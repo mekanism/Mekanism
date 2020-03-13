@@ -72,7 +72,6 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             return energyDisplays.get(side).get(stage);
         }
         Model3D model = new Model3D();
-        model.baseBlock = GeneratorsFluids.BIOETHANOL.getBlock();
         model.setTexture(MekanismRenderer.getFluidTexture(GeneratorsFluids.BIOETHANOL.getFluidStack(1), FluidType.STILL));
         switch (side) {
             case NORTH:

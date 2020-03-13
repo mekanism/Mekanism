@@ -8,10 +8,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityTeleporter;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -37,9 +35,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         if (tile.shouldRender && tile.getWorld() != null) {
             matrix.push();
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
-            //TODO: Improve how it calculates which direction it is facing? In case there are multiple teleporters touching?
-            Model3D overlayModel = getOverlayModel(tile.getWorld().getBlockState(tile.getPos().west()).getBlock() instanceof BlockTeleporterFrame);
-            MekanismRenderer.renderObject(overlayModel, matrix, renderer, MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
+            MekanismRenderer.renderObject(getOverlayModel(tile.hasEastWestFrame()), matrix, renderer, MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                   MekanismRenderer.getColorARGB(EnumColor.PURPLE, 0.75F));
             MekanismRenderer.disableGlow(glowInfo);
             matrix.pop();
@@ -55,7 +51,6 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         if (eastWest) {
             if (EAST_WEST == null) {
                 EAST_WEST = new Model3D();
-                EAST_WEST.baseBlock = Blocks.STONE;
                 EAST_WEST.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getGas()));
                 EAST_WEST.minY = 1;
                 EAST_WEST.maxY = 3;
@@ -68,7 +63,6 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         }
         if (NORTH_SOUTH == null) {
             NORTH_SOUTH = new Model3D();
-            NORTH_SOUTH.baseBlock = Blocks.STONE;
             NORTH_SOUTH.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getGas()));
             NORTH_SOUTH.minY = 1;
             NORTH_SOUTH.maxY = 3;

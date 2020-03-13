@@ -9,9 +9,6 @@ import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -44,9 +41,6 @@ public final class FluidRenderer {
         }
 
         Model3D model = new Model3D();
-        BlockState state = MekanismUtils.getFlowingBlockState(data.fluidType);
-        //TODO: Check air better, given we don't have any position information
-        model.baseBlock = state.isAir() ? Blocks.WATER : state.getBlock();
         model.setTexture(MekanismRenderer.getFluidTexture(data.fluidType, FluidType.STILL));
 
         cachedCenter.put(stage, model);
@@ -66,13 +60,8 @@ public final class FluidRenderer {
         }
 
         Model3D model = new Model3D();
-        BlockState state = MekanismUtils.getFlowingBlockState(data.fluidType);
-        //TODO: Check air better, given we don't have any position information
-        model.baseBlock = state.isAir() ? Blocks.WATER : state.getBlock();
         MekanismRenderer.prepFlowing(model, data.fluidType);
-
         cachedValveFluids.put(data, model);
-
         switch (data.side) {
             case DOWN:
                 model.minX = 0.3;

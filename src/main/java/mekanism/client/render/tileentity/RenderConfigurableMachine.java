@@ -16,7 +16,6 @@ import mekanism.common.base.ProfilerConstants;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -81,7 +80,6 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         }
 
         Model3D toReturn = new Model3D();
-        toReturn.baseBlock = Blocks.STONE;
         toReturn.setTexture(MekanismRenderer.overlays.get(type));
 
         if (cachedOverlays.containsKey(side)) {

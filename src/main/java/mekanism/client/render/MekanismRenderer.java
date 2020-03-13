@@ -26,8 +26,6 @@ import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -399,8 +397,6 @@ public class MekanismRenderer {
         public TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
 
         public boolean[] renderSides = new boolean[]{true, true, true, true, true, true, false};
-
-        public Block baseBlock = Blocks.SAND;
 
         public final void setBlockBounds(double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos) {
             minX = xNeg;

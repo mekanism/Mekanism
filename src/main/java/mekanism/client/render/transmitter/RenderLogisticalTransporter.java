@@ -25,7 +25,6 @@ import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -150,7 +149,6 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 break;
         }
         Model3D model = new Model3D();
-        model.baseBlock = Blocks.STONE;
         model.setTexture(icon);
         switch (side) {
             case DOWN:

@@ -9,7 +9,6 @@ import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -49,7 +48,6 @@ public final class MinerVisualRenderer {
                         if (x == -data.radius || x == data.radius || y == data.minY - data.yCoord || y == data.maxY - data.yCoord || z == -data.radius || z == data.radius) {
                             Model3D model = new Model3D();
                             model.setBlockBounds(x + 0.4, y + 0.4, z + 0.4, x + 0.6, y + 0.6, z + 0.6);
-                            model.baseBlock = Blocks.WATER;
                             model.setTexture(MekanismRenderer.whiteIcon);
                             models.add(model);
                         }

@@ -29,7 +29,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.BlockState;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -248,7 +248,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      * @return 1: yes, 2: no frame, 3: no link found, 4: not enough electricity
      */
     private byte canTeleport() {
-        if (!hasFrame()) {
+        if (!hasEastWestFrame() && !hasNorthSouthFrame()) {
             return 2;
         } else if (getClosest() == null) {
             return 3;
@@ -332,24 +332,24 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return energyCost;
     }
 
-    private boolean hasFrame() {
-        if (isFrame(getPos().getX() - 1, getPos().getY(), getPos().getZ()) && isFrame(getPos().getX() + 1, getPos().getY(), getPos().getZ())
-            && isFrame(getPos().getX() - 1, getPos().getY() + 1, getPos().getZ()) && isFrame(getPos().getX() + 1, getPos().getY() + 1, getPos().getZ())
-            && isFrame(getPos().getX() - 1, getPos().getY() + 2, getPos().getZ()) && isFrame(getPos().getX() + 1, getPos().getY() + 2, getPos().getZ())
-            && isFrame(getPos().getX() - 1, getPos().getY() + 3, getPos().getZ()) && isFrame(getPos().getX() + 1, getPos().getY() + 3, getPos().getZ())
-            && isFrame(getPos().getX(), getPos().getY() + 3, getPos().getZ())) {
-            return true;
-        }
-        return isFrame(getPos().getX(), getPos().getY(), getPos().getZ() - 1) && isFrame(getPos().getX(), getPos().getY(), getPos().getZ() + 1)
-               && isFrame(getPos().getX(), getPos().getY() + 1, getPos().getZ() - 1) && isFrame(getPos().getX(), getPos().getY() + 1, getPos().getZ() + 1)
-               && isFrame(getPos().getX(), getPos().getY() + 2, getPos().getZ() - 1) && isFrame(getPos().getX(), getPos().getY() + 2, getPos().getZ() + 1)
-               && isFrame(getPos().getX(), getPos().getY() + 3, getPos().getZ() - 1) && isFrame(getPos().getX(), getPos().getY() + 3, getPos().getZ() + 1)
-               && isFrame(getPos().getX(), getPos().getY() + 3, getPos().getZ());
+    public boolean hasEastWestFrame() {
+        int x = getPos().getX();
+        int y = getPos().getY();
+        int z = getPos().getZ();
+        return isFrame(x - 1, y, z) && isFrame(x + 1, y, z) && isFrame(x - 1, y + 1, z) && isFrame(x + 1, y + 1, z) && isFrame(x - 1, y + 2, z)
+               && isFrame(x + 1, y + 2, z) && isFrame(x - 1, y + 3, z) && isFrame(x + 1, y + 3, z) && isFrame(x, y + 3, z);
+    }
+
+    public boolean hasNorthSouthFrame() {
+        int x = getPos().getX();
+        int y = getPos().getY();
+        int z = getPos().getZ();
+        return isFrame(x, y, z - 1) && isFrame(x, y, z + 1) && isFrame(x, y + 1, z - 1) && isFrame(x, y + 1, z + 1) && isFrame(x, y + 2, z - 1)
+               && isFrame(x, y + 2, z + 1) && isFrame(x, y + 3, z - 1) && isFrame(x, y + 3, z + 1) && isFrame(x, y + 3, z);
     }
 
     public boolean isFrame(int x, int y, int z) {
-        BlockState state = world.getBlockState(new BlockPos(x, y, z));
-        return state.getBlock() instanceof BlockTeleporterFrame;
+        return world.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockTeleporterFrame;
     }
 
     @Override
@@ -389,19 +389,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     manager.remove(freq, getSecurity().getOwnerUUID());
                 }
             }
-            return;
-        }
-
-        super.handlePacketData(dataStream);
-
-        if (isRemote()) {
+        } else {
+            //TODO: Move to container sync
             if (dataStream.readBoolean()) {
                 frequency = new Frequency(dataStream);
             } else {
                 frequency = null;
             }
-
-            shouldRender = dataStream.readBoolean();
 
             publicCache.clear();
             privateCache.clear();
@@ -419,14 +413,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
         if (frequency == null) {
             data.add(false);
         } else {
             data.add(true);
             frequency.write(data);
         }
-        data.add(shouldRender);
         //TODO: Sync list of frequencies via a syncable list
         data.add(Mekanism.publicTeleporters.getFrequencies().size());
         for (Frequency freq : Mekanism.publicTeleporters.getFrequencies()) {
@@ -477,5 +469,19 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableByte.create(() -> status, value -> status = value));
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.putBoolean(NBTConstants.RENDERING, shouldRender);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> shouldRender = value);
     }
 }
