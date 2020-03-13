@@ -161,7 +161,7 @@ public abstract class BlockMekanism extends Block {
         if (tile instanceof IBoundingBlock) {
             ((IBoundingBlock) tile).onPlace();
         }
-        if (!world.isRemote) {
+        if (!world.isRemote()) {
             if (tile instanceof IMultiblock) {
                 ((IMultiblock<?>) tile).doUpdate();
             }
@@ -211,10 +211,6 @@ public abstract class BlockMekanism extends Block {
         //The variant of it that was in BlockBasic
         if (item instanceof IItemEnergized && tile.isElectric() && !(tile instanceof TileEntityMultiblock<?>)) {
             tile.setEnergy(((IItemEnergized) item).getEnergy(stack));
-        }
-        //TODO: Figure out if this is actually needed
-        if (!world.isRemote) {
-            tile.sendUpdatePacket();
         }
     }
 

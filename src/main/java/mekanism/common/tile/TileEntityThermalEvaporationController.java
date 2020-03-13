@@ -83,7 +83,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     private boolean updatedThisTick;
 
-    private float prevScale;
+    public float prevScale;
 
     public float totalLoss;
 
@@ -154,9 +154,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
-        if (active && Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
-            prevScale = (float) inputTank.getFluidAmount() / inputTank.getCapacity();
-            sendUpdatePacket();
+        if (active) {
+            float scale = MekanismUtils.getScale(prevScale, inputTank);
+            if (scale != prevScale) {
+                prevScale = scale;
+                sendUpdatePacket();
+            }
         }
     }
 
@@ -170,10 +173,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public void onNeighborChange(Block block) {
         super.onNeighborChange(block);
         refresh();
-    }
-
-    public boolean hasRecipe(FluidStack fluid) {
-        return containsRecipe(recipe -> recipe.getInput().testType(fluid));
     }
 
     protected void refresh() {
@@ -535,6 +534,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         updateTag.putBoolean(NBTConstants.LEFT_ON_FACE, isLeftOnFace);
         updateTag.putInt(NBTConstants.RENDER_Y, renderY);
         updateTag.putBoolean(NBTConstants.ACTIVE, getActive());
+        updateTag.putFloat(NBTConstants.SCALE, prevScale);
         return updateTag;
     }
 
@@ -548,9 +548,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         });
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.LEFT_ON_FACE, value -> isLeftOnFace = value);
         NBTUtils.setIntIfPresent(tag, NBTConstants.RENDER_Y, value -> renderY = value);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
         //Note: we send the active state over the network as when we are force syncing it we may not have the accurate block state
         // on the client yet
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.LEFT_ON_FACE, active -> {
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.ACTIVE, active -> {
             if (clientStructured != active) {
                 clientStructured = active;
                 if (active) {

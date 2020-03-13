@@ -106,8 +106,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         }
         int newScale = (int) (getEnergy() * 20 / getMaxEnergy());
         if (newScale != prevScale) {
-            sendUpdatePacket();
             prevScale = newScale;
+            sendUpdatePacket();
         }
     }
 

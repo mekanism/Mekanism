@@ -87,6 +87,10 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 }
                 data.prevActive = data.activeTicks > 0;
             }
+            List<IInventorySlot> inventorySlots = structure.getInventorySlots(null);
+            //TODO: No magic numbers??
+            FluidInventorySlot inputSlot = (FluidInventorySlot) inventorySlots.get(0);
+            inputSlot.handleTank(inventorySlots.get(1), structure.editMode);
             float scale = MekanismUtils.getScale(prevScale, structure.fluidTank);
             if (scale != prevScale) {
                 needsPacket = true;
@@ -95,10 +99,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             if (needsPacket) {
                 sendUpdatePacket();
             }
-            List<IInventorySlot> inventorySlots = structure.getInventorySlots(null);
-            //TODO: No magic numbers??
-            FluidInventorySlot inputSlot = (FluidInventorySlot) inventorySlots.get(0);
-            inputSlot.handleTank(inventorySlots.get(1), structure.editMode);
         }
     }
 

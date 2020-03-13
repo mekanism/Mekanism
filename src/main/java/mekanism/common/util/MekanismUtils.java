@@ -192,7 +192,7 @@ public final class MekanismUtils {
         return getScale(prevScale, tank.getStored(), tank.getCapacity(), tank.isEmpty());
     }
 
-    private static float getScale(float prevScale, int stored, int capacity, boolean empty) {
+    public static float getScale(float prevScale, int stored, int capacity, boolean empty) {
         float targetScale = (float) stored / capacity;
         if (Math.abs(prevScale - targetScale) > 0.01) {
             return (9 * prevScale + targetScale) / 10;

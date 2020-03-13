@@ -38,12 +38,11 @@ public class RenderThermalEvaporationController extends MekanismTileEntityRender
             matrix.push();
             BlockPos pos = tile.getPos();
             matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
-            float fluidScale = (float) tile.inputTank.getFluidAmount() / (float) tile.getMaxFluid();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
             //Render the proper height
-            Model3D fluidModel = FluidRenderer.getFluidModel(data, Math.min(1, fluidScale));
+            Model3D fluidModel = FluidRenderer.getFluidModel(data, Math.min(1, tile.prevScale));
             MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                  MekanismRenderer.getColorARGB(data.fluidType, fluidScale));
+                  MekanismRenderer.getColorARGB(data.fluidType, tile.prevScale));
             MekanismRenderer.disableGlow(glowInfo);
             matrix.pop();
         }
