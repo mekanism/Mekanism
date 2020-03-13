@@ -8,13 +8,9 @@ buildscript {
             name "forge"
             url "https://files.minecraftforge.net/maven"
         }
-        maven {
-            url 'http://dogforce-games.com/maven'
-        }
     }
     dependencies {
-        //TODO: Change this back to 3.+ once FG is fixed
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.0.163+pull-657', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 

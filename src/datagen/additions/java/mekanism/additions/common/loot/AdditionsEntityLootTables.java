@@ -62,7 +62,7 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
                           .acceptFunction(SetCount.builder(RandomValueRange.of(0.0F, 1.0F)))
                           .acceptFunction(LootingEnchantBonus.builder(RandomValueRange.of(0.0F, 1.0F))
                                 .func_216072_a(1)
-                          ).acceptFunction(SetNBT.func_215952_a(slownessPotion))
+                          ).acceptFunction(SetNBT.builder(slownessPotion))
                     ).acceptCondition(KilledByPlayer.builder())
               )
         );

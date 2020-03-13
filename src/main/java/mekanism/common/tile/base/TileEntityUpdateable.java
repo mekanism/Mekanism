@@ -90,16 +90,10 @@ public abstract class TileEntityUpdateable extends TileEntity {
         if (isRemote()) {
             Mekanism.logger.warn("Update packet call requested from client side", new Exception());
         } else {
-            //TODO: Figure out why we are sending an update packet via our own method, in the majority of cases
-            // when the block is initially placed (so early in fact that the client doesn't have a tile there yet)
             //Note: We use our own update packet/channel to avoid chunk trashing and minecraft attempting to rerender
             // the entire chunk when most often we are just updating a TileEntityRenderer, so the chunk itself
             // does not need to and should not be redrawn
             Mekanism.packetHandler.sendToAllTracking(new PacketUpdateTile(this), tracking);
-            //TODO: Even with the fix/workaround for the chunk thrashing/redrawing I believe we should look more
-            // into usages of this method, and see if we can further reduce how often this needs to be called
-            //BlockState state = getBlockState();
-            //world.notifyBlockUpdate(getPos(), state, state, BlockFlags.BLOCK_UPDATE);
         }
     }
 }
