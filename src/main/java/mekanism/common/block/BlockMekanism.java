@@ -236,6 +236,18 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
+    @Deprecated
+    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
+        if (state.hasTileEntity() && oldState.getBlock() != state.getBlock()) {
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onAdded();
+            }
+        }
+        super.onBlockAdded(state, world, pos, oldState, isMoving);
+    }
+
+    @Override
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         if (state.hasTileEntity() && state.getBlock() != newState.getBlock()) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);

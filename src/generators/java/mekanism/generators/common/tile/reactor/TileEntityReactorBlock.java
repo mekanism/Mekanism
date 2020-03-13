@@ -46,9 +46,7 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
     @Override
     public void remove() {
         super.remove();
-        if (getReactor() != null) {
-            getReactor().formMultiblock(false);
-        }
+        formMultiblock(false);
     }
 
     @Override
@@ -86,9 +84,7 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        if (!(this instanceof TileEntityReactorController) && getReactor() != null) {
-            getReactor().formMultiblock(true);
-        }
+        formMultiblock(true);
     }
 
     @Override
@@ -98,22 +94,29 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
             if (getReactor() == null) {
                 updateController(true);
             } else {
-                getReactor().formMultiblock(false);
+                formMultiblock(false);
             }
+        }
+    }
+
+    protected void formMultiblock(boolean keepBurning) {
+        if (getReactor() != null) {
+            getReactor().formMultiblock(keepBurning);
         }
     }
 
     private void updateController(boolean fromAdding) {
         if (this instanceof TileEntityReactorController) {
-            if (!fromAdding && !((TileEntityReactorController) this).isFormed()) {
-                ((TileEntityReactorController) this).formMultiblock(false);
-                setActive(true);
+            if (!fromAdding) {
+                TileEntityReactorController controller = (TileEntityReactorController) this;
+                if (!controller.isFormed()) {
+                    formMultiblock(false);
+                }
             }
         } else {
             TileEntityReactorController found = new ControllerFinder().find();
             if (found != null && !found.isFormed()) {
                 found.formMultiblock(false);
-                found.setActive(true);
             }
         }
     }

@@ -119,6 +119,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         //future impl
     }
 
+    @Override
     public void formMultiblock(boolean keepBurning) {
         if (getReactor() == null) {
             setReactor(new FusionReactor(this));
@@ -150,18 +151,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     protected boolean canPlaySound() {
         return isBurning();
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-        formMultiblock(true);
-    }
-
-    @Override
-    public void onAdded() {
-        super.onAdded();
-        formMultiblock(false);
     }
 
     @Nonnull

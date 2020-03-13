@@ -190,7 +190,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     private Range3D genPacketRange() {
-        if (getSize() == 0) {
+        if (isEmpty()) {
             deregister();
             return null;
         }
@@ -238,6 +238,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public int getSize() {
         return transmitters.size();
+    }
+
+    public boolean isEmpty() {
+        return transmitters.isEmpty();
     }
 
     public int getAcceptorSize() {
@@ -298,7 +302,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     @Override
     public boolean needsTicks() {
-        return getSize() > 0;
+        return !isEmpty();
     }
 
     @Override

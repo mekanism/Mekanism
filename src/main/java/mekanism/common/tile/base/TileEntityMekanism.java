@@ -494,12 +494,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
     }
 
-    @Override
-    public void updateContainingBlockInfo() {
-        super.updateContainingBlockInfo();
-        onAdded();
-    }
-
     public void open(PlayerEntity player) {
         playersUsing.add(player);
     }

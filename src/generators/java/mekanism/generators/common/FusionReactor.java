@@ -276,10 +276,6 @@ public class FusionReactor {
         reactorBlocks.clear();
         formed = false;
         setBurning(burning && keepBurning);
-
-        if (!controller.isRemote()) {
-            controller.sendUpdatePacket();
-        }
     }
 
     public void formMultiblock(boolean keepBurning) {
@@ -291,12 +287,18 @@ public class FusionReactor {
 
         if (!createFrame(centreOfReactor) || !addSides(centreOfReactor) || !centerIsClear(centreOfReactor)) {
             unformMultiblock(keepBurning);
+            if (!controller.isRemote() && !controller.isRemoved()) {
+                //Only set it to inactive and update the controller if we aren't unforming the multiblock due to removing it
+                controller.setActive(false);
+                controller.sendUpdatePacket();
+            }
             return;
         }
 
         formed = true;
 
         if (!controller.isRemote()) {
+            controller.setActive(true);
             controller.sendUpdatePacket();
         }
     }

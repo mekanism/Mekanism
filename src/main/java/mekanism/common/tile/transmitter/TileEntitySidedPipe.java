@@ -455,12 +455,6 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
     @Override
     public void onLoad() {
         onWorldJoin();
-        //TODO: Temporarily commented out to stop crashing from starting world with pipes in it
-        // For the most part is seems to be working just fine without this, except some spots still behave strangely
-        /*if (getPossibleTransmitterConnections() != currentTransmitterConnections) {
-            //Mark the transmitters as invalidated if they do not match what we have stored/calculated
-            refreshConnections();
-        }//*/
         super.onLoad();
     }
 
