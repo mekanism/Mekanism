@@ -17,6 +17,7 @@ import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientProxy;
 import mekanism.client.ClientTickHandler;
+import mekanism.client.ModelLoaderRegisterHelper;
 import mekanism.common.base.IModule;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.command.CommandMek;
@@ -208,6 +209,11 @@ public class Mekanism {
         MekanismGases.GASES.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
+
+        //Register our model loader as soon as we can to avoid it not existing when models are loaded
+        // as there seems to be some odd race condition which allows for the model loader to sometimes not be loaded
+        // when the client starts loading models. Even if we register our loader as early as ClientSetupEvent
+        DistExecutor.runWhenOn(Dist.CLIENT, ModelLoaderRegisterHelper::registerModelLoader);
     }
 
     public static ResourceLocation rl(String path) {
