@@ -10,7 +10,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.obj.ContentsModelConfiguration;
 import mekanism.client.render.obj.VisibleModelConfiguration;
-import mekanism.common.ColorRGBA;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
@@ -42,30 +41,23 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
         super(renderer);
     }
 
-    protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, int light, int overlayLight, TextureAtlasSprite icon, ColorRGBA color) {
-        int argb = color.argb();
-        float red = MekanismRenderer.getRed(argb);
-        float green = MekanismRenderer.getGreen(argb);
-        float blue = MekanismRenderer.getBlue(argb);
-        float alpha = MekanismRenderer.getAlpha(argb);
-        renderModel(transmitter, matrix, builder, red, green, blue, alpha, light, overlayLight, icon);
-    }
-
-    protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, float red, float green, float blue, float alpha, int light, int overlayLight,
+    protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, int rgb, float alpha, int light, int overlayLight,
           TextureAtlasSprite icon) {
-        List<String> visible = Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName() + transmitter.getConnectionType(side).getName().toUpperCase()).collect(Collectors.toList());
-        renderModel(transmitter, matrix, builder, red, green, blue, alpha, light, overlayLight, icon, visible);
+        renderModel(transmitter, matrix, builder, MekanismRenderer.getRed(rgb), MekanismRenderer.getGreen(rgb), MekanismRenderer.getBlue(rgb), alpha, light, overlayLight, icon,
+              Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName() + transmitter.getConnectionType(side).getName().toUpperCase()).collect(Collectors.toList()));
     }
 
     protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, float red, float green, float blue, float alpha, int light, int overlayLight,
           TextureAtlasSprite icon, List<String> visible) {
-        //TODO: Can we somehow cache any of this method
-        IBakedModel bakedModel = MekanismRenderer.contentsModel.bake(new VisibleModelConfiguration(contentsConfiguration, visible), ModelLoader.instance(),
-              material -> icon, ModelRotation.X0_Y0, ItemOverrideList.EMPTY, MODEL_LOCATION);
-        Entry entry = matrix.getLast();
-        //Get all the sides
-        for (BakedQuad quad : bakedModel.getQuads(transmitter.getBlockState(), null, Minecraft.getInstance().world.getRandom(), transmitter.getModelData())) {
-            builder.addVertexData(entry, quad, red, green, blue, alpha, light, overlayLight);
+        if (!visible.isEmpty()) {
+            //TODO: Can we somehow cache any of this method
+            IBakedModel bakedModel = MekanismRenderer.contentsModel.bake(new VisibleModelConfiguration(contentsConfiguration, visible), ModelLoader.instance(),
+                  material -> icon, ModelRotation.X0_Y0, ItemOverrideList.EMPTY, MODEL_LOCATION);
+            Entry entry = matrix.getLast();
+            //Get all the sides
+            for (BakedQuad quad : bakedModel.getQuads(transmitter.getBlockState(), null, Minecraft.getInstance().world.getRandom(), transmitter.getModelData())) {
+                builder.addVertexData(entry, quad, red, green, blue, alpha, light, overlayLight);
+            }
         }
     }
 

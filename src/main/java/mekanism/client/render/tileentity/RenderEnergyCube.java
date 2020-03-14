@@ -2,17 +2,12 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.RelativeSide;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityEnergyCube;
-import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.component.config.slot.ISlotInfo;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
@@ -32,10 +27,9 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
 
     @Override
     protected void render(TileEntityEnergyCube tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
+        profiler.startSection(ProfilerConstants.FRAME);
         matrix.push();
         matrix.translate(0.5, 1.5, 0.5);
-
-        matrix.push();
         switch (tile.getDirection()) {
             case DOWN:
                 matrix.rotate(Vector3f.XN.rotationDegrees(90));
@@ -50,37 +44,29 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
                 MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
                 break;
         }
-
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
+        profiler.startSection(ProfilerConstants.CORNERS);
         model.render(matrix, renderer, light, overlayLight, tile.tier, false);
-
-        ConfigInfo config = tile.configComponent.getConfig(TransmissionType.ENERGY);
-        if (config != null) {
-            for (RelativeSide side : EnumUtils.SIDES) {
-                ISlotInfo slotInfo = config.getSlotInfo(side);
-                //TODO: Re-evaluate
-                boolean canInput = false;
-                boolean canOutput = false;
-                if (slotInfo != null) {
-                    canInput = slotInfo.canInput();
-                    canOutput = slotInfo.canOutput();
-                }
-                model.renderSide(matrix, renderer, light, overlayLight, side, canInput, canOutput);
-            }
-        }
+        profiler.endStartSection(ProfilerConstants.SIDES);
+        model.renderSidesBatched(tile, matrix, renderer, light, overlayLight);
+        profiler.endSection();//End sides
         matrix.pop();
 
+        profiler.endStartSection(ProfilerConstants.CORE);//End frame start core
         int energyScale = tile.getEnergyScale();
         if (energyScale > 0) {
-            matrix.translate(0, -1, 0);
+            matrix.push();
+            matrix.translate(0.5, 0.5, 0.5);
             float ticks = MekanismClient.ticksPassed + partialTick;
             matrix.scale(0.4F, 0.4F, 0.4F);
             matrix.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
-            matrix.rotate(Vector3f.YP.rotationDegrees(4 * ticks));
-            matrix.rotate(coreVec.rotationDegrees(36F + 4 * ticks));
+            float scaledTicks = 4 * ticks;
+            matrix.rotate(Vector3f.YP.rotationDegrees(scaledTicks));
+            matrix.rotate(coreVec.rotationDegrees(36F + scaledTicks));
             core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.tier.getBaseTier().getColor(), energyScale / 20F);
+            matrix.pop();
         }
-        matrix.pop();
+        profiler.endSection();
     }
 
     @Override

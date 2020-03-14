@@ -1,39 +1,37 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.ColorTemperature;
+import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 
 @ParametersAreNonnullByDefault
-public class RenderThermodynamicConductor extends RenderTransmitterSimple<TileEntityThermodynamicConductor> {
+public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEntityThermodynamicConductor> {
 
     public RenderThermodynamicConductor(TileEntityRendererDispatcher renderer) {
         super(renderer);
     }
 
     @Override
-    protected void render(TileEntityThermodynamicConductor transmitter, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+    protected void render(TileEntityThermodynamicConductor conductor, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        if (!MekanismConfig.client.opaqueTransmitters.get()) {
-            render(transmitter, matrix, renderer, light, overlayLight, 15, profiler);
-        }
+        matrix.push();
+        matrix.translate(0.5, 0.5, 0.5);
+        int argb = ColorTemperature.fromTemperature(conductor.getTemp(), conductor.getBaseColor()).argb();
+        renderModel(conductor, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), argb,
+              MekanismRenderer.getAlpha(argb), MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.heatIcon);
+        matrix.pop();
     }
 
     @Override
     protected String getProfilerSection() {
         return ProfilerConstants.THERMODYNAMIC_CONDUCTOR;
-    }
-
-    @Override
-    public void renderContents(MatrixStack matrix, IVertexBuilder renderer, TileEntityThermodynamicConductor conductor, int light, int overlayLight) {
-        renderModel(conductor, matrix, renderer, light, overlayLight, MekanismRenderer.heatIcon, ColorTemperature.fromTemperature(conductor.getTemp(), conductor.getBaseColor()));
     }
 }

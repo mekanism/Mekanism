@@ -4,7 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.FluidRenderMap;
@@ -65,6 +66,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             matrix.push();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluidStack);
             boolean gas = fluidStack.getFluid().getAttributes().isGaseous(fluidStack);
+            List<String> connectionContents = new ArrayList<>();
             for (Direction side : EnumUtils.DIRECTIONS) {
                 ConnectionType connectionType = pipe.getConnectionType(side);
                 if (connectionType == ConnectionType.NORMAL) {
@@ -74,16 +76,17 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                               MekanismRenderer.getColorARGB(fluidStack, scale));
                     }
                 } else if (connectionType != ConnectionType.NONE) {
-                    matrix.translate(0.5, 0.5, 0.5);
-                    int color = MekanismRenderer.getColorARGB(fluidStack, pipe.currentScale);
-                    float red = MekanismRenderer.getRed(color);
-                    float green = MekanismRenderer.getGreen(color);
-                    float blue = MekanismRenderer.getBlue(color);
-                    float alpha = MekanismRenderer.getAlpha(color);
-                    renderModel(pipe, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), red, green, blue, alpha, light,
-                          overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidType.STILL), Collections.singletonList(side.getName() + connectionType.getName().toUpperCase()));
-                    matrix.translate(-0.5, -0.5, -0.5);
+                    connectionContents.add(side.getName() + connectionType.getName().toUpperCase());
                 }
+            }
+            if (!connectionContents.isEmpty()) {
+                matrix.push();
+                matrix.translate(0.5, 0.5, 0.5);
+                int color = MekanismRenderer.getColorARGB(fluidStack, pipe.currentScale);
+                renderModel(pipe, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)),
+                      MekanismRenderer.getRed(color), MekanismRenderer.getGreen(color), MekanismRenderer.getBlue(color), MekanismRenderer.getAlpha(color), light,
+                      overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidType.STILL), connectionContents);
+                matrix.pop();
             }
             Model3D model = getModel(null, fluidStack, getStage(scale, gas));
             if (model != null) {
