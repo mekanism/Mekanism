@@ -633,6 +633,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
+        //TODO: Improve on this to use the max that we actually may need?
         return INFINITE_EXTENT_AABB;
     }
 

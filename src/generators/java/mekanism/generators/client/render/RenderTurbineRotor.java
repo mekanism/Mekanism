@@ -29,37 +29,35 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         if (tile.getMultiblock() != null && !internalRender) {
             return;
         }
-
-        matrix.push();
-
+        int housedBlades = tile.getHousedBlades();
+        if (housedBlades == 0) {
+            return;
+        }
         int baseIndex = tile.getPosition() * 2;
-        float rotateSpeed = 0.0F;
-
-        if (tile.getMultiblock() != null && SynchronizedTurbineData.clientRotationMap.containsKey(tile.getMultiblock())) {
-            rotateSpeed = SynchronizedTurbineData.clientRotationMap.getFloat(tile.getMultiblock());
-        }
-
         if (!Mekanism.proxy.isPaused()) {
-            tile.rotationLower = (tile.rotationLower + rotateSpeed * BASE_SPEED * (1F / (float) (baseIndex + 1))) % 360;
-            tile.rotationUpper = (tile.rotationUpper + rotateSpeed * BASE_SPEED * (1F / (float) (baseIndex + 2))) % 360;
+            if (tile.getMultiblock() != null && SynchronizedTurbineData.clientRotationMap.containsKey(tile.getMultiblock())) {
+                float rotateSpeed = SynchronizedTurbineData.clientRotationMap.getFloat(tile.getMultiblock()) * BASE_SPEED;
+                tile.rotationLower = (tile.rotationLower + rotateSpeed * (1F / (float) (baseIndex + 1))) % 360;
+                tile.rotationUpper = (tile.rotationUpper + rotateSpeed * (1F / (float) (baseIndex + 2))) % 360;
+            } else {
+                tile.rotationLower = tile.rotationLower % 360;
+                tile.rotationUpper = tile.rotationUpper % 360;
+            }
         }
-
-        if (tile.getHousedBlades() > 0) {
-            matrix.push();
-            matrix.translate(0.5, -1, 0.5);
-            matrix.rotate(Vector3f.YP.rotationDegrees(tile.rotationLower));
-            model.render(matrix, renderer, light, overlayLight, baseIndex);
-            matrix.pop();
-        }
-
-        if (tile.getHousedBlades() == 2) {
+        //Bottom blade
+        matrix.push();
+        matrix.translate(0.5, -1, 0.5);
+        matrix.rotate(Vector3f.YP.rotationDegrees(tile.rotationLower));
+        model.render(matrix, renderer, light, overlayLight, baseIndex);
+        matrix.pop();
+        //Top blade
+        if (housedBlades == 2) {
             matrix.push();
             matrix.translate(0.5, -0.5, 0.5);
             matrix.rotate(Vector3f.YP.rotationDegrees(tile.rotationUpper));
             model.render(matrix, renderer, light, overlayLight, baseIndex + 1);
             matrix.pop();
         }
-        matrix.pop();
     }
 
     @Override

@@ -33,7 +33,8 @@ public class PacketUpdateTile {
         context.get().enqueueWork(() -> {
             TileEntityUpdateable tile = MekanismUtils.getTileEntity(TileEntityUpdateable.class, player.world, message.pos, true);
             if (tile == null) {
-                Mekanism.logger.warn("Update tile packet received for position: {} in world: {}, but no valid tile was found.", message.pos, player.world);
+                Mekanism.logger.warn("Update tile packet received for position: {} in world: {}, but no valid tile was found.", message.pos,
+                      player.world.getDimension().getType().getRegistryName());
             } else {
                 tile.handleUpdatePacket(message.updateTag);
             }

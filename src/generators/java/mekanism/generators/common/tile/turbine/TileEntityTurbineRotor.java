@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile.turbine;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.util.MekanismUtils;
@@ -18,6 +19,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
     // Position of this rotor, relative to bottom
     private int position = -1;
+    //Rough radius of blades
+    private int radius = -1;
 
     // Rendering helpers
     public float rotationLower;
@@ -36,16 +39,16 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
     public void updateRotors() {
         // In order to render properly, each rotor has to know its position, relative to other contiguous rotors
-        // along the Z axis. When a neighbor changes, rescan the rotors and figure out everyone's position
+        // along the Y axis. When a neighbor changes, rescan the rotors and figure out everyone's position
         // N.B. must be in bottom->top order.
 
         // Find the bottom-most rotor and start scan from there
-        TileEntityTurbineRotor rotor = nextRotor(getPos().down());
-        if (rotor != null) {
-            rotor.updateRotors();
-        } else {
+        TileEntityTurbineRotor rotor = getRotor(getPos().down());
+        if (rotor == null) {
             // This is the bottom-most rotor, so start scan up
             scanRotors(0);
+        } else {
+            rotor.updateRotors();
         }
     }
 
@@ -53,11 +56,17 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         if (index != position) {
             // Our position has changed, update and generate an update packet for client
             position = index;
-            sendUpdatePacket();
+            updateRadius();
+            if (blades > 0) {
+                //Only send an update packet to the client if we actually have some blades installed
+                // otherwise we don't bother updating the client on what position we are at as they do not
+                // actually need it for rendering, and may not even have the tile placed yet
+                sendUpdatePacket();
+            }
         }
 
         // Pass the scan along to next rotor up, along with their new index
-        TileEntityTurbineRotor rotor = nextRotor(getPos().up());
+        TileEntityTurbineRotor rotor = getRotor(getPos().up());
         if (rotor != null) {
             rotor.scanRotors(index + 1);
         }
@@ -65,7 +74,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
     public boolean addBlade() {
         // If the the rotor beneath has less than two blades, add to it
-        TileEntityTurbineRotor next = nextRotor(getPos().down());
+        TileEntityTurbineRotor next = getRotor(getPos().down());
         if (next != null && next.blades < 2) {
             return next.addBlade();
         } else if (blades < 2) {
@@ -78,16 +87,13 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
         // This rotor and the rotor below are full up; pass the call
         // on up to the next rotor in stack
-        next = nextRotor(getPos().up());
-        if (next != null) {
-            return next.addBlade();
-        }
-        return false;
+        next = getRotor(getPos().up());
+        return next != null && next.addBlade();
     }
 
     public boolean removeBlade() {
         // If the the rotor above has any blades, remove them first
-        TileEntityTurbineRotor next = nextRotor(getPos().up());
+        TileEntityTurbineRotor next = getRotor(getPos().up());
         if (next != null && next.blades > 0) {
             return next.removeBlade();
         } else if (blades > 0) {
@@ -101,11 +107,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
         // This rotor and the rotor above are empty; pass the call
         // on up to the next rotor in stack
-        next = nextRotor(getPos().down());
-        if (next != null) {
-            return next.removeBlade();
-        }
-        return false;
+        next = getRotor(getPos().down());
+        return next != null && next.removeBlade();
     }
 
 
@@ -117,7 +120,12 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         return position;
     }
 
-    private TileEntityTurbineRotor nextRotor(BlockPos pos) {
+    private void updateRadius() {
+        radius = 1 + position / 4;
+    }
+
+    @Nullable
+    private TileEntityTurbineRotor getRotor(BlockPos pos) {
         return MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, getWorld(), pos);
     }
 
@@ -125,6 +133,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         blades = nbtTags.getInt(NBTConstants.BLADES);
+        position = nbtTags.getInt(NBTConstants.POSITION);
+        updateRadius();
     }
 
     @Nonnull
@@ -132,13 +142,18 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.BLADES, getHousedBlades());
+        nbtTags.putInt(NBTConstants.POSITION, getPosition());
         return nbtTags;
     }
 
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return INFINITE_EXTENT_AABB;
+        if (blades == 0 || radius == -1) {
+            //If there are no blades default to the collision box of the rotor
+            return super.getRenderBoundingBox();
+        }
+        return new AxisAlignedBB(pos.add(-radius, 0, -radius), pos.add(1 + radius, 1, 1 + radius));
     }
 
     @Override
@@ -164,7 +179,10 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         int prevBlades = blades;
         int prevPosition = position;
         NBTUtils.setIntIfPresent(tag, NBTConstants.BLADES, value -> blades = value);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.POSITION, value -> position = value);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.POSITION, value -> {
+            position = value;
+            updateRadius();
+        });
         if (prevBlades != blades || prevPosition != prevBlades) {
             rotationLower = 0;
             rotationUpper = 0;

@@ -222,6 +222,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
+        //TODO: Improve on this to use the max that we actually may need?
         return INFINITE_EXTENT_AABB;
     }
 

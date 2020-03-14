@@ -480,6 +480,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
+        //TODO: Improve on this to use the max that we actually may need?
         return INFINITE_EXTENT_AABB;
     }
 

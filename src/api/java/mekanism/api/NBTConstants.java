@@ -40,6 +40,7 @@ public final class NBTConstants {
     public static final String INJECTION_RATE = "injectionRate";
     public static final String LOGIC_TYPE = "logicType";
     public static final String BLADES = "blades";
+    public static final String POSITION = "position";
 
     public static final String SIDE = "side";
 
@@ -183,7 +184,6 @@ public final class NBTConstants {
     public static final String HAS_STRUCTURE = "hasStructure";
     public static final String INVENTORY_ID = "inventoryID";
     public static final String RENDER_LOCATION = "renderLocation";
-    public static final String POSITION = "position";
     public static final String VOLUME = "volume";
     public static final String LOWER_VOLUME = "lowerVolume";
     public static final String ROTATION = "rotation";

@@ -393,8 +393,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        //TODO: Do we need to override getRenderBoundingBox in all the places we do, or is overriding the TE renderer good enough with the isGlobal
-        return INFINITE_EXTENT_AABB;
+        //The render bounding box goes where the portal is, we can ignore rendering it
+        // if the only thing that is in view is the teleporter itself
+        return new AxisAlignedBB(pos.up(), pos.add(1, 3, 1));
     }
 
     @Override
