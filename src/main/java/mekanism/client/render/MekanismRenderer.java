@@ -17,14 +17,12 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ISideConfiguration;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -32,10 +30,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -47,7 +43,6 @@ import net.minecraftforge.client.model.obj.OBJModel.ModelSettings;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.opengl.GL13;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -61,19 +56,6 @@ public class MekanismRenderer {
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
-    private static RenderConfigurableMachine<?> machineRenderer;
-
-    @SubscribeEvent
-    public static void init(FMLClientSetupEvent event) {
-        //Note: We set the machine renderer in a FMLClientSetupEvent, to make sure that it does not get set at the
-        // wrong time when running the data generators and thus cause a crash
-        machineRenderer = new RenderConfigurableMachine<>(TileEntityRendererDispatcher.instance);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <S extends TileEntity & ISideConfiguration> RenderConfigurableMachine<S> machineRenderer() {
-        return (RenderConfigurableMachine<S>) machineRenderer;
-    }
 
     /**
      * Get a fluid texture when a stack does not exist.
@@ -352,7 +334,7 @@ public class MekanismRenderer {
         FluidRenderer.resetCachedModels();
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
-        RenderConfigurableMachine.resetCachedOverlays();
+        RenderTickHandler.resetCachedOverlays();
         MinerVisualRenderer.resetCachedVisuals();
         RenderTeleporter.resetCachedModels();
     }

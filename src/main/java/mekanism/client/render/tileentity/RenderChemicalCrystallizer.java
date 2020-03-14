@@ -29,7 +29,6 @@ public class RenderChemicalCrystallizer extends MekanismTileEntityRenderer<TileE
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         model.render(matrix, renderer, light, overlayLight);
         matrix.pop();
-        MekanismRenderer.machineRenderer().render(tile, partialTick, matrix, renderer, light, overlayLight);
     }
 
     @Override

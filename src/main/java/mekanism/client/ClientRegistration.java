@@ -95,7 +95,6 @@ import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
-import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderEnergyCube;
@@ -192,42 +191,6 @@ public class ClientRegistration {
               MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE, MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE, MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE);
         ClientRegistrationUtil.bindTileEntityRenderer(RenderThermodynamicConductor::new, MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR,
               MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
-        //TERs that are just the configurable machine renderer
-        ClientRegistrationUtil.bindTileEntityRenderer(RenderConfigurableMachine::new, MekanismTileEntityTypes.CHEMICAL_INJECTION_CHAMBER, MekanismTileEntityTypes.COMBINER,
-              MekanismTileEntityTypes.CRUSHER, MekanismTileEntityTypes.ENERGIZED_SMELTER, MekanismTileEntityTypes.ENRICHMENT_CHAMBER,
-              MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR, MekanismTileEntityTypes.METALLURGIC_INFUSER, MekanismTileEntityTypes.OSMIUM_COMPRESSOR,
-              MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER, MekanismTileEntityTypes.PRECISION_SAWMILL, MekanismTileEntityTypes.PURIFICATION_CHAMBER,
-              //Gas tanks
-              MekanismTileEntityTypes.BASIC_GAS_TANK, MekanismTileEntityTypes.ADVANCED_GAS_TANK, MekanismTileEntityTypes.ELITE_GAS_TANK,
-              MekanismTileEntityTypes.ULTIMATE_GAS_TANK, MekanismTileEntityTypes.CREATIVE_GAS_TANK,
-              //Factories
-              //Combining
-              MekanismTileEntityTypes.BASIC_COMBINING_FACTORY, MekanismTileEntityTypes.ADVANCED_COMBINING_FACTORY,
-              MekanismTileEntityTypes.ELITE_COMBINING_FACTORY, MekanismTileEntityTypes.ULTIMATE_COMBINING_FACTORY,
-              //Compressing
-              MekanismTileEntityTypes.BASIC_COMPRESSING_FACTORY, MekanismTileEntityTypes.ADVANCED_COMPRESSING_FACTORY,
-              MekanismTileEntityTypes.ELITE_COMPRESSING_FACTORY, MekanismTileEntityTypes.ULTIMATE_COMPRESSING_FACTORY,
-              //Crushing
-              MekanismTileEntityTypes.BASIC_CRUSHING_FACTORY, MekanismTileEntityTypes.ADVANCED_CRUSHING_FACTORY,
-              MekanismTileEntityTypes.ELITE_CRUSHING_FACTORY, MekanismTileEntityTypes.ULTIMATE_CRUSHING_FACTORY,
-              //Enriching
-              MekanismTileEntityTypes.BASIC_ENRICHING_FACTORY, MekanismTileEntityTypes.ADVANCED_ENRICHING_FACTORY,
-              MekanismTileEntityTypes.ELITE_ENRICHING_FACTORY, MekanismTileEntityTypes.ULTIMATE_ENRICHING_FACTORY,
-              //Infusing
-              MekanismTileEntityTypes.BASIC_INFUSING_FACTORY, MekanismTileEntityTypes.ADVANCED_INFUSING_FACTORY,
-              MekanismTileEntityTypes.ELITE_INFUSING_FACTORY, MekanismTileEntityTypes.ULTIMATE_INFUSING_FACTORY,
-              //Injecting
-              MekanismTileEntityTypes.BASIC_INJECTING_FACTORY, MekanismTileEntityTypes.ADVANCED_INJECTING_FACTORY,
-              MekanismTileEntityTypes.ELITE_INJECTING_FACTORY, MekanismTileEntityTypes.ULTIMATE_INJECTING_FACTORY,
-              //Purifying
-              MekanismTileEntityTypes.BASIC_PURIFYING_FACTORY, MekanismTileEntityTypes.ADVANCED_PURIFYING_FACTORY,
-              MekanismTileEntityTypes.ELITE_PURIFYING_FACTORY, MekanismTileEntityTypes.ULTIMATE_PURIFYING_FACTORY,
-              //Sawing
-              MekanismTileEntityTypes.BASIC_SAWING_FACTORY, MekanismTileEntityTypes.ADVANCED_SAWING_FACTORY,
-              MekanismTileEntityTypes.ELITE_SAWING_FACTORY, MekanismTileEntityTypes.ULTIMATE_SAWING_FACTORY,
-              //Smelting
-              MekanismTileEntityTypes.BASIC_SMELTING_FACTORY, MekanismTileEntityTypes.ADVANCED_SMELTING_FACTORY,
-              MekanismTileEntityTypes.ELITE_SMELTING_FACTORY, MekanismTileEntityTypes.ULTIMATE_SMELTING_FACTORY);
 
         //Block render layers
         //Cutout

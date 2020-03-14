@@ -81,7 +81,6 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
             core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.tier.getBaseTier().getColor(), energyScale / 20F);
         }
         matrix.pop();
-        MekanismRenderer.machineRenderer().render(tile, partialTick, matrix, renderer, light, overlayLight);
     }
 
     @Override

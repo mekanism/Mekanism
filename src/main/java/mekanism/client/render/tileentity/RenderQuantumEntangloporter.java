@@ -29,7 +29,6 @@ public class RenderQuantumEntangloporter extends MekanismTileEntityRenderer<Tile
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         model.render(matrix, renderer, light, overlayLight, false);
         matrix.pop();
-        MekanismRenderer.machineRenderer().render(tile, partialTick, matrix, renderer, light, overlayLight);
     }
 
     @Override

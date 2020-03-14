@@ -4,8 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -153,9 +151,7 @@ public class ModelHeatGenerator extends Model {
         matrix.push();
         matrix.scale(1.001F, 1.001F, 1.001F);
         matrix.translate(0, -0.0011, 0);
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
         render(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), light, overlayLight, 1, 1, 1, 1);
-        MekanismRenderer.disableGlow(glowInfo);
         matrix.pop();
     }
 
