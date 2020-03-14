@@ -57,7 +57,6 @@ import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
 import mekanism.common.world.GenHandler;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.SimpleReloadableResourceManager;
@@ -151,10 +150,6 @@ public class Mekanism {
      * The server's world tick handler.
      */
     public static CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
-    /**
-     * The version of ore generation in this version of Mekanism. Increment this every time the default ore generation changes.
-     */
-    public static int baseWorldGenVersion = 0;//TODO: Just remove this?
     /**
      * The GameProfile used by the dummy Mekanism player
      */
@@ -403,19 +398,14 @@ public class Mekanism {
 
     private void chunkSave(ChunkDataEvent.Save event) {
         if (event.getWorld() != null && !event.getWorld().isRemote()) {
-            CompoundNBT nbtTags = event.getData();
-            nbtTags.putInt(NBTConstants.WORLD_GEN, baseWorldGenVersion);
-            nbtTags.putInt(NBTConstants.WORLD_GEN_VERSION, MekanismConfig.world.userGenVersion.get());
+            event.getData().putInt(NBTConstants.WORLD_GEN_VERSION, MekanismConfig.world.userGenVersion.get());
         }
     }
 
     private synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         if (event.getWorld() != null && !event.getWorld().isRemote()) {
-            if (MekanismConfig.world.enableRegeneration.get()) {
-                CompoundNBT loadData = event.getData();
-                if (loadData.getInt(NBTConstants.WORLD_GEN) != baseWorldGenVersion || loadData.getInt(NBTConstants.WORLD_GEN_VERSION) != MekanismConfig.world.userGenVersion.get()) {
-                    worldTickHandler.addRegenChunk(event.getWorld().getDimension().getType(), event.getChunk().getPos());
-                }
+            if (MekanismConfig.world.enableRegeneration.get() && event.getData().getInt(NBTConstants.WORLD_GEN_VERSION) < MekanismConfig.world.userGenVersion.get()) {
+                worldTickHandler.addRegenChunk(event.getWorld().getDimension().getType(), event.getChunk().getPos());
             }
         }
     }

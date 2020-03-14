@@ -17,6 +17,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.item.block.RenderFluidTankItem;
+import mekanism.client.render.obj.TransmitterLoader;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
@@ -37,6 +38,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.ModelSettings;
@@ -56,6 +58,14 @@ public class MekanismRenderer {
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
+
+    //We ignore the warning, due to this actually being able to be null during runData
+    @SuppressWarnings("ConstantConditions")
+    public static void registerModelLoader() {
+        if (Minecraft.getInstance() != null) {
+            ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
+        }
+    }
 
     /**
      * Get a fluid texture when a stack does not exist.
