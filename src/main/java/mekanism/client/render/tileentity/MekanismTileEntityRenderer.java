@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 @ParametersAreNonnullByDefault
 public abstract class MekanismTileEntityRenderer<TILE extends TileEntity> extends TileEntityRenderer<TILE> {
 
-    public MekanismTileEntityRenderer(TileEntityRendererDispatcher renderer) {
+    protected MekanismTileEntityRenderer(TileEntityRendererDispatcher renderer) {
         super(renderer);
     }
 

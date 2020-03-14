@@ -10,6 +10,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.obj.ContentsModelConfiguration;
 import mekanism.client.render.obj.VisibleModelConfiguration;
+import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
@@ -22,9 +23,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.ModelRotation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoader;
@@ -32,12 +31,12 @@ import net.minecraftforge.client.model.ModelLoader;
 //TODO: Contents don't fully render properly if you are standing directly under it and
 // look at a slight angle. (Has to do with it not being directly in view)
 @ParametersAreNonnullByDefault
-public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?, ?>> extends TileEntityRenderer<T> {
+public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?, ?>> extends MekanismTileEntityRenderer<T> {
 
     public static final ResourceLocation MODEL_LOCATION = MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj");
     private static final IModelConfiguration contentsConfiguration = new ContentsModelConfiguration();
 
-    public RenderTransmitterBase(TileEntityRendererDispatcher renderer) {
+    protected RenderTransmitterBase(TileEntityRendererDispatcher renderer) {
         super(renderer);
     }
 
@@ -63,15 +62,8 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
 
     @Override
     public void render(T transmitter, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight) {
-        if (!MekanismConfig.client.opaqueTransmitters.get() && transmitter.getWorld() != null) {
-            IProfiler profiler = transmitter.getWorld().getProfiler();
-            profiler.startSection(getProfilerSection());
-            render(transmitter, partialTick, matrix, renderer, light, overlayLight, profiler);
-            profiler.endSection();
+        if (!MekanismConfig.client.opaqueTransmitters.get()) {
+            super.render(transmitter, partialTick, matrix, renderer, light, overlayLight);
         }
     }
-
-    protected abstract void render(T transmitter, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler);
-
-    protected abstract String getProfilerSection();
 }

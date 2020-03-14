@@ -26,12 +26,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -227,6 +227,20 @@ public class MekanismRenderer {
         return argb;
     }
 
+    //TODO: Use these calculateGlowLight after rewriting the renderResizableCuboid?
+    public static int calculateGlowLight(int light, @Nonnull FluidStack fluid) {
+        return fluid.isEmpty() ? light : calculateGlowLight(light, fluid.getFluid().getAttributes().getLuminosity(fluid));
+    }
+
+    public static int calculateGlowLight(int light, int glow) {
+        if (glow >= 15) {
+            return MekanismRenderer.FULL_LIGHT;
+        }
+        int blockLight = LightTexture.getLightBlock(light);
+        int skyLight = LightTexture.getLightSky(light);
+        return LightTexture.packLight(Math.max(blockLight, glow), Math.max(skyLight, glow));
+    }
+
     @Nonnull
     public static GlowInfo enableGlow() {
         return enableGlow(15);
@@ -249,11 +263,6 @@ public class MekanismRenderer {
     @Nonnull
     public static GlowInfo enableGlow(@Nonnull FluidStack fluid) {
         return fluid.isEmpty() ? NO_GLOW : enableGlow(fluid.getFluid().getAttributes().getLuminosity(fluid));
-    }
-
-    @Nonnull
-    public static GlowInfo enableGlow(@Nonnull Fluid fluid) {
-        return fluid == Fluids.EMPTY ? NO_GLOW : enableGlow(fluid.getAttributes().getLuminosity());
     }
 
     public static void disableGlow(@Nonnull GlowInfo info) {

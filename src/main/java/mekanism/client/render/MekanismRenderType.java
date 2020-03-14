@@ -30,8 +30,9 @@ public class MekanismRenderType extends RenderType {
               .shadeModel(SHADE_ENABLED)//shadeModel(GL11.GL_SMOOTH)
               .alpha(ZERO_ALPHA)//disableAlphaTest
               .transparency(TRANSLUCENT_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
+              .lightmap(LIGHTMAP_DISABLED)//disableLighting
               .build(true);
-        return makeType("mek_flame", DefaultVertexFormats.POSITION_TEX_COLOR, GL11.GL_QUADS, 256, true, false, state);
+        return makeType("mek_flame", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, false, state);
     }
 
     public static RenderType transmitterContents(ResourceLocation resourceLocation) {
