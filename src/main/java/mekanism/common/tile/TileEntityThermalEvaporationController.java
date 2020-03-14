@@ -427,12 +427,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return false;
     }
 
-    public Coord4D getRenderLocation() {
+    public BlockPos getRenderLocation() {
         Direction right = getRightSide();
-        Coord4D renderLocation = Coord4D.get(this).offset(right);
+        BlockPos renderLocation = pos.offset(right);
         renderLocation = isLeftOnFace ? renderLocation.offset(right) : renderLocation;
         renderLocation = renderLocation.offset(getLeftSide()).offset(getOppositeDirection());
-        renderLocation.y = renderY;
+        renderLocation = new BlockPos(renderLocation.getX(), renderY, renderLocation.getZ());
         switch (getDirection()) {
             case SOUTH:
                 renderLocation = renderLocation.offset(Direction.NORTH).offset(Direction.WEST);
@@ -480,8 +480,15 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        //TODO: Improve on this to use the max that we actually may need?
-        return INFINITE_EXTENT_AABB;
+        if (getActive() && height > 2 && !inputTank.isEmpty()) {
+            //TODO: Eventually we may want to look into caching this
+            BlockPos corner1 = getRenderLocation();
+            //height - 2 up, but then we go up one further to take into account that block
+            BlockPos corner2 = corner1.east(2).south(2).up(height - 1);
+            return new AxisAlignedBB(corner1, corner2);
+        }
+        return super.getRenderBoundingBox();
+
     }
 
     @Override
@@ -508,8 +515,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         //TODO: Should this be disabled via the inventory slots instead. (Then we can't access the items when opening the controller)
         if (!getActive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
-        }
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             //Never allow the fluid handler cap to be enabled here even though internally we handle fluid
             return true;
         }
@@ -558,7 +564,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 if (active) {
                     // Calculate the two corners of the evap tower using the render location as basis (which is the
                     // lowest rightmost corner inside the tower, relative to the controller).
-                    BlockPos corner1 = getRenderLocation().getPos().west().north().down();
+                    BlockPos corner1 = getRenderLocation().west().north().down();
                     BlockPos corner2 = corner1.east(3).south(3).up(height - 1);
                     // Use the corners to spin up the sparkle
                     Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2, tile -> tile instanceof TileEntityThermalEvaporationBlock);

@@ -633,8 +633,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        //TODO: Improve on this to use the max that we actually may need?
-        return INFINITE_EXTENT_AABB;
+        if (clientRendering) {
+            //TODO: Improve on this to use the max that we actually need to do the rendering
+            // holding off for now due to wanting to rewrite RenderResizableCuboid
+            return INFINITE_EXTENT_AABB;
+        }
+        return new AxisAlignedBB(pos.add(-1, 0, -1), pos.add(2, 2, 2));
     }
 
     @Override

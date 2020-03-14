@@ -222,8 +222,16 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        //TODO: Improve on this to use the max that we actually may need?
-        return INFINITE_EXTENT_AABB;
+        if (clientHasStructure && structure != null && isRendering && structure.renderLocation != null) {
+            //TODO: Eventually we may want to look into caching this
+            BlockPos corner1 = structure.renderLocation.getPos();
+            //height - 2 up, but then we go up one further to take into account that block
+            BlockPos corner2 = corner1.east(structure.volLength + 1).south(structure.volWidth + 1).up(structure.volHeight - 1);
+            //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
+            // how the specific multiblock wants to render, that it is being viewed
+            return new AxisAlignedBB(corner1, corner2);
+        }
+        return super.getRenderBoundingBox();
     }
 
     @Override

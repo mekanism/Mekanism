@@ -2,6 +2,7 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.Coord4D;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderType;
@@ -28,7 +29,7 @@ public class RenderThermalEvaporationController extends MekanismTileEntityRender
           IProfiler profiler) {
         if (tile.getActive() && tile.height - 2 >= 1 && !tile.inputTank.isEmpty()) {
             RenderData data = new RenderData();
-            data.location = tile.getRenderLocation();
+            data.location = new Coord4D(tile.getRenderLocation(), tile.getWorld());
             data.height = tile.height - 2;
             //TODO: If we ever allow different width for the evap controller then update this length and width
             data.length = 2;
