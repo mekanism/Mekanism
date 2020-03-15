@@ -107,7 +107,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
         if (isEmpty() || (sameType = isTypeEqual(stack))) {
             int toAdd = Math.min(stack.getAmount(), needed);
             if (action.execute()) {
-                //If we want to actually insert the item, then update the current item
+                //If we want to actually insert the chemical, then update the current chemical
                 if (sameType) {
                     //We can just grow our stack by the amount we want to increase it
                     stored.grow(toAdd);

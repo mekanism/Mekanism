@@ -5,6 +5,7 @@ package mekanism.api.energy;
  *
  * @author aidancbrady
  */
+@Deprecated
 public interface IStrictEnergyStorage {
 
     /**

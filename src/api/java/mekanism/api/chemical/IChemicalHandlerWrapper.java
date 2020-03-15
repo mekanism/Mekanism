@@ -3,9 +3,6 @@ package mekanism.api.chemical;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 /**
  * Helper interface for defining how to wrap handlers into a generic interface that can be used to reduce duplicate code needed between various chemical type handlers
@@ -82,7 +79,8 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      * <p>
      * Inserts a {@link STACK} into a given tank and return the remainder. The {@link STACK} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, FluidAction)}
+     * Note: This behaviour is subtly different from {{@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param tank   Tank to insert to.
      * @param stack  {@link STACK} to insert. This must not be modified by the tank.
@@ -113,7 +111,8 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      * Inserts a {@link STACK} into this handler, distribution is left <strong>entirely</strong> to the handler. The {@link STACK} <em>should not</em> be modified in this
      * function!
      * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, FluidAction)}
+     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param stack  {@link STACK} to insert. This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

@@ -7,9 +7,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -45,14 +42,14 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * <strong><em>SERIOUSLY: DO NOT MODIFY THE RETURNED CHEMICAL STACK</em></strong>
      * </p>
      *
-     * @return {@link ChemicalStack} in a given tank. EMPTY instance of the {@link ChemicalStack} if the tank is empty.
+     * @return {@link ChemicalStack} in this tank. EMPTY instance of the {@link ChemicalStack} if the tank is empty.
      */
     STACK getStack();
 
     /**
      * Overrides the stack in this {@link IChemicalTank}.
      *
-     * @param stack {@link ChemicalStack} to set this tanks' contents to (may be empty).
+     * @param stack {@link ChemicalStack} to set this tank's contents to (may be empty).
      *
      * @throws RuntimeException if this tank is called in a way that it was not expecting.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
@@ -64,7 +61,8 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * Inserts a {@link ChemicalStack} into this {@link IChemicalTank} and return the remainder. The {@link ChemicalStack} <em>should not</em> be modified in this
      * function!
      * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, FluidAction)}
+     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param stack          {@link ChemicalStack} to insert. This must not be modified by the tank.
      * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
@@ -90,14 +88,13 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
         if (isEmpty() || (sameType = isTypeEqual(stack))) {
             int toAdd = Math.min(stack.getAmount(), needed);
             if (action.execute()) {
-                //If we want to actually insert the item, then update the current item
+                //If we want to actually insert the chemical, then update the current chemical
                 if (sameType) {
                     //We can just grow our stack by the amount we want to increase it
                     // Note: this also will mark that the contents changed
                     growStack(toAdd, action);
                 } else {
                     //If we are not the same type then we have to copy the stack and set it
-                    // Just set it unchecked as we have already validated it
                     // Note: this also will mark that the contents changed
                     setStack(createStack(stack, toAdd));
                 }
@@ -208,7 +205,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * If there is a stack stored in this tank, increase its size by the given amount. Capping at this chemical tank's limit. If the stack shrinks to an amount of less
      * than or equal to zero, then this instead sets the stack to the empty stack.
      *
-     * @param amount The desired size to set the stack to.
+     * @param amount The desired amount to grow the stack by.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
      * @return Actual amount the stack grew.
@@ -228,10 +225,10 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * If there is a stack stored in this tank, shrink its size by the given amount. If this causes its size to become less than or equal to zero, then the stack is set
      * to the empty stack. If this method is used to grow the stack the size gets capped at this chemical tank's limit.
      *
-     * @param amount The desired size to set the stack to.
+     * @param amount The desired amount to shrink the stack by.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
-     * @return Actual amount the stack grew.
+     * @return Actual amount the stack shrunk.
      *
      * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}

@@ -9,9 +9,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -55,7 +52,8 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * <p>
      * Inserts an {@link ItemStack} into this {@link IInventorySlot} and return the remainder. The {@link ItemStack} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, FluidAction)}
+     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param stack          {@link ItemStack} to insert. This must not be modified by the slot.
      * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
@@ -88,7 +86,6 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
                     growStack(toAdd, action);
                 } else {
                     //If we are not the same type then we have to copy the stack and set it
-                    // Just set it unchecked as we have already validated it
                     // Note: this also will mark that the contents changed
                     ItemStack toSet = stack.copy();
                     toSet.setCount(toAdd);
@@ -235,7 +232,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * If there is a stack stored in this slot, increase its size by the given amount. Capping at the item's max stack size and the limit of this slot. If the stack
      * shrinks to an amount of less than or equal to zero, then this instead sets the stack to the empty stack.
      *
-     * @param amount The desired size to set the stack to.
+     * @param amount The desired amount to grow the stack by.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
      * @return Actual amount the stack grew.
@@ -255,10 +252,10 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * If there is a stack stored in this slot, shrink its size by the given amount. If this causes its size to become less than or equal to zero, then the stack is set
      * to the empty stack. If this method is used to grow the stack the size gets capped at the item's max stack size and the limit of this slot.
      *
-     * @param amount The desired size to set the stack to.
+     * @param amount The desired amount to shrink the stack by.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
-     * @return Actual amount the stack grew.
+     * @return Actual amount the stack shrunk.
      *
      * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}

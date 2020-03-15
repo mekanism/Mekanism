@@ -8,6 +8,7 @@ import net.minecraft.util.Direction;
  *
  * @author AidanBrady
  */
+@Deprecated
 public interface IStrictEnergyOutputter {
 
     /**

@@ -6,9 +6,6 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.chemical.ChemicalUtils;
 import net.minecraft.util.Direction;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 /**
  * A sided variant of {@link IInfusionHandler}
@@ -139,7 +136,8 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
      * <p>
      * Inserts a {@link InfusionStack} into a given tank and return the remainder. The {@link InfusionStack} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, FluidAction)}
+     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param tank   Tank to insert to.
      * @param stack  {@link InfusionStack} to insert. This must not be modified by the tank.
@@ -186,7 +184,8 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
      * Inserts a {@link InfusionStack} into this handler, distribution is left <strong>entirely</strong> to this {@link IInfusionHandler}. The {@link InfusionStack}
      * <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, FluidAction)}
+     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param stack  {@link InfusionStack} to insert. This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

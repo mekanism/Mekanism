@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 
 //TODO: Do we even want this anymore, for the most part I inlined this into the EnergyInventorySlot
 // I sort of want to rework the energy API to not be three interfaces, so after doing so re-evaluate this
+@Deprecated
 public class EnergizedItemManager {
 
     /**
