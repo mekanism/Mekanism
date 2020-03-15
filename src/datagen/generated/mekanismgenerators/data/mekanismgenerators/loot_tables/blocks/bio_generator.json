@@ -32,11 +32,6 @@
                   "op": "replace"
                 },
                 {
-                  "source": "controlType",
-                  "target": "mekData.controlType",
-                  "op": "replace"
-                },
-                {
                   "source": "FluidTanks",
                   "target": "mekData.FluidTanks",
                   "op": "replace"

@@ -24,8 +24,8 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
     private void setMachineData() {
         this.soundRegistrar = origMachine.soundRegistrar;
         this.supportedUpgrades = origMachine.supportedUpgrades;
-        this.energyUsage = origMachine.energyStorage;
-        this.energyStorage = origMachine.energyStorage;
+        this.energyUsage = () -> origMachine.getUsage();
+        this.energyStorage = () -> tier.processes * Math.max(0.5D * origMachine.getConfigStorage(), origMachine.getUsage());
         this.factoryType = origMachine.factoryType;
     }
 

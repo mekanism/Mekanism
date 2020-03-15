@@ -32,11 +32,6 @@
                   "op": "replace"
                 },
                 {
-                  "source": "controlType",
-                  "target": "mekData.controlType",
-                  "op": "replace"
-                },
-                {
                   "source": "GasTanks",
                   "target": "mekData.GasTanks",
                   "op": "replace"

@@ -373,6 +373,6 @@ public class MekanismBlocks {
 
     @SuppressWarnings("unchecked")
     public static BlockRegistryObject<BlockFactory<?>, ItemBlockFactory>[] getFactoryBlocks() {
-        return (BlockRegistryObject<BlockFactory<?>, ItemBlockFactory>[]) FACTORIES.values().toArray();
+        return FACTORIES.values().toArray(new BlockRegistryObject[0]);
     }
 }

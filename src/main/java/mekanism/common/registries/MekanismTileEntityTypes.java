@@ -222,6 +222,6 @@ public class MekanismTileEntityTypes {
 
     @SuppressWarnings("unchecked")
     public static TileEntityTypeRegistryObject<? extends TileEntityFactory<?>>[] getFactoryTiles() {
-        return (TileEntityTypeRegistryObject<? extends TileEntityFactory<?>>[]) FACTORIES.values().toArray();
+        return FACTORIES.values().toArray(new TileEntityTypeRegistryObject[0]);
     }
 }
