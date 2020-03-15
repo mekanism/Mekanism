@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Pos3D;
 import mekanism.common.base.ILangEntry;
@@ -24,7 +25,7 @@ public class Generator<TILE extends TileEntityMekanism> extends BlockTile<TILE> 
 
     protected List<Function<Random, GeneratorParticle>> particleFunctions = new ArrayList<>();
 
-    public Generator(TileEntityTypeRegistryObject<TILE> tileEntityRegistrar, ContainerTypeRegistryObject<MekanismTileContainer<TILE>> containerRegistrar, GeneratorsLang description) {
+    public Generator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, GeneratorsLang description) {
         super(tileEntityRegistrar);
         this.containerRegistrar = containerRegistrar;
         this.description = description;
@@ -72,8 +73,8 @@ public class Generator<TILE extends TileEntityMekanism> extends BlockTile<TILE> 
             super(holder);
         }
 
-        public static <TILE extends TileEntityMekanism> GeneratorBuilder<Generator<TILE>, TILE, ?> createGenerator(TileEntityTypeRegistryObject<TILE> tileEntityRegistrar,
-              ContainerTypeRegistryObject<MekanismTileContainer<TILE>> containerRegistrar, GeneratorsLang description) {
+        public static <TILE extends TileEntityMekanism> GeneratorBuilder<Generator<TILE>, TILE, ?> createGenerator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
+              Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, GeneratorsLang description) {
             return new GeneratorBuilder<>(new Generator<TILE>(tileEntityRegistrar, containerRegistrar, description));
         }
 

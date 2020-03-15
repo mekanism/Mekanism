@@ -1,6 +1,7 @@
 package mekanism.common.content.blocktype;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.common.HolidayManager;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -15,24 +16,24 @@ import net.minecraft.util.math.shapes.VoxelShape;
 
 public class BlockTile<TILE extends TileEntityMekanism> {
 
-    protected TileEntityTypeRegistryObject<TILE> tileEntityRegistrar;
-    protected ContainerTypeRegistryObject<MekanismTileContainer<TILE>> containerRegistrar;
+    protected Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar;
+    protected Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar;
     protected Function<TILE, INamedContainerProvider> customContainerSupplier;
 
     protected SoundEventRegistryObject<SoundEvent> soundRegistrar;
 
     protected VoxelShape[] bounds;
 
-    public BlockTile(TileEntityTypeRegistryObject<TILE> tileEntityRegistrar) {
+    public BlockTile(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar) {
         this.tileEntityRegistrar = tileEntityRegistrar;
     }
 
     public TileEntityType<TILE> getTileType() {
-        return tileEntityRegistrar.getTileEntityType();
+        return tileEntityRegistrar.get().getTileEntityType();
     }
 
     public ContainerTypeRegistryObject<MekanismTileContainer<TILE>> getContainerType() {
-        return containerRegistrar;
+        return containerRegistrar.get();
     }
 
     @Nonnull

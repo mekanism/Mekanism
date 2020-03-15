@@ -3,6 +3,7 @@ package mekanism.common.content.blocktype;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.tier.BaseTier;
@@ -25,7 +26,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
 
     protected Set<Upgrade> supportedUpgrades;
 
-    public Machine(TileEntityTypeRegistryObject<TILE> tileEntityRegistrar, ContainerTypeRegistryObject<MekanismTileContainer<TILE>> containerRegistrar, MekanismLang description) {
+    public Machine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, MekanismLang description) {
         super(tileEntityRegistrar);
         this.containerRegistrar = containerRegistrar;
         this.description = description;
@@ -62,7 +63,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
 
         protected FactoryType factoryType;
 
-        public FactoryMachine(TileEntityTypeRegistryObject<TILE> tileEntitySupplier, ContainerTypeRegistryObject<MekanismTileContainer<TILE>> containerRegistrar, MekanismLang description, FactoryType factoryType) {
+        public FactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntitySupplier, Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, MekanismLang description, FactoryType factoryType) {
             super(tileEntitySupplier, containerRegistrar, description);
             this.factoryType = factoryType;
         }
@@ -83,13 +84,13 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
             super(holder);
         }
 
-        public static <TILE extends TileEntityMekanism> MachineBuilder<Machine<TILE>, TILE, ?> createMachine(TileEntityTypeRegistryObject<TILE> tileEntityRegistrar,
-              ContainerTypeRegistryObject<MekanismTileContainer<TILE>> containerRegistrar, MekanismLang description) {
+        public static <TILE extends TileEntityMekanism> MachineBuilder<Machine<TILE>, TILE, ?> createMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
+              Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, MekanismLang description) {
             return new MachineBuilder<>(new Machine<TILE>(tileEntityRegistrar, containerRegistrar, description));
         }
 
-        public static <TILE extends TileEntityMekanism> MachineBuilder<FactoryMachine<TILE>, TILE, ?> createFactoryMachine(TileEntityTypeRegistryObject<TILE> tileEntityRegistrar,
-              ContainerTypeRegistryObject<MekanismTileContainer<TILE>> containerRegistrar, MekanismLang description, FactoryType factoryType) {
+        public static <TILE extends TileEntityMekanism> MachineBuilder<FactoryMachine<TILE>, TILE, ?> createFactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
+              Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, MekanismLang description, FactoryType factoryType) {
             MachineBuilder<FactoryMachine<TILE>, TILE, ?> builder = new MachineBuilder<>(new FactoryMachine<>(tileEntityRegistrar, containerRegistrar, description, factoryType));
             builder.holder.factoryType = factoryType;
             return builder;
