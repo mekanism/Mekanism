@@ -1,23 +1,18 @@
 package mekanism.common.content.blocktype;
 
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
-import mekanism.api.block.FactoryType;
 import mekanism.api.tier.BaseTier;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
-import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.item.block.machine.ItemBlockFactory;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.BlockState;
 
@@ -65,9 +60,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
 
     public static class FactoryMachine<TILE extends TileEntityMekanism> extends Machine<TILE> {
 
-        private FactoryType factoryType;
-
-        private Map<BaseTier, BlockRegistryObject<BlockFactory, ItemBlockFactory>> tierUpgradeMap = new HashMap<>();
+        protected FactoryType factoryType;
 
         public FactoryMachine(TileEntityTypeRegistryObject<TILE> tileEntitySupplier, ContainerTypeRegistryObject<MekanismTileContainer<TILE>> containerRegistrar, MekanismLang description, FactoryType factoryType) {
             super(tileEntitySupplier, containerRegistrar, description);
@@ -80,7 +73,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
 
         @Nonnull
         public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
-            return tierUpgradeMap.get(tier).getBlock().getDefaultState();
+            return MekanismBlocks.getFactory(FactoryTier.values()[tier.ordinal()], factoryType).getBlock().getDefaultState();
         }
     }
 
@@ -110,20 +103,6 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
 
         public T withSupportedUpgrades(Set<Upgrade> upgrades) {
             holder.supportedUpgrades = upgrades;
-            return getThis();
-        }
-
-        @SafeVarargs
-        @SuppressWarnings("unchecked")
-        public final T withFactoryHierarchy(BlockRegistryObject<BlockFactory, ItemBlockFactory>... factories) {
-            if (!(holder instanceof FactoryMachine)) {
-                Mekanism.logger.error("Tried to set a factory hierarchy on a non-factory machine");
-                return null;
-            }
-
-            for (int i = 0; i < factories.length; i++) {
-                ((FactoryMachine<TILE>) holder).tierUpgradeMap.put(BaseTier.byIndexStatic(i), factories[i]);
-            }
             return getThis();
         }
     }

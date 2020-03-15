@@ -8,7 +8,6 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.block.FactoryType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
@@ -17,10 +16,11 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.base.ProcessInfo;
-import mekanism.common.block.machine.BlockFactory;
+import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -85,7 +85,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     protected TileEntityFactory(IBlockProvider blockProvider) {
         super(blockProvider);
-        BlockFactory factoryBlock = (BlockFactory) blockProvider.getBlock();
+        BlockFactory<?> factoryBlock = (BlockFactory<?>) blockProvider.getBlock();
         this.type = factoryBlock.getFactoryType();
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
@@ -134,7 +134,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     protected void presetVariables() {
-        tier = ((BlockFactory) getBlockType()).getTier();
+        tier = ((BlockFactory<?>) getBlockType()).getTier();
     }
 
     @Nonnull
@@ -281,7 +281,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     public double getScaledProgress(int i, int process) {
-        return (double) getProgress(process) * i / (double) ticksRequired;
+        return (double) getProgress(process) * i / ticksRequired;
     }
 
     @Override

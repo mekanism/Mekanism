@@ -199,35 +199,8 @@ public class ClientRegistration {
               MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER, MekanismTileEntityTypes.PRECISION_SAWMILL, MekanismTileEntityTypes.PURIFICATION_CHAMBER,
               //Gas tanks
               MekanismTileEntityTypes.BASIC_GAS_TANK, MekanismTileEntityTypes.ADVANCED_GAS_TANK, MekanismTileEntityTypes.ELITE_GAS_TANK,
-              MekanismTileEntityTypes.ULTIMATE_GAS_TANK, MekanismTileEntityTypes.CREATIVE_GAS_TANK,
-              //Factories
-              //Combining
-              MekanismTileEntityTypes.BASIC_COMBINING_FACTORY, MekanismTileEntityTypes.ADVANCED_COMBINING_FACTORY,
-              MekanismTileEntityTypes.ELITE_COMBINING_FACTORY, MekanismTileEntityTypes.ULTIMATE_COMBINING_FACTORY,
-              //Compressing
-              MekanismTileEntityTypes.BASIC_COMPRESSING_FACTORY, MekanismTileEntityTypes.ADVANCED_COMPRESSING_FACTORY,
-              MekanismTileEntityTypes.ELITE_COMPRESSING_FACTORY, MekanismTileEntityTypes.ULTIMATE_COMPRESSING_FACTORY,
-              //Crushing
-              MekanismTileEntityTypes.BASIC_CRUSHING_FACTORY, MekanismTileEntityTypes.ADVANCED_CRUSHING_FACTORY,
-              MekanismTileEntityTypes.ELITE_CRUSHING_FACTORY, MekanismTileEntityTypes.ULTIMATE_CRUSHING_FACTORY,
-              //Enriching
-              MekanismTileEntityTypes.BASIC_ENRICHING_FACTORY, MekanismTileEntityTypes.ADVANCED_ENRICHING_FACTORY,
-              MekanismTileEntityTypes.ELITE_ENRICHING_FACTORY, MekanismTileEntityTypes.ULTIMATE_ENRICHING_FACTORY,
-              //Infusing
-              MekanismTileEntityTypes.BASIC_INFUSING_FACTORY, MekanismTileEntityTypes.ADVANCED_INFUSING_FACTORY,
-              MekanismTileEntityTypes.ELITE_INFUSING_FACTORY, MekanismTileEntityTypes.ULTIMATE_INFUSING_FACTORY,
-              //Injecting
-              MekanismTileEntityTypes.BASIC_INJECTING_FACTORY, MekanismTileEntityTypes.ADVANCED_INJECTING_FACTORY,
-              MekanismTileEntityTypes.ELITE_INJECTING_FACTORY, MekanismTileEntityTypes.ULTIMATE_INJECTING_FACTORY,
-              //Purifying
-              MekanismTileEntityTypes.BASIC_PURIFYING_FACTORY, MekanismTileEntityTypes.ADVANCED_PURIFYING_FACTORY,
-              MekanismTileEntityTypes.ELITE_PURIFYING_FACTORY, MekanismTileEntityTypes.ULTIMATE_PURIFYING_FACTORY,
-              //Sawing
-              MekanismTileEntityTypes.BASIC_SAWING_FACTORY, MekanismTileEntityTypes.ADVANCED_SAWING_FACTORY,
-              MekanismTileEntityTypes.ELITE_SAWING_FACTORY, MekanismTileEntityTypes.ULTIMATE_SAWING_FACTORY,
-              //Smelting
-              MekanismTileEntityTypes.BASIC_SMELTING_FACTORY, MekanismTileEntityTypes.ADVANCED_SMELTING_FACTORY,
-              MekanismTileEntityTypes.ELITE_SMELTING_FACTORY, MekanismTileEntityTypes.ULTIMATE_SMELTING_FACTORY);
+              MekanismTileEntityTypes.ULTIMATE_GAS_TANK, MekanismTileEntityTypes.CREATIVE_GAS_TANK);
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderConfigurableMachine::new, MekanismTileEntityTypes.getFactoryTiles());
 
         //Block render layers
         //Cutout

@@ -7,6 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -14,6 +15,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.tier.FactoryTier;
 import net.minecraft.data.DataGenerator;
 
 public class MekanismLangProvider extends BaseLanguageProvider {
@@ -198,15 +200,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTiered(MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK, "Fluid Tank");
         addTiered(MekanismBlocks.BASIC_GAS_TANK, MekanismBlocks.ADVANCED_GAS_TANK, MekanismBlocks.ELITE_GAS_TANK, MekanismBlocks.ULTIMATE_GAS_TANK, MekanismBlocks.CREATIVE_GAS_TANK, "Gas Tank");
         //Factories
-        addTiered(MekanismBlocks.BASIC_SMELTING_FACTORY, MekanismBlocks.ADVANCED_SMELTING_FACTORY, MekanismBlocks.ELITE_SMELTING_FACTORY, MekanismBlocks.ULTIMATE_SMELTING_FACTORY, "Smelting Factory");
-        addTiered(MekanismBlocks.BASIC_ENRICHING_FACTORY, MekanismBlocks.ADVANCED_ENRICHING_FACTORY, MekanismBlocks.ELITE_ENRICHING_FACTORY, MekanismBlocks.ULTIMATE_ENRICHING_FACTORY, "Enriching Factory");
-        addTiered(MekanismBlocks.BASIC_CRUSHING_FACTORY, MekanismBlocks.ADVANCED_CRUSHING_FACTORY, MekanismBlocks.ELITE_CRUSHING_FACTORY, MekanismBlocks.ULTIMATE_CRUSHING_FACTORY, "Crushing Factory");
-        addTiered(MekanismBlocks.BASIC_COMPRESSING_FACTORY, MekanismBlocks.ADVANCED_COMPRESSING_FACTORY, MekanismBlocks.ELITE_COMPRESSING_FACTORY, MekanismBlocks.ULTIMATE_COMPRESSING_FACTORY, "Compressing Factory");
-        addTiered(MekanismBlocks.BASIC_COMBINING_FACTORY, MekanismBlocks.ADVANCED_COMBINING_FACTORY, MekanismBlocks.ELITE_COMBINING_FACTORY, MekanismBlocks.ULTIMATE_COMBINING_FACTORY, "Combining Factory");
-        addTiered(MekanismBlocks.BASIC_PURIFYING_FACTORY, MekanismBlocks.ADVANCED_PURIFYING_FACTORY, MekanismBlocks.ELITE_PURIFYING_FACTORY, MekanismBlocks.ULTIMATE_PURIFYING_FACTORY, "Purifying Factory");
-        addTiered(MekanismBlocks.BASIC_INJECTING_FACTORY, MekanismBlocks.ADVANCED_INJECTING_FACTORY, MekanismBlocks.ELITE_INJECTING_FACTORY, MekanismBlocks.ULTIMATE_INJECTING_FACTORY, "Injecting Factory");
-        addTiered(MekanismBlocks.BASIC_INFUSING_FACTORY, MekanismBlocks.ADVANCED_INFUSING_FACTORY, MekanismBlocks.ELITE_INFUSING_FACTORY, MekanismBlocks.ULTIMATE_INFUSING_FACTORY, "Infusing Factory");
-        addTiered(MekanismBlocks.BASIC_SAWING_FACTORY, MekanismBlocks.ADVANCED_SAWING_FACTORY, MekanismBlocks.ELITE_SAWING_FACTORY, MekanismBlocks.ULTIMATE_SAWING_FACTORY, "Sawing Factory");
+        for (FactoryTier tier : FactoryTier.values()) {
+            for (FactoryType type : FactoryType.values()) {
+                add(MekanismBlocks.getFactory(tier, type), tier.getBaseTier().getSimpleName() + " " + capitalize(type.getRegistryNameComponent()) + " Factory");
+            }
+        }
         //Transmitters
         add(MekanismBlocks.RESTRICTIVE_TRANSPORTER, "Restrictive Transporter");
         add(MekanismBlocks.DIVERSION_TRANSPORTER, "Diversion Transporter");
@@ -563,15 +561,15 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.AUTO_MODE, "Auto-Mode: %s");
         //Factory Type
         add(MekanismLang.FACTORY_TYPE, "Recipe type: %s");
-        add(APILang.SMELTING, "Smelting");
-        add(APILang.ENRICHING, "Enriching");
-        add(APILang.CRUSHING, "Crushing");
-        add(APILang.COMPRESSING, "Compressing");
-        add(APILang.COMBINING, "Combining");
-        add(APILang.PURIFYING, "Purifying");
-        add(APILang.INJECTING, "Injecting");
-        add(APILang.INFUSING, "Infusing");
-        add(APILang.SAWING, "Sawing");
+        add(MekanismLang.SMELTING, "Smelting");
+        add(MekanismLang.ENRICHING, "Enriching");
+        add(MekanismLang.CRUSHING, "Crushing");
+        add(MekanismLang.COMPRESSING, "Compressing");
+        add(MekanismLang.COMBINING, "Combining");
+        add(MekanismLang.PURIFYING, "Purifying");
+        add(MekanismLang.INJECTING, "Injecting");
+        add(MekanismLang.INFUSING, "Infusing");
+        add(MekanismLang.SAWING, "Sawing");
         //Transmitter Networks
         add(MekanismLang.NETWORK_DESCRIPTION, "[%s] %s transmitters, %s acceptors.");
         add(MekanismLang.INVENTORY_NETWORK, "InventoryNetwork");
@@ -847,6 +845,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addTiered(IItemProvider basic, IItemProvider advanced, IItemProvider elite, IItemProvider ultimate, IItemProvider creative, String name) {
         addTiered(basic, advanced, elite, ultimate, name);
         add(creative, "Creative " + name);
+    }
+
+    private String capitalize(String s) {
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 
     private void addSlurry(SlurryRegistryObject<Slurry, Slurry> slurryRO, String name) {

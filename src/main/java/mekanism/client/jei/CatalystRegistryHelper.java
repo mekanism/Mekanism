@@ -1,8 +1,9 @@
 package mekanism.client.jei;
 
-import mekanism.api.block.FactoryType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IHasFactoryType;
+import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;
@@ -33,10 +34,12 @@ public class CatalystRegistryHelper {
 
     public static void registerRecipeItem(IRecipeCatalystRegistration registry, IBlockProvider mekanismBlock, ResourceLocation category) {
         registry.addRecipeCatalyst(mekanismBlock.getItemStack(), category);
-        FactoryType factoryType = mekanismBlock.getFactoryType();
-        if (factoryType != null) {
-            for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-                registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, factoryType).getItemStack(), category);
+        if (mekanismBlock.getBlock() instanceof IHasFactoryType) {
+            FactoryType factoryType = ((IHasFactoryType) mekanismBlock).getFactoryType();
+            if (factoryType != null) {
+                for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
+                    registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, factoryType).getItemStack(), category);
+                }
             }
         }
     }

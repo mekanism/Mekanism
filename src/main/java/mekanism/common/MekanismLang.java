@@ -531,7 +531,17 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_RESTRICTIVE("description", "restrictive"),
     DESCRIPTION_OSMIUM_ORE("description", "osmium_ore"),
     DESCRIPTION_COPPER_ORE("description", "copper_ore"),
-    DESCRIPTION_TIN_ORE("description", "tin_ore");
+    DESCRIPTION_TIN_ORE("description", "tin_ore"),
+    //Factory Type
+    SMELTING("factory", "smelting"),
+    ENRICHING("factory", "enriching"),
+    CRUSHING("factory", "crushing"),
+    COMPRESSING("factory", "compressing"),
+    COMBINING("factory", "combining"),
+    PURIFYING("factory", "purifying"),
+    INJECTING("factory", "injecting"),
+    INFUSING("factory", "infusing"),
+    SAWING("factory", "sawing");
 
     private final String key;
 

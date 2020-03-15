@@ -1,11 +1,11 @@
 package mekanism.common.recipe;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
@@ -38,8 +38,9 @@ import mekanism.common.block.basic.BlockInductionCell;
 import mekanism.common.block.basic.BlockInductionProvider;
 import mekanism.common.block.basic.BlockResource;
 import mekanism.common.block.interfaces.ITieredBlock;
-import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.block.machine.BlockFluidTank;
+import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
+import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipePattern.DoubleLine;
@@ -61,6 +62,7 @@ import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tier.FactoryTier;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
@@ -741,70 +743,30 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     }
 
     private void addBasicFactoryRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        addBasicFactoryRecipe(consumer, basePath, MekanismBlocks.BASIC_COMBINING_FACTORY, MekanismBlocks.COMBINER);
-        addBasicFactoryRecipe(consumer, basePath, MekanismBlocks.BASIC_COMPRESSING_FACTORY, MekanismBlocks.OSMIUM_COMPRESSOR);
-        addBasicFactoryRecipe(consumer, basePath, MekanismBlocks.BASIC_CRUSHING_FACTORY, MekanismBlocks.CRUSHER);
-        addBasicFactoryRecipe(consumer, basePath, MekanismBlocks.BASIC_ENRICHING_FACTORY, MekanismBlocks.ENRICHMENT_CHAMBER);
-        addBasicFactoryRecipe(consumer, basePath, MekanismBlocks.BASIC_INFUSING_FACTORY, MekanismBlocks.METALLURGIC_INFUSER);
-        addBasicFactoryRecipe(consumer, basePath, MekanismBlocks.BASIC_INJECTING_FACTORY, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
-        addBasicFactoryRecipe(consumer, basePath, MekanismBlocks.BASIC_PURIFYING_FACTORY, MekanismBlocks.PURIFICATION_CHAMBER);
-        addBasicFactoryRecipe(consumer, basePath, MekanismBlocks.BASIC_SAWING_FACTORY, MekanismBlocks.PRECISION_SAWMILL);
-        addBasicFactoryRecipe(consumer, basePath, MekanismBlocks.BASIC_SMELTING_FACTORY, MekanismBlocks.ENERGIZED_SMELTER);
-    }
-
-    private void addBasicFactoryRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFactory, ?> factory, IItemProvider toUpgrade) {
-        addFactoryRecipe(consumer, basePath, factory, toUpgrade, Tags.Items.INGOTS_IRON, MekanismTags.Items.ALLOYS_BASIC, MekanismTags.Items.CIRCUITS_BASIC);
+        for (FactoryType type : FactoryType.values()) {
+            addFactoryRecipe(consumer, basePath, MekanismBlocks.getFactory(FactoryTier.BASIC, type), type.getBaseBlock(), Tags.Items.INGOTS_IRON, MekanismTags.Items.ALLOYS_BASIC, MekanismTags.Items.CIRCUITS_BASIC);
+        }
     }
 
     private void addAdvancedFactoryRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        addAdvancedFactoryRecipe(consumer, basePath, MekanismBlocks.ADVANCED_COMBINING_FACTORY, MekanismBlocks.BASIC_COMBINING_FACTORY);
-        addAdvancedFactoryRecipe(consumer, basePath, MekanismBlocks.ADVANCED_COMPRESSING_FACTORY, MekanismBlocks.BASIC_COMPRESSING_FACTORY);
-        addAdvancedFactoryRecipe(consumer, basePath, MekanismBlocks.ADVANCED_CRUSHING_FACTORY, MekanismBlocks.BASIC_CRUSHING_FACTORY);
-        addAdvancedFactoryRecipe(consumer, basePath, MekanismBlocks.ADVANCED_ENRICHING_FACTORY, MekanismBlocks.BASIC_ENRICHING_FACTORY);
-        addAdvancedFactoryRecipe(consumer, basePath, MekanismBlocks.ADVANCED_INFUSING_FACTORY, MekanismBlocks.BASIC_INFUSING_FACTORY);
-        addAdvancedFactoryRecipe(consumer, basePath, MekanismBlocks.ADVANCED_INJECTING_FACTORY, MekanismBlocks.BASIC_INJECTING_FACTORY);
-        addAdvancedFactoryRecipe(consumer, basePath, MekanismBlocks.ADVANCED_PURIFYING_FACTORY, MekanismBlocks.BASIC_PURIFYING_FACTORY);
-        addAdvancedFactoryRecipe(consumer, basePath, MekanismBlocks.ADVANCED_SAWING_FACTORY, MekanismBlocks.BASIC_SAWING_FACTORY);
-        addAdvancedFactoryRecipe(consumer, basePath, MekanismBlocks.ADVANCED_SMELTING_FACTORY, MekanismBlocks.BASIC_SMELTING_FACTORY);
-    }
-
-    private void addAdvancedFactoryRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFactory, ?> factory, IItemProvider toUpgrade) {
-        addFactoryRecipe(consumer, basePath, factory, toUpgrade, MekanismTags.Items.INGOTS_OSMIUM, MekanismTags.Items.ALLOYS_INFUSED, MekanismTags.Items.CIRCUITS_ADVANCED);
+        for (FactoryType type : FactoryType.values()) {
+            addFactoryRecipe(consumer, basePath, MekanismBlocks.getFactory(FactoryTier.ADVANCED, type), MekanismBlocks.getFactory(FactoryTier.BASIC, type), MekanismTags.Items.INGOTS_OSMIUM, MekanismTags.Items.ALLOYS_INFUSED, MekanismTags.Items.CIRCUITS_ADVANCED);
+        }
     }
 
     private void addEliteFactoryRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        addEliteFactoryRecipe(consumer, basePath, MekanismBlocks.ELITE_COMBINING_FACTORY, MekanismBlocks.ADVANCED_COMBINING_FACTORY);
-        addEliteFactoryRecipe(consumer, basePath, MekanismBlocks.ELITE_COMPRESSING_FACTORY, MekanismBlocks.ADVANCED_COMPRESSING_FACTORY);
-        addEliteFactoryRecipe(consumer, basePath, MekanismBlocks.ELITE_CRUSHING_FACTORY, MekanismBlocks.ADVANCED_CRUSHING_FACTORY);
-        addEliteFactoryRecipe(consumer, basePath, MekanismBlocks.ELITE_ENRICHING_FACTORY, MekanismBlocks.ADVANCED_ENRICHING_FACTORY);
-        addEliteFactoryRecipe(consumer, basePath, MekanismBlocks.ELITE_INFUSING_FACTORY, MekanismBlocks.ADVANCED_INFUSING_FACTORY);
-        addEliteFactoryRecipe(consumer, basePath, MekanismBlocks.ELITE_INJECTING_FACTORY, MekanismBlocks.ADVANCED_INJECTING_FACTORY);
-        addEliteFactoryRecipe(consumer, basePath, MekanismBlocks.ELITE_PURIFYING_FACTORY, MekanismBlocks.ADVANCED_PURIFYING_FACTORY);
-        addEliteFactoryRecipe(consumer, basePath, MekanismBlocks.ELITE_SAWING_FACTORY, MekanismBlocks.ADVANCED_SAWING_FACTORY);
-        addEliteFactoryRecipe(consumer, basePath, MekanismBlocks.ELITE_SMELTING_FACTORY, MekanismBlocks.ADVANCED_SMELTING_FACTORY);
-    }
-
-    private void addEliteFactoryRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFactory, ?> factory, IItemProvider toUpgrade) {
-        addFactoryRecipe(consumer, basePath, factory, toUpgrade, Tags.Items.INGOTS_GOLD, MekanismTags.Items.ALLOYS_REINFORCED, MekanismTags.Items.CIRCUITS_ELITE);
+        for (FactoryType type : FactoryType.values()) {
+            addFactoryRecipe(consumer, basePath, MekanismBlocks.getFactory(FactoryTier.ELITE, type), MekanismBlocks.getFactory(FactoryTier.ADVANCED, type), Tags.Items.INGOTS_GOLD, MekanismTags.Items.ALLOYS_REINFORCED, MekanismTags.Items.CIRCUITS_ELITE);
+        }
     }
 
     private void addUltimateFactoryRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        addUltimateFactoryRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_COMBINING_FACTORY, MekanismBlocks.ELITE_COMBINING_FACTORY);
-        addUltimateFactoryRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_COMPRESSING_FACTORY, MekanismBlocks.ELITE_COMPRESSING_FACTORY);
-        addUltimateFactoryRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_CRUSHING_FACTORY, MekanismBlocks.ELITE_CRUSHING_FACTORY);
-        addUltimateFactoryRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_ENRICHING_FACTORY, MekanismBlocks.ELITE_ENRICHING_FACTORY);
-        addUltimateFactoryRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INFUSING_FACTORY, MekanismBlocks.ELITE_INFUSING_FACTORY);
-        addUltimateFactoryRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INJECTING_FACTORY, MekanismBlocks.ELITE_INJECTING_FACTORY);
-        addUltimateFactoryRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_PURIFYING_FACTORY, MekanismBlocks.ELITE_PURIFYING_FACTORY);
-        addUltimateFactoryRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_SAWING_FACTORY, MekanismBlocks.ELITE_SAWING_FACTORY);
-        addUltimateFactoryRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_SMELTING_FACTORY, MekanismBlocks.ELITE_SMELTING_FACTORY);
+        for (FactoryType type : FactoryType.values()) {
+            addFactoryRecipe(consumer, basePath, MekanismBlocks.getFactory(FactoryTier.ULTIMATE, type), MekanismBlocks.getFactory(FactoryTier.ELITE, type), Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC, MekanismTags.Items.CIRCUITS_ULTIMATE);
+        }
     }
 
-    private void addUltimateFactoryRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFactory, ?> factory, IItemProvider toUpgrade) {
-        addFactoryRecipe(consumer, basePath, factory, toUpgrade, Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC, MekanismTags.Items.CIRCUITS_ULTIMATE);
-    }
-
-    private void addFactoryRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFactory, ?> factory,
+    private void addFactoryRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFactory<?>, ?> factory,
           IItemProvider toUpgrade, Tag<Item> ingotTag, Tag<Item> alloyTag, Tag<Item> circuitTag) {
         MekDataShapedRecipeBuilder.shapedRecipe(factory)
               .pattern(TIER_PATTERN)

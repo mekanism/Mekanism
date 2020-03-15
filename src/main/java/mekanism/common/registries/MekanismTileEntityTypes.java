@@ -1,8 +1,12 @@
 package mekanism.common.registries;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import mekanism.common.Mekanism;
+import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -35,9 +39,6 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntityInductionProvider;
-import mekanism.common.tile.laser.TileEntityLaser;
-import mekanism.common.tile.laser.TileEntityLaserAmplifier;
-import mekanism.common.tile.laser.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOredictionificator;
@@ -60,10 +61,14 @@ import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.factory.TileEntityCombiningFactory;
+import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityItemStackToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;
+import mekanism.common.tile.laser.TileEntityLaser;
+import mekanism.common.tile.laser.TileEntityLaserAmplifier;
+import mekanism.common.tile.laser.TileEntityLaserTractorBeam;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
@@ -75,6 +80,22 @@ import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 public class MekanismTileEntityTypes {
 
     public static final TileEntityTypeDeferredRegister TILE_ENTITY_TYPES = new TileEntityTypeDeferredRegister(Mekanism.MODID);
+
+    private static final Table<FactoryTier, FactoryType, TileEntityTypeRegistryObject<? extends TileEntityFactory<?>>> FACTORIES = HashBasedTable.create();
+
+    static {
+        for (FactoryTier tier : FactoryTier.values()) {
+            FACTORIES.put(tier, FactoryType.COMBINING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.COMBINING), () -> new TileEntityCombiningFactory(MekanismBlocks.getFactory(tier, FactoryType.COMBINING))));
+            FACTORIES.put(tier, FactoryType.COMPRESSING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.COMPRESSING), () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.COMPRESSING))));
+            FACTORIES.put(tier, FactoryType.CRUSHING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.CRUSHING), () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.CRUSHING))));
+            FACTORIES.put(tier, FactoryType.ENRICHING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.ENRICHING), () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.ENRICHING))));
+            FACTORIES.put(tier, FactoryType.INFUSING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.INFUSING), () -> new TileEntityMetallurgicInfuserFactory(MekanismBlocks.getFactory(tier, FactoryType.INFUSING))));
+            FACTORIES.put(tier, FactoryType.INJECTING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.INJECTING), () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.INJECTING))));
+            FACTORIES.put(tier, FactoryType.PURIFYING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.PURIFYING), () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.PURIFYING))));
+            FACTORIES.put(tier, FactoryType.SAWING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.SAWING), () -> new TileEntitySawingFactory(MekanismBlocks.getFactory(tier, FactoryType.SAWING))));
+            FACTORIES.put(tier, FactoryType.SMELTING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.SMELTING), () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.SMELTING))));
+        }
+    }
 
     //TODO: Tile types that need to be evaluated further
     public static final TileEntityTypeRegistryObject<TileEntityBoundingBlock> BOUNDING_BLOCK = TILE_ENTITY_TYPES.register(MekanismBlocks.BOUNDING_BLOCK, TileEntityBoundingBlock::new);
@@ -195,50 +216,12 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> ELITE_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_INDUCTION_PROVIDER, () -> new TileEntityInductionProvider(MekanismBlocks.ELITE_INDUCTION_PROVIDER));
     public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> ULTIMATE_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, () -> new TileEntityInductionProvider(MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER));
 
-    //Factories
-    //Combining
-    public static final TileEntityTypeRegistryObject<TileEntityCombiningFactory> BASIC_COMBINING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_COMBINING_FACTORY, () -> new TileEntityCombiningFactory(MekanismBlocks.BASIC_COMBINING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityCombiningFactory> ADVANCED_COMBINING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_COMBINING_FACTORY, () -> new TileEntityCombiningFactory(MekanismBlocks.ADVANCED_COMBINING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityCombiningFactory> ELITE_COMBINING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_COMBINING_FACTORY, () -> new TileEntityCombiningFactory(MekanismBlocks.ELITE_COMBINING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityCombiningFactory> ULTIMATE_COMBINING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_COMBINING_FACTORY, () -> new TileEntityCombiningFactory(MekanismBlocks.ULTIMATE_COMBINING_FACTORY));
-    //Compressing
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> BASIC_COMPRESSING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_COMPRESSING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.BASIC_COMPRESSING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> ADVANCED_COMPRESSING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_COMPRESSING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.ADVANCED_COMPRESSING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> ELITE_COMPRESSING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_COMPRESSING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.ELITE_COMPRESSING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> ULTIMATE_COMPRESSING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_COMPRESSING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.ULTIMATE_COMPRESSING_FACTORY));
-    //Crushing
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> BASIC_CRUSHING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_CRUSHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.BASIC_CRUSHING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> ADVANCED_CRUSHING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_CRUSHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.ADVANCED_CRUSHING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> ELITE_CRUSHING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_CRUSHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.ELITE_CRUSHING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> ULTIMATE_CRUSHING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_CRUSHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.ULTIMATE_CRUSHING_FACTORY));
-    //Enriching
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> BASIC_ENRICHING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_ENRICHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.BASIC_ENRICHING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> ADVANCED_ENRICHING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_ENRICHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.ADVANCED_ENRICHING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> ELITE_ENRICHING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_ENRICHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.ELITE_ENRICHING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> ULTIMATE_ENRICHING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_ENRICHING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.ULTIMATE_ENRICHING_FACTORY));
-    //Infusing
-    public static final TileEntityTypeRegistryObject<TileEntityMetallurgicInfuserFactory> BASIC_INFUSING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_INFUSING_FACTORY, () -> new TileEntityMetallurgicInfuserFactory(MekanismBlocks.BASIC_INFUSING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityMetallurgicInfuserFactory> ADVANCED_INFUSING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_INFUSING_FACTORY, () -> new TileEntityMetallurgicInfuserFactory(MekanismBlocks.ADVANCED_INFUSING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityMetallurgicInfuserFactory> ELITE_INFUSING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_INFUSING_FACTORY, () -> new TileEntityMetallurgicInfuserFactory(MekanismBlocks.ELITE_INFUSING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityMetallurgicInfuserFactory> ULTIMATE_INFUSING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_INFUSING_FACTORY, () -> new TileEntityMetallurgicInfuserFactory(MekanismBlocks.ULTIMATE_INFUSING_FACTORY));
-    //Injecting
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> BASIC_INJECTING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_INJECTING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.BASIC_INJECTING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> ADVANCED_INJECTING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_INJECTING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.ADVANCED_INJECTING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> ELITE_INJECTING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_INJECTING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.ELITE_INJECTING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> ULTIMATE_INJECTING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_INJECTING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.ULTIMATE_INJECTING_FACTORY));
-    //Purifying
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> BASIC_PURIFYING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_PURIFYING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.BASIC_PURIFYING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> ADVANCED_PURIFYING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_PURIFYING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.ADVANCED_PURIFYING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> ELITE_PURIFYING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_PURIFYING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.ELITE_PURIFYING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackGasToItemStackFactory> ULTIMATE_PURIFYING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_PURIFYING_FACTORY, () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.ULTIMATE_PURIFYING_FACTORY));
-    //Sawing
-    public static final TileEntityTypeRegistryObject<TileEntitySawingFactory> BASIC_SAWING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_SAWING_FACTORY, () -> new TileEntitySawingFactory(MekanismBlocks.BASIC_SAWING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntitySawingFactory> ADVANCED_SAWING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_SAWING_FACTORY, () -> new TileEntitySawingFactory(MekanismBlocks.ADVANCED_SAWING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntitySawingFactory> ELITE_SAWING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_SAWING_FACTORY, () -> new TileEntitySawingFactory(MekanismBlocks.ELITE_SAWING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntitySawingFactory> ULTIMATE_SAWING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_SAWING_FACTORY, () -> new TileEntitySawingFactory(MekanismBlocks.ULTIMATE_SAWING_FACTORY));
-    //Smelting
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> BASIC_SMELTING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_SMELTING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.BASIC_SMELTING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> ADVANCED_SMELTING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_SMELTING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.ADVANCED_SMELTING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> ELITE_SMELTING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_SMELTING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.ELITE_SMELTING_FACTORY));
-    public static final TileEntityTypeRegistryObject<TileEntityItemStackToItemStackFactory> ULTIMATE_SMELTING_FACTORY = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_SMELTING_FACTORY, () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.ULTIMATE_SMELTING_FACTORY));
+    public static TileEntityTypeRegistryObject<? extends TileEntityFactory<?>> getFactoryTile(FactoryTier tier, FactoryType type) {
+        return FACTORIES.get(tier, type);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static TileEntityTypeRegistryObject<? extends TileEntityFactory<?>>[] getFactoryTiles() {
+        return (TileEntityTypeRegistryObject<? extends TileEntityFactory<?>>[]) FACTORIES.values().toArray();
+    }
 }
