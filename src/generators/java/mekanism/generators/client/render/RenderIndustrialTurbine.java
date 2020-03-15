@@ -1,12 +1,13 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.client.render.ModelRenderer;
-import mekanism.client.render.data.GasRenderData;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.ModelRenderer;
+import mekanism.client.render.data.GasRenderData;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsProfilerConstants;
@@ -27,9 +28,10 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
     @Override
     protected void render(TileEntityTurbineCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.complex != null && tile.structure.renderLocation != null) {
-            RenderTurbineRotor.internalRender = true;
             BlockPos pos = tile.getPos();
             BlockPos complexPos = tile.structure.complex.getPos();
+            IVertexBuilder buffer = RenderTurbineRotor.INSTANCE.model.getBuffer(renderer);
+            profiler.startSection(GeneratorsProfilerConstants.TURBINE_ROTOR);
             while (true) {
                 complexPos = complexPos.down();
                 TileEntityTurbineRotor rotor = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, tile.getWorld(), complexPos);
@@ -38,11 +40,10 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                 }
                 matrix.push();
                 matrix.translate(complexPos.getX() - pos.getX(), complexPos.getY() - pos.getY(), complexPos.getZ() - pos.getZ());
-                //TODO: Batch all the rotor rendering into a single render type rendering
-                renderDispatcher.renderItem(rotor, matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight);
+                RenderTurbineRotor.INSTANCE.render(rotor, matrix, buffer, MekanismRenderer.FULL_LIGHT, overlayLight);
                 matrix.pop();
             }
-            RenderTurbineRotor.internalRender = false;
+            profiler.endSection();
             if (!tile.structure.gasTank.isEmpty() && tile.structure.volLength > 0) {
                 GasRenderData data = new GasRenderData();
                 data.height = tile.structure.lowerVolume / (tile.structure.volLength * tile.structure.volWidth);

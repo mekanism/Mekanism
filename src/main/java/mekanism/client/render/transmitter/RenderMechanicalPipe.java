@@ -32,7 +32,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final int stages = 100;
     private static final double height = 0.45;
     private static final double offset = 0.015;
-    //TODO: this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support. 6 is used for null side
+    //Note: this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support. 6 is used for null side
     private static Int2ObjectMap<FluidRenderMap<Int2ObjectMap<Model3D>>> cachedLiquids = new Int2ObjectArrayMap<>(7);
 
     public RenderMechanicalPipe(TileEntityRendererDispatcher renderer) {
@@ -67,24 +67,19 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             int glow = MekanismRenderer.calculateGlowLight(light, fluidStack);
             boolean gas = fluidStack.getFluid().getAttributes().isGaseous(fluidStack);
             List<String> connectionContents = new ArrayList<>();
+            Model3D model = getModel(null, fluidStack, getStage(scale, gas));
             for (Direction side : EnumUtils.DIRECTIONS) {
-                //TODO: Make this mark the sides that shouldn't get rendered
                 ConnectionType connectionType = pipe.getConnectionType(side);
                 if (connectionType == ConnectionType.NORMAL) {
-                    Model3D model = getModel(side, fluidStack, getStage(scale, gas));
-                    if (model != null) {
-                        //TODO: Only render part of back face?
-                        MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, scale), glow);
-                    }
+                    MekanismRenderer.renderObject(getModel(side, fluidStack, getStage(scale, gas)), matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, scale), glow);
                 } else if (connectionType != ConnectionType.NONE) {
                     connectionContents.add(side.getName() + connectionType.getName().toUpperCase());
                 }
+                if (model != null) {
+                    model.setSideRender(side, connectionType == ConnectionType.NONE);
+                }
             }
-            Model3D model = getModel(null, fluidStack, getStage(scale, gas));
-            if (model != null) {
-                //TODO: Make this only render faces that don't have a connection type
-                MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, scale), glow);
-            }
+            MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, scale), glow);
             if (!connectionContents.isEmpty()) {
                 matrix.push();
                 matrix.translate(0.5, 0.5, 0.5);
