@@ -5,13 +5,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 
@@ -33,12 +31,8 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     @Override
     protected void render(TileEntityTeleporter tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.shouldRender && tile.getWorld() != null) {
-            matrix.push();
-            GlowInfo glowInfo = MekanismRenderer.enableGlow();
-            MekanismRenderer.renderObject(getOverlayModel(tile.hasEastWestFrame()), matrix, renderer, MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                  MekanismRenderer.getColorARGB(EnumColor.PURPLE, 0.75F));
-            MekanismRenderer.disableGlow(glowInfo);
-            matrix.pop();
+            MekanismRenderer.renderObject(getOverlayModel(tile.hasEastWestFrame()), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
+                  MekanismRenderer.getColorARGB(EnumColor.PURPLE, 0.75F), MekanismRenderer.FULL_LIGHT);
         }
     }
 

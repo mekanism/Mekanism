@@ -32,7 +32,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -261,9 +260,8 @@ public class RenderTickHandler {
                             MatrixStack matrix = event.getMatrix();
                             matrix.push();
                             matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
-                            MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, event.getBuffers(),
-                                  MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F));
+                            MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, event.getBuffers().getBuffer(MekanismRenderType.resizableCuboid()),
+                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), MekanismRenderer.FULL_LIGHT);
                             matrix.pop();
                         }
                     }

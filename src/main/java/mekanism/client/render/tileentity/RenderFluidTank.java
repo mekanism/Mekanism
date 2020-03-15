@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import javax.annotation.Nonnull;
@@ -9,13 +10,10 @@ import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,33 +39,24 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     protected void render(TileEntityFluidTank tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         FluidStack fluid = tile.fluidTank.getFluid();
         float fluidScale = tile.prevScale;
-        FluidStack valveFluid = tile.valveFluid;
+        IVertexBuilder buffer = null;
         if (!fluid.isEmpty() && fluidScale > 0) {
-            if (tile.tier == FluidTankTier.CREATIVE) {
-                fluidScale = 1;
-            }
-            matrix.push();
-            GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
             int modelNumber;
             if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
                 modelNumber = stages - 1;
             } else {
                 modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
             }
-            MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer, MekanismRenderType.renderFluidTankState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                  MekanismRenderer.getColorARGB(fluid, fluidScale));
-            MekanismRenderer.disableGlow(glowInfo);
-            matrix.pop();
+            buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+            MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, buffer, MekanismRenderer.getColorARGB(fluid, fluidScale),
+                  MekanismRenderer.calculateGlowLight(light, fluid));
         }
-
-        if (!valveFluid.isEmpty() && !valveFluid.getFluid().getAttributes().isGaseous(valveFluid)) {
-            matrix.push();
-            GlowInfo glowInfo = MekanismRenderer.enableGlow(valveFluid);
-            Model3D valveModel = getValveModel(valveFluid, Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1))));
-            MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidTankState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                  MekanismRenderer.getColorARGB(valveFluid));
-            MekanismRenderer.disableGlow(glowInfo);
-            matrix.pop();
+        if (!tile.valveFluid.isEmpty() && !tile.valveFluid.getFluid().getAttributes().isGaseous(tile.valveFluid)) {
+            if (buffer == null) {
+                buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+            }
+            MekanismRenderer.renderObject(getValveModel(tile.valveFluid, Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))), matrix, buffer,
+                  MekanismRenderer.getColorARGB(tile.valveFluid), MekanismRenderer.calculateGlowLight(light, tile.valveFluid));
         }
     }
 

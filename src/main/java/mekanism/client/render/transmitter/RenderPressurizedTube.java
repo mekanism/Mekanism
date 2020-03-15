@@ -34,7 +34,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
                 matrix.translate(0.5, 0.5, 0.5);
                 Gas gas = transmitterNetwork.gasTank.getType();
                 renderModel(tube, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), gas.getTint(),
-                      tube.currentScale, light, overlayLight, MekanismRenderer.getChemicalTexture(gas));
+                      tube.currentScale, MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.getChemicalTexture(gas));
                 matrix.pop();
             }
         }

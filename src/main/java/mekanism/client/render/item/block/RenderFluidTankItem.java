@@ -12,7 +12,6 @@ import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
@@ -21,7 +20,6 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -63,14 +61,12 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         if (tier == null) {
             return;
         }
-        matrix.push();
         if (!fluidTank.isEmpty()) {
             float fluidScale = (float) fluidTank.getFluidAmount() / fluidTank.getCapacity();
             if (fluidScale > 0) {
                 FluidStack fluid = fluidTank.getFluid();
                 matrix.push();
                 matrix.translate(-0.5, -0.5, -0.5);
-                GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
                 int modelNumber;
                 int color;
                 if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
@@ -80,12 +76,12 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
                     modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
                     color = MekanismRenderer.getColorARGB(fluid);
                 }
-                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer, MekanismRenderType.renderFluidTankState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), color);
-                MekanismRenderer.disableGlow(glowInfo);
+                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()), color,
+                      MekanismRenderer.calculateGlowLight(light, fluid));
                 matrix.pop();
             }
         }
-
+        matrix.push();
         matrix.translate(0, -0.9, 0);
         matrix.scale(0.9F, 0.8F, 0.9F);
         //Scale to to size of item

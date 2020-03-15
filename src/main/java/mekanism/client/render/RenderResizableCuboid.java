@@ -6,9 +6,7 @@ import java.util.Arrays;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -53,13 +51,14 @@ public class RenderResizableCuboid {
         throw new RuntimeException("Was given a null axis! That was probably not intentional, consider this a bug! (Vector = " + vector + ")");
     }
 
-    public void renderCube(Model3D cube, MatrixStack matrix, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder, int argb) {
-        Vec3d size = new Vec3d(cube.sizeX(), cube.sizeY(), cube.sizeZ());
-        IVertexBuilder builder = renderer.getBuffer(MekanismRenderType.resizableCuboid(stateBuilder));
+    public void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int argb, int light) {
         float red = MekanismRenderer.getRed(argb);
         float green = MekanismRenderer.getGreen(argb);
         float blue = MekanismRenderer.getBlue(argb);
         float alpha = MekanismRenderer.getAlpha(argb);
+        Vec3d size = new Vec3d(cube.sizeX(), cube.sizeY(), cube.sizeZ());
+        matrix.push();
+        matrix.translate(cube.minX, cube.minY, cube.minZ);
         Matrix4f matrix4f = matrix.getLast().getMatrix();
         for (Direction face : EnumUtils.DIRECTIONS) {
             if (cube.shouldSideRender(face)) {
@@ -98,29 +97,30 @@ public class RenderResizableCuboid {
                             }
                             float[] xyz = new float[]{uIndex, (float) (uIndex + addU), vIndex, (float) (vIndex + addV)};
 
-                            renderPoint(matrix4f, builder, face, u, v, other, uvCopy, xyz, true, false, red, green, blue, alpha);
-                            renderPoint(matrix4f, builder, face, u, v, other, uvCopy, xyz, true, true, red, green, blue, alpha);
-                            renderPoint(matrix4f, builder, face, u, v, other, uvCopy, xyz, false, true, red, green, blue, alpha);
-                            renderPoint(matrix4f, builder, face, u, v, other, uvCopy, xyz, false, false, red, green, blue, alpha);
+                            renderPoint(matrix4f, buffer, face, u, v, other, uvCopy, xyz, true, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, face, u, v, other, uvCopy, xyz, true, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, face, u, v, other, uvCopy, xyz, false, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, face, u, v, other, uvCopy, xyz, false, false, red, green, blue, alpha, light);
 
-                            renderPoint(matrix4f, builder, opposite, u, v, other, uvCopy, xyz, false, false, red, green, blue, alpha);
-                            renderPoint(matrix4f, builder, opposite, u, v, other, uvCopy, xyz, false, true, red, green, blue, alpha);
-                            renderPoint(matrix4f, builder, opposite, u, v, other, uvCopy, xyz, true, true, red, green, blue, alpha);
-                            renderPoint(matrix4f, builder, opposite, u, v, other, uvCopy, xyz, true, false, red, green, blue, alpha);
+                            renderPoint(matrix4f, buffer, opposite, u, v, other, uvCopy, xyz, false, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, opposite, u, v, other, uvCopy, xyz, false, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, opposite, u, v, other, uvCopy, xyz, true, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, opposite, u, v, other, uvCopy, xyz, true, false, red, green, blue, alpha, light);
                         }
                     }
                 }
             }
         }
+        matrix.pop();
     }
 
-    private void renderPoint(Matrix4f matrix4f, IVertexBuilder builder, Direction face, Axis u, Axis v, float other, float[] uv, float[] xyz, boolean minU, boolean minV,
-          float red, float green, float blue, float alpha) {
+    private void renderPoint(Matrix4f matrix4f, IVertexBuilder buffer, Direction face, Axis u, Axis v, float other, float[] uv, float[] xyz, boolean minU, boolean minV,
+          float red, float green, float blue, float alpha, int light) {
         int U_ARRAY = minU ? U_MIN : U_MAX;
         int V_ARRAY = minV ? V_MIN : V_MAX;
         Vector3f vertex = withValue(VEC_ZERO, u, xyz[U_ARRAY]);
         vertex = withValue(vertex, v, xyz[V_ARRAY]);
         vertex = withValue(vertex, face.getAxis(), other);
-        builder.pos(matrix4f, vertex.getX(), vertex.getY(), vertex.getZ()).color(red, green, blue, alpha).tex(uv[U_ARRAY], uv[V_ARRAY]).endVertex();
+        buffer.pos(matrix4f, vertex.getX(), vertex.getY(), vertex.getZ()).color(red, green, blue, alpha).tex(uv[U_ARRAY], uv[V_ARRAY]).lightmap(light).endVertex();
     }
 }
