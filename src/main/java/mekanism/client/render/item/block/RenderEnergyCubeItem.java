@@ -3,8 +3,6 @@ package mekanism.client.render.item.block;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
-import mekanism.api.RelativeSide;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
@@ -14,15 +12,11 @@ import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
-import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants.NBT;
 
 public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
@@ -43,22 +37,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         matrix.translate(0, -1, 0);
         //TODO: Instead of having this be a thing, make it do it from model like the block does?
         energyCube.render(matrix, renderer, light, overlayLight, tier, true);
-
-        CompoundNBT configData = ItemDataUtils.getDataMapIfPresent(stack);
-        if (configData != null && configData.contains(NBTConstants.COMPONENT_CONFIG, NBT.TAG_COMPOUND)) {
-            CompoundNBT sideConfig = configData.getCompound(NBTConstants.COMPONENT_CONFIG).getCompound(NBTConstants.CONFIG + TransmissionType.ENERGY.ordinal());
-            //TODO: Maybe improve on this, but for now this is a decent way of making it not have disabled sides show
-            for (RelativeSide side : EnumUtils.SIDES) {
-                DataType dataType = DataType.byIndexStatic(sideConfig.getInt(NBTConstants.SIDE + side.ordinal()));
-                //TODO: Improve on the check compared to just directly comparing the data type?
-                energyCube.renderSide(matrix, renderer, light, overlayLight, side, dataType.equals(DataType.INPUT), dataType.equals(DataType.OUTPUT));
-            }
-        } else {
-            for (RelativeSide side : EnumUtils.SIDES) {
-                energyCube.renderSide(matrix, renderer, light, overlayLight, side, true, true);
-            }
-        }
-
+        energyCube.renderSidesBatched(stack, tier, matrix, renderer, light, overlayLight);
         matrix.pop();
         double energyPercentage = ItemDataUtils.getDouble(stack, NBTConstants.ENERGY_STORED) / tier.getMaxEnergy();
         if (energyPercentage > 0.1) {

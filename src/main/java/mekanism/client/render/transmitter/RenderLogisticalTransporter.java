@@ -15,7 +15,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.transporter.HashedItem;
@@ -100,11 +99,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     matrix.push();
                     matrix.scale(0.5F, 0.5F, 0.5F);
                     matrix.translate(0.5, 0.5, 0.5);
-                    GlowInfo glowInfo = MekanismRenderer.enableGlow();
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[rayTraceResult.getFace().ordinal()];
-                    MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getFace(), mode), matrix, renderer,
-                          MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), MekanismRenderer.getColorARGB(255, 255, 255, 0.8F));
-                    MekanismRenderer.disableGlow(glowInfo);
+                    MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getFace(), mode), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
+                          MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT);
                     matrix.pop();
                 }
             }

@@ -132,7 +132,7 @@ public class TileComponentConfig implements ITileComponent, ITrackableContainer 
             for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
                 TransmissionType type = entry.getKey();
                 ConfigInfo info = entry.getValue();
-                info.setEjecting(configNBT.getBoolean(NBTConstants.EJECTING + type.ordinal()));
+                info.setEjecting(configNBT.getBoolean(NBTConstants.EJECT + type.ordinal()));
                 CompoundNBT sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
                 for (RelativeSide side : EnumUtils.SIDES) {
                     NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> info.setDataType(side, dataType));
@@ -147,7 +147,7 @@ public class TileComponentConfig implements ITileComponent, ITrackableContainer 
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
-            configNBT.putBoolean(NBTConstants.EJECTING + type.ordinal(), info.isEjecting());
+            configNBT.putBoolean(NBTConstants.EJECT + type.ordinal(), info.isEjecting());
             CompoundNBT sideConfig = new CompoundNBT();
             for (RelativeSide side : EnumUtils.SIDES) {
                 sideConfig.putInt(NBTConstants.SIDE + side.ordinal(), info.getDataType(side).ordinal());

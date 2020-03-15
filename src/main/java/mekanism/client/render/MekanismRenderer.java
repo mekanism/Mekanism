@@ -1,8 +1,8 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
@@ -17,43 +17,38 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.tileentity.RenderConfigurableMachine;
+import mekanism.client.render.obj.TransmitterLoader;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ISideConfiguration;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.ModelSettings;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import org.lwjgl.opengl.GL13;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
 
-    public static final GlowInfo NO_GLOW = new GlowInfo(0, 0, false);
+    //TODO: Replace various usages of this with the getter for calculating glow light, at least if we end up making it only
+    // effect block light for the glow rather than having it actually become full light
     public static final int FULL_LIGHT = 0xF000F0;
 
     public static OBJModel contentsModel;
@@ -61,18 +56,13 @@ public class MekanismRenderer {
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
-    private static RenderConfigurableMachine<?> machineRenderer;
 
-    @SubscribeEvent
-    public static void init(FMLClientSetupEvent event) {
-        //Note: We set the machine renderer in a FMLClientSetupEvent, to make sure that it does not get set at the
-        // wrong time when running the data generators and thus cause a crash
-        machineRenderer = new RenderConfigurableMachine<>(TileEntityRendererDispatcher.instance);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <S extends TileEntity & ISideConfiguration> RenderConfigurableMachine<S> machineRenderer() {
-        return (RenderConfigurableMachine<S>) machineRenderer;
+    //We ignore the warning, due to this actually being able to be null during runData
+    @SuppressWarnings("ConstantConditions")
+    public static void registerModelLoader() {
+        if (Minecraft.getInstance() != null) {
+            ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
+        }
     }
 
     /**
@@ -119,17 +109,9 @@ public class MekanismRenderer {
         model.setTextures(still, still, flowing, flowing, flowing, flowing);
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder) {
-        renderObject(object, matrix, renderer, stateBuilder, -1);
-    }
-
-    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder,
-          int argb) {
+    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light) {
         if (object != null) {
-            matrix.push();
-            matrix.translate(object.minX, object.minY, object.minZ);
-            RenderResizableCuboid.INSTANCE.renderCube(object, matrix, renderer, stateBuilder, argb);
-            matrix.pop();
+            RenderResizableCuboid.INSTANCE.renderCube(object, matrix, buffer, argb, light);
         }
     }
 
@@ -245,39 +227,18 @@ public class MekanismRenderer {
         return argb;
     }
 
-    @Nonnull
-    public static GlowInfo enableGlow() {
-        return enableGlow(15);
+    //TODO: Use these calculateGlowLight after rewriting the renderResizableCuboid?
+    public static int calculateGlowLight(int light, @Nonnull FluidStack fluid) {
+        return fluid.isEmpty() ? light : calculateGlowLight(light, fluid.getFluid().getAttributes().getLuminosity(fluid));
     }
 
-    @Nonnull
-    public static GlowInfo enableGlow(int glow) {
-        //TODO: Decide if for fullbright glow we want to just disable the lightmap instead of using this method for glow
-        //to modify the state properly we would add .lightmap(LIGHTMAP_DISABLED)
-        //TODO: Do we need to make sure optifine is not loaded
-        if (/*!FMLClientHandler.instance().hasOptifine() && */glow > 0) {
-            GlowInfo info = new GlowInfo(GlStateManager.lastBrightnessX, GlStateManager.lastBrightnessY, true);
-            float glowStrength = (glow / 15F) * 240F;
-            RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE1, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
-            return info;
+    public static int calculateGlowLight(int light, int glow) {
+        if (glow >= 15) {
+            return MekanismRenderer.FULL_LIGHT;
         }
-        return NO_GLOW;
-    }
-
-    @Nonnull
-    public static GlowInfo enableGlow(@Nonnull FluidStack fluid) {
-        return fluid.isEmpty() ? NO_GLOW : enableGlow(fluid.getFluid().getAttributes().getLuminosity(fluid));
-    }
-
-    @Nonnull
-    public static GlowInfo enableGlow(@Nonnull Fluid fluid) {
-        return fluid == Fluids.EMPTY ? NO_GLOW : enableGlow(fluid.getAttributes().getLuminosity());
-    }
-
-    public static void disableGlow(@Nonnull GlowInfo info) {
-        if (info.glowEnabled) {
-            RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE1, info.lightmapLastX, info.lightmapLastY);
-        }
+        int blockLight = LightTexture.getLightBlock(light);
+        int skyLight = LightTexture.getLightSky(light);
+        return LightTexture.packLight(Math.max(blockLight, glow), Math.max(skyLight, glow));
     }
 
     public static float getPartialTick() {
@@ -349,10 +310,10 @@ public class MekanismRenderer {
             event.addSprite(type.getIcon());
         }
 
-        FluidRenderer.resetCachedModels();
+        ModelRenderer.resetCachedModels();
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
-        RenderConfigurableMachine.resetCachedOverlays();
+        RenderTickHandler.resetCachedOverlays();
         MinerVisualRenderer.resetCachedVisuals();
         RenderTeleporter.resetCachedModels();
     }
@@ -383,16 +344,8 @@ public class MekanismRenderer {
 
     public static class Model3D {
 
-        public double posX, posY, posZ;
-
         public double minX, minY, minZ;
         public double maxX, maxY, maxZ;
-
-        public double textureStartX = 0, textureStartY = 0, textureStartZ = 0;
-        public double textureSizeX = 16, textureSizeY = 16, textureSizeZ = 16;
-        public double textureOffsetX = 0, textureOffsetY = 0, textureOffsetZ = 0;
-
-        public int[] textureFlips = new int[]{2, 2, 2, 2, 2, 2};
 
         public TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
 
@@ -427,10 +380,6 @@ public class MekanismRenderer {
             return renderSides[side.ordinal()];
         }
 
-        public TextureAtlasSprite getBlockTextureFromSide(int i) {
-            return textures[i];
-        }
-
         public void setTexture(TextureAtlasSprite tex) {
             Arrays.fill(textures, tex);
         }
@@ -442,19 +391,6 @@ public class MekanismRenderer {
             textures[3] = south;
             textures[4] = west;
             textures[5] = east;
-        }
-    }
-
-    public static class GlowInfo {
-
-        private final boolean glowEnabled;
-        private final float lightmapLastX;
-        private final float lightmapLastY;
-
-        public GlowInfo(float lightmapLastX, float lightmapLastY, boolean glowEnabled) {
-            this.lightmapLastX = lightmapLastX;
-            this.lightmapLastY = lightmapLastY;
-            this.glowEnabled = glowEnabled;
         }
     }
 }

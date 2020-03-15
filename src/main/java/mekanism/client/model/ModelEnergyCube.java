@@ -2,19 +2,32 @@ package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import java.util.EnumSet;
+import java.util.Set;
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tier.EnergyCubeTier;
+import mekanism.common.tile.TileEntityEnergyCube;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.util.EnumUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class ModelEnergyCube extends Model {
 
@@ -403,18 +416,106 @@ public class ModelEnergyCube extends Model {
     }
 
     public void renderSide(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, RelativeSide side, boolean canInput, boolean canOutput) {
+        int sideOrdinal = side.ordinal();
         if (canInput || canOutput) {
             IVertexBuilder buffer = renderer.getBuffer(RENDER_TYPE);
-            connectors[side.ordinal()].render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
-            ports[side.ordinal()].render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
+            connectors[sideOrdinal].render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
+            ports[sideOrdinal].render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
         }
         if (canOutput) {
             light = MekanismRenderer.FULL_LIGHT;
-            ports[side.ordinal()].render(matrix, renderer.getBuffer(RENDER_TYPE_BASE), light, overlayLight, 1, 1, 1, 1);
+            ports[sideOrdinal].render(matrix, renderer.getBuffer(RENDER_TYPE_BASE), light, overlayLight, 1, 1, 1, 1);
         }
         IVertexBuilder ledBuffer = renderer.getBuffer(canOutput ? RENDER_TYPE_ON : RENDER_TYPE_OFF);
-        leds1[side.ordinal()].render(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
-        leds2[side.ordinal()].render(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
+        leds1[sideOrdinal].render(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
+        leds2[sideOrdinal].render(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
+    }
+
+    public void renderSidesBatched(@Nonnull TileEntityEnergyCube tile, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+        Set<RelativeSide> enabledSides = EnumSet.noneOf(RelativeSide.class);
+        Set<RelativeSide> outputSides = EnumSet.noneOf(RelativeSide.class);
+        ConfigInfo config = tile.getConfig().getConfig(TransmissionType.ENERGY);
+        if (config != null) {
+            for (RelativeSide side : EnumUtils.SIDES) {
+                ISlotInfo slotInfo = config.getSlotInfo(side);
+                if (slotInfo != null) {
+                    if (slotInfo.canInput()) {
+                        enabledSides.add(side);
+                    } else if (slotInfo.canOutput()) {
+                        enabledSides.add(side);
+                        outputSides.add(side);
+                    }
+                }
+            }
+        }
+        renderSidesBatched(matrix, renderer, light, overlayLight, enabledSides, outputSides);
+    }
+
+    public void renderSidesBatched(@Nonnull ItemStack stack, EnergyCubeTier tier, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
+          int overlayLight) {
+        Set<RelativeSide> enabledSides;
+        Set<RelativeSide> outputSides;
+        CompoundNBT configData = ItemDataUtils.getDataMapIfPresent(stack);
+        if (configData != null && configData.contains(NBTConstants.COMPONENT_CONFIG, NBT.TAG_COMPOUND)) {
+            enabledSides = EnumSet.noneOf(RelativeSide.class);
+            outputSides = EnumSet.noneOf(RelativeSide.class);
+            CompoundNBT sideConfig = configData.getCompound(NBTConstants.COMPONENT_CONFIG).getCompound(NBTConstants.CONFIG + TransmissionType.ENERGY.ordinal());
+            //TODO: Maybe improve on this, but for now this is a decent way of making it not have disabled sides show
+            for (RelativeSide side : EnumUtils.SIDES) {
+                DataType dataType = DataType.byIndexStatic(sideConfig.getInt(NBTConstants.SIDE + side.ordinal()));
+                if (dataType.equals(DataType.INPUT)) {
+                    enabledSides.add(side);
+                } else if (dataType.equals(DataType.OUTPUT)) {
+                    enabledSides.add(side);
+                    outputSides.add(side);
+                }
+            }
+        } else {
+            enabledSides = EnumSet.allOf(RelativeSide.class);
+            if (tier == EnergyCubeTier.CREATIVE) {
+                outputSides = EnumSet.allOf(RelativeSide.class);
+            } else {
+                outputSides = EnumSet.of(RelativeSide.FRONT);
+            }
+        }
+        renderSidesBatched(matrix, renderer, light, overlayLight, enabledSides, outputSides);
+    }
+
+    /**
+     * Batched version of {@link #renderSide(MatrixStack, IRenderTypeBuffer, int, int, RelativeSide, boolean, boolean)} that render all sides per render type before
+     * switching to the next render type. This is because the way Minecraft draws custom render types, is it flushes and instantly draws as soon as it gets a new type if
+     * it doesn't know how to handle the type.
+     */
+    private void renderSidesBatched(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, Set<RelativeSide> enabledSides,
+          Set<RelativeSide> outputSides) {
+        if (!enabledSides.isEmpty()) {
+            IVertexBuilder buffer = renderer.getBuffer(RENDER_TYPE);
+            for (RelativeSide enabledSide : enabledSides) {
+                int sideOrdinal = enabledSide.ordinal();
+                connectors[sideOrdinal].render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
+                ports[sideOrdinal].render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
+            }
+            if (!outputSides.isEmpty()) {
+                buffer = renderer.getBuffer(RENDER_TYPE_BASE);
+                for (RelativeSide outputSide : outputSides) {
+                    ports[outputSide.ordinal()].render(matrix, buffer, MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 1);
+                }
+                renderLEDS(outputSides, renderer.getBuffer(RENDER_TYPE_ON), matrix, MekanismRenderer.FULL_LIGHT, overlayLight);
+            }
+        }
+        if (outputSides.size() < EnumUtils.SIDES.length) {
+            Set<RelativeSide> remainingSides = EnumSet.allOf(RelativeSide.class);
+            remainingSides.removeAll(outputSides);
+            renderLEDS(remainingSides, renderer.getBuffer(RENDER_TYPE_OFF), matrix, light, overlayLight);
+        }
+    }
+
+    private void renderLEDS(Set<RelativeSide> sides, IVertexBuilder ledBuffer, MatrixStack matrix, int light, int overlayLight) {
+        for (RelativeSide side : sides) {
+            int sideOrdinal = side.ordinal();
+            leds1[sideOrdinal].render(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
+            leds2[sideOrdinal].render(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
+        }
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -442,9 +543,17 @@ public class ModelEnergyCube extends Model {
             cube.mirror = true;
         }
 
+        public IVertexBuilder getBuffer(@Nonnull IRenderTypeBuffer renderer) {
+            return renderer.getBuffer(RENDER_TYPE);
+        }
+
         public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, EnumColor color, float energyPercentage) {
-            cube.render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2),
+            render(matrix, getBuffer(renderer), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2),
                   energyPercentage);
+        }
+
+        public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder buffer, int light, int overlayLight, EnumColor color, float energyPercentage) {
+            cube.render(matrix, buffer, light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), energyPercentage);
         }
 
         @Override

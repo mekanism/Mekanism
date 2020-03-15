@@ -95,6 +95,6 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return INFINITE_EXTENT_AABB;
+        return new AxisAlignedBB(pos, pos.add(1, 2, 1));
     }
 }

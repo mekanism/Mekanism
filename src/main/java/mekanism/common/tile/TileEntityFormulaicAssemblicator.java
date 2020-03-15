@@ -317,7 +317,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
         ItemStack output = lastOutputStack;
         if (!output.isEmpty() && tryMoveToOutput(output, Action.SIMULATE) &&
-            (lastRemainingItems.isEmpty() || lastRemainingItems.stream().allMatch(it -> it.isEmpty() || tryMoveToOutput(it, Action.EXECUTE)))) {
+            (lastRemainingItems.isEmpty() || lastRemainingItems.stream().allMatch(it -> it.isEmpty() || tryMoveToOutput(it, Action.SIMULATE)))) {
             tryMoveToOutput(output, Action.EXECUTE);
             //TODO: Fix this as I believe if things overlap there is a chance it won't work properly.
             // For example if there are multiple stacks of dirt in remaining and we have room for one stack, but given we only check one stack at a time...)

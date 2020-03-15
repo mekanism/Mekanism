@@ -22,6 +22,12 @@ public class ProfilerConstants {
     public static final String THERMAL_EVAPORATION_CONTROLLER = "thermalEvaporationController";
     public static final String THERMOELECTRIC_BOILER = "thermoelectricBoiler";
 
+    //Sub parts
+    public static final String CORE = "core";
+    public static final String FRAME = "frame";
+    public static final String SIDES = "sides";
+    public static final String CORNERS = "corners";
+
     //Transmitter
     public static final String LOGISTICAL_TRANSPORTER = "logisticalTransporter";
     public static final String MECHANICAL_PIPE = "mechanicalPipe";

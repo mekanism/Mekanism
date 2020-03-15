@@ -12,8 +12,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
@@ -41,17 +41,14 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     public void onLoad() {
         super.onLoad();
-
-        World world = getWorld();
-        if (world == null) {
-            return;
-        }
-        // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
-        // an initial activity status and the client (in MP) will show the windmills turning while not
-        // generating any power
-        isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName().toString());
-        if (isBlacklistDimension) {
-            setActive(false);
+        if (world != null) {
+            // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
+            // an initial activity status and the client (in MP) will show the windmills turning while not
+            // generating any power
+            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName().toString());
+            if (isBlacklistDimension) {
+                setActive(false);
+            }
         }
     }
 
@@ -84,7 +81,6 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
     private float getMultiplier() {
-        World world = getWorld();
         if (world != null && world.canBlockSeeSky(getPos().up(4))) {
             final float minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
             final float maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
@@ -106,30 +102,26 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     public void onPlace() {
-        World world = getWorld();
-        if (world == null) {
-            return;
+        if (world != null) {
+            BlockPos pos = getPos();
+            MekanismUtils.makeBoundingBlock(world, pos.up(), pos);
+            MekanismUtils.makeBoundingBlock(world, pos.up(2), pos);
+            MekanismUtils.makeBoundingBlock(world, pos.up(3), pos);
+            MekanismUtils.makeBoundingBlock(world, pos.up(4), pos);
+            // Check to see if the placement is happening in a blacklisted dimension
+            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName().toString());
         }
-        BlockPos pos = getPos();
-        MekanismUtils.makeBoundingBlock(world, pos.up(), pos);
-        MekanismUtils.makeBoundingBlock(world, pos.up(2), pos);
-        MekanismUtils.makeBoundingBlock(world, pos.up(3), pos);
-        MekanismUtils.makeBoundingBlock(world, pos.up(4), pos);
-        // Check to see if the placement is happening in a blacklisted dimension
-        isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName().toString());
     }
 
     @Override
     public void onBreak() {
-        World world = getWorld();
-        if (world == null) {
-            return;
+        if (world != null) {
+            world.removeBlock(getPos().add(0, 1, 0), false);
+            world.removeBlock(getPos().add(0, 2, 0), false);
+            world.removeBlock(getPos().add(0, 3, 0), false);
+            world.removeBlock(getPos().add(0, 4, 0), false);
+            world.removeBlock(getPos(), false);
         }
-        world.removeBlock(getPos().add(0, 1, 0), false);
-        world.removeBlock(getPos().add(0, 2, 0), false);
-        world.removeBlock(getPos().add(0, 3, 0), false);
-        world.removeBlock(getPos().add(0, 4, 0), false);
-        world.removeBlock(getPos(), false);
     }
 
     public float getCurrentMultiplier() {
@@ -154,5 +146,12 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         super.addContainerTrackers(container);
         container.track(SyncableFloat.create(this::getCurrentMultiplier, value -> currentMultiplier = value));
         container.track(SyncableBoolean.create(this::isBlacklistDimension, value -> isBlacklistDimension = value));
+    }
+
+    @Nonnull
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        //Note: we just extend it to the max size it could be ignoring what direction it is actually facing
+        return new AxisAlignedBB(pos.add(-2, 0, -2), pos.add(3, 7, 3));
     }
 }

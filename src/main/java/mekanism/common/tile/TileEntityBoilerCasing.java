@@ -101,7 +101,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.lastMaxBoil = (int) Math.floor(heatAvailable / SynchronizedBoilerData.getHeatEnthalpy());
 
                 int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterTank.getFluidAmount());
-                amountToBoil = Math.min(amountToBoil, (structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK) - steamAmount);
+                amountToBoil = Math.min(amountToBoil, structure.steamTank.getCapacity() - steamAmount);
                 if (!structure.waterTank.isEmpty()) {
                     structure.waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
                 }

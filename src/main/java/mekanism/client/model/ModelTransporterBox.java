@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -35,10 +34,8 @@ public class ModelTransporterBox extends Model {
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float x, float y, float z, EnumColor color) {
         matrix.push();
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
         matrix.translate(x, y, z);
-        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
-        MekanismRenderer.disableGlow(glowInfo);
+        render(matrix, renderer.getBuffer(RENDER_TYPE), MekanismRenderer.FULL_LIGHT, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
         matrix.pop();
     }
 

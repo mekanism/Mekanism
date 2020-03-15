@@ -9,6 +9,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -32,33 +33,29 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     @Override
     public void onPlace() {
-        World world = getWorld();
-        if (world == null) {
-            return;
-        }
-        BlockPos pos = getPos();
-        MekanismUtils.makeBoundingBlock(world, pos.add(0, 1, 0), pos);
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                MekanismUtils.makeBoundingBlock(world, pos.add(x, 2, z), pos);
+        if (world != null) {
+            BlockPos pos = getPos();
+            MekanismUtils.makeBoundingBlock(world, pos.add(0, 1, 0), pos);
+            for (int x = -1; x <= 1; x++) {
+                for (int z = -1; z <= 1; z++) {
+                    MekanismUtils.makeBoundingBlock(world, pos.add(x, 2, z), pos);
+                }
             }
         }
     }
 
     @Override
     public void onBreak() {
-        World world = getWorld();
-        if (world == null) {
-            return;
-        }
-        world.removeBlock(getPos().add(0, 1, 0), false);
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                world.removeBlock(getPos().add(x, 2, z), false);
+        if (world != null) {
+            world.removeBlock(getPos().add(0, 1, 0), false);
+            for (int x = -1; x <= 1; x++) {
+                for (int z = -1; z <= 1; z++) {
+                    world.removeBlock(getPos().add(x, 2, z), false);
+                }
             }
+            remove();
+            world.removeBlock(getPos(), false);
         }
-        remove();
-        world.removeBlock(getPos(), false);
     }
 
     @Nonnull
@@ -72,8 +69,13 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     @Override
     protected boolean canSeeSky() {
-        //TODO: Verify this is correct at 2, I for some reason had it at 3 before
         World world = getWorld();
         return world != null && world.canBlockSeeSky(getPos().up(2));
+    }
+
+    @Nonnull
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new AxisAlignedBB(pos.add(-1, 0, -1), pos.add(2, 3, 2));
     }
 }

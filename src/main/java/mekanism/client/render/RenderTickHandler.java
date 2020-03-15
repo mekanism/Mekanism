@@ -1,20 +1,31 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
+import mekanism.api.RelativeSide;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -25,24 +36,34 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BasicParticleType;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.DrawHighlightEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class RenderTickHandler {
 
+    private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
+
     private static double HUD_SCALE = 0.6;
 
     public static int modeSwitchTimer = 0;
     public Random rand = new Random();
     public Minecraft minecraft = Minecraft.getInstance();
+
+    public static void resetCachedOverlays() {
+        cachedOverlays.clear();
+    }
 
     @SubscribeEvent
     public void tickEnd(RenderTickEvent event) {
@@ -204,6 +225,52 @@ public class RenderTickHandler {
         }
     }
 
+    @SubscribeEvent
+    public void configurableMachine(DrawHighlightEvent.HighlightBlock event) {
+        PlayerEntity player = minecraft.player;
+        if (player == null) {
+            return;
+        }
+        ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
+        if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
+            //If we are not holding a configurator, look if we are in the offhand
+            stack = player.getHeldItem(Hand.OFF_HAND);
+            if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
+                return;
+            }
+        }
+        World world = player.getEntityWorld();
+        IProfiler profiler = world.getProfiler();
+        profiler.startSection(ProfilerConstants.CONFIGURABLE_MACHINE);
+        BlockRayTraceResult rayTraceResult = event.getTarget();
+        if (!rayTraceResult.getType().equals(Type.MISS)) {
+            ConfiguratorMode state = ((ItemConfigurator) stack.getItem()).getState(stack);
+            if (state.isConfigurating()) {
+                TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
+                BlockPos pos = rayTraceResult.getPos();
+                TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                if (tile instanceof ISideConfiguration) {
+                    ISideConfiguration configurable = (ISideConfiguration) tile;
+                    TileComponentConfig config = configurable.getConfig();
+                    if (config.supports(type)) {
+                        Direction face = rayTraceResult.getFace();
+                        DataType dataType = config.getDataType(type, RelativeSide.fromDirections(configurable.getOrientation(), face));
+                        if (dataType != null) {
+                            Vec3d viewPosition = event.getInfo().getProjectedView();
+                            MatrixStack matrix = event.getMatrix();
+                            matrix.push();
+                            matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
+                            MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, event.getBuffers().getBuffer(MekanismRenderType.resizableCuboid()),
+                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), MekanismRenderer.FULL_LIGHT);
+                            matrix.pop();
+                        }
+                    }
+                }
+            }
+        }
+        profiler.endSection();
+    }
+
     private void drawString(ITextComponent textComponent, boolean leftSide, int y, int color) {
         String s = textComponent.getFormattedText();
         FontRenderer font = minecraft.fontRenderer;
@@ -214,5 +281,80 @@ public class RenderTickHandler {
             int width = font.getStringWidth(s) + 2;
             font.drawStringWithShadow(s, minecraft.getMainWindow().getScaledWidth() - width, y, color);
         }
+    }
+
+    private Model3D getOverlayModel(Direction side, TransmissionType type) {
+        if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(type)) {
+            return cachedOverlays.get(side).get(type);
+        }
+
+        Model3D toReturn = new Model3D();
+        toReturn.setTexture(MekanismRenderer.overlays.get(type));
+
+        if (cachedOverlays.containsKey(side)) {
+            cachedOverlays.get(side).put(type, toReturn);
+        } else {
+            Map<TransmissionType, Model3D> map = new EnumMap<>(TransmissionType.class);
+            map.put(type, toReturn);
+            cachedOverlays.put(side, map);
+        }
+
+        switch (side) {
+            case DOWN:
+                toReturn.minY = -.01;
+                toReturn.maxY = -.001;
+
+                toReturn.minX = 0;
+                toReturn.minZ = 0;
+                toReturn.maxX = 1;
+                toReturn.maxZ = 1;
+                break;
+            case UP:
+                toReturn.minY = 1.001;
+                toReturn.maxY = 1.01;
+
+                toReturn.minX = 0;
+                toReturn.minZ = 0;
+                toReturn.maxX = 1;
+                toReturn.maxZ = 1;
+                break;
+            case NORTH:
+                toReturn.minZ = -.01;
+                toReturn.maxZ = -.001;
+
+                toReturn.minX = 0;
+                toReturn.minY = 0;
+                toReturn.maxX = 1;
+                toReturn.maxY = 1;
+                break;
+            case SOUTH:
+                toReturn.minZ = 1.001;
+                toReturn.maxZ = 1.01;
+
+                toReturn.minX = 0;
+                toReturn.minY = 0;
+                toReturn.maxX = 1;
+                toReturn.maxY = 1;
+                break;
+            case WEST:
+                toReturn.minX = -.01;
+                toReturn.maxX = -.001;
+
+                toReturn.minY = 0;
+                toReturn.minZ = 0;
+                toReturn.maxY = 1;
+                toReturn.maxZ = 1;
+                break;
+            case EAST:
+                toReturn.minX = 1.001;
+                toReturn.maxX = 1.01;
+
+                toReturn.minY = 0;
+                toReturn.minZ = 0;
+                toReturn.maxY = 1;
+                toReturn.maxZ = 1;
+                break;
+        }
+        return toReturn;
     }
 }

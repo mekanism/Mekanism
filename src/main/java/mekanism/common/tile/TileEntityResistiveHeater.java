@@ -77,7 +77,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        energyUsage = nbtTags.getDouble(NBTConstants.ENERGY_PER_TICK);
+        energyUsage = nbtTags.getDouble(NBTConstants.ENERGY_USAGE);
         temperature = nbtTags.getDouble(NBTConstants.TEMPERATURE);
         setMaxEnergy(energyUsage * 400);
     }
@@ -86,7 +86,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putDouble(NBTConstants.ENERGY_PER_TICK, energyUsage);
+        nbtTags.putDouble(NBTConstants.ENERGY_USAGE, energyUsage);
         nbtTags.putDouble(NBTConstants.TEMPERATURE, temperature);
         return nbtTags;
     }

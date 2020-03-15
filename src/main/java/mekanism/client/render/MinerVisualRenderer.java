@@ -1,17 +1,15 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 
 public final class MinerVisualRenderer {
 
@@ -22,17 +20,14 @@ public final class MinerVisualRenderer {
     }
 
     public static void render(@Nonnull TileEntityDigitalMiner miner, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer) {
-        matrix.push();
         List<Model3D> models = getModels(new MinerRenderData(miner));
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        RenderType.State.Builder stateBuilder = MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+        int argb = MekanismRenderer.getColorARGB(1, 1, 1, 0.8F);
         //TODO: Rendering the visuals drops FPS by a good bit, can we at least batch getting the vertex builder
         // Or maybe we should just make one large square?
         for (Model3D model : models) {
-            MekanismRenderer.renderObject(model, matrix, renderer, stateBuilder, MekanismRenderer.getColorARGB(1, 1, 1, 0.8F));
+            MekanismRenderer.renderObject(model, matrix, buffer, argb, MekanismRenderer.FULL_LIGHT);
         }
-        MekanismRenderer.disableGlow(glowInfo);
-        matrix.pop();
     }
 
     private static List<Model3D> getModels(MinerRenderData data) {

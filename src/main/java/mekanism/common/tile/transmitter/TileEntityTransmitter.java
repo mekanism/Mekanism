@@ -26,6 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -330,6 +331,13 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public abstract void takeShare();
 
     public abstract void updateShare();
+
+    @Nonnull
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        //If any of the block is in view, then allow rendering the contents
+        return new AxisAlignedBB(pos, pos.add(1, 1, 1));
+    }
 
     @Nonnull
     @Override

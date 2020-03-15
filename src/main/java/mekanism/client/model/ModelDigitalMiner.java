@@ -4,8 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.HolidayManager;
 import mekanism.common.HolidayManager.May4;
 import mekanism.common.util.MekanismUtils;
@@ -436,10 +434,8 @@ public class ModelDigitalMiner extends Model {
         matrix.push();
         matrix.scale(1.001F, 1.001F, 1.001F);
         matrix.translate(-0.0011, -0.0011, -0.0011);
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
         boolean may4 = HolidayManager.getHoliday() instanceof May4;
         render(matrix, renderer.getBuffer(on ? (may4 ? RENDER_TYPE_ON_MAY4 : RENDER_TYPE_ON) : RENDER_TYPE_OFF), light, overlayLight, 1, 1, 1, 1);
-        MekanismRenderer.disableGlow(glowInfo);
         matrix.pop();
     }
 

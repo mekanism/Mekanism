@@ -95,7 +95,6 @@ import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
-import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderEnergyCube;
@@ -192,15 +191,6 @@ public class ClientRegistration {
               MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE, MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE, MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE);
         ClientRegistrationUtil.bindTileEntityRenderer(RenderThermodynamicConductor::new, MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR,
               MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
-        //TERs that are just the configurable machine renderer
-        ClientRegistrationUtil.bindTileEntityRenderer(RenderConfigurableMachine::new, MekanismTileEntityTypes.CHEMICAL_INJECTION_CHAMBER, MekanismTileEntityTypes.COMBINER,
-              MekanismTileEntityTypes.CRUSHER, MekanismTileEntityTypes.ENERGIZED_SMELTER, MekanismTileEntityTypes.ENRICHMENT_CHAMBER,
-              MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR, MekanismTileEntityTypes.METALLURGIC_INFUSER, MekanismTileEntityTypes.OSMIUM_COMPRESSOR,
-              MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER, MekanismTileEntityTypes.PRECISION_SAWMILL, MekanismTileEntityTypes.PURIFICATION_CHAMBER,
-              //Gas tanks
-              MekanismTileEntityTypes.BASIC_GAS_TANK, MekanismTileEntityTypes.ADVANCED_GAS_TANK, MekanismTileEntityTypes.ELITE_GAS_TANK,
-              MekanismTileEntityTypes.ULTIMATE_GAS_TANK, MekanismTileEntityTypes.CREATIVE_GAS_TANK);
-        ClientRegistrationUtil.bindTileEntityRenderer(RenderConfigurableMachine::new, MekanismTileEntityTypes.getFactoryTiles());
 
         //Block render layers
         //Cutout

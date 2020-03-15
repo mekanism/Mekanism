@@ -1,17 +1,18 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
@@ -62,36 +63,37 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
         float scale = Math.min(pipe.currentScale, 1);
         if (scale > 0.01 && !fluidStack.isEmpty()) {
-            matrix.push();
-            GlowInfo glowInfo = MekanismRenderer.enableGlow(fluidStack);
+            IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+            int glow = MekanismRenderer.calculateGlowLight(light, fluidStack);
             boolean gas = fluidStack.getFluid().getAttributes().isGaseous(fluidStack);
+            List<String> connectionContents = new ArrayList<>();
             for (Direction side : EnumUtils.DIRECTIONS) {
+                //TODO: Make this mark the sides that shouldn't get rendered
                 ConnectionType connectionType = pipe.getConnectionType(side);
                 if (connectionType == ConnectionType.NORMAL) {
                     Model3D model = getModel(side, fluidStack, getStage(scale, gas));
                     if (model != null) {
-                        MekanismRenderer.renderObject(model, matrix, renderer, MekanismRenderType.renderMechanicalPipeState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                              MekanismRenderer.getColorARGB(fluidStack, scale));
+                        //TODO: Only render part of back face?
+                        MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, scale), glow);
                     }
                 } else if (connectionType != ConnectionType.NONE) {
-                    matrix.translate(0.5, 0.5, 0.5);
-                    int color = MekanismRenderer.getColorARGB(fluidStack, pipe.currentScale);
-                    float red = MekanismRenderer.getRed(color);
-                    float green = MekanismRenderer.getGreen(color);
-                    float blue = MekanismRenderer.getBlue(color);
-                    float alpha = MekanismRenderer.getAlpha(color);
-                    renderModel(pipe, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), red, green, blue, alpha, light,
-                          overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidType.STILL), Collections.singletonList(side.getName() + connectionType.getName().toUpperCase()));
-                    matrix.translate(-0.5, -0.5, -0.5);
+                    connectionContents.add(side.getName() + connectionType.getName().toUpperCase());
                 }
             }
             Model3D model = getModel(null, fluidStack, getStage(scale, gas));
             if (model != null) {
-                MekanismRenderer.renderObject(model, matrix, renderer, MekanismRenderType.renderMechanicalPipeState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                      MekanismRenderer.getColorARGB(fluidStack, scale));
+                //TODO: Make this only render faces that don't have a connection type
+                MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, scale), glow);
             }
-            MekanismRenderer.disableGlow(glowInfo);
-            matrix.pop();
+            if (!connectionContents.isEmpty()) {
+                matrix.push();
+                matrix.translate(0.5, 0.5, 0.5);
+                int color = MekanismRenderer.getColorARGB(fluidStack, pipe.currentScale);
+                renderModel(pipe, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)),
+                      MekanismRenderer.getRed(color), MekanismRenderer.getGreen(color), MekanismRenderer.getBlue(color), MekanismRenderer.getAlpha(color), glow,
+                      overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidType.STILL), connectionContents);
+                matrix.pop();
+            }
         }
     }
 

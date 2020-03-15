@@ -1,12 +1,10 @@
 package mekanism.generators.common.tile;
 
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
 
 public abstract class TileEntityGenerator extends TileEntityMekanism {
 
@@ -51,12 +49,6 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
      * @return if the generator can operate
      */
     public abstract boolean canOperate();
-
-    @Nonnull
-    @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return INFINITE_EXTENT_AABB;
-    }
 
     @Override
     public boolean renderUpdate() {
