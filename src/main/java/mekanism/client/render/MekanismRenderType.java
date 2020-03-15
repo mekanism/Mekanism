@@ -71,9 +71,10 @@ public class MekanismRenderType extends RenderType {
               .transparency(TRANSLUCENT_TRANSPARENCY);//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
     }
 
-    public static RenderType resizableCuboid(RenderType.State.Builder stateBuilder, VertexFormat format) {
+    public static RenderType resizableCuboid(RenderType.State.Builder stateBuilder) {
         stateBuilder.alpha(new RenderState.AlphaState(0.1F))//enableAlphaTest/alphaFunc(GL11.GL_GREATER, 0.1F)
               .lightmap(LIGHTMAP_DISABLED);//disableLighting
-        return makeType("resizable_cuboid", format, GL11.GL_QUADS, 256, true, false, stateBuilder.build(true));
+        return makeType("resizable_cuboid", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, false,
+              stateBuilder.build(true));
     }
 }

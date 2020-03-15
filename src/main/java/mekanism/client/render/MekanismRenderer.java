@@ -384,16 +384,8 @@ public class MekanismRenderer {
 
     public static class Model3D {
 
-        public double posX, posY, posZ;
-
         public double minX, minY, minZ;
         public double maxX, maxY, maxZ;
-
-        public double textureStartX = 0, textureStartY = 0, textureStartZ = 0;
-        public double textureSizeX = 16, textureSizeY = 16, textureSizeZ = 16;
-        public double textureOffsetX = 0, textureOffsetY = 0, textureOffsetZ = 0;
-
-        public int[] textureFlips = new int[]{2, 2, 2, 2, 2, 2};
 
         public TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
 
@@ -426,10 +418,6 @@ public class MekanismRenderer {
 
         public boolean shouldSideRender(Direction side) {
             return renderSides[side.ordinal()];
-        }
-
-        public TextureAtlasSprite getBlockTextureFromSide(int i) {
-            return textures[i];
         }
 
         public void setTexture(TextureAtlasSprite tex) {
