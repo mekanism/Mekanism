@@ -73,39 +73,41 @@ public class RenderResizableCuboid {
                     face = face.getAxisDirection() == AxisDirection.NEGATIVE ? face : face.getOpposite();
                     Direction opposite = face.getOpposite();
 
-                    float minU = sprite.getInterpolatedU(0);
-                    float maxU = sprite.getInterpolatedU(16);
-                    float minV = sprite.getInterpolatedV(16);
-                    float maxV = sprite.getInterpolatedV(0);
+                    float minU = sprite.getMinU();
+                    float maxU = sprite.getMaxU();
+                    //Flip the v
+                    float minV = sprite.getMaxV();
+                    float maxV = sprite.getMinV();
                     double sizeU = getValue(size, u);
                     double sizeV = getValue(size, v);
+                    //TODO: Look into this more, as it makes tiling of multiple objects not render properly if they don't fit the full texture.
+                    // Example: Mechanical pipes rendering water or lava, makes it relatively easy to see the texture artifacts
                     for (int uIndex = 0; uIndex < sizeU; uIndex++) {
-                        float[] uv = new float[]{minU, maxU, minV, maxV};
+                        float[] baseUV = new float[]{minU, maxU, minV, maxV};
                         double addU = 1;
-                        // If the size of the texture is greater than the cuboid goes on for then make sure the texture
-                        // positions are lowered
+                        // If the size of the texture is greater than the cuboid goes on for then make sure the texture positions are lowered
                         if (uIndex + addU > sizeU) {
                             addU = sizeU - uIndex;
-                            uv[U_MAX] = uv[U_MIN] + (uv[U_MAX] - uv[U_MIN]) * (float) addU;
+                            baseUV[U_MAX] = baseUV[U_MIN] + (baseUV[U_MAX] - baseUV[U_MIN]) * (float) addU;
                         }
                         for (int vIndex = 0; vIndex < sizeV; vIndex++) {
-                            float[] uvCopy = Arrays.copyOf(uv, 4);
+                            float[] uv = Arrays.copyOf(baseUV, 4);
                             double addV = 1;
                             if (vIndex + addV > sizeV) {
                                 addV = sizeV - vIndex;
-                                uvCopy[V_MAX] = uvCopy[V_MIN] + (uvCopy[V_MAX] - uvCopy[V_MIN]) * (float) addV;
+                                uv[V_MAX] = uv[V_MIN] + (uv[V_MAX] - uv[V_MIN]) * (float) addV;
                             }
                             float[] xyz = new float[]{uIndex, (float) (uIndex + addU), vIndex, (float) (vIndex + addV)};
 
-                            renderPoint(matrix4f, buffer, face, u, v, other, uvCopy, xyz, true, false, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, face, u, v, other, uvCopy, xyz, true, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, face, u, v, other, uvCopy, xyz, false, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, face, u, v, other, uvCopy, xyz, false, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, face, u, v, other, uv, xyz, true, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, face, u, v, other, uv, xyz, true, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, face, u, v, other, uv, xyz, false, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, face, u, v, other, uv, xyz, false, false, red, green, blue, alpha, light);
 
-                            renderPoint(matrix4f, buffer, opposite, u, v, other, uvCopy, xyz, false, false, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, opposite, u, v, other, uvCopy, xyz, false, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, opposite, u, v, other, uvCopy, xyz, true, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, opposite, u, v, other, uvCopy, xyz, true, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, opposite, u, v, other, uv, xyz, false, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, opposite, u, v, other, uv, xyz, false, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, opposite, u, v, other, uv, xyz, true, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, buffer, opposite, u, v, other, uv, xyz, true, false, red, green, blue, alpha, light);
                         }
                     }
                 }

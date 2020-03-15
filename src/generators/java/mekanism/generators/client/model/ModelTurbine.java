@@ -69,16 +69,19 @@ public class ModelTurbine extends Model {
         setRotateAngle(blade_west, BLADE_ROTATE, 0.0F, 0.0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, int index) {
+    public IVertexBuilder getBuffer(@Nonnull IRenderTypeBuffer renderer) {
+        return renderer.getBuffer(RENDER_TYPE);
+    }
+
+    public void render(@Nonnull MatrixStack matrix, IVertexBuilder buffer, int light, int overlayLight, int index) {
         matrix.push();
         matrix.rotate(Vector3f.YP.rotationDegrees(index * 5));
         float scale = index * 0.5F;
         float widthDiv = 16;
-        IVertexBuilder vertexBuilder = renderer.getBuffer(RENDER_TYPE);
-        renderBlade(matrix, vertexBuilder, light, overlayLight, blade_west, scale, scale / widthDiv, -0.25, 0);
-        renderBlade(matrix, vertexBuilder, light, overlayLight, blade_east, scale, scale / widthDiv, 0.25, 0);
-        renderBlade(matrix, vertexBuilder, light, overlayLight, blade_north, scale / widthDiv, scale, 0, -0.25);
-        renderBlade(matrix, vertexBuilder, light, overlayLight, blade_south, scale / widthDiv, scale, 0, 0.25);
+        renderBlade(matrix, buffer, light, overlayLight, blade_west, scale, scale / widthDiv, -0.25, 0);
+        renderBlade(matrix, buffer, light, overlayLight, blade_east, scale, scale / widthDiv, 0.25, 0);
+        renderBlade(matrix, buffer, light, overlayLight, blade_north, scale / widthDiv, scale, 0, -0.25);
+        renderBlade(matrix, buffer, light, overlayLight, blade_south, scale / widthDiv, scale, 0, 0.25);
         matrix.pop();
     }
 
