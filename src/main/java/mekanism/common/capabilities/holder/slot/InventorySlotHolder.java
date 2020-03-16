@@ -21,7 +21,6 @@ public class InventorySlotHolder implements IInventorySlotHolder {
     private final Predicate<RelativeSide> insertPredicate;
     private final Predicate<RelativeSide> extractPredicate;
     //TODO: Allow declaring that some sides will be the same, so can just be the same list in memory??
-    //TODO: Also allow for relative sides??
 
     InventorySlotHolder(Supplier<Direction> facingSupplier, Predicate<RelativeSide> insertPredicate, Predicate<RelativeSide> extractPredicate) {
         this.facingSupplier = facingSupplier;

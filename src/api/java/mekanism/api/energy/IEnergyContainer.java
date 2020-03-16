@@ -54,15 +54,8 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
         double toAdd = Math.min(amount, needed);
         if (action.execute()) {
             //If we want to actually insert the energy, then update the current energy
-            if (isEmpty()) {
-                //If we are currently empty, then we have to set the energy to the value we are adding
-                // Note: this also will mark that the contents changed
-                setEnergy(toAdd);
-            } else {
-                //Otherwise, we can just grow our stack by the amount we want to increase it
-                // Note: this also will mark that the contents changed
-                growStack(toAdd, action);
-            }
+            // Note: this also will mark that the contents changed
+            setEnergy(getEnergy() + toAdd);
         }
         return amount - toAdd;
     }
@@ -89,7 +82,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
         double ret = Math.min(getEnergy(), amount);
         if (ret > 0 && action.execute()) {
             // Note: this also will mark that the contents changed
-            shrinkStack(ret, action);
+            setEnergy(getEnergy() - ret);
         }
         return ret;
     }
@@ -105,59 +98,6 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      * Called when the contents of this container changes.
      */
     void onContentsChanged();
-
-    /**
-     * Convenience method for growing the amount of energy stored.
-     *
-     * Increases the amount of energy stored in this container by the given amount. Capping at this container's max energy. If the stored energy shrinks to an amount of
-     * less than or equal to zero, then this instead sets the energy to zero.
-     *
-     * @param amount The desired amount to grow the stored energy by.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return Actual amount the stored energy grew.
-     *
-     * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
-     * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
-     */
-    default double growStack(double amount, Action action) {
-        double current = getEnergy();
-        double desiredAmount = current + amount;
-        if (desiredAmount <= 0) {
-            if (action.execute()) {
-                setEmpty();
-            }
-            return 0;
-        }
-        double maxEnergy = getMaxEnergy();
-        if (desiredAmount > maxEnergy) {
-            //Cap the amount we can grow it at, by our max energy
-            desiredAmount = maxEnergy;
-        }
-        if (getEnergy() != desiredAmount && action.execute()) {
-            //Only do something if our size is changing and we want to actually execute the adjustment
-            setEnergy(desiredAmount);
-        }
-        return desiredAmount - current;
-    }
-
-    /**
-     * Convenience method for shrinking the amount of energy stored.
-     *
-     * Shrinks the amount of energy stored in this container, shrink its amount by the given amount. If this causes its size to become less than or equal to zero, then
-     * the energy stored is set to zero. If this method is used to grow the stack the size gets capped at this container's max energy.
-     *
-     * @param amount The desired size to shrink the stored energy by.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return Actual amount the stack shrunk.
-     *
-     * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
-     * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
-     */
-    default double shrinkStack(double amount, Action action) {
-        return -growStack(-amount, action);
-    }
 
     /**
      * Convenience method for checking if this container is empty.

@@ -9,6 +9,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.lasers.ILaserReceptor;
@@ -29,6 +30,7 @@ import mekanism.common.capabilities.basic.DefaultLaserReceptor;
 import mekanism.common.capabilities.basic.DefaultLogisticalTransporter;
 import mekanism.common.capabilities.basic.DefaultSpecialConfigData;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyAcceptor;
+import mekanism.common.capabilities.basic.DefaultStrictEnergyHandler;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyStorage;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -38,14 +40,20 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
  */
 public class Capabilities {
 
+    @Deprecated
     @CapabilityInject(IStrictEnergyStorage.class)
     public static Capability<IStrictEnergyStorage> ENERGY_STORAGE_CAPABILITY = null;
 
+    @Deprecated
     @CapabilityInject(IStrictEnergyAcceptor.class)
     public static Capability<IStrictEnergyAcceptor> ENERGY_ACCEPTOR_CAPABILITY = null;
 
+    @Deprecated
     @CapabilityInject(IStrictEnergyOutputter.class)
     public static Capability<IStrictEnergyOutputter> ENERGY_OUTPUTTER_CAPABILITY = null;
+
+    @CapabilityInject(IStrictEnergyHandler.class)
+    public static Capability<IStrictEnergyHandler> STRICT_ENERGY_CAPABILITY = null;
 
     @CapabilityInject(IConfigurable.class)
     public static Capability<IConfigurable> CONFIGURABLE_CAPABILITY = null;
@@ -88,6 +96,7 @@ public class Capabilities {
         DefaultStrictEnergyStorage.register();
         DefaultStrictEnergyAcceptor.register();
         DefaultCableOutputter.register();
+        DefaultStrictEnergyHandler.register();
 
         DefaultGridTransmitter.register();
         DefaultLogisticalTransporter.register();

@@ -28,7 +28,9 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
     private final IMekanismGasHandler gasHandler;
 
     public static BasicGasTank create(int capacity, @Nullable IMekanismGasHandler gasHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         return new BasicGasTank(capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, gasHandler);
     }
 
@@ -37,31 +39,41 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
     }
 
     public static BasicGasTank input(int capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         Objects.requireNonNull(validator, "Gas validity check cannot be null");
         return new BasicGasTank(capacity, notExternal, alwaysTrueBi, validator, gasHandler);
     }
 
     public static BasicGasTank input(int capacity, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Gas validity check cannot be null");
         return new BasicGasTank(capacity, notExternal, (stack, automationType) -> canInsert.test(stack), validator, gasHandler);
     }
 
     public static BasicGasTank output(int capacity, @Nullable IMekanismGasHandler gasHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         return new BasicGasTank(capacity, alwaysTrueBi, internalOnly, alwaysTrue, gasHandler);
     }
 
     public static BasicGasTank ejectOutput(int capacity, @Nullable IMekanismGasHandler gasHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         return new BasicGasTank(capacity, internalOnly, internalOnly, alwaysTrue, gasHandler);
     }
 
     public static BasicGasTank create(int capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator,
           @Nullable IMekanismGasHandler gasHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Gas validity check cannot be null");
@@ -70,7 +82,9 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
 
     public static BasicGasTank create(int capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Gas validity check cannot be null");

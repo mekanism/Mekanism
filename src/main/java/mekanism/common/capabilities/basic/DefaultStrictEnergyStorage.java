@@ -10,6 +10,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 /**
  * Created by ben on 30/04/16.
  */
+@Deprecated
 public class DefaultStrictEnergyStorage implements IStrictEnergyStorage, INBTSerializable<CompoundNBT> {
 
     private double energyStored = 0;

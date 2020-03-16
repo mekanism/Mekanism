@@ -13,8 +13,8 @@ import net.minecraftforge.fluids.FluidStack;
 public class BoilerTank extends MultiblockFluidTank<TileEntityBoilerCasing> {
 
     public static BoilerTank create(TileEntityBoilerCasing tile, IntSupplier capacity, Predicate<@NonNull FluidStack> validator) {
-        //TODO: Validate capacity is positive
         Objects.requireNonNull(tile, "Tile cannot be null");
+        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
         return new BoilerTank(tile, capacity, validator);
     }

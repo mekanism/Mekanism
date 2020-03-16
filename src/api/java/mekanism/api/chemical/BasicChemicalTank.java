@@ -39,7 +39,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     /**
      * {@inheritDoc}
      *
-     * @apiNote We return a cached value from this that if modified won't actually end up having any information about the slot get changed.
+     * @apiNote We return a cached value from this that if modified won't actually end up having any information about the tank get changed.
      */
     @Override
     public STACK getStack() {
@@ -49,8 +49,6 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public void setStack(STACK stack) {
-        //TODO: Should we allow forcefully setting invalid items? At least we need to go through them and check to make sure we allow setting an empty container??
-        // This error of empty container not being valid may not even be an issue once we move logic for resources into the specific slots
         setStack(stack, true);
     }
 
@@ -95,12 +93,12 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     @Override
     public STACK insert(@Nonnull STACK stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getType(), automationType)) {
-            //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
+            //"Fail quick" if the given stack is empty or we can never insert the chemical or currently are unable to insert it
             return stack;
         }
         int needed = Math.min(getRate(automationType), getNeeded());
         if (needed <= 0) {
-            //Fail if we are a full slot or our rate is zero
+            //Fail if we are a full tank or our rate is zero
             return stack;
         }
         boolean sameType = false;
@@ -134,7 +132,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     @Override
     public STACK extract(int amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1 || !canExtract.test(stored.getType(), automationType)) {
-            //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
+            //"Fail quick" if we don't can never extract from this tank, have a chemical stored, or the amount being requested is less than one
             return getEmptyStack();
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
@@ -199,7 +197,8 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
         // have caught any rate limit issues
         int current = getStored();
         if (amount > 0) {
-            amount = Math.min(amount, getRate(null));
+            //Cap adding amount at how much we need, so that we don't risk integer overflow
+            amount = Math.min(Math.min(amount, getNeeded()), getRate(null));
         } else if (amount < 0) {
             amount = Math.max(amount, -getRate(null));
         }

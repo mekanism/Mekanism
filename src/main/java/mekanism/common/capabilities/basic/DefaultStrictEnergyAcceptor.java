@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 /**
  * Created by ben on 30/04/16.
  */
+@Deprecated
 public class DefaultStrictEnergyAcceptor implements IStrictEnergyAcceptor {
 
     public static void register() {

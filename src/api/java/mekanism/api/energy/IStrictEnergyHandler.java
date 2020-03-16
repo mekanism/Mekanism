@@ -81,7 +81,7 @@ public interface IStrictEnergyHandler {
      * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
-     * @param energy Energy to insert.
+     * @param amount Energy to insert.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
      * @return The remaining energy that was not inserted (if the entire amount is accepted, then return {@code 0}).
@@ -91,8 +91,8 @@ public interface IStrictEnergyHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the insertion. Additionally
      * negative values for {@code amount} <strong>MUST</strong> be supported, and treated as if the passed value was actually {@code 0}.
      */
-    default double insertEnergy(double energy, Action action) {
-        return EnergyTransferUtils.insert(energy, action, this::getEnergyContainerCount, this::getEnergy, this::insertEnergy);
+    default double insertEnergy(double amount, Action action) {
+        return EnergyTransferUtils.insert(amount, action, this::getEnergyContainerCount, this::getEnergy, this::insertEnergy);
     }
 
     /**

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 
@@ -12,8 +13,16 @@ public class ProxiedSlotInfo {
 
     public static class Energy extends EnergySlotInfo {
 
-        public Energy(boolean canInput, boolean canOutput) {
-            super(canInput, canOutput);
+        private final Supplier<List<IEnergyContainer>> containerSupplier;
+
+        public Energy(boolean canInput, boolean canOutput, Supplier<List<IEnergyContainer>> containerSupplier) {
+            super(canInput, canOutput, Collections.emptyList());
+            this.containerSupplier = containerSupplier;
+        }
+
+        @Override
+        public List<IEnergyContainer> getContainers() {
+            return containerSupplier.get();
         }
     }
 

@@ -23,7 +23,7 @@ public class VariableCapacityGasTank extends BasicGasTank {
 
     public static VariableCapacityGasTank create(IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
-        //TODO: Validate capacity is positive
+        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Gas validity check cannot be null");
@@ -31,7 +31,7 @@ public class VariableCapacityGasTank extends BasicGasTank {
     }
 
     public static VariableCapacityGasTank output(IntSupplier capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
-        //TODO: Validate capacity is positive
+        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Gas validity check cannot be null");
         return new VariableCapacityGasTank(capacity, alwaysTrueBi, internalOnly, validator, gasHandler);
     }

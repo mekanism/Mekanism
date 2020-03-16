@@ -117,8 +117,6 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Override
     public void setStack(ItemStack stack) {
-        //TODO: Should we allow forcefully setting invalid items? At least we need to go through them and check to make sure we allow setting an empty container??
-        // This error of empty container not being valid may not even be an issue once we move logic for resources into the specific slots
         setStack(stack, true);
     }
 
@@ -271,6 +269,23 @@ public class BasicInventorySlot implements IInventorySlot {
         current.setCount(amount);
         onContentsChanged();
         return amount;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
+     * instead of having to make a copy.
+     */
+    @Override
+    public int growStack(int amount, Action action) {
+        int current = getCount();
+        if (amount > 0) {
+            //Cap adding amount at how much we need, so that we don't risk integer overflow
+            amount = Math.min(amount, getLimit(this.current));
+        }
+        int newSize = setStackSize(current + amount, action);
+        return newSize - current;
     }
 
     /**

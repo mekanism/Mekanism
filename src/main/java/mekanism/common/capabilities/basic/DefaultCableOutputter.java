@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 /**
  * Created by ben on 30/04/16.
  */
+@Deprecated
 public class DefaultCableOutputter implements IStrictEnergyOutputter {
 
     public static void register() {

@@ -158,6 +158,10 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
      */
     default int growStack(int amount, Action action) {
         int current = getFluidAmount();
+        if (amount > 0) {
+            //Cap adding amount at how much we need, so that we don't risk integer overflow
+            amount = Math.min(amount, getNeeded());
+        }
         int newSize = setStackSize(current + amount, action);
         return newSize - current;
     }

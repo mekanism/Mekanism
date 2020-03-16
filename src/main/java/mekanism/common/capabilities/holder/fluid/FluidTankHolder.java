@@ -18,7 +18,6 @@ public class FluidTankHolder implements IFluidTankHolder {
     private final List<IExtendedFluidTank> tanks = new ArrayList<>();
     private final Supplier<Direction> facingSupplier;
     //TODO: Allow declaring that some sides will be the same, so can just be the same list in memory??
-    //TODO: Also allow for relative sides??
 
     FluidTankHolder(Supplier<Direction> facingSupplier) {
         this.facingSupplier = facingSupplier;
@@ -35,14 +34,14 @@ public class FluidTankHolder implements IFluidTankHolder {
     @Override
     public List<IExtendedFluidTank> getTanks(@Nullable Direction direction) {
         if (direction == null || directionalTanks.isEmpty()) {
-            //If we want the internal OR we have no side specification, give all of our slots
+            //If we want the internal OR we have no side specification, give all of our tanks
             return tanks;
         }
         RelativeSide side = RelativeSide.fromDirections(facingSupplier.get(), direction);
-        List<IExtendedFluidTank> slots = directionalTanks.get(side);
-        if (slots == null) {
+        List<IExtendedFluidTank> tanks = directionalTanks.get(side);
+        if (tanks == null) {
             return Collections.emptyList();
         }
-        return slots;
+        return tanks;
     }
 }

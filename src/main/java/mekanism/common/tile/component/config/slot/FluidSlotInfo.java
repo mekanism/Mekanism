@@ -6,7 +6,6 @@ import mekanism.api.fluid.IExtendedFluidTank;
 
 public class FluidSlotInfo extends BaseSlotInfo {
 
-    //TODO: Should it be a fluid tank instead
     private final List<IExtendedFluidTank> tanks;
 
     public FluidSlotInfo(boolean canInput, boolean canOutput, IExtendedFluidTank... tanks) {

@@ -242,6 +242,10 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      */
     default int growStack(int amount, Action action) {
         int current = getCount();
+        if (amount > 0) {
+            //Cap adding amount at how much we need, so that we don't risk integer overflow
+            amount = Math.min(amount, getLimit(getStack()));
+        }
         int newSize = setStackSize(current + amount, action);
         return newSize - current;
     }

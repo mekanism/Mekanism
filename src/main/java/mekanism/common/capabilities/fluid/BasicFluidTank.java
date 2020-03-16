@@ -30,12 +30,16 @@ public class BasicFluidTank implements IExtendedFluidTank {
     public static final BiPredicate<@NonNull FluidStack, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
 
     public static BasicFluidTank create(int capacity, @Nullable IMekanismFluidHandler fluidHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         return new BasicFluidTank(capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, fluidHandler);
     }
 
     public static BasicFluidTank create(int capacity, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
         return new BasicFluidTank(capacity, alwaysTrueBi, alwaysTrueBi, validator, fluidHandler);
     }
@@ -46,19 +50,25 @@ public class BasicFluidTank implements IExtendedFluidTank {
     }
 
     public static BasicFluidTank input(int capacity, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
         return new BasicFluidTank(capacity, notExternal, alwaysTrueBi, validator, fluidHandler);
     }
 
     public static BasicFluidTank output(int capacity, @Nullable IMekanismFluidHandler fluidHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         return new BasicFluidTank(capacity, alwaysTrueBi, internalOnly, alwaysTrue, fluidHandler);
     }
 
     public static BasicFluidTank create(int capacity, Predicate<@NonNull FluidStack> canExtract, Predicate<@NonNull FluidStack> canInsert,
           Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
@@ -67,7 +77,9 @@ public class BasicFluidTank implements IExtendedFluidTank {
 
     public static BasicFluidTank create(int capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
-        //TODO: Validate capacity is positive
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
@@ -111,7 +123,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     /**
      * {@inheritDoc}
      *
-     * @apiNote We return a cached value from this that if modified won't actually end up having any information about the slot get changed.
+     * @apiNote We return a cached value from this that if modified won't actually end up having any information about the tank get changed.
      */
     @Override
     public FluidStack getFluid() {
@@ -121,8 +133,6 @@ public class BasicFluidTank implements IExtendedFluidTank {
 
     @Override
     public void setStack(FluidStack stack) {
-        //TODO: Should we allow forcefully setting invalid items? At least we need to go through them and check to make sure we allow setting an empty container??
-        // This error of empty container not being valid may not even be an issue once we move logic for resources into the specific slots
         setStack(stack, true);
     }
 
@@ -167,19 +177,19 @@ public class BasicFluidTank implements IExtendedFluidTank {
     @Override
     public FluidStack insert(@Nonnull FluidStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isFluidValid(stack) || !canInsert.test(stack, automationType)) {
-            //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
+            //"Fail quick" if the given stack is empty or we can never insert the fluid or currently are unable to insert it
             return stack;
         }
         int needed = Math.min(getRate(automationType), getNeeded());
         if (needed <= 0) {
-            //Fail if we are a full slot or our rate is zero
+            //Fail if we are a full tank or our rate is zero
             return stack;
         }
         boolean sameType = false;
         if (isEmpty() || (sameType = stored.isFluidEqual(stack))) {
             int toAdd = Math.min(stack.getAmount(), needed);
             if (action.execute()) {
-                //If we want to actually insert the item, then update the current item
+                //If we want to actually insert the fluid, then update the current fluid
                 if (sameType) {
                     //We can just grow our stack by the amount we want to increase it
                     stored.grow(toAdd);
@@ -206,7 +216,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     @Override
     public FluidStack extract(int amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1 || !canExtract.test(stored, automationType)) {
-            //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
+            //"Fail quick" if we don't can never extract from this tank, have an fluid stored, or the amount being requested is less than one
             return FluidStack.EMPTY;
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
@@ -271,7 +281,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
         // have caught any rate limit issues
         int current = getFluidAmount();
         if (amount > 0) {
-            amount = Math.min(amount, getRate(null));
+            //Cap adding amount at how much we need, so that we don't risk integer overflow
+            amount = Math.min(Math.min(amount, getNeeded()), getRate(null));
         } else if (amount < 0) {
             amount = Math.max(amount, -getRate(null));
         }

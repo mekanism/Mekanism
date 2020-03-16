@@ -21,20 +21,20 @@ import net.minecraftforge.fluids.FluidStack;
 public class VariableCapacityFluidTank extends BasicFluidTank {
 
     public static VariableCapacityFluidTank input(IntSupplier capacity, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
-        //TODO: Validate capacity is positive
+        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
         return new VariableCapacityFluidTank(capacity, notExternal, alwaysTrueBi, validator, fluidHandler);
     }
 
     public static VariableCapacityFluidTank output(IntSupplier capacity, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
-        //TODO: Validate capacity is positive
+        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
         return new VariableCapacityFluidTank(capacity, alwaysTrueBi, internalOnly, validator, fluidHandler);
     }
 
     public static VariableCapacityFluidTank create(IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
-        //TODO: Validate capacity is positive
+        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
