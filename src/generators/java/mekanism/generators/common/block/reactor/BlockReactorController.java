@@ -2,14 +2,14 @@ package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IBlockElectric;
-import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.attribute.AttributeSound;
+import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -32,8 +32,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-public class BlockReactorController extends BlockMekanism implements IHasGui<TileEntityReactorController>, IStateActive, IBlockElectric, IHasInventory, IHasDescription,
-      IBlockSound, IHasTileEntity<TileEntityReactorController> {
+public class BlockReactorController extends BlockMekanism implements IHasGui<TileEntityReactorController>, AttributeStateActive, IBlockElectric, IHasInventory, IHasDescription,
+      AttributeSound, IHasTileEntity<TileEntityReactorController> {
 
     public BlockReactorController() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));

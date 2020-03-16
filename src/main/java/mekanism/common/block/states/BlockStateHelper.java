@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.Contract;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -23,7 +26,6 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
-import org.jetbrains.annotations.Contract;
 
 //TODO: Set default state for different blocks if the default is not ideal
 public class BlockStateHelper {
@@ -38,7 +40,7 @@ public class BlockStateHelper {
 
     public static BlockState getDefaultState(@Nonnull BlockState state) {
         Block block = state.getBlock();
-        if (block instanceof IStateActive) {
+        if (Attribute.has(block, AttributeStateActive.class)) {
             //Default things to not being active
             state = state.with(activeProperty, false);
         }
@@ -54,7 +56,7 @@ public class BlockStateHelper {
         if (block instanceof IStateFacing) {
             properties.add(((IStateFacing) block).getFacingProperty());
         }
-        if (block instanceof IStateActive) {
+        if (Attribute.has(block, AttributeStateActive.class)) {
             properties.add(activeProperty);
         }
         if (block instanceof IStateStorage) {
@@ -171,7 +173,7 @@ public class BlockStateHelper {
         if (oldBlock instanceof IStateFacing && newBlock instanceof IStateFacing) {
             newState = newState.with(((IStateFacing) newBlock).getFacingProperty(), oldState.get(((IStateFacing) oldBlock).getFacingProperty()));
         }
-        if (oldBlock instanceof IStateActive && newBlock instanceof IStateActive) {
+        if (Attribute.has(oldBlock, newBlock, AttributeStateActive.class)) {
             newState = newState.with(activeProperty, oldState.get(activeProperty));
         }
         if (oldBlock instanceof IStateStorage && newBlock instanceof IStateStorage) {

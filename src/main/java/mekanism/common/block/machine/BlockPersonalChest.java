@@ -9,9 +9,9 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -48,7 +48,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockPersonalChest extends BlockMekanism implements IHasModel, IHasGui<TileEntityPersonalChest>, IStateFacing, IHasInventory, IHasSecurity,
-      IHasTileEntity<TileEntityPersonalChest>, IStateFluidLoggable, IStateActive, IHasDescription {
+      IHasTileEntity<TileEntityPersonalChest>, IStateFluidLoggable, AttributeStateActive, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 

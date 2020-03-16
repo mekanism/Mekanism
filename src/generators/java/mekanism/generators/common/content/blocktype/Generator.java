@@ -1,21 +1,14 @@
 package mekanism.generators.common.content.blocktype;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.function.DoubleSupplier;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import mekanism.api.Pos3D;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.content.blocktype.BlockTile;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.generators.common.GeneratorsLang;
-import net.minecraft.particles.IParticleData;
 
 public class Generator<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
 
@@ -23,12 +16,11 @@ public class Generator<TILE extends TileEntityMekanism> extends BlockTile<TILE> 
 
     protected GeneratorsLang description;
 
-    protected List<Function<Random, GeneratorParticle>> particleFunctions = new ArrayList<>();
-
-    public Generator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, GeneratorsLang description) {
+    public Generator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, GeneratorsLang description) {
         super(tileEntityRegistrar);
-        this.containerRegistrar = containerRegistrar;
         this.description = description;
+
+        attributeMap.put(AttributeStateActive.class, new AttributeStateActive());
     }
 
     @Nonnull
@@ -44,29 +36,6 @@ public class Generator<TILE extends TileEntityMekanism> extends BlockTile<TILE> 
         return energyStorage != null;
     }
 
-    public List<Function<Random, GeneratorParticle>> getParticleFunctions() {
-        return particleFunctions;
-    }
-
-    public static class GeneratorParticle {
-
-        private IParticleData type;
-        private Pos3D pos;
-
-        public GeneratorParticle(IParticleData type, Pos3D pos) {
-            this.type = type;
-            this.pos = pos;
-        }
-
-        public IParticleData getType() {
-            return type;
-        }
-
-        public Pos3D getPos() {
-            return pos;
-        }
-    }
-
     public static class GeneratorBuilder<GENERATOR extends Generator<TILE>, TILE extends TileEntityMekanism, T extends GeneratorBuilder<GENERATOR, TILE, T>> extends BlockTileBuilder<GENERATOR, TILE, T> {
 
         protected GeneratorBuilder(GENERATOR holder) {
@@ -74,17 +43,12 @@ public class Generator<TILE extends TileEntityMekanism> extends BlockTile<TILE> 
         }
 
         public static <TILE extends TileEntityMekanism> GeneratorBuilder<Generator<TILE>, TILE, ?> createGenerator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
-              Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, GeneratorsLang description) {
-            return new GeneratorBuilder<>(new Generator<TILE>(tileEntityRegistrar, containerRegistrar, description));
+              GeneratorsLang description) {
+            return new GeneratorBuilder<>(new Generator<TILE>(tileEntityRegistrar, description));
         }
 
         public T withConfig(DoubleSupplier energyStorage) {
             holder.energyStorage = energyStorage;
-            return getThis();
-        }
-
-        public T addParticleFX(IParticleData type, Function<Random, Pos3D> posSupplier) {
-            holder.particleFunctions.add((random) -> new GeneratorParticle(type, posSupplier.apply(random)));
             return getThis();
         }
     }

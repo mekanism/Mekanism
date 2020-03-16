@@ -16,6 +16,8 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.base.ProcessInfo;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -86,7 +88,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected TileEntityFactory(IBlockProvider blockProvider) {
         super(blockProvider);
         BlockFactory<?> factoryBlock = (BlockFactory<?>) blockProvider.getBlock();
-        this.type = factoryBlock.getFactoryType();
+        this.type = Attribute.get(factoryBlock, AttributeFactoryType.class).getFactoryType();
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

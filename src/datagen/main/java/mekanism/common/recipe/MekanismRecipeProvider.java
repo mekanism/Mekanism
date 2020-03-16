@@ -33,6 +33,8 @@ import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.BlockGasTank;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockInductionCell;
 import mekanism.common.block.basic.BlockInductionProvider;
@@ -775,7 +777,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, ingotTag)
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(Criterion.has(toUpgrade))
-              .build(consumer, Mekanism.rl(basePath + factory.getBlock().getFactoryType().getRegistryNameComponent()));
+              .build(consumer, Mekanism.rl(basePath + Attribute.get(factory.getBlock(), AttributeFactoryType.class).getFactoryType().getRegistryNameComponent()));
     }
 
     private void addFluidTankRecipes(Consumer<IFinishedRecipe> consumer) {

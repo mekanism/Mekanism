@@ -4,7 +4,6 @@ import java.util.Random;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IBlockElectric;
-import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
@@ -12,19 +11,19 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeCustomShape;
+import mekanism.common.block.attribute.AttributeParticleFX;
+import mekanism.common.block.attribute.AttributeParticleFX.Particle;
+import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.content.blocktype.Generator;
-import mekanism.generators.common.content.blocktype.Generator.GeneratorParticle;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -33,7 +32,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -42,8 +40,8 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockGenerator<TILE extends TileEntityMekanism> extends BlockMekanism implements IHasGui<TILE>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
-    IHasTileEntity<TILE>, ISupportsComparator, ISupportsRedstone, IStateFluidLoggable, IStateActive, IHasDescription {
+public class BlockGenerator<TILE extends TileEntityMekanism> extends BlockMekanism implements IBlockElectric, IStateFacing, IHasInventory, IHasSecurity,
+    IHasTileEntity<TILE>, ISupportsComparator, ISupportsRedstone, IStateFluidLoggable, AttributeStateActive, IHasDescription {
 
     protected Generator<TILE> generatorType;
 
@@ -72,9 +70,9 @@ public class BlockGenerator<TILE extends TileEntityMekanism> extends BlockMekani
     @Override
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tile != null && MekanismUtils.isActive(world, pos)) {
-            for (Function<Random, GeneratorParticle> particleFunction : generatorType.getParticleFunctions()) {
-                GeneratorParticle particle = particleFunction.apply(random);
+        if (tile != null && MekanismUtils.isActive(world, pos) && Attribute.has(state.getBlock(), AttributeParticleFX.class)) {
+            for (Function<Random, Particle> particleFunction : generatorType.get(AttributeParticleFX.class).getParticleFunctions()) {
+                Particle particle = particleFunction.apply(random);
                 Vec3d particlePos = particle.getPos();
                 if (tile.getDirection() == Direction.WEST) {
                     particlePos = particlePos.rotateYaw(90);
@@ -109,23 +107,12 @@ public class BlockGenerator<TILE extends TileEntityMekanism> extends BlockMekani
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return generatorType.getBounds()[getDirection(state).ordinal() - 2];
+        return generatorType.has(AttributeCustomShape.class) ? generatorType.get(AttributeCustomShape.class).getBounds()[getDirection(state).ordinal() - 2] : super.getShape(state, world, pos, context);
     }
 
     @Override
     public double getStorage() {
         return generatorType.getConfigStorage();
-    }
-
-    @Nonnull
-    @Override
-    public SoundEvent getSoundEvent() {
-        return generatorType.getSoundEvent();
-    }
-
-    @Override
-    public ContainerTypeRegistryObject<MekanismTileContainer<TILE>> getContainerType() {
-        return generatorType.getContainerType();
     }
 
     @Override

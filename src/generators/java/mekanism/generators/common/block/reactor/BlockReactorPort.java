@@ -5,8 +5,8 @@ import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -24,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-public class BlockReactorPort extends BlockMekanism implements IStateActive, IBlockElectric, IHasTileEntity<TileEntityReactorPort>, IHasDescription {
+public class BlockReactorPort extends BlockMekanism implements AttributeStateActive, IBlockElectric, IHasTileEntity<TileEntityReactorPort>, IHasDescription {
 
     public BlockReactorPort() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));

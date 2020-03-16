@@ -6,9 +6,9 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -19,7 +19,7 @@ import mekanism.common.tile.TileEntityInductionPort;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 
-public class BlockInductionPort extends BlockBasicMultiblock implements IStateActive, IHasInventory, IHasTileEntity<TileEntityInductionPort>, ISupportsComparator,
+public class BlockInductionPort extends BlockBasicMultiblock implements AttributeStateActive, IHasInventory, IHasTileEntity<TileEntityInductionPort>, ISupportsComparator,
       IHasGui<TileEntityInductionPort>, IHasDescription {
 
     @Override

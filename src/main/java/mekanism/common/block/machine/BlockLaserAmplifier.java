@@ -12,10 +12,10 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
@@ -49,7 +49,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHasGui<TileEntityLaserAmplifier>, IStateFacing, IStateActive, IHasSecurity, ISupportsRedstone,
+public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHasGui<TileEntityLaserAmplifier>, IStateFacing, AttributeStateActive, IHasSecurity, ISupportsRedstone,
       IHasTileEntity<TileEntityLaserAmplifier>, ISupportsComparator, IStateFluidLoggable, IHasDescription, IBlockElectric {
 
     //TODO: Mess with both the model and this so that it is technically hollow?

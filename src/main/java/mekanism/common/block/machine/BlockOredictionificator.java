@@ -10,9 +10,9 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -44,7 +44,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockOredictionificator extends BlockMekanism implements IHasGui<TileEntityOredictionificator>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
+public class BlockOredictionificator extends BlockMekanism implements IHasGui<TileEntityOredictionificator>, IStateFacing, AttributeStateActive, IHasInventory, IHasSecurity,
       ISupportsRedstone, IHasTileEntity<TileEntityOredictionificator>, IHasDescription {
 
     public BlockOredictionificator() {

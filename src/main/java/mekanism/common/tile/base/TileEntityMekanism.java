@@ -1,6 +1,5 @@
 package mekanism.common.tile.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -11,12 +10,12 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.block.IBlockElectric;
-import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
@@ -44,9 +43,11 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeGui;
+import mekanism.common.block.attribute.AttributeSound;
+import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
@@ -274,7 +275,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             securityComponent = new TileComponentSecurity(this);
         }
         if (hasSound()) {
-            soundEvent = ((IBlockSound) blockProvider.getBlock()).getSoundEvent();
+            soundEvent = Attribute.get(blockProvider.getBlock(), AttributeSound.class).getSoundEvent();
         } else {
             soundEvent = null;
         }
@@ -287,12 +288,12 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         canBeUpgraded = block instanceof IUpgradeableBlock;
         isDirectional = block instanceof IStateFacing;
         supportsRedstone = block instanceof ISupportsRedstone;
-        hasSound = block instanceof IBlockSound && ((IBlockSound) block).hasSound();
-        hasGui = block instanceof IHasGui;
+        hasSound = Attribute.has(block, AttributeSound.class);
+        hasGui = Attribute.has(block, AttributeGui.class);
         hasInventory = block instanceof IHasInventory;
         hasSecurity = block instanceof IHasSecurity;
         //TODO: Is this the proper way of doing it
-        isActivatable = hasSound || block instanceof IStateActive;
+        isActivatable = hasSound || Attribute.has(block, AttributeSound.class);
         supportsComparator = block instanceof ISupportsComparator;
     }
 
@@ -455,7 +456,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 }
             }
 
-            NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityMekanism>) blockProvider.getBlock()).getProvider(this), pos);
+            NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(blockProvider.getBlock(), AttributeGui.class).getProvider(this), pos);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
@@ -1223,8 +1224,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     private boolean getClientActive() {
         BlockState state = getBlockState();
         Block block = state.getBlock();
-        if (block instanceof IStateActive) {
-            return ((IStateActive) block).isActive(state);
+        if (Attribute.has(block, AttributeStateActive.class)) {
+            return Attribute.get(block, AttributeStateActive.class).isActive(state);
         }
         return false;
     }
@@ -1234,11 +1235,11 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (isActivatable()) {
             BlockState state = getBlockState();
             Block block = state.getBlock();
-            if (block instanceof IStateActive) {
+            if (Attribute.has(block, AttributeStateActive.class)) {
                 currentActive = active;
 
                 if (updateDelay == 0 && getClientActive() != active) {
-                    state = ((IStateActive) block).setActive(state, active);
+                    state = Attribute.get(block, AttributeStateActive.class).setActive(state, active);
                     world.setBlockState(pos, state);
                     updateDelay = delaySupplier.getAsInt();
                 }

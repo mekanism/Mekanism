@@ -3,28 +3,20 @@ package mekanism.common.block.machine.prefab;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasModel;
 import mekanism.api.tier.BaseTier;
-import mekanism.common.base.IHasFactoryType;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.blocktype.Factory;
-import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityFactory;
 import net.minecraft.block.BlockState;
 
-public class BlockFactoryMachine<TILE extends TileEntityMekanism, MACHINE extends FactoryMachine<TILE>> extends BlockMachine<TILE, MACHINE> implements IHasFactoryType, IUpgradeableBlock {
+public class BlockFactoryMachine<TILE extends TileEntityMekanism, MACHINE extends FactoryMachine<TILE>> extends BlockMachine<TILE, MACHINE> implements IUpgradeableBlock {
 
     public BlockFactoryMachine(MACHINE machineType) {
         super(machineType);
-    }
-
-    @Nonnull
-    @Override
-    public FactoryType getFactoryType() {
-        return machineType.getFactoryType();
     }
 
     @Nonnull

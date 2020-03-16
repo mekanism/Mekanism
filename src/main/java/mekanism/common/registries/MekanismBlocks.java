@@ -15,6 +15,7 @@ import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockSalt;
+import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockBoilerCasing;
 import mekanism.common.block.basic.BlockBoilerValve;
@@ -343,7 +344,7 @@ public class MekanismBlocks {
     }
 
     private static <TILE extends TileEntityFactory<?>> BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> registerFactory(Factory<TILE> type) {
-        return registerTieredBlock(type.getTier(), "_" + type.getFactoryType().getRegistryNameComponent() + "_factory", () -> new BlockFactory<TILE>(type), ItemBlockFactory::new);
+        return registerTieredBlock(type.getTier(), "_" + type.get(AttributeFactoryType.class).getFactoryType().getRegistryNameComponent() + "_factory", () -> new BlockFactory<TILE>(type), ItemBlockFactory::new);
     }
 
     private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(ITier tier, String suffix,

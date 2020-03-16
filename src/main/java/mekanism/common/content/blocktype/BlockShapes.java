@@ -1,7 +1,6 @@
 package mekanism.common.content.blocktype;
 
 import static net.minecraft.block.Block.makeCuboidShape;
-
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.util.Direction;
@@ -310,12 +309,16 @@ public final class BlockShapes {
         ), Rotation.CLOCKWISE_180, ELECTRIC_PUMP);
     }
 
-    private static void setShape(VoxelShape shape, Rotation rotation, VoxelShape[] dest) {
+    private static void setShape(VoxelShape shape, Rotation rotation, VoxelShape[] dest, boolean verticalAxis) {
         if (rotation != Rotation.NONE) {
             shape = VoxelShapeUtils.rotate(shape, rotation);
         }
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            dest[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(shape, side);
+            dest[verticalAxis ? side.ordinal() : side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(shape, side);
         }
+    }
+
+    private static void setShape(VoxelShape shape, Rotation rotation, VoxelShape[] dest) {
+        setShape(shape, rotation, dest, false);
     }
 }

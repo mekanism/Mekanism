@@ -8,9 +8,9 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -35,7 +35,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BlockThermalEvaporationController extends BlockMekanism implements IHasModel, IStateFacing, IStateActive, IHasInventory, IHasDescription,
+public class BlockThermalEvaporationController extends BlockMekanism implements IHasModel, IStateFacing, AttributeStateActive, IHasInventory, IHasDescription,
       IHasGui<TileEntityThermalEvaporationController>, IHasTileEntity<TileEntityThermalEvaporationController> {
 
     public BlockThermalEvaporationController() {

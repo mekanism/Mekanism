@@ -2,6 +2,9 @@ package mekanism.common.content.blocktype;
 
 import java.util.function.Supplier;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.attribute.AttributeFactoryType;
+import mekanism.common.block.attribute.AttributeGui;
+import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -15,18 +18,18 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
     private FactoryTier tier;
 
     public Factory(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, FactoryMachine<?> origMachine, FactoryTier tier) {
-        super(tileEntityRegistrar, containerRegistrar, MekanismLang.DESCRIPTION_FACTORY, origMachine.getFactoryType());
+        super(tileEntityRegistrar, MekanismLang.DESCRIPTION_FACTORY, origMachine.get(AttributeFactoryType.class).getFactoryType());
         this.origMachine = origMachine;
         this.tier = tier;
         setMachineData();
+        attributeMap.put(AttributeGui.class, new AttributeGui<>(containerRegistrar));
     }
 
     private void setMachineData() {
-        this.soundRegistrar = origMachine.soundRegistrar;
+        setFrom(origMachine, AttributeSound.class, AttributeFactoryType.class);
         this.supportedUpgrades = origMachine.supportedUpgrades;
         this.energyUsage = () -> origMachine.getUsage();
         this.energyStorage = () -> tier.processes * Math.max(0.5D * origMachine.getConfigStorage(), origMachine.getUsage());
-        this.factoryType = origMachine.factoryType;
     }
 
     public FactoryTier getTier() {

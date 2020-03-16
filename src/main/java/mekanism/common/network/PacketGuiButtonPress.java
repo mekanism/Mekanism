@@ -5,7 +5,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.common.MekanismLang;
 import mekanism.common.PacketHandler;
-import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
@@ -136,8 +137,8 @@ public class PacketGuiButtonPress {
         BACK_BUTTON((tile, extra) -> {
             //Special handling to basically reset to the tiles default gui container
             Block block = tile.getBlockType();
-            if (block instanceof IHasGui) {
-                return ((IHasGui<TileEntityMekanism>) block).getProvider(tile);
+            if (Attribute.has(block, AttributeGui.class)) {
+                return Attribute.get(block, AttributeGui.class).getProvider(tile);
             }
             return null;
         }),
