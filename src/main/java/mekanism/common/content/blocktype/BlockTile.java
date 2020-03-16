@@ -2,11 +2,16 @@ package mekanism.common.content.blocktype;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
+import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -23,10 +28,13 @@ public class BlockTile<TILE extends TileEntityMekanism> {
 
     protected Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar;
 
+    protected ILangEntry description;
+
     protected Map<Class<? extends Attribute>, Attribute> attributeMap = new HashMap<>();
 
-    public BlockTile(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar) {
+    public BlockTile(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
         this.tileEntityRegistrar = tileEntityRegistrar;
+        this.description = description;
     }
 
     public boolean has(Class<? extends Attribute> type) {
@@ -53,6 +61,11 @@ public class BlockTile<TILE extends TileEntityMekanism> {
         return tileEntityRegistrar.get().getTileEntityType();
     }
 
+    @Nonnull
+    public ILangEntry getDescription() {
+        return description;
+    }
+
     public static class BlockTileBuilder<BLOCK extends BlockTile<TILE>, TILE extends TileEntityMekanism, T extends BlockTileBuilder<BLOCK, TILE, T>> {
 
         protected BLOCK holder;
@@ -61,18 +74,27 @@ public class BlockTile<TILE extends TileEntityMekanism> {
             this.holder = holder;
         }
 
+        public static <TILE extends TileEntityMekanism> BlockTileBuilder<BlockTile<TILE>, TILE, ?> createBlock(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, MekanismLang description) {
+            return new BlockTileBuilder<>(new BlockTile<TILE>(tileEntityRegistrar, description));
+        }
+
         @SuppressWarnings("unchecked")
         public T getThis() {
             return (T) this;
         }
 
-        public T with(Attribute attr) {
-            holder.attributeMap.put(attr.getClass(), attr);
+        public T with(Attribute... attrs) {
+            for (Attribute attr : attrs) {
+                holder.attributeMap.put(attr.getClass(), attr);
+            }
             return getThis();
         }
 
-        public T without(Class<? extends Attribute> attr) {
-            holder.remove(attr);
+        @SafeVarargs
+        public final T without(Class<? extends Attribute>... attrs) {
+            for (Class<? extends Attribute> attr : attrs) {
+                holder.remove(attr);
+            }
             return getThis();
         }
 
@@ -86,6 +108,14 @@ public class BlockTile<TILE extends TileEntityMekanism> {
 
         public T withGui(Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar) {
             return with(new AttributeGui<>(containerRegistrar));
+        }
+
+        public T withEnergyConfig(DoubleSupplier energyUsage, DoubleSupplier energyStorage) {
+            return with(new AttributeEnergy(energyUsage, energyStorage));
+        }
+
+        public T withEnergyConfig(DoubleSupplier energyStorage) {
+            return with(new AttributeEnergy(null, energyStorage));
         }
 
         @SuppressWarnings("unchecked")

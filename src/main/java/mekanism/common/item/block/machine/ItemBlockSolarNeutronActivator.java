@@ -9,11 +9,11 @@ import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.BlockSolarNeutronActivator;
+import mekanism.common.block.machine.prefab.BlockMachine;
+import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.IItemSustainedInventory;
-import mekanism.common.item.block.ItemBlockAdvancedTooltip;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
+import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -31,10 +31,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class ItemBlockSolarNeutronActivator extends ItemBlockAdvancedTooltip<BlockSolarNeutronActivator> implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockSolarNeutronActivator extends ItemBlockMachine implements IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockSolarNeutronActivator(BlockSolarNeutronActivator block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::activator));
+    public ItemBlockSolarNeutronActivator(BlockMachine<TileEntitySolarNeutronActivator, Machine<TileEntitySolarNeutronActivator>> block) {
+        super(block, ISTERProvider::activator);
     }
 
     @Override

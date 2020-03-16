@@ -15,13 +15,9 @@ import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.block.IBlockElectric;
-import mekanism.api.block.IHasInventory;
-import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
-import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -44,9 +40,13 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.block.attribute.AttributeStateActive;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.capabilities.Capabilities;
@@ -283,15 +283,15 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     private void setSupportedTypes(Block block) {
         //Used to get any data we may need
-        isElectric = block instanceof IBlockElectric;
-        supportsUpgrades = block instanceof ISupportsUpgrades;
+        isElectric = Attribute.has(blockProvider.getBlock(), AttributeEnergy.class);
+        supportsUpgrades = Attribute.has(blockProvider.getBlock(), AttributeUpgradeSupport.class);
         canBeUpgraded = block instanceof IUpgradeableBlock;
         isDirectional = block instanceof IStateFacing;
         supportsRedstone = block instanceof ISupportsRedstone;
         hasSound = Attribute.has(block, AttributeSound.class);
         hasGui = Attribute.has(block, AttributeGui.class);
-        hasInventory = block instanceof IHasInventory;
-        hasSecurity = block instanceof IHasSecurity;
+        hasInventory = Attribute.has(blockProvider.getBlock(), AttributeInventory.class);
+        hasSecurity = Attribute.has(blockProvider.getBlock(), AttributeSecurity.class);
         //TODO: Is this the proper way of doing it
         isActivatable = hasSound || Attribute.has(block, AttributeSound.class);
         supportsComparator = block instanceof ISupportsComparator;
@@ -849,7 +849,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         if (supportsUpgrades()) {
-            return ((ISupportsUpgrades) getBlockType()).getSupportedUpgrade();
+            return Attribute.get(blockProvider.getBlock(), AttributeUpgradeSupport.class).getSupportedUpgrades();
         }
         return Collections.emptySet();
     }
@@ -1147,14 +1147,14 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     public double getBaseUsage() {
         if (isElectric()) {
-            return ((IBlockElectric) blockProvider.getBlock()).getUsage();
+            return Attribute.get(blockProvider.getBlock(), AttributeEnergy.class).getUsage();
         }
         return 0;
     }
 
     public double getBaseStorage() {
         if (isElectric()) {
-            return ((IBlockElectric) blockProvider.getBlock()).getStorage();
+            return Attribute.get(blockProvider.getBlock(), AttributeEnergy.class).getStorage();
         }
         return 0;
     }

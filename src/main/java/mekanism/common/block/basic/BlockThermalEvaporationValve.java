@@ -2,7 +2,6 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.common.MekanismLang;
@@ -23,7 +22,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporationValve extends BlockMekanism implements IHasModel, IHasTileEntity<TileEntityThermalEvaporationValve>, ISupportsComparator,
+public class BlockThermalEvaporationValve extends BlockMekanism implements IHasTileEntity<TileEntityThermalEvaporationValve>, ISupportsComparator,
       IHasDescription {
 
     public BlockThermalEvaporationValve() {

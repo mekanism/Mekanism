@@ -4,7 +4,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.BlockChargepad;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.block.machine.prefab.BlockMachine.BlockMachineModel;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
@@ -23,9 +25,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockChargepad extends ItemBlockAdvancedTooltip<BlockChargepad> implements IItemEnergized, IItemSustainedInventory {
+public class ItemBlockChargepad extends ItemBlockAdvancedTooltip<BlockMachineModel<?, ?>> implements IItemEnergized, IItemSustainedInventory {
 
-    public ItemBlockChargepad(BlockChargepad block) {
+    public ItemBlockChargepad(BlockMachineModel<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
@@ -39,7 +41,7 @@ public class ItemBlockChargepad extends ItemBlockAdvancedTooltip<BlockChargepad>
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockChargepad) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockChargepad) item).getBlock().getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, Attribute.get(((ItemBlockChargepad) item).getBlock(), AttributeEnergy.class).getStorage());
         }
         return 0;
     }

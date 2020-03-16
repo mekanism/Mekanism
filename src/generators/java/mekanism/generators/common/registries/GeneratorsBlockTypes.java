@@ -15,7 +15,7 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.particles.ParticleTypes;
 
-public class GeneratorsGeneratorTypes {
+public class GeneratorsBlockTypes {
 
     // Heat Generator
     public static final Generator<TileEntityHeatGenerator> HEAT_GENERATOR = GeneratorBuilder

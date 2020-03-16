@@ -1,7 +1,6 @@
 package mekanism.common.block.machine.prefab;
 
 import javax.annotation.Nonnull;
-import mekanism.api.block.IHasModel;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
@@ -25,7 +24,7 @@ public class BlockFactoryMachine<TILE extends TileEntityMekanism, MACHINE extend
         return machineType.upgradeResult(current, tier);
     }
 
-    public static class BlockFactoryMachineModel<TILE extends TileEntityMekanism> extends BlockFactoryMachine<TILE, FactoryMachine<TILE>> implements IHasModel, IStateFluidLoggable {
+    public static class BlockFactoryMachineModel<TILE extends TileEntityMekanism> extends BlockFactoryMachine<TILE, FactoryMachine<TILE>> implements IStateFluidLoggable {
 
         public BlockFactoryMachineModel(FactoryMachine<TILE> machineType) {
             super(machineType);

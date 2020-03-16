@@ -4,7 +4,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.BlockLaser;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.block.machine.prefab.BlockMachine.BlockMachineModel;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
@@ -24,9 +26,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockLaser extends ItemBlockAdvancedTooltip<BlockLaser> implements IItemEnergized, IItemSustainedInventory {
+public class ItemBlockLaser extends ItemBlockAdvancedTooltip<BlockMachineModel<?, ?>> implements IItemEnergized, IItemSustainedInventory {
 
-    public ItemBlockLaser(BlockLaser block) {
+    public ItemBlockLaser(BlockMachineModel<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
@@ -41,7 +43,7 @@ public class ItemBlockLaser extends ItemBlockAdvancedTooltip<BlockLaser> impleme
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockLaser) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockLaser) item).getBlock().getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, Attribute.get(((ItemBlockLaser) item).getBlock(), AttributeEnergy.class).getStorage());
         }
         return 0;
     }

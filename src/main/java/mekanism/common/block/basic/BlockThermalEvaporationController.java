@@ -3,7 +3,6 @@ package mekanism.common.block.basic;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasInventory;
-import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
@@ -35,7 +34,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BlockThermalEvaporationController extends BlockMekanism implements IHasModel, IStateFacing, AttributeStateActive, IHasInventory, IHasDescription,
+public class BlockThermalEvaporationController extends BlockMekanism implements IStateFacing, AttributeStateActive, IHasInventory, IHasDescription,
       IHasGui<TileEntityThermalEvaporationController>, IHasTileEntity<TileEntityThermalEvaporationController> {
 
     public BlockThermalEvaporationController() {

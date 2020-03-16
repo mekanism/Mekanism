@@ -5,7 +5,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.BlockSeismicVibrator;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.block.machine.prefab.BlockMachine;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
@@ -31,9 +33,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockSeismicVibrator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockMachine<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockSeismicVibrator(BlockSeismicVibrator block) {
+    public ItemBlockSeismicVibrator(BlockMachine<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::seismicVibrator));
     }
 
@@ -62,7 +64,7 @@ public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockSeis
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockSeismicVibrator) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockSeismicVibrator) item).getBlock().getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, Attribute.get(((ItemBlockSeismicVibrator) item).getBlock(), AttributeEnergy.class).getStorage());
         }
         return 0;
     }

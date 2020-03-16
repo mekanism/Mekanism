@@ -1,33 +1,29 @@
 package mekanism.common.block.machine.prefab;
 
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Upgrade;
-import mekanism.api.block.IBlockElectric;
-import mekanism.api.block.IHasInventory;
-import mekanism.api.block.IHasModel;
-import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.block.ISupportsComparator;
-import mekanism.api.block.ISupportsRedstone;
-import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
+import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeParticleFX.Particle;
+import mekanism.common.block.attribute.AttributeStateActive;
+import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
+import mekanism.common.block.attribute.Attributes.AttributeFullRotation;
+import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.ITypeBlock;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.BlockTile;
-import mekanism.common.content.blocktype.Machine;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +33,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
@@ -52,8 +49,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machine<TILE>> extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IStateFacing,
-      IHasInventory, IHasSecurity, IHasTileEntity<TILE>, ISupportsRedstone, ISupportsComparator, IHasDescription, ITypeBlock<TILE> {
+public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends BlockTile<TILE>> extends BlockMekanism implements IStateFacing,
+      IHasTileEntity<TILE>, IHasDescription, ITypeBlock<TILE> {
 
     protected MACHINE machineType;
 
@@ -72,32 +69,19 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
         return machineType.getTileType();
     }
 
-    @Override
-    public double getUsage() {
-        if (machineType.hasUsage()) {
-            return machineType.getUsage();
-        }
-        return IBlockElectric.super.getUsage();
-    }
-
-    @Override
-    public double getConfigStorage() {
-        if (machineType.hasConfigStorage()) {
-            return machineType.getConfigStorage();
-        }
-        return IBlockElectric.super.getConfigStorage();
-    }
-
-    @Nonnull
-    @Override
-    public Set<Upgrade> getSupportedUpgrade() {
-        return machineType.getSupportedUpgrades();
-    }
-
     @Nonnull
     @Override
     public ILangEntry getDescription() {
         return machineType.getDescription();
+    }
+
+    @Nonnull
+    @Override
+    public DirectionProperty getFacingProperty() {
+        if (machineType.has(AttributeFullRotation.class)) {
+            return BlockStateHelper.facingProperty;
+        }
+        return IStateFacing.super.getFacingProperty();
     }
 
     @Nonnull
@@ -113,12 +97,12 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
         if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
         }
-        return tile.openGui(player);
+        return machineType.has(AttributeGui.class) ? tile.openGui(player) : ActionResultType.PASS;
     }
 
     @Override
     public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-        if (MekanismConfig.client.enableAmbientLighting.get()) {
+        if (MekanismConfig.client.enableAmbientLighting.get() && machineType.has(AttributeStateActive.class)) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).getActive()) {
                 return MekanismConfig.client.ambientLightingLevel.get();
@@ -135,8 +119,7 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
 
     @Override
     public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
-        // TODO: This is how it was before, but should it be divided by 5 like in Block.java
-        return blockResistance;
+        return machineType.has(AttributeCustomResistance.class) ? machineType.get(AttributeCustomResistance.class).getResistance() : blockResistance;
     }
 
     @Override
@@ -174,10 +157,30 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return machineType.has(AttributeCustomShape.class) ? machineType.get(AttributeCustomShape.class).getBounds()[getDirection(state).ordinal() - 2] : super.getShape(state, world, pos, context);
+        if (machineType.has(AttributeCustomShape.class)) {
+            return machineType.get(AttributeCustomShape.class).getBounds()[getDirection(state).ordinal() - (machineType.has(AttributeFullRotation.class) ? 0 : 2)];
+        }
+        return super.getShape(state, world, pos, context);
     }
 
-    public static class BlockMachineModel<TILE extends TileEntityMekanism, MACHINE extends Machine<TILE>> extends BlockMachine<TILE, MACHINE> implements IHasModel, IStateFluidLoggable {
+    @Override
+    public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+        return machineType.has(AttributeRedstoneEmitter.class) ? true : super.canConnectRedstone(state, world, pos, side);
+    }
+
+    @Override
+    @Deprecated
+    public int getWeakPower(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+        if (machineType.has(AttributeRedstoneEmitter.class)) {
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                return tile.getRedstoneLevel();
+            }
+        }
+        return 0;
+    }
+
+    public static class BlockMachineModel<TILE extends TileEntityMekanism, MACHINE extends BlockTile<TILE>> extends BlockMachine<TILE, MACHINE> implements IStateFluidLoggable {
 
         public BlockMachineModel(MACHINE machineType) {
             super(machineType);

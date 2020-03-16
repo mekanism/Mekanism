@@ -2,9 +2,11 @@ package mekanism.common.content.blocktype;
 
 import java.util.function.Supplier;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -26,10 +28,9 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
     }
 
     private void setMachineData() {
-        setFrom(origMachine, AttributeSound.class, AttributeFactoryType.class);
-        this.supportedUpgrades = origMachine.supportedUpgrades;
-        this.energyUsage = () -> origMachine.getUsage();
-        this.energyStorage = () -> tier.processes * Math.max(0.5D * origMachine.getConfigStorage(), origMachine.getUsage());
+        setFrom(origMachine, AttributeSound.class, AttributeFactoryType.class, AttributeUpgradeSupport.class);
+        AttributeEnergy origEnergy = origMachine.get(AttributeEnergy.class);
+        attributeMap.put(AttributeEnergy.class, new AttributeEnergy(() -> origEnergy.getUsage(), () -> tier.processes * Math.max(0.5D * origEnergy.getConfigStorage(), origEnergy.getUsage())));
     }
 
     public FactoryTier getTier() {

@@ -3,7 +3,6 @@ package mekanism.common.block.basic;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.block.IHasInventory;
-import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.inventory.AutomationType;
@@ -46,7 +45,7 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, AttributeStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator,
+public class BlockBin extends BlockMekanism implements IStateFacing, AttributeStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator,
       IHasInventory, IHasDescription, IUpgradeableBlock {
 
     private final BinTier tier;
