@@ -8,17 +8,13 @@ import mekanism.api.IEvaporationSolar;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.energy.IStrictEnergyOutputter;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.basic.DefaultAlloyInteraction;
 import mekanism.common.capabilities.basic.DefaultBlockableConnection;
-import mekanism.common.capabilities.basic.DefaultCableOutputter;
 import mekanism.common.capabilities.basic.DefaultConfigCardAccess;
 import mekanism.common.capabilities.basic.DefaultConfigurable;
 import mekanism.common.capabilities.basic.DefaultEvaporationSolar;
@@ -29,9 +25,7 @@ import mekanism.common.capabilities.basic.DefaultInfusionHandler;
 import mekanism.common.capabilities.basic.DefaultLaserReceptor;
 import mekanism.common.capabilities.basic.DefaultLogisticalTransporter;
 import mekanism.common.capabilities.basic.DefaultSpecialConfigData;
-import mekanism.common.capabilities.basic.DefaultStrictEnergyAcceptor;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyHandler;
-import mekanism.common.capabilities.basic.DefaultStrictEnergyStorage;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -39,18 +33,6 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
  * Created by ben on 30/04/16.
  */
 public class Capabilities {
-
-    @Deprecated
-    @CapabilityInject(IStrictEnergyStorage.class)
-    public static Capability<IStrictEnergyStorage> ENERGY_STORAGE_CAPABILITY = null;
-
-    @Deprecated
-    @CapabilityInject(IStrictEnergyAcceptor.class)
-    public static Capability<IStrictEnergyAcceptor> ENERGY_ACCEPTOR_CAPABILITY = null;
-
-    @Deprecated
-    @CapabilityInject(IStrictEnergyOutputter.class)
-    public static Capability<IStrictEnergyOutputter> ENERGY_OUTPUTTER_CAPABILITY = null;
 
     @CapabilityInject(IStrictEnergyHandler.class)
     public static Capability<IStrictEnergyHandler> STRICT_ENERGY_CAPABILITY = null;
@@ -93,9 +75,6 @@ public class Capabilities {
     public static Capability<ILogisticalTransporter> LOGISTICAL_TRANSPORTER_CAPABILITY = null;
 
     public static void registerCapabilities() {
-        DefaultStrictEnergyStorage.register();
-        DefaultStrictEnergyAcceptor.register();
-        DefaultCableOutputter.register();
         DefaultStrictEnergyHandler.register();
 
         DefaultGridTransmitter.register();

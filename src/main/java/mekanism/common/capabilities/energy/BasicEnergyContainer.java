@@ -130,7 +130,6 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public double extract(double amount, Action action, AutomationType automationType) {
-        //TODO: Replace this and the default implementation with a limit that is greater than zero that we used to use in places
         if (isEmpty() || amount <= 0 || !canExtract.test(automationType)) {
             //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than zero
             return 0;

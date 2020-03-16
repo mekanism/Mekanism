@@ -92,6 +92,23 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
     }
 
     /**
+     * A sided variant of {@link IStrictEnergyHandler#getNeededEnergy(int)}, docs copied for convenience.
+     *
+     * Retrieves the amount of energy that is needed to fill a given container.
+     *
+     * @param container Container to query.
+     * @param side      The side we are interacting with the handler from (null for internal).
+     *
+     * @return The energy needed to fill the container.
+     */
+    double getNeededEnergy(int container, @Nullable Direction side);
+
+    @Override
+    default double getNeededEnergy(int container) {
+        return getNeededEnergy(container, getEnergySideFor());
+    }
+
+    /**
      * A sided variant of {@link IStrictEnergyHandler#insertEnergy(int, double, Action)}, docs copied for convenience.
      *
      * <p>

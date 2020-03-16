@@ -4,10 +4,10 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Optional;
 import java.util.Set;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.EnergyAcceptorWrapper;
-import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.TileEntityInductionPort;
@@ -104,9 +104,9 @@ public final class CableUtils {
         return false;
     }
 
-    public static void emit(IEnergyWrapper emitter) {
+    public static void emit(IStrictEnergyHandler emitter) {
         TileEntity tileEntity = (TileEntity) emitter;
-        if (!tileEntity.getWorld().isRemote && MekanismUtils.canFunction(tileEntity)) {
+        if (!tileEntity.getWorld().isRemote() && MekanismUtils.canFunction(tileEntity)) {
             double energyToSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
             if (energyToSend > 0) {
                 BlockPos pos = tileEntity.getPos();

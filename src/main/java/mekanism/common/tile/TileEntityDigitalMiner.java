@@ -838,12 +838,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getItemHandler(side)));
-        } else if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
-            return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        } else if (capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
-            return Capabilities.ENERGY_ACCEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        } else if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
-            return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        } else if (capability == Capabilities.STRICT_ENERGY_CAPABILITY) {
+            return Capabilities.STRICT_ENERGY_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getEnergyHandler(side)));
         } else if (capability == CapabilityEnergy.ENERGY) {
             return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side)));
         }
@@ -866,7 +862,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 return side != back;
             }
             return true;
-        } else if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY) {
+        } else if (CapabilityUtils.isEnergyCapability(capability)) {
             if (offset.equals(Vec3i.NULL_VECTOR)) {
                 //Disable if it is the bottom port but wrong side of it
                 return side != Direction.DOWN;
@@ -890,7 +886,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         //Return some capabilities as disabled, and handle them with offset capabilities instead
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
-        } else if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY) {
+        } else if (CapabilityUtils.isEnergyCapability(capability)) {
             return true;
         }
         return super.isCapabilityDisabled(capability, side);

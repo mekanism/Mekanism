@@ -58,6 +58,7 @@ public final class NBTConstants {
     public static final String COMPONENT_UPGRADE = "componentUpgrade";
     public static final String CONFIG = "config";
     public static final String CONNECTION = "connection";
+    public static final String CONTAINER = "Container";
     public static final String CONTROL_TYPE = "controlType";
     public static final String DATA = "data";
     public static final String DATA_TYPE = "dataType";
@@ -68,6 +69,7 @@ public final class NBTConstants {
     public static final String DUMP_RIGHT = "dumpRight";
     public static final String EDIT_MODE = "editMode";
     public static final String EJECT = "eject";
+    public static final String ENERGY_CONTAINERS = "EnergyContainers";
     public static final String ENERGY_STORED = "energy";
     public static final String ENERGY_USAGE = "energyUsage";
     public static final String FILTER = "filter";

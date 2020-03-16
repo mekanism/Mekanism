@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.Upgrade;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.IUpgradeTile;
@@ -17,28 +16,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 //TODO: Comparator handling?
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements IStrictEnergyAcceptor, ISpecialConfigData, IUpgradeTile {
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISpecialConfigData, IUpgradeTile {
 
     public TileEntityAdvancedBoundingBlock() {
         super(MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK.getTileEntityType());
-    }
-
-    @Override
-    public double acceptEnergy(Direction side, double amount, boolean simulate) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null || !canReceiveEnergy(side)) {
-            return 0;
-        }
-        return inv.acceptEnergy(side, amount, simulate);
-    }
-
-    @Override
-    public boolean canReceiveEnergy(Direction side) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return false;
-        }
-        return inv.canBoundReceiveEnergy(getPos(), side);
     }
 
     public IAdvancedBoundingBlock getInv() {

@@ -9,6 +9,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
@@ -138,18 +139,18 @@ public class EnergyInventorySlot extends BasicInventorySlot {
 
     //TODO: Should we make this slot keep track of an IStrictEnergyStorage AND also then make some sort of "ITickableSlot" or something that lets us tick a bunch
     // of slots at once instead of having to manually call the relevant methods
-    public void discharge(IStrictEnergyStorage storer) {
-        if (!isEmpty() && storer.getEnergy() < storer.getMaxEnergy()) {
+    public void discharge(IMekanismStrictEnergyHandler handler) {
+        if (!isEmpty() && handler.getEnergy() < handler.getMaxEnergy()) {
             if (current.getItem() instanceof IEnergizedItem) {
                 IEnergizedItem energizedItem = (IEnergizedItem) current.getItem();
                 if (energizedItem.canSend(current)) {
                     double currentStoredEnergy = energizedItem.getEnergy(current);
-                    double energyToTransfer = Math.min(energizedItem.getMaxTransfer(current), Math.min(currentStoredEnergy, storer.getMaxEnergy() - storer.getEnergy()));
+                    double energyToTransfer = Math.min(energizedItem.getMaxTransfer(current), Math.min(currentStoredEnergy, handler.getMaxEnergy() - handler.getEnergy()));
                     if (energyToTransfer > 0) {
                         //Update the energy in the item
                         energizedItem.setEnergy(current, currentStoredEnergy - energyToTransfer);
                         //Update the energy in the IStrictEnergyStorage
-                        storer.setEnergy(storer.getEnergy() + energyToTransfer);
+                        handler.setEnergy(handler.getEnergy() + energyToTransfer);
                         onContentsChanged();
                         return;
                     }
@@ -160,35 +161,35 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 if (forgeCapability.isPresent()) {
                     IEnergyStorage storage = forgeCapability.get();
                     if (storage.canExtract()) {
-                        int needed = ForgeEnergyIntegration.toForge(storer.getMaxEnergy() - storer.getEnergy());
-                        storer.setEnergy(storer.getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
+                        int needed = ForgeEnergyIntegration.toForge(handler.getMaxEnergy() - handler.getEnergy());
+                        handler.setEnergy(handler.getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
                         onContentsChanged();
                         //Exit early as we successfully discharged
                         return;
                     }
                 }
             }
-            if (current.getItem() == Items.REDSTONE && storer.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get() <= storer.getMaxEnergy()) {
-                storer.setEnergy(storer.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get());
+            if (current.getItem() == Items.REDSTONE && handler.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get() <= handler.getMaxEnergy()) {
+                handler.setEnergy(handler.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get());
                 current.shrink(1);
                 onContentsChanged();
             }
         }
     }
 
-    public void charge(IStrictEnergyStorage storer) {
-        if (!isEmpty() && storer.getEnergy() > 0) {
+    public void charge(IMekanismStrictEnergyHandler handler) {
+        if (!isEmpty() && handler.getEnergy() > 0) {
             if (current.getItem() instanceof IEnergizedItem) {
                 IEnergizedItem energizedItem = (IEnergizedItem) current.getItem();
                 if (energizedItem.canReceive(current)) {
-                    double storedEnergy = storer.getEnergy();
+                    double storedEnergy = handler.getEnergy();
                     double itemStoredEnergy = energizedItem.getEnergy(current);
                     double energyToTransfer = Math.min(energizedItem.getMaxTransfer(current), Math.min(energizedItem.getMaxEnergy(current) - itemStoredEnergy, storedEnergy));
                     if (energyToTransfer > 0) {
                         //Update the energy in the item
                         energizedItem.setEnergy(current, itemStoredEnergy + energyToTransfer);
                         //Update the energy in the IStrictEnergyStorage
-                        storer.setEnergy(storedEnergy - energyToTransfer);
+                        handler.setEnergy(storedEnergy - energyToTransfer);
                         onContentsChanged();
                         return;
                     }
@@ -199,8 +200,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 if (forgeCapability.isPresent()) {
                     IEnergyStorage storage = forgeCapability.get();
                     if (storage.canReceive()) {
-                        int stored = ForgeEnergyIntegration.toForge(storer.getEnergy());
-                        storer.setEnergy(storer.getEnergy() - ForgeEnergyIntegration.fromForge(storage.receiveEnergy(stored, false)));
+                        int stored = ForgeEnergyIntegration.toForge(handler.getEnergy());
+                        handler.setEnergy(handler.getEnergy() - ForgeEnergyIntegration.fromForge(storage.receiveEnergy(stored, false)));
                         onContentsChanged();
                         //Exit early as we successfully discharged
                         return;

@@ -279,24 +279,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canOutputEnergy(Direction side) {
-        if (!hasFrequency()) {
-            return false;
-        }
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
-        return slotInfo instanceof EnergySlotInfo && slotInfo.canOutput();
-    }
-
-    @Override
-    public boolean canReceiveEnergy(Direction side) {
-        if (!hasFrequency()) {
-            return false;
-        }
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
-        return slotInfo instanceof EnergySlotInfo && slotInfo.canInput();
-    }
-
-    @Override
     public double getMaxOutput() {
         return hasFrequency() ? MekanismConfig.general.quantumEntangloporterEnergyTransfer.get() : 0;
     }

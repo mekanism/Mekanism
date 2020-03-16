@@ -26,6 +26,20 @@ public class DataHandlerUtils {
     }
 
     /**
+     * Helper to read and load a list of containers from a {@link ListNBT}
+     */
+    public static void readContainers(List<? extends INBTSerializable<CompoundNBT>> containers, ListNBT storedContainers) {
+        readContents(containers, storedContainers, NBTConstants.CONTAINER);
+    }
+
+    /**
+     * Helper to read and load a list of containers to a {@link ListNBT}
+     */
+    public static ListNBT writeContainers(List<? extends INBTSerializable<CompoundNBT>> containers) {
+        return writeContents(containers, NBTConstants.CONTAINER);
+    }
+
+    /**
      * Helper to read and load a list of tanks from a {@link ListNBT}
      */
     public static void readSlots(List<? extends INBTSerializable<CompoundNBT>> slots, ListNBT storedSlots) {

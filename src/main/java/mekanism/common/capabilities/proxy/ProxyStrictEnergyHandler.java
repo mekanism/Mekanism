@@ -52,6 +52,11 @@ public class ProxyStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
+    public double getNeededEnergy(int container) {
+        return energyHandler.getNeededEnergy(container, side);
+    }
+
+    @Override
     public double insertEnergy(int container, double amount, Action action) {
         return readOnly || readOnlyInsert ? amount : energyHandler.insertEnergy(container, amount, side, action);
     }

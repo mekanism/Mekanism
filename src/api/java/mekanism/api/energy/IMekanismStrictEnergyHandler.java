@@ -81,6 +81,12 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler 
     }
 
     @Override
+    default double getNeededEnergy(int container, @Nullable Direction side) {
+        IEnergyContainer energyContainer = getEnergyContainer(container, side);
+        return energyContainer == null ? 0 : energyContainer.getNeeded();
+    }
+
+    @Override
     default double insertEnergy(int container, double amount, @Nullable Direction side, Action action) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         return energyContainer == null ? amount : energyContainer.insert(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);

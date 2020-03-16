@@ -191,12 +191,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         lastUsage = prev - getEnergy();
     }
 
-    @Override
-    public boolean canReceiveEnergy(Direction side) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
-        return slotInfo instanceof EnergySlotInfo && slotInfo.canInput();
-    }
-
     private void sortInventory() {
         if (sorting) {
             for (int i = 0; i < processInfoSlots.length; i++) {

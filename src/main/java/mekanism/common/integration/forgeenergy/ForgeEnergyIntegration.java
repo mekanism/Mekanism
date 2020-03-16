@@ -1,6 +1,7 @@
 package mekanism.common.integration.forgeenergy;
 
-import mekanism.common.base.IEnergyWrapper;
+import mekanism.api.Action;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
@@ -8,10 +9,10 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 public class ForgeEnergyIntegration implements IEnergyStorage {
 
-    private final IEnergyWrapper tile;
+    private final IMekanismStrictEnergyHandler tile;
     private final Direction side;
 
-    public ForgeEnergyIntegration(IEnergyWrapper tile, Direction facing) {
+    public ForgeEnergyIntegration(IMekanismStrictEnergyHandler tile, Direction facing) {
         this.tile = tile;
         side = facing;
     }
@@ -58,11 +59,11 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
 
     @Override
     public boolean canExtract() {
-        return tile.canOutputEnergy(side);
+        return tile.insertEnergy(1, side, Action.SIMULATE) < 1;
     }
 
     @Override
     public boolean canReceive() {
-        return tile.canReceiveEnergy(side);
+        return tile.extractEnergy(1, side, Action.SIMULATE) > 0;
     }
 }

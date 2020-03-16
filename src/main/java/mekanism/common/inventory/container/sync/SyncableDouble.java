@@ -2,6 +2,7 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.network.container.property.DoublePropertyData;
 
 /**

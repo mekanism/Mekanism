@@ -19,13 +19,13 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -71,9 +71,7 @@ public class TileComponentConfig implements ITileComponent, ITrackableContainer 
             type = TransmissionType.HEAT;
         } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             type = TransmissionType.FLUID;
-        } else if (capability == CapabilityEnergy.ENERGY || capability == Capabilities.ENERGY_STORAGE_CAPABILITY ||
-                   capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
-            //While we strictly speaking don't need to check this for energy because of baseline checks, we do so anyways as it makes the logic easier to follow
+        } else if (CapabilityUtils.isEnergyCapability(capability)) {
             type = TransmissionType.ENERGY;
         }
         if (type != null) {

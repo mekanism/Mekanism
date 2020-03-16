@@ -25,6 +25,9 @@ import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -35,7 +38,6 @@ import mekanism.api.sustained.ISustainedInventory;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -53,12 +55,14 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.proxy.ProxyFluidHandler;
 import mekanism.common.capabilities.proxy.ProxyGasHandler;
 import mekanism.common.capabilities.proxy.ProxyInfusionHandler;
 import mekanism.common.capabilities.proxy.ProxyItemHandler;
+import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -80,7 +84,6 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileActive;
 import mekanism.common.tile.interfaces.ITileDirectional;
-import mekanism.common.tile.interfaces.ITileElectric;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.ITileUpgradable;
@@ -118,14 +121,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-//TODO: Should methods that TileEntityMekanism implements but aren't used because of the block this tile is for
-// does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
-// rather than silently "fail" and just do nothing
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends TileEntityUpdateable implements IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
-      ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable,
-      IComparatorSupport, ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler {
-    //TODO: Make sure we have a way of saving the inventory to disk and a way to load it, basically what ISustainedInventory was before
+      ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
+      ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler {
 
     //TODO: Should the implementations of the various stuff be extracted into TileComponents?
 
@@ -152,6 +151,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     private boolean isActivatable;
     private boolean hasInventory;
     private boolean hasSecurity;
+    @Deprecated
     private boolean isElectric;
     private boolean hasSound;
     private boolean hasGui;
@@ -207,16 +207,17 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     private Map<Direction, ProxyFluidHandler> fluidHandlers;
     //End variables IMekanismFluidHandler
 
+    //Variables for handling IMekanismStrictEnergyHandler
+    @Nullable
+    private IEnergyContainerHolder energyContainerHolder;
+
+    private ProxyStrictEnergyHandler readOnlyStrictEnergyHandler;
+    private Map<Direction, ProxyStrictEnergyHandler> strictEnergyHandlers;
+    //End variables IMekanismStrictEnergyHandler
+
     //Variables for handling ITileElectric
-    protected CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
-    /**
-     * How much energy is stored in this block.
-     */
-    private double electricityStored;
-    /**
-     * Actual maximum energy storage, including upgrades
-     */
-    private double maxEnergy;
+    //TODO: Replace with a proxy system
+    protected CapabilityWrapperManager<IStrictEnergyHandler, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IStrictEnergyHandler.class, ForgeEnergyIntegration.class);
     private double energyPerTick;
     private double lastEnergyReceived;
     //End variables ITileElectric
@@ -258,6 +259,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         fluidTankHolder = getInitialFluidTanks();
         if (canHandleFluid()) {
             fluidHandlers = new EnumMap<>(Direction.class);
+        }
+        energyContainerHolder = getInitialEnergyContainers();
+        if (canHandleEnergy()) {
+            strictEnergyHandlers = new EnumMap<>(Direction.class);
         }
         if (hasInventory()) {
             itemHandlers = new EnumMap<>(Direction.class);
@@ -301,7 +306,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
      * @implNote This method should be used for setting any variables that would normally be set directly, except that gets run to late to set things up properly in our
      * constructor.
      */
-    protected void presetVariables() {}
+    protected void presetVariables() {
+    }
 
     public Block getBlockType() {
         //TODO: Should this be getBlockState().getBlock()
@@ -333,7 +339,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         return supportsRedstone;
     }
 
-    @Override
+    @Deprecated
     public final boolean isElectric() {
         return isElectric;
     }
@@ -546,8 +552,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (canHandleFluid() && persistFluid()) {
             DataHandlerUtils.readTanks(getFluidTanks(null), nbtTags.getList(NBTConstants.FLUID_TANKS, NBT.TAG_COMPOUND));
         }
-        if (isElectric()) {
-            electricityStored = nbtTags.getDouble(NBTConstants.ENERGY_STORED);
+        if (canHandleEnergy() && persistEnergy()) {
+            DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags.getList(NBTConstants.ENERGY_CONTAINERS, NBT.TAG_COMPOUND));
         }
         if (isActivatable()) {
             currentActive = nbtTags.getBoolean(NBTConstants.ACTIVE_STATE);
@@ -578,8 +584,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (canHandleFluid() && persistFluid()) {
             nbtTags.put(NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(getFluidTanks(null)));
         }
-        if (isElectric()) {
-            nbtTags.putDouble(NBTConstants.ENERGY_STORED, getEnergy());
+        if (canHandleEnergy() && persistEnergy()) {
+            nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
         }
         if (isActivatable()) {
             nbtTags.putBoolean(NBTConstants.ACTIVE_STATE, currentActive);
@@ -597,7 +603,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             container.track(SyncableEnum.create(RedstoneControl::byIndexStatic, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
         }
         if (isElectric()) {
-            container.track(SyncableDouble.create(this::getEnergy, this::setEnergy));
             container.track(SyncableDouble.create(this::getInputRate, this::setInputRate));
             if (supportsUpgrades()) {
                 container.track(SyncableDouble.create(this::getEnergyPerTick, this::setEnergyPerTick));
@@ -620,6 +625,12 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             List<IExtendedFluidTank> fluidTanks = getFluidTanks(null);
             for (IExtendedFluidTank fluidTank : fluidTanks) {
                 container.track(SyncableFluidStack.create(fluidTank));
+            }
+        }
+        if (canHandleEnergy() && handlesEnergy()) {
+            List<IEnergyContainer> energyContainers = getEnergyContainers(null);
+            for (IEnergyContainer energyContainer : energyContainers) {
+                container.track(SyncableDouble.create(energyContainer::getEnergy, energyContainer::setEnergy));
             }
         }
     }
@@ -664,7 +675,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
                 List<IInventorySlot> inventorySlots = getInventorySlots(side);
                 //Don't return an item handler if we don't actually even have any slots for that side
-                //TODO: Should we actually return the item handler regardless??? And then just everything fails?
                 LazyOptional<IItemHandler> lazyItemHandler = inventorySlots.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getItemHandler(side));
                 return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, lazyItemHandler);
             }
@@ -673,7 +683,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
                 List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(side);
                 //Don't return a gas handler if we don't actually even have any gas tanks for that side
-                //TODO: Should we actually return the gas handler regardless??? And then just everything fails?
                 LazyOptional<IGasHandler> lazyGasHandler = gasTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getGasHandler(side));
                 return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, lazyGasHandler);
             }
@@ -682,7 +691,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             if (capability == Capabilities.INFUSION_HANDLER_CAPABILITY) {
                 List<? extends IChemicalTank<InfuseType, InfusionStack>> infusionTanks = getInfusionTanks(side);
                 //Don't return an infusion handler if we don't actually even have any infusion tanks for that side
-                //TODO: Should we actually return the infusion handler regardless??? And then just everything fails?
                 LazyOptional<IInfusionHandler> lazyInfusionHandler = infusionTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getInfusionHandler(side));
                 return Capabilities.INFUSION_HANDLER_CAPABILITY.orEmpty(capability, lazyInfusionHandler);
             }
@@ -691,37 +699,24 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 List<IExtendedFluidTank> fluidTanks = getFluidTanks(side);
                 //Don't return a fluid handler if we don't actually even have any fluid tanks for that side
-                //TODO: Should we actually return fluid item handler regardless??? And then just everything fails?
                 LazyOptional<IFluidHandler> lazyFluidHandler = fluidTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getFluidHandler(side));
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, lazyFluidHandler);
             }
         }
-        if (isElectric()) {
-            if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
-                return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        if (canHandleEnergy() && CapabilityUtils.isEnergyCapability(capability)) {
+            List<IEnergyContainer> energyContainers = getEnergyContainers(side);
+            //Don't return a energy handler if we don't actually even have any energy containers for that side
+            if (energyContainers.isEmpty()) {
+                return LazyOptional.empty();
             }
-            if (capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
-                return Capabilities.ENERGY_ACCEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-            }
-            if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
-                return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-            }
-            if (capability == CapabilityEnergy.ENERGY) {
+            if (capability == Capabilities.STRICT_ENERGY_CAPABILITY) {
+                return Capabilities.STRICT_ENERGY_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getEnergyHandler(side)));
+            } else if (capability == CapabilityEnergy.ENERGY) {
                 return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side)));
             }
         }
         //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
         return super.getCapability(capability, side);
-    }
-
-    //TODO: Go through and re-evaluate all the capabilities, as there are cases when we should have the item handler cap disabled where it is not in the future
-    // As other ones are being handled this is becoming less of a problem, as things like multiblocks are returning no slots accessible for when they are not formed
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side) {
-        if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY) {
-            return side != null && !canReceiveEnergy(side) && !canOutputEnergy(side);
-        }
-        return false;
     }
 
     public void onNeighborChange(Block block) {
@@ -1087,48 +1082,66 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     }
     //End methods IMekanismFluidHandler
 
-    //Methods for implementing ITileElectric
-    protected boolean isStrictEnergy(@Nonnull Capability<?> capability) {
-        return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY;
+    //Methods for implementing IMekanismStrictEnergyHandler
+    @Nullable
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        return null;
     }
 
+    @Nonnull
     @Override
-    public boolean canOutputEnergy(Direction side) {
-        return false;
+    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+        return canHandleEnergy() && energyContainerHolder != null ? energyContainerHolder.getEnergyContainers(side) : Collections.emptyList();
     }
 
-    @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return isElectric();
+    /**
+     * Should energy be persisted in this tile save
+     */
+    public boolean persistEnergy() {
+        return canHandleEnergy();
     }
 
-    @Override
-    public double getMaxOutput() {
-        return 0;
+    /**
+     * Should energy be saved to the item, and synced to the client in the GUI
+     */
+    public boolean handlesEnergy() {
+        return persistEnergy();
     }
 
-    @Override
-    public double getEnergy() {
-        return isElectric() ? electricityStored : 0;
+    /**
+     * Lazily get and cache an IStrictEnergyHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null
+     * side
+     */
+    protected IStrictEnergyHandler getEnergyHandler(@Nullable Direction side) {
+        if (!canHandleEnergy()) {
+            return null;
+        }
+        if (side == null) {
+            if (readOnlyStrictEnergyHandler == null) {
+                readOnlyStrictEnergyHandler = new ProxyStrictEnergyHandler(this, null, energyContainerHolder);
+            }
+            return readOnlyStrictEnergyHandler;
+        }
+        ProxyStrictEnergyHandler energyHandler = strictEnergyHandlers.get(side);
+        if (energyHandler == null) {
+            strictEnergyHandlers.put(side, energyHandler = new ProxyStrictEnergyHandler(this, side, energyContainerHolder));
+        }
+        return energyHandler;
     }
 
-    @Override
-    public void setEnergy(double energy) {
-        if (isElectric()) {
-            electricityStored = Math.max(Math.min(energy, getMaxEnergy()), 0);
-            markDirty();
+    public void loadEnergy(ListNBT nbtTags) {
+        if (nbtTags != null && !nbtTags.isEmpty() && canHandleFluid()) {
+            DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags);
         }
     }
+    //End methods IMekanismStrictEnergyHandler
 
-    @Override
-    public double getMaxEnergy() {
-        return maxEnergy;
-    }
-
+    //Methods for implementing ITileElectric
     public double getInputRate() {
         return lastEnergyReceived;
     }
 
+    //TODO: Re-implement lastEnergyReceived for when we accept energy
     public void setInputRate(double inputRate) {
         this.lastEnergyReceived = inputRate;
     }
@@ -1154,44 +1167,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     public void setEnergyPerTick(double energyPerTick) {
         if (isElectric()) {
             this.energyPerTick = energyPerTick;
-        }
-    }
-
-    @Override
-    public double acceptEnergy(Direction side, double amount, boolean simulate) {
-        if (!isElectric()) {
-            return 0;
-        }
-        double toUse = Math.min(getNeededEnergy(), amount);
-        if (toUse < 0.0001 || (side != null && !canReceiveEnergy(side))) {
-            return 0;
-        }
-        if (!simulate) {
-            setEnergy(getEnergy() + toUse);
-            this.lastEnergyReceived += toUse;
-        }
-        return toUse;
-    }
-
-    @Override
-    public double pullEnergy(Direction side, double amount, boolean simulate) {
-        if (!isElectric()) {
-            return 0;
-        }
-        double toGive = Math.min(getEnergy(), amount);
-        if (toGive < 0.0001 || (side != null && !canOutputEnergy(side))) {
-            return 0;
-        }
-        if (!simulate) {
-            setEnergy(getEnergy() - toGive);
-        }
-        return toGive;
-    }
-
-    //TODO: Remove the need for this?
-    protected void setMaxEnergy(double maxEnergy) {
-        if (isElectric()) {
-            this.maxEnergy = maxEnergy;
         }
     }
     //End methods ITileElectric
@@ -1232,6 +1207,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //End methods ITileActive
 
     //Methods for implementing ITileSound
+
     /**
      * Used to check if this tile should attempt to play its sound
      */

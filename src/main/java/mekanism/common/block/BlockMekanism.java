@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.common.base.IBoundingBlock;
@@ -17,11 +16,9 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.item.IItemEnergized;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -93,11 +90,11 @@ public abstract class BlockMekanism extends Block {
         if (tile.handlesFluid()) {
             ItemDataUtils.setList(itemStack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(tile.getFluidTanks(null)));
         }
+        if (tile.handlesEnergy()) {
+            ItemDataUtils.setList(itemStack, NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(tile.getEnergyContainers(null)));
+        }
         if (item instanceof ISustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
-        }
-        if (item instanceof IEnergizedItem && tile.isElectric() && !(tile instanceof TileEntityMultiblock<?>)) {
-            ((IEnergizedItem) item).setEnergy(itemStack, tile.getEnergy());
         }
         return itemStack;
     }
@@ -200,6 +197,9 @@ public abstract class BlockMekanism extends Block {
         if (tile.handlesFluid()) {
             tile.loadFluid(ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
         }
+        if (tile.handlesEnergy()) {
+            tile.loadEnergy(ItemDataUtils.getList(stack, NBTConstants.ENERGY_CONTAINERS));
+        }
         if (tile instanceof ISustainedData && stack.hasTag()) {
             ((ISustainedData) tile).readSustainedData(stack);
         }
@@ -208,10 +208,6 @@ public abstract class BlockMekanism extends Block {
         }
         if (item instanceof ISustainedInventory && tile.persistInventory()) {
             tile.setInventory(((ISustainedInventory) item).getInventory(stack));
-        }
-        //The variant of it that was in BlockBasic
-        if (item instanceof IItemEnergized && tile.isElectric() && !(tile instanceof TileEntityMultiblock<?>)) {
-            tile.setEnergy(((IItemEnergized) item).getEnergy(stack));
         }
     }
 

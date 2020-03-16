@@ -5,13 +5,10 @@ import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.component.config.slot.ISlotInfo;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -28,12 +25,6 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
      */
     public TileEntityBasicMachine(IBlockProvider blockProvider, int baseTicksRequired) {
         super(blockProvider, baseTicksRequired);
-    }
-
-    @Override
-    public boolean canReceiveEnergy(Direction side) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
-        return slotInfo instanceof EnergySlotInfo && slotInfo.canInput();
     }
 
     @Override

@@ -117,18 +117,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     }
 
     @Override
-    public boolean canReceiveEnergy(Direction side) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
-        return slotInfo instanceof EnergySlotInfo && slotInfo.canInput();
-    }
-
-    @Override
-    public boolean canOutputEnergy(Direction side) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.ENERGY, side);
-        return slotInfo instanceof EnergySlotInfo && slotInfo.canOutput();
-    }
-
-    @Override
     public double getMaxEnergy() {
         return tier.getMaxEnergy();
     }
@@ -167,6 +155,11 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
             return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapabilityIfEnabled(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
+        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override

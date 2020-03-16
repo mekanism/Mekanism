@@ -126,6 +126,10 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                     nbtBuilder.replaceOperation(NBTConstants.FLUID_TANKS, NBTConstants.MEK_DATA + "." + NBTConstants.FLUID_TANKS);
                     hasData = true;
                 }
+                if (tileEntity.handlesEnergy() && tileEntity.getEnergyContainers(null).size() > 0) {
+                    nbtBuilder.replaceOperation(NBTConstants.ENERGY_CONTAINERS, NBTConstants.MEK_DATA + "." + NBTConstants.ENERGY_CONTAINERS);
+                    hasData = true;
+                }
             }
             //TODO: If anything for inventories doesn't work we may have to check if the tile is an ISustainedInventory
             // I don't believe it is directly needed anymore for this due to IHasInventory
@@ -141,6 +145,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                     }
                 }
             }
+            //TODO: Remove this in favor of the above tile check we have?
             if (Attribute.has(block, AttributeEnergy.class)) {
                 //If the block is electric but is not part of a multiblock
                 // we want to copy the energy information

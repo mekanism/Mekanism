@@ -42,6 +42,15 @@ public interface IStrictEnergyHandler {
     double getMaxEnergy(int container);
 
     /**
+     * Retrieves the amount of energy that is needed to fill a given container.
+     *
+     * @param container Container to query.
+     *
+     * @return The energy needed to fill the container.
+     */
+    double getNeededEnergy(int container);
+
+    /**
      * <p>
      * Inserts energy into a given container and return the remainder.
      * </p>
