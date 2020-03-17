@@ -4,16 +4,24 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
-import mekanism.api.energy.EnergyStack;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.base.target.EnergyAcceptorTarget;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
@@ -24,18 +32,23 @@ import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 
-public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> {
+public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNetwork, Double> implements IMekanismStrictEnergyHandler {
 
-    public double clientEnergyScale = 0;
-    public EnergyStack buffer = new EnergyStack(0);
-    private double lastPowerScale = 0;
-    private double joulesTransmitted = 0;
-    private double jouleBufferLastTick = 0;
+    private final List<IEnergyContainer> energyContainers;
+    public final VariableCapacityEnergyContainer energyContainer;
+
+    public double clientEnergyScale;
+    private double lastPowerScale;
+    private double joulesTransmitted;
+    private double jouleBufferLastTick;
 
     public EnergyNetwork() {
+        energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsDouble, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
+        energyContainers = Collections.singletonList(energyContainer);
     }
 
     public EnergyNetwork(Collection<EnergyNetwork> networks) {
+        this();
         for (EnergyNetwork net : networks) {
             if (net != null) {
                 adoptTransmittersAndAcceptorsFrom(net);
@@ -47,48 +60,46 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(EnergyNetwork net) {
-        if (net.jouleBufferLastTick > jouleBufferLastTick || net.clientEnergyScale > clientEnergyScale) {
-            clientEnergyScale = net.clientEnergyScale;
-            jouleBufferLastTick = net.jouleBufferLastTick;
-            joulesTransmitted = net.joulesTransmitted;
-            lastPowerScale = net.lastPowerScale;
+        if (isRemote()) {
+            if (!net.energyContainer.isEmpty() && net.clientEnergyScale > clientEnergyScale) {
+                clientEnergyScale = net.clientEnergyScale;
+                energyContainer.setEnergy(net.getBuffer());
+                net.clientEnergyScale = 0;
+                net.energyContainer.setEmpty();
+            }
+        } else if (!net.energyContainer.isEmpty()) {
+            energyContainer.setEnergy(energyContainer.getEnergy() + net.getBuffer());
+            net.energyContainer.setEmpty();
         }
-        buffer.amount += net.buffer.amount;
         super.adoptTransmittersAndAcceptorsFrom(net);
     }
 
     public static double round(double d) {
-        return Math.round(d * 10000) / 10000;
+        return Math.round(d * 10_000) / 10_000;
     }
 
     @Nonnull
     @Override
-    public EnergyStack getBuffer() {
-        return buffer;
+    public Double getBuffer() {
+        return energyContainer.getEnergy();
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> transmitter) {
-        EnergyStack energy = transmitter.getBuffer();
-        buffer.amount += energy.amount;
-        energy.amount = 0;
+    public void absorbBuffer(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, Double> transmitter) {
+        Double energy = transmitter.getBuffer();
+        if (energy != null && energy > 0) {
+            energyContainer.setEnergy(energyContainer.getEnergy() + energy);
+        }
     }
 
     @Override
     public void clampBuffer() {
-        if (buffer.amount > getCapacityAsDouble()) {
-            buffer.amount = getCapacityAsDouble();
+        if (!energyContainer.isEmpty()) {
+            double capacity = getCapacityAsDouble();
+            if (energyContainer.getEnergy() > capacity) {
+                energyContainer.setEnergy(capacity);
+            }
         }
-        if (buffer.amount < 0) {
-            buffer.amount = 0;
-        }
-    }
-
-    public double getEnergyNeeded() {
-        if (isRemote()) {
-            return 0;
-        }
-        return getCapacityAsDouble() - buffer.amount;
     }
 
     private double tickEmit(double energyToSend) {
@@ -106,9 +117,9 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             }
             EnergyAcceptorTarget target = new EnergyAcceptorTarget();
             for (Direction side : sides) {
-                EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
-                if (acceptor != null && acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side)) {
-                    target.addHandler(side, acceptor);
+                IStrictEnergyHandler handler = EnergyCompatUtils.get(tile, side);
+                if (handler != null && handler.insertEnergy(1, Action.SIMULATE) < 1) {
+                    target.addHandler(side, handler);
                 }
             }
             int curHandlers = target.getHandlers().size();
@@ -118,14 +129,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             }
         }
         return EmitUtils.sendToAcceptors(targets, totalHandlers, energyToSend);
-    }
-
-    public double emit(double energyToSend, boolean doEmit) {
-        double toUse = Math.min(getEnergyNeeded(), energyToSend);
-        if (doEmit) {
-            buffer.amount += toUse;
-        }
-        return energyToSend - toUse;
     }
 
     @Override
@@ -156,7 +159,8 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     public double getPowerScale() {
-        return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower()) * 2) / 10, 1), getCapacityAsDouble() == 0 ? 0 : buffer.amount / getCapacityAsDouble());
+        return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower()) * 2) / 10, 1),
+              getCapacityAsDouble() == 0 ? 0 : energyContainer.getEnergy() / getCapacityAsDouble());
     }
 
     public void clearJoulesTransmitted() {
@@ -170,12 +174,12 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 
     @Override
     public ITextComponent getNeededInfo() {
-        return EnergyDisplay.of(getEnergyNeeded()).getTextComponent();
+        return EnergyDisplay.of(energyContainer.getNeeded()).getTextComponent();
     }
 
     @Override
     public ITextComponent getStoredInfo() {
-        return EnergyDisplay.of(buffer.amount).getTextComponent();
+        return EnergyDisplay.of(energyContainer.getEnergy()).getTextComponent();
     }
 
     @Override
@@ -186,6 +190,16 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     @Override
     public ITextComponent getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmitters.size(), possibleAcceptors.size());
+    }
+
+    @Override
+    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+        return energyContainers;
+    }
+
+    @Override
+    public void onContentsChanged() {
+        //TODO: Do we want to mark the network as dirty
     }
 
     public static class EnergyTransferEvent extends Event {

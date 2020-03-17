@@ -113,7 +113,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         }
         if (gasTank.isEmpty()) {
             gasTank.setStack(gas.copy());
-            gas.setAmount(0);
             return;
         }
 
@@ -124,7 +123,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 //TODO: Print warning/error
             }
         }
-        gas.setAmount(0);
     }
 
     @Override
@@ -205,10 +203,9 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
             int stored = gasTank.getStored();
             if (stored != prevStored) {
+                prevStored = stored;
                 needsUpdate = true;
             }
-
-            prevStored = stored;
             if (didTransfer != prevTransfer || needsUpdate) {
                 MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, getBuffer(), didTransfer));
                 needsUpdate = false;

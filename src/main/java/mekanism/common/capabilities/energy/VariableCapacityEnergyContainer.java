@@ -14,7 +14,7 @@ import mekanism.api.inventory.AutomationType;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class VariableCapacityEnergyContainer extends BasicEnergyContainer {//TODO: Evaluate if this should even exist
+public class VariableCapacityEnergyContainer extends BasicEnergyContainer {
 
     public static VariableCapacityEnergyContainer input(DoubleSupplier maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
         Objects.requireNonNull(maxEnergy, "Max energy supplier cannot be null");

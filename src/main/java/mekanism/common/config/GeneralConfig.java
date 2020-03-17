@@ -8,6 +8,7 @@ import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
@@ -215,9 +216,9 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("portableTeleporterDelay", 0));
 
         builder.comment("Quantum Entangloporter Settings").push(ENTANGLOPORTER_CATEGORY);
-        quantumEntangloporterEnergyBuffer = CachedDoubleValue.wrap(this, builder.comment("Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency.")
+        quantumEntangloporterEnergyBuffer = CachedDoubleValue.wrap(this, builder.comment("Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier energy cube capacity.")
               .worldRestart()
-              .defineInRange("energyBuffer", 16_000_000D, 0, Double.MAX_VALUE));
+              .defineInRange("energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), 0, Double.MAX_VALUE));
         quantumEntangloporterFluidBuffer = CachedIntValue.wrap(this, builder.comment("Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
               .defineInRange("fluidBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 0, Integer.MAX_VALUE));

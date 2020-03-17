@@ -29,6 +29,9 @@ import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.energy.MinerEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.chunkloading.IChunkLoader;
@@ -99,8 +102,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     public boolean inverse;
 
-    public int minY = 0;
-    public int maxY = 60;
+    private int minY;
+    private int maxY = 60;
 
     public boolean doEject = false;
     public boolean doPull = false;
@@ -113,11 +116,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     public int cachedToMine;
 
-    public boolean silkTouch;
+    private boolean silkTouch;
 
     public boolean running;
-
-    private double prevEnergy;
 
     private int delayTicks;
 
@@ -129,12 +130,21 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     private TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
 
+    private MinerEnergyContainer energyContainer;
     private List<IInventorySlot> mainSlots;
     private EnergyInventorySlot energySlot;
 
     public TileEntityDigitalMiner() {
         super(MekanismBlocks.DIGITAL_MINER);
         radius = 10;
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = MinerEnergyContainer.input(this), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BOTTOM);
+        return builder.build();
     }
 
     @Nonnull
@@ -189,72 +199,77 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
         energySlot.discharge(this);
 
-        if (MekanismUtils.canFunction(this) && running && getEnergy() >= getEnergyPerTick() && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
-            setActive(true);
-            if (delay > 0) {
-                delay--;
-            }
-            setEnergy(getEnergy() - getEnergyPerTick());
-            if (delay == 0) {
-                boolean did = false;
-                for (Iterator<ChunkPos> it = oresToMine.keySet().iterator(); it.hasNext(); ) {
-                    ChunkPos chunk = it.next();
-                    BitSet set = oresToMine.get(chunk);
-                    int next = 0;
-                    while (!did) {
-                        int index = set.nextSetBit(next);
-                        BlockPos pos = getPosFromIndex(index);
-                        if (index == -1) {
-                            it.remove();
+        if (MekanismUtils.canFunction(this) && running && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
+            double energyPerTick = energyContainer.getEnergyPerTick();
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
+                setActive(true);
+                if (delay > 0) {
+                    delay--;
+                }
+                energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                if (delay == 0) {
+                    boolean did = false;
+                    for (Iterator<ChunkPos> it = oresToMine.keySet().iterator(); it.hasNext(); ) {
+                        ChunkPos chunk = it.next();
+                        BitSet set = oresToMine.get(chunk);
+                        int next = 0;
+                        while (!did) {
+                            int index = set.nextSetBit(next);
+                            BlockPos pos = getPosFromIndex(index);
+                            if (index == -1) {
+                                it.remove();
+                                break;
+                            }
+                            if (!world.isBlockPresent(pos) || world.isAirBlock(pos)) {
+                                set.clear(index);
+                                if (set.cardinality() == 0) {
+                                    it.remove();
+                                    break;
+                                }
+                                next = index + 1;
+                                continue;
+                            }
+                            boolean hasFilter = false;
+                            BlockState state = world.getBlockState(pos);
+                            for (MinerFilter<?> filter : filters) {
+                                if (filter.canFilter(state)) {
+                                    hasFilter = true;
+                                    break;
+                                }
+                            }
+
+                            if (inverse == hasFilter || !canMine(pos)) {
+                                set.clear(index);
+                                if (set.cardinality() == 0) {
+                                    it.remove();
+                                    break;
+                                }
+                                next = index + 1;
+                                continue;
+                            }
+
+                            List<ItemStack> drops = MinerUtils.getDrops((ServerWorld) world, pos, getSilkTouch(), this.pos);
+                            if (canInsert(drops) && setReplace(pos, index)) {
+                                did = true;
+                                add(drops);
+                                set.clear(index);
+                                if (set.cardinality() == 0) {
+                                    it.remove();
+                                }
+                                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getStateId(state));
+                                missingStack = ItemStack.EMPTY;
+                            }
                             break;
                         }
-                        if (!world.isBlockPresent(pos) || world.isAirBlock(pos)) {
-                            set.clear(index);
-                            if (set.cardinality() == 0) {
-                                it.remove();
-                                break;
-                            }
-                            next = index + 1;
-                            continue;
-                        }
-                        boolean hasFilter = false;
-                        BlockState state = world.getBlockState(pos);
-                        for (MinerFilter<?> filter : filters) {
-                            if (filter.canFilter(state)) {
-                                hasFilter = true;
-                                break;
-                            }
-                        }
-
-                        if (inverse == hasFilter || !canMine(pos)) {
-                            set.clear(index);
-                            if (set.cardinality() == 0) {
-                                it.remove();
-                                break;
-                            }
-                            next = index + 1;
-                            continue;
-                        }
-
-                        List<ItemStack> drops = MinerUtils.getDrops((ServerWorld) world, pos, silkTouch, this.pos);
-                        if (canInsert(drops) && setReplace(pos, index)) {
-                            did = true;
-                            add(drops);
-                            set.clear(index);
-                            if (set.cardinality() == 0) {
-                                it.remove();
-                            }
-                            world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getStateId(state));
-                            missingStack = ItemStack.EMPTY;
-                        }
-                        break;
                     }
+                    delay = getDelay();
+                    //Update the cached to mine value now that we have actually performed a mine
+                    updateCachedToMine();
                 }
-                delay = getDelay();
-                //Update the cached to mine value now that we have actually performed a mine
-                updateCachedToMine();
+            } else {
+                setActive(false);
             }
-        } else if (prevEnergy >= getEnergy()) {
+        } else {
             setActive(false);
         }
 
@@ -278,37 +293,61 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         } else if (delayTicks > 0) {
             delayTicks--;
         }
-        prevEnergy = getEnergy();
-    }
-
-    @Override
-    public double getEnergyPerTick() {
-        double ret = super.getEnergyPerTick();
-        if (silkTouch) {
-            ret *= MekanismConfig.general.minerSilkMultiplier.get();
-        }
-        int baseRad = Math.max(radius - 10, 0);
-        ret *= 1 + ((float) baseRad / 22F);
-        int baseHeight = Math.max(maxY - minY - 60, 0);
-        ret *= 1 + ((float) baseHeight / 195F);
-        return ret;
     }
 
     public int getDelay() {
         return delayLength;
     }
 
+    public boolean getSilkTouch() {
+        return silkTouch;
+    }
+
     public int getRadius() {
         return radius;
+    }
+
+    public int getMinY() {
+        return minY;
+    }
+
+    public int getMaxY() {
+        return maxY;
+    }
+
+    public void setSilkTouch(boolean newSilkTouch) {
+        boolean changed = silkTouch != newSilkTouch;
+        silkTouch = newSilkTouch;
+        if (changed) {
+            energyContainer.updateMinerEnergyPerTick();
+        }
     }
 
     private void setRadius(int newRadius) {
         boolean changed = radius != newRadius;
         radius = newRadius;
-        // If the radius changed and we're on the server, go ahead and refresh
-        // the chunk set
-        if (changed && hasWorld() && isRemote()) {
-            getChunkLoader().refreshChunkTickets();
+        if (changed) {
+            energyContainer.updateMinerEnergyPerTick();
+            if (hasWorld() && isRemote()) {
+                // If the radius changed and we're on the server, go ahead and refresh the chunk set
+                getChunkLoader().refreshChunkTickets();
+            }
+        }
+    }
+
+    public void setMinY(int newMinY) {
+        boolean changed = minY != newMinY;
+        minY = newMinY;
+        if (changed) {
+            energyContainer.updateMinerEnergyPerTick();
+        }
+    }
+
+    public void setMaxY(int newMaxY) {
+        boolean changed = maxY != newMaxY;
+        maxY = newMaxY;
+        if (changed) {
+            energyContainer.updateMinerEnergyPerTick();
         }
     }
 
@@ -480,7 +519,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
-            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(getDiameter(), maxY - minY + 1, getDiameter())));
+            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(getDiameter(), getMaxY() - getMinY() + 1, getDiameter())));
             searcher.start();
         }
         running = true;
@@ -573,19 +612,19 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     sendUpdatePacket();
                     break;
                 case 7:
-                    minY = dataStream.readInt();
+                    setMinY(dataStream.readInt());
                     //Send a packet to update the visual renderer
                     //TODO: Only do this if the renderer is actually active
                     sendUpdatePacket();
                     break;
                 case 8:
-                    maxY = dataStream.readInt();
+                    setMaxY(dataStream.readInt());
                     //Send a packet to update the visual renderer
                     //TODO: Only do this if the renderer is actually active
                     sendUpdatePacket();
                     break;
                 case 9:
-                    silkTouch = !silkTouch;
+                    setSilkTouch(!getSilkTouch());
                     break;
                 case 10:
                     inverse = !inverse;
@@ -608,7 +647,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     public int getTotalSize() {
-        return getDiameter() * getDiameter() * (maxY - minY + 1);
+        return getDiameter() * getDiameter() * (getMaxY() - getMinY() + 1);
     }
 
     public int getDiameter() {
@@ -616,7 +655,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     public BlockPos getStartingPos() {
-        return new BlockPos(getPos().getX() - radius, minY, getPos().getZ() - radius);
+        return new BlockPos(getPos().getX() - radius, getMinY(), getPos().getZ() - radius);
     }
 
     private BlockPos getPosFromIndex(int index) {
@@ -688,12 +727,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        nbtTags.putInt(NBTConstants.RADIUS, radius);
-        nbtTags.putInt(NBTConstants.MIN, minY);
-        nbtTags.putInt(NBTConstants.MAX, maxY);
+        nbtTags.putInt(NBTConstants.RADIUS, getRadius());
+        nbtTags.putInt(NBTConstants.MIN, getMinY());
+        nbtTags.putInt(NBTConstants.MAX, getMaxY());
         nbtTags.putBoolean(NBTConstants.EJECT, doEject);
         nbtTags.putBoolean(NBTConstants.PULL, doPull);
-        nbtTags.putBoolean(NBTConstants.SILK_TOUCH, silkTouch);
+        nbtTags.putBoolean(NBTConstants.SILK_TOUCH, getSilkTouch());
         nbtTags.putBoolean(NBTConstants.INVERSE, inverse);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
@@ -708,11 +747,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
         setRadius(Math.min(nbtTags.getInt(NBTConstants.RADIUS), MekanismConfig.general.digitalMinerMaxRadius.get()));
-        minY = nbtTags.getInt(NBTConstants.MIN);
-        maxY = nbtTags.getInt(NBTConstants.MAX);
+        NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MIN, this::setMinY);
+        NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MAX, this::setMaxY);
         doEject = nbtTags.getBoolean(NBTConstants.EJECT);
         doPull = nbtTags.getBoolean(NBTConstants.PULL);
-        silkTouch = nbtTags.getBoolean(NBTConstants.SILK_TOUCH);
+        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.SILK_TOUCH, this::setSilkTouch);
         inverse = nbtTags.getBoolean(NBTConstants.INVERSE);
         filters.clear();
         if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
@@ -733,12 +772,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, NBTConstants.RADIUS, radius);
-        ItemDataUtils.setInt(itemStack, NBTConstants.MIN, minY);
-        ItemDataUtils.setInt(itemStack, NBTConstants.MAX, maxY);
+        ItemDataUtils.setInt(itemStack, NBTConstants.RADIUS, getRadius());
+        ItemDataUtils.setInt(itemStack, NBTConstants.MIN, getMinY());
+        ItemDataUtils.setInt(itemStack, NBTConstants.MAX, getMaxY());
         ItemDataUtils.setBoolean(itemStack, NBTConstants.EJECT, doEject);
         ItemDataUtils.setBoolean(itemStack, NBTConstants.PULL, doPull);
-        ItemDataUtils.setBoolean(itemStack, NBTConstants.SILK_TOUCH, silkTouch);
+        ItemDataUtils.setBoolean(itemStack, NBTConstants.SILK_TOUCH, getSilkTouch());
         ItemDataUtils.setBoolean(itemStack, NBTConstants.INVERSE, inverse);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
@@ -755,10 +794,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             setRadius(Math.min(ItemDataUtils.getInt(itemStack, NBTConstants.RADIUS), MekanismConfig.general.digitalMinerMaxRadius.get()));
         }
         if (ItemDataUtils.hasData(itemStack, NBTConstants.MIN, NBT.TAG_INT)) {
-            minY = ItemDataUtils.getInt(itemStack, NBTConstants.MIN);
+            setMinY(ItemDataUtils.getInt(itemStack, NBTConstants.MIN));
         }
         if (ItemDataUtils.hasData(itemStack, NBTConstants.MAX, NBT.TAG_INT)) {
-            maxY = ItemDataUtils.getInt(itemStack, NBTConstants.MAX);
+            setMaxY(ItemDataUtils.getInt(itemStack, NBTConstants.MAX));
         }
         if (ItemDataUtils.hasData(itemStack, NBTConstants.EJECT, NBT.TAG_BYTE)) {
             doEject = ItemDataUtils.getBoolean(itemStack, NBTConstants.EJECT);
@@ -767,7 +806,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             doPull = ItemDataUtils.getBoolean(itemStack, NBTConstants.PULL);
         }
         if (ItemDataUtils.hasData(itemStack, NBTConstants.SILK_TOUCH, NBT.TAG_BYTE)) {
-            silkTouch = ItemDataUtils.getBoolean(itemStack, NBTConstants.SILK_TOUCH);
+            setSilkTouch(ItemDataUtils.getBoolean(itemStack, NBTConstants.SILK_TOUCH));
         }
         if (ItemDataUtils.hasData(itemStack, NBTConstants.INVERSE, NBT.TAG_BYTE)) {
             inverse = ItemDataUtils.getBoolean(itemStack, NBTConstants.INVERSE);
@@ -803,23 +842,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (upgrade == Upgrade.SPEED) {
             delayLength = MekanismUtils.getTicks(this, MekanismConfig.general.digitalMinerTicksPerMine.get());
         }
-    }
-
-    @Override
-    public boolean canBoundReceiveEnergy(BlockPos coord, Direction side) {
-        Direction left = getLeftSide();
-        Direction right = getRightSide();
-        if (coord.equals(getPos().offset(left))) {
-            return side == left;
-        } else if (coord.equals(getPos().offset(right))) {
-            return side == right;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return side == getLeftSide() || side == getRightSide() || side == Direction.DOWN;
     }
 
     @Nonnull
@@ -917,6 +939,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return filters;
     }
 
+    public MinerEnergyContainer getEnergyContainer() {
+        return energyContainer;
+    }
+
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
@@ -924,16 +950,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         container.track(SyncableBoolean.create(() -> doEject, value -> doEject = value));
         container.track(SyncableBoolean.create(() -> doPull, value -> doPull = value));
         container.track(SyncableBoolean.create(() -> running, value -> running = value));
-        container.track(SyncableBoolean.create(() -> silkTouch, value -> silkTouch = value));
+        container.track(SyncableBoolean.create(this::getSilkTouch, this::setSilkTouch));
         container.track(SyncableEnum.create(State::byIndexStatic, State.IDLE, () -> searcher.state, value -> searcher.state = value));
         container.track(SyncableInt.create(() -> !isRemote() && searcher.state == State.SEARCHING ? searcher.found : cachedToMine, value -> cachedToMine = value));
         container.track(SyncableItemStack.create(() -> missingStack, value -> missingStack = value));
     }
 
     public void addConfigContainerTrackers(MekanismContainer container) {
-        container.track(SyncableInt.create(() -> radius, value -> radius = value));
-        container.track(SyncableInt.create(() -> minY, value -> minY = value));
-        container.track(SyncableInt.create(() -> maxY, value -> maxY = value));
+        container.track(SyncableInt.create(this::getRadius, this::setRadius));
+        container.track(SyncableInt.create(this::getMinY, this::setMinY));
+        container.track(SyncableInt.create(this::getMaxY, this::setMaxY));
         container.track(SyncableBoolean.create(() -> inverse, value -> inverse = value));
         container.track(SyncableFilterList.create(this::getFilters, value -> {
             if (value instanceof HashList) {
@@ -948,9 +974,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = super.getUpdateTag();
-        updateTag.putInt(NBTConstants.RADIUS, radius);
-        updateTag.putInt(NBTConstants.MIN, minY);
-        updateTag.putInt(NBTConstants.MAX, maxY);
+        updateTag.putInt(NBTConstants.RADIUS, getRadius());
+        updateTag.putInt(NBTConstants.MIN, getMinY());
+        updateTag.putInt(NBTConstants.MAX, getMaxY());
         return updateTag;
     }
 
@@ -958,8 +984,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setIntIfPresent(tag, NBTConstants.RADIUS, this::setRadius);//client allowed to use whatever server sends
-        NBTUtils.setIntIfPresent(tag, NBTConstants.MIN, value -> minY = value);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.MAX, value -> maxY = value);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.MIN, this::setMinY);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.MAX, this::setMaxY);
     }
 
     private static class ItemCount {

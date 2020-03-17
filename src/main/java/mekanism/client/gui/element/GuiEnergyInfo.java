@@ -21,7 +21,7 @@ public class GuiEnergyInfo extends GuiTexturedElement {
         infoHandler = handler;
     }
 
-    public GuiEnergyInfo(MachineEnergyContainer energyContainer, IGuiWrapper gui) {
+    public GuiEnergyInfo(MachineEnergyContainer<?> energyContainer, IGuiWrapper gui) {
         this(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))), gui);
     }

@@ -58,7 +58,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     protected final IInputHandler<@NonNull ItemStack> itemInputHandler;
     protected final IInputHandler<@NonNull GasStack> gasInputHandler;
 
-    private MachineEnergyContainer energyContainer;
+    private MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private GasInventorySlot secondarySlot;
@@ -188,7 +188,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
               outputSlot, getComponents());
     }
 
-    public MachineEnergyContainer getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityAdvancedElectricMachine> getEnergyContainer() {
         return energyContainer;
     }
 }

@@ -38,7 +38,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine<I
     protected final IInputHandler<@NonNull ItemStack> inputHandler;
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;
 
-    private MachineEnergyContainer energyContainer;
+    private MachineEnergyContainer<TileEntityElectricMachine> energyContainer;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
@@ -130,7 +130,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine<I
         return new MachineUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, inputSlot, outputSlot, getComponents());
     }
 
-    public MachineEnergyContainer getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityElectricMachine> getEnergyContainer() {
         return energyContainer;
     }
 }

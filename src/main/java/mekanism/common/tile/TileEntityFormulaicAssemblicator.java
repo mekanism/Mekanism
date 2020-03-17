@@ -87,7 +87,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     public ItemStack lastFormulaStack = ItemStack.EMPTY;
     public ItemStack lastOutputStack = ItemStack.EMPTY;
 
-    private MachineEnergyContainer energyContainer;
+    private MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer;
     private List<IInventorySlot> craftingGridSlots;
     private List<IInventorySlot> inputSlots;
     private List<IInventorySlot> outputSlots;
@@ -613,7 +613,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
-    public MachineEnergyContainer getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityFormulaicAssemblicator> getEnergyContainer() {
         return energyContainer;
     }
 

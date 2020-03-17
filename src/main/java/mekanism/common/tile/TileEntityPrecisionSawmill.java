@@ -41,7 +41,7 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
     private final IOutputHandler<@NonNull ChanceOutput> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
 
-    private MachineEnergyContainer energyContainer;
+    private MachineEnergyContainer<TileEntityPrecisionSawmill> energyContainer;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private OutputInventorySlot secondaryOutputSlot;
@@ -145,7 +145,7 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
         return new SawmillUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, inputSlot, outputSlot, secondaryOutputSlot, getComponents());
     }
 
-    public MachineEnergyContainer getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityPrecisionSawmill> getEnergyContainer() {
         return energyContainer;
     }
 }

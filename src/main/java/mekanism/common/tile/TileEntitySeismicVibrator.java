@@ -23,7 +23,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
 
     public int clientPiston;
 
-    private MachineEnergyContainer energyContainer;
+    private MachineEnergyContainer<TileEntitySeismicVibrator> energyContainer;
     private EnergyInventorySlot energySlot;
 
     public TileEntitySeismicVibrator() {
@@ -112,7 +112,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
         return new AxisAlignedBB(pos, pos.add(1, 2, 1));
     }
 
-    public MachineEnergyContainer getEnergyContainer() {
+    public MachineEnergyContainer<TileEntitySeismicVibrator> getEnergyContainer() {
         return energyContainer;
     }
 }

@@ -1,18 +1,19 @@
 package mekanism.common.base.target;
 
-import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.api.Action;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.base.SplitInfo;
 import net.minecraft.util.Direction;
 
-public class EnergyAcceptorTarget extends Target<EnergyAcceptorWrapper, Double, Double> {
+public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Double, Double> {
 
     @Override
     protected void acceptAmount(Direction side, SplitInfo<Double> splitInfo, Double amount) {
-        splitInfo.send(handlers.get(side).acceptEnergy(side, amount, false));
+        splitInfo.send(amount - handlers.get(side).insertEnergy(amount, Action.EXECUTE));
     }
 
     @Override
-    protected Double simulate(EnergyAcceptorWrapper wrapper, Direction side, Double energyToSend) {
-        return wrapper.acceptEnergy(side, energyToSend, true);
+    protected Double simulate(IStrictEnergyHandler handler, Direction side, Double energyToSend) {
+        return energyToSend - handler.insertEnergy(energyToSend, Action.SIMULATE);
     }
 }

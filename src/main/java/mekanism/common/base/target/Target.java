@@ -70,7 +70,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      *
      * @return The amount it was actually willing to accept.
      */
-    protected abstract TYPE simulate(HANDLER handler, Direction side, EXTRA extra);
+    protected abstract TYPE simulate(HANDLER handler, Direction side, EXTRA extra);//TODO: Remove the direction as it is now unused
 
     /**
      * Calculates how much each handler can take of toSend. If the amount requested is less than the amount per handler/target in splitInfo it immediately sends the

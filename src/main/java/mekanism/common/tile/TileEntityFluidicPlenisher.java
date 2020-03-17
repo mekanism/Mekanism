@@ -61,7 +61,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
      */
     public int operatingTicks;
 
-    private MachineEnergyContainer energyContainer;
+    private MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer;
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
@@ -76,8 +76,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
         //TODO: Is there a better position to use, should it maybe get the default fluid state
         builder.addTank(fluidTank = BasicFluidTank.input(10_000,
-              fluid -> fluid.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluid), this),
-              RelativeSide.TOP);
+              fluid -> fluid.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluid), this), RelativeSide.TOP);
         return builder.build();
     }
 
@@ -275,7 +274,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         container.track(SyncableBoolean.create(() -> finishedCalc, value -> finishedCalc = value));
     }
 
-    public MachineEnergyContainer getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityFluidicPlenisher> getEnergyContainer() {
         return energyContainer;
     }
 }

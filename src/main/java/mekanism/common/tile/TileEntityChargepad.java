@@ -40,7 +40,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
                 if (entity instanceof EntityRobit) {
                     EntityRobit robit = (EntityRobit) entity;
                     double canGive = Math.min(getEnergy(), 1_000);
-                    double toGive = Math.min(robit.MAX_ELECTRICITY - robit.getEnergy(), canGive);
+                    double toGive = Math.min(robit.getMaxEnergy() - robit.getEnergy(), canGive);
                     robit.setEnergy(robit.getEnergy() + toGive);
                     setEnergy(getEnergy() - toGive);
                 } else if (entity instanceof PlayerEntity) {

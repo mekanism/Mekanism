@@ -50,7 +50,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityBasicMachine<GasTo
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull GasStack> inputHandler;
 
-    private MachineEnergyContainer energyContainer;
+    private MachineEnergyContainer<TileEntityChemicalCrystallizer> energyContainer;
     private GasInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
@@ -161,7 +161,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityBasicMachine<GasTo
         return new Object[]{inputTank};
     }
 
-    public MachineEnergyContainer getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityChemicalCrystallizer> getEnergyContainer() {
         return energyContainer;
     }
 }

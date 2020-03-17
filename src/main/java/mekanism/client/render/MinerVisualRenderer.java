@@ -68,7 +68,7 @@ public final class MinerVisualRenderer {
         }
 
         public MinerRenderData(TileEntityDigitalMiner miner) {
-            this(miner.minY, miner.maxY, miner.getRadius(), miner.getPos().getY());
+            this(miner.getMinY(), miner.getMaxY(), miner.getRadius(), miner.getPos().getY());
         }
 
         @Override

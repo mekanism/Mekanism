@@ -16,7 +16,7 @@ import net.minecraft.block.Block;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PRCEnergyContainer extends MachineEnergyContainer {
+public class PRCEnergyContainer extends MachineEnergyContainer<TileEntityPressurizedReactionChamber> {
 
     public static PRCEnergyContainer input(TileEntityPressurizedReactionChamber tile) {
         Block block = tile.getBlockType().getBlock();
@@ -28,12 +28,9 @@ public class PRCEnergyContainer extends MachineEnergyContainer {
         return new PRCEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
     }
 
-    private final TileEntityPressurizedReactionChamber tile;
-
     protected PRCEnergyContainer(double maxEnergy, double energyPerTick, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           TileEntityPressurizedReactionChamber tile) {
         super(maxEnergy, energyPerTick, canExtract, canInsert, tile);
-        this.tile = tile;
     }
 
     @Override

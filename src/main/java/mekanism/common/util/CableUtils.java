@@ -3,11 +3,12 @@ package mekanism.common.util;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Optional;
 import java.util.Set;
+import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.TileEntityInductionPort;
@@ -120,7 +121,7 @@ public final class CableUtils {
                         if (tile != null && (isValidAcceptorOnSide(tileEntity, tile, side) || isCable(tile))) {
                             //Get the opposite side as the current side is relative to us
                             Direction opposite = side.getOpposite();
-                            EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite);
+                            EnergyCompatUtils acceptor = EnergyCompatUtils.get(tile, opposite);
                             if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor.needsEnergy(opposite)) {
                                 target.addHandler(opposite, acceptor);
                             }
@@ -136,7 +137,7 @@ public final class CableUtils {
                         //Streamline sideless removal method for induction port.
                         ((TileEntityInductionPort) emitter).removeEnergy(sent, false);
                     } else {
-                        emitter.setEnergy(emitter.getEnergy() - sent);
+                        emitter.extractEnergy(sent, Action.EXECUTE);
                     }
                 }
             }

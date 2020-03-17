@@ -35,6 +35,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
@@ -51,7 +52,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
 
-    private MachineEnergyContainer energyContainer;
+    private MachineEnergyContainer<TileEntityMetallurgicInfuser> energyContainer;
     private InfusionInventorySlot infusionSlot;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
@@ -59,7 +60,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
 
     public TileEntityMetallurgicInfuser() {
         super(MekanismBlocks.METALLURGIC_INFUSER, 200);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
@@ -72,6 +73,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
             itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
             itemConfig.setDataType(RelativeSide.BOTTOM, DataType.EXTRA);
             itemConfig.setDataType(RelativeSide.BACK, DataType.ENERGY);
+        }
+
+        ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
+        if (energyConfig != null) {
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
+            energyConfig.fill(DataType.INPUT);
+            energyConfig.setCanEject(false);
         }
 
         ejectorComponent = new TileComponentEjector(this);
@@ -100,7 +108,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
     @Nonnull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
         return builder.build();
     }
@@ -190,7 +198,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
               inputSlot, outputSlot, getComponents());
     }
 
-    public MachineEnergyContainer getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityMetallurgicInfuser> getEnergyContainer() {
         return energyContainer;
     }
 }

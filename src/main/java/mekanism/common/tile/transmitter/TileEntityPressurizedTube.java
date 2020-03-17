@@ -364,7 +364,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(side);
             //Don't return a gas handler if we don't actually even have any tanks for that side
-            //TODO: Should we actually return the gas handler regardless??? And then just everything fails?
             LazyOptional<IGasHandler> lazyGasHandler = gasTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getGasHandler(side));
             return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, lazyGasHandler);
         }

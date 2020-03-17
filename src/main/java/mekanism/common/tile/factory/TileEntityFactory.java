@@ -83,7 +83,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Nonnull
     protected FactoryType type;
 
-    protected MachineEnergyContainer energyContainer;
+    protected MachineEnergyContainer<TileEntityFactory<?>> energyContainer;
     protected List<IInventorySlot> inputSlots;
     protected List<IInventorySlot> outputSlots;
     protected EnergyInventorySlot energySlot;
@@ -397,7 +397,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return true;
     }
 
-    public MachineEnergyContainer getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityFactory<?>> getEnergyContainer() {
         return energyContainer;
     }
 

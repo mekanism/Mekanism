@@ -18,6 +18,7 @@ import mekanism.client.gui.element.tab.GuiVisualsTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.capabilities.energy.MinerEnergyContainer;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -50,20 +51,21 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile, 163, 25, 50));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 163, 25, 50));
         addButton(new GuiVisualsTab(this, tile));
         addButton(new GuiSlot(SlotType.NORMAL, this, 143, 26).validity(() -> tile.missingStack)
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
               .hover(getOnHover(() -> tile.missingStack.isEmpty() ? MekanismLang.MINER_WELL.translate() : MekanismLang.MINER_MISSING_BLOCK.translate())));
         addButton(new GuiEnergyInfo(() -> {
-            double perTick = tile.getEnergyPerTick();
+            MinerEnergyContainer energyContainer = tile.getEnergyContainer();
+            double perTick = energyContainer.getEnergyPerTick();
             ArrayList<ITextComponent> ret = new ArrayList<>(4);
-            ret.add(MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(tile.getMaxEnergy())));
+            ret.add(MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(energyContainer.getMaxEnergy())));
             ret.add(MekanismLang.NEEDED_PER_TICK.translate(EnergyDisplay.of(perTick)));
-            if (perTick > tile.getMaxEnergy()) {
+            if (perTick > energyContainer.getMaxEnergy()) {
                 ret.add(MekanismLang.MINER_INSUFFICIENT_BUFFER.translateColored(EnumColor.RED));
             }
-            ret.add(MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(tile.getNeededEnergy())));
+            ret.add(MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(energyContainer.getNeeded())));
             return ret;
         }, this));
         addButton(startButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 17, 60, 20, MekanismLang.BUTTON_START,
@@ -100,7 +102,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         drawString(tile.getName(), 69, 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         ILangEntry runningType;
-        if (tile.getEnergyPerTick() > tile.getMaxEnergy()) {
+        if (tile.getEnergyContainer().getEnergyPerTick() > tile.getEnergyContainer().getMaxEnergy()) {
             runningType = MekanismLang.MINER_LOW_POWER;
         } else if (tile.running) {
             runningType = MekanismLang.MINER_RUNNING;
@@ -112,7 +114,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
 
         drawString(MekanismLang.EJECT.translate(OnOff.of(tile.doEject)), 9, 30, 0x00CD00);
         drawString(MekanismLang.MINER_AUTO_PULL.translate(OnOff.of(tile.doPull)), 9, 39, 0x00CD00);
-        drawString(MekanismLang.MINER_SILK_ENABLED.translate(OnOff.of(tile.silkTouch)), 9, 48, 0x00CD00);
+        drawString(MekanismLang.MINER_SILK_ENABLED.translate(OnOff.of(tile.getSilkTouch())), 9, 48, 0x00CD00);
         drawString(MekanismLang.MINER_TO_MINE.translate(), 9, 59, 0x00CD00);
         drawString(TextComponentUtil.build(tile.cachedToMine), 9, 68, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

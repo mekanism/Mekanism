@@ -87,7 +87,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      */
     private Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
 
-    private MachineEnergyContainer energyContainer;
+    private MachineEnergyContainer<TileEntityElectricPump> energyContainer;
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
@@ -359,7 +359,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
-    public MachineEnergyContainer getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityElectricPump> getEnergyContainer() {
         return energyContainer;
     }
 }

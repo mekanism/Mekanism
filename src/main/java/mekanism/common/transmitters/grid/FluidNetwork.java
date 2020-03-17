@@ -104,7 +104,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         }
         if (fluidTank.isEmpty()) {
             fluidTank.setStack(fluid.copy());
-            fluid.setAmount(0);
             return;
         }
         //TODO better multiple buffer impl
@@ -114,7 +113,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 //TODO: Print warning/error
             }
         }
-        fluid.setAmount(0);
     }
 
     @Override

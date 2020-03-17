@@ -125,8 +125,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         super(type, world);
         getNavigator().setCanSwim(false);
         setCustomNameVisible(true);
-        //TODO
-        energyContainer = BasicEnergyContainer.create(, this);
+        //TODO: Insert/Extract restrictions
+        energyContainer = BasicEnergyContainer.create(MAX_ELECTRICITY, this);
         energyContainers = Collections.singletonList(energyContainer);
 
         //TODO: Go through all this and clean it up properly

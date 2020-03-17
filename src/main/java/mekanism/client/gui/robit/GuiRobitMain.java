@@ -60,12 +60,12 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         addButton(new GuiHorizontalPowerBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return EnergyDisplay.of(robit.getEnergy(), robit.MAX_ELECTRICITY).getTextComponent();
+                return EnergyDisplay.of(robit.getEnergy(), robit.getMaxEnergy()).getTextComponent();
             }
 
             @Override
             public double getLevel() {
-                return robit.getEnergy() / robit.MAX_ELECTRICITY;
+                return robit.getEnergy() / robit.getMaxEnergy();
             }
         }, 27, 74, 120));
         addButton(confirmName = new TranslationButton(this, getGuiLeft() + 58, getGuiTop() + 47, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
@@ -142,7 +142,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         if (!nameChangeField.visible) {
             CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
             renderScaledText(MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, 0x00CD00, 119);
-            renderScaledText(MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergy(), robit.MAX_ELECTRICITY)), 29, 36 - 4, 0x00CD00, 119);
+            renderScaledText(MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergy(), robit.getMaxEnergy())), 29, 36 - 4, 0x00CD00, 119);
             renderScaledText(MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, 0x00CD00, 119);
             renderScaledText(MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()), 29, 54 - 4, 0x00CD00, 119);
             renderScaledText(MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, 0x00CD00, 119);

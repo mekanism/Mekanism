@@ -103,8 +103,8 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         drawString(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 11, 28, 0x00CD00);
         drawString(MekanismLang.MINER_IS_INVERSE.translate(OnOff.of(tile.inverse)), 11, 131, 0x00CD00);
         drawString(MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 11, 58, 0x00CD00);
-        drawString(MekanismLang.MIN.translate(tile.minY), 11, 83, 0x00CD00);
-        drawString(MekanismLang.MAX.translate(tile.maxY), 11, 108, 0x00CD00);
+        drawString(MekanismLang.MIN.translate(tile.getMinY()), 11, 83, 0x00CD00);
+        drawString(MekanismLang.MAX.translate(tile.getMaxY()), 11, 108, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -178,7 +178,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     private void setMinY() {
         if (!minField.getText().isEmpty()) {
-            int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tile.maxY));
+            int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tile.getMaxY()));
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(7, toUse)));
             minField.setText("");
         }
@@ -186,7 +186,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     private void setMaxY() {
         if (!maxField.getText().isEmpty()) {
-            int toUse = Math.max(tile.minY, Math.min(Integer.parseInt(maxField.getText()), 255));
+            int toUse = Math.max(tile.getMinY(), Math.min(Integer.parseInt(maxField.getText()), 255));
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(8, toUse)));
             maxField.setText("");
         }

@@ -15,28 +15,28 @@ import net.minecraft.block.Block;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MachineEnergyContainer extends BasicEnergyContainer {
+public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends BasicEnergyContainer {
 
-    public static MachineEnergyContainer input(TileEntityMekanism tile) {
+    public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> input(TILE tile) {
         Block block = tile.getBlockType().getBlock();
         if (!(block instanceof IBlockElectric)) {
             throw new IllegalArgumentException("Block provider must be an electric block");
         }
         Objects.requireNonNull(tile, "Tile cannot be null");
         IBlockElectric electricBlock = (IBlockElectric) block;
-        return new MachineEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
+        return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
     }
 
-    private final TileEntityMekanism upgradeTile;
+    protected final TILE tile;
     private final double baseEnergyPerTick;
     private double currentMaxEnergy;
     private double currentEnergyPerTick;
 
     protected MachineEnergyContainer(double maxEnergy, double energyPerTick, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
-          TileEntityMekanism tile) {
+          TILE tile) {
         super(maxEnergy, canExtract, canInsert, tile);
         this.baseEnergyPerTick = energyPerTick;
-        this.upgradeTile = tile;
+        this.tile = tile;
         //Make sure we have the proper max energy set initially
         updateMaxEnergy();
         updateEnergyPerTick();
@@ -78,11 +78,11 @@ public class MachineEnergyContainer extends BasicEnergyContainer {
 
     public void updateMaxEnergy() {
         //TODO: Do we want to validate it actually supports energy upgrades?
-        setMaxEnergy(MekanismUtils.getMaxEnergy(upgradeTile, getBaseMaxEnergy()));
+        setMaxEnergy(MekanismUtils.getMaxEnergy(tile, getBaseMaxEnergy()));
     }
 
     public void updateEnergyPerTick() {
         //TODO: Do we want to validate it actually supports energy or speed upgrades?
-        setEnergyPerTick(MekanismUtils.getEnergyPerTick(upgradeTile, baseEnergyPerTick));
+        setEnergyPerTick(MekanismUtils.getEnergyPerTick(tile, baseEnergyPerTick));
     }
 }

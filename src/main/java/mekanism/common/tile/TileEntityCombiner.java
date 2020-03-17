@@ -42,7 +42,7 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
     private final IInputHandler<@NonNull ItemStack> inputHandler;
     private final IInputHandler<@NonNull ItemStack> extraInputHandler;
 
-    private MachineEnergyContainer energyContainer;
+    private MachineEnergyContainer<TileEntityCombiner> energyContainer;
     private InputInventorySlot mainInputSlot;
     private InputInventorySlot extraInputSlot;
     private OutputInventorySlot outputSlot;
@@ -155,7 +155,7 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
         return new CombinerUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, extraInputSlot, mainInputSlot, outputSlot, getComponents());
     }
 
-    public MachineEnergyContainer getEnergyContainer() {
+    public MachineEnergyContainer<TileEntityCombiner> getEnergyContainer() {
         return energyContainer;
     }
 }
