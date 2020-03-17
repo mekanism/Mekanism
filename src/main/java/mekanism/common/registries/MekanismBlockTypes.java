@@ -9,13 +9,14 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
+import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
-import mekanism.common.block.attribute.Attributes.AttributeFullRotation;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.BlockShapes;
 import mekanism.common.content.blocktype.BlockTile;
@@ -28,12 +29,16 @@ import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.content.blocktype.Machine.MachineBuilder;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.DigitalMinerContainer;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
 import mekanism.common.inventory.container.tile.TeleporterContainer;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
@@ -44,6 +49,8 @@ import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.tile.TileEntityCrusher;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
@@ -51,6 +58,9 @@ import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
+import mekanism.common.tile.TileEntityInductionCasing;
+import mekanism.common.tile.TileEntityInductionPort;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
@@ -63,6 +73,7 @@ import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
+import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.laser.TileEntityLaser;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
@@ -262,7 +273,7 @@ public class MekanismBlockTypes {
         .createBlock(() -> MekanismTileEntityTypes.CHARGEPAD, MekanismLang.DESCRIPTION_CHARGEPAD)
         .withEnergyConfig(() -> 25, MekanismConfig.storage.chargePad)
         .withSound(MekanismSounds.CHARGEPAD)
-        .with(new AttributeStateActive())
+        .with(new AttributeStateActive(), new AttributeStateFacing())
         .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
         .build();
     // Laser
@@ -270,7 +281,7 @@ public class MekanismBlockTypes {
         .createBlock(() -> MekanismTileEntityTypes.LASER, MekanismLang.DESCRIPTION_LASER)
         .withEnergyConfig(MekanismConfig.usage.laser, MekanismConfig.storage.laser)
         .withSound(MekanismSounds.LASER)
-        .with(new AttributeStateActive(), new AttributeFullRotation())
+        .with(new AttributeStateActive(), new AttributeStateFacing(BlockStateHelper.facingProperty))
         .withCustomShape(BlockShapes.LASER)
         .build();
     // Laser Amplifier
@@ -278,7 +289,7 @@ public class MekanismBlockTypes {
         .createBlock(() -> MekanismTileEntityTypes.LASER_AMPLIFIER, MekanismLang.DESCRIPTION_LASER_AMPLIFIER)
         .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER)
         .withEnergyConfig(null, () -> 5E9)
-        .with(new AttributeFullRotation(), new AttributeRedstoneEmitter(), new AttributeRedstone(), new AttributeComparator(), new AttributeSecurity())
+        .with(new AttributeStateFacing(BlockStateHelper.facingProperty), new AttributeRedstoneEmitter(), new AttributeRedstone(), new AttributeComparator(), new AttributeSecurity())
         .withCustomShape(BlockShapes.LASER_AMPLIFIER)
         .build();
     // Laser Tractor Beam
@@ -286,7 +297,7 @@ public class MekanismBlockTypes {
         .createBlock(() -> MekanismTileEntityTypes.LASER_TRACTOR_BEAM, MekanismLang.DESCRIPTION_LASER_TRACTOR_BEAM)
         .withGui(() -> MekanismContainerTypes.LASER_TRACTOR_BEAM)
         .withEnergyConfig(null, () -> 5E9)
-        .with(new AttributeFullRotation(), new AttributeComparator(), new AttributeSecurity(), new AttributeInventory())
+        .with(new AttributeStateFacing(BlockStateHelper.facingProperty), new AttributeComparator(), new AttributeSecurity(), new AttributeInventory())
         .withCustomShape(BlockShapes.LASER_AMPLIFIER)
         .build();
     // Resistive Heater
@@ -311,14 +322,14 @@ public class MekanismBlockTypes {
         .createBlock(() -> MekanismTileEntityTypes.PERSONAL_CHEST, MekanismLang.DESCRIPTION_PERSONAL_CHEST)
         .withGui(() -> MekanismContainerTypes.PERSONAL_CHEST_BLOCK)
         .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new PersonalChestTileContainer(i, inv, tile)))
-        .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeCustomResistance(-1F))
+        .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
         .withCustomShape(BlockShapes.PERSONAL_CHEST)
         .build();
     // Fuelwood Heater
     public static final BlockTile<TileEntityFuelwoodHeater> FUELWOOD_HEATER = BlockTileBuilder
         .createBlock(() -> MekanismTileEntityTypes.FUELWOOD_HEATER, MekanismLang.DESCRIPTION_FUELWOOD_HEATER)
         .withGui(() -> MekanismContainerTypes.FUELWOOD_HEATER)
-        .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeParticleFX()
+        .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeParticleFX()
             .add(ParticleTypes.SMOKE, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
             .add(RedstoneParticleData.REDSTONE_DUST, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
         .build();
@@ -327,7 +338,7 @@ public class MekanismBlockTypes {
         .createBlock(() -> MekanismTileEntityTypes.OREDICTIONIFICATOR, MekanismLang.DESCRIPTION_OREDICTIONIFICATOR)
         .withGui(() -> MekanismContainerTypes.OREDICTIONIFICATOR)
         .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new OredictionificatorContainer(i, inv, tile)))
-        .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeRedstone())
+        .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeRedstone())
         .build();
     // Teleporter
     public static final Machine<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = MachineBuilder
@@ -337,8 +348,65 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeRedstone.class, AttributeComparator.class)
           .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, tile)))
-          .withCustomShape(BlockShapes.QUANTUM_ENTANGLOPORTER)
           .build();
+    // Logistical Sorter
+    public static final Machine<TileEntityLogisticalSorter> LOGISTICAL_SORTER = MachineBuilder
+          .createMachine(() -> MekanismTileEntityTypes.LOGISTICAL_SORTER, MekanismLang.DESCRIPTION_LOGISTICAL_SORTER)
+          .withGui(() -> MekanismContainerTypes.LOGISTICAL_SORTER)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .without(AttributeEnergy.class)
+          .with(new AttributeStateFacing(BlockStateHelper.facingProperty))
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.LOGISTICAL_SORTER, i, inv, tile)))
+          .withCustomShape(BlockShapes.LOGISTICAL_SORTER)
+          .withSound(MekanismSounds.LOGISTICAL_SORTER)
+          .build();
+
+    // Dynamic Tank
+    public static final BlockTile<TileEntityDynamicTank> DYNAMIC_TANK = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_TANK, MekanismLang.DESCRIPTION_DYNAMIC_TANK)
+        .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK)
+        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile)))
+        .with(new AttributeInventory())
+        .build();
+    // Dynamic Valve
+    public static final BlockTile<TileEntityDynamicValve> DYNAMIC_VALVE = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_VALVE, MekanismLang.DESCRIPTION_DYNAMIC_VALVE)
+        .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK)
+        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile)))
+        .with(new AttributeInventory(), new AttributeComparator())
+        .build();
+    // Boiler Casing
+    public static final BlockTile<TileEntityBoilerCasing> BOILER_CASING = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.BOILER_CASING, MekanismLang.DESCRIPTION_BOILER_CASING)
+        .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
+        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.THERMOELECTRIC_BOILER, i, inv, tile)))
+        .build();
+    // Boiler Valve
+    public static final BlockTile<TileEntityBoilerValve> BOILER_VALVE = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.BOILER_VALVE, MekanismLang.DESCRIPTION_BOILER_VALVE)
+        .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
+        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.THERMOELECTRIC_BOILER, i, inv, tile)))
+        .with(new AttributeInventory(), new AttributeComparator())
+        .build();
+    // Superheating Element
+    public static final BlockTile<TileEntitySuperheatingElement> SUPERHEATING_ELEMENT = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.SUPERHEATING_ELEMENT, MekanismLang.DESCRIPTION_SUPERHEATING_ELEMENT)
+        .with(new AttributeStateActive())
+        .build();
+    // Induction Casing
+    public static final BlockTile<TileEntityInductionCasing> INDUCTION_CASING = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.INDUCTION_CASING, MekanismLang.DESCRIPTION_INDUCTION_CASING)
+        .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX)
+        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile)))
+        .with(new AttributeInventory(), new AttributeComparator())
+        .build();
+    // Induction Port
+    public static final BlockTile<TileEntityInductionPort> INDUCTION_PORT = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.INDUCTION_PORT, MekanismLang.DESCRIPTION_INDUCTION_PORT)
+        .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX)
+        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile)))
+        .with(new AttributeInventory(), new AttributeComparator(), new AttributeStateActive())
+        .build();
 
     static {
         for (FactoryTier tier : FactoryTier.values()) {

@@ -12,7 +12,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityFactory;
 import net.minecraft.block.BlockState;
 
-public class BlockFactoryMachine<TILE extends TileEntityMekanism, MACHINE extends FactoryMachine<TILE>> extends BlockMachine<TILE, MACHINE> implements IUpgradeableBlock {
+public class BlockFactoryMachine<TILE extends TileEntityMekanism, MACHINE extends FactoryMachine<TILE>> extends BlockBase<TILE, MACHINE> implements IUpgradeableBlock {
 
     public BlockFactoryMachine(MACHINE machineType) {
         super(machineType);
@@ -21,7 +21,7 @@ public class BlockFactoryMachine<TILE extends TileEntityMekanism, MACHINE extend
     @Nonnull
     @Override
     public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
-        return machineType.upgradeResult(current, tier);
+        return type.upgradeResult(current, tier);
     }
 
     public static class BlockFactoryMachineModel<TILE extends TileEntityMekanism> extends BlockFactoryMachine<TILE, FactoryMachine<TILE>> implements IStateFluidLoggable {
@@ -39,7 +39,7 @@ public class BlockFactoryMachine<TILE extends TileEntityMekanism, MACHINE extend
 
         @Override
         public FactoryTier getTier() {
-            return machineType.getTier();
+            return type.getTier();
         }
     }
 }

@@ -2,7 +2,12 @@ package mekanism.generators.common.registries;
 
 import mekanism.api.Pos3D;
 import mekanism.common.block.attribute.AttributeParticleFX;
+import mekanism.common.block.attribute.AttributeStateActive;
+import mekanism.common.block.attribute.Attributes.AttributeComparator;
+import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.blocktype.BlockTile;
+import mekanism.common.content.blocktype.BlockTile.BlockTileBuilder;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.blocktype.BlockShapes;
 import mekanism.generators.common.content.blocktype.Generator;
@@ -13,6 +18,12 @@ import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
+import mekanism.generators.common.tile.reactor.TileEntityReactorController;
+import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
+import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.particles.ParticleTypes;
 
 public class GeneratorsBlockTypes {
@@ -70,4 +81,41 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.ADVANCED_SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
           .build();
+
+    // Turbine Casing
+    public static final BlockTile<TileEntityTurbineCasing> TURBINE_CASING = BlockTileBuilder
+        .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_CASING, GeneratorsLang.DESCRIPTION_TURBINE_CASING)
+        .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
+        .build();
+    // Turbine Valve
+    public static final BlockTile<TileEntityTurbineValve> TURBINE_VALVE = BlockTileBuilder
+        .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VALVE, GeneratorsLang.DESCRIPTION_TURBINE_VALVE)
+        .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
+        .with(new AttributeComparator())
+        .build();
+    // Turbine Vent
+    public static final BlockTile<TileEntityTurbineVent> TURBINE_VENT = BlockTileBuilder
+        .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VALVE, GeneratorsLang.DESCRIPTION_TURBINE_VENT)
+        .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
+        .build();
+
+    // Reactor Controller
+    public static final BlockTile<TileEntityReactorController> REACTOR_CONTROLLER = BlockTileBuilder
+        .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_CONTROLLER, GeneratorsLang.DESCRIPTION_REACTOR_CONTROLLER)
+        .withGui(() -> GeneratorsContainerTypes.REACTOR_CONTROLLER)
+        .withEnergyConfig(() -> 1_000_000_000)
+        .withSound(GeneratorsSounds.FUSION_REACTOR)
+        .with(new AttributeStateActive(), new AttributeInventory())
+        .build();
+    // Reactor Port
+    public static final BlockTile<TileEntityReactorPort> REACTOR_PORT = BlockTileBuilder
+        .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_PORT, GeneratorsLang.DESCRIPTION_REACTOR_PORT)
+        .withEnergyConfig(() -> 1)
+        .with(new AttributeStateActive())
+        .build();
+    // Reactor Frame
+    public static final BlockTile<TileEntityReactorFrame> REACTOR_FRAME = BlockTileBuilder
+        .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_FRAME, GeneratorsLang.DESCRIPTION_REACTOR_FRAME)
+        .withEnergyConfig(null, null)
+        .build();
 }

@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import org.jetbrains.annotations.Contract;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateActive;
+import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -53,9 +54,8 @@ public class BlockStateHelper {
 
     public static void fillBlockStateContainer(Block block, StateContainer.Builder<Block, BlockState> builder) {
         List<IProperty<?>> properties = new ArrayList<>();
-        if (block instanceof IStateFacing) {
-            properties.add(((IStateFacing) block).getFacingProperty());
-        }
+        Attribute.ifHas(block, AttributeStateFacing.class, (attr) -> properties.add(attr.getFacingProperty()));
+
         if (Attribute.has(block, AttributeStateActive.class)) {
             properties.add(activeProperty);
         }
@@ -80,8 +80,8 @@ public class BlockStateHelper {
         if (state == null) {
             return null;
         }
-        if (block instanceof IStateFacing) {
-            IStateFacing blockFacing = (IStateFacing) block;
+        if (Attribute.has(block, AttributeStateFacing.class)) {
+            AttributeStateFacing blockFacing = Attribute.get(block, AttributeStateFacing.class);
             //TODO: Somehow weight this stuff towards context.getFace(), so that it has a higher likelihood of going with the face that was clicked on
             Direction newDirection = Direction.SOUTH;
             if (blockFacing.supportsDirection(Direction.DOWN) && blockFacing.supportsDirection(Direction.UP)) {
@@ -139,8 +139,8 @@ public class BlockStateHelper {
 
     public static BlockState rotate(BlockState state, Rotation rotation) {
         Block block = state.getBlock();
-        if (block instanceof IStateFacing) {
-            IStateFacing blockFacing = (IStateFacing) block;
+        if (Attribute.has(block, AttributeStateFacing.class)) {
+            AttributeStateFacing blockFacing = Attribute.get(block, AttributeStateFacing.class);
             return rotate(blockFacing, blockFacing.getFacingProperty(), state, rotation);
         }
         return state;
@@ -148,15 +148,15 @@ public class BlockStateHelper {
 
     public static BlockState mirror(BlockState state, Mirror mirror) {
         Block block = state.getBlock();
-        if (block instanceof IStateFacing) {
-            IStateFacing blockFacing = (IStateFacing) block;
+        if (Attribute.has(block, AttributeStateFacing.class)) {
+            AttributeStateFacing blockFacing = Attribute.get(block, AttributeStateFacing.class);
             DirectionProperty property = blockFacing.getFacingProperty();
             return rotate(blockFacing, property, state, mirror.toRotation(state.get(property)));
         }
         return state;
     }
 
-    private static BlockState rotate(IStateFacing blockFacing, DirectionProperty property, BlockState state, Rotation rotation) {
+    private static BlockState rotate(AttributeStateFacing blockFacing, DirectionProperty property, BlockState state, Rotation rotation) {
         return blockFacing.setDirection(state, rotation.rotate(state.get(property)));
     }
 
@@ -170,8 +170,8 @@ public class BlockStateHelper {
     public static BlockState copyStateData(BlockState oldState, BlockState newState) {
         Block oldBlock = oldState.getBlock();
         Block newBlock = newState.getBlock();
-        if (oldBlock instanceof IStateFacing && newBlock instanceof IStateFacing) {
-            newState = newState.with(((IStateFacing) newBlock).getFacingProperty(), oldState.get(((IStateFacing) oldBlock).getFacingProperty()));
+        if (Attribute.has(oldBlock, newBlock, AttributeStateFacing.class)) {
+            newState = newState.with(Attribute.get(newBlock, AttributeStateFacing.class).getFacingProperty(), oldState.get(Attribute.get(oldBlock, AttributeStateFacing.class).getFacingProperty()));
         }
         if (Attribute.has(oldBlock, newBlock, AttributeStateActive.class)) {
             newState = newState.with(activeProperty, oldState.get(activeProperty));

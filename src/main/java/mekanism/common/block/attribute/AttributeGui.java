@@ -23,7 +23,7 @@ public class AttributeGui<TILE extends TileEntityMekanism> implements Attribute 
         this.containerSupplier = containerSupplier;
     }
 
-    public ContainerTypeRegistryObject<? extends MekanismTileContainer<? super TILE>> getContainerType() {
+    public ContainerTypeRegistryObject<? extends MekanismTileContainer<?>> getContainerType() {
         return containerRegistrar.get();
     }
 

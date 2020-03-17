@@ -7,7 +7,7 @@ import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
-import mekanism.common.block.machine.prefab.BlockMachine;
+import mekanism.common.block.machine.prefab.BlockBase;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
@@ -33,9 +33,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockMachine<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockBase<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockSeismicVibrator(BlockMachine<?, ?> block) {
+    public ItemBlockSeismicVibrator(BlockBase<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::seismicVibrator));
     }
 

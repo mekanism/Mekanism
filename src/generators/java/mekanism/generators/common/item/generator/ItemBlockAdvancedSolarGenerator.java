@@ -1,7 +1,7 @@
 package mekanism.generators.common.item.generator;
 
 import javax.annotation.Nonnull;
-import mekanism.common.block.machine.prefab.BlockMachine;
+import mekanism.common.block.machine.prefab.BlockBase;
 import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.render.item.GeneratorsISTERProvider;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 
 public class ItemBlockAdvancedSolarGenerator extends ItemBlockMachine {
 
-    public ItemBlockAdvancedSolarGenerator(BlockMachine<?, ?> block) {
+    public ItemBlockAdvancedSolarGenerator(BlockBase<?, ?> block) {
         super(block, GeneratorsISTERProvider::advancedSolar);
     }
 

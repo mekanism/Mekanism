@@ -7,18 +7,19 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
+import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.block.Block;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundEvent;
@@ -74,6 +75,20 @@ public class BlockTile<TILE extends TileEntityMekanism> {
         return description;
     }
 
+    public static <T extends TileEntityMekanism> boolean is(Block block, BlockTile<?>... types) {
+        if (block instanceof ITypeBlock) {
+            for (BlockTile<?> type : types) {
+                if (((ITypeBlock<?>) block).getType() == type)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public static BlockTile<?> get(Block block) {
+        return block instanceof ITypeBlock ? ((ITypeBlock<?>) block).getType() : null;
+    }
+
     public static class BlockTileBuilder<BLOCK extends BlockTile<TILE>, TILE extends TileEntityMekanism, T extends BlockTileBuilder<BLOCK, TILE, T>> {
 
         protected BLOCK holder;
@@ -82,7 +97,7 @@ public class BlockTile<TILE extends TileEntityMekanism> {
             this.holder = holder;
         }
 
-        public static <TILE extends TileEntityMekanism> BlockTileBuilder<BlockTile<TILE>, TILE, ?> createBlock(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, MekanismLang description) {
+        public static <TILE extends TileEntityMekanism> BlockTileBuilder<BlockTile<TILE>, TILE, ?> createBlock(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
             return new BlockTileBuilder<>(new BlockTile<TILE>(tileEntityRegistrar, description));
         }
 

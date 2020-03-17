@@ -1,11 +1,10 @@
 package mekanism.client;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.UUID;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
-import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.network.PacketKey;
 import mekanism.common.security.SecurityData;
 import net.minecraft.client.Minecraft;
@@ -38,8 +37,6 @@ public class MekanismClient {
         Mekanism.playerState.clear();
         Mekanism.activeVibrators.clear();
         Mekanism.freeRunnerOn.clear();
-
-        SynchronizedBoilerData.clientHotMap.clear();
 
         for (IModule module : Mekanism.modulesLoaded) {
             module.resetClient();

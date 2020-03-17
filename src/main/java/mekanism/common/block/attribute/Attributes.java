@@ -8,9 +8,6 @@ public class Attributes {
     /** If a block has an inventory. */
     public static class AttributeInventory implements Attribute {}
 
-    /** If a block supports rotation on all faces. */
-    public static class AttributeFullRotation implements Attribute {}
-
     /** If a block supports comparators. */
     public static class AttributeComparator implements Attribute {}
 

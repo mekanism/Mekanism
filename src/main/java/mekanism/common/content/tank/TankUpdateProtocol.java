@@ -4,17 +4,17 @@ import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.block.basic.BlockDynamicTank;
+import mekanism.common.content.blocktype.BlockTile;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
+import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
@@ -28,8 +28,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        BlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
-        return state.getBlock() instanceof BlockDynamicTank;
+        return BlockTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.DYNAMIC_TANK, MekanismBlockTypes.DYNAMIC_VALVE);
     }
 
     @Override

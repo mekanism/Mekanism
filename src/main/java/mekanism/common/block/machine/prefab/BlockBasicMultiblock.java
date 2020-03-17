@@ -1,8 +1,8 @@
-package mekanism.common.block.basic;
+package mekanism.common.block.machine.prefab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.block.BlockMekanism;
+import mekanism.common.content.blocktype.BlockTile;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -24,14 +24,14 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
-public class BlockBasicMultiblock extends BlockMekanism {
+public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends BlockBase<TILE, BlockTile<TILE>> {
 
-    public BlockBasicMultiblock() {
-        this(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
+    public BlockBasicMultiblock(BlockTile<TILE> type) {
+        this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
     }
 
-    public BlockBasicMultiblock(Block.Properties properties) {
-        super(properties);
+    public BlockBasicMultiblock(BlockTile<TILE> type, Block.Properties properties) {
+        super(type, properties);
     }
 
     @Override

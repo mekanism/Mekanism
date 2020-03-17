@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.prefab.BlockMachine.BlockMachineModel;
+import mekanism.common.block.machine.prefab.BlockBase.BlockMachineModel;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
 import mekanism.common.item.IItemSustainedInventory;

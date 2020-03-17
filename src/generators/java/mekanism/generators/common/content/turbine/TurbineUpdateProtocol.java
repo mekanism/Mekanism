@@ -1,10 +1,11 @@
 package mekanism.generators.common.content.turbine;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.common.content.blocktype.BlockTile;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -13,7 +14,7 @@ import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.turbine.BlockTurbineCasing;
+import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
@@ -36,7 +37,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        return pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockTurbineCasing;
+        return BlockTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), GeneratorsBlockTypes.TURBINE_CASING, GeneratorsBlockTypes.TURBINE_VALVE, GeneratorsBlockTypes.TURBINE_VENT);
     }
 
     @Override

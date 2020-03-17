@@ -10,7 +10,9 @@ import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.prefab.BlockMachine;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.block.machine.prefab.BlockBase;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
@@ -40,13 +42,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockMachine<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockBase<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockMachine(BlockMachine<?, ?> block) {
+    public ItemBlockMachine(BlockBase<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
-    public ItemBlockMachine(BlockMachine<?, ?> block, Supplier<Callable<ItemStackTileEntityRenderer>> renderer) {
+    public ItemBlockMachine(BlockBase<?, ?> block, Supplier<Callable<ItemStackTileEntityRenderer>> renderer) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(renderer));
     }
 
@@ -77,7 +79,7 @@ public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockMachine<?, ?
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockMachine) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockMachine) item).getBlock().getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, Attribute.get(((ItemBlockMachine) item).getBlock(), AttributeEnergy.class).getStorage());
         }
         return 0;
     }

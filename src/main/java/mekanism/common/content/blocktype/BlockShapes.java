@@ -30,9 +30,10 @@ public final class BlockShapes {
     public static final VoxelShape[] SEISMIC_VIBRATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] PERSONAL_CHEST = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] QUANTUM_ENTANGLOPORTER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] LOGISTICAL_SORTER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        setShape(VoxelShapeUtils.combine(
+        setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
             makeCuboidShape(0, 0, 0, 16, 4, 16), // base
             makeCuboidShape(15, 3, 3, 16, 13, 13), // portToggle1
             makeCuboidShape(0, 4, 4, 1, 12, 12), // portToggle2a
@@ -50,7 +51,7 @@ public final class BlockShapes {
             makeCuboidShape(3, 15, 3, 4, 16, 13), // tube4
             makeCuboidShape(3, 14, 3, 4, 15, 4), // tube5
             makeCuboidShape(3, 14, 12, 4, 15, 13)// tube6
-        ), Rotation.CLOCKWISE_90, ELECTROLYTIC_SEPARATOR);
+        ), Rotation.CLOCKWISE_90), ELECTROLYTIC_SEPARATOR);
 
         setShape(VoxelShapeUtils.combine(
               makeCuboidShape(5, 9, -14, 6, 10, -13),
@@ -124,7 +125,7 @@ public final class BlockShapes {
               makeCuboidShape(-10 + 2.5, 16, -12, -5.5 + 2.5, 26, -14),
               makeCuboidShape(-13.5 + 2.5, 16, -13, -9 + 2.5, 26, -15),
               makeCuboidShape(-16.5 + 2.5, 16, -14, -12.5 + 2.5, 26, -16)
-        ), Rotation.NONE, DIGITAL_MINER);
+        ), DIGITAL_MINER);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(0, 0, 0, 16, 5, 16), // base
@@ -141,7 +142,7 @@ public final class BlockShapes {
             makeCuboidShape(0.5, 6, 14.5, 1.5, 11, 15.5), // support2
             makeCuboidShape(14.5, 6, 0.5, 15.5, 11, 1.5), // support3
             makeCuboidShape(0.5, 6, 0.5, 1.5, 11, 1.5)// support4
-        ), Rotation.NONE, CHEMICAL_CRYSTALLIZER);
+        ), CHEMICAL_CRYSTALLIZER);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(0, 0, 0, 16, 4, 16), // base
@@ -154,7 +155,7 @@ public final class BlockShapes {
             makeCuboidShape(12, 9, 1, 13, 10, 6), // bar3
             makeCuboidShape(12, 11, 1, 13, 12, 6), // bar4
             makeCuboidShape(12, 13, 1, 13, 14, 6)// bar5
-        ), Rotation.NONE, PRESSURIZED_REACTION_CHAMBER);
+        ), PRESSURIZED_REACTION_CHAMBER);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(0, 0, 0, 16, 4, 16), // base
@@ -174,7 +175,7 @@ public final class BlockShapes {
             makeCuboidShape(1, 12, 1, 15, 15, 15), // plate1
             makeCuboidShape(1, 8, 1, 15, 11, 15), // plate2
             makeCuboidShape(1, 4, 1, 15, 7, 15)// plate3
-        ), Rotation.NONE, METALLURGIC_INFUSER);
+        ), METALLURGIC_INFUSER);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(0, 0, 0, 16, 4, 16), // base
@@ -200,7 +201,7 @@ public final class BlockShapes {
             makeCuboidShape(7, 10, 1, 9, 11, 2), // bridge2
             makeCuboidShape(7, 8, 1, 9, 9, 2), // bridge3
             makeCuboidShape(7, 6, 1, 9, 7, 2)// bridge4
-        ), Rotation.NONE, CHEMICAL_WASHER);
+        ), CHEMICAL_WASHER);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(0, 0, 0, 16, 4, 16), // base
@@ -213,7 +214,7 @@ public final class BlockShapes {
             makeCuboidShape(8, 5, 7, 14, 16, 15), // tower2
             makeCuboidShape(7, 7, 9, 8, 10, 12), // pipe1
             makeCuboidShape(13, 5, 5, 15, 11, 11)// pipe2
-        ), Rotation.NONE, CHEMICAL_OXIDIZER);
+        ), CHEMICAL_OXIDIZER);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(0, 0, 0, 16, 5, 16), // base
@@ -245,9 +246,9 @@ public final class BlockShapes {
             makeCuboidShape(3, 13.5, 7.5, 4, 14.5, 9.5), // tube8
             makeCuboidShape(7, 14, 10, 9, 15, 11), // tube9
             makeCuboidShape(7, 14, 13, 9, 15, 14)// tube10
-        ), Rotation.NONE, CHEMICAL_INFUSER);
+        ), CHEMICAL_INFUSER);
 
-        setShape(VoxelShapeUtils.combine(
+        setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
             makeCuboidShape(0, 0, 0, 16, 7, 16), // base
             makeCuboidShape(1, 7, 0, 15, 15, 2), // back
             makeCuboidShape(1, 7, 2, 15, 12, 15), // glass
@@ -260,7 +261,7 @@ public final class BlockShapes {
             makeCuboidShape(1, 13, 14, 2, 15, 15), // support2
             makeCuboidShape(0, 3, 3, 1, 13, 13), // portToggle1
             makeCuboidShape(15, 4, 4, 16, 12, 12)// portToggle2
-        ), Rotation.CLOCKWISE_180, CHEMICAL_DISSOLUTION_CHAMBER);
+        ), Rotation.CLOCKWISE_180), CHEMICAL_DISSOLUTION_CHAMBER);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(0, 0, 0, 16, 5, 16), // base
@@ -285,7 +286,7 @@ public final class BlockShapes {
             makeCuboidShape(7, 9, 13, 9, 10, 14), // tube6
             makeCuboidShape(7, 11, 13, 9, 12, 14), // tube7
             makeCuboidShape(7, 5, 13, 9, 6, 14)// tube8
-        ), Rotation.NONE, ROTARY_CONDENSENTRATOR);
+        ), ROTARY_CONDENSENTRATOR);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(3, 15, 3, 13, 16, 13), // portTop
@@ -302,9 +303,9 @@ public final class BlockShapes {
             makeCuboidShape(5, 10, 12, 6, 11, 15), // rod2
             makeCuboidShape(10, 5, 12, 11, 6, 15), // rod3
             makeCuboidShape(5, 5, 12, 6, 6, 15)// rod4
-        ), Rotation.NONE, FLUIDIC_PLENISHER);
+        ), FLUIDIC_PLENISHER);
 
-        setShape(VoxelShapeUtils.combine(
+        setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
             makeCuboidShape(4.5, 1, 4.5, 11.5, 13, 11.5), // pumpCasing
             makeCuboidShape(5, 0, 5, 11, 15, 11), // pumpBase
             makeCuboidShape(4, 13, 4, 12, 14, 12), // pumpRingTop
@@ -315,7 +316,7 @@ public final class BlockShapes {
             makeCuboidShape(5, 10, 1, 6, 11, 5), // powerConnectorFrame2
             makeCuboidShape(10, 5, 1, 11, 6, 5), // powerConnectorFrame3
             makeCuboidShape(5, 5, 1, 6, 6, 5)// powerConnectorFrame4
-        ), Rotation.CLOCKWISE_180, ELECTRIC_PUMP);
+        ), Rotation.CLOCKWISE_180), ELECTRIC_PUMP);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(6, 14, 14, 10, 29, 16),
@@ -393,7 +394,7 @@ public final class BlockShapes {
             makeCuboidShape(-0.5, 30.5, 4, 1.25, 31.5, 8),
             makeCuboidShape(-0.5, 30, 8, 1.25, 31, 12),
             makeCuboidShape(-0.5, 29.5, 12, 1.25, 30.5, 16.1)
-        ), Rotation.NONE, SOLAR_NEUTRON_ACTIVATOR);
+        ), SOLAR_NEUTRON_ACTIVATOR);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(10, 1, 11.99, 12, 8, 13.99),//pillar1
@@ -404,7 +405,7 @@ public final class BlockShapes {
             makeCuboidShape(7, 4, 11, 9, 5, 13),//plug
             makeCuboidShape(4, 4, 15, 12, 12, 16),//port
             makeCuboidShape(5, 5, 15, 11, 11, 16)//port_ring
-        ), Rotation.NONE, CHARGEPAD);
+        ), CHARGEPAD);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(5, 2, 4, 11, 9, 12),//body
@@ -427,7 +428,7 @@ public final class BlockShapes {
             makeCuboidShape(11, 6, 4, 12, 7, 12),//fin6
             makeCuboidShape(11, 4, 4, 12, 5, 12),//fin7
             makeCuboidShape(11, 2, 4, 12, 3, 12)//fin8
-        ), Rotation.NONE, LASER, true);
+        ), LASER, true);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(1, 1, 1, 15, 15, 15),//Base
@@ -437,7 +438,7 @@ public final class BlockShapes {
             makeCuboidShape(3, 0, 3, 13, 1, 13),//S4
             makeCuboidShape(3, 3, 0, 13, 13, 1),//S5
             makeCuboidShape(3, 15, 3, 13, 16, 13)//S6
-        ), Rotation.NONE, LASER_AMPLIFIER, true);
+        ), LASER_AMPLIFIER, true);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(0, 0, 0, 16, 7, 16),//base
@@ -460,7 +461,7 @@ public final class BlockShapes {
             makeCuboidShape(3, 6.5, 3.5, 13, 15.5, 4.5),//fin8
             makeCuboidShape(3, 6.5, 2, 13, 15.5, 3),//fin9
             makeCuboidShape(3, 6.5, 0.5, 13, 15.5, 1.5)//fin10
-        ), Rotation.NONE, RESISTIVE_HEATER);
+        ), RESISTIVE_HEATER);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(4, 0, 4, 12, 2, 12),
@@ -500,12 +501,12 @@ public final class BlockShapes {
             makeCuboidShape(0.5, 0, 14.5, 15.5, 32, 15.5),
             makeCuboidShape(14.5, 0, 0.5, 15.5, 32, 15.5),
             makeCuboidShape(0.5, 0, 0.5, 1.5, 32, 15.5)
-        ), Rotation.NONE, SEISMIC_VIBRATOR);
+        ), SEISMIC_VIBRATOR);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(1, 0, 1, 15, 14, 15),//Main chest
             makeCuboidShape(7, 7, 0, 9, 11, 1)//latch
-        ), Rotation.NONE, PERSONAL_CHEST);
+        ), PERSONAL_CHEST);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(4, 4, 0, 12, 12, 1),//portFront
@@ -546,21 +547,47 @@ public final class BlockShapes {
             makeCuboidShape(14.5, 14.5, 3, 15.5, 15.5, 13),//frameEdge10
             makeCuboidShape(0.5, 14.5, 3, 1.5, 15.5, 13),//frameEdge11
             makeCuboidShape(3, 14.5, 14.5, 13, 15.5, 15.5)//frameEdge12
-        ), Rotation.NONE, QUANTUM_ENTANGLOPORTER, true);
+        ), QUANTUM_ENTANGLOPORTER, true);
 
-        setShape(makeCuboidShape(2, 0, 2, 14, 16, 14), Rotation.CLOCKWISE_90, FLUID_TANK);
+        setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
+            makeCuboidShape(5, 5, 1, 11, 11, 15),//pipe
+            makeCuboidShape(3, 3, 14, 13, 13, 15),//connectorBack
+            makeCuboidShape(2, 2, 15, 14, 14, 16),//portBackLarge
+            makeCuboidShape(4, 4, 16, 12, 12, 17),//portBack
+            makeCuboidShape(3, 3, 0, 13, 13, 1),//portFront
+            makeCuboidShape(11, 6.5, 3.5, 12, 9.5, 11.5),//panel1
+            makeCuboidShape(4, 6.5, 3.5, 5, 9.5, 11.5),//panel2
+            makeCuboidShape(7, 3, 4, 9, 5, 5),//pistonConnector1
+            makeCuboidShape(7, 11, 4, 9, 13, 5),//pistonConnector2
+            makeCuboidShape(7, 3.5, 1, 9, 5.5, 4),//pistonBrace1
+            makeCuboidShape(7, 10.5, 1, 9, 12.5, 4),//pistonBrace2
+            makeCuboidShape(7, 3, 9.01, 9, 5, 14.01),//pistonBase1
+            makeCuboidShape(7, 11, 9.01, 9, 13, 14.01),//pistonBase2
+            makeCuboidShape(7.5, 3.5, 5.01, 8.5, 4.5, 10.01),//pistonBar1
+            makeCuboidShape(7.5, 11.5, 5.01, 8.5, 12.5, 10.01),//pistonBar2
+            makeCuboidShape(4.5, 4.5, 1, 11.5, 11.5, 2),//ring1
+            makeCuboidShape(4.5, 4.5, 3, 11.5, 11.5, 4),//ring2
+            makeCuboidShape(4.5, 4.5, 5, 11.5, 11.5, 6),//ring3
+            makeCuboidShape(4.5, 4.5, 7, 11.5, 11.5, 8),//ring4
+            makeCuboidShape(4.5, 4.5, 9, 11.5, 11.5, 10),//ring5
+            makeCuboidShape(4.5, 4.5, 11, 11.5, 11.5, 12),//ring6
+            makeCuboidShape(4.5, 4.5, 13, 11.5, 11.5, 14),//ring7
+            makeCuboidShape(11.5, 7.5, 6.5, 12.5, 8.5, 7.5),//led1
+            makeCuboidShape(11.5, 7.5, 4.5, 12.5, 8.5, 5.5),//led2
+            makeCuboidShape(3.5, 7.5, 4.5, 4.5, 8.5, 5.5),//led3
+            makeCuboidShape(3.5, 7.5, 6.5, 4.5, 8.5, 7.5)//led4
+        ), Direction.NORTH), LOGISTICAL_SORTER, true);
+
+        setShape(VoxelShapeUtils.rotate(makeCuboidShape(2, 0, 2, 14, 16, 14), Rotation.CLOCKWISE_90), FLUID_TANK);
     }
 
-    private static void setShape(VoxelShape shape, Rotation rotation, VoxelShape[] dest, boolean verticalAxis) {
-        if (rotation != Rotation.NONE) {
-            shape = VoxelShapeUtils.rotate(shape, rotation);
-        }
+    private static void setShape(VoxelShape shape, VoxelShape[] dest, boolean verticalAxis) {
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             dest[verticalAxis ? side.ordinal() : side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(shape, side);
         }
     }
 
-    private static void setShape(VoxelShape shape, Rotation rotation, VoxelShape[] dest) {
-        setShape(shape, rotation, dest, false);
+    private static void setShape(VoxelShape shape, VoxelShape[] dest) {
+        setShape(shape, dest, false);
     }
 }

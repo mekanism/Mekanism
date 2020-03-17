@@ -6,7 +6,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
-import mekanism.common.block.machine.prefab.BlockMachine.BlockMachineModel;
+import mekanism.common.block.machine.prefab.BlockBase.BlockMachineModel;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;

@@ -42,13 +42,13 @@ import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.block.attribute.AttributeStateActive;
+import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
-import mekanism.common.block.states.IStateFacing;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.capabilities.IToggleableCapability;
@@ -286,7 +286,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         isElectric = Attribute.has(block, AttributeEnergy.class);
         supportsUpgrades = Attribute.has(block, AttributeUpgradeSupport.class);
         canBeUpgraded = block instanceof IUpgradeableBlock;
-        isDirectional = block instanceof IStateFacing;
+        isDirectional = Attribute.has(block, AttributeStateFacing.class);
         supportsRedstone = Attribute.has(block, AttributeRedstone.class);
         hasSound = Attribute.has(block, AttributeSound.class);
         hasGui = Attribute.has(block, AttributeGui.class);
@@ -762,8 +762,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (isDirectional()) {
             BlockState state = getBlockState();
             Block block = state.getBlock();
-            if (block instanceof IStateFacing) {
-                return ((IStateFacing) block).getDirection(state);
+            if (Attribute.has(block, AttributeStateFacing.class)) {
+                return Attribute.get(block, AttributeStateFacing.class).getDirection(state);
             }
         }
         //TODO: Remove, give it some better default, or allow it to be null
@@ -776,8 +776,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (isDirectional()) {
             BlockState state = getBlockState();
             Block block = state.getBlock();
-            if (block instanceof IStateFacing) {
-                state = ((IStateFacing) block).setDirection(state, direction);
+            if (Attribute.has(block, AttributeStateFacing.class)) {
+                state = Attribute.get(block, AttributeStateFacing.class).setDirection(state, direction);
                 World world = getWorld();
                 if (world != null) {
                     world.setBlockState(pos, state);
