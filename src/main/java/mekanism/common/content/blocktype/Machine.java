@@ -25,7 +25,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 
-public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
+public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE> {
 
     public Machine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, MekanismLang description) {
         super(tileEntityRegistrar, description);

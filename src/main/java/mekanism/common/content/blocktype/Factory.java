@@ -6,6 +6,7 @@ import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
+import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -17,24 +18,19 @@ import mekanism.common.tile.factory.TileEntityFactory;
 public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<TILE> {
 
     private FactoryMachine<?> origMachine;
-    private FactoryTier tier;
 
     public Factory(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, FactoryMachine<?> origMachine, FactoryTier tier) {
         super(tileEntityRegistrar, MekanismLang.DESCRIPTION_FACTORY, origMachine.get(AttributeFactoryType.class).getFactoryType());
         this.origMachine = origMachine;
-        this.tier = tier;
         setMachineData();
-        add(new AttributeGui<>(containerRegistrar));
+        add(new AttributeGui<>(containerRegistrar), new AttributeTier<>(tier));
     }
 
     private void setMachineData() {
         setFrom(origMachine, AttributeSound.class, AttributeFactoryType.class, AttributeUpgradeSupport.class);
         AttributeEnergy origEnergy = origMachine.get(AttributeEnergy.class);
-        add(new AttributeEnergy(() -> origEnergy.getUsage(), () -> tier.processes * Math.max(0.5D * origEnergy.getConfigStorage(), origEnergy.getUsage())));
-    }
-
-    public FactoryTier getTier() {
-        return tier;
+        AttributeTier<FactoryTier> tier = origMachine.get(AttributeTier.class);
+        add(new AttributeEnergy(() -> origEnergy.getUsage(), () -> tier.getTier().processes * Math.max(0.5D * origEnergy.getConfigStorage(), origEnergy.getUsage())));
     }
 
     public static class FactoryBuilder<FACTORY extends Factory<TILE>, TILE extends TileEntityFactory<?>, T extends MachineBuilder<FACTORY, TILE, T>> extends BlockTileBuilder<FACTORY, TILE, T> {

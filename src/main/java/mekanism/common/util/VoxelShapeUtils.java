@@ -390,6 +390,17 @@ public final class VoxelShapeUtils {
         return combine(shapes, false);
     }
 
+    public static void setShape(VoxelShape shape, VoxelShape[] dest, boolean verticalAxis) {
+        Direction[] dirs = verticalAxis ? EnumUtils.DIRECTIONS : EnumUtils.HORIZONTAL_DIRECTIONS;
+        for (Direction side : dirs) {
+            dest[verticalAxis ? side.ordinal() : side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(shape, side);
+        }
+    }
+
+    public static void setShape(VoxelShape shape, VoxelShape[] dest) {
+        setShape(shape, dest, false);
+    }
+
     @FunctionalInterface
     public interface ShapeCreator {
 
@@ -435,6 +446,7 @@ public final class VoxelShapeUtils {
             return new Vec3f(this.x * factorX, this.y * factorY, this.z * factorZ);
         }
 
+        @Override
         public String toString() {
             return "(" + this.x + ", " + this.y + ", " + this.z + ")";
         }

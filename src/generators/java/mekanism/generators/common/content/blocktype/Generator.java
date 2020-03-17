@@ -9,12 +9,12 @@ import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
-import mekanism.common.content.blocktype.BlockTile;
+import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.generators.common.GeneratorsLang;
 
-public class Generator<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
+public class Generator<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE> {
 
     protected DoubleSupplier energyStorage;
 

@@ -1,9 +1,8 @@
 package mekanism.common.block.interfaces;
 
-import mekanism.common.content.blocktype.BlockTile;
-import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.content.blocktype.BlockType;
 
-public interface ITypeBlock<TILE extends TileEntityMekanism> {
+public interface ITypeBlock {
 
-    public BlockTile<TILE> getType();
+    public BlockType getType();
 }

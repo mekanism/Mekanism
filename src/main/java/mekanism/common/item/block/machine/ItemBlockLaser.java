@@ -6,7 +6,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
-import mekanism.common.block.machine.prefab.BlockBase.BlockMachineModel;
+import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
@@ -26,9 +26,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockLaser extends ItemBlockAdvancedTooltip<BlockMachineModel<?, ?>> implements IItemEnergized, IItemSustainedInventory {
+public class ItemBlockLaser extends ItemBlockAdvancedTooltip<BlockTileModel<?, ?>> implements IItemEnergized, IItemSustainedInventory {
 
-    public ItemBlockLaser(BlockMachineModel<?, ?> block) {
+    public ItemBlockLaser(BlockTileModel<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 

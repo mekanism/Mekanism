@@ -4,7 +4,7 @@ import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.content.blocktype.BlockTile;
+import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -28,7 +28,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        return BlockTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.DYNAMIC_TANK, MekanismBlockTypes.DYNAMIC_VALVE);
+        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.DYNAMIC_TANK, MekanismBlockTypes.DYNAMIC_VALVE);
     }
 
     @Override

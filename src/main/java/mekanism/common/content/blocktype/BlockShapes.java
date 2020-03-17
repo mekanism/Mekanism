@@ -1,5 +1,6 @@
 package mekanism.common.content.blocktype;
 
+import static mekanism.common.util.VoxelShapeUtils.setShape;
 import static net.minecraft.block.Block.makeCuboidShape;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
@@ -31,6 +32,7 @@ public final class BlockShapes {
     public static final VoxelShape[] PERSONAL_CHEST = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] QUANTUM_ENTANGLOPORTER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] LOGISTICAL_SORTER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] SECURITY_DESK = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
@@ -578,16 +580,40 @@ public final class BlockShapes {
             makeCuboidShape(3.5, 7.5, 6.5, 4.5, 8.5, 7.5)//led4
         ), Direction.NORTH), LOGISTICAL_SORTER, true);
 
+        setShape(VoxelShapeUtils.combine(
+            makeCuboidShape(0, 6, 0, 16, 13, 16),
+            makeCuboidShape(0, 0, 0, 16, 5, 16),
+            makeCuboidShape(1, 5, 1, 15, 6, 15),
+            //Rough estimated of things that are at angles, so that we do not have overly complex shapes
+            //keyboard
+            makeCuboidShape(3, 13, 2, 13, 14, 7),
+            //stand base
+            makeCuboidShape(4, 13, 10, 12, 14, 14),
+            //stand neck
+            makeCuboidShape(7, 14, 13, 9, 15.5, 14),
+            makeCuboidShape(7, 15.5, 12.875, 9, 17, 13.875),
+            makeCuboidShape(7, 17, 12.75, 9, 18.5, 13.75),
+            makeCuboidShape(7, 18.5, 12.625, 9, 20, 13.625),
+            //monitor
+            makeCuboidShape(1, 14.5, 9, 15, 15, 10),
+            makeCuboidShape(1, 15, 8, 15, 16, 10.5),
+            makeCuboidShape(1, 16, 8.5, 15, 17, 11),
+            makeCuboidShape(1, 17, 9, 15, 18, 11.5),
+            makeCuboidShape(1, 18, 9.5, 15, 19, 12),
+            makeCuboidShape(1, 19, 10, 15, 20, 12.5),
+            makeCuboidShape(1, 20, 10.5, 15, 21, 13),
+            makeCuboidShape(1, 21, 11, 15, 22, 13.5),
+            makeCuboidShape(1, 22, 11.5, 15, 23, 14),
+            makeCuboidShape(1, 23, 12, 15, 24, 14.25),
+            makeCuboidShape(1, 24, 12.5, 15, 24.5, 13),
+            //monitor back
+            makeCuboidShape(2, 16, 11, 14, 17, 12),
+            makeCuboidShape(2, 17, 11.5, 14, 18, 12.5),
+            makeCuboidShape(2, 18, 12, 14, 19, 13),
+            makeCuboidShape(2, 19, 12.5, 14, 20, 13.5),
+            makeCuboidShape(2, 20, 13, 14, 21.5, 14)
+        ), SECURITY_DESK);
+
         setShape(VoxelShapeUtils.rotate(makeCuboidShape(2, 0, 2, 14, 16, 14), Rotation.CLOCKWISE_90), FLUID_TANK);
-    }
-
-    private static void setShape(VoxelShape shape, VoxelShape[] dest, boolean verticalAxis) {
-        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            dest[verticalAxis ? side.ordinal() : side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(shape, side);
-        }
-    }
-
-    private static void setShape(VoxelShape shape, VoxelShape[] dest) {
-        setShape(shape, dest, false);
     }
 }

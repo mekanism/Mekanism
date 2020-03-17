@@ -3,7 +3,6 @@ package mekanism.common.block;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.states.IStateStorage;
 import mekanism.common.item.block.ItemBlockCardboardBox;
@@ -29,7 +28,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockCardboardBox extends BlockMekanism implements IHasModel, IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
+public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
     public BlockCardboardBox() {
         super(Block.Properties.create(Material.WOOL).hardnessAndResistance(0.5F, 1F));

@@ -2,7 +2,7 @@ package mekanism.common.item.block.machine;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.item.ISTERProvider;
-import mekanism.common.block.machine.prefab.BlockBase;
+import mekanism.common.block.machine.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 
 public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockDigitalMiner(BlockBase<TileEntityDigitalMiner, Machine<TileEntityDigitalMiner>> block) {
+    public ItemBlockDigitalMiner(BlockTile<TileEntityDigitalMiner, Machine<TileEntityDigitalMiner>> block) {
         super(block, ISTERProvider::miner);
     }
 

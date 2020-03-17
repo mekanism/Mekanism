@@ -9,7 +9,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.prefab.BlockBase;
+import mekanism.common.block.machine.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.security.ISecurityItem;
@@ -33,7 +33,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class ItemBlockSolarNeutronActivator extends ItemBlockMachine implements IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockSolarNeutronActivator(BlockBase<TileEntitySolarNeutronActivator, Machine<TileEntitySolarNeutronActivator>> block) {
+    public ItemBlockSolarNeutronActivator(BlockTile<TileEntitySolarNeutronActivator, Machine<TileEntitySolarNeutronActivator>> block) {
         super(block, ISTERProvider::activator);
     }
 

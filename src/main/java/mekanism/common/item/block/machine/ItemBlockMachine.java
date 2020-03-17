@@ -12,7 +12,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
-import mekanism.common.block.machine.prefab.BlockBase;
+import mekanism.common.block.machine.prefab.BlockTile;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
@@ -42,13 +42,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockBase<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockMachine(BlockBase<?, ?> block) {
+    public ItemBlockMachine(BlockTile<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
-    public ItemBlockMachine(BlockBase<?, ?> block, Supplier<Callable<ItemStackTileEntityRenderer>> renderer) {
+    public ItemBlockMachine(BlockTile<?, ?> block, Supplier<Callable<ItemStackTileEntityRenderer>> renderer) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(renderer));
     }
 

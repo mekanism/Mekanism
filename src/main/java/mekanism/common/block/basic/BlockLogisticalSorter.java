@@ -2,7 +2,7 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.common.block.machine.prefab.BlockBase.BlockMachineModel;
+import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -24,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-public class BlockLogisticalSorter extends BlockMachineModel<TileEntityLogisticalSorter, Machine<TileEntityLogisticalSorter>> {
+public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSorter, Machine<TileEntityLogisticalSorter>> {
 
     public BlockLogisticalSorter() {
         super(MekanismBlockTypes.LOGISTICAL_SORTER);

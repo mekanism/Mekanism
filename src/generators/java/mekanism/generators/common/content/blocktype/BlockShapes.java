@@ -1,9 +1,9 @@
 package mekanism.generators.common.content.blocktype;
 
+import static mekanism.common.util.VoxelShapeUtils.setShape;
 import static net.minecraft.block.Block.makeCuboidShape;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.shapes.VoxelShape;
 
@@ -33,7 +33,7 @@ public final class BlockShapes {
             makeCuboidShape(12, 7, 0, 16, 8, 2),//fin6
             makeCuboidShape(0, 13, 0, 16, 14, 2),//fin7
             makeCuboidShape(0, 15, 0, 16, 16, 2)//fin8
-        ), Rotation.NONE, HEAT_GENERATOR);
+        ), HEAT_GENERATOR);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(4.5, 68.5, 4, 11.5, 75.5, 13),
@@ -57,9 +57,9 @@ public final class BlockShapes {
             makeCuboidShape(3.5, 11, 3.5, 12.5, 19, 12.5),
             makeCuboidShape(3.25, 15, 3.25, 12.75, 19, 12.75),
             makeCuboidShape(3, 3, 3, 13, 15, 13)
-        ), Rotation.NONE, WIND_GENERATOR);
+        ), WIND_GENERATOR);
 
-        setShape(VoxelShapeUtils.combine(
+        setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
             makeCuboidShape(4, 4, 15, 12, 12, 16),//port
             makeCuboidShape(5, 5, 5, 11, 11, 15),//portBase
             makeCuboidShape(4, 38, 5, 12, 44, 11),//jointBox
@@ -76,7 +76,7 @@ public final class BlockShapes {
             makeCuboidShape(0, 0, 0, 16, 2, 16),//base1
             makeCuboidShape(3, 1, 3, 13, 3, 13),//base2
             makeCuboidShape(4, 2, 4, 12, 10, 12)//base3
-        ), Rotation.CLOCKWISE_180, ADVANCED_SOLAR_GENERATOR);
+        ), Rotation.CLOCKWISE_180), ADVANCED_SOLAR_GENERATOR);
 
         setShape(VoxelShapeUtils.combine(
             VoxelShapeUtils.exclude(
@@ -84,7 +84,7 @@ public final class BlockShapes {
                   makeCuboidShape(3, 7, 15, 13, 16, 16)
             ),
             makeCuboidShape(3, 14.5, 14.5, 13, 15.5, 15.5)
-        ), Rotation.NONE, BIO_GENERATOR);
+        ), BIO_GENERATOR);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(0, 9, 0, 16, 11, 16),//solarPanel
@@ -95,7 +95,7 @@ public final class BlockShapes {
             makeCuboidShape(6.5, 3, 6.5, 9.5, 6, 9.5),//solarPanelPipeConnector
             makeCuboidShape(7, 5, 7, 9, 8, 9),//solarPanelRod1
             makeCuboidShape(7, 3, 7, 9, 5, 9)//solarPanelRod2
-        ), Rotation.NONE, SOLAR_GENERATOR);
+        ), SOLAR_GENERATOR);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(0, 0, 0, 16, 4, 16),//base
@@ -118,15 +118,6 @@ public final class BlockShapes {
             makeCuboidShape(4, 11.75, 2.75, 12, 12, 3),//connector4a
             makeCuboidShape(4, 11.25, 2.5, 12, 11.75, 2.75),//connector4b
             makeCuboidShape(4, 11, 2.25, 12, 11.25, 2.5)//connector4c
-        ), Rotation.NONE, GAS_BURNING_GENERATOR);
-    }
-
-    private static void setShape(VoxelShape shape, Rotation rotation, VoxelShape[] dest) {
-        if (rotation != Rotation.NONE) {
-            shape = VoxelShapeUtils.rotate(shape, rotation);
-        }
-        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            dest[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(shape, side);
-        }
+        ), GAS_BURNING_GENERATOR);
     }
 }

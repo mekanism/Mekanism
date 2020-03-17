@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
@@ -18,6 +17,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -106,7 +106,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                     hasData = true;
                 }
             }
-            if (block instanceof ISupportsRedstone) {
+            if (Attribute.has(block, AttributeRedstone.class)) {
                 nbtBuilder.replaceOperation(NBTConstants.CONTROL_TYPE, NBTConstants.MEK_DATA + "." + NBTConstants.CONTROL_TYPE);
                 hasData = true;
             }

@@ -5,9 +5,13 @@ import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.blocktype.BlockTile;
-import mekanism.common.content.blocktype.BlockTile.BlockTileBuilder;
+import mekanism.common.content.blocktype.BlockTypeTile;
+import mekanism.common.content.blocktype.BlockTypeTile.BlockTileBuilder;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.blocktype.BlockShapes;
 import mekanism.generators.common.content.blocktype.Generator;
@@ -20,6 +24,7 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
+import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
@@ -83,24 +88,24 @@ public class GeneratorsBlockTypes {
           .build();
 
     // Turbine Casing
-    public static final BlockTile<TileEntityTurbineCasing> TURBINE_CASING = BlockTileBuilder
+    public static final BlockTypeTile<TileEntityTurbineCasing> TURBINE_CASING = BlockTileBuilder
         .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_CASING, GeneratorsLang.DESCRIPTION_TURBINE_CASING)
         .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
         .build();
     // Turbine Valve
-    public static final BlockTile<TileEntityTurbineValve> TURBINE_VALVE = BlockTileBuilder
+    public static final BlockTypeTile<TileEntityTurbineValve> TURBINE_VALVE = BlockTileBuilder
         .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VALVE, GeneratorsLang.DESCRIPTION_TURBINE_VALVE)
         .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
         .with(new AttributeComparator())
         .build();
     // Turbine Vent
-    public static final BlockTile<TileEntityTurbineVent> TURBINE_VENT = BlockTileBuilder
+    public static final BlockTypeTile<TileEntityTurbineVent> TURBINE_VENT = BlockTileBuilder
         .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VALVE, GeneratorsLang.DESCRIPTION_TURBINE_VENT)
         .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
         .build();
 
     // Reactor Controller
-    public static final BlockTile<TileEntityReactorController> REACTOR_CONTROLLER = BlockTileBuilder
+    public static final BlockTypeTile<TileEntityReactorController> REACTOR_CONTROLLER = BlockTileBuilder
         .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_CONTROLLER, GeneratorsLang.DESCRIPTION_REACTOR_CONTROLLER)
         .withGui(() -> GeneratorsContainerTypes.REACTOR_CONTROLLER)
         .withEnergyConfig(() -> 1_000_000_000)
@@ -108,14 +113,21 @@ public class GeneratorsBlockTypes {
         .with(new AttributeStateActive(), new AttributeInventory())
         .build();
     // Reactor Port
-    public static final BlockTile<TileEntityReactorPort> REACTOR_PORT = BlockTileBuilder
+    public static final BlockTypeTile<TileEntityReactorPort> REACTOR_PORT = BlockTileBuilder
         .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_PORT, GeneratorsLang.DESCRIPTION_REACTOR_PORT)
         .withEnergyConfig(() -> 1)
         .with(new AttributeStateActive())
         .build();
     // Reactor Frame
-    public static final BlockTile<TileEntityReactorFrame> REACTOR_FRAME = BlockTileBuilder
+    public static final BlockTypeTile<TileEntityReactorFrame> REACTOR_FRAME = BlockTileBuilder
         .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_FRAME, GeneratorsLang.DESCRIPTION_REACTOR_FRAME)
         .withEnergyConfig(null, null)
+        .build();
+    // Reactor Logic Adapter
+    public static final BlockTypeTile<TileEntityReactorLogicAdapter> REACTOR_LOGIC_ADAPTER = BlockTileBuilder
+        .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_REACTOR_LOGIC_ADAPTER)
+        .withGui(() -> GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER)
+        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER, i, inv, tile)))
+        .with(new AttributeRedstoneEmitter<>((tile) -> tile.checkMode() ? 15 : 0))
         .build();
 }

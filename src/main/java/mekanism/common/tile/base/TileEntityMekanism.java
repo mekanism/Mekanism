@@ -44,11 +44,11 @@ import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
-import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.capabilities.IToggleableCapability;
@@ -285,7 +285,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         //Used to get any data we may need
         isElectric = Attribute.has(block, AttributeEnergy.class);
         supportsUpgrades = Attribute.has(block, AttributeUpgradeSupport.class);
-        canBeUpgraded = block instanceof IUpgradeableBlock;
+        canBeUpgraded = Attribute.has(block, AttributeUpgradeable.class);
         isDirectional = Attribute.has(block, AttributeStateFacing.class);
         supportsRedstone = Attribute.has(block, AttributeRedstone.class);
         hasSound = Attribute.has(block, AttributeSound.class);

@@ -1,5 +1,8 @@
 package mekanism.common.block.attribute;
 
+import java.util.function.Function;
+import mekanism.common.tile.base.TileEntityMekanism;
+
 public class Attributes {
 
     /** If a block supports security. */
@@ -15,7 +18,18 @@ public class Attributes {
     public static class AttributeRedstone implements Attribute {}
 
     /** If a block can emit redstone. */
-    public static class AttributeRedstoneEmitter implements Attribute {}
+    public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements Attribute {
+
+        private Function<TILE, Integer> redstoneFunction;
+
+        public AttributeRedstoneEmitter(Function<TILE, Integer> redstoneFunction) {
+            this.redstoneFunction = redstoneFunction;
+        }
+
+        public int getRedstoneLevel(TILE tile) {
+            return redstoneFunction.apply(tile);
+        }
+    }
 
     /** Custom explosion resistance attribute. */
     public static class AttributeCustomResistance implements Attribute {
