@@ -20,6 +20,9 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.blocktype.FactoryType;
@@ -35,7 +38,6 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.InventoryUtils;
@@ -81,6 +83,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Nonnull
     protected FactoryType type;
 
+    protected MachineEnergyContainer energyContainer;
     protected List<IInventorySlot> inputSlots;
     protected List<IInventorySlot> outputSlots;
     protected EnergyInventorySlot energySlot;
@@ -120,7 +123,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }
@@ -137,6 +140,14 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     protected void presetVariables() {
         tier = Attribute.getTier(getBlockType(), FactoryTier.class);
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        return builder.build();
     }
 
     @Nonnull
@@ -166,7 +177,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         handleSecondaryFuel();
         sortInventory();
 
-        double prev = getEnergy();
+        double prev = energyContainer.getEnergy();
         for (int i = 0; i < cachedRecipes.length; i++) {
             CachedRecipe<RECIPE> cachedRecipe = cachedRecipes[i] = getUpdatedCache(i);
             if (cachedRecipe != null) {
@@ -188,7 +199,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             }
         }
         setActive(isActive);
-        lastUsage = prev - getEnergy();
+        lastUsage = prev - energyContainer.getEnergy();
     }
 
     private void sortInventory() {
@@ -384,6 +395,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public boolean lightUpdate() {
         return true;
+    }
+
+    public MachineEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 
     @Override

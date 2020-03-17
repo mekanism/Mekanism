@@ -18,6 +18,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
@@ -29,7 +30,6 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -46,7 +46,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.ProxiedSlotInfo;
 import mekanism.common.util.CableUtils;
@@ -84,7 +83,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
-            Supplier<List<IInventorySlot>> slotSupplier = () -> hasFrequency() ? frequency.inventorySlots : Collections.emptyList();
+            Supplier<List<IInventorySlot>> slotSupplier = () -> hasFrequency() ? frequency.getInventorySlots(null) : Collections.emptyList();
             itemConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Inventory(true, false, slotSupplier));
             itemConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Inventory(false, true, slotSupplier));
             //Set default config directions
@@ -94,7 +93,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo fluidConfig = configComponent.getConfig(TransmissionType.FLUID);
         if (fluidConfig != null) {
-            Supplier<List<IExtendedFluidTank>> tankSupplier = () -> hasFrequency() ? frequency.fluidTanks : Collections.emptyList();
+            Supplier<List<IExtendedFluidTank>> tankSupplier = () -> hasFrequency() ? frequency.getFluidTanks(null) : Collections.emptyList();
             fluidConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Fluid(true, false, tankSupplier));
             fluidConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Fluid(false, true, tankSupplier));
             //Set default config directions
@@ -104,7 +103,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
         if (gasConfig != null) {
-            Supplier<List<? extends IChemicalTank<Gas, GasStack>>> tankSupplier = () -> hasFrequency() ? frequency.gasTanks : Collections.emptyList();
+            Supplier<List<? extends IChemicalTank<Gas, GasStack>>> tankSupplier = () -> hasFrequency() ? frequency.getGasTanks(null) : Collections.emptyList();
             gasConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Gas(true, false, tankSupplier));
             gasConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Gas(false, true, tankSupplier));
             //Set default config directions
@@ -114,8 +113,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Energy(true, false));
-            energyConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Energy(false, true));
+            Supplier<List<IEnergyContainer>> containerSupplier = () -> hasFrequency() ? frequency.getEnergyContainers(null) : Collections.emptyList();
+            energyConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Energy(true, false, containerSupplier));
+            energyConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Energy(false, true, containerSupplier));
             //Set default config directions
             energyConfig.fill(DataType.INPUT);
             energyConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
@@ -279,28 +279,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public double getMaxOutput() {
-        return hasFrequency() ? MekanismConfig.general.quantumEntangloporterEnergyTransfer.get() : 0;
-    }
-
-    @Override
-    public double getEnergy() {
-        return hasFrequency() ? frequency.storedEnergy : 0;
-    }
-
-    @Override
-    public void setEnergy(double energy) {
-        if (hasFrequency()) {
-            frequency.storedEnergy = Math.min(MekanismConfig.general.quantumEntangloporterEnergyTransfer.get(), energy);
-        }
-    }
-
-    @Override
-    public double getMaxEnergy() {
-        return hasFrequency() ? MekanismConfig.general.quantumEntangloporterEnergyTransfer.get() : 0;
-    }
-
-    @Override
     public boolean persistInventory() {
         return false;
     }
@@ -326,6 +304,16 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
+    public boolean canHandleEnergy() {
+        return true;
+    }
+
+    @Override
+    public boolean persistEnergy() {
+        return false;
+    }
+
+    @Override
     public double getTemp() {
         return hasFrequency() ? frequency.temperature : 0;
     }
@@ -337,7 +325,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public double getInsulationCoefficient(Direction side) {
-        return 1000;
+        return 1_000;
     }
 
     @Override
@@ -442,6 +430,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return hasFrequency() && canHandleFluid() ? frequency.getFluidTanks(side) : Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+        return hasFrequency() && canHandleEnergy() ? frequency.getEnergyContainers(side) : Collections.emptyList();
     }
 
     @Override

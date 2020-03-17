@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -9,7 +8,6 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntitySeismicVibrator;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -26,9 +24,8 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
         addButton(new GuiInnerScreen(this, 16, 23, 112, 40));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
     }
 
     @Override

@@ -2,7 +2,9 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.SawmillRecipe;
@@ -131,7 +133,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
         return new SawmillCachedRecipe(recipe, inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
@@ -143,7 +145,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
             SawmillUpgradeData data = (SawmillUpgradeData) upgradeData;
             redstone = data.redstone;
             setControlType(data.controlType);
-            setEnergy(data.electricityStored);
+            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             sorting = data.sorting;
             //TODO: Transfer recipe ticks?
             //TODO: Transfer operating ticks properly
@@ -165,6 +167,6 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
     @Nonnull
     @Override
     public SawmillUpgradeData getUpgradeData() {
-        return new SawmillUpgradeData(redstone, getControlType(), getEnergy(), progress, energySlot, inputSlots, outputSlots, sorting, getComponents());
+        return new SawmillUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, inputSlots, outputSlots, sorting, getComponents());
     }
 }

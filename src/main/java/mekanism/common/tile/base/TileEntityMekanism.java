@@ -54,6 +54,7 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.capabilities.IToggleableCapability;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -151,8 +152,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     private boolean isActivatable;
     private boolean hasInventory;
     private boolean hasSecurity;
-    @Deprecated
-    private boolean isElectric;
     private boolean hasSound;
     private boolean hasGui;
 
@@ -218,7 +217,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //Variables for handling ITileElectric
     //TODO: Replace with a proxy system
     protected CapabilityWrapperManager<IStrictEnergyHandler, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IStrictEnergyHandler.class, ForgeEnergyIntegration.class);
-    private double energyPerTick;
     private double lastEnergyReceived;
     //End variables ITileElectric
 
@@ -271,10 +269,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (supportsUpgrades()) {
             upgradeComponent = new TileComponentUpgrade(this, UpgradeInventorySlot.of(this, getSupportedUpgrade()));
         }
-        if (isElectric()) {
-            maxEnergy = getBaseStorage();
-            energyPerTick = getBaseUsage();
-        }
         if (hasSecurity()) {
             securityComponent = new TileComponentSecurity(this);
         }
@@ -287,7 +281,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     private void setSupportedTypes(Block block) {
         //Used to get any data we may need
-        isElectric = Attribute.has(block, AttributeEnergy.class);
         supportsUpgrades = Attribute.has(block, AttributeUpgradeSupport.class);
         canBeUpgraded = Attribute.has(block, AttributeUpgradeable.class);
         isDirectional = Attribute.has(block, AttributeStateFacing.class);
@@ -337,11 +330,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public final boolean supportsRedstone() {
         return supportsRedstone;
-    }
-
-    @Deprecated
-    public final boolean isElectric() {
-        return isElectric;
     }
 
     @Override
@@ -602,13 +590,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (supportsRedstone()) {
             container.track(SyncableEnum.create(RedstoneControl::byIndexStatic, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
         }
-        if (isElectric()) {
-            container.track(SyncableDouble.create(this::getInputRate, this::setInputRate));
-            if (supportsUpgrades()) {
-                container.track(SyncableDouble.create(this::getEnergyPerTick, this::setEnergyPerTick));
-                container.track(SyncableDouble.create(this::getMaxEnergy, this::setMaxEnergy));
-            }
-        }
         if (canHandleGas() && handlesGas()) {
             List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(null);
             for (IChemicalTank<Gas, GasStack> gasTank : gasTanks) {
@@ -628,9 +609,16 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             }
         }
         if (canHandleEnergy() && handlesEnergy()) {
+            //TODO: Transition this over?
+            container.track(SyncableDouble.create(this::getInputRate, this::setInputRate));
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
                 container.track(SyncableDouble.create(energyContainer::getEnergy, energyContainer::setEnergy));
+                if (supportsUpgrades() && energyContainer instanceof MachineEnergyContainer) {
+                    MachineEnergyContainer machineEnergy = (MachineEnergyContainer) energyContainer;
+                    container.track(SyncableDouble.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
+                    container.track(SyncableDouble.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
+                }
             }
         }
     }
@@ -846,15 +834,18 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     public void recalculateUpgrades(Upgrade upgrade) {
         //TODO: Defaults for each of the types based on what other things this machine supports??
         if (upgrade == Upgrade.SPEED) {
-            if (isElectric()) {
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
+            for (IEnergyContainer energyContainer : getEnergyContainers(null)) {
+                if (energyContainer instanceof MachineEnergyContainer) {
+                    ((MachineEnergyContainer) energyContainer).updateEnergyPerTick();
+                }
             }
         } else if (upgrade == Upgrade.ENERGY) {
-            //TODO: Is there any case this is not a required sub req?
-            if (isElectric()) {
-                setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
-                setEnergy(Math.min(getMaxEnergy(), getEnergy()));
+            for (IEnergyContainer energyContainer : getEnergyContainers(null)) {
+                if (energyContainer instanceof MachineEnergyContainer) {
+                    MachineEnergyContainer machineEnergy = (MachineEnergyContainer) energyContainer;
+                    machineEnergy.updateMaxEnergy();
+                    machineEnergy.updateEnergyPerTick();
+                }
             }
         }
     }
@@ -863,8 +854,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //Methods for implementing ITileContainer
     @Nullable
     protected IInventorySlotHolder getInitialInventory() {
-        //TODO: Go back through and verify all sides are correct/make sense now that it is easier to tell what slot is what
-        // Also reorder the slots to be more logical when the order does not make much sense
         return null;
     }
 
@@ -1144,30 +1133,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //TODO: Re-implement lastEnergyReceived for when we accept energy
     public void setInputRate(double inputRate) {
         this.lastEnergyReceived = inputRate;
-    }
-
-    public double getBaseUsage() {
-        if (isElectric()) {
-            return Attribute.get(blockProvider.getBlock(), AttributeEnergy.class).getUsage();
-        }
-        return 0;
-    }
-
-    public double getBaseStorage() {
-        if (isElectric()) {
-            return Attribute.get(blockProvider.getBlock(), AttributeEnergy.class).getStorage();
-        }
-        return 0;
-    }
-
-    public double getEnergyPerTick() {
-        return isElectric() ? energyPerTick : 0;
-    }
-
-    public void setEnergyPerTick(double energyPerTick) {
-        if (isElectric()) {
-            this.energyPerTick = energyPerTick;
-        }
     }
     //End methods ITileElectric
 

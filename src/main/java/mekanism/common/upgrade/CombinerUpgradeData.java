@@ -1,6 +1,7 @@
 package mekanism.common.upgrade;
 
 import java.util.List;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ITileComponent;
@@ -13,16 +14,16 @@ public class CombinerUpgradeData extends MachineUpgradeData {
     public final InputInventorySlot extraSlot;
 
     //Combiner Constructor
-    public CombinerUpgradeData(boolean redstone, RedstoneControl controlType, double electricityStored, int operatingTicks, EnergyInventorySlot energySlot,
+    public CombinerUpgradeData(boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int operatingTicks, EnergyInventorySlot energySlot,
           InputInventorySlot extraSlot, InputInventorySlot inputSlot, OutputInventorySlot outputSlot, List<ITileComponent> components) {
-        super(redstone, controlType, electricityStored, operatingTicks, energySlot, inputSlot, outputSlot, components);
+        super(redstone, controlType, energyContainer, operatingTicks, energySlot, inputSlot, outputSlot, components);
         this.extraSlot = extraSlot;
     }
 
     //Combining Factory Constructor
-    public CombinerUpgradeData(boolean redstone, RedstoneControl controlType, double electricityStored, int[] progress, EnergyInventorySlot energySlot,
+    public CombinerUpgradeData(boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int[] progress, EnergyInventorySlot energySlot,
           InputInventorySlot extraSlot, List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, boolean sorting, List<ITileComponent> components) {
-        super(redstone, controlType, electricityStored, progress, energySlot, inputSlots, outputSlots, sorting, components);
+        super(redstone, controlType, energyContainer, progress, energySlot, inputSlots, outputSlots, sorting, components);
         this.extraSlot = extraSlot;
     }
 }

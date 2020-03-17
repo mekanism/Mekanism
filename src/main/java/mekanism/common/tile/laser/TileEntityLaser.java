@@ -1,8 +1,11 @@
 package mekanism.common.tile.laser;
 
+import mekanism.api.RelativeSide;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.LaserEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismBlocks;
-import net.minecraft.util.Direction;
 
 public class TileEntityLaser extends TileEntityBasicLaser {
 
@@ -11,12 +14,12 @@ public class TileEntityLaser extends TileEntityBasicLaser {
     }
 
     @Override
-    protected double toFire() {
-        return Math.min(getEnergy(), MekanismConfig.usage.laser.get());
+    protected void addInitialEnergyContainers(EnergyContainerHelper builder) {
+        builder.addContainer(energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue, this), RelativeSide.BACK);
     }
 
     @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return side == getOppositeDirection();
+    protected double toFire() {
+        return MekanismConfig.usage.laser.get();
     }
 }

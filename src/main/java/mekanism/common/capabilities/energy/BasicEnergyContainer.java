@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -16,6 +17,7 @@ import net.minecraft.nbt.CompoundNBT;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class BasicEnergyContainer implements IEnergyContainer {
 
     public static final Predicate<@NonNull AutomationType> alwaysTrue = automationType -> true;
@@ -23,11 +25,11 @@ public class BasicEnergyContainer implements IEnergyContainer {
     public static final Predicate<@NonNull AutomationType> internalOnly = automationType -> automationType == AutomationType.INTERNAL;
     public static final Predicate<@NonNull AutomationType> notExternal = automationType -> automationType != AutomationType.EXTERNAL;
 
-    public static BasicEnergyContainer create(double maxEnergy, @Nullable IMekanismStrictEnergyHandler fluidHandler) {
+    public static BasicEnergyContainer create(double maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
         if (maxEnergy < 0) {
             throw new IllegalArgumentException("Max energy must be at least zero");
         }
-        return new BasicEnergyContainer(maxEnergy, alwaysTrue, alwaysTrue, fluidHandler);
+        return new BasicEnergyContainer(maxEnergy, alwaysTrue, alwaysTrue, energyHandler);
     }
 
     public static BasicEnergyContainer input(double maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
@@ -83,6 +85,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public void setEnergy(double energy) {
+        //TODO: Evaluate usages of this
         if (energy < 0) {
             //Throws a RuntimeException as specified is allowed when something unexpected happens
             // As setEnergy is more meant to be used as an internal method

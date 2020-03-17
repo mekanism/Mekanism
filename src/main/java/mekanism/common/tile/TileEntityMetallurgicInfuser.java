@@ -2,11 +2,13 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
@@ -16,8 +18,11 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -46,6 +51,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
 
+    private MachineEnergyContainer energyContainer;
     private InfusionInventorySlot infusionSlot;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
@@ -88,6 +94,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
             //Otherwise return true, as we already validated the type was valid
             return true;
         }, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
         return builder.build();
     }
 
@@ -152,7 +166,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
         return new MetallurgicInfuserCachedRecipe(recipe, infusionInputHandler, itemInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);
@@ -172,7 +186,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
     @Nonnull
     @Override
     public MetallurgicInfuserUpgradeData getUpgradeData() {
-        return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), infusionTank.getStack(), infusionSlot, energySlot,
+        return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), infusionTank.getStack(), infusionSlot, energySlot,
               inputSlot, outputSlot, getComponents());
+    }
+
+    public MachineEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 }

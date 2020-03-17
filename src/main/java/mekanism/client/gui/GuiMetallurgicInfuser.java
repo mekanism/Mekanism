@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -18,7 +17,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -37,9 +35,8 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.RIGHT, this, 72, 47));
         addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.infusionTank), 7, 15, 4, 52, false));
         addButton(new GuiDumpButton<>(this, tile, 140, 65,

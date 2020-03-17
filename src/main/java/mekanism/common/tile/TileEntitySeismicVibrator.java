@@ -1,16 +1,21 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.RelativeSide;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
@@ -18,10 +23,19 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
 
     public int clientPiston;
 
+    private MachineEnergyContainer energyContainer;
     private EnergyInventorySlot energySlot;
 
     public TileEntitySeismicVibrator() {
         super(MekanismBlocks.SEISMIC_VIBRATOR);
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this), RelativeSide.BACK);
+        return builder.build();
     }
 
     @Nonnull
@@ -45,9 +59,14 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.discharge(this);
-        if (MekanismUtils.canFunction(this) && getEnergy() >= getBaseUsage()) {
-            setActive(true);
-            pullEnergy(null, getBaseUsage(), false);
+        if (MekanismUtils.canFunction(this)) {
+            double energyPerTick = energyContainer.getEnergyPerTick();
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
+                setActive(true);
+                energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+            } else {
+                setActive(false);
+            }
         } else {
             setActive(false);
         }
@@ -74,11 +93,6 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     }
 
     @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return side == getOppositeDirection();
-    }
-
-    @Override
     public void onPlace() {
         MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
     }
@@ -96,5 +110,9 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return new AxisAlignedBB(pos, pos.add(1, 2, 1));
+    }
+
+    public MachineEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 }

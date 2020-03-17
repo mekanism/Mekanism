@@ -7,6 +7,9 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.LaserEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -16,7 +19,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements ITileNetwork {
 
@@ -29,6 +31,11 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     public TileEntityLaserAmplifier() {
         super(MekanismBlocks.LASER_AMPLIFIER);
+    }
+
+    @Override
+    protected void addInitialEnergyContainers(EnergyContainerHelper builder) {
+        builder.addContainer(energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.internalOnly, this));
     }
 
     @Override
@@ -55,19 +62,19 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     private boolean shouldFire() {
-        return ticks >= time && getEnergy() >= minThreshold && MekanismUtils.canFunction(this);
+        return ticks >= time && energyContainer.getEnergy() >= minThreshold && MekanismUtils.canFunction(this);
     }
 
     @Override
     protected double toFire() {
-        return shouldFire() ? Math.min(getEnergy(), maxThreshold) : 0;
+        return shouldFire() ? Math.min(super.toFire(), maxThreshold) : 0;
     }
 
     @Override
     public int getRedstoneLevel() {
         //TODO: Do we have to keep track of this and when it changes notify the comparator the level changed. Probably
         if (outputMode == RedstoneOutput.ENERGY_CONTENTS) {
-            return MekanismUtils.redstoneLevelFromContents(getEnergy(), getMaxEnergy());
+            return MekanismUtils.redstoneLevelFromContents(energyContainer.getEnergy(), energyContainer.getMaxEnergy());
         }
         return emittingRedstone ? 15 : 0;
     }
@@ -77,10 +84,10 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         if (!isRemote()) {
             switch (dataStream.readInt()) {
                 case 0:
-                    minThreshold = Math.min(getMaxEnergy(), MekanismUtils.convertToJoules(dataStream.readDouble()));
+                    minThreshold = Math.min(energyContainer.getMaxEnergy(), MekanismUtils.convertToJoules(dataStream.readDouble()));
                     break;
                 case 1:
-                    maxThreshold = Math.min(getMaxEnergy(), MekanismUtils.convertToJoules(dataStream.readDouble()));
+                    maxThreshold = Math.min(energyContainer.getMaxEnergy(), MekanismUtils.convertToJoules(dataStream.readDouble()));
                     break;
                 case 2:
                     time = dataStream.readInt();
@@ -114,11 +121,6 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Override
     public boolean canPulse() {
-        return true;
-    }
-
-    @Override
-    public boolean canOutputEnergy(Direction side) {
         return true;
     }
 

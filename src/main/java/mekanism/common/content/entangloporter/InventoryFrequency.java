@@ -12,10 +12,13 @@ import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -25,19 +28,20 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
-public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismGasHandler, IMekanismFluidHandler {
+public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismGasHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler {
 
     public static final String ENTANGLOPORTER = "Entangloporter";
 
-    public double storedEnergy;
     public BasicFluidTank storedFluid;
     public BasicGasTank storedGas;
     public double temperature;
     private IInventorySlot storedItem;
+    private IEnergyContainer storedEnergy;
 
-    public List<IInventorySlot> inventorySlots;
-    public List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
-    public List<IExtendedFluidTank> fluidTanks;
+    private List<IInventorySlot> inventorySlots;
+    private List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
+    private List<IExtendedFluidTank> fluidTanks;
+    private List<IEnergyContainer> energyContainers;
 
     public InventoryFrequency(String n, UUID uuid) {
         super(FrequencyType.INVENTORY, n, uuid);
@@ -59,12 +63,14 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         gasTanks = Collections.singletonList(storedGas);
         storedItem = EntangloporterInventorySlot.create(this);
         inventorySlots = Collections.singletonList(storedItem);
+        storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.quantumEntangloporterEnergyBuffer.get(), this);
+        energyContainers = Collections.singletonList(storedEnergy);
     }
 
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putDouble(NBTConstants.ENERGY_STORED, storedEnergy);
+        nbtTags.put(NBTConstants.ENERGY_STORED, storedEnergy.serializeNBT());
         nbtTags.put(NBTConstants.FLUID_STORED, storedFluid.serializeNBT());
         nbtTags.put(NBTConstants.GAS_STORED, storedGas.serializeNBT());
         nbtTags.put(NBTConstants.ITEM, storedItem.serializeNBT());
@@ -75,7 +81,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         presetVariables();
-        storedEnergy = nbtTags.getDouble(NBTConstants.ENERGY_STORED);
+        storedEnergy.deserializeNBT(nbtTags.getCompound(NBTConstants.ENERGY_STORED));
         storedFluid.deserializeNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
         storedGas.deserializeNBT(nbtTags.getCompound(NBTConstants.GAS_STORED));
         storedItem.deserializeNBT(nbtTags.getCompound(NBTConstants.ITEM));
@@ -85,7 +91,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeDouble(storedEnergy);
+        buffer.writeDouble(storedEnergy.getEnergy());
         buffer.writeFluidStack(storedFluid.getFluid());
         ChemicalUtils.writeChemicalStack(buffer, storedGas.getStack());
         buffer.writeCompoundTag(storedItem.serializeNBT());
@@ -96,7 +102,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
         presetVariables();
-        storedEnergy = dataStream.readDouble();
+        storedEnergy.setEnergy(dataStream.readDouble());
         storedFluid.setStack(dataStream.readFluidStack());
         storedGas.setStack(ChemicalUtils.readGasStack(dataStream));
         storedItem.deserializeNBT(dataStream.readCompoundTag());
@@ -119,6 +125,11 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
+    }
+
+    @Override
+    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+        return energyContainers;
     }
 
     @Override

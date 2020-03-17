@@ -18,7 +18,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -84,6 +87,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      */
     private Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
 
+    private MachineEnergyContainer energyContainer;
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
@@ -102,6 +106,14 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     @Nonnull
     @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this), RelativeSide.BACK);
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(inputSlot = FluidInventorySlot.drain(fluidTank, this, 28, 20), RelativeSide.TOP);
@@ -115,30 +127,28 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.onUpdateServer();
         energySlot.discharge(this);
         inputSlot.drainTank(outputSlot);
-        if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
-            //TODO: Why does it not just use energy immediately, why does it wait until the next
-            // check to use it
-            if (suckedLastOperation) {
-                setEnergy(getEnergy() - getEnergyPerTick());
-            }
-            if ((operatingTicks + 1) < ticksRequired) {
-                operatingTicks++;
-            } else {
-                if (fluidTank.isEmpty() || FluidAttributes.BUCKET_VOLUME <= fluidTank.getNeeded()) {
-                    if (!suck()) {
-                        suckedLastOperation = false;
-                        reset();
-                    } else {
-                        suckedLastOperation = true;
-                    }
-                } else {
-                    suckedLastOperation = false;
+        boolean sucked = false;
+        if (MekanismUtils.canFunction(this)) {
+            //TODO: Why does it not just use energy immediately, why does it wait until the next check to use it
+            double energyPerTick = energyContainer.getEnergyPerTick();
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
+                if (suckedLastOperation) {
+                    energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 }
-                operatingTicks = 0;
+                operatingTicks++;
+                if (operatingTicks >= ticksRequired) {
+                    operatingTicks = 0;
+                    if (fluidTank.isEmpty() || FluidAttributes.BUCKET_VOLUME <= fluidTank.getNeeded()) {
+                        if (suck()) {
+                            sucked = true;
+                        } else {
+                            reset();
+                        }
+                    }
+                }
             }
-        } else {
-            suckedLastOperation = false;
         }
+        suckedLastOperation = sucked;
 
         if (!fluidTank.isEmpty()) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos.up());
@@ -301,11 +311,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return getOppositeDirection() == side;
-    }
-
-    @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.PUMP_RESET.translateColored(EnumColor.GRAY)));
@@ -352,5 +357,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public List<ITextComponent> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
+    }
+
+    public MachineEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 }

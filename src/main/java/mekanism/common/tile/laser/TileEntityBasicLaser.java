@@ -2,8 +2,10 @@ package mekanism.common.tile.laser;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.ClientLaserManager;
@@ -11,6 +13,9 @@ import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.energy.LaserEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
@@ -19,12 +24,12 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 
 public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
+    protected LaserEnergyContainer energyContainer;
     private Coord4D digging;
     private double diggingProgress;
     private double lastFired;
@@ -32,6 +37,16 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     public TileEntityBasicLaser(IBlockProvider blockProvider) {
         super(blockProvider);
     }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        addInitialEnergyContainers(builder);
+        return builder.build();
+    }
+
+    protected abstract void addInitialEnergyContainers(EnergyContainerHelper builder);
 
     @Override
     protected void onUpdateClient() {
@@ -63,7 +78,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        double firing = toFire();
+        double firing = energyContainer.extract(toFire(), Action.SIMULATE, AutomationType.INTERNAL);
         if (firing > 0) {
             if (firing != lastFired || !getActive()) {
                 setActive(true);
@@ -92,7 +107,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     }
                 }
             }
-            setEnergy(getEnergy() - firing);
+            energyContainer.extract(firing, Action.EXECUTE, AutomationType.INTERNAL);
             setEmittingRedstone(info.foundEntity);
         } else if (getActive()) {
             setActive(false);
@@ -112,12 +127,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     protected double toFire() {
-        return getEnergy();
-    }
-
-    @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return false;
+        return Double.MAX_VALUE;
     }
 
     @Override
@@ -146,5 +156,9 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setDoubleIfPresent(tag, NBTConstants.LAST_FIRED, fired -> lastFired = fired);
+    }
+
+    public LaserEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 }

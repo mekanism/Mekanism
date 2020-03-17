@@ -16,6 +16,7 @@ public class EnergyContainerHelper {
         this.slotHolder = slotHolder;
     }
 
+    //TODO: View usages and determine which ones if any should be moved to having a config
     public static EnergyContainerHelper forSide(Supplier<Direction> facingSupplier) {
         return new EnergyContainerHelper(new EnergyContainerHolder(facingSupplier));
     }

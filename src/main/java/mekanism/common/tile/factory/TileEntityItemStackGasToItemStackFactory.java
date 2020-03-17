@@ -2,12 +2,14 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
@@ -184,7 +186,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         return new ItemStackGasToItemStackCachedRecipe(recipe, inputHandlers[cacheIndex], gasInputHandler, () -> secondaryEnergyThisTick, outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
@@ -213,7 +215,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
             AdvancedMachineUpgradeData data = (AdvancedMachineUpgradeData) upgradeData;
             redstone = data.redstone;
             setControlType(data.controlType);
-            setEnergy(data.electricityStored);
+            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             sorting = data.sorting;
             //TODO: Transfer recipe ticks?
             //TODO: Transfer operating ticks properly
@@ -237,7 +239,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Nonnull
     @Override
     public AdvancedMachineUpgradeData getUpgradeData() {
-        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergy(), progress, gasTank.getStack(), extraSlot, energySlot, inputSlots, outputSlots,
+        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, gasTank.getStack(), extraSlot, energySlot, inputSlots, outputSlots,
               sorting, getComponents());
     }
 

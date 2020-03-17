@@ -2,8 +2,10 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CombinerCachedRecipe;
@@ -12,6 +14,9 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -37,15 +42,12 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
     private final IInputHandler<@NonNull ItemStack> inputHandler;
     private final IInputHandler<@NonNull ItemStack> extraInputHandler;
 
+    private MachineEnergyContainer energyContainer;
     private InputInventorySlot mainInputSlot;
     private InputInventorySlot extraInputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
 
-    /**
-     * Double Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), secondary slot (1), output slot (2), energy slot (3), and the upgrade slot
-     * (4). The machine will not run if it does not have enough electricity.
-     */
     public TileEntityCombiner() {
         super(MekanismBlocks.COMBINER, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
@@ -65,7 +67,7 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }
@@ -76,6 +78,14 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
         inputHandler = InputHelper.getInputHandler(mainInputSlot);
         extraInputHandler = InputHelper.getInputHandler(extraInputSlot);
         outputHandler = OutputHelper.getOutputHandler(outputSlot);
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        return builder.build();
     }
 
     @Nonnull
@@ -133,7 +143,7 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
         return new CombinerCachedRecipe(recipe, inputHandler, extraInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);
@@ -142,6 +152,10 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
     @Nonnull
     @Override
     public CombinerUpgradeData getUpgradeData() {
-        return new CombinerUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), energySlot, extraInputSlot, mainInputSlot, outputSlot, getComponents());
+        return new CombinerUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, extraInputSlot, mainInputSlot, outputSlot, getComponents());
+    }
+
+    public MachineEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 }

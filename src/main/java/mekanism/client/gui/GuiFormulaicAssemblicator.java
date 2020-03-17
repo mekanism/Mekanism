@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -23,7 +22,6 @@ import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -52,12 +50,11 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile, 159, 15));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 159, 15));
         //Overwrite the output slots with a "combined" slot
         addButton(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
         addButton(new GuiProgress(() -> tile.operatingTicks / (double) tile.ticksRequired, ProgressType.TALL_RIGHT, this, 86, 43));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
         addButton(encodeFormulaButton = new MekanismImageButton(this, getGuiLeft() + 7, getGuiTop() + 45, 14, getButtonLocation("encode_formula"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1))),
               getOnHover(MekanismLang.ENCODE_FORMULA)));

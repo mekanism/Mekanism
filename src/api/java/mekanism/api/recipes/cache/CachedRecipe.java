@@ -71,6 +71,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         return this;
     }
 
+    //TODO: Do we want to change to a system similar to the InputHandler, except for energy, so that we can simulate extracting energy from our container
     public CachedRecipe<RECIPE> setEnergyRequirements(DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy, DoubleConsumer useEnergy) {
         this.perTickEnergy = perTickEnergy;
         this.storedEnergy = storedEnergy;

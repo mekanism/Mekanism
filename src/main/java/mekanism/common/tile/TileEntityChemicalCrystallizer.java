@@ -2,11 +2,13 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.GasToItemStackCachedRecipe;
@@ -16,8 +18,11 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -45,6 +50,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityBasicMachine<GasTo
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull GasStack> inputHandler;
 
+    private MachineEnergyContainer energyContainer;
     private GasInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
@@ -66,7 +72,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityBasicMachine<GasTo
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }
@@ -83,6 +89,14 @@ public class TileEntityChemicalCrystallizer extends TileEntityBasicMachine<GasTo
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
         builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this), RelativeSide.LEFT);
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
         return builder.build();
     }
 
@@ -136,7 +150,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityBasicMachine<GasTo
         return new GasToItemStackCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);
@@ -145,5 +159,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityBasicMachine<GasTo
     @Override
     public Object[] getManagedTanks() {
         return new Object[]{inputTank};
+    }
+
+    public MachineEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 }

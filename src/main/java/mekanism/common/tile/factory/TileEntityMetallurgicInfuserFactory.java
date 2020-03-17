@@ -2,10 +2,12 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
@@ -148,7 +150,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         return new MetallurgicInfuserCachedRecipe(recipe, infusionInputHandler, inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
@@ -160,7 +162,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
             MetallurgicInfuserUpgradeData data = (MetallurgicInfuserUpgradeData) upgradeData;
             redstone = data.redstone;
             setControlType(data.controlType);
-            setEnergy(data.electricityStored);
+            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             sorting = data.sorting;
             //TODO: Transfer recipe ticks?
             //TODO: Transfer operating ticks properly
@@ -184,7 +186,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Nonnull
     @Override
     public MetallurgicInfuserUpgradeData getUpgradeData() {
-        return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergy(), progress, infusionTank.getStack(), extraSlot, energySlot,
+        return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, infusionTank.getStack(), extraSlot, energySlot,
               inputSlots, outputSlots, sorting, getComponents());
     }
 

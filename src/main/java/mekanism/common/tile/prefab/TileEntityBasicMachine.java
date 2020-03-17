@@ -18,11 +18,6 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
-    /**
-     * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
-     *
-     * @param baseTicksRequired - how many ticks it takes to run a cycle
-     */
     public TileEntityBasicMachine(IBlockProvider blockProvider, int baseTicksRequired) {
         super(blockProvider, baseTicksRequired);
     }

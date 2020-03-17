@@ -74,7 +74,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue allowChunkloading;
     public final CachedBooleanValue allowProtection;
     public final CachedIntValue portableTeleporterDelay;
-    public final CachedDoubleValue quantumEntangloporterEnergyTransfer;
+    public final CachedDoubleValue quantumEntangloporterEnergyBuffer;
     public final CachedIntValue quantumEntangloporterFluidBuffer;
     public final CachedIntValue quantumEntangloporterGasBuffer;
     public final CachedBooleanValue blacklistIC2;
@@ -215,7 +215,7 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("portableTeleporterDelay", 0));
 
         builder.comment("Quantum Entangloporter Settings").push(ENTANGLOPORTER_CATEGORY);
-        quantumEntangloporterEnergyTransfer = CachedDoubleValue.wrap(this, builder.comment("Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency.")
+        quantumEntangloporterEnergyBuffer = CachedDoubleValue.wrap(this, builder.comment("Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency.")
               .worldRestart()
               .defineInRange("energyBuffer", 16_000_000D, 0, Double.MAX_VALUE));
         quantumEntangloporterFluidBuffer = CachedIntValue.wrap(this, builder.comment("Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")

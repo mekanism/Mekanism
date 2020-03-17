@@ -2,7 +2,9 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.CombinerRecipe;
@@ -120,7 +122,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
         return new CombinerCachedRecipe(recipe, inputHandlers[cacheIndex], extraInputHandler, outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
@@ -132,7 +134,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
             CombinerUpgradeData data = (CombinerUpgradeData) upgradeData;
             redstone = data.redstone;
             setControlType(data.controlType);
-            setEnergy(data.electricityStored);
+            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             sorting = data.sorting;
             //TODO: Transfer recipe ticks?
             //TODO: Transfer operating ticks properly
@@ -155,6 +157,6 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @Nonnull
     @Override
     public CombinerUpgradeData getUpgradeData() {
-        return new CombinerUpgradeData(redstone, getControlType(), getEnergy(), progress, energySlot, extraSlot, inputSlots, outputSlots, sorting, getComponents());
+        return new CombinerUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, extraSlot, inputSlots, outputSlots, sorting, getComponents());
     }
 }

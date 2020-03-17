@@ -39,31 +39,41 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        return toForge(tile.acceptEnergy(side, fromForge(maxReceive), simulate));
+        //Max energy that would be inserted
+        double toInsert = fromForge(maxReceive);
+        return toForge(toInsert - tile.insertEnergy(toInsert, side, Action.get(!simulate)));
     }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
-        return toForge(tile.pullEnergy(side, fromForge(maxExtract), simulate));
+        return toForge(tile.extractEnergy(fromForge(maxExtract), side, Action.get(!simulate)));
     }
 
     @Override
     public int getEnergyStored() {
-        return toForge(tile.getEnergy());
+        if (tile.getEnergyContainerCount(side) > 0) {
+            //TODO: Improve on this
+            return toForge(tile.getEnergy(0));
+        }
+        return 0;
     }
 
     @Override
     public int getMaxEnergyStored() {
-        return toForge(tile.getMaxEnergy());
+        if (tile.getEnergyContainerCount(side) > 0) {
+            //TODO: Improve on this
+            return toForge(tile.getMaxEnergy(0));
+        }
+        return 0;
     }
 
     @Override
     public boolean canExtract() {
-        return tile.insertEnergy(1, side, Action.SIMULATE) < 1;
+        return tile.extractEnergy(1, side, Action.SIMULATE) < 1;
     }
 
     @Override
     public boolean canReceive() {
-        return tile.extractEnergy(1, side, Action.SIMULATE) > 0;
+        return tile.insertEnergy(1, side, Action.SIMULATE) > 0;
     }
 }

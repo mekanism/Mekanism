@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.bar;
 
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.common.util.MekanismUtils;
@@ -18,50 +17,6 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
 
     private final double heightScale;
 
-    public GuiVerticalPowerBar(IGuiWrapper gui, IStrictEnergyHandler handler, int x, int y) {
-        this(gui, handler, x, y, texHeight);
-    }
-
-    public GuiVerticalPowerBar(IGuiWrapper gui, IStrictEnergyHandler handler, int x, int y, int desiredHeight) {
-        this(gui, new IBarInfoHandler() {
-            @Override
-            public ITextComponent getTooltip() {
-                int energyContainerCount = handler.getEnergyContainerCount();
-                if (energyContainerCount == 0) {
-                    return EnergyDisplay.of(0).getTextComponent();
-                } else if (energyContainerCount == 1) {
-                    return EnergyDisplay.of(handler.getEnergy(0), handler.getMaxEnergy(0)).getTextComponent();
-                }
-                double energy = 0;
-                double maxEnergy = 0;
-                for (int container = 0; container < energyContainerCount; container++) {
-                    //TODO: Make sure to account for double overflow
-                    energy += handler.getEnergy(container);
-                    maxEnergy += handler.getMaxEnergy(container);
-                }
-                return EnergyDisplay.of(energy, maxEnergy).getTextComponent();
-            }
-
-            @Override
-            public double getLevel() {
-                int energyContainerCount = handler.getEnergyContainerCount();
-                if (energyContainerCount == 0) {
-                    return 0;
-                } else if (energyContainerCount == 1) {
-                    return handler.getEnergy(0) / handler.getMaxEnergy(0);
-                }
-                double energy = 0;
-                double maxEnergy = 0;
-                for (int container = 0; container < energyContainerCount; container++) {
-                    //TODO: Make sure to account for double overflow
-                    energy += handler.getEnergy(container);
-                    maxEnergy += handler.getMaxEnergy(container);
-                }
-                return energy / maxEnergy;
-            }
-        }, x, y, desiredHeight);
-    }
-
     public GuiVerticalPowerBar(IGuiWrapper gui, IEnergyContainer container, int x, int y) {
         this(gui, container, x, y, texHeight);
     }
@@ -75,7 +30,8 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
 
             @Override
             public double getLevel() {
-                return container.getEnergy() / container.getMaxEnergy();
+                double maxEnergy = container.getMaxEnergy();
+                return maxEnergy == 0 ? 1 : container.getEnergy() / maxEnergy;
             }
         }, x, y, desiredHeight);
     }

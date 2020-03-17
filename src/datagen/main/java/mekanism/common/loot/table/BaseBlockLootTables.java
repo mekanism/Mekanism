@@ -145,15 +145,6 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                     }
                 }
             }
-            //TODO: Remove this in favor of the above tile check we have?
-            if (Attribute.has(block, AttributeEnergy.class)) {
-                //If the block is electric but is not part of a multiblock
-                // we want to copy the energy information
-                if (!(tile instanceof TileEntityMultiblock<?>)) {
-                    nbtBuilder.replaceOperation(NBTConstants.ENERGY_STORED, NBTConstants.MEK_DATA + "." + NBTConstants.ENERGY_STORED);
-                    hasData = true;
-                }
-            }
             if (block instanceof BlockCardboardBox) {
                 //TODO: Do this better so that it doesn't have to be as hard coded to being a cardboard box
                 nbtBuilder.replaceOperation(NBTConstants.DATA, NBTConstants.MEK_DATA + "." + NBTConstants.DATA);

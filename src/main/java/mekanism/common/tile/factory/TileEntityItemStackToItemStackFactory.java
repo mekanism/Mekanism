@@ -2,6 +2,8 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -92,7 +94,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
         return new ItemStackToItemStackCachedRecipe(recipe, inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
@@ -104,7 +106,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
             MachineUpgradeData data = (MachineUpgradeData) upgradeData;
             redstone = data.redstone;
             setControlType(data.controlType);
-            setEnergy(data.electricityStored);
+            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             sorting = data.sorting;
             //TODO: Transfer recipe ticks?
             //TODO: Transfer operating ticks properly
@@ -126,6 +128,6 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     @Nonnull
     @Override
     public MachineUpgradeData getUpgradeData() {
-        return new MachineUpgradeData(redstone, getControlType(), getEnergy(), progress, energySlot, inputSlots, outputSlots, sorting, getComponents());
+        return new MachineUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, inputSlots, outputSlots, sorting, getComponents());
     }
 }

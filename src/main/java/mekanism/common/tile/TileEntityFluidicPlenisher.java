@@ -15,7 +15,10 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -58,6 +61,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
      */
     public int operatingTicks;
 
+    private MachineEnergyContainer energyContainer;
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
@@ -79,6 +83,14 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     @Nonnull
     @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this), RelativeSide.BACK);
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(inputSlot = FluidInventorySlot.fill(fluidTank, this, 28, 20), RelativeSide.TOP);
@@ -93,27 +105,29 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         energySlot.discharge(this);
         inputSlot.fillTank(outputSlot);
 
-        if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && !fluidTank.isEmpty()) {
-            if (!finishedCalc) {
-                setEnergy(getEnergy() - getEnergyPerTick());
-            }
-            if ((operatingTicks + 1) < ticksRequired) {
-                operatingTicks++;
-            } else {
+        if (MekanismUtils.canFunction(this) && !fluidTank.isEmpty()) {
+            double energyPerTick = energyContainer.getEnergyPerTick();
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
                 if (!finishedCalc) {
-                    doPlenish();
-                } else {
-                    BlockPos below = getPos().offset(Direction.DOWN);
-                    if (canReplace(below, false, false) && fluidTank.getFluidAmount() >= FluidAttributes.BUCKET_VOLUME) {
-                        if (fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, below, fluidTank.getFluid())) {
-                            //TODO: Set fluid state??
-                            world.setBlockState(below, MekanismUtils.getFlowingBlockState(fluidTank.getFluid()));
-                            setEnergy(getEnergy() - getEnergyPerTick());
-                            fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
+                    energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                }
+                operatingTicks++;
+                if (operatingTicks >= ticksRequired) {
+                    operatingTicks = 0;
+                    if (finishedCalc) {
+                        BlockPos below = getPos().offset(Direction.DOWN);
+                        if (canReplace(below, false, false) && fluidTank.getFluidAmount() >= FluidAttributes.BUCKET_VOLUME) {
+                            if (fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, below, fluidTank.getFluid())) {
+                                //TODO: Set fluid state??
+                                world.setBlockState(below, MekanismUtils.getFlowingBlockState(fluidTank.getFluid()));
+                                energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                                fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
+                            }
                         }
+                    } else {
+                        doPlenish();
                     }
                 }
-                operatingTicks = 0;
             }
         }
     }
@@ -220,11 +234,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return getOppositeDirection() == side;
-    }
-
-    @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         activeNodes.clear();
         usedNodes.clear();
@@ -264,5 +273,9 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(() -> finishedCalc, value -> finishedCalc = value));
+    }
+
+    public MachineEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 }

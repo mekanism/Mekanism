@@ -11,6 +11,9 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.energy.EnergyCubeEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -22,7 +25,6 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.upgrade.EnergyCubeUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
@@ -44,6 +46,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
+    private EnergyCubeEnergyContainer energyContainer;
     private EnergyInventorySlot chargeSlot;
     private EnergyInventorySlot dischargeSlot;
 
@@ -69,8 +72,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
-            energyConfig.addSlotInfo(DataType.OUTPUT, new EnergySlotInfo(false, true));
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
+            energyConfig.addSlotInfo(DataType.OUTPUT, new EnergySlotInfo(false, true, energyContainer));
             //Set default config directions
             energyConfig.fill(DataType.INPUT);
             energyConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
@@ -83,6 +86,14 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     @Override
     protected void presetVariables() {
         tier = Attribute.getTier(getBlockType(), EnergyCubeTier.class);
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addContainer(energyContainer = EnergyCubeEnergyContainer.create(tier, this));
+        return builder.build();
     }
 
     @Nonnull
@@ -104,7 +115,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         if (MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY)) {
             CableUtils.emit(this);
         }
-        int newScale = (int) (getEnergy() * 20 / getMaxEnergy());
+        //TODO: Convert this to using MekanismUtils.getScale?
+        int newScale = (int) (energyContainer.getEnergy() * 20 / energyContainer.getMaxEnergy());
         if (newScale != prevScale) {
             prevScale = newScale;
             sendUpdatePacket();
@@ -112,25 +124,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     }
 
     @Override
-    public double getMaxOutput() {
-        return tier.getOutput();
-    }
-
-    @Override
-    public double getMaxEnergy() {
-        return tier.getMaxEnergy();
-    }
-
-    @Override
-    public void setEnergy(double energy) {
-        if (tier != EnergyCubeTier.CREATIVE || energy == Double.MAX_VALUE) {
-            super.setEnergy(energy);
-        }
-    }
-
-    @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(getEnergy(), getMaxEnergy());
+        return MekanismUtils.redstoneLevelFromContents(energyContainer.getEnergy(), energyContainer.getMaxEnergy());
     }
 
     @Override
@@ -168,7 +163,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
             EnergyCubeUpgradeData data = (EnergyCubeUpgradeData) upgradeData;
             redstone = data.redstone;
             setControlType(data.controlType);
-            setEnergy(data.electricityStored);
+            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             chargeSlot.setStack(data.chargeSlot.getStack());
             dischargeSlot.setStack(data.dischargeSlot.getStack());
             for (ITileComponent component : getComponents()) {
@@ -179,10 +174,14 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         }
     }
 
+    public EnergyCubeEnergyContainer getEnergyContainer() {
+        return energyContainer;
+    }
+
     @Nonnull
     @Override
     public EnergyCubeUpgradeData getUpgradeData() {
-        return new EnergyCubeUpgradeData(redstone, getControlType(), getEnergy(), chargeSlot, dischargeSlot, getComponents());
+        return new EnergyCubeUpgradeData(redstone, getControlType(), getEnergyContainer(), chargeSlot, dischargeSlot, getComponents());
     }
 
     public int getEnergyScale() {

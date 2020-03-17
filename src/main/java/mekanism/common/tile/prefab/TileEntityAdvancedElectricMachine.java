@@ -2,12 +2,14 @@ package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -17,8 +19,11 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -53,18 +58,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     protected final IInputHandler<@NonNull ItemStack> itemInputHandler;
     protected final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    private MachineEnergyContainer energyContainer;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private GasInventorySlot secondarySlot;
     private EnergyInventorySlot energySlot;
 
-    /**
-     * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2), energy slot (3), and the upgrade slot (4).
-     * The machine will not run if it does not have enough electricity, or if it doesn't have enough fuel ticks.
-     *
-     * @param ticksRequired    - how many ticks it takes to smelt an item.
-     * @param secondaryPerTick - how much secondary energy (fuel) this machine uses per tick.
-     */
     public TileEntityAdvancedElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
         super(blockProvider, ticksRequired);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
@@ -84,7 +83,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }
@@ -103,6 +102,14 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(gasTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
         return builder.build();
     }
 
@@ -160,7 +167,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         return new ItemStackGasToItemStackCachedRecipe(recipe, itemInputHandler, gasInputHandler, () -> gasUsageThisTick, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);
@@ -177,7 +184,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     @Nonnull
     @Override
     public AdvancedMachineUpgradeData getUpgradeData() {
-        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), gasTank.getStack(), secondarySlot, energySlot, inputSlot,
+        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), gasTank.getStack(), secondarySlot, energySlot, inputSlot,
               outputSlot, getComponents());
+    }
+
+    public MachineEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 }

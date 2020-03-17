@@ -2,6 +2,7 @@ package mekanism.common.upgrade;
 
 import java.util.Collections;
 import java.util.List;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ITileComponent;
@@ -14,7 +15,7 @@ public class MachineUpgradeData implements IUpgradeData {
 
     public final boolean redstone;
     public final RedstoneControl controlType;
-    public final double electricityStored;
+    public final IEnergyContainer energyContainer;
     public final int[] progress;
     public final boolean sorting;
     public final EnergyInventorySlot energySlot;
@@ -23,18 +24,18 @@ public class MachineUpgradeData implements IUpgradeData {
     public final CompoundNBT components;
 
     //Machine Constructor
-    public MachineUpgradeData(boolean redstone, RedstoneControl controlType, double electricityStored, int operatingTicks, EnergyInventorySlot energySlot,
+    public MachineUpgradeData(boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int operatingTicks, EnergyInventorySlot energySlot,
           InputInventorySlot inputSlot, OutputInventorySlot outputSlot, List<ITileComponent> components) {
-        this(redstone, controlType, electricityStored, new int[]{operatingTicks}, energySlot, Collections.singletonList(inputSlot), Collections.singletonList(outputSlot),
+        this(redstone, controlType, energyContainer, new int[]{operatingTicks}, energySlot, Collections.singletonList(inputSlot), Collections.singletonList(outputSlot),
               false, components);
     }
 
     //Machine Factory Constructor
-    public MachineUpgradeData(boolean redstone, RedstoneControl controlType, double electricityStored, int[] progress, EnergyInventorySlot energySlot,
+    public MachineUpgradeData(boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int[] progress, EnergyInventorySlot energySlot,
           List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, boolean sorting, List<ITileComponent> components) {
         this.redstone = redstone;
         this.controlType = controlType;
-        this.electricityStored = electricityStored;
+        this.energyContainer = energyContainer;
         this.progress = progress;
         this.energySlot = energySlot;
         this.inputSlots = inputSlots;

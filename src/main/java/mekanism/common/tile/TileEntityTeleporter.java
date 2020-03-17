@@ -284,7 +284,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     alignPlayer((ServerPlayerEntity) entity, closestCoords);
                 }
                 for (Coord4D coords : frequency.activeCoords) {
-                    //TODO: Check
+                    //TODO: Check (probably needs to at least fix what world this is defined with)
                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), world, coords.getPos());
                 }
                 setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));

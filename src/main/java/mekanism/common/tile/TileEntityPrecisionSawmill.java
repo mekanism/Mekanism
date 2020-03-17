@@ -2,8 +2,10 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -13,6 +15,9 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -36,6 +41,7 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
     private final IOutputHandler<@NonNull ChanceOutput> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
 
+    private MachineEnergyContainer energyContainer;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private OutputInventorySlot secondaryOutputSlot;
@@ -58,7 +64,7 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }
@@ -68,6 +74,14 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
 
         inputHandler = InputHelper.getInputHandler(inputSlot);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, secondaryOutputSlot);
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        return builder.build();
     }
 
     @Nonnull
@@ -119,7 +133,7 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
         return new SawmillCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);
@@ -128,6 +142,10 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
     @Nonnull
     @Override
     public SawmillUpgradeData getUpgradeData() {
-        return new SawmillUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), energySlot, inputSlot, outputSlot, secondaryOutputSlot, getComponents());
+        return new SawmillUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, inputSlot, outputSlot, secondaryOutputSlot, getComponents());
+    }
+
+    public MachineEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 }

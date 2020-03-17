@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.bar;
 
-import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.common.util.MekanismUtils;
@@ -17,16 +17,17 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
 
     private final double widthScale;
 
-    public GuiHorizontalPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, int x, int y) {
+    public GuiHorizontalPowerBar(IGuiWrapper gui, IEnergyContainer container, int x, int y) {
         this(gui, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent();
+                return EnergyDisplay.of(container.getEnergy(), container.getMaxEnergy()).getTextComponent();
             }
 
             @Override
             public double getLevel() {
-                return tile.getEnergy() / tile.getMaxEnergy();
+                double maxEnergy = container.getMaxEnergy();
+                return maxEnergy == 0 ? 1 : container.getEnergy() / maxEnergy;
             }
         }, x, y, texWidth);
     }

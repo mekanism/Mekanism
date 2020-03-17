@@ -2,8 +2,10 @@ package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -13,6 +15,9 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -33,16 +38,11 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine<I
     protected final IInputHandler<@NonNull ItemStack> inputHandler;
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;
 
+    private MachineEnergyContainer energyContainer;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
 
-    /**
-     * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1), output slot (2), and the upgrade slot (3). It will not run if it does not
-     * have enough energy.
-     *
-     * @param ticksRequired - ticks required to operate -- or smelt an item.
-     */
     public TileEntityElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
         super(blockProvider, ticksRequired);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
@@ -60,7 +60,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine<I
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }
@@ -70,6 +70,14 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine<I
 
         inputHandler = InputHelper.getInputHandler(inputSlot);
         outputHandler = OutputHelper.getOutputHandler(outputSlot);
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        return builder.build();
     }
 
     @Nonnull
@@ -110,7 +118,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine<I
         return new ItemStackToItemStackCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);
@@ -119,6 +127,10 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine<I
     @Nonnull
     @Override
     public MachineUpgradeData getUpgradeData() {
-        return new MachineUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), energySlot, inputSlot, outputSlot, getComponents());
+        return new MachineUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, inputSlot, outputSlot, getComponents());
+    }
+
+    public MachineEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 }

@@ -17,6 +17,9 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.assemblicator.RecipeFormula;
@@ -84,6 +87,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     public ItemStack lastFormulaStack = ItemStack.EMPTY;
     public ItemStack lastOutputStack = ItemStack.EMPTY;
 
+    private MachineEnergyContainer energyContainer;
     private List<IInventorySlot> craftingGridSlots;
     private List<IInventorySlot> inputSlots;
     private List<IInventorySlot> outputSlots;
@@ -107,13 +111,21 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        return builder.build();
     }
 
     @Nonnull
@@ -599,6 +611,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
+    }
+
+    public MachineEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 
     @Override

@@ -2,12 +2,14 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.PressurizedReactionCachedRecipe;
@@ -17,9 +19,12 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.energy.PRCEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -57,6 +62,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    private PRCEnergyContainer energyContainer;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
@@ -96,7 +102,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }
@@ -125,6 +131,14 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addTank(inputFluidTank = BasicFluidTank.input(10_000, fluid -> containsRecipe(recipe -> recipe.getInputFluid().testType(fluid)), this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addContainer(energyContainer = PRCEnergyContainer.input(this));
         return builder.build();
     }
 
@@ -187,11 +201,12 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         if (update) {
             recalculateUpgrades(Upgrade.SPEED);
         }
+        //Ensure we take our recipe's energy per tick into account
+        energyContainer.updateEnergyPerTick();
         return new PressurizedReactionCachedRecipe(recipe, itemInputHandler, fluidInputHandler, gasInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(() -> MekanismUtils.getEnergyPerTick(this, getBaseUsage() + recipe.getEnergyRequired()), this::getEnergy,
-                    energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);
@@ -205,5 +220,9 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     @Override
     public Object[] getManagedTanks() {
         return new Object[]{inputFluidTank, inputGasTank, outputGasTank};
+    }
+
+    public PRCEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 }

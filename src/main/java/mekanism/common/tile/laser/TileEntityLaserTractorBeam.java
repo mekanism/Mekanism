@@ -7,6 +7,9 @@ import mekanism.api.Coord4D;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.LaserManager;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.LaserEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -19,6 +22,11 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
 
     public TileEntityLaserTractorBeam() {
         super(MekanismBlocks.LASER_TRACTOR_BEAM);
+    }
+
+    @Override
+    protected void addInitialEnergyContainers(EnergyContainerHelper builder) {
+        builder.addContainer(energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.notExternal, BasicEnergyContainer.internalOnly, this));
     }
 
     @Nonnull

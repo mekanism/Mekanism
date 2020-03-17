@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.Chemical;
 import mekanism.client.gui.element.GuiDumpButton;
@@ -27,7 +26,6 @@ import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
@@ -57,9 +55,8 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiSortingTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile, getXSize() - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.lastUsage)),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), getXSize() - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
+        addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
         if (tile.hasSecondaryResourceBar()) {
             ChemicalInfoProvider<? extends Chemical<?>> provider = null;
             if (tile instanceof TileEntityMetallurgicInfuserFactory) {

@@ -16,7 +16,9 @@ import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -29,6 +31,8 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
@@ -83,10 +87,9 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: When Galaticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, IStrictEnergyStorage, ICachedRecipeHolder<ItemStackToItemStackRecipe>,
-      ITrackableContainer {
+public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, ICachedRecipeHolder<ItemStackToItemStackRecipe>, ITrackableContainer,
+      IMekanismStrictEnergyHandler {
 
-    private static final DataParameter<Float> ELECTRICITY = EntityDataManager.createKey(EntityRobit.class, DataSerializers.FLOAT);
     private static final DataParameter<String> OWNER_UUID = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
     private static final DataParameter<String> OWNER_NAME = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> FOLLOW = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
@@ -115,11 +118,17 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     private final EnergyInventorySlot energySlot;
     private final InputInventorySlot smeltingInputSlot;
     private final OutputInventorySlot smeltingOutputSlot;
+    private final List<IEnergyContainer> energyContainers;
+    private final BasicEnergyContainer energyContainer;
 
     public EntityRobit(EntityType<EntityRobit> type, World world) {
         super(type, world);
         getNavigator().setCanSwim(false);
         setCustomNameVisible(true);
+        //TODO
+        energyContainer = BasicEnergyContainer.create(, this);
+        energyContainers = Collections.singletonList(energyContainer);
+
         //TODO: Go through all this and clean it up properly
         inventorySlots = new ArrayList<>();
         inventoryContainerSlots = new ArrayList<>();
@@ -182,7 +191,6 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     protected void registerData() {
         super.registerData();
-        dataManager.register(ELECTRICITY, 0F);
         dataManager.register(OWNER_UUID, "");
         dataManager.register(OWNER_NAME, "");
         dataManager.register(FOLLOW, false);
@@ -197,7 +205,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     public void baseTick() {
         if (!world.isRemote) {
-            if (getFollowing() && getOwner() != null && getDistanceSq(getOwner()) > 4 && !getNavigator().noPath() && getEnergy() > 0) {
+            if (getFollowing() && getOwner() != null && getDistanceSq(getOwner()) > 4 && !getNavigator().noPath() && energyContainer.getEnergy() > 0) {
                 setEnergy(getEnergy() - getRoundedTravelEnergy());
             }
         }
@@ -224,7 +232,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 }
             }
 
-            if (getEnergy() == 0 && !isOnChargepad()) {
+            if (energyContainer.getEnergy() == 0 && !isOnChargepad()) {
                 goHome();
             }
 
@@ -343,7 +351,6 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     public void writeAdditional(CompoundNBT nbtTags) {
         super.writeAdditional(nbtTags);
-        nbtTags.putDouble(NBTConstants.ENERGY_STORED, getEnergy());
         //TODO: Is this necessary or is it handled by the main entity class
         //nbtTags.putString(NBTConstants.NAME, getName());
         if (getOwnerUUID() != null) {
@@ -355,12 +362,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             homeLocation.write(nbtTags);
         }
         nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeSlots(getInventorySlots(null)));
+        nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
     }
 
     @Override
     public void readAdditional(CompoundNBT nbtTags) {
         super.readAdditional(nbtTags);
-        setEnergy(nbtTags.getDouble(NBTConstants.ENERGY_STORED));
         //TODO: Is this necessary or is it handled by the main entity class
         //setCustomNameTag(nbtTags.getString(NBTConstants.NAME));
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
@@ -368,6 +375,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
         homeLocation = Coord4D.read(nbtTags);
         DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
+        DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags.getList(NBTConstants.ENERGY_CONTAINERS, NBT.TAG_COMPOUND));
     }
 
     @Override
@@ -379,7 +387,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         amount = applyArmorCalculations(damageSource, amount);
         amount = applyPotionDamageCalculations(damageSource, amount);
         float j = getHealth();
-        setEnergy(Math.max(0, getEnergy() - (amount * 1000)));
+
+        setEnergy(Math.max(0, getEnergy() - 1_000 * amount));
         getCombatTracker().trackDamage(damageSource, j, amount);
     }
 
@@ -393,22 +402,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     @Override
     public boolean canBePushed() {
-        return getEnergy() > 0;
-    }
-
-    @Override
-    public double getEnergy() {
-        return dataManager.get(ELECTRICITY);
-    }
-
-    @Override
-    public void setEnergy(double energy) {
-        dataManager.set(ELECTRICITY, (float) Math.max(Math.min(energy, MAX_ELECTRICITY), 0));
-    }
-
-    @Override
-    public double getMaxEnergy() {
-        return MAX_ELECTRICITY;
+        return energyContainer.getEnergy() > 0;
     }
 
     public PlayerEntity getOwner() {
@@ -463,6 +457,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
+    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+        return canHandleEnergy() ? energyContainers : Collections.emptyList();
+    }
+
+    @Override
     public void onContentsChanged() {
         //TODO: Do we need to save the things? Probably, if not remove the call to here from createNewCachedRecipe
     }
@@ -513,7 +512,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         //TODO: Make a robit specific smelting energy usage config
         return new ItemStackToItemStackCachedRecipe(recipe, inputHandler, outputHandler)
-              .setEnergyRequirements(MekanismConfig.usage.energizedSmelter::get, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(MekanismConfig.usage.energizedSmelter::get, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::onContentsChanged)
               .setOperatingTicksChanged(operatingTicks -> progress = operatingTicks);

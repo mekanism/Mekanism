@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.gauge;
 
-import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
@@ -46,6 +46,6 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     public interface IEnergyInfoHandler {
 
-        IStrictEnergyStorage getEnergyStorage();
+        IEnergyContainer getEnergyStorage();
     }
 }
