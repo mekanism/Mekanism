@@ -24,13 +24,13 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
         this.origMachine = origMachine;
         this.tier = tier;
         setMachineData();
-        attributeMap.put(AttributeGui.class, new AttributeGui<>(containerRegistrar));
+        add(new AttributeGui<>(containerRegistrar));
     }
 
     private void setMachineData() {
         setFrom(origMachine, AttributeSound.class, AttributeFactoryType.class, AttributeUpgradeSupport.class);
         AttributeEnergy origEnergy = origMachine.get(AttributeEnergy.class);
-        attributeMap.put(AttributeEnergy.class, new AttributeEnergy(() -> origEnergy.getUsage(), () -> tier.processes * Math.max(0.5D * origEnergy.getConfigStorage(), origEnergy.getUsage())));
+        add(new AttributeEnergy(() -> origEnergy.getUsage(), () -> tier.processes * Math.max(0.5D * origEnergy.getConfigStorage(), origEnergy.getUsage())));
     }
 
     public FactoryTier getTier() {

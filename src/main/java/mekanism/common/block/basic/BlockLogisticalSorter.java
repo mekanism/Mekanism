@@ -1,4 +1,4 @@
-package mekanism.common.block.machine;
+package mekanism.common.block.basic;
 
 import java.util.EnumSet;
 import java.util.Set;

@@ -16,8 +16,6 @@ import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.block.ISupportsComparator;
-import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -45,7 +43,9 @@ import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.IStateFacing;
@@ -283,18 +283,17 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     private void setSupportedTypes(Block block) {
         //Used to get any data we may need
-        isElectric = Attribute.has(blockProvider.getBlock(), AttributeEnergy.class);
-        supportsUpgrades = Attribute.has(blockProvider.getBlock(), AttributeUpgradeSupport.class);
+        isElectric = Attribute.has(block, AttributeEnergy.class);
+        supportsUpgrades = Attribute.has(block, AttributeUpgradeSupport.class);
         canBeUpgraded = block instanceof IUpgradeableBlock;
         isDirectional = block instanceof IStateFacing;
-        supportsRedstone = block instanceof ISupportsRedstone;
+        supportsRedstone = Attribute.has(block, AttributeRedstone.class);
         hasSound = Attribute.has(block, AttributeSound.class);
         hasGui = Attribute.has(block, AttributeGui.class);
-        hasInventory = Attribute.has(blockProvider.getBlock(), AttributeInventory.class);
-        hasSecurity = Attribute.has(blockProvider.getBlock(), AttributeSecurity.class);
-        //TODO: Is this the proper way of doing it
+        hasInventory = Attribute.has(block, AttributeInventory.class);
+        hasSecurity = Attribute.has(block, AttributeSecurity.class);
         isActivatable = hasSound || Attribute.has(block, AttributeSound.class);
-        supportsComparator = block instanceof ISupportsComparator;
+        supportsComparator = Attribute.has(block, AttributeComparator.class);
     }
 
     /**

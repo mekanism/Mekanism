@@ -26,11 +26,10 @@ import net.minecraft.util.math.shapes.VoxelShape;
 
 public class BlockTile<TILE extends TileEntityMekanism> {
 
-    protected Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar;
+    private Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar;
+    private ILangEntry description;
 
-    protected ILangEntry description;
-
-    protected Map<Class<? extends Attribute>, Attribute> attributeMap = new HashMap<>();
+    private Map<Class<? extends Attribute>, Attribute> attributeMap = new HashMap<>();
 
     public BlockTile(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
         this.tileEntityRegistrar = tileEntityRegistrar;
@@ -53,8 +52,17 @@ public class BlockTile<TILE extends TileEntityMekanism> {
         }
     }
 
-    public void remove(Class<? extends Attribute> type) {
-        attributeMap.remove(type);
+    public void add(Attribute... attrs) {
+        for (Attribute attr : attrs) {
+            attributeMap.put(attr.getClass(), attr);
+        }
+    }
+
+    @SafeVarargs
+    public final void remove(Class<? extends Attribute>... attrs) {
+        for (Class<? extends Attribute> attr : attrs) {
+            attributeMap.remove(attr);
+        }
     }
 
     public TileEntityType<TILE> getTileType() {
@@ -84,17 +92,13 @@ public class BlockTile<TILE extends TileEntityMekanism> {
         }
 
         public T with(Attribute... attrs) {
-            for (Attribute attr : attrs) {
-                holder.attributeMap.put(attr.getClass(), attr);
-            }
+            holder.add(attrs);
             return getThis();
         }
 
         @SafeVarargs
         public final T without(Class<? extends Attribute>... attrs) {
-            for (Class<? extends Attribute> attr : attrs) {
-                holder.remove(attr);
-            }
+            holder.remove(attrs);
             return getThis();
         }
 

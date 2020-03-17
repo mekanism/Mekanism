@@ -30,22 +30,18 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
         super(tileEntityRegistrar, description);
 
         // add default particle effects
-        attributeMap.put(AttributeParticleFX.class, new AttributeParticleFX()
+        add(new AttributeParticleFX()
             .add(ParticleTypes.SMOKE, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
             .add(RedstoneParticleData.REDSTONE_DUST, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)));
-        attributeMap.put(AttributeStateActive.class, new AttributeStateActive());
-        attributeMap.put(AttributeInventory.class, new AttributeInventory());
-        attributeMap.put(AttributeSecurity.class, new AttributeSecurity());
-        attributeMap.put(AttributeRedstone.class, new AttributeRedstone());
-        attributeMap.put(AttributeComparator.class, new AttributeComparator());
-        attributeMap.put(AttributeUpgradeSupport.class, new AttributeUpgradeSupport(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING)));
+        add(new AttributeStateActive(), new AttributeInventory(), new AttributeSecurity(), new AttributeRedstone(), new AttributeComparator());
+        add(new AttributeUpgradeSupport(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING)));
     }
 
     public static class FactoryMachine<TILE extends TileEntityMekanism> extends Machine<TILE> {
 
         public FactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntitySupplier, MekanismLang description, FactoryType factoryType) {
             super(tileEntitySupplier, description);
-            attributeMap.put(AttributeFactoryType.class, new AttributeFactoryType(factoryType));
+            add(new AttributeFactoryType(factoryType));
         }
 
         @Nonnull
@@ -71,7 +67,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
         }
 
         public T withSupportedUpgrades(Set<Upgrade> upgrades) {
-            holder.attributeMap.put(AttributeUpgradeSupport.class, new AttributeUpgradeSupport(upgrades));
+            holder.add(new AttributeUpgradeSupport(upgrades));
             return getThis();
         }
     }

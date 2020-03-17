@@ -14,7 +14,7 @@ import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IItemNetwork;
-import mekanism.common.block.machine.BlockFluidTank;
+import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.fluid.RateLimitFluidHandler;
 import mekanism.common.item.IItemSustainedInventory;

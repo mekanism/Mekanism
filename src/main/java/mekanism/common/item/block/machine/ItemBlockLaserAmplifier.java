@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.BlockLaserAmplifier;
+import mekanism.common.block.machine.prefab.BlockMachine;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
@@ -20,9 +20,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockLaserAmplifier extends ItemBlockAdvancedTooltip<BlockLaserAmplifier> implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockLaserAmplifier extends ItemBlockAdvancedTooltip<BlockMachine<?, ?>> implements IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockLaserAmplifier(BlockLaserAmplifier block) {
+    public ItemBlockLaserAmplifier(BlockMachine<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 

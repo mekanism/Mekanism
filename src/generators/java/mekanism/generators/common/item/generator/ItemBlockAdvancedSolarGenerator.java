@@ -1,17 +1,18 @@
 package mekanism.generators.common.item.generator;
 
 import javax.annotation.Nonnull;
+import mekanism.common.block.machine.prefab.BlockMachine;
+import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.render.item.GeneratorsISTERProvider;
-import mekanism.generators.common.block.BlockGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemBlockAdvancedSolarGenerator extends ItemBlockGenerator {
+public class ItemBlockAdvancedSolarGenerator extends ItemBlockMachine {
 
-    public ItemBlockAdvancedSolarGenerator(BlockGenerator<?> block) {
+    public ItemBlockAdvancedSolarGenerator(BlockMachine<?, ?> block) {
         super(block, GeneratorsISTERProvider::advancedSolar);
     }
 
