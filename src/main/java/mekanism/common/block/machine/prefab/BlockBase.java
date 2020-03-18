@@ -66,7 +66,8 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         if (type.has(AttributeCustomShape.class)) {
             AttributeStateFacing attr = type.get(AttributeStateFacing.class);
-            return type.get(AttributeCustomShape.class).getBounds()[attr.getDirection(state).ordinal() - (attr.getFacingProperty() == BlockStateHelper.facingProperty ? 0 : 2)];
+            int index = attr == null ? 0 : (attr.getDirection(state).ordinal() - (attr.getFacingProperty() == BlockStateHelper.facingProperty ? 0 : 2));
+            return type.get(AttributeCustomShape.class).getBounds()[index];
         }
         return super.getShape(state, world, pos, context);
     }

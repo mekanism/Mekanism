@@ -32,7 +32,6 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockEnergyCube;
-import mekanism.common.block.BlockGasTank;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.attribute.AttributeTier;
@@ -474,6 +473,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTieredEnergyCube(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockEnergyCube, ?> energyCube,
           IItemProvider previousEnergyCube, Tag<Item> ingotTag, Tag<Item> alloyTag) {
+        String tierName = Attribute.get(energyCube.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(energyCube)
               .pattern(ENERGY_CUBE_PATTERN)
               .key(Pattern.PREVIOUS, previousEnergyCube)
@@ -482,7 +482,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(Criterion.HAS_ENERGY_TABLET)
               .addCriterion(Criterion.has(previousEnergyCube))
-              .build(consumer, Mekanism.rl(basePath + energyCube.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addEnrichmentChamberRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -799,6 +799,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTieredFluidTank(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFluidTank, ?> tank, IItemProvider previousTank,
           Tag<Item> alloyTag, RecipeCriterion alloyCriterion) {
+        String tierName = Attribute.get(tank.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(FLUID_TANK_PATTERN)
               .key(Pattern.PREVIOUS, previousTank)
@@ -806,7 +807,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(alloyCriterion)
               .addCriterion(Criterion.has(previousTank))
-              .build(consumer, Mekanism.rl(basePath + tank.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addGasConversionRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -861,8 +862,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addTieredGasTank(consumer, basePath, MekanismBlocks.ULTIMATE_GAS_TANK, MekanismBlocks.ELITE_GAS_TANK, MekanismTags.Items.ALLOYS_ATOMIC, Criterion.HAS_ATOMIC_ALLOY);
     }
 
-    private void addTieredGasTank(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockGasTank, ?> tank, IItemProvider previousTank,
+    private void addTieredGasTank(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> tank, IItemProvider previousTank,
           Tag<Item> alloyTag, RecipeCriterion alloyCriterion) {
+        String tierName = Attribute.get(tank.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(GAS_TANK_PATTERN)
               .key(Pattern.PREVIOUS, previousTank)
@@ -870,7 +872,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(alloyCriterion)
               .addCriterion(Criterion.has(previousTank))
-              .build(consumer, Mekanism.rl(basePath + tank.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addInductionRecipes(Consumer<IFinishedRecipe> consumer) {

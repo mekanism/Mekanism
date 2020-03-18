@@ -100,7 +100,7 @@ public class GeneratorsBlockTypes {
         .build();
     // Turbine Vent
     public static final BlockTypeTile<TileEntityTurbineVent> TURBINE_VENT = BlockTileBuilder
-        .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VALVE, GeneratorsLang.DESCRIPTION_TURBINE_VENT)
+        .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VENT, GeneratorsLang.DESCRIPTION_TURBINE_VENT)
         .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
         .build();
 
@@ -127,7 +127,7 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityReactorLogicAdapter> REACTOR_LOGIC_ADAPTER = BlockTileBuilder
         .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_REACTOR_LOGIC_ADAPTER)
         .withGui(() -> GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER)
+        .with(new AttributeRedstoneEmitter<TileEntityReactorLogicAdapter>((tile) -> tile.checkMode() ? 15 : 0))
         .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER, i, inv, tile)))
-        .with(new AttributeRedstoneEmitter<>((tile) -> tile.checkMode() ? 15 : 0))
         .build();
 }

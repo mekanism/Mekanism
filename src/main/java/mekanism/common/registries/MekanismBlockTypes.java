@@ -43,7 +43,10 @@ import mekanism.common.inventory.container.tile.TeleporterContainer;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tier.BinTier;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.tier.FluidTankTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.TileEntityBin;
@@ -64,10 +67,13 @@ import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
+import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
+import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
+import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
@@ -190,7 +196,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.DIGITAL_MINER)
           .withEnergyConfig(MekanismConfig.usage.digitalMiner::get, MekanismConfig.storage.digitalMiner::get)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR))
-          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new DigitalMinerContainer(i, inv, tile)))
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new DigitalMinerContainer(i, inv, (TileEntityDigitalMiner) tile)))
           .withCustomShape(BlockShapes.DIGITAL_MINER)
           .build();
     // Formulaic Assemblicator
@@ -199,7 +205,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.FORMULAIC_ASSEMBLICATOR)
           .withEnergyConfig(MekanismConfig.usage.formulaicAssemblicator, MekanismConfig.storage.formulaicAssemblicator)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY))
-          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new FormulaicAssemblicatorContainer(i, inv, tile)))
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new FormulaicAssemblicatorContainer(i, inv, (TileEntityFormulaicAssemblicator) tile)))
           .build();
     // Electric Pump
     public static final Machine<TileEntityElectricPump> ELECTRIC_PUMP = MachineBuilder.createMachine(() -> MekanismTileEntityTypes.ELECTRIC_PUMP, MekanismLang.DESCRIPTION_ELECTRIC_PUMP)
@@ -221,7 +227,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(() -> 12500, MekanismConfig.storage.teleporter)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .without(AttributeStateActive.class, AttributeParticleFX.class)
-          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new TeleporterContainer(i, inv, tile)))
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new TeleporterContainer(i, inv, (TileEntityTeleporter) tile)))
           .build();
     // Chargepad
     public static final BlockTypeTile<TileEntityChargepad> CHARGEPAD =
@@ -253,7 +259,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityPersonalChest> PERSONAL_CHEST = BlockTileBuilder
         .createBlock(() -> MekanismTileEntityTypes.PERSONAL_CHEST, MekanismLang.DESCRIPTION_PERSONAL_CHEST)
         .withGui(() -> MekanismContainerTypes.PERSONAL_CHEST_BLOCK)
-        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new PersonalChestTileContainer(i, inv, tile)))
+        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new PersonalChestTileContainer(i, inv, (TileEntityPersonalChest) tile)))
         .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
         .withCustomShape(BlockShapes.PERSONAL_CHEST)
         .build();
@@ -268,7 +274,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityOredictionificator> OREDICTIONIFICATOR = BlockTileBuilder
         .createBlock(() -> MekanismTileEntityTypes.OREDICTIONIFICATOR, MekanismLang.DESCRIPTION_OREDICTIONIFICATOR)
         .withGui(() -> MekanismContainerTypes.OREDICTIONIFICATOR)
-        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new OredictionificatorContainer(i, inv, tile)))
+        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new OredictionificatorContainer(i, inv, (TileEntityOredictionificator) tile)))
         .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeRedstone())
         .build();
     // Teleporter
@@ -278,7 +284,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(null, null)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeRedstone.class, AttributeComparator.class)
-          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, tile)))
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, (TileEntityQuantumEntangloporter) tile)))
           .build();
     // Logistical Sorter
     public static final Machine<TileEntityLogisticalSorter> LOGISTICAL_SORTER = MachineBuilder
@@ -294,7 +300,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntitySecurityDesk> SECURITY_DESK = BlockTileBuilder
         .createBlock(() -> MekanismTileEntityTypes.SECURITY_DESK, MekanismLang.DESCRIPTION_SECURITY_DESK)
         .withGui(() -> MekanismContainerTypes.SECURITY_DESK)
-        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new SecurityDeskContainer(i, inv, tile)))
+        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new SecurityDeskContainer(i, inv, (TileEntitySecurityDesk) tile)))
         .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
         .withCustomShape(BlockShapes.SECURITY_DESK)
         .build();
@@ -375,6 +381,27 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityBin> ULTIMATE_BIN = createBin(BinTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_BIN, null);
     public static final Machine<TileEntityBin> CREATIVE_BIN = createBin(BinTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_BIN, null);
 
+    // Energy Cubes
+    public static final Machine<TileEntityEnergyCube> BASIC_ENERGY_CUBE = createEnergyCube(EnergyCubeTier.BASIC, () -> MekanismTileEntityTypes.BASIC_ENERGY_CUBE, () -> MekanismBlocks.ADVANCED_ENERGY_CUBE);
+    public static final Machine<TileEntityEnergyCube> ADVANCED_ENERGY_CUBE = createEnergyCube(EnergyCubeTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_ENERGY_CUBE, () -> MekanismBlocks.ELITE_ENERGY_CUBE);
+    public static final Machine<TileEntityEnergyCube> ELITE_ENERGY_CUBE = createEnergyCube(EnergyCubeTier.ELITE, () -> MekanismTileEntityTypes.ELITE_ENERGY_CUBE, () -> MekanismBlocks.ULTIMATE_ENERGY_CUBE);
+    public static final Machine<TileEntityEnergyCube> ULTIMATE_ENERGY_CUBE = createEnergyCube(EnergyCubeTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_ENERGY_CUBE, null);
+    public static final Machine<TileEntityEnergyCube> CREATIVE_ENERGY_CUBE = createEnergyCube(EnergyCubeTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_ENERGY_CUBE, null);
+
+    // Fluid Tanks
+    public static final Machine<TileEntityFluidTank> BASIC_FLUID_TANK = createFluidTank(FluidTankTier.BASIC, () -> MekanismTileEntityTypes.BASIC_FLUID_TANK, () -> MekanismBlocks.ADVANCED_FLUID_TANK);
+    public static final Machine<TileEntityFluidTank> ADVANCED_FLUID_TANK = createFluidTank(FluidTankTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_FLUID_TANK, () -> MekanismBlocks.ELITE_FLUID_TANK);
+    public static final Machine<TileEntityFluidTank> ELITE_FLUID_TANK = createFluidTank(FluidTankTier.ELITE, () -> MekanismTileEntityTypes.ELITE_FLUID_TANK, () -> MekanismBlocks.ULTIMATE_FLUID_TANK);
+    public static final Machine<TileEntityFluidTank> ULTIMATE_FLUID_TANK = createFluidTank(FluidTankTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_FLUID_TANK, null);
+    public static final Machine<TileEntityFluidTank> CREATIVE_FLUID_TANK = createFluidTank(FluidTankTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_FLUID_TANK, null);
+
+    // Gas Tanks
+    public static final Machine<TileEntityGasTank> BASIC_GAS_TANK = createGasTank(GasTankTier.BASIC, () -> MekanismTileEntityTypes.BASIC_GAS_TANK, () -> MekanismBlocks.ADVANCED_GAS_TANK);
+    public static final Machine<TileEntityGasTank> ADVANCED_GAS_TANK = createGasTank(GasTankTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_GAS_TANK, () -> MekanismBlocks.ELITE_GAS_TANK);
+    public static final Machine<TileEntityGasTank> ELITE_GAS_TANK = createGasTank(GasTankTier.ELITE, () -> MekanismTileEntityTypes.ELITE_GAS_TANK, () -> MekanismBlocks.ULTIMATE_GAS_TANK);
+    public static final Machine<TileEntityGasTank> ULTIMATE_GAS_TANK = createGasTank(GasTankTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_GAS_TANK, null);
+    public static final Machine<TileEntityGasTank> CREATIVE_GAS_TANK = createGasTank(GasTankTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_GAS_TANK, null);
+
     static {
         for (FactoryTier tier : FactoryTier.values()) {
             for (FactoryType type : FactoryType.values()) {
@@ -405,6 +432,33 @@ public class MekanismBlockTypes {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_BIN)
             .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
             .without(AttributeParticleFX.class, AttributeSecurity.class)
+            .build();
+    }
+
+    public static final <TILE extends TileEntityEnergyCube> Machine<TILE> createEnergyCube(EnergyCubeTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+        return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_ENERGY_CUBE)
+            .withGui(() -> MekanismContainerTypes.ENERGY_CUBE)
+            .withEnergyConfig(() -> tier.getMaxEnergy())
+            .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock), new AttributeStateFacing(BlockStateHelper.facingProperty))
+            .without(AttributeParticleFX.class, AttributeStateActive.class)
+            .build();
+    }
+
+    public static final <TILE extends TileEntityFluidTank> Machine<TILE> createFluidTank(FluidTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+        return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_FLUID_TANK)
+            .withGui(() -> MekanismContainerTypes.FLUID_TANK)
+            .withCustomShape(BlockShapes.FLUID_TANK)
+            .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
+            .without(AttributeParticleFX.class, AttributeStateFacing.class, AttributeRedstone.class)
+            .build();
+    }
+
+    public static final <TILE extends TileEntityGasTank> Machine<TILE> createGasTank(GasTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+        return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_GAS_TANK)
+            .withGui(() -> MekanismContainerTypes.GAS_TANK)
+            .withCustomShape(BlockShapes.GAS_TANK)
+            .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
+            .without(AttributeParticleFX.class, AttributeStateActive.class)
             .build();
     }
 }

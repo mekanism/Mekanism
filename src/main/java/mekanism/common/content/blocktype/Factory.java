@@ -21,11 +21,11 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
 
     private FactoryMachine<?> origMachine;
 
-    public Factory(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, FactoryMachine<?> origMachine, FactoryTier tier) {
+    public Factory(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<? extends MekanismTileContainer<?>>> containerRegistrar, FactoryMachine<?> origMachine, FactoryTier tier) {
         super(tileEntityRegistrar, MekanismLang.DESCRIPTION_FACTORY, origMachine.get(AttributeFactoryType.class).getFactoryType());
         this.origMachine = origMachine;
         setMachineData();
-        add(new AttributeGui<>(containerRegistrar), new AttributeTier<>(tier));
+        add(new AttributeGui(containerRegistrar), new AttributeTier<>(tier));
 
         if (tier.ordinal() < FactoryTier.values().length - 1) {
             add(new AttributeUpgradeable(() -> MekanismBlocks.getFactory(FactoryTier.values()[tier.ordinal()+1], origMachine.get(AttributeFactoryType.class).getFactoryType())));
@@ -49,7 +49,7 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
         public static <TILE extends TileEntityFactory<?>> FactoryBuilder<Factory<TILE>, TILE, ?> createFactory(Supplier<?> tileEntityRegistrar,
               Supplier<?> containerRegistrar, FactoryMachine<?> origMachine, FactoryTier tier) {
             // this is dirty but unfortunately necessary for things to play right
-            return new FactoryBuilder<>(new Factory<TILE>((Supplier<TileEntityTypeRegistryObject<TILE>>)tileEntityRegistrar, (Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>>)containerRegistrar, origMachine, tier));
+            return new FactoryBuilder<>(new Factory<TILE>((Supplier<TileEntityTypeRegistryObject<TILE>>)tileEntityRegistrar, (Supplier<ContainerTypeRegistryObject<? extends MekanismTileContainer<?>>>)containerRegistrar, origMachine, tier));
         }
     }
 }

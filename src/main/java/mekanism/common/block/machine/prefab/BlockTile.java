@@ -129,8 +129,12 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
 
     public static class BlockTileModel<TILE extends TileEntityMekanism, BLOCK extends BlockTypeTile<TILE>> extends BlockTile<TILE, BLOCK> implements IStateFluidLoggable {
 
-        public BlockTileModel(BLOCK machineType) {
-            super(machineType);
+        public BlockTileModel(BLOCK type) {
+            super(type);
+        }
+
+        public BlockTileModel(BLOCK type, Block.Properties properties) {
+            super(type, properties);
         }
     }
 }

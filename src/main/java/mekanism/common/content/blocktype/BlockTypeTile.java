@@ -46,8 +46,8 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
             return with(new AttributeSound(soundRegistrar));
         }
 
-        public T withGui(Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar) {
-            return with(new AttributeGui<>(containerRegistrar));
+        public T withGui(Supplier<ContainerTypeRegistryObject<? extends MekanismTileContainer<?>>> containerRegistrar) {
+            return with(new AttributeGui(containerRegistrar));
         }
 
         public T withEnergyConfig(DoubleSupplier energyUsage, DoubleSupplier energyStorage) {
@@ -58,8 +58,7 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
             return with(new AttributeEnergy(null, energyStorage));
         }
 
-        @SuppressWarnings("unchecked")
-        public T withCustomContainer(Function<TILE, INamedContainerProvider> customContainerSupplier) {
+        public T withCustomContainer(Function<TileEntityMekanism, INamedContainerProvider> customContainerSupplier) {
             if (!holder.has(AttributeGui.class)) {
                 Mekanism.logger.error("Attempted to set a custom container on a block type without a GUI attribute.");
             }

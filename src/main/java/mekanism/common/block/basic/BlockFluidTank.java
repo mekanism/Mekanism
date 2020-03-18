@@ -2,36 +2,16 @@ package mekanism.common.block.basic;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.block.IColoredBlock;
-import mekanism.api.block.IHasInventory;
-import mekanism.api.block.IHasModel;
-import mekanism.api.block.IHasSecurity;
-import mekanism.api.block.IHasTileEntity;
-import mekanism.api.block.ISupportsComparator;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
-import mekanism.api.tier.BaseTier;
-import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
-import mekanism.common.block.BlockMekanism;
-import mekanism.common.block.attribute.AttributeStateActive;
-import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.ITieredBlock;
-import mekanism.common.block.interfaces.IUpgradeableBlock;
-import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateFluidLoggable;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeTier;
+import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.registration.impl.ContainerTypeRegistryObject;
-import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.registries.MekanismTileEntityTypes;
-import mekanism.common.tier.FluidTankTier;
+import mekanism.common.content.blocktype.Machine;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -39,20 +19,14 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ILightReader;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -60,21 +34,10 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, AttributeStateActive, ITieredBlock<FluidTankTier>,
-      IHasInventory, IHasTileEntity<TileEntityFluidTank>, ISupportsComparator, IHasSecurity, IStateFluidLoggable, IHasDescription, IUpgradeableBlock {
+public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> implements IColoredBlock {
 
-    private static final VoxelShape bounds = makeCuboidShape(2, 0, 2, 14, 16, 14);
-
-    private final FluidTankTier tier;
-
-    public BlockFluidTank(FluidTankTier tier) {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
-        this.tier = tier;
-    }
-
-    @Override
-    public FluidTankTier getTier() {
-        return tier;
+    public BlockFluidTank(Machine<TileEntityFluidTank> type) {
+        super(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
     }
 
     @Override
@@ -123,18 +86,6 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
             }
         }
         return tile.openGui(player);
-    }
-
-    @Override
-    @Deprecated
-    public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return SecurityUtils.canAccess(player, MekanismUtils.getTileEntity(world, pos)) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
-    }
-
-    @Override
-    public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
-        //TODO: This is how it was before, but should it be divided by 5 like in Block.java
-        return blockResistance;
     }
 
     private boolean manageInventory(PlayerEntity player, TileEntityFluidTank tile, Hand hand, ItemStack itemStack) {
@@ -207,71 +158,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
     }
 
     @Override
-    @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
-        if (!world.isRemote) {
-            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-            if (tile != null) {
-                tile.onNeighborChange(neighborBlock);
-            }
-        }
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return bounds;
-    }
-
-    @Override
     public EnumColor getColor() {
-        return getTier().getBaseTier().getColor();
-    }
-
-    @Override
-    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFluidTank>> getContainerType() {
-        return MekanismContainerTypes.FLUID_TANK;
-    }
-
-    @Override
-    public TileEntityType<TileEntityFluidTank> getTileType() {
-        switch (tier) {
-            case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_FLUID_TANK.getTileEntityType();
-            case ELITE:
-                return MekanismTileEntityTypes.ELITE_FLUID_TANK.getTileEntityType();
-            case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_FLUID_TANK.getTileEntityType();
-            case CREATIVE:
-                return MekanismTileEntityTypes.CREATIVE_FLUID_TANK.getTileEntityType();
-            case BASIC:
-            default:
-                return MekanismTileEntityTypes.BASIC_FLUID_TANK.getTileEntityType();
-        }
-    }
-
-    @Nonnull
-    @Override
-    public ILangEntry getDescription() {
-        return MekanismLang.DESCRIPTION_FLUID_TANK;
-    }
-
-    @Nonnull
-    @Override
-    public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
-        switch (tier) {
-            case BASIC:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_FLUID_TANK.getBlock().getDefaultState());
-            case ADVANCED:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_FLUID_TANK.getBlock().getDefaultState());
-            case ELITE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_FLUID_TANK.getBlock().getDefaultState());
-            case ULTIMATE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_FLUID_TANK.getBlock().getDefaultState());
-            case CREATIVE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.CREATIVE_FLUID_TANK.getBlock().getDefaultState());
-        }
-        return current;
+        return Attribute.get(this, AttributeTier.class).getTier().getBaseTier().getColor();
     }
 }

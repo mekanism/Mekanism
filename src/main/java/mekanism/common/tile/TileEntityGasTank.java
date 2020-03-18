@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
@@ -19,7 +19,8 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.block.BlockGasTank;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.capabilities.chemical.GasTankGasTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -103,7 +104,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
 
     @Override
     protected void presetVariables() {
-        tier = ((BlockGasTank) getBlockType()).getTier();
+        tier = (GasTankTier) Attribute.get(getBlockType(), AttributeTier.class).getTier();
     }
 
     @Nonnull
