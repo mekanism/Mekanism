@@ -19,8 +19,6 @@ import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockFluidTank;
-import mekanism.common.block.basic.BlockInductionCell;
-import mekanism.common.block.basic.BlockInductionProvider;
 import mekanism.common.block.basic.BlockLogisticalSorter;
 import mekanism.common.block.basic.BlockPressureDisperser;
 import mekanism.common.block.basic.BlockResource;
@@ -29,12 +27,13 @@ import mekanism.common.block.basic.BlockSteelCasing;
 import mekanism.common.block.basic.BlockStructuralGlass;
 import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.block.machine.prefab.BlockTile;
-import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
+import mekanism.common.block.machine.prefab.BlockBase;
 import mekanism.common.block.machine.prefab.BlockBasicMultiblock;
 import mekanism.common.block.machine.prefab.BlockFactoryMachine;
 import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactoryMachineModel;
+import mekanism.common.block.machine.prefab.BlockTile;
+import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
 import mekanism.common.block.transmitter.BlockDiversionTransporter;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
 import mekanism.common.block.transmitter.BlockMechanicalPipe;
@@ -42,6 +41,7 @@ import mekanism.common.block.transmitter.BlockPressurizedTube;
 import mekanism.common.block.transmitter.BlockRestrictiveTransporter;
 import mekanism.common.block.transmitter.BlockThermodynamicConductor;
 import mekanism.common.block.transmitter.BlockUniversalCable;
+import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.blocktype.Factory;
 import mekanism.common.content.blocktype.FactoryType;
@@ -81,18 +81,16 @@ import mekanism.common.item.block.transmitter.ItemBlockUniversalCable;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.resource.BlockResourceInfo;
-import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
-import mekanism.common.tier.InductionCellTier;
-import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
+import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityChargepad;
@@ -165,11 +163,11 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockResource, ItemBlockResource> COPPER_BLOCK = registerResourceBlock(BlockResourceInfo.COPPER);
     public static final BlockRegistryObject<BlockResource, ItemBlockResource> TIN_BLOCK = registerResourceBlock(BlockResourceInfo.TIN);
 
-    public static final BlockRegistryObject<BlockBin, ItemBlockBin> BASIC_BIN = registerBin(BinTier.BASIC);
-    public static final BlockRegistryObject<BlockBin, ItemBlockBin> ADVANCED_BIN = registerBin(BinTier.ADVANCED);
-    public static final BlockRegistryObject<BlockBin, ItemBlockBin> ELITE_BIN = registerBin(BinTier.ELITE);
-    public static final BlockRegistryObject<BlockBin, ItemBlockBin> ULTIMATE_BIN = registerBin(BinTier.ULTIMATE);
-    public static final BlockRegistryObject<BlockBin, ItemBlockBin> CREATIVE_BIN = registerBin(BinTier.CREATIVE);
+    public static final BlockRegistryObject<BlockBin, ItemBlockBin> BASIC_BIN = registerBin(MekanismBlockTypes.BASIC_BIN);
+    public static final BlockRegistryObject<BlockBin, ItemBlockBin> ADVANCED_BIN = registerBin(MekanismBlockTypes.ADVANCED_BIN);
+    public static final BlockRegistryObject<BlockBin, ItemBlockBin> ELITE_BIN = registerBin(MekanismBlockTypes.ELITE_BIN);
+    public static final BlockRegistryObject<BlockBin, ItemBlockBin> ULTIMATE_BIN = registerBin(MekanismBlockTypes.ULTIMATE_BIN);
+    public static final BlockRegistryObject<BlockBin, ItemBlockBin> CREATIVE_BIN = registerBin(MekanismBlockTypes.CREATIVE_BIN);
 
     public static final BlockRegistryObject<BlockTeleporterFrame, ItemBlockTooltip<BlockTeleporterFrame>> TELEPORTER_FRAME = registerBlock("teleporter_frame", BlockTeleporterFrame::new);
     public static final BlockRegistryObject<BlockSteelCasing, ItemBlockTooltip<BlockSteelCasing>> STEEL_CASING = registerBlock("steel_casing", BlockSteelCasing::new);
@@ -182,15 +180,15 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityInductionCasing>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityInductionCasing>>> INDUCTION_CASING = registerBlock("induction_casing", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.INDUCTION_CASING));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityInductionPort>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityInductionPort>>> INDUCTION_PORT = registerBlock("induction_port", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.INDUCTION_PORT));
 
-    public static final BlockRegistryObject<BlockInductionCell, ItemBlockInductionCell> BASIC_INDUCTION_CELL = registerInductionCell(InductionCellTier.BASIC);
-    public static final BlockRegistryObject<BlockInductionCell, ItemBlockInductionCell> ADVANCED_INDUCTION_CELL = registerInductionCell(InductionCellTier.ADVANCED);
-    public static final BlockRegistryObject<BlockInductionCell, ItemBlockInductionCell> ELITE_INDUCTION_CELL = registerInductionCell(InductionCellTier.ELITE);
-    public static final BlockRegistryObject<BlockInductionCell, ItemBlockInductionCell> ULTIMATE_INDUCTION_CELL = registerInductionCell(InductionCellTier.ULTIMATE);
+    public static final BlockRegistryObject<BlockBase<BlockType>, ItemBlockInductionCell> BASIC_INDUCTION_CELL = registerInductionCell(MekanismBlockTypes.BASIC_INDUCTION_CELL);
+    public static final BlockRegistryObject<BlockBase<BlockType>, ItemBlockInductionCell> ADVANCED_INDUCTION_CELL = registerInductionCell(MekanismBlockTypes.ADVANCED_INDUCTION_CELL);
+    public static final BlockRegistryObject<BlockBase<BlockType>, ItemBlockInductionCell> ELITE_INDUCTION_CELL = registerInductionCell(MekanismBlockTypes.ELITE_INDUCTION_CELL);
+    public static final BlockRegistryObject<BlockBase<BlockType>, ItemBlockInductionCell> ULTIMATE_INDUCTION_CELL = registerInductionCell(MekanismBlockTypes.ULTIMATE_INDUCTION_CELL);
 
-    public static final BlockRegistryObject<BlockInductionProvider, ItemBlockInductionProvider> BASIC_INDUCTION_PROVIDER = registerInductionProvider(InductionProviderTier.BASIC);
-    public static final BlockRegistryObject<BlockInductionProvider, ItemBlockInductionProvider> ADVANCED_INDUCTION_PROVIDER = registerInductionProvider(InductionProviderTier.ADVANCED);
-    public static final BlockRegistryObject<BlockInductionProvider, ItemBlockInductionProvider> ELITE_INDUCTION_PROVIDER = registerInductionProvider(InductionProviderTier.ELITE);
-    public static final BlockRegistryObject<BlockInductionProvider, ItemBlockInductionProvider> ULTIMATE_INDUCTION_PROVIDER = registerInductionProvider(InductionProviderTier.ULTIMATE);
+    public static final BlockRegistryObject<BlockBase<BlockType>, ItemBlockInductionProvider> BASIC_INDUCTION_PROVIDER = registerInductionProvider(MekanismBlockTypes.BASIC_INDUCTION_PROVIDER);
+    public static final BlockRegistryObject<BlockBase<BlockType>, ItemBlockInductionProvider> ADVANCED_INDUCTION_PROVIDER = registerInductionProvider(MekanismBlockTypes.ADVANCED_INDUCTION_PROVIDER);
+    public static final BlockRegistryObject<BlockBase<BlockType>, ItemBlockInductionProvider> ELITE_INDUCTION_PROVIDER = registerInductionProvider(MekanismBlockTypes.ELITE_INDUCTION_PROVIDER);
+    public static final BlockRegistryObject<BlockBase<BlockType>, ItemBlockInductionProvider> ULTIMATE_INDUCTION_PROVIDER = registerInductionProvider(MekanismBlockTypes.ULTIMATE_INDUCTION_PROVIDER);
 
     public static final BlockRegistryObject<BlockTile<TileEntitySuperheatingElement, BlockTypeTile<TileEntitySuperheatingElement>>, ItemBlockTooltip<BlockTile<TileEntitySuperheatingElement, BlockTypeTile<TileEntitySuperheatingElement>>>> SUPERHEATING_ELEMENT = registerBlock("superheating_element", () -> new BlockTile<>(MekanismBlockTypes.SUPERHEATING_ELEMENT));
     public static final BlockRegistryObject<BlockPressureDisperser, ItemBlockTooltip<BlockPressureDisperser>> PRESSURE_DISPERSER = registerBlock("pressure_disperser", BlockPressureDisperser::new);
@@ -300,16 +298,16 @@ public class MekanismBlocks {
         return BLOCKS.register("block_" + resource.getRegistrySuffix(), () -> new BlockResource(resource), ItemBlockResource::new);
     }
 
-    private static BlockRegistryObject<BlockBin, ItemBlockBin> registerBin(BinTier tier) {
-        return registerTieredBlock(tier, "_bin", () -> new BlockBin(tier), ItemBlockBin::new);
+    private static BlockRegistryObject<BlockBin, ItemBlockBin> registerBin(BlockTypeTile<TileEntityBin> type) {
+        return registerTieredBlock(type.get(AttributeTier.class).getTier(), "_bin", () -> new BlockBin(type), ItemBlockBin::new);
     }
 
-    private static BlockRegistryObject<BlockInductionCell, ItemBlockInductionCell> registerInductionCell(InductionCellTier tier) {
-        return registerTieredBlock(tier, "_induction_cell", () -> new BlockInductionCell(tier), ItemBlockInductionCell::new);
+    private static BlockRegistryObject<BlockBase<BlockType>, ItemBlockInductionCell> registerInductionCell(BlockType type) {
+        return registerTieredBlock(type.get(AttributeTier.class).getTier(), "_induction_cell", () -> new BlockBase<>(type), ItemBlockInductionCell::new);
     }
 
-    private static BlockRegistryObject<BlockInductionProvider, ItemBlockInductionProvider> registerInductionProvider(InductionProviderTier tier) {
-        return registerTieredBlock(tier, "_induction_provider", () -> new BlockInductionProvider(tier), ItemBlockInductionProvider::new);
+    private static BlockRegistryObject<BlockBase<BlockType>, ItemBlockInductionProvider> registerInductionProvider(BlockType type) {
+        return registerTieredBlock(type.get(AttributeTier.class).getTier(), "_induction_provider", () -> new BlockBase<>(type), ItemBlockInductionProvider::new);
     }
 
     private static BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> registerFluidTank(FluidTankTier tier) {

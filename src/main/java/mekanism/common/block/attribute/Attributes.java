@@ -17,6 +17,9 @@ public class Attributes {
     /** If a block has a redstone input configuration. */
     public static class AttributeRedstone implements Attribute {}
 
+    /** If mobs can spawn on the block. */
+    public static class AttributeNoMobSpawn implements Attribute {}
+
     /** If a block can emit redstone. */
     public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements Attribute {
 

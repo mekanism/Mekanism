@@ -3,16 +3,15 @@ package mekanism.common.content.blocktype;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.Pos3D;
 import mekanism.api.Upgrade;
-import mekanism.api.tier.BaseTier;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
@@ -21,7 +20,6 @@ import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.block.BlockState;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 
@@ -42,12 +40,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE
 
         public FactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntitySupplier, MekanismLang description, FactoryType factoryType) {
             super(tileEntitySupplier, description);
-            add(new AttributeFactoryType(factoryType));
-        }
-
-        @Nonnull
-        public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
-            return MekanismBlocks.getFactory(FactoryTier.values()[tier.ordinal()], get(AttributeFactoryType.class).getFactoryType()).getBlock().getDefaultState();
+            add(new AttributeFactoryType(factoryType), new AttributeUpgradeable(() -> MekanismBlocks.getFactory(FactoryTier.BASIC, get(AttributeFactoryType.class).getFactoryType())));
         }
     }
 

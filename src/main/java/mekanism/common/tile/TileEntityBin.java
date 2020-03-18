@@ -8,7 +8,8 @@ import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.block.basic.BlockBin;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -51,7 +52,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     @Override
     protected void presetVariables() {
-        tier = ((BlockBin) getBlockType()).getTier();
+        tier = (BinTier) Attribute.get(getBlockType(), AttributeTier.class).getTier();
     }
 
     @Nonnull

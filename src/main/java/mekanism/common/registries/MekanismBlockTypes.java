@@ -1,18 +1,21 @@
 package mekanism.common.registries;
 
 import java.util.EnumSet;
+import java.util.function.Supplier;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import mekanism.api.Pos3D;
 import mekanism.api.Upgrade;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateFacing;
+import mekanism.common.block.attribute.AttributeTier;
+import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeNoMobSpawn;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
@@ -37,7 +40,13 @@ import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
 import mekanism.common.inventory.container.tile.SecurityDeskContainer;
 import mekanism.common.inventory.container.tile.TeleporterContainer;
+import mekanism.common.registration.impl.BlockRegistryObject;
+import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
+import mekanism.common.tier.BinTier;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.tier.InductionCellTier;
+import mekanism.common.tier.InductionProviderTier;
+import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityChargepad;
@@ -60,7 +69,9 @@ import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
 import mekanism.common.tile.TileEntityInductionCasing;
+import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
+import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOredictionificator;
@@ -202,7 +213,7 @@ public class MekanismBlockTypes {
     // Solar Neutron Activator
     public static final Machine<TileEntitySolarNeutronActivator> SOLAR_NEUTRON_ACTIVATOR = MachineBuilder
         .createMachine(() -> MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR, MekanismLang.DESCRIPTION_SOLAR_NEUTRON_ACTIVATOR).withGui(() -> MekanismContainerTypes.SOLAR_NEUTRON_ACTIVATOR)
-        .without(AttributeEnergy.class, AttributeParticleFX.class).withSupportedUpgrades(EnumSet.of(Upgrade.SPEED)).withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR).build();
+        .without(AttributeParticleFX.class).withSupportedUpgrades(EnumSet.of(Upgrade.SPEED)).withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR).build();
     // Teleporter
     public static final Machine<TileEntityTeleporter> TELEPORTER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.TELEPORTER, MekanismLang.DESCRIPTION_TELEPORTER)
@@ -274,7 +285,6 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.LOGISTICAL_SORTER, MekanismLang.DESCRIPTION_LOGISTICAL_SORTER)
           .withGui(() -> MekanismContainerTypes.LOGISTICAL_SORTER)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
-          .without(AttributeEnergy.class)
           .with(new AttributeStateFacing(BlockStateHelper.facingProperty))
           .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.LOGISTICAL_SORTER, i, inv, tile)))
           .withCustomShape(BlockShapes.LOGISTICAL_SORTER)
@@ -334,17 +344,36 @@ public class MekanismBlockTypes {
         .with(new AttributeInventory(), new AttributeComparator(), new AttributeStateActive())
         .build();
     // Thermal Evaporation Controller
-    public static final BlockTypeTile<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER =
-        BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER)
-            .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER)
-            .with(new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(9F)).build();
+    public static final BlockTypeTile<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER)
+        .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER)
+        .with(new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(9F)).build();
     // Thermal Evaporation Valve
-    public static final BlockTypeTile<TileEntityThermalEvaporationValve> THERMAL_EVAPORATION_VALVE =
-        BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_VALVE)
-            .with(new AttributeComparator(), new AttributeCustomResistance(9F)).build();
+    public static final BlockTypeTile<TileEntityThermalEvaporationValve> THERMAL_EVAPORATION_VALVE = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_VALVE)
+        .with(new AttributeComparator(), new AttributeCustomResistance(9F)).build();
     // Thermal Evaporation Block
-    public static final BlockTypeTile<TileEntityThermalEvaporationBlock> THERMAL_EVAPORATION_BLOCK =
-        BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_BLOCK).with(new AttributeCustomResistance(9F)).build();
+    public static final BlockTypeTile<TileEntityThermalEvaporationBlock> THERMAL_EVAPORATION_BLOCK = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_BLOCK).with(new AttributeCustomResistance(9F)).build();
+
+    // Induction Cells
+    public static final BlockTypeTile<TileEntityInductionCell> BASIC_INDUCTION_CELL = createInductionCell(InductionCellTier.BASIC, () -> MekanismTileEntityTypes.BASIC_INDUCTION_CELL);
+    public static final BlockTypeTile<TileEntityInductionCell> ADVANCED_INDUCTION_CELL = createInductionCell(InductionCellTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_INDUCTION_CELL);
+    public static final BlockTypeTile<TileEntityInductionCell> ELITE_INDUCTION_CELL = createInductionCell(InductionCellTier.ELITE, () -> MekanismTileEntityTypes.ELITE_INDUCTION_CELL);
+    public static final BlockTypeTile<TileEntityInductionCell> ULTIMATE_INDUCTION_CELL = createInductionCell(InductionCellTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_INDUCTION_CELL);
+
+    // Induction Provider
+    public static final BlockTypeTile<TileEntityInductionProvider> BASIC_INDUCTION_PROVIDER = createInductionProvider(InductionProviderTier.BASIC, () -> MekanismTileEntityTypes.BASIC_INDUCTION_PROVIDER);
+    public static final BlockTypeTile<TileEntityInductionProvider> ADVANCED_INDUCTION_PROVIDER = createInductionProvider(InductionProviderTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_INDUCTION_PROVIDER);
+    public static final BlockTypeTile<TileEntityInductionProvider> ELITE_INDUCTION_PROVIDER = createInductionProvider(InductionProviderTier.ELITE, () -> MekanismTileEntityTypes.ELITE_INDUCTION_PROVIDER);
+    public static final BlockTypeTile<TileEntityInductionProvider> ULTIMATE_INDUCTION_PROVIDER = createInductionProvider(InductionProviderTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_INDUCTION_PROVIDER);
+
+    // Bins
+    public static final Machine<TileEntityBin> BASIC_BIN = createBin(BinTier.BASIC, () -> MekanismTileEntityTypes.BASIC_BIN, () -> MekanismBlocks.ADVANCED_BIN);
+    public static final Machine<TileEntityBin> ADVANCED_BIN = createBin(BinTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_BIN, () -> MekanismBlocks.ELITE_BIN);
+    public static final Machine<TileEntityBin> ELITE_BIN = createBin(BinTier.ELITE, () -> MekanismTileEntityTypes.ELITE_BIN, () -> MekanismBlocks.ULTIMATE_BIN);
+    public static final Machine<TileEntityBin> ULTIMATE_BIN = createBin(BinTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_BIN, null);
+    public static final Machine<TileEntityBin> CREATIVE_BIN = createBin(BinTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_BIN, null);
 
     static {
         for (FactoryTier tier : FactoryTier.values()) {
@@ -357,5 +386,25 @@ public class MekanismBlockTypes {
 
     public static Factory<?> getFactory(FactoryTier tier, FactoryType type) {
         return FACTORIES.get(tier, type);
+    }
+
+    public static final <TILE extends TileEntityInductionCell> BlockTypeTile<TILE> createInductionCell(InductionCellTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
+        return BlockTileBuilder.createBlock(tile, MekanismLang.DESCRIPTION_INDUCTION_CELL)
+            .withEnergyConfig(() -> tier.getMaxEnergy())
+            .with(new AttributeTier<>(tier), new AttributeNoMobSpawn())
+            .build();
+    }
+
+    public static final <TILE extends TileEntityInductionProvider> BlockTypeTile<TILE> createInductionProvider(InductionProviderTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
+        return BlockTileBuilder.createBlock(tile, MekanismLang.DESCRIPTION_INDUCTION_PROVIDER)
+            .with(new AttributeTier<>(tier), new AttributeNoMobSpawn())
+            .build();
+    }
+
+    public static final <TILE extends TileEntityBin> Machine<TILE> createBin(BinTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+        return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_BIN)
+            .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
+            .without(AttributeParticleFX.class, AttributeSecurity.class)
+            .build();
     }
 }

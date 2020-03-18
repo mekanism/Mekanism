@@ -12,9 +12,10 @@ import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.ColorRGBA;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
-import mekanism.common.block.transmitter.BlockThermodynamicConductor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
@@ -42,7 +43,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     public TileEntityThermodynamicConductor(IBlockProvider blockProvider) {
         super(((IHasTileEntity<TileEntityThermodynamicConductor>) blockProvider.getBlock()).getTileType());
-        this.tier = ((BlockThermodynamicConductor) blockProvider.getBlock()).getTier();
+        this.tier = (ConductorTier) Attribute.get(blockProvider.getBlock(), AttributeTier.class).getTier();
     }
 
     @Override

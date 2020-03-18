@@ -8,10 +8,12 @@ import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 
@@ -24,6 +26,10 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
         this.origMachine = origMachine;
         setMachineData();
         add(new AttributeGui<>(containerRegistrar), new AttributeTier<>(tier));
+
+        if (tier.ordinal() < FactoryTier.values().length - 1) {
+            add(new AttributeUpgradeable(() -> MekanismBlocks.getFactory(FactoryTier.values()[tier.ordinal()+1], origMachine.get(AttributeFactoryType.class).getFactoryType())));
+        }
     }
 
     private void setMachineData() {

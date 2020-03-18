@@ -38,8 +38,6 @@ import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockFluidTank;
-import mekanism.common.block.basic.BlockInductionCell;
-import mekanism.common.block.basic.BlockInductionProvider;
 import mekanism.common.block.basic.BlockResource;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
@@ -206,6 +204,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTieredBin(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockBin, ?> bin, IItemProvider previousBin, Tag<Item> circuitTag,
           Tag<Item> alloyTag, RecipeCriterion circuitCriterion) {
+        String tierName = Attribute.get(bin.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(bin)
               .pattern(BIN_PATTERN)
               .key(Pattern.PREVIOUS, previousBin)
@@ -214,7 +213,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(circuitCriterion)
               .addCriterion(Criterion.has(previousBin))
-              .build(consumer, Mekanism.rl(basePath + bin.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addChemicalInfuserRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -919,8 +918,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
     }
 
-    private void addTieredInductionCellRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockInductionCell, ?> cell,
+    private void addTieredInductionCellRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> cell,
           IItemProvider previousCell, IItemProvider energyCube) {
+        String tierName = Attribute.get(cell.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(cell)
               .pattern(INDUCTION_CELL_PATTERN)
               .key(Pattern.PREVIOUS, previousCell)
@@ -928,7 +928,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .addCriterion(Criterion.has(previousCell))
               .addCriterion(Criterion.has(energyCube))
-              .build(consumer, Mekanism.rl(basePath + cell.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addInductionProviderRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
@@ -949,8 +949,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ULTIMATE, Criterion.HAS_ULTIMATE_CIRCUIT);
     }
 
-    private void addTieredInductionProviderRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockInductionProvider, ?> provider,
+    private void addTieredInductionProviderRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> provider,
           IItemProvider previousProvider, IItemProvider energyCube, Tag<Item> circuitTag, RecipeCriterion circuitCriterion) {
+        String tierName = Attribute.get(provider.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(provider)
               .pattern(INDUCTION_PROVIDER_PATTERN)
               .key(Pattern.PREVIOUS, previousProvider)
@@ -959,7 +960,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.has(previousProvider))
               .addCriterion(Criterion.has(energyCube))
               .addCriterion(circuitCriterion)
-              .build(consumer, Mekanism.rl(basePath + provider.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addInfusionConversionRecipes(Consumer<IFinishedRecipe> consumer) {
