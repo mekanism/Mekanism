@@ -18,6 +18,7 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
+import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -136,7 +137,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     protected void presetVariables() {
-        tier = ((BlockFactory<?>) getBlockType()).getTier();
+        tier = (FactoryTier) Attribute.get(getBlockType(), AttributeTier.class).getTier();
     }
 
     @Nonnull

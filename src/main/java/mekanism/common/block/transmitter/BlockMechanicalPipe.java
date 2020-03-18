@@ -1,13 +1,15 @@
 package mekanism.common.block.transmitter;
 
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.interfaces.ITieredBlock;
+import mekanism.common.block.attribute.AttributeTier;
+import mekanism.common.block.interfaces.ITypeBlock;
+import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import net.minecraft.tileentity.TileEntityType;
 
-public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITieredBlock<PipeTier>, IHasTileEntity<TileEntityMechanicalPipe> {
+public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITypeBlock, IHasTileEntity<TileEntityMechanicalPipe> {
 
     private final PipeTier tier;
 
@@ -16,8 +18,8 @@ public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITiere
     }
 
     @Override
-    public PipeTier getTier() {
-        return tier;
+    public BlockType getType() {
+        return AttributeTier.getPassthroughType(tier);
     }
 
     @Override

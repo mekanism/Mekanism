@@ -35,12 +35,13 @@ import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
+import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.block.basic.BlockInductionCell;
 import mekanism.common.block.basic.BlockInductionProvider;
 import mekanism.common.block.basic.BlockResource;
-import mekanism.common.block.interfaces.ITieredBlock;
+import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemTierInstaller;
@@ -2186,35 +2187,38 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE, MekanismBlocks.ELITE_UNIVERSAL_CABLE, MekanismTags.Items.ALLOYS_ATOMIC, Criterion.HAS_ATOMIC_ALLOY);
     }
 
-    private void addBasicTransmitterRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITieredBlock<?>, ?> transmitter,
+    private void addBasicTransmitterRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter,
           Tag<Item> itemTag) {
+        String tierName = Attribute.get(transmitter.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, itemTag)
               .addCriterion(Criterion.HAS_STEEL)
-              .build(consumer, Mekanism.rl(basePath + transmitter.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
-    private void addBasicTransmitterRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITieredBlock<?>, ?> transmitter,
+    private void addBasicTransmitterRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter,
           Item item) {
+        String tierName = Attribute.get(transmitter.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, item)
               .addCriterion(Criterion.HAS_STEEL)
-              .build(consumer, Mekanism.rl(basePath + transmitter.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
-    private void addTransmitterUpgradeRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITieredBlock<?>, ?> transmitter,
+    private void addTransmitterUpgradeRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter,
           IItemProvider previousTransmitter, Tag<Item> alloyTag, RecipeCriterion alloyCriterion) {
+        String tierName = Attribute.get(transmitter.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(TRANSMITTER_UPGRADE_PATTERN)
               .key(Pattern.PREVIOUS, previousTransmitter)
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(Criterion.has(previousTransmitter))
               .addCriterion(alloyCriterion)
-              .build(consumer, Mekanism.rl(basePath + transmitter.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addUpgradeRecipes(Consumer<IFinishedRecipe> consumer) {
