@@ -35,7 +35,6 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue TO_FORGE;
     public final CachedDoubleValue FROM_H2;
     public final CachedIntValue ETHENE_BURN_TIME;
-    public final CachedDoubleValue ENERGY_PER_REDSTONE;
     public final CachedIntValue disassemblerEnergyUsage;
     public final CachedIntValue disassemblerEnergyUsageHoe;
     public final CachedIntValue disassemblerEnergyUsageShovel;
@@ -100,7 +99,6 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("dynamicTankEasterEgg", false));
         cardboardModBlacklist = CachedConfigValue.wrap(this, builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box.")
               .define("cardboardModBlacklist", new ArrayList<>()));
-        //TODO: Unused
         UPDATE_DELAY = CachedIntValue.wrap(this, builder.comment("How many ticks must pass until a block's active state can sync with the client.")
               .define("UPDATE_DELAY", 10));
 
@@ -123,8 +121,6 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("HydrogenEnergyDensity", 200D));
         ETHENE_BURN_TIME = CachedIntValue.wrap(this, builder.comment("Burn time for Ethylene (1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus).")
               .define("EthyleneBurnTime", 40));
-        ENERGY_PER_REDSTONE = CachedDoubleValue.wrap(this, builder.comment("How much energy (Joules) a piece of redstone gives in machines.")
-              .define("EnergyPerRedstone", 10_000D));
         builder.pop();
 
         builder.comment("Atomic Disassembler Settings").push(DISASSEMBLER_CATEGORY);

@@ -28,6 +28,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 @MethodsReturnNonnullByDefault
 public class BasicInventorySlot implements IInventorySlot {
 
+    //TODO: Should we make some sort of "ITickableSlot" or something that lets us tick a bunch of slots at once instead of having to manually call the relevant methods
     public static final Predicate<@NonNull ItemStack> alwaysTrue = stack -> true;
     public static final Predicate<@NonNull ItemStack> alwaysFalse = stack -> false;
     public static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;

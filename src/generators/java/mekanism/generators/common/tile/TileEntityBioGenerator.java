@@ -49,14 +49,14 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, stack -> stack.getItem().isIn(MekanismTags.Items.FUELS_BIO) ? 200 : 0,
               GeneratorsFluids.BIOETHANOL::getFluidStack, this, 17, 35),
               RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
-        builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
+        builder.addSlot(energySlot = EnergyInventorySlot.drain(this, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
 
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.charge(this);
+        energySlot.drainContainer();
         fuelSlot.fillOrBurn();
         if (canOperate()) {
             setActive(true);

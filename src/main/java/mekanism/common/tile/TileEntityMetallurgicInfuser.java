@@ -127,14 +127,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
             return true;
         }, stack -> containsRecipe(recipe -> recipe.getItemInput().testType(stack)), this, 51, 43));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 109, 43));
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 143, 35));
         return builder.build();
     }
 
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
         infusionSlot.fillTankOrConvert();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {

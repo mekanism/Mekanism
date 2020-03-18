@@ -133,7 +133,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         return MekanismLang.PUBLIC.translate();
     }
 
-    public void updateButtons() {
+    private void updateButtons() {
         if (tile.getSecurity().getClientOwner() == null) {
             return;
         }

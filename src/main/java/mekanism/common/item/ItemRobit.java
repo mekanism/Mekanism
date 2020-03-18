@@ -56,7 +56,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 if (!world.isRemote) {
                     EntityRobit robit = new EntityRobit(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
                     robit.setHome(Coord4D.get(chargepad));
-                    robit.setEnergy(getEnergy(stack));
+                    robit.getEnergyContainer().setEnergy(getEnergy(stack));
                     robit.setOwnerUUID(player.getUniqueID());
                     robit.setInventory(getInventory(stack));
                     robit.setCustomName(getName(stack));

@@ -43,14 +43,14 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 15, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(this, 15, 35));
         return builder.build();
     }
 
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
         double toUse = 0;
         if (MekanismUtils.canFunction(this)) {
             toUse = Math.min(getEnergy(), energyUsage);

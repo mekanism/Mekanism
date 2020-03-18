@@ -6,6 +6,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
+//TODO: Re-evaluate this
+@Deprecated
 public class ForgeEnergyItemWrapper extends ItemCapability implements IEnergyStorage {
 
     @Override

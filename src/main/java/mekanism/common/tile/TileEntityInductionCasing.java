@@ -40,8 +40,8 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         if (structure != null && isRendering) {
             structure.tick(getWorld());
             List<IInventorySlot> inventorySlots = getInventorySlots(null);
-            ((EnergyInventorySlot) inventorySlots.get(0)).charge(this);
-            ((EnergyInventorySlot) inventorySlots.get(1)).discharge(this);
+            ((EnergyInventorySlot) inventorySlots.get(0)).drainContainer();
+            ((EnergyInventorySlot) inventorySlots.get(1)).fillContainerOrConvert();
         }
     }
 

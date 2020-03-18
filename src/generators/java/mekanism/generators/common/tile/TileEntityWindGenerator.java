@@ -34,7 +34,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.drain(this, 143, 35));
         return builder.build();
     }
 
@@ -55,7 +55,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.charge(this);
+        energySlot.drainContainer();
         // If we're in a blacklisted dimension, there's nothing more to do
         if (isBlacklistDimension) {
             return;

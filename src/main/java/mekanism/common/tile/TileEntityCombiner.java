@@ -96,7 +96,7 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
         builder.addSlot(mainInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getMainInput().testType(item)), this, 64, 17));
         builder.addSlot(extraInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getExtraInput().testType(item)), this, 64, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 39, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 39, 35));
         extraInputSlot.setSlotType(ContainerSlotType.EXTRA);
         return builder.build();
     }
@@ -104,7 +104,7 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();

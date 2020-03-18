@@ -100,8 +100,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(dischargeSlot = EnergyInventorySlot.discharge(this, 17, 35));
-        builder.addSlot(chargeSlot = EnergyInventorySlot.charge(this, 143, 35));
+        builder.addSlot(dischargeSlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 17, 35));
+        builder.addSlot(chargeSlot = EnergyInventorySlot.drain(energyContainer, this, 143, 35));
         dischargeSlot.setSlotOverlay(SlotOverlay.MINUS);
         chargeSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
@@ -110,8 +110,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        chargeSlot.charge(this);
-        dischargeSlot.discharge(this);
+        chargeSlot.drainContainer();
+        dischargeSlot.fillContainerOrConvert();
         if (MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY)) {
             CableUtils.emit(this);
         }

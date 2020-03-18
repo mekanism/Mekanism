@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiRobitScreen;
 import mekanism.client.gui.element.GuiSideHolder;
-import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -57,17 +56,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         super.init();
         addButton(new GuiSideHolder(this, 176, 6, 106));
         addButton(new GuiRobitScreen(this, 27, 16, 122, 56, () -> nameChangeField.visible));
-        addButton(new GuiHorizontalPowerBar(this, new IBarInfoHandler() {
-            @Override
-            public ITextComponent getTooltip() {
-                return EnergyDisplay.of(robit.getEnergy(), robit.getMaxEnergy()).getTextComponent();
-            }
-
-            @Override
-            public double getLevel() {
-                return robit.getEnergy() / robit.getMaxEnergy();
-            }
-        }, 27, 74, 120));
+        addButton(new GuiHorizontalPowerBar(this, robit.getEnergyContainer(), 27, 74, 120));
         addButton(confirmName = new TranslationButton(this, getGuiLeft() + 58, getGuiTop() + 47, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
         confirmName.visible = false;
 
@@ -142,7 +131,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         if (!nameChangeField.visible) {
             CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
             renderScaledText(MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, 0x00CD00, 119);
-            renderScaledText(MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergy(), robit.getMaxEnergy())), 29, 36 - 4, 0x00CD00, 119);
+            renderScaledText(MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer().getEnergy(), robit.getEnergyContainer().getMaxEnergy())), 29, 36 - 4, 0x00CD00, 119);
             renderScaledText(MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, 0x00CD00, 119);
             renderScaledText(MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()), 29, 54 - 4, 0x00CD00, 119);
             renderScaledText(MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, 0x00CD00, 119);

@@ -121,7 +121,7 @@ public final class CableUtils {
                         if (tile != null && (isValidAcceptorOnSide(tileEntity, tile, side) || isCable(tile))) {
                             //Get the opposite side as the current side is relative to us
                             Direction opposite = side.getOpposite();
-                            EnergyCompatUtils acceptor = EnergyCompatUtils.get(tile, opposite);
+                            EnergyCompatUtils acceptor = EnergyCompatUtils.getStrictEnergyHandler(tile, opposite);
                             if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor.needsEnergy(opposite)) {
                                 target.addHandler(opposite, acceptor);
                             }

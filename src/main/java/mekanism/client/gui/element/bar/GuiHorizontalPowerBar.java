@@ -18,6 +18,10 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
     private final double widthScale;
 
     public GuiHorizontalPowerBar(IGuiWrapper gui, IEnergyContainer container, int x, int y) {
+        this(gui, container, x, y, texWidth);
+    }
+
+    public GuiHorizontalPowerBar(IGuiWrapper gui, IEnergyContainer container, int x, int y, int desiredWidth) {
         this(gui, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -29,7 +33,7 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
                 double maxEnergy = container.getMaxEnergy();
                 return maxEnergy == 0 ? 1 : container.getEnergy() / maxEnergy;
             }
-        }, x, y, texWidth);
+        }, x, y, desiredWidth);
     }
 
     public GuiHorizontalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int desiredWidth) {

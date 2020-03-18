@@ -98,7 +98,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
             IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper = wrapperFunction.apply(stack);
             if (wrapper != null) {
                 if (chemicalTank.isEmpty()) {
-                    //If the chemical tank is empty, accept the chemical item  as long as it is not full
+                    //If the chemical tank is empty, accept the chemical item as long as it is not full
                     for (int tank = 0; tank < wrapper.getTanks(); tank++) {
                         if (wrapper.getChemicalInTank(tank).getAmount() < wrapper.getTankCapacity(tank)) {
                             //True if we have any space in this tank

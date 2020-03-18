@@ -10,8 +10,6 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;

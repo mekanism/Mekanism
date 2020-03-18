@@ -58,7 +58,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(fuelSlot = GasInventorySlot.fill(fuelTank, this, 17, 35),
               RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
-        builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
+        builder.addSlot(energySlot = EnergyInventorySlot.drain(this, 143, 35), RelativeSide.RIGHT);
         fuelSlot.setSlotOverlay(SlotOverlay.MINUS);
         return builder.build();
     }
@@ -66,7 +66,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.charge(this);
+        energySlot.drainContainer();
         fuelSlot.fillTank();
 
         boolean operate = canOperate();

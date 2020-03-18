@@ -18,19 +18,28 @@ import net.minecraft.block.Block;
 public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends BasicEnergyContainer {
 
     public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> input(TILE tile) {
+        IBlockElectric electricBlock = validateBlock(tile);
+        return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
+    }
+
+    public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> internal(TILE tile) {
+        IBlockElectric electricBlock = validateBlock(tile);
+        return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), internalOnly, internalOnly, tile);
+    }
+
+    protected static IBlockElectric validateBlock(TileEntityMekanism tile) {
+        Objects.requireNonNull(tile, "Tile cannot be null");
         Block block = tile.getBlockType().getBlock();
         if (!(block instanceof IBlockElectric)) {
             throw new IllegalArgumentException("Block provider must be an electric block");
         }
-        Objects.requireNonNull(tile, "Tile cannot be null");
-        IBlockElectric electricBlock = (IBlockElectric) block;
-        return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
+        return (IBlockElectric) block;
     }
 
     protected final TILE tile;
     private final double baseEnergyPerTick;
     private double currentMaxEnergy;
-    private double currentEnergyPerTick;
+    protected double currentEnergyPerTick;
 
     protected MachineEnergyContainer(double maxEnergy, double energyPerTick, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           TILE tile) {

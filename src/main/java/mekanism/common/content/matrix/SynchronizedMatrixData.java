@@ -45,8 +45,8 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         List<IInventorySlot> inventorySlots = new ArrayList<>();
         EnergyInventorySlot energyInputSlot;
         EnergyInventorySlot energyOutputSlot;
-        inventorySlots.add(energyInputSlot = EnergyInventorySlot.charge(this, 146, 20));
-        inventorySlots.add(energyOutputSlot = EnergyInventorySlot.discharge(this, 146, 51));
+        inventorySlots.add(energyInputSlot = EnergyInventorySlot.drain(this, 146, 20));
+        inventorySlots.add(energyOutputSlot = EnergyInventorySlot.fillOrConvert(this, 146, 51));
         energyInputSlot.setSlotOverlay(SlotOverlay.PLUS);
         energyOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
         return inventorySlots;

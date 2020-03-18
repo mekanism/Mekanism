@@ -117,7 +117,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
             }
             EnergyAcceptorTarget target = new EnergyAcceptorTarget();
             for (Direction side : sides) {
-                IStrictEnergyHandler handler = EnergyCompatUtils.get(tile, side);
+                IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(tile, side);
                 if (handler != null && handler.insertEnergy(1, Action.SIMULATE) < 1) {
                     target.addHandler(side, handler);
                 }

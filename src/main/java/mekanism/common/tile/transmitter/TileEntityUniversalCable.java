@@ -25,14 +25,12 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
 import mekanism.common.integration.EnergyCompatUtils;
-import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.CableTier;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -40,7 +38,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, Double> implements IMekanismStrictEnergyHandler {
 
@@ -52,8 +49,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     public BasicEnergyContainer buffer;
     public double currentPower = 0;
     public double lastWrite = 0;
-
-    private CapabilityWrapperManager<IStrictEnergyHandler, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IStrictEnergyHandler.class, ForgeEnergyIntegration.class);
 
     public TileEntityUniversalCable(IBlockProvider blockProvider) {
         super(((IHasTileEntity<TileEntityUniversalCable>) blockProvider.getBlock()).getTileType());
@@ -68,9 +63,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
      * side
      */
     private IStrictEnergyHandler getEnergyHandler(@Nullable Direction side) {
-        if (!canHandleEnergy()) {
-            return null;
-        }
         if (side == null) {
             if (readOnlyStrictEnergyHandler == null) {
                 readOnlyStrictEnergyHandler = new ProxyStrictEnergyHandler(this, null, null);
@@ -97,7 +89,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
             if (!connections.isEmpty()) {
                 TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(this, getPos(), getWorld());
                 for (Direction side : connections) {
-                    IStrictEnergyHandler strictEnergyHandler = EnergyCompatUtils.get(connectedOutputters[side.ordinal()], side.getOpposite());
+                    IStrictEnergyHandler strictEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(connectedOutputters[side.ordinal()], side.getOpposite());
                     if (strictEnergyHandler != null) {
                         double received = strictEnergyHandler.extractEnergy(getAvailablePull(), Action.SIMULATE);
                         if (received > 0 && takeEnergy(received, Action.SIMULATE) == 0) {
@@ -256,7 +248,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
 
     @Override
     public IStrictEnergyHandler getCachedAcceptor(Direction side) {
-        return EnergyCompatUtils.get(getCachedTile(side), side.getOpposite());
+        return EnergyCompatUtils.getStrictEnergyHandler(getCachedTile(side), side.getOpposite());
     }
 
     @Override
@@ -301,17 +293,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (CapabilityUtils.isEnergyCapability(capability)) {
+        if (EnergyCompatUtils.isEnergyCapability(capability)) {
             List<IEnergyContainer> energyContainers = getEnergyContainers(side);
-            if (energyContainers.isEmpty()) {
-                return LazyOptional.empty();
-            }
-            if (capability == Capabilities.STRICT_ENERGY_CAPABILITY) {
-                //Don't return an energy handler if we don't actually even have any containers for that side
-                return Capabilities.STRICT_ENERGY_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getEnergyHandler(side)));
-            } else if (capability == CapabilityEnergy.ENERGY) {
-                return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side)));
-            }
+            return energyContainers.isEmpty() ? LazyOptional.empty() : EnergyCompatUtils.getEnergyCapability(capability, getEnergyHandler(side));
         }
         return super.getCapability(capability, side);
     }

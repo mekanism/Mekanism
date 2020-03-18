@@ -2,12 +2,14 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.FluidGasToGasCachedRecipe;
@@ -93,7 +95,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITan
         //Output slot for the fluid container that was used as an input
         builder.addSlot(OutputInventorySlot.at(this, 180, 102), RelativeSide.TOP);
         builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.RIGHT);
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(this, 155, 5));
         gasOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
         fluidSlot.setSlotType(ContainerSlotType.INPUT);
         return builder.build();
@@ -102,7 +104,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITan
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
         //TODO: Fix this not moving the item to the output slot
         fluidSlot.fillTank();
         gasOutputSlot.drainTank();
@@ -148,7 +150,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITan
         return new FluidGasToGasCachedRecipe(recipe, fluidInputHandler, gasInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {
                   if (currentMax <= 0) {

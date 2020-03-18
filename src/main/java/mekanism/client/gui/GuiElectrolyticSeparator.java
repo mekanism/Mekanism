@@ -35,11 +35,11 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getEnergyContainer().getNeeded()))), this));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, GaugeType.STANDARD, this, 5, 10));
         addButton(new GuiGasGauge(() -> tile.leftTank, GaugeType.SMALL, this, 58, 18));
         addButton(new GuiGasGauge(() -> tile.rightTank, GaugeType.SMALL, this, 100, 18));
-        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressType.BI, this, 80, 30));
         addButton(new GuiGasMode(this, getGuiLeft() + 7, getGuiTop() + 72, false, () -> tile.dumpLeft,

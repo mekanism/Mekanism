@@ -181,7 +181,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             }
         }
         //Add the energy slot after adding the other slots so that it has lowest priority in shift clicking
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 152, 76));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 152, 76));
         return builder.build();
     }
 
@@ -205,7 +205,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             needsOrganize = false;
             organizeStock();
         }
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
         if (getControlType() != RedstoneControl.PULSE) {
             pulseOperations = 0;
         } else if (MekanismUtils.canFunction(this)) {
@@ -230,9 +230,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                             pulseOperations--;
                         }
                     }
-                } else if (getEnergy() >= getEnergyPerTick()) {
-                    operatingTicks++;
-                    setEnergy(getEnergy() - getEnergyPerTick());
+                } else {
+                    double energyPerTick = energyContainer.getEnergyPerTick();
+                    if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
+                        energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                        operatingTicks++;
+                    }
                 }
             } else {
                 operatingTicks = 0;

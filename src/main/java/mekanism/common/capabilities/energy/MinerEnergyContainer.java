@@ -1,13 +1,11 @@
 package mekanism.common.capabilities.energy;
 
-import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.block.IBlockElectric;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import net.minecraft.block.Block;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -15,12 +13,7 @@ import net.minecraft.block.Block;
 public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigitalMiner> {
 
     public static MinerEnergyContainer input(TileEntityDigitalMiner tile) {
-        Block block = tile.getBlockType().getBlock();
-        if (!(block instanceof IBlockElectric)) {
-            throw new IllegalArgumentException("Block provider must be an electric block");
-        }
-        Objects.requireNonNull(tile, "Tile cannot be null");
-        IBlockElectric electricBlock = (IBlockElectric) block;
+        IBlockElectric electricBlock = validateBlock(tile);
         return new MinerEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), tile);
     }
 

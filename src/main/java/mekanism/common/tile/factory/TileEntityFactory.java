@@ -156,7 +156,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         addSlots(builder);
         //Add the energy slot after adding the other slots so that it has lowest priority in shift clicking
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 7, 13));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 7, 13));
         return builder.build();
     }
 
@@ -172,7 +172,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         if (ticker == 1) {
             world.notifyNeighborsOfStateChange(getPos(), getBlockType());
         }
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
 
         handleSecondaryFuel();
         sortInventory();

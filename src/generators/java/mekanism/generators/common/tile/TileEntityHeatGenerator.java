@@ -74,14 +74,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         // Eventually we may want to grab the 20 dynamically in case some mod is changing the burn time of a lava bucket
         builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, stack -> ForgeHooks.getBurnTime(stack) / 20, size -> new FluidStack(Fluids.LAVA, size),
               this, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
-        builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
+        builder.addSlot(energySlot = EnergyInventorySlot.drain(this, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
 
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.charge(this);
+        energySlot.drainContainer();
         fuelSlot.fillOrBurn();
         double prev = getEnergy();
         transferHeatTo(getBoost());

@@ -20,6 +20,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
@@ -44,6 +45,7 @@ import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
+import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -85,7 +87,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -163,7 +164,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 mainSlots.add(slot);
             }
         }
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 152, 6));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 152, 6));
         return builder.build();
     }
 
@@ -197,7 +198,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             initCalc = true;
         }
 
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
 
         if (MekanismUtils.canFunction(this) && running && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
             double energyPerTick = energyContainer.getEnergyPerTick();
@@ -860,10 +861,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getItemHandler(side)));
-        } else if (capability == Capabilities.STRICT_ENERGY_CAPABILITY) {
-            return Capabilities.STRICT_ENERGY_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getEnergyHandler(side)));
-        } else if (capability == CapabilityEnergy.ENERGY) {
-            return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side)));
+        } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
+            List<IEnergyContainer> energyContainers = getEnergyContainers(side);
+            //Don't return a energy handler if we don't actually even have any energy containers for that side
+            return energyContainers.isEmpty() ? LazyOptional.empty() : EnergyCompatUtils.getEnergyCapability(capability, getEnergyHandler(side));
         }
         //Fallback to checking the normal capabilities
         return getCapability(capability, side);
@@ -884,7 +885,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 return side != back;
             }
             return true;
-        } else if (CapabilityUtils.isEnergyCapability(capability)) {
+        } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             if (offset.equals(Vec3i.NULL_VECTOR)) {
                 //Disable if it is the bottom port but wrong side of it
                 return side != Direction.DOWN;
@@ -908,7 +909,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         //Return some capabilities as disabled, and handle them with offset capabilities instead
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
-        } else if (CapabilityUtils.isEnergyCapability(capability)) {
+        } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             return true;
         }
         return super.isCapabilityDisabled(capability, side);

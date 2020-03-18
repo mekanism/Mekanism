@@ -2,12 +2,14 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToGasCachedRecipe;
@@ -78,7 +80,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
               RelativeSide.TOP, RelativeSide.LEFT);
         builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 25), RelativeSide.RIGHT);
         //TODO: Make this be accessible from some side for automation??
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(this, 155, 5));
         gasInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
@@ -87,7 +89,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
         gasInputSlot.fillTankOrConvert();
         outputSlot.drainTank();
         injectUsageThisTick = StatUtils.inversePoisson(injectUsage);
@@ -130,7 +132,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
         return new ItemStackGasToGasCachedRecipe(recipe, itemInputHandler, gasInputHandler, () -> injectUsageThisTick, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);

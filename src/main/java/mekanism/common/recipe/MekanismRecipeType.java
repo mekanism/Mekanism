@@ -19,6 +19,7 @@ import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -72,6 +73,8 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
     public static final MekanismRecipeType<ItemStackGasToItemStackRecipe> COMPRESSING = create("compressing");
     public static final MekanismRecipeType<ItemStackGasToItemStackRecipe> PURIFYING = create("purifying");
     public static final MekanismRecipeType<ItemStackGasToItemStackRecipe> INJECTING = create("injecting");
+
+    public static final MekanismRecipeType<ItemStackToEnergyRecipe> ENERGY_CONVERSION = create("energy_conversion");
 
     public static final MekanismRecipeType<ItemStackToGasRecipe> GAS_CONVERSION = create("gas_conversion");
     public static final MekanismRecipeType<ItemStackToGasRecipe> OXIDIZING = create("oxidizing");

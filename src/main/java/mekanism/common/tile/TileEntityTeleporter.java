@@ -9,12 +9,17 @@ import java.util.UUID;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.basic.BlockTeleporterFrame;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.chunkloading.IChunkLoader;
@@ -38,6 +43,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -71,6 +77,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     private TileComponentChunkLoader<TileEntityTeleporter> chunkLoaderComponent;
 
+    private MachineEnergyContainer<TileEntityTeleporter> energyContainer;
     private EnergyInventorySlot energySlot;
 
     public TileEntityTeleporter() {
@@ -80,9 +87,17 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     @Nonnull
     @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 153, 7));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 153, 7));
         return builder.build();
     }
 
@@ -152,7 +167,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             sendUpdatePacket();
         }
         teleDelay = Math.max(0, teleDelay - 1);
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
     }
 
     @Override
@@ -252,12 +267,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (closestCoords == null) {
             return 3;
         }
-        List<Entity> entitiesInPortal = getToTeleport();
-        int electricityNeeded = 0;
-        for (Entity entity : entitiesInPortal) {
-            electricityNeeded += calculateEnergyCost(entity, closestCoords);
-        }
-        if (getEnergy() < electricityNeeded) {
+        if (energyContainer.getEnergy() < getToTeleport().stream().mapToInt(entity -> calculateEnergyCost(entity, closestCoords)).sum()) {
             return 4;
         }
         return 1;
@@ -267,16 +277,15 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      * @apiNote Only call this from the server
      */
     private void teleport() {
-        List<Entity> entitiesInPortal = getToTeleport();
         Coord4D closestCoords = getClosest();
         if (closestCoords == null) {
             return;
         }
-        for (Entity entity : entitiesInPortal) {
-            World teleWorld = ServerLifecycleHooks.getCurrentServer().getWorld(closestCoords.dimension);
-            TileEntityTeleporter teleporter = MekanismUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestCoords.getPos());
-
-            if (teleporter != null) {
+        MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
+        World teleWorld = currentServer.getWorld(closestCoords.dimension);
+        TileEntityTeleporter teleporter = MekanismUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestCoords.getPos());
+        if (teleporter != null) {
+            for (Entity entity : getToTeleport()) {
                 teleporter.didTeleport.add(entity.getUniqueID());
                 teleporter.teleDelay = 5;
                 teleportEntityTo(entity, closestCoords, teleporter);
@@ -284,10 +293,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     alignPlayer((ServerPlayerEntity) entity, closestCoords);
                 }
                 for (Coord4D coords : frequency.activeCoords) {
-                    //TODO: Check (probably needs to at least fix what world this is defined with)
-                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), world, coords.getPos());
+                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), currentServer.getWorld(coords.dimension), coords.getPos());
                 }
-                setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
+                energyContainer.extract(calculateEnergyCost(entity, closestCoords), Action.EXECUTE, AutomationType.INTERNAL);
                 world.playSound(entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
             }
         }
@@ -309,14 +317,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     private List<Entity> getToTeleport() {
-        List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, teleportBounds);
-        List<Entity> ret = new ArrayList<>();
-        for (Entity entity : entities) {
-            if (!didTeleport.contains(entity.getUniqueID())) {
-                ret.add(entity);
-            }
-        }
-        return ret;
+        return world == null ? Collections.emptyList() : world.getEntitiesWithinAABB(Entity.class, teleportBounds,
+              entity -> !entity.isSpectator() && !didTeleport.contains(entity.getUniqueID()));
     }
 
     private int calculateEnergyCost(Entity entity, Coord4D coords) {
@@ -417,6 +419,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public int getCurrentRedstoneLevel() {
         //We don't cache the redstone level for the teleporter
         return getRedstoneLevel();
+    }
+
+    public MachineEnergyContainer<TileEntityTeleporter> getEnergyContainer() {
+        return energyContainer;
     }
 
     private List<Frequency> getPublicFrequencies() {

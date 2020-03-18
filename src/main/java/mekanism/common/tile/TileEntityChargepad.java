@@ -1,27 +1,51 @@
 package mekanism.common.tile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.function.Predicate;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.api.Action;
+import mekanism.api.RelativeSide;
+import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.inventory.AutomationType;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class TileEntityChargepad extends TileEntityMekanism {
 
+    private static final Predicate<LivingEntity> CHARGE_PREDICATE = entity -> !entity.isSpectator() && (entity instanceof PlayerEntity || entity instanceof EntityRobit);
+
     public Random random = new Random();
+    private MachineEnergyContainer<TileEntityChargepad> energyContainer;
 
     public TileEntityChargepad() {
         super(MekanismBlocks.CHARGEPAD);
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this), RelativeSide.BACK, RelativeSide.BOTTOM);
+        return builder.build();
     }
 
     @Override
@@ -29,41 +53,55 @@ public class TileEntityChargepad extends TileEntityMekanism {
         super.onUpdateServer();
         boolean active = false;
         //Use 0.4 for y so as to catch entities that are partially standing on the back pane
-        List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class,
-              new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 0.4, pos.getZ() + 1));
-
+        List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(),
+              pos.getX() + 1, pos.getY() + 0.4, pos.getZ() + 1), CHARGE_PREDICATE);
         for (LivingEntity entity : entities) {
-            if (entity instanceof PlayerEntity || entity instanceof EntityRobit) {
-                active = getEnergy() > 0;
-            }
-            if (getActive()) {
+            active = !energyContainer.isEmpty();
+            if (active) {
                 if (entity instanceof EntityRobit) {
-                    EntityRobit robit = (EntityRobit) entity;
-                    double canGive = Math.min(getEnergy(), 1_000);
-                    double toGive = Math.min(robit.getMaxEnergy() - robit.getEnergy(), canGive);
-                    robit.setEnergy(robit.getEnergy() + toGive);
-                    setEnergy(getEnergy() - toGive);
+                    provideEnergy((EntityRobit) entity, Math.min(energyContainer.getEnergy(), 1_000));
                 } else if (entity instanceof PlayerEntity) {
-                    PlayerEntity player = (PlayerEntity) entity;
-                    double prevEnergy = getEnergy();
-                    for (ItemStack stack : player.inventory.armorInventory) {
-                        ChargeUtils.charge(stack, this);
-                        if (prevEnergy != getEnergy()) {
-                            break;
-                        }
-                    }
-                    for (ItemStack stack : player.inventory.mainInventory) {
-                        ChargeUtils.charge(stack, this);
-                        if (prevEnergy != getEnergy()) {
-                            break;
+                    Optional<IItemHandler> itemHandlerCap = MekanismUtils.toOptional(entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+                    //Ensure that we have an item handler capability, because if for example the player is dead we will not
+                    if (itemHandlerCap.isPresent()) {
+                        IItemHandler itemHandler = itemHandlerCap.get();
+                        int slots = itemHandler.getSlots();
+                        for (int slot = 0; slot < slots; slot++) {
+                            ItemStack stack = itemHandler.getStackInSlot(slot);
+                            if (!stack.isEmpty() && provideEnergy(EnergyCompatUtils.getStrictEnergyHandler(stack), energyContainer.getEnergy())) {
+                                //Only allow charging one item per player each check
+                                break;
+                            }
                         }
                     }
                 }
+            } else {
+                //If we run out of energy, stop checking the remaining entities
+                break;
             }
         }
         if (active != getActive()) {
             setActive(active);
         }
+    }
+
+    private boolean provideEnergy(@Nullable IStrictEnergyHandler energyHandler, double energyToGive) {
+        if (energyHandler == null) {
+            return false;
+        }
+        double simulatedRemainder = energyHandler.insertEnergy(energyToGive, Action.SIMULATE);
+        if (simulatedRemainder < energyToGive) {
+            //We are able to fit at least some of the energy from our container into the item
+            double extractedEnergy = energyContainer.extract(energyToGive - simulatedRemainder, Action.EXECUTE, AutomationType.INTERNAL);
+            if (extractedEnergy > 0) {
+                //If we were able to actually extract it from our energy container, then insert it into the item
+                if (energyHandler.insertEnergy(extractedEnergy, Action.EXECUTE) > 0) {
+                    //TODO: Print warning/error
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -73,11 +111,6 @@ public class TileEntityChargepad extends TileEntityMekanism {
             world.addParticle(RedstoneParticleData.REDSTONE_DUST, getPos().getX() + random.nextDouble(), getPos().getY() + 0.15,
                   getPos().getZ() + random.nextDouble(), 0, 0, 0);
         }
-    }
-
-    @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return side == Direction.DOWN || side == getOppositeDirection();
     }
 
     @Override

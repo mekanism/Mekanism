@@ -52,7 +52,6 @@ import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -68,7 +67,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
-import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -114,7 +113,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -215,8 +213,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //End variables IMekanismStrictEnergyHandler
 
     //Variables for handling ITileElectric
-    //TODO: Replace with a proxy system
-    protected CapabilityWrapperManager<IStrictEnergyHandler, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IStrictEnergyHandler.class, ForgeEnergyIntegration.class);
     private double lastEnergyReceived;
     //End variables ITileElectric
 
@@ -691,17 +687,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, lazyFluidHandler);
             }
         }
-        if (canHandleEnergy() && CapabilityUtils.isEnergyCapability(capability)) {
+        if (canHandleEnergy() && EnergyCompatUtils.isEnergyCapability(capability)) {
             List<IEnergyContainer> energyContainers = getEnergyContainers(side);
             //Don't return a energy handler if we don't actually even have any energy containers for that side
-            if (energyContainers.isEmpty()) {
-                return LazyOptional.empty();
-            }
-            if (capability == Capabilities.STRICT_ENERGY_CAPABILITY) {
-                return Capabilities.STRICT_ENERGY_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getEnergyHandler(side)));
-            } else if (capability == CapabilityEnergy.ENERGY) {
-                return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side)));
-            }
+            return energyContainers.isEmpty() ? LazyOptional.empty() : EnergyCompatUtils.getEnergyCapability(capability, getEnergyHandler(side));
         }
         //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
         return super.getCapability(capability, side);

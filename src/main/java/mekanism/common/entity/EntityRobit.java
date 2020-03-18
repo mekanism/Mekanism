@@ -32,7 +32,6 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
@@ -125,9 +124,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         super(type, world);
         getNavigator().setCanSwim(false);
         setCustomNameVisible(true);
-        //TODO: Insert/Extract restrictions
-        energyContainer = BasicEnergyContainer.create(MAX_ELECTRICITY, this);
-        energyContainers = Collections.singletonList(energyContainer);
+        energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ELECTRICITY, this));
 
         //TODO: Go through all this and clean it up properly
         inventorySlots = new ArrayList<>();
@@ -139,7 +136,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 inventoryContainerSlots.add(slot);
             }
         }
-        inventorySlots.add(energySlot = EnergyInventorySlot.discharge(this, 153, 17));
+        inventorySlots.add(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getEntityWorld, this, 153, 17));
         inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 51, 35));
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
         // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes?
@@ -197,7 +194,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         dataManager.register(DROP_PICKUP, false);
     }
 
-    public double getRoundedTravelEnergy() {
+    private double getRoundedTravelEnergy() {
         double distance = Math.sqrt(getDistanceSq(prevPosX, prevPosY, prevPosZ));
         return new BigDecimal(distance * 1.5).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
@@ -205,8 +202,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     public void baseTick() {
         if (!world.isRemote) {
-            if (getFollowing() && getOwner() != null && getDistanceSq(getOwner()) > 4 && !getNavigator().noPath() && energyContainer.getEnergy() > 0) {
-                setEnergy(getEnergy() - getRoundedTravelEnergy());
+            if (getFollowing() && getOwner() != null && getDistanceSq(getOwner()) > 4 && !getNavigator().noPath() && !energyContainer.isEmpty()) {
+                energyContainer.extract(getRoundedTravelEnergy(), Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
 
@@ -232,11 +229,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 }
             }
 
-            if (energyContainer.getEnergy() == 0 && !isOnChargepad()) {
+            if (energyContainer.isEmpty() && !isOnChargepad()) {
                 goHome();
             }
 
-            energySlot.discharge(this);
+            energySlot.fillContainerOrConvert();
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
@@ -327,7 +324,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         //TODO: Move this to loot table?
         ItemEntity entityItem = new ItemEntity(world, getPosX(), getPosY() + 0.3, getPosZ(), MekanismItems.ROBIT.getItemStack());
         ItemRobit item = (ItemRobit) entityItem.getItem().getItem();
-        item.setEnergy(entityItem.getItem(), getEnergy());
+        item.setEnergy(entityItem.getItem(), energyContainer.getEnergy());
         item.setInventory(((ISustainedInventory) this).getInventory(), entityItem.getItem());
         item.setName(entityItem.getItem(), getName().getFormattedText());
         entityItem.setMotion(0, rand.nextGaussian() * 0.05F + 0.2F, 0);
@@ -388,7 +385,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         amount = applyPotionDamageCalculations(damageSource, amount);
         float j = getHealth();
 
-        setEnergy(Math.max(0, getEnergy() - 1_000 * amount));
+        energyContainer.extract(1_000 * amount, Action.EXECUTE, AutomationType.INTERNAL);
         getCombatTracker().trackDamage(damageSource, j, amount);
     }
 
@@ -402,7 +399,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     @Override
     public boolean canBePushed() {
-        return energyContainer.getEnergy() > 0;
+        return !energyContainer.isEmpty();
     }
 
     public PlayerEntity getOwner() {
@@ -505,6 +502,10 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inputHandler.getInput();
         return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
+    }
+
+    public IEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 
     @Nullable

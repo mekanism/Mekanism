@@ -38,10 +38,10 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     @Override
     public ITextComponent getTooltipText() {
-        if (infoHandler.getEnergyStorage().getEnergy() > 0) {
-            return EnergyDisplay.of(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()).getTextComponent();
+        if (infoHandler.getEnergyStorage().isEmpty()) {
+            return MekanismLang.EMPTY.translate();
         }
-        return MekanismLang.EMPTY.translate();
+        return EnergyDisplay.of(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()).getTextComponent();
     }
 
     public interface IEnergyInfoHandler {

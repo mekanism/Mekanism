@@ -9,7 +9,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiTeleporterStatus;
-import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -24,7 +23,6 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -60,17 +58,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
-            @Override
-            public ITextComponent getTooltip() {
-                return EnergyDisplay.of(getEnergy(), getMaxEnergy()).getTextComponent();
-            }
-
-            @Override
-            public double getLevel() {
-                return getEnergy() / getMaxEnergy();
-            }
-        }, 158, 26));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 158, 26));
         addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
 
         addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
@@ -202,7 +190,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(getName(), (getXSize() / 2) - (getStringWidth(getName()) / 2), 4, 0x404040);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
         drawString(OwnerDisplay.of(getOwner(), tile.getSecurity().getClientOwner()).getTextComponent(), 8, getYSize() - 92, 0x404040);
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
         drawString(frequencyComponent, 32, 81, 0x404040);
@@ -225,22 +213,9 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     }
 
     public void setFrequency(String freq) {
-        if (freq.isEmpty()) {
-            return;
+        if (!freq.isEmpty()) {
+            TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
         }
-        TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
-        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
-    }
-
-    private ITextComponent getName() {
-        return tile.getName();
-    }
-
-    private double getEnergy() {
-        return tile.getEnergy();
-    }
-
-    private double getMaxEnergy() {
-        return tile.getMaxEnergy();
     }
 }

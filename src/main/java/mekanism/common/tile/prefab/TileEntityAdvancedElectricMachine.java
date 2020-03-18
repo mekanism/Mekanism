@@ -120,13 +120,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 64, 17));
         builder.addSlot(secondarySlot = GasInventorySlot.fillOrConvert(gasTank, this::getWorld, this, 64, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 39, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 39, 35));
         return builder.build();
     }
 
     @Override
     protected void onUpdateServer() {
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
         secondarySlot.fillTankOrConvert();
         //TODO: Is there some better way to do this rather than storing it and then doing it like this?
         // TODO: Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics

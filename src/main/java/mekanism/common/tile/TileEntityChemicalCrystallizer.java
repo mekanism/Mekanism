@@ -106,7 +106,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityBasicMachine<GasTo
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this, 6, 65));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 131, 57));
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
         inputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }
@@ -114,7 +114,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityBasicMachine<GasTo
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
         inputSlot.fillTank();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {

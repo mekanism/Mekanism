@@ -1,20 +1,17 @@
 package mekanism.common.integration.forgeenergy;
 
 import mekanism.api.Action;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.Direction;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class ForgeEnergyIntegration implements IEnergyStorage {
 
-    private final IMekanismStrictEnergyHandler tile;
-    private final Direction side;
+    private final IStrictEnergyHandler handler;
 
-    public ForgeEnergyIntegration(IMekanismStrictEnergyHandler tile, Direction facing) {
-        this.tile = tile;
-        side = facing;
+    public ForgeEnergyIntegration(IStrictEnergyHandler handler) {
+        this.handler = handler;
     }
 
     public static double fromForge(int forge) {
@@ -39,41 +36,40 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        //Max energy that would be inserted
         double toInsert = fromForge(maxReceive);
-        return toForge(toInsert - tile.insertEnergy(toInsert, side, Action.get(!simulate)));
+        return toForge(toInsert - handler.insertEnergy(toInsert, Action.get(!simulate)));
     }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
-        return toForge(tile.extractEnergy(fromForge(maxExtract), side, Action.get(!simulate)));
+        return toForge(handler.extractEnergy(fromForge(maxExtract), Action.get(!simulate)));
     }
 
     @Override
     public int getEnergyStored() {
-        if (tile.getEnergyContainerCount(side) > 0) {
+        if (handler.getEnergyContainerCount() > 0) {
             //TODO: Improve on this
-            return toForge(tile.getEnergy(0));
+            return toForge(handler.getEnergy(0));
         }
         return 0;
     }
 
     @Override
     public int getMaxEnergyStored() {
-        if (tile.getEnergyContainerCount(side) > 0) {
+        if (handler.getEnergyContainerCount() > 0) {
             //TODO: Improve on this
-            return toForge(tile.getMaxEnergy(0));
+            return toForge(handler.getMaxEnergy(0));
         }
         return 0;
     }
 
     @Override
     public boolean canExtract() {
-        return tile.extractEnergy(1, side, Action.SIMULATE) < 1;
+        return handler.extractEnergy(1, Action.SIMULATE) > 0;
     }
 
     @Override
     public boolean canReceive() {
-        return tile.insertEnergy(1, side, Action.SIMULATE) > 0;
+        return handler.insertEnergy(1, Action.SIMULATE) < 1;
     }
 }

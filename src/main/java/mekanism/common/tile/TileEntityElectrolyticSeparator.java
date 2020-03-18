@@ -12,6 +12,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
@@ -21,9 +22,12 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.capabilities.energy.ElectrolyticSeparatorEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -85,6 +89,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
+    private ElectrolyticSeparatorEnergyContainer energyContainer;
     private FluidInventorySlot fluidSlot;
     private GasInventorySlot leftOutputSlot;
     private GasInventorySlot rightOutputSlot;
@@ -115,12 +120,20 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = ElectrolyticSeparatorEnergyContainer.input(this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 26, 35), RelativeSide.FRONT);
         builder.addSlot(leftOutputSlot = GasInventorySlot.drain(leftTank, this, 59, 52), RelativeSide.LEFT);
         builder.addSlot(rightOutputSlot = GasInventorySlot.drain(rightTank, this, 101, 52), RelativeSide.RIGHT);
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35), RelativeSide.BACK);
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 143, 35), RelativeSide.BACK);
         fluidSlot.setSlotType(ContainerSlotType.INPUT);
         leftOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
         rightOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -130,18 +143,18 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
         fluidSlot.fillTank();
 
         leftOutputSlot.drainTank();
         rightOutputSlot.drainTank();
-        double prev = getEnergy();
+        double prev = energyContainer.getEnergy();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
         //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-        clientEnergyUsed = prev - getEnergy();
+        clientEnergyUsed = prev - energyContainer.getEnergy();
 
         int dumpAmount = 8 * (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
         handleTank(leftTank, dumpLeft, getLeftSide(), dumpAmount);
@@ -190,10 +203,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Nullable
     @Override
     public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(@Nonnull ElectrolysisRecipe recipe, int cacheIndex) {
+        energyContainer.updateEnergyPerTick();
         return new ElectrolysisCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(() -> getEnergyPerTick() * recipe.getEnergyMultiplier(), this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {
                   if (currentMax <= 0) {
@@ -204,14 +218,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
               });
     }
 
-    @Override
-    public void recalculateUpgrades(Upgrade upgrade) {
-        //Don't call super as we no-op speed upgrades as it is used for batch speed upgrades, and should not be changing the total amount produced
-        // and only increase the max energy storage for the separator not also decrease energy per tick
-        if (upgrade == Upgrade.ENERGY) {
-            setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
-            setEnergy(Math.min(getMaxEnergy(), getEnergy()));
-        }
+    public ElectrolyticSeparatorEnergyContainer getEnergyContainer() {
+        return energyContainer;
     }
 
     @Override

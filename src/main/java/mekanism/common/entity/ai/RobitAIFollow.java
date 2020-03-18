@@ -39,7 +39,7 @@ public class RobitAIFollow extends RobitAIBase {
             return false;
         } else if (theRobit.getDistanceSq(player) < (minDist * minDist)) {
             return false;
-        } else if (theRobit.getEnergy() == 0) {
+        } else if (theRobit.getEnergyContainer().isEmpty()) {
             return false;
         }
         theOwner = player;
@@ -48,7 +48,7 @@ public class RobitAIFollow extends RobitAIBase {
 
     @Override
     public boolean shouldContinueExecuting() {
-        return !thePathfinder.noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0
+        return !thePathfinder.noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && !theRobit.getEnergyContainer().isEmpty()
                && theOwner.world.getDimension().equals(theRobit.world.getDimension());
     }
 

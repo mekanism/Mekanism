@@ -1,11 +1,11 @@
 package mekanism.common.recipe;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
@@ -15,6 +15,7 @@ import mekanism.api.datagen.recipe.builder.FluidToFluidRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackGasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackGasToItemStackRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ItemStackToEnergyRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToInfuseTypeRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
@@ -155,6 +156,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addControlCircuitRecipes(consumer);
         addCrusherRecipes(consumer);
         addChemicalCrystallizerRecipes(consumer);
+        addEnergyConversionRecipes(consumer);
         addEnergyCubeRecipes(consumer);
         addEnrichmentChamberRecipes(consumer);
         addEvaporatingRecipes(consumer);
@@ -461,6 +463,21 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               MekanismItems.LITHIUM_DUST.getItemStack()
         ).addCriterion(Criterion.HAS_CHEMICAL_CRYSTALLIZER)
               .build(consumer, Mekanism.rl(basePath + "lithium"));
+    }
+
+    private void addEnergyConversionRecipes(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "energy_conversion/";
+        double redstoneEnergy = 10_000;
+        addEnergyConversionRecipe(consumer, basePath, "redstone", Tags.Items.DUSTS_REDSTONE, redstoneEnergy);
+        addEnergyConversionRecipe(consumer, basePath, "redstone_block", Tags.Items.STORAGE_BLOCKS_REDSTONE, 9 * redstoneEnergy);
+    }
+
+    private void addEnergyConversionRecipe(Consumer<IFinishedRecipe> consumer, String basePath, String name, Tag<Item> inputTag, double output) {
+        ItemStackToEnergyRecipeBuilder.energyConversion(
+              ItemStackIngredient.from(inputTag),
+              output
+        ).addCriterion(Criterion.has(name, inputTag))
+              .build(consumer, Mekanism.rl(basePath + name));
     }
 
     private void addEnergyCubeRecipes(Consumer<IFinishedRecipe> consumer) {

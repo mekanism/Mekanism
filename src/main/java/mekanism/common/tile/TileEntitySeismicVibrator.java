@@ -42,7 +42,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 143, 35));
         return builder.build();
     }
 
@@ -58,7 +58,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        energySlot.discharge(this);
+        energySlot.fillContainerOrConvert();
         if (MekanismUtils.canFunction(this)) {
             double energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {

@@ -39,7 +39,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.drain(this, 143, 35));
         return builder.build();
     }
 
@@ -77,7 +77,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (!settingsChecked) {
             recheckSettings();
         }
-        energySlot.charge(this);
+        energySlot.drainContainer();
         // Sort out if the generator can see the sun; we no longer check if it's raining here,
         // since under the new rules, we can still generate power when it's raining, albeit at a
         // significant penalty.

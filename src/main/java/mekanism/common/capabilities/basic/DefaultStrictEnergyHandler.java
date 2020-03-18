@@ -33,6 +33,11 @@ public class DefaultStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
+    public double getNeededEnergy(int container) {
+        return 0;
+    }
+
+    @Override
     public double insertEnergy(int container, double amount, Action action) {
         return amount;
     }
