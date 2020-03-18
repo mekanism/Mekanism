@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -33,10 +34,10 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.PipeUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -48,7 +49,6 @@ import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -59,7 +59,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable, ITankManager {
 
@@ -151,11 +150,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         suckedLastOperation = sucked;
 
         if (!fluidTank.isEmpty()) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos.up());
-            CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(handler -> {
-                FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
-                fluidTank.extract(handler.fill(toDrain, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
-            });
+            PipeUtils.emit(EnumSet.of(Direction.UP), fluidTank, this, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
         }
     }
 

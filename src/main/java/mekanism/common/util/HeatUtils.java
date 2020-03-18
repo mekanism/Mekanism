@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import mekanism.api.IHeatTransfer;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -16,7 +17,8 @@ public class HeatUtils {
                 double heatToTransfer = source.getTemp() / invConduction;
                 source.transferHeatTo(-heatToTransfer);
                 sink.transferHeatTo(heatToTransfer);
-                if (!(sink instanceof ICapabilityProvider && ((ICapabilityProvider) sink).getCapability(Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent())) {
+                if (!(sink instanceof ICapabilityProvider) || !CapabilityUtils.getCapability((ICapabilityProvider) sink, Capabilities.GRID_TRANSMITTER_CAPABILITY,
+                      null).filter(transmitter -> TransmissionType.checkTransmissionType(transmitter, TransmissionType.HEAT)).isPresent()) {
                     heatTransferred[0] += heatToTransfer;
                 }
                 continue;

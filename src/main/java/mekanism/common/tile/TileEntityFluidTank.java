@@ -1,12 +1,12 @@
 package mekanism.common.tile;
 
+import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.base.ContainerEditMode;
 import mekanism.common.base.IFluidContainerManager;
@@ -28,12 +28,11 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.upgrade.FluidTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
@@ -42,7 +41,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager, ITankManager {
 
@@ -127,21 +125,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         }
         inputSlot.handleTank(outputSlot, editMode);
         if (getActive()) {
-            activeEmit();
+            PipeUtils.emit(EnumSet.of(Direction.DOWN), fluidTank, this, tier.getOutput());
         }
         if (needsPacket) {
             sendUpdatePacket();
             needsPacket = false;
-        }
-    }
-
-    private void activeEmit() {
-        if (!fluidTank.isEmpty()) {
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().down());
-            CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
-                FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
-                fluidTank.extract(handler.fill(toDrain, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
-            });
         }
     }
 

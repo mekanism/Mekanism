@@ -166,8 +166,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
             if (mode == GasMode.DUMPING) {
                 tank.shrinkStack(dumpAmount, Action.EXECUTE);
             } else {
-                GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), output));
-                tank.shrinkStack(GasUtils.emit(toSend, this, EnumSet.of(side)), Action.EXECUTE);
+                GasUtils.emit(EnumSet.of(side), tank, this, output);
                 if (mode == GasMode.DUMPING_EXCESS) {
                     int needed = tank.getNeeded();
                     if (needed < output) {

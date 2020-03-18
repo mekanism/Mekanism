@@ -44,9 +44,9 @@ public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher,
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiHorizontalPowerBar(this, tile, 115, 75));
+        addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getEnergyContainer().getNeeded()))), this));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, GaugeType.STANDARD, this, 5, 4));
         addButton(new GuiGasGauge(() -> tile.inputTank, GaugeType.STANDARD, this, 26, 13));
         addButton(new GuiGasGauge(() -> tile.outputTank, GaugeType.STANDARD, this, 133, 13));

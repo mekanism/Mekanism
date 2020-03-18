@@ -9,10 +9,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
@@ -46,7 +42,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fluids.FluidStack;
 
 public class TileComponentEjector implements ITileComponent, ITrackableContainer {
 
@@ -92,26 +87,11 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
             if (slotInfo != null) {
                 Set<Direction> outputSides = info.getSidesForData(DataType.OUTPUT);
                 if (type == TransmissionType.GAS && slotInfo instanceof GasSlotInfo) {
-                    ((GasSlotInfo) slotInfo).getTanks().forEach(tank -> ejectGas(outputSides, tank));
+                    ((GasSlotInfo) slotInfo).getTanks().forEach(tank -> GasUtils.emit(outputSides, tank, tile, GAS_OUTPUT));
                 } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo) {
-                    ((FluidSlotInfo) slotInfo).getTanks().forEach(tank -> ejectFluid(outputSides, tank));
+                    ((FluidSlotInfo) slotInfo).getTanks().forEach(tank -> PipeUtils.emit(outputSides, tank, tile, FLUID_OUTPUT));
                 }
             }
-        }
-    }
-
-    private void ejectGas(Set<Direction> outputSides, IChemicalTank<Gas, GasStack> tank) {
-        if (!tank.isEmpty()) {
-            GasStack toEmit = new GasStack(tank.getStack(), Math.min(GAS_OUTPUT, tank.getStored()));
-            //Shrink the stack by the amount we are able to emit
-            tank.shrinkStack(GasUtils.emit(toEmit, tile, outputSides), Action.EXECUTE);
-        }
-    }
-
-    private void ejectFluid(Set<Direction> outputSides, IExtendedFluidTank tank) {
-        if (!tank.isEmpty()) {
-            FluidStack toEmit = new FluidStack(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
-            tank.extract(PipeUtils.emit(outputSides, toEmit, tile), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 

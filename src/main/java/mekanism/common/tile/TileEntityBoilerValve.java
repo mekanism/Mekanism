@@ -25,8 +25,8 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1 && !structure.steamTank.isEmpty()) {
-            GasUtils.emitGas(this, structure.steamTank);
+        if (structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1) {
+            GasUtils.emit(structure.steamTank, this);
         }
     }
 

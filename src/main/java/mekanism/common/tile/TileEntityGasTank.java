@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.Nonnull;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
@@ -135,11 +134,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
         if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
             ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
             if (config != null && config.isEjecting()) {
-                Set<Direction> sidesForData = config.getSidesForData(DataType.OUTPUT);
-                if (!sidesForData.isEmpty()) {
-                    GasStack toSend = new GasStack(gasTank.getStack(), Math.min(gasTank.getStored(), tier.getOutput()));
-                    gasTank.shrinkStack(GasUtils.emit(toSend, this, sidesForData), Action.get(tier != GasTankTier.CREATIVE));
-                }
+                GasUtils.emit(config.getSidesForData(DataType.OUTPUT), gasTank, this, tier.getOutput());
             }
         }
 

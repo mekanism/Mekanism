@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -18,8 +19,11 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -50,6 +54,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    private MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer;
     private GasInventorySlot gasInputSlot;
     private InputInventorySlot inputSlot;
     private GasInventorySlot outputSlot;
@@ -73,6 +78,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Nonnull
     @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(injectTank, this::getWorld, this, 6, 65), RelativeSide.BOTTOM);
@@ -80,7 +93,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
               RelativeSide.TOP, RelativeSide.LEFT);
         builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 25), RelativeSide.RIGHT);
         //TODO: Make this be accessible from some side for automation??
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
         gasInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
@@ -97,7 +110,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
-        GasUtils.emitGas(this, outputTank, gasOutput, getRightSide());
+        GasUtils.emit(EnumSet.of(getRightSide()), outputTank, this, gasOutput);
     }
 
     @Nonnull
@@ -154,5 +167,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     public Object[] getManagedTanks() {
         return new Object[]{injectTank, outputTank};
+    }
+
+    public MachineEnergyContainer<TileEntityChemicalDissolutionChamber> getEnergyContainer() {
+        return energyContainer;
     }
 }

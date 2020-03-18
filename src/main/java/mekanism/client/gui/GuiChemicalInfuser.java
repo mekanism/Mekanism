@@ -30,9 +30,9 @@ public class GuiChemicalInfuser extends GuiMekanismTile<TileEntityChemicalInfuse
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiHorizontalPowerBar(this, tile, 115, 75));
+        addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getEnergyContainer().getNeeded()))), this));
         addButton(new GuiGasGauge(() -> tile.leftTank, GaugeType.STANDARD, this, 25, 13));
         addButton(new GuiGasGauge(() -> tile.centerTank, GaugeType.STANDARD, this, 79, 4));
         addButton(new GuiGasGauge(() -> tile.rightTank, GaugeType.STANDARD, this, 133, 13));

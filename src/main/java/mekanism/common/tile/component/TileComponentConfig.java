@@ -155,12 +155,6 @@ public class TileComponentConfig implements ITileComponent, ITrackableContainer 
         nbtTags.put(NBTConstants.COMPONENT_CONFIG, configNBT);
     }
 
-    //TODO: Should we inline this?
-    public boolean isEjecting(TransmissionType type) {
-        ConfigInfo info = getConfig(type);
-        return info != null && info.isEjecting();
-    }
-
     @Override
     public void invalidate() {
     }

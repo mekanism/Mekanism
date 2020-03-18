@@ -36,7 +36,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     public BasicGasTank storedGas;
     public double temperature;
     private IInventorySlot storedItem;
-    private IEnergyContainer storedEnergy;
+    public IEnergyContainer storedEnergy;
 
     private List<IInventorySlot> inventorySlots;
     private List<? extends IChemicalTank<Gas, GasStack>> gasTanks;

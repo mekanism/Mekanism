@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -20,9 +21,12 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -70,6 +74,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
 
     public double clientEnergyUsed;
 
+    private MachineEnergyContainer<TileEntityRotaryCondensentrator> energyContainer;
     private GasInventorySlot gasInputSlot;
     private GasInventorySlot gasOutputSlot;
     private FluidInventorySlot fluidInputSlot;
@@ -113,6 +118,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //TODO: Fix these, not only is the naming bad, but there is a dedicated drain and empty slot for gas unlike how the fluid is
@@ -120,7 +133,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         builder.addSlot(gasOutputSlot = GasInventorySlot.rotary(gasTank, () -> mode, this, 5, 56), RelativeSide.LEFT);
         builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, () -> mode, this, 155, 25), RelativeSide.RIGHT);
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 155, 56), RelativeSide.RIGHT);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(this, 155, 5), RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.BOTTOM, RelativeSide.TOP);
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5), RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.BOTTOM, RelativeSide.TOP);
         gasInputSlot.setSlotType(ContainerSlotType.INPUT);
         gasInputSlot.setSlotOverlay(SlotOverlay.PLUS);
         gasOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -136,19 +149,19 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         if (mode) {//Fluid to Gas
             fluidInputSlot.fillTank(fluidOutputSlot);
             gasInputSlot.drainTank();
-            GasUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
+            GasUtils.emit(EnumSet.of(getLeftSide()), gasTank, this, gasOutput);
         } else {//Gas to Fluid
             gasOutputSlot.fillTank();
             fluidInputSlot.drainTank(fluidOutputSlot);
             //TODO: Auto eject fluid?
         }
-        double prev = getEnergy();
+        double prev = energyContainer.getEnergy();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
         //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-        clientEnergyUsed = prev - getEnergy();
+        clientEnergyUsed = prev - energyContainer.getEnergy();
     }
 
     @Override

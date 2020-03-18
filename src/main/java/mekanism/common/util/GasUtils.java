@@ -5,21 +5,20 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
-import mekanism.api.NBTConstants;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -34,36 +33,18 @@ import net.minecraft.world.World;
 public final class GasUtils {
 
     public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<Direction> sides) {
-        final IGasHandler[] acceptors = new IGasHandler[]{null, null, null, null, null, null};
+        IGasHandler[] acceptors = new IGasHandler[EnumUtils.DIRECTIONS.length];
         EmitUtils.forEachSide(world, pos, sides, (tile, side) ->
               CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> acceptors[side.ordinal()] = handler));
         return acceptors;
     }
 
-    /**
-     * Gets all the acceptors around a tile entity.
-     *
-     * @return array of IGasAcceptors
-     */
-    public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world) {
-        return getConnectedAcceptors(pos, world, EnumSet.allOf(Direction.class));
-    }
-
     public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
+        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
+              TransmissionType.checkTransmissionType(transmitter, TransmissionType.GAS)).isPresent()) {
             return false;
         }
         return CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
-    }
-
-    public static void clearIfInvalid(IChemicalTank<Gas, GasStack> tank, Predicate<@NonNull Gas> isValid) {
-        //TODO: Hook this back up
-        if (MekanismConfig.general.voidInvalidGases.get()) {
-            Gas gas = tank.getType();
-            if (!gas.isEmptyType() && !isValid.test(gas)) {
-                tank.setEmpty();
-            }
-        }
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, int capacity, IGasProvider gasProvider) {
@@ -106,29 +87,40 @@ public final class GasUtils {
         return false;
     }
 
+    public static void emit(IChemicalTank<Gas, GasStack> tank, TileEntity from) {
+        emit(EnumSet.allOf(Direction.class), tank, from);
+    }
+
+    public static void emit(Set<Direction> outputSides, IChemicalTank<Gas, GasStack> tank, TileEntity from) {
+        emit(outputSides, tank, from, tank.getCapacity());
+    }
+
+    public static void emit(Set<Direction> outputSides, IChemicalTank<Gas, GasStack> tank, TileEntity from, int maxOutput) {
+        if (!tank.isEmpty() && maxOutput > 0) {
+            tank.extract(emit(outputSides, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
+        }
+    }
+
     /**
      * Emits gas from a central block by splitting the received stack among the sides given.
      *
+     * @param sides - the list of sides to output from
      * @param stack - the stack to output
      * @param from  - the TileEntity to output from
-     * @param sides - the list of sides to output from
      *
      * @return the amount of gas emitted
      */
-    public static int emit(@Nonnull GasStack stack, TileEntity from, Set<Direction> sides) {
-        if (stack.isEmpty()) {
+    public static int emit(Set<Direction> sides, @Nonnull GasStack stack, TileEntity from) {
+        if (stack.isEmpty() || sides.isEmpty()) {
             return 0;
         }
-
         //Fake that we have one target given we know that no sides will overlap
         // This allows us to have slightly better performance
-        final GasHandlerTarget target = new GasHandlerTarget(stack);
+        GasHandlerTarget target = new GasHandlerTarget(stack);
         GasStack unitStack = new GasStack(stack, 1);
         EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
-
-            //Invert to get access side
-            final Direction accessSide = side.getOpposite();
-
+            //Insert to access side
+            Direction accessSide = side.getOpposite();
             //Collect cap
             CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
                 if (canInsert(handler, unitStack)) {
@@ -136,33 +128,13 @@ public final class GasUtils {
                 }
             });
         });
-
         int curHandlers = target.getHandlers().size();
         if (curHandlers > 0) {
             Set<GasHandlerTarget> targets = new ObjectOpenHashSet<>();
             targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), stack);
+            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), stack.copy());
         }
         return 0;
-    }
-
-    public static void emitGas(TileEntity tile, IChemicalTank<Gas, GasStack> tank, int gasOutput, Direction side) {
-        if (!tank.isEmpty()) {
-            GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), gasOutput));
-            int sent = GasUtils.emit(toSend, tile, EnumSet.of(side));
-            if (tank.shrinkStack(sent, Action.EXECUTE) != sent) {
-                //TODO: Print warning/error
-            }
-        }
-    }
-
-    public static void emitGas(TileEntity tile, IChemicalTank<Gas, GasStack> tank) {
-        if (!tank.isEmpty()) {
-            int sent = GasUtils.emit(tank.getStack().copy(), tile, EnumSet.allOf(Direction.class));
-            if (tank.shrinkStack(sent, Action.EXECUTE) != sent) {
-                //TODO: Print warning/error
-            }
-        }
     }
 
     public static boolean canInsert(IGasHandler handler, @Nonnull GasStack unitStack) {

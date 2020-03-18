@@ -1,9 +1,11 @@
 package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -471,8 +473,8 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
         return getConnectionType(side, getAllCurrentConnections(), currentTransmitterConnections, connectionTypes);
     }
 
-    public List<Direction> getConnections(ConnectionType type) {
-        List<Direction> sides = new ArrayList<>();
+    public Set<Direction> getConnections(ConnectionType type) {
+        Set<Direction> sides = EnumSet.noneOf(Direction.class);
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (getConnectionType(side) == type) {
                 sides.add(side);

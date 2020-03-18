@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -103,7 +104,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
-        GasUtils.emitGas(this, outputTank, gasOutput, getDirection());
+        GasUtils.emit(EnumSet.of(getDirection()), outputTank, this, gasOutput);
     }
 
     @Nonnull

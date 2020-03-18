@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -82,39 +83,37 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public void tick() {
-        if (!isRemote()) {
+        if (isRemote()) {
+            float targetScale = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().gasScale : (float) buffer.getStored() / (float) buffer.getCapacity();
+            if (Math.abs(currentScale - targetScale) > 0.01) {
+                currentScale = (9 * currentScale + targetScale) / 10;
+            }
+        } else {
             updateShare();
-            List<Direction> connections = getConnections(ConnectionType.PULL);
+            Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
-                IGasHandler[] connectedAcceptors = GasUtils.getConnectedAcceptors(getPos(), getWorld());
-                for (Direction side : connections) {
-                    IGasHandler container = connectedAcceptors[side.ordinal()];
-                    if (container != null) {
+                for (IGasHandler connectedAcceptor : GasUtils.getConnectedAcceptors(getPos(), getWorld(), connections)) {
+                    if (connectedAcceptor != null) {
                         GasStack received;
                         //Note: We recheck the buffer each time in case we ended up accepting gas somewhere
                         // and our buffer changed and is no longer empty
                         GasStack bufferWithFallback = getBufferWithFallback();
                         if (bufferWithFallback.isEmpty()) {
                             //If we don't have a gas stored try pulling as much as we are able to
-                            received = container.extractGas(getAvailablePull(), Action.SIMULATE);
+                            received = connectedAcceptor.extractGas(getAvailablePull(), Action.SIMULATE);
                         } else {
                             //Otherwise try draining the same type of gas we have stored requesting up to as much as we are able to pull
                             // We do this to better support multiple tanks in case the gas we have stored we could pull out of a block's
                             // second tank but just asking to drain a specific amount
-                            received = container.extractGas(new GasStack(bufferWithFallback, getAvailablePull()), Action.SIMULATE);
+                            received = connectedAcceptor.extractGas(new GasStack(bufferWithFallback, getAvailablePull()), Action.SIMULATE);
                         }
                         if (!received.isEmpty() && takeGas(received, Action.SIMULATE).isEmpty()) {
                             //If we received some gas and are able to insert it all
                             GasStack remainder = takeGas(received, Action.EXECUTE);
-                            container.extractGas(new GasStack(received, received.getAmount() - remainder.getAmount()), Action.EXECUTE);
+                            connectedAcceptor.extractGas(new GasStack(received, received.getAmount() - remainder.getAmount()), Action.EXECUTE);
                         }
                     }
                 }
-            }
-        } else {
-            float targetScale = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().gasScale : (float) buffer.getStored() / (float) buffer.getCapacity();
-            if (Math.abs(currentScale - targetScale) > 0.01) {
-                currentScale = (9 * currentScale + targetScale) / 10;
             }
         }
         super.tick();

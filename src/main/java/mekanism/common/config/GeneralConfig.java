@@ -81,6 +81,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue blacklistForge;
     public final CachedIntValue laserRange;
     public final CachedIntValue laserEnergyNeededPerHardness;
+    //TODO: Replace this with a void invalid contents, rather than throwing a runtime exception for things, log a warning and then void the contents
     public final CachedBooleanValue voidInvalidGases;
     public final CachedIntValue digitalMinerMaxRadius;
     public final CachedIntValue digitalMinerTicksPerMine;

@@ -2,10 +2,17 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
+import mekanism.api.RelativeSide;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
@@ -27,12 +34,12 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer, ITileNetwork {
 
-    public double energyUsage = 100;
+    private float soundScale = 1;
     private double temperature;
     public double heatToAbsorb = 0;
-    public float soundScale = 1;
     public double lastEnvironmentLoss;
 
+    private ResistiveHeaterEnergyContainer energyContainer;
     private EnergyInventorySlot energySlot;
 
     public TileEntityResistiveHeater() {
@@ -41,9 +48,17 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
     @Nonnull
     @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = ResistiveHeaterEnergyContainer.input(this), RelativeSide.LEFT, RelativeSide.RIGHT);
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(this, 15, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 15, 35));
         return builder.build();
     }
 
@@ -53,11 +68,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         energySlot.fillContainerOrConvert();
         double toUse = 0;
         if (MekanismUtils.canFunction(this)) {
-            toUse = Math.min(getEnergy(), energyUsage);
-            heatToAbsorb += toUse / MekanismConfig.general.energyPerHeat.get();
-            setEnergy(getEnergy() - toUse);
+            toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
+            if (toUse > 0) {
+                heatToAbsorb += toUse / MekanismConfig.general.energyPerHeat.get();
+                energyContainer.extract(toUse, Action.EXECUTE, AutomationType.INTERNAL);
+            }
         }
-
         setActive(toUse > 0);
         double[] loss = simulateHeat();
         applyTemperatureChange();
@@ -70,23 +86,15 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     }
 
     @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return side == getLeftSide() || side == getRightSide();
-    }
-
-    @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        energyUsage = nbtTags.getDouble(NBTConstants.ENERGY_USAGE);
         temperature = nbtTags.getDouble(NBTConstants.TEMPERATURE);
-        setMaxEnergy(energyUsage * 400);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putDouble(NBTConstants.ENERGY_USAGE, energyUsage);
         nbtTags.putDouble(NBTConstants.TEMPERATURE, temperature);
         return nbtTags;
     }
@@ -94,8 +102,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
-            energyUsage = MekanismUtils.convertToJoules(dataStream.readInt());
-            setMaxEnergy(energyUsage * 400);
+            energyContainer.updateEnergyUsage(MekanismUtils.convertToJoules(dataStream.readInt()));
         }
     }
 
@@ -157,10 +164,13 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         return true;
     }
 
+    public MachineEnergyContainer<TileEntityResistiveHeater> getEnergyContainer() {
+        return energyContainer;
+    }
+
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(() -> energyUsage, value -> energyUsage = value));
         container.track(SyncableDouble.create(this::getTemp, value -> temperature = value));
         container.track(SyncableDouble.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }

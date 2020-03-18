@@ -141,8 +141,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (configComponent.isEjecting(TransmissionType.ENERGY)) {
-            CableUtils.emit(this);
+        if (hasFrequency()) {
+            ConfigInfo info = configComponent.getConfig(TransmissionType.ENERGY);
+            if (info != null && info.isEjecting()) {
+                CableUtils.emit(info.getSidesForData(DataType.OUTPUT), frequency.storedEnergy, this);
+            }
         }
         double[] loss = simulateHeat();
         applyTemperatureChange();

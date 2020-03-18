@@ -11,6 +11,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
@@ -49,7 +50,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     public double getMaxOutput() {
-        return structure != null ? structure.getRemainingOutput() : 0;
+        return structure == null ? 0 : structure.getRemainingOutput();
     }
 
     @Override

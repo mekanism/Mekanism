@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -17,8 +18,11 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -41,6 +45,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
 
+    private MachineEnergyContainer<TileEntityChemicalOxidizer> energyContainer;
     private InputInventorySlot inputSlot;
     private GasInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
@@ -61,11 +66,19 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
 
     @Nonnull
     @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 26, 36), RelativeSide.LEFT);
         builder.addSlot(outputSlot = GasInventorySlot.drain(gasTank, this, 155, 25), RelativeSide.RIGHT);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(this, 155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }
@@ -79,7 +92,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
-        GasUtils.emitGas(this, gasTank, gasOutput, getRightSide());
+        GasUtils.emit(EnumSet.of(getRightSide()), gasTank, this, gasOutput);
     }
 
     @Nonnull
@@ -119,5 +132,9 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Override
     public Object[] getManagedTanks() {
         return new Object[]{gasTank};
+    }
+
+    public MachineEnergyContainer<TileEntityChemicalOxidizer> getEnergyContainer() {
+        return energyContainer;
     }
 }

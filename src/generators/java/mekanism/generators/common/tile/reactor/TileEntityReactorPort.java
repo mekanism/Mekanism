@@ -96,8 +96,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
     protected void onUpdateServer() {
         super.onUpdateServer();
         CableUtils.emit(this);
-        if (getActive() && getReactor() != null && !getReactor().getSteamTank().isEmpty()) {
-            GasUtils.emitGas(this, getReactor().getSteamTank());
+        if (getActive() && getReactor() != null) {
+            GasUtils.emit(getReactor().getSteamTank(), this);
         }
     }
 

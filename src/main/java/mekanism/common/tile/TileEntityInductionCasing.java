@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
@@ -24,7 +23,7 @@ import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage {
+public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> {
 
     public TileEntityInductionCasing() {
         this(MekanismBlocks.INDUCTION_CASING);

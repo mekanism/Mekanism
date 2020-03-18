@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -85,17 +86,15 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
             }
         } else {
             updateShare();
-            List<Direction> connections = getConnections(ConnectionType.PULL);
+            Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
-                TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(this, getPos(), getWorld());
-                for (Direction side : connections) {
-                    IStrictEnergyHandler strictEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(connectedOutputters[side.ordinal()], side.getOpposite());
-                    if (strictEnergyHandler != null) {
-                        double received = strictEnergyHandler.extractEnergy(getAvailablePull(), Action.SIMULATE);
+                for (IStrictEnergyHandler connectedAcceptor : CableUtils.getConnectedAcceptors(getPos(), getWorld(), connections)) {
+                    if (connectedAcceptor != null) {
+                        double received = connectedAcceptor.extractEnergy(getAvailablePull(), Action.SIMULATE);
                         if (received > 0 && takeEnergy(received, Action.SIMULATE) == 0) {
                             //If we received some energy and are able to insert it all
                             double remainder = takeEnergy(received, Action.EXECUTE);
-                            strictEnergyHandler.extractEnergy(received - remainder, Action.EXECUTE);
+                            connectedAcceptor.extractEnergy(received - remainder, Action.EXECUTE);
                         }
                     }
                 }
@@ -190,7 +189,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
 
     @Override
     public boolean isValidAcceptor(TileEntity acceptor, Direction side) {
-        return CableUtils.isValidAcceptorOnSide(this, acceptor, side);
+        return CableUtils.isValidAcceptorOnSide(acceptor, side);
     }
 
     @Override

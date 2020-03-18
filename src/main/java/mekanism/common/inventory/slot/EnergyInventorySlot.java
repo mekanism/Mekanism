@@ -27,16 +27,6 @@ import net.minecraft.world.World;
 @MethodsReturnNonnullByDefault
 public class EnergyInventorySlot extends BasicInventorySlot {
 
-    @Deprecated//TODO: Replace calls to this with the proper version
-    public static EnergyInventorySlot fillOrConvert(@Nullable IMekanismInventory inventory, int x, int y) {
-        return new EnergyInventorySlot();
-    }
-
-    @Deprecated//TODO: Replace calls to this with the proper version
-    public static EnergyInventorySlot drain(@Nullable IMekanismInventory inventory, int x, int y) {
-        return new EnergyInventorySlot();
-    }
-
     /**
      * Gets the energy from ItemStack conversion, ignoring the size of the item stack.
      */

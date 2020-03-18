@@ -344,8 +344,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.GRID_TRANSMITTER_CAPABILITY) {
             return Capabilities.GRID_TRANSMITTER_CAPABILITY.orEmpty(capability, LazyOptional.of(this::getTransmitter));
-        }
-        if (capability == Capabilities.ALLOY_INTERACTION_CAPABILITY) {
+        } else if (capability == Capabilities.ALLOY_INTERACTION_CAPABILITY) {
             return Capabilities.ALLOY_INTERACTION_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
@@ -28,7 +29,8 @@ public final class TransporterUtils {
     }
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
+        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
+              TransmissionType.checkTransmissionType(transmitter, TransmissionType.ITEM)).isPresent()) {
             return false;
         }
         return InventoryUtils.isItemHandler(tile, side.getOpposite());

@@ -610,10 +610,12 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
                 container.track(SyncableDouble.create(energyContainer::getEnergy, energyContainer::setEnergy));
-                if (supportsUpgrades() && energyContainer instanceof MachineEnergyContainer<?>) {
+                if (energyContainer instanceof MachineEnergyContainer<?>) {
                     MachineEnergyContainer<?> machineEnergy = (MachineEnergyContainer<?>) energyContainer;
-                    container.track(SyncableDouble.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
-                    container.track(SyncableDouble.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
+                    if (supportsUpgrades() || machineEnergy.adjustableRates()) {
+                        container.track(SyncableDouble.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
+                        container.track(SyncableDouble.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
+                    }
                 }
             }
         }

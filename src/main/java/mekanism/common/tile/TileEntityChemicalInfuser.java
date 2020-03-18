@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -20,8 +21,11 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -53,6 +57,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITa
     private final IInputHandler<@NonNull GasStack> leftInputHandler;
     private final IInputHandler<@NonNull GasStack> rightInputHandler;
 
+    private MachineEnergyContainer<TileEntityChemicalInfuser> energyContainer;
     private GasInventorySlot leftInputSlot;
     private GasInventorySlot outputSlot;
     private GasInventorySlot rightInputSlot;
@@ -94,13 +99,21 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITa
 
     @Nonnull
     @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //TODO: Should our gas checking, also check the other tank's contents so we don't let putting the same gas in on both sides
         builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this, 5, 56), RelativeSide.LEFT);
         builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this, 155, 56), RelativeSide.RIGHT);
         builder.addSlot(outputSlot = GasInventorySlot.drain(centerTank, this, 80, 65), RelativeSide.FRONT);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(this, 155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
         leftInputSlot.setSlotType(ContainerSlotType.INPUT);
         leftInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         rightInputSlot.setSlotType(ContainerSlotType.INPUT);
@@ -117,14 +130,14 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITa
         leftInputSlot.fillTank();
         rightInputSlot.fillTank();
         outputSlot.drainTank();
-        double prev = getEnergy();
+        double prev = energyContainer.getEnergy();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
         //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-        clientEnergyUsed = prev - getEnergy();
-        GasUtils.emitGas(this, centerTank, gasOutput, getDirection());
+        clientEnergyUsed = prev - energyContainer.getEnergy();
+        GasUtils.emit(EnumSet.of(getDirection()), centerTank, this, gasOutput);
     }
 
     @Nonnull
@@ -183,6 +196,10 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITa
     @Override
     public boolean lightUpdate() {
         return true;
+    }
+
+    public MachineEnergyContainer<TileEntityChemicalInfuser> getEnergyContainer() {
+        return energyContainer;
     }
 
     @Override

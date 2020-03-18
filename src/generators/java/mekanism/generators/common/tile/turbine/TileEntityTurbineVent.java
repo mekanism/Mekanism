@@ -1,20 +1,13 @@
 package mekanism.generators.common.tile.turbine;
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.inventory.AutomationType;
-import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EmitUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class TileEntityTurbineVent extends TileEntityTurbineCasing {
 
@@ -25,14 +18,8 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (structure != null && !structure.ventTank.isEmpty()) {
-            FluidStack fluidStack = structure.ventTank.getFluid().copy();
-            EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class),
-                  (tile, side) -> CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
-                      if (PipeUtils.canFill(handler, fluidStack)) {
-                          structure.ventTank.extract(handler.fill(fluidStack, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
-                      }
-                  }));
+        if (structure != null) {
+            PipeUtils.emit(structure.ventTank, this);
         }
     }
 

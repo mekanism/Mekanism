@@ -1,9 +1,11 @@
 package mekanism.common.capabilities.energy;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.Upgrade;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.block.IBlockElectric;
@@ -51,6 +53,10 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         updateEnergyPerTick();
     }
 
+    public boolean adjustableRates() {
+        return false;
+    }
+
     @Override
     public double getMaxEnergy() {
         return currentMaxEnergy;
@@ -86,12 +92,17 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     }
 
     public void updateMaxEnergy() {
-        //TODO: Do we want to validate it actually supports energy upgrades?
-        setMaxEnergy(MekanismUtils.getMaxEnergy(tile, getBaseMaxEnergy()));
+        if (tile.supportsUpgrades() && tile.getSupportedUpgrade().contains(Upgrade.ENERGY)) {
+            setMaxEnergy(MekanismUtils.getMaxEnergy(tile, getBaseMaxEnergy()));
+        }
     }
 
     public void updateEnergyPerTick() {
-        //TODO: Do we want to validate it actually supports energy or speed upgrades?
-        setEnergyPerTick(MekanismUtils.getEnergyPerTick(tile, baseEnergyPerTick));
+        if (tile.supportsUpgrades()) {
+            Set<Upgrade> supportedUpgrades = tile.getSupportedUpgrade();
+            if (supportedUpgrades.contains(Upgrade.ENERGY) || supportedUpgrades.contains(Upgrade.SPEED)) {
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(tile, baseEnergyPerTick));
+            }
+        }
     }
 }

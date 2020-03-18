@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
@@ -13,7 +12,6 @@ import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
-import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -30,9 +28,8 @@ public class GuiChemicalOxidizer extends GuiMekanismTile<TileEntityChemicalOxidi
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiHorizontalPowerBar(this, tile, 115, 75));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
+        addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
         addButton(new GuiGasGauge(() -> tile.gasTank, GaugeType.STANDARD, this, 133, 13));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 64, 40));
     }

@@ -4,6 +4,10 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.inventory.AutomationType;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.tileentity.TileEntity;
@@ -18,7 +22,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 public final class PipeUtils {
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
+        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
+              TransmissionType.checkTransmissionType(transmitter, TransmissionType.FLUID)).isPresent()) {
             return false;
         }
         return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
@@ -29,11 +34,25 @@ public final class PipeUtils {
      *
      * @return array of IFluidHandlers
      */
-    public static IFluidHandler[] getConnectedAcceptors(BlockPos pos, World world) {
-        final IFluidHandler[] acceptors = new IFluidHandler[]{null, null, null, null, null, null};
-        EmitUtils.forEachSide(world, pos, EnumSet.allOf(Direction.class), (tile, side) ->
+    public static IFluidHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<Direction> sides) {
+        final IFluidHandler[] acceptors = new IFluidHandler[EnumUtils.DIRECTIONS.length];
+        EmitUtils.forEachSide(world, pos, sides, (tile, side) ->
               CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> acceptors[side.ordinal()] = handler));
         return acceptors;
+    }
+
+    public static void emit(IExtendedFluidTank tank, TileEntity from) {
+        emit(EnumSet.allOf(Direction.class), tank, from);
+    }
+
+    public static void emit(Set<Direction> outputSides, IExtendedFluidTank tank, TileEntity from) {
+        emit(outputSides, tank, from, tank.getCapacity());
+    }
+
+    public static void emit(Set<Direction> outputSides, IExtendedFluidTank tank, TileEntity from, int maxOutput) {
+        if (!tank.isEmpty() && maxOutput > 0) {
+            tank.extract(emit(outputSides, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
+        }
     }
 
     /**
@@ -43,23 +62,22 @@ public final class PipeUtils {
      * @param stack - the stack to output
      * @param from  - the TileEntity to output from
      *
-     * @return the amount of gas emitted
+     * @return the amount of fluid emitted
      */
     public static int emit(Set<Direction> sides, @Nonnull FluidStack stack, TileEntity from) {
-        if (stack.isEmpty()) {
+        if (stack.isEmpty() || sides.isEmpty()) {
             return 0;
         }
+        FluidStack toSend = stack.copy();
         //Fake that we have one target given we know that no sides will overlap
         // This allows us to have slightly better performance
-        final FluidHandlerTarget target = new FluidHandlerTarget(stack);
+        FluidHandlerTarget target = new FluidHandlerTarget(stack);
         EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
-
             //Insert to access side
-            final Direction accessSide = side.getOpposite();
-
+            Direction accessSide = side.getOpposite();
             //Collect cap
             CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
-                if (canFill(handler, stack)) {
+                if (canFill(handler, toSend)) {
                     target.addHandler(accessSide, handler);
                 }
             });
@@ -69,7 +87,7 @@ public final class PipeUtils {
         if (curHandlers > 0) {
             Set<FluidHandlerTarget> targets = new ObjectOpenHashSet<>();
             targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), stack);
+            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), toSend);
         }
         return 0;
     }

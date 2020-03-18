@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
@@ -43,11 +42,10 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         addButton(new GuiInnerScreen(this, 48, 23, 80, 28));
         addButton(new GuiInnerScreen(this, 48, 50, 68, 13));
         addButton(new GuiInnerScreen(this, 115, 50, 13, 13));
-        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.energyUsage)),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.lastEnvironmentLoss * unit.intervalSize, unit, false);
@@ -73,7 +71,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, 0x404040);
         renderScaledText(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemp(), TemperatureUnit.AMBIENT)), 50, 25, 0x00CD00, 76);
-        renderScaledText(MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.energyUsage)), 50, 41, 0x00CD00, 76);
+        renderScaledText(MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick())), 50, 41, 0x00CD00, 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
