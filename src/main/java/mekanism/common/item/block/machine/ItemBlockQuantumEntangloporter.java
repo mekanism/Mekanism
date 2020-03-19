@@ -9,7 +9,9 @@ import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.BlockQuantumEntangloporter;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.block.machine.prefab.BlockTile;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
@@ -37,9 +39,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip<BlockQuantumEntangloporter> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockQuantumEntangloporter(BlockQuantumEntangloporter block) {
+    public ItemBlockQuantumEntangloporter(BlockTile<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::entangloporter));
     }
 
@@ -75,7 +77,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip<Blo
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockQuantumEntangloporter) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockQuantumEntangloporter) item).getBlock().getStorage());
+            return MekanismUtils.getMaxEnergy(itemStack, Attribute.get(((ItemBlockQuantumEntangloporter) item).getBlock(), AttributeEnergy.class).getStorage());
         }
         return 0;
     }

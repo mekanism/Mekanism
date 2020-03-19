@@ -32,13 +32,13 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockEnergyCube;
-import mekanism.common.block.BlockGasTank;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeFactoryType;
+import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.basic.BlockBin;
-import mekanism.common.block.basic.BlockInductionCell;
-import mekanism.common.block.basic.BlockInductionProvider;
+import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.block.basic.BlockResource;
-import mekanism.common.block.interfaces.ITieredBlock;
-import mekanism.common.block.machine.BlockFluidTank;
+import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemTierInstaller;
@@ -203,6 +203,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTieredBin(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockBin, ?> bin, IItemProvider previousBin, Tag<Item> circuitTag,
           Tag<Item> alloyTag, RecipeCriterion circuitCriterion) {
+        String tierName = Attribute.get(bin.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(bin)
               .pattern(BIN_PATTERN)
               .key(Pattern.PREVIOUS, previousBin)
@@ -211,7 +212,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(circuitCriterion)
               .addCriterion(Criterion.has(previousBin))
-              .build(consumer, Mekanism.rl(basePath + bin.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addChemicalInfuserRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -472,6 +473,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTieredEnergyCube(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockEnergyCube, ?> energyCube,
           IItemProvider previousEnergyCube, Tag<Item> ingotTag, Tag<Item> alloyTag) {
+        String tierName = Attribute.get(energyCube.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(energyCube)
               .pattern(ENERGY_CUBE_PATTERN)
               .key(Pattern.PREVIOUS, previousEnergyCube)
@@ -480,7 +482,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(Criterion.HAS_ENERGY_TABLET)
               .addCriterion(Criterion.has(previousEnergyCube))
-              .build(consumer, Mekanism.rl(basePath + energyCube.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addEnrichmentChamberRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -775,7 +777,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, ingotTag)
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(Criterion.has(toUpgrade))
-              .build(consumer, Mekanism.rl(basePath + factory.getBlock().getFactoryType().getRegistryNameComponent()));
+              .build(consumer, Mekanism.rl(basePath + Attribute.get(factory.getBlock(), AttributeFactoryType.class).getFactoryType().getRegistryNameComponent()));
     }
 
     private void addFluidTankRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -797,6 +799,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTieredFluidTank(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFluidTank, ?> tank, IItemProvider previousTank,
           Tag<Item> alloyTag, RecipeCriterion alloyCriterion) {
+        String tierName = Attribute.get(tank.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(FLUID_TANK_PATTERN)
               .key(Pattern.PREVIOUS, previousTank)
@@ -804,7 +807,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(alloyCriterion)
               .addCriterion(Criterion.has(previousTank))
-              .build(consumer, Mekanism.rl(basePath + tank.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addGasConversionRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -859,8 +862,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addTieredGasTank(consumer, basePath, MekanismBlocks.ULTIMATE_GAS_TANK, MekanismBlocks.ELITE_GAS_TANK, MekanismTags.Items.ALLOYS_ATOMIC, Criterion.HAS_ATOMIC_ALLOY);
     }
 
-    private void addTieredGasTank(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockGasTank, ?> tank, IItemProvider previousTank,
+    private void addTieredGasTank(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> tank, IItemProvider previousTank,
           Tag<Item> alloyTag, RecipeCriterion alloyCriterion) {
+        String tierName = Attribute.get(tank.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(GAS_TANK_PATTERN)
               .key(Pattern.PREVIOUS, previousTank)
@@ -868,7 +872,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(alloyCriterion)
               .addCriterion(Criterion.has(previousTank))
-              .build(consumer, Mekanism.rl(basePath + tank.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addInductionRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -916,8 +920,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
     }
 
-    private void addTieredInductionCellRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockInductionCell, ?> cell,
+    private void addTieredInductionCellRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> cell,
           IItemProvider previousCell, IItemProvider energyCube) {
+        String tierName = Attribute.get(cell.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(cell)
               .pattern(INDUCTION_CELL_PATTERN)
               .key(Pattern.PREVIOUS, previousCell)
@@ -925,7 +930,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .addCriterion(Criterion.has(previousCell))
               .addCriterion(Criterion.has(energyCube))
-              .build(consumer, Mekanism.rl(basePath + cell.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addInductionProviderRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
@@ -946,8 +951,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ULTIMATE, Criterion.HAS_ULTIMATE_CIRCUIT);
     }
 
-    private void addTieredInductionProviderRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockInductionProvider, ?> provider,
+    private void addTieredInductionProviderRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> provider,
           IItemProvider previousProvider, IItemProvider energyCube, Tag<Item> circuitTag, RecipeCriterion circuitCriterion) {
+        String tierName = Attribute.get(provider.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(provider)
               .pattern(INDUCTION_PROVIDER_PATTERN)
               .key(Pattern.PREVIOUS, previousProvider)
@@ -956,7 +962,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.has(previousProvider))
               .addCriterion(Criterion.has(energyCube))
               .addCriterion(circuitCriterion)
-              .build(consumer, Mekanism.rl(basePath + provider.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addInfusionConversionRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -2184,35 +2190,38 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE, MekanismBlocks.ELITE_UNIVERSAL_CABLE, MekanismTags.Items.ALLOYS_ATOMIC, Criterion.HAS_ATOMIC_ALLOY);
     }
 
-    private void addBasicTransmitterRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITieredBlock<?>, ?> transmitter,
+    private void addBasicTransmitterRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter,
           Tag<Item> itemTag) {
+        String tierName = Attribute.get(transmitter.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, itemTag)
               .addCriterion(Criterion.HAS_STEEL)
-              .build(consumer, Mekanism.rl(basePath + transmitter.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
-    private void addBasicTransmitterRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITieredBlock<?>, ?> transmitter,
+    private void addBasicTransmitterRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter,
           Item item) {
+        String tierName = Attribute.get(transmitter.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, item)
               .addCriterion(Criterion.HAS_STEEL)
-              .build(consumer, Mekanism.rl(basePath + transmitter.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
-    private void addTransmitterUpgradeRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITieredBlock<?>, ?> transmitter,
+    private void addTransmitterUpgradeRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter,
           IItemProvider previousTransmitter, Tag<Item> alloyTag, RecipeCriterion alloyCriterion) {
+        String tierName = Attribute.get(transmitter.getBlock(), AttributeTier.class).getTier().getBaseTier().getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(TRANSMITTER_UPGRADE_PATTERN)
               .key(Pattern.PREVIOUS, previousTransmitter)
               .key(Pattern.ALLOY, alloyTag)
               .addCriterion(Criterion.has(previousTransmitter))
               .addCriterion(alloyCriterion)
-              .build(consumer, Mekanism.rl(basePath + transmitter.getBlock().getTier().getBaseTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addUpgradeRecipes(Consumer<IFinishedRecipe> consumer) {

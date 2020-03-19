@@ -28,7 +28,7 @@ import net.minecraft.util.Direction;
 
 public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer, IMekanismFluidHandler, IMekanismGasHandler {
 
-    public static Object2BooleanMap<String> clientHotMap = new Object2BooleanOpenHashMap<>();
+    public static Object2BooleanMap<String> hotMap = new Object2BooleanOpenHashMap<>();
 
     public static double CASING_INSULATION_COEFFICIENT = 1;
     public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;

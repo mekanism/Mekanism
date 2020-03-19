@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.BlockFuelwoodHeater;
+import mekanism.common.block.machine.prefab.BlockTile;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
@@ -20,9 +20,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemBlockFuelwoodHeater extends ItemBlockAdvancedTooltip<BlockFuelwoodHeater> implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockFuelwoodHeater extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> implements IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockFuelwoodHeater(BlockFuelwoodHeater block) {
+    public ItemBlockFuelwoodHeater(BlockTile<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 

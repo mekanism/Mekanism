@@ -14,11 +14,12 @@ import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IItemNetwork;
-import mekanism.common.block.machine.BlockFluidTank;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeTier;
+import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.fluid.RateLimitFluidHandler;
 import mekanism.common.item.IItemSustainedInventory;
-import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
@@ -39,7 +40,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -72,24 +72,15 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank> implements IItemSustainedInventory, ISecurityItem, IItemNetwork,
-      ITieredItem<FluidTankTier> {
+public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank> implements IItemSustainedInventory, ISecurityItem, IItemNetwork {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::fluidTank));
     }
 
-    @Nullable
-    @Override
-    public FluidTankTier getTier(@Nonnull ItemStack stack) {
-        Item item = stack.getItem();
-        return item instanceof ItemBlockFluidTank ? ((ItemBlockFluidTank) item).getTier() : null;
-    }
-
     @Nonnull
-    @Override
     public FluidTankTier getTier() {
-        return getBlock().getTier();
+        return (FluidTankTier) Attribute.get(getBlock(), AttributeTier.class).getTier();
     }
 
     @Override
@@ -103,7 +94,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         } else {
             tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
         }
-        FluidTankTier tier = getTier(stack);
+        FluidTankTier tier = getTier();
         if (tier != null) {
             int cap = tier.getStorage();
             if (cap == Integer.MAX_VALUE) {
@@ -296,8 +287,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        FluidTankTier tier = getTier(stack);
-        return new ItemCapabilityWrapper(stack, RateLimitFluidHandler.create(tier == null ? getBlock().getTier() : tier));
+        return new ItemCapabilityWrapper(stack, RateLimitFluidHandler.create(getTier()));
     }
 
     @Override

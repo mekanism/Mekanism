@@ -1,8 +1,5 @@
 package mekanism.common.util;
 
-import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +8,10 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.Contract;
+import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.Upgrade;
@@ -85,7 +86,6 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.Contract;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -277,7 +277,7 @@ public final class MekanismUtils {
     public static double getMaxEnergy(ItemStack itemStack, double def) {
         Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemStack));
         float numUpgrades = upgrades.get(Upgrade.ENERGY) == null ? 0 : (float) upgrades.get(Upgrade.ENERGY);
-        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), numUpgrades / (float) Upgrade.ENERGY.getMax());
+        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), numUpgrades / Upgrade.ENERGY.getMax());
     }
 
     /**
@@ -402,7 +402,7 @@ public final class MekanismUtils {
             return;
         }
         BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.getBlock();
-        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null);
+        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null, Direction.NORTH);
         world.setBlockState(boundingLocation, newState, BlockFlags.DEFAULT);
         if (!world.isRemote()) {
             TileEntityBoundingBlock tile = getTileEntity(TileEntityBoundingBlock.class, world, boundingLocation);
@@ -423,7 +423,7 @@ public final class MekanismUtils {
      */
     public static void makeAdvancedBoundingBlock(IWorld world, BlockPos boundingLocation, BlockPos orig) {
         BlockBounding boundingBlock = MekanismBlocks.ADVANCED_BOUNDING_BLOCK.getBlock();
-        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null);
+        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null, Direction.NORTH);
         world.setBlockState(boundingLocation, newState, BlockFlags.DEFAULT);
         if (!world.isRemote()) {
             TileEntityAdvancedBoundingBlock tile = getTileEntity(TileEntityAdvancedBoundingBlock.class, world, boundingLocation);

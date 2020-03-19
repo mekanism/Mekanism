@@ -1,10 +1,10 @@
 package mekanism.client.render.item.block;
 
+import java.util.Optional;
+import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.Optional;
-import javax.annotation.Nonnull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.model.ModelFluidTank;
@@ -57,7 +57,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             return;
         }
         ItemBlockFluidTank itemFluidTank = (ItemBlockFluidTank) stack.getItem();
-        FluidTankTier tier = itemFluidTank.getTier(stack);
+        FluidTankTier tier = itemFluidTank.getTier();
         if (tier == null) {
             return;
         }

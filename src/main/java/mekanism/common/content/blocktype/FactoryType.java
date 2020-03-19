@@ -6,18 +6,18 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismMachineTypes;
+import mekanism.common.registries.MekanismBlockTypes;
 
 public enum FactoryType implements IHasTranslationKey {
-    SMELTING("smelting", MekanismLang.SMELTING, () -> MekanismMachineTypes.ENERGIZED_SMELTER, () -> MekanismBlocks.ENERGIZED_SMELTER),
-    ENRICHING("enriching", MekanismLang.ENRICHING, () -> MekanismMachineTypes.ENRICHMENT_CHAMBER, () -> MekanismBlocks.ENRICHMENT_CHAMBER),
-    CRUSHING("crushing", MekanismLang.CRUSHING, () -> MekanismMachineTypes.CRUSHER, () -> MekanismBlocks.CRUSHER),
-    COMPRESSING("compressing", MekanismLang.COMPRESSING, () -> MekanismMachineTypes.OSMIUM_COMPRESSOR, () -> MekanismBlocks.OSMIUM_COMPRESSOR),
-    COMBINING("combining", MekanismLang.COMBINING, () -> MekanismMachineTypes.COMBINER, () -> MekanismBlocks.COMBINER),
-    PURIFYING("purifying", MekanismLang.PURIFYING, () -> MekanismMachineTypes.PURIFICATION_CHAMBER, () -> MekanismBlocks.PURIFICATION_CHAMBER),
-    INJECTING("injecting", MekanismLang.INJECTING, () -> MekanismMachineTypes.CHEMICAL_INJECTION_CHAMBER, () -> MekanismBlocks.CHEMICAL_INJECTION_CHAMBER),
-    INFUSING("infusing", MekanismLang.INFUSING, () -> MekanismMachineTypes.METALLURGIC_INFUSER, () -> MekanismBlocks.METALLURGIC_INFUSER),
-    SAWING("sawing", MekanismLang.SAWING, () -> MekanismMachineTypes.PRECISION_SAWMILL, () -> MekanismBlocks.PRECISION_SAWMILL);
+    SMELTING("smelting", MekanismLang.SMELTING, () -> MekanismBlockTypes.ENERGIZED_SMELTER, () -> MekanismBlocks.ENERGIZED_SMELTER),
+    ENRICHING("enriching", MekanismLang.ENRICHING, () -> MekanismBlockTypes.ENRICHMENT_CHAMBER, () -> MekanismBlocks.ENRICHMENT_CHAMBER),
+    CRUSHING("crushing", MekanismLang.CRUSHING, () -> MekanismBlockTypes.CRUSHER, () -> MekanismBlocks.CRUSHER),
+    COMPRESSING("compressing", MekanismLang.COMPRESSING, () -> MekanismBlockTypes.OSMIUM_COMPRESSOR, () -> MekanismBlocks.OSMIUM_COMPRESSOR),
+    COMBINING("combining", MekanismLang.COMBINING, () -> MekanismBlockTypes.COMBINER, () -> MekanismBlocks.COMBINER),
+    PURIFYING("purifying", MekanismLang.PURIFYING, () -> MekanismBlockTypes.PURIFICATION_CHAMBER, () -> MekanismBlocks.PURIFICATION_CHAMBER),
+    INJECTING("injecting", MekanismLang.INJECTING, () -> MekanismBlockTypes.CHEMICAL_INJECTION_CHAMBER, () -> MekanismBlocks.CHEMICAL_INJECTION_CHAMBER),
+    INFUSING("infusing", MekanismLang.INFUSING, () -> MekanismBlockTypes.METALLURGIC_INFUSER, () -> MekanismBlocks.METALLURGIC_INFUSER),
+    SAWING("sawing", MekanismLang.SAWING, () -> MekanismBlockTypes.PRECISION_SAWMILL, () -> MekanismBlocks.PRECISION_SAWMILL);
 
     private final String registryNameComponent;
     private final MekanismLang langEntry;

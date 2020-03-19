@@ -4,7 +4,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
-import mekanism.common.block.interfaces.IUpgradeableBlock;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeTier;
+import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileDirectional;
@@ -55,9 +57,9 @@ public class ItemTierInstaller extends Item {
         BlockPos pos = context.getPos();
         BlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
-        if (block instanceof IUpgradeableBlock) {
-            IUpgradeableBlock upgradeableBlock = (IUpgradeableBlock) block;
-            BaseTier baseTier = upgradeableBlock.getBaseTier();
+        if (Attribute.has(block, AttributeUpgradeable.class)) {
+            AttributeUpgradeable upgradeableBlock = Attribute.get(block, AttributeUpgradeable.class);
+            BaseTier baseTier = Attribute.has(block, AttributeTier.class) ? Attribute.get(block, AttributeTier.class).getTier().getBaseTier() : null;
             if (baseTier == fromTier && baseTier != toTier) {
                 BlockState upgradeState = upgradeableBlock.upgradeResult(state, toTier);
                 if (state == upgradeState) {

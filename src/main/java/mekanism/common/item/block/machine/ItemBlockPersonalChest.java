@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.BlockPersonalChest;
+import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
 import mekanism.common.item.IItemSustainedInventory;
@@ -28,9 +28,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip<BlockPersonalChest> implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip<BlockTileModel<?, ?>> implements IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockPersonalChest(BlockPersonalChest block) {
+    public ItemBlockPersonalChest(BlockTileModel<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 

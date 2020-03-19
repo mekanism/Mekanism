@@ -2,7 +2,6 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
@@ -31,7 +30,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
 
-public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IHasTileEntity<TileEntityStructuralGlass>, IHasDescription {
+public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntity<TileEntityStructuralGlass>, IHasDescription {
 
     public BlockStructuralGlass() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F).notSolid());

@@ -1,11 +1,11 @@
 package mekanism.common.tile.transmitter;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.block.IHasTileEntity;
@@ -18,6 +18,7 @@ import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
@@ -60,7 +61,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         super(((IHasTileEntity<TileEntityLogisticalTransporter>) blockProvider.getBlock()).getTileType());
         Block block = blockProvider.getBlock();
         if (block instanceof BlockLogisticalTransporter) {
-            this.tier = ((BlockLogisticalTransporter) block).getTier();
+            this.tier = Attribute.getTier(blockProvider.getBlock(), TransporterTier.class);
         } else {
             //Diversion and restrictive transporters
             this.tier = TransporterTier.BASIC;

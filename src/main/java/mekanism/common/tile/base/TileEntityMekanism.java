@@ -1,6 +1,5 @@
 package mekanism.common.tile.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -11,18 +10,12 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.block.IBlockElectric;
-import mekanism.api.block.IBlockSound;
-import mekanism.api.block.IHasInventory;
-import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.block.ISupportsComparator;
-import mekanism.api.block.ISupportsRedstone;
-import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -44,10 +37,18 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IUpgradeableBlock;
-import mekanism.common.block.states.IStateActive;
-import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.block.attribute.AttributeGui;
+import mekanism.common.block.attribute.AttributeSound;
+import mekanism.common.block.attribute.AttributeStateActive;
+import mekanism.common.block.attribute.AttributeStateFacing;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.block.attribute.AttributeUpgradeable;
+import mekanism.common.block.attribute.Attributes.AttributeComparator;
+import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeRedstone;
+import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.capabilities.IToggleableCapability;
@@ -106,7 +107,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -274,7 +274,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             securityComponent = new TileComponentSecurity(this);
         }
         if (hasSound()) {
-            soundEvent = ((IBlockSound) blockProvider.getBlock()).getSoundEvent();
+            soundEvent = Attribute.get(blockProvider.getBlock(), AttributeSound.class).getSoundEvent();
         } else {
             soundEvent = null;
         }
@@ -282,18 +282,17 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     private void setSupportedTypes(Block block) {
         //Used to get any data we may need
-        isElectric = block instanceof IBlockElectric;
-        supportsUpgrades = block instanceof ISupportsUpgrades;
-        canBeUpgraded = block instanceof IUpgradeableBlock;
-        isDirectional = block instanceof IStateFacing;
-        supportsRedstone = block instanceof ISupportsRedstone;
-        hasSound = block instanceof IBlockSound && ((IBlockSound) block).hasSound();
-        hasGui = block instanceof IHasGui;
-        hasInventory = block instanceof IHasInventory;
-        hasSecurity = block instanceof IHasSecurity;
-        //TODO: Is this the proper way of doing it
-        isActivatable = hasSound || block instanceof IStateActive;
-        supportsComparator = block instanceof ISupportsComparator;
+        isElectric = Attribute.has(block, AttributeEnergy.class);
+        supportsUpgrades = Attribute.has(block, AttributeUpgradeSupport.class);
+        canBeUpgraded = Attribute.has(block, AttributeUpgradeable.class);
+        isDirectional = Attribute.has(block, AttributeStateFacing.class);
+        supportsRedstone = Attribute.has(block, AttributeRedstone.class);
+        hasSound = Attribute.has(block, AttributeSound.class);
+        hasGui = Attribute.has(block, AttributeGui.class);
+        hasInventory = Attribute.has(block, AttributeInventory.class);
+        hasSecurity = Attribute.has(block, AttributeSecurity.class);
+        isActivatable = hasSound || Attribute.has(block, AttributeSound.class);
+        supportsComparator = Attribute.has(block, AttributeComparator.class);
     }
 
     /**
@@ -455,7 +454,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 }
             }
 
-            NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityMekanism>) blockProvider.getBlock()).getProvider(this), pos);
+            NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(blockProvider.getBlock(), AttributeGui.class).getProvider(this), pos);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
@@ -760,11 +759,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public Direction getDirection() {
         if (isDirectional()) {
-            BlockState state = getBlockState();
-            Block block = state.getBlock();
-            if (block instanceof IStateFacing) {
-                return ((IStateFacing) block).getDirection(state);
-            }
+            return Attribute.getFacing(getBlockState());
         }
         //TODO: Remove, give it some better default, or allow it to be null
         return Direction.NORTH;
@@ -772,16 +767,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Override
     public void setFacing(@Nonnull Direction direction) {
-        //TODO: Remove this method or cleanup how it is a wrapper for setting the blockstate direction
         if (isDirectional()) {
-            BlockState state = getBlockState();
-            Block block = state.getBlock();
-            if (block instanceof IStateFacing) {
-                state = ((IStateFacing) block).setDirection(state, direction);
-                World world = getWorld();
-                if (world != null) {
-                    world.setBlockState(pos, state);
-                }
+            BlockState state = Attribute.setFacing(getBlockState(), direction);
+            if (world != null && state != null) {
+                world.setBlockState(pos, state);
             }
         }
     }
@@ -848,7 +837,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         if (supportsUpgrades()) {
-            return ((ISupportsUpgrades) getBlockType()).getSupportedUpgrade();
+            return Attribute.get(blockProvider.getBlock(), AttributeUpgradeSupport.class).getSupportedUpgrades();
         }
         return Collections.emptySet();
     }
@@ -1146,14 +1135,14 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     public double getBaseUsage() {
         if (isElectric()) {
-            return ((IBlockElectric) blockProvider.getBlock()).getUsage();
+            return Attribute.get(blockProvider.getBlock(), AttributeEnergy.class).getUsage();
         }
         return 0;
     }
 
     public double getBaseStorage() {
         if (isElectric()) {
-            return ((IBlockElectric) blockProvider.getBlock()).getStorage();
+            return Attribute.get(blockProvider.getBlock(), AttributeEnergy.class).getStorage();
         }
         return 0;
     }
@@ -1221,12 +1210,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     }
 
     private boolean getClientActive() {
-        BlockState state = getBlockState();
-        Block block = state.getBlock();
-        if (block instanceof IStateActive) {
-            return ((IStateActive) block).isActive(state);
-        }
-        return false;
+        return Attribute.isActive(getBlockState());
     }
 
     @Override
@@ -1234,11 +1218,11 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (isActivatable()) {
             BlockState state = getBlockState();
             Block block = state.getBlock();
-            if (block instanceof IStateActive) {
+            if (Attribute.has(block, AttributeStateActive.class)) {
                 currentActive = active;
 
                 if (updateDelay == 0 && getClientActive() != active) {
-                    state = ((IStateActive) block).setActive(state, active);
+                    state = Attribute.setActive(state, active);
                     world.setBlockState(pos, state);
                     updateDelay = delaySupplier.getAsInt();
                 }

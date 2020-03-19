@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.block.ISupportsComparator;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.sustained.ISustainedInventory;
@@ -14,6 +13,8 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.item.IItemEnergized;
@@ -260,7 +261,7 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     public boolean hasComparatorInputOverride(BlockState blockState) {
-        return this instanceof ISupportsComparator;
+        return Attribute.has(this, AttributeComparator.class);
     }
 
     @Override

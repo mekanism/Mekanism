@@ -1,13 +1,15 @@
 package mekanism.common.block.transmitter;
 
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.interfaces.ITieredBlock;
+import mekanism.common.block.attribute.AttributeTier;
+import mekanism.common.block.interfaces.ITypeBlock;
+import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import net.minecraft.tileentity.TileEntityType;
 
-public class BlockThermodynamicConductor extends BlockSmallTransmitter implements ITieredBlock<ConductorTier>, IHasTileEntity<TileEntityThermodynamicConductor> {
+public class BlockThermodynamicConductor extends BlockSmallTransmitter implements ITypeBlock, IHasTileEntity<TileEntityThermodynamicConductor> {
 
     private final ConductorTier tier;
 
@@ -16,8 +18,8 @@ public class BlockThermodynamicConductor extends BlockSmallTransmitter implement
     }
 
     @Override
-    public ConductorTier getTier() {
-        return tier;
+    public BlockType getType() {
+        return AttributeTier.getPassthroughType(tier);
     }
 
     @Override

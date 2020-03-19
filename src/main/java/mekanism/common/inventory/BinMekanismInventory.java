@@ -5,8 +5,11 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
+import mekanism.common.tier.BinTier;
 import net.minecraft.item.ItemStack;
 
 public class BinMekanismInventory extends ItemStackMekanismInventory {
@@ -20,7 +23,7 @@ public class BinMekanismInventory extends ItemStackMekanismInventory {
     @Nonnull
     @Override
     protected List<IInventorySlot> getInitialInventory() {
-        binSlot = BinInventorySlot.create(this, ((ItemBlockBin) stack.getItem()).getTier());
+        binSlot = BinInventorySlot.create(this, (BinTier) Attribute.get(((ItemBlockBin) stack.getItem()).getBlock(), AttributeTier.class).getTier());
         return Collections.singletonList(binSlot);
     }
 

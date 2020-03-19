@@ -15,9 +15,9 @@ import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
-import mekanism.common.block.transmitter.BlockUniversalCable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
@@ -54,7 +54,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
     public TileEntityUniversalCable(IBlockProvider blockProvider) {
         super(((IHasTileEntity<TileEntityUniversalCable>) blockProvider.getBlock()).getTileType());
-        this.tier = ((BlockUniversalCable) blockProvider.getBlock()).getTier();
+        this.tier = Attribute.getTier(blockProvider.getBlock(), CableTier.class);
     }
 
     @Override

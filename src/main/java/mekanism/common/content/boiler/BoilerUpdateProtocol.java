@@ -1,16 +1,17 @@
 package mekanism.common.content.boiler;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.block.basic.BlockBoilerCasing;
+import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
+import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityPressureDisperser;
@@ -32,7 +33,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        return pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockBoilerCasing;
+        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.BOILER_CASING, MekanismBlockTypes.BOILER_VALVE);
     }
 
     @Override

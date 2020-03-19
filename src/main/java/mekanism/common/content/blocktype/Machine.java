@@ -2,79 +2,45 @@ package mekanism.common.content.blocktype;
 
 import java.util.EnumSet;
 import java.util.Set;
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import mekanism.api.Pos3D;
 import mekanism.api.Upgrade;
-import mekanism.api.tier.BaseTier;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.block.attribute.AttributeFactoryType;
+import mekanism.common.block.attribute.AttributeParticleFX;
+import mekanism.common.block.attribute.AttributeStateActive;
+import mekanism.common.block.attribute.AttributeStateFacing;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.block.attribute.AttributeUpgradeable;
+import mekanism.common.block.attribute.Attributes.AttributeComparator;
+import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeRedstone;
+import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.block.BlockState;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.particles.RedstoneParticleData;
 
-public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
+public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE> {
 
-    protected DoubleSupplier energyUsage;
-    protected DoubleSupplier energyStorage;
+    public Machine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, MekanismLang description) {
+        super(tileEntityRegistrar, description);
 
-    protected MekanismLang description;
-
-    protected Set<Upgrade> supportedUpgrades;
-
-    public Machine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, MekanismLang description) {
-        super(tileEntityRegistrar);
-        this.containerRegistrar = containerRegistrar;
-        this.description = description;
-        this.supportedUpgrades = EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
-    }
-
-    @Nonnull
-    public Set<Upgrade> getSupportedUpgrades() {
-        return supportedUpgrades;
-    }
-
-    @Nonnull
-    public ILangEntry getDescription() {
-        return description;
-    }
-
-    public double getUsage() {
-        return energyUsage.getAsDouble();
-    }
-
-    public boolean hasUsage() {
-        return energyUsage != null;
-    }
-
-    public double getConfigStorage() {
-        return energyStorage.getAsDouble();
-    }
-
-    public boolean hasConfigStorage() {
-        return energyStorage != null;
+        // add default particle effects
+        add(new AttributeParticleFX()
+            .add(ParticleTypes.SMOKE, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, 0.52))
+            .add(RedstoneParticleData.REDSTONE_DUST, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, 0.52)));
+        add(new AttributeStateActive(), new AttributeStateFacing(), new AttributeInventory(), new AttributeSecurity(), new AttributeRedstone(), new AttributeComparator());
+        add(new AttributeUpgradeSupport(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING)));
     }
 
     public static class FactoryMachine<TILE extends TileEntityMekanism> extends Machine<TILE> {
 
-        protected FactoryType factoryType;
-
-        public FactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntitySupplier, Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, MekanismLang description, FactoryType factoryType) {
-            super(tileEntitySupplier, containerRegistrar, description);
-            this.factoryType = factoryType;
-        }
-
-        public FactoryType getFactoryType() {
-            return factoryType;
-        }
-
-        @Nonnull
-        public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
-            return MekanismBlocks.getFactory(FactoryTier.values()[tier.ordinal()], factoryType).getBlock().getDefaultState();
+        public FactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntitySupplier, MekanismLang description, FactoryType factoryType) {
+            super(tileEntitySupplier, description);
+            add(new AttributeFactoryType(factoryType), new AttributeUpgradeable(() -> MekanismBlocks.getFactory(FactoryTier.BASIC, get(AttributeFactoryType.class).getFactoryType())));
         }
     }
 
@@ -84,26 +50,18 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
             super(holder);
         }
 
-        public static <TILE extends TileEntityMekanism> MachineBuilder<Machine<TILE>, TILE, ?> createMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
-              Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, MekanismLang description) {
-            return new MachineBuilder<>(new Machine<TILE>(tileEntityRegistrar, containerRegistrar, description));
+        public static <TILE extends TileEntityMekanism> MachineBuilder<Machine<TILE>, TILE, ?> createMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, MekanismLang description) {
+            return new MachineBuilder<>(new Machine<TILE>(tileEntityRegistrar, description));
         }
 
         public static <TILE extends TileEntityMekanism> MachineBuilder<FactoryMachine<TILE>, TILE, ?> createFactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
-              Supplier<ContainerTypeRegistryObject<MekanismTileContainer<TILE>>> containerRegistrar, MekanismLang description, FactoryType factoryType) {
-            MachineBuilder<FactoryMachine<TILE>, TILE, ?> builder = new MachineBuilder<>(new FactoryMachine<>(tileEntityRegistrar, containerRegistrar, description, factoryType));
-            builder.holder.factoryType = factoryType;
+              MekanismLang description, FactoryType factoryType) {
+            MachineBuilder<FactoryMachine<TILE>, TILE, ?> builder = new MachineBuilder<>(new FactoryMachine<>(tileEntityRegistrar, description, factoryType));
             return builder;
         }
 
-        public T withConfig(DoubleSupplier energyUsage, DoubleSupplier energyStorage) {
-            holder.energyUsage = energyUsage;
-            holder.energyStorage = energyStorage;
-            return getThis();
-        }
-
         public T withSupportedUpgrades(Set<Upgrade> upgrades) {
-            holder.supportedUpgrades = upgrades;
+            holder.add(new AttributeUpgradeSupport(upgrades));
             return getThis();
         }
     }

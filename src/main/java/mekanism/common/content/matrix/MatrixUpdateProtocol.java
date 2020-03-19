@@ -3,16 +3,16 @@ package mekanism.common.content.matrix;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.block.basic.BlockInductionCasing;
+import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
+import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -25,8 +25,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        BlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
-        return state.getBlock() instanceof BlockInductionCasing;
+        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.INDUCTION_CASING, MekanismBlockTypes.INDUCTION_PORT);
     }
 
     @Override

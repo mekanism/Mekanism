@@ -10,10 +10,11 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismRecipeSerializers;
@@ -227,12 +228,12 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
             }
         }
         //Transfer stored upgrades
-        if (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof ISupportsUpgrades) {
+        if (item instanceof BlockItem && Attribute.has(((BlockItem) item).getBlock(), AttributeUpgradeSupport.class)) {
             //TODO: Fix this not transferring upgrade items that are in the upgrade slot itself and haven't finished being installed
             Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
             for (int i = 0; i < invLength; i++) {
                 ItemStack stack = inv.getStackInSlot(i);
-                if (!stack.isEmpty() && stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ISupportsUpgrades) {
+                if (!stack.isEmpty() && stack.getItem() instanceof BlockItem && Attribute.has(((BlockItem) stack.getItem()).getBlock(), AttributeUpgradeSupport.class)) {
                     CompoundNBT componentUpgrade = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
                     if (!componentUpgrade.isEmpty()) {
                         Map<Upgrade, Integer> stackMap = Upgrade.buildMap(componentUpgrade);

@@ -12,7 +12,7 @@ import mekanism.common.base.ContainerEditMode;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.block.machine.BlockFluidTank;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.FluidTankFluidTank;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
@@ -71,7 +71,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Override
     protected void presetVariables() {
-        tier = ((BlockFluidTank) getBlockType()).getTier();
+        tier = Attribute.getTier(getBlockType(), FluidTankTier.class);
     }
 
     @Nonnull

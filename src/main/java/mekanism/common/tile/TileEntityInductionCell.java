@@ -2,7 +2,7 @@ package mekanism.common.tile;
 
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.block.basic.BlockInductionCell;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.util.Direction;
@@ -17,7 +17,7 @@ public class TileEntityInductionCell extends TileEntityMekanism implements IStri
 
     @Override
     protected void presetVariables() {
-        tier = ((BlockInductionCell) getBlockType()).getTier();
+        tier = Attribute.getTier(getBlockType(), InductionCellTier.class);
     }
 
     @Override

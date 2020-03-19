@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
@@ -89,6 +89,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             if (newHot != structure.clientHot) {
                 needsPacket = true;
                 structure.clientHot = newHot;
+                SynchronizedBoilerData.hotMap.put(structure.inventoryID, structure.clientHot);
             }
 
             double[] d = structure.simulateHeat();
@@ -268,7 +269,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.steamTank.setStack(value));
             NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_Y, value -> structure.upperRenderLocation = value);
             NBTUtils.setBooleanIfPresent(tag, NBTConstants.HOT, value -> structure.clientHot = value);
-            SynchronizedBoilerData.clientHotMap.put(structure.inventoryID, structure.clientHot);
             valveViewing.clear();
             if (tag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
                 ListNBT valves = tag.getList(NBTConstants.VALVE, NBT.TAG_COMPOUND);

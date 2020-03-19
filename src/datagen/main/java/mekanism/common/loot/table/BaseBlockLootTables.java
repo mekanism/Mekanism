@@ -1,23 +1,24 @@
 package mekanism.common.loot.table;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.NBTConstants;
-import mekanism.api.block.IBlockElectric;
-import mekanism.api.block.IHasInventory;
-import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.block.ISupportsRedstone;
-import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.block.BlockCardboardBox;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeRedstone;
+import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
@@ -80,14 +81,14 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 // so then we can just remove having to create a tile to check if it implements specific things
                 tile = ((IHasTileEntity<?>) block).getTileType().create();
             }
-            if (block instanceof IHasSecurity) {
+            if (Attribute.has(block, AttributeSecurity.class)) {
                 //TODO: Should we just save the entire security component? If not in 1.16 given Mojang is changing UUID saving this will need to be updated
                 nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID + "Most", NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID + "Most");
                 nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID + "Least", NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID + "Least");
                 nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.SECURITY_MODE, NBTConstants.MEK_DATA + "." + NBTConstants.SECURITY_MODE);
                 hasData = true;
             }
-            if (block instanceof ISupportsUpgrades) {
+            if (Attribute.has(block, AttributeUpgradeSupport.class)) {
                 nbtBuilder.replaceOperation(NBTConstants.COMPONENT_UPGRADE, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_UPGRADE);
                 hasData = true;
             }
@@ -105,7 +106,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                     hasData = true;
                 }
             }
-            if (block instanceof ISupportsRedstone) {
+            if (Attribute.has(block, AttributeRedstone.class)) {
                 nbtBuilder.replaceOperation(NBTConstants.CONTROL_TYPE, NBTConstants.MEK_DATA + "." + NBTConstants.CONTROL_TYPE);
                 hasData = true;
             }
@@ -128,7 +129,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             }
             //TODO: If anything for inventories doesn't work we may have to check if the tile is an ISustainedInventory
             // I don't believe it is directly needed anymore for this due to IHasInventory
-            if (block instanceof IHasInventory) {
+            if (Attribute.has(block, AttributeInventory.class)) {
                 //If the block has an inventory, copy the inventory slots,
                 // but if it is an IItemHandler, which for most cases of ours it will be,
                 // then only copy the slots if we actually have any slots because otherwise maybe something just went wrong
@@ -140,7 +141,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                     }
                 }
             }
-            if (block instanceof IBlockElectric) {
+            if (Attribute.has(block, AttributeEnergy.class)) {
                 //If the block is electric but is not part of a multiblock
                 // we want to copy the energy information
                 if (!(tile instanceof TileEntityMultiblock<?>)) {

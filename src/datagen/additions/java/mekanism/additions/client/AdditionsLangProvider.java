@@ -123,6 +123,9 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         add(AdditionsLang.CHANNEL, "Channel: %s");
         add(AdditionsLang.WALKIE_DISABLED, "Voice server disabled.");
         add(AdditionsLang.KEY_VOICE, "Voice");
+
+        add(AdditionsLang.DESCRIPTION_GLOW_PANEL, "A modern, ever-lasting light source. Now in many colors!");
+        add(AdditionsLang.DESCRIPTION_OBSIDIAN_TNT, "An extremely powerful, obsidian-infused block of TNT. Use at your own peril.");
     }
 
     @SafeVarargs

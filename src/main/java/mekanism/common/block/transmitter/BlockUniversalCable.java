@@ -1,13 +1,15 @@
 package mekanism.common.block.transmitter;
 
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.interfaces.ITieredBlock;
+import mekanism.common.block.attribute.AttributeTier;
+import mekanism.common.block.interfaces.ITypeBlock;
+import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.tileentity.TileEntityType;
 
-public class BlockUniversalCable extends BlockSmallTransmitter implements ITieredBlock<CableTier>, IHasTileEntity<TileEntityUniversalCable> {
+public class BlockUniversalCable extends BlockSmallTransmitter implements ITypeBlock, IHasTileEntity<TileEntityUniversalCable> {
 
     private final CableTier tier;
 
@@ -16,8 +18,8 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITiere
     }
 
     @Override
-    public CableTier getTier() {
-        return tier;
+    public BlockType getType() {
+        return AttributeTier.getPassthroughType(tier);
     }
 
     @Override

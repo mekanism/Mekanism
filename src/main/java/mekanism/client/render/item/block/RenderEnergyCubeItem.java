@@ -1,7 +1,7 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.NBTConstants;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
@@ -27,7 +27,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
-        EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier(stack);
+        EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier();
         if (tier == null) {
             return;
         }

@@ -2,55 +2,31 @@ package mekanism.common.block;
 
 import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
-import mekanism.api.block.IBlockElectric;
-import mekanism.api.block.IHasInventory;
-import mekanism.api.block.IHasSecurity;
-import mekanism.api.block.IHasTileEntity;
-import mekanism.api.block.ISupportsComparator;
-import mekanism.api.block.ISupportsRedstone;
-import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
-import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.ITieredBlock;
-import mekanism.common.block.interfaces.IUpgradeableBlock;
-import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateFacing;
-import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeStateFacing;
+import mekanism.common.block.attribute.AttributeTier;
+import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
+import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.block.ItemBlockEnergyCube;
-import mekanism.common.registration.impl.ContainerTypeRegistryObject;
-import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -63,8 +39,7 @@ import net.minecraft.world.World;
  *
  * @author AidanBrady
  */
-public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntityEnergyCube>, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory,
-      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator, IStateFluidLoggable, IHasDescription, IUpgradeableBlock {
+public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machine<TileEntityEnergyCube>> {
 
     private static final VoxelShape[] bounds = new VoxelShape[256];
 
@@ -161,42 +136,18 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
         return ((((((top | bottom << 1) | front << 2) | back << 3) | left << 4) | right << 5) | (rotateVertical ? 1 : 0) << 6) | (rotateHorizontal ? 1 : 0) << 7;
     }
 
-    private final EnergyCubeTier tier;
 
-    public BlockEnergyCube(EnergyCubeTier tier) {
+    public BlockEnergyCube(Machine<TileEntityEnergyCube> type) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the energy cube
         // this may change based on what sides are enabled
         //TODO: We still need to fix trying to place things like torches on the side
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(2F, 4F).variableOpacity());
-        this.tier = tier;
-    }
-
-    @Override
-    public EnergyCubeTier getTier() {
-        return tier;
-    }
-
-    @Nonnull
-    @Override
-    public DirectionProperty getFacingProperty() {
-        return BlockStateHelper.facingProperty;
-    }
-
-    @Override
-    @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
-        if (!world.isRemote) {
-            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-            if (tile != null) {
-                tile.onNeighborChange(neighborBlock);
-            }
-        }
+        super(type, Block.Properties.create(Material.IRON).hardnessAndResistance(2F, 4F).variableOpacity());
     }
 
     @Override
     public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityEnergyCube) {
-            if (tier == EnergyCubeTier.CREATIVE) {
+            if (Attribute.get(this, AttributeTier.class).getTier() == EnergyCubeTier.CREATIVE) {
                 ConfigInfo energyConfig = ((TileEntityEnergyCube) tile).configComponent.getConfig(TransmissionType.ENERGY);
                 if (energyConfig != null) {
                     energyConfig.fill(((ItemBlockEnergyCube) stack.getItem()).getEnergy(stack) > 0 ? DataType.OUTPUT : DataType.INPUT);
@@ -210,35 +161,8 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
         super.fillItemGroup(group, items);
         //Charged
         ItemStack charged = new ItemStack(this);
-        ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, tier.getMaxEnergy());
+        ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, ((EnergyCubeTier) Attribute.get(this, AttributeTier.class).getTier()).getMaxEnergy());
         items.add(charged);
-    }
-
-    @Override
-    @Deprecated
-    public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return SecurityUtils.canAccess(player, MekanismUtils.getTileEntity(world, pos)) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
-    }
-
-    @Nonnull
-    @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (world.isRemote) {
-            return ActionResultType.SUCCESS;
-        }
-        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tile == null) {
-            return ActionResultType.PASS;
-        }
-        if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
-            return ActionResultType.SUCCESS;
-        }
-        return tile.openGui(player);
-    }
-
-    @Override
-    public double getStorage() {
-        return tier.getMaxEnergy();
     }
 
     @Nonnull
@@ -256,7 +180,7 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
                 //Default to facing north all enabled
                 index = getIndex(1, 1, 1, 1, 1, 1, false, false);
             } else {
-                Direction facing = getDirection(state);
+                Direction facing = Attribute.get(this, AttributeStateFacing.class).getDirection(state);
                 index = getIndex(
                       isSideEnabled(energyConfig, facing, Direction.UP),//top
                       isSideEnabled(energyConfig, facing, Direction.DOWN),//bottom
@@ -278,51 +202,5 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
     private static int isSideEnabled(ConfigInfo energyConfig, Direction facing, Direction side) {
         ISlotInfo slotInfo = energyConfig.getSlotInfo(RelativeSide.fromDirections(facing, side));
         return slotInfo != null && slotInfo.isEnabled() ? 1 : 0;
-    }
-
-    @Override
-    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityEnergyCube>> getContainerType() {
-        return MekanismContainerTypes.ENERGY_CUBE;
-    }
-
-    @Override
-    public TileEntityType<TileEntityEnergyCube> getTileType() {
-        switch (tier) {
-            case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_ENERGY_CUBE.getTileEntityType();
-            case ELITE:
-                return MekanismTileEntityTypes.ELITE_ENERGY_CUBE.getTileEntityType();
-            case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_ENERGY_CUBE.getTileEntityType();
-            case CREATIVE:
-                return MekanismTileEntityTypes.CREATIVE_ENERGY_CUBE.getTileEntityType();
-            case BASIC:
-            default:
-                return MekanismTileEntityTypes.BASIC_ENERGY_CUBE.getTileEntityType();
-        }
-    }
-
-    @Nonnull
-    @Override
-    public ILangEntry getDescription() {
-        return MekanismLang.DESCRIPTION_ENERGY_CUBE;
-    }
-
-    @Nonnull
-    @Override
-    public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
-        switch (tier) {
-            case BASIC:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_ENERGY_CUBE.getBlock().getDefaultState());
-            case ADVANCED:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_ENERGY_CUBE.getBlock().getDefaultState());
-            case ELITE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_ENERGY_CUBE.getBlock().getDefaultState());
-            case ULTIMATE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_ENERGY_CUBE.getBlock().getDefaultState());
-            case CREATIVE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.CREATIVE_ENERGY_CUBE.getBlock().getDefaultState());
-        }
-        return current;
     }
 }

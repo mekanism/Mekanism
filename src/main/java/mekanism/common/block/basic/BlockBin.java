@@ -2,39 +2,20 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
-import mekanism.api.block.IHasInventory;
-import mekanism.api.block.IHasModel;
-import mekanism.api.block.IHasTileEntity;
-import mekanism.api.block.ISupportsComparator;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.tier.BaseTier;
-import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
-import mekanism.common.block.BlockMekanism;
-import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.block.interfaces.ITieredBlock;
-import mekanism.common.block.interfaces.IUpgradeableBlock;
-import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateActive;
-import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.machine.prefab.BlockTile;
+import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.inventory.slot.BinInventorySlot;
-import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismTileEntityTypes;
-import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -46,30 +27,10 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator,
-      IHasInventory, IHasDescription, IUpgradeableBlock {
+public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityBin>> {
 
-    private final BinTier tier;
-
-    public BlockBin(BinTier tier) {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
-        this.tier = tier;
-    }
-
-    @Override
-    public BinTier getTier() {
-        return tier;
-    }
-
-    @Override
-    @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
-        if (!world.isRemote) {
-            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-            if (tile != null) {
-                tile.onNeighborChange(neighborBlock);
-            }
-        }
+    public BlockBin(BlockTypeTile<TileEntityBin> type) {
+        super(type);
     }
 
     @Override
@@ -150,46 +111,5 @@ public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, 
             }
         }
         return ActionResultType.SUCCESS;
-    }
-
-    @Override
-    public TileEntityType<TileEntityBin> getTileType() {
-        switch (tier) {
-            case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_BIN.getTileEntityType();
-            case ELITE:
-                return MekanismTileEntityTypes.ELITE_BIN.getTileEntityType();
-            case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_BIN.getTileEntityType();
-            case CREATIVE:
-                return MekanismTileEntityTypes.CREATIVE_BIN.getTileEntityType();
-            case BASIC:
-            default:
-                return MekanismTileEntityTypes.BASIC_BIN.getTileEntityType();
-        }
-    }
-
-    @Nonnull
-    @Override
-    public ILangEntry getDescription() {
-        return MekanismLang.DESCRIPTION_BIN;
-    }
-
-    @Nonnull
-    @Override
-    public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
-        switch (tier) {
-            case BASIC:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_BIN.getBlock().getDefaultState());
-            case ADVANCED:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_BIN.getBlock().getDefaultState());
-            case ELITE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_BIN.getBlock().getDefaultState());
-            case ULTIMATE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_BIN.getBlock().getDefaultState());
-            case CREATIVE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.CREATIVE_BIN.getBlock().getDefaultState());
-        }
-        return current;
     }
 }
