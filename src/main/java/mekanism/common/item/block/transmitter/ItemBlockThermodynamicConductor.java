@@ -7,7 +7,6 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.transmitter.BlockThermodynamicConductor;
 import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.ConductorTier;
@@ -26,7 +25,7 @@ public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble<Bloc
 
     @Nonnull
     public ConductorTier getTier() {
-        return (ConductorTier) Attribute.get(getBlock(), AttributeTier.class).getTier();
+        return Attribute.getTier(getBlock(), ConductorTier.class);
     }
 
     @Override

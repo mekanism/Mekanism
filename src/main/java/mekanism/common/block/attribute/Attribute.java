@@ -1,8 +1,11 @@
 package mekanism.common.block.attribute;
 
 import java.util.function.Consumer;
+import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.Direction;
 
 public interface Attribute {
 
@@ -25,5 +28,30 @@ public interface Attribute {
                 run.accept(attribute);
             }
         }
+    }
+
+    public static Direction getFacing(BlockState state) {
+        AttributeStateFacing attr = get(state.getBlock(), AttributeStateFacing.class);
+        return attr == null ? null : attr.getDirection(state);
+    }
+
+    public static BlockState setFacing(BlockState state, Direction facing) {
+        AttributeStateFacing attr = get(state.getBlock(), AttributeStateFacing.class);
+        return attr == null ? null : attr.setDirection(state, facing);
+    }
+
+    public static boolean isActive(BlockState state) {
+        AttributeStateActive attr = get(state.getBlock(), AttributeStateActive.class);
+        return attr == null ? false : attr.isActive(state);
+    }
+
+    public static BlockState setActive(BlockState state, boolean active) {
+        AttributeStateActive attr = get(state.getBlock(), AttributeStateActive.class);
+        return attr == null ? null : attr.setActive(state, active);
+    }
+
+    public static <T extends ITier> T getTier(Block block, Class<T> tierClass) {
+        AttributeTier<T> attr = get(block, AttributeTier.class);
+        return attr == null ? null : attr.getTier();
     }
 }

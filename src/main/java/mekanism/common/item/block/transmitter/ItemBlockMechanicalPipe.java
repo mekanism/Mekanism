@@ -7,7 +7,6 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.transmitter.BlockMechanicalPipe;
 import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.PipeTier;
@@ -26,7 +25,7 @@ public class ItemBlockMechanicalPipe extends ItemBlockMultipartAble<BlockMechani
 
     @Nonnull
     public PipeTier getTier() {
-        return (PipeTier) Attribute.get(getBlock(), AttributeTier.class).getTier();
+        return Attribute.getTier(getBlock(), PipeTier.class);
     }
 
     @Override

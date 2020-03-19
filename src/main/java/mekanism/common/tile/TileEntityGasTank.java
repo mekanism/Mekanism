@@ -20,7 +20,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.capabilities.chemical.GasTankGasTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -104,7 +103,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
 
     @Override
     protected void presetVariables() {
-        tier = (GasTankTier) Attribute.get(getBlockType(), AttributeTier.class).getTier();
+        tier = Attribute.getTier(getBlockType(), GasTankTier.class);
     }
 
     @Nonnull

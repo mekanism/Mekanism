@@ -107,7 +107,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -760,11 +759,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public Direction getDirection() {
         if (isDirectional()) {
-            BlockState state = getBlockState();
-            Block block = state.getBlock();
-            if (Attribute.has(block, AttributeStateFacing.class)) {
-                return Attribute.get(block, AttributeStateFacing.class).getDirection(state);
-            }
+            return Attribute.getFacing(getBlockState());
         }
         //TODO: Remove, give it some better default, or allow it to be null
         return Direction.NORTH;
@@ -772,16 +767,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Override
     public void setFacing(@Nonnull Direction direction) {
-        //TODO: Remove this method or cleanup how it is a wrapper for setting the blockstate direction
         if (isDirectional()) {
-            BlockState state = getBlockState();
-            Block block = state.getBlock();
-            if (Attribute.has(block, AttributeStateFacing.class)) {
-                state = Attribute.get(block, AttributeStateFacing.class).setDirection(state, direction);
-                World world = getWorld();
-                if (world != null) {
-                    world.setBlockState(pos, state);
-                }
+            BlockState state = Attribute.setFacing(getBlockState(), direction);
+            if (world != null && state != null) {
+                world.setBlockState(pos, state);
             }
         }
     }
@@ -1221,12 +1210,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     }
 
     private boolean getClientActive() {
-        BlockState state = getBlockState();
-        Block block = state.getBlock();
-        if (Attribute.has(block, AttributeStateActive.class)) {
-            return Attribute.get(block, AttributeStateActive.class).isActive(state);
-        }
-        return false;
+        return Attribute.isActive(getBlockState());
     }
 
     @Override
@@ -1238,7 +1222,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 currentActive = active;
 
                 if (updateDelay == 0 && getClientActive() != active) {
-                    state = Attribute.get(block, AttributeStateActive.class).setActive(state, active);
+                    state = Attribute.setActive(state, active);
                     world.setBlockState(pos, state);
                     updateDelay = delaySupplier.getAsInt();
                 }

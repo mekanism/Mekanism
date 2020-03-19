@@ -19,7 +19,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
@@ -62,7 +61,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         super(((IHasTileEntity<TileEntityLogisticalTransporter>) blockProvider.getBlock()).getTileType());
         Block block = blockProvider.getBlock();
         if (block instanceof BlockLogisticalTransporter) {
-            this.tier = (TransporterTier) Attribute.get(blockProvider.getBlock(), AttributeTier.class).getTier();
+            this.tier = Attribute.getTier(blockProvider.getBlock(), TransporterTier.class);
         } else {
             //Diversion and restrictive transporters
             this.tier = TransporterTier.BASIC;

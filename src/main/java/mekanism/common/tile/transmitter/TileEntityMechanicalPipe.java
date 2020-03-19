@@ -18,7 +18,6 @@ import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -57,7 +56,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     public TileEntityMechanicalPipe(IBlockProvider blockProvider) {
         super(((IHasTileEntity<TileEntityMechanicalPipe>) blockProvider.getBlock()).getTileType());
-        this.tier = (PipeTier) Attribute.get(blockProvider.getBlock(), AttributeTier.class).getTier();
+        this.tier = Attribute.getTier(blockProvider.getBlock(), PipeTier.class);
         fluidHandlers = new EnumMap<>(Direction.class);
         buffer = BasicFluidTank.create(getCapacity(), BasicFluidTank.alwaysFalse, BasicFluidTank.alwaysTrue, this);
         tanks = Collections.singletonList(buffer);

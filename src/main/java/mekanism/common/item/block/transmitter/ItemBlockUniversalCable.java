@@ -7,7 +7,6 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.transmitter.BlockUniversalCable;
 import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.CableTier;
@@ -27,7 +26,7 @@ public class ItemBlockUniversalCable extends ItemBlockMultipartAble<BlockUnivers
 
     @Nonnull
     public CableTier getTier() {
-        return (CableTier) Attribute.get(getBlock(), AttributeTier.class).getTier();
+        return Attribute.getTier(getBlock(), CableTier.class);
     }
 
     @Override

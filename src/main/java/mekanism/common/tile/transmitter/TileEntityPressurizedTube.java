@@ -22,7 +22,6 @@ import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -58,7 +57,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
         super(((IHasTileEntity<TileEntityPressurizedTube>) blockProvider.getBlock()).getTileType());
-        this.tier = (TubeTier) Attribute.get(blockProvider.getBlock(), AttributeTier.class).getTier();
+        this.tier = Attribute.getTier(blockProvider.getBlock(), TubeTier.class);
         gasHandlers = new EnumMap<>(Direction.class);
         buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, this);
         tanks = Collections.singletonList(buffer);

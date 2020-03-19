@@ -25,7 +25,7 @@ public class DefaultStorageHelper {
         @Override
         public void readNBT(Capability<T> capability, T instance, Direction side, INBT nbt) {
             if (instance instanceof INBTSerializable) {
-                Class<? extends INBT> nbtClass = ((INBTSerializable<?>) instance).serializeNBT().getClass();
+                Class<? extends INBT> nbtClass = ((INBTSerializable<? extends INBT>) instance).serializeNBT().getClass();
                 if (nbtClass.isInstance(nbt)) {
                     ((INBTSerializable) instance).deserializeNBT(nbtClass.cast(nbt));
                 }

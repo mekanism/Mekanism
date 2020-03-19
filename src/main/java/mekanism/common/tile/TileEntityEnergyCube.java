@@ -10,7 +10,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -83,7 +82,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
 
     @Override
     protected void presetVariables() {
-        tier = (EnergyCubeTier) Attribute.get(getBlockType(), AttributeTier.class).getTier();
+        tier = Attribute.getTier(getBlockType(), EnergyCubeTier.class);
     }
 
     @Nonnull

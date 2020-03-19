@@ -7,7 +7,6 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.transmitter.BlockPressurizedTube;
 import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.TubeTier;
@@ -26,7 +25,7 @@ public class ItemBlockPressurizedTube extends ItemBlockMultipartAble<BlockPressu
 
     @Nonnull
     public TubeTier getTier() {
-        return (TubeTier) Attribute.get(getBlock(), AttributeTier.class).getTier();
+        return Attribute.getTier(getBlock(), TubeTier.class);
     }
 
     @Override
