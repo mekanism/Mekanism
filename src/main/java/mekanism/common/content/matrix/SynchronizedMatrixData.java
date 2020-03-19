@@ -139,6 +139,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         this.clientProviders = providers;
     }
 
+    @Nonnull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return energyContainers;

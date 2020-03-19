@@ -1,14 +1,18 @@
 package mekanism.generators.common.tile.turbine;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
@@ -23,28 +27,15 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null) {
-            CableUtils.emit(this);
+            //TODO: We may want to look into caching the directionsToEmit, and updating it on neighbor updates
+            Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                if (!structure.locations.contains(Coord4D.get(this).offset(direction))) {
+                    directionsToEmit.add(direction);
+                }
+            }
+            CableUtils.emit(directionsToEmit, structure.energyContainer, this);
         }
-    }
-
-    @Override
-    public boolean canOutputEnergy(Direction side) {
-        return structure != null && !structure.locations.contains(Coord4D.get(this).offset(side));
-    }
-
-    @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return false;
-    }
-
-    @Override
-    public double getMaxOutput() {
-        return structure == null ? 0 : structure.getEnergyCapacity();
-    }
-
-    @Override
-    public double acceptEnergy(Direction side, double amount, boolean simulate) {
-        return 0;
     }
 
     @Override
@@ -63,6 +54,24 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     @Override
     public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
         return canHandleGas() && structure != null ? structure.getGasTanks(side) : Collections.emptyList();
+    }
+
+    @Override
+    public boolean canHandleEnergy() {
+        //Mark that we can handle energy
+        return true;
+    }
+
+    @Override
+    public boolean persistEnergy() {
+        //But that we do not handle energy when it comes to syncing it/saving this tile to disk
+        return false;
+    }
+
+    @Nonnull
+    @Override
+    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+        return canHandleEnergy() && structure != null ? structure.getEnergyContainers(side) : Collections.emptyList();
     }
 
     @Override

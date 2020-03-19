@@ -194,7 +194,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         TurbineCache turbineCache = (TurbineCache) cache;
         TurbineCache mergeCache = (TurbineCache) merge;
         StorageUtils.mergeTanks(turbineCache.getGasTanks(null).get(0), mergeCache.getGasTanks(null).get(0));
-        turbineCache.electricity += mergeCache.electricity;
+        StorageUtils.mergeContainers(turbineCache.getEnergyContainers(null).get(0), mergeCache.getEnergyContainers(null).get(0));
         turbineCache.dumpMode = mergeCache.dumpMode;
     }
 
@@ -204,6 +204,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         if (!structureFound.gasTank.isEmpty()) {
             structureFound.gasTank.setStackSize(Math.min(structureFound.gasTank.getStored(), structureFound.getSteamCapacity()), Action.EXECUTE);
         }
-        structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());
+        if (!structureFound.energyContainer.isEmpty()) {
+            structureFound.energyContainer.setEnergy(Math.min(structureFound.energyContainer.getEnergy(), structureFound.getEnergyCapacity()));
+        }
     }
 }

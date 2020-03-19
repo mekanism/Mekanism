@@ -48,9 +48,12 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         super(maxEnergy, canExtract, canInsert, tile);
         this.baseEnergyPerTick = energyPerTick;
         this.tile = tile;
+        currentMaxEnergy = maxEnergy;
+        currentEnergyPerTick = energyPerTick;
+        //TODO: Evaluate if we need to set this anywhere, doing so here is too early
         //Make sure we have the proper max energy set initially
-        updateMaxEnergy();
-        updateEnergyPerTick();
+        //updateMaxEnergy();
+        //updateEnergyPerTick();
     }
 
     public boolean adjustableRates() {

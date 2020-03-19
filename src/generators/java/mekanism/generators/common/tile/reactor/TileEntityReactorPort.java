@@ -10,6 +10,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -70,10 +71,25 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
     @Nonnull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        if (!canHandleFluid() || getReactor() == null) {
-            return Collections.emptyList();
-        }
-        return getReactor().controller.getFluidTanks(side);
+        return canHandleFluid() && getReactor() != null ? getReactor().controller.getFluidTanks(side) : Collections.emptyList();
+    }
+
+    @Override
+    public boolean canHandleEnergy() {
+        //Mark that we can handle energy
+        return true;
+    }
+
+    @Override
+    public boolean persistEnergy() {
+        //But that we do not handle energy when it comes to syncing it/saving this tile to disk
+        return false;
+    }
+
+    @Nonnull
+    @Override
+    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+        return canHandleEnergy() && getReactor() != null ? getReactor().controller.getEnergyContainers(side) : Collections.emptyList();
     }
 
     @Override
@@ -95,9 +111,9 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        CableUtils.emit(this);
         if (getActive() && getReactor() != null) {
             GasUtils.emit(getReactor().getSteamTank(), this);
+            CableUtils.emit(getReactor().controller.energyContainer, this);
         }
     }
 
@@ -110,38 +126,6 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapabilityIfEnabled(capability, side);
-    }
-
-    @Override
-    public double getEnergy() {
-        return getReactor() == null ? 0 : getReactor().getBufferedEnergy();
-    }
-
-    @Override
-    public void setEnergy(double energy) {
-        if (getReactor() != null) {
-            getReactor().setBufferedEnergy(energy);
-        }
-    }
-
-    @Override
-    public double getMaxEnergy() {
-        return getReactor() == null ? 0 : getReactor().getBufferSize();
-    }
-
-    @Override
-    public boolean canOutputEnergy(Direction side) {
-        return true;
-    }
-
-    @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return false;
-    }
-
-    @Override
-    public double getMaxOutput() {
-        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -230,5 +214,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
             return GasStack.EMPTY;
         }
         return super.extractGas(tank, amount, side, action);
+    }
+
+    @Override
+    public double extractEnergy(int container, double amount, @Nullable Direction side, @Nonnull Action action) {
+        //Don't allow extracting if we are on input mode
+        return getActive() ? super.extractEnergy(container, amount, side, action) : 0;
     }
 }

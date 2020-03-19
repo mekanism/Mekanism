@@ -12,8 +12,8 @@
               "source": "block_entity",
               "ops": [
                 {
-                  "source": "energy",
-                  "target": "mekData.energy",
+                  "source": "EnergyContainers",
+                  "target": "mekData.EnergyContainers",
                   "op": "replace"
                 }
               ]

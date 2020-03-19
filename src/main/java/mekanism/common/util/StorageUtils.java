@@ -8,6 +8,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import net.minecraft.item.ItemStack;
@@ -40,6 +41,14 @@ public class StorageUtils {
             tank.setStack(mergeTank.getStack());
         } else if (!mergeTank.isEmpty() && tank.isTypeEqual(mergeTank.getStack())) {
             mergeTank.growStack(tank.getStored(), Action.EXECUTE);
+        }
+    }
+
+    public static void mergeContainers(IEnergyContainer container, IEnergyContainer mergeContainer) {
+        if (container.isEmpty()) {
+            container.setEnergy(mergeContainer.getEnergy());
+        } else if (!mergeContainer.isEmpty()) {
+            mergeContainer.setEnergy(mergeContainer.getEnergy() + mergeContainer.getEnergy());
         }
     }
 }

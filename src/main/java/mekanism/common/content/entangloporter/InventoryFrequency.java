@@ -127,6 +127,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         return fluidTanks;
     }
 
+    @Nonnull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return energyContainers;

@@ -110,6 +110,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
         return Math.min(tier.getCableCapacity(), buffer.getNeeded());
     }
 
+    @Nonnull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         if (getTransmitter().hasTransmitterNetwork()) {

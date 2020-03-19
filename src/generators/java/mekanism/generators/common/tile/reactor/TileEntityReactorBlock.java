@@ -71,16 +71,6 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
     }
 
     @Override
-    public boolean canOutputEnergy(Direction side) {
-        return false;
-    }
-
-    @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return false;
-    }
-
-    @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         formMultiblock(true);

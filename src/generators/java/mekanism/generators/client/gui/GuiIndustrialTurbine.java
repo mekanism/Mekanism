@@ -39,7 +39,24 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         super.init();
         addButton(new GuiInnerScreen(this, 50, 23, 112, 41));
         addButton(new GuiTurbineTab(this, tile, TurbineTab.STAT));
-        addButton(new GuiVerticalPowerBar(this, tile, 164, 16));
+        addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
+            @Override
+            public ITextComponent getTooltip() {
+                if (tile.structure == null) {
+                    return EnergyDisplay.of(0).getTextComponent();
+                }
+                return EnergyDisplay.of(tile.structure.energyContainer.getEnergy(), tile.structure.energyContainer.getMaxEnergy()).getTextComponent();
+            }
+
+            @Override
+            public double getLevel() {
+                if (tile.structure == null) {
+                    return 1;
+                }
+                double maxEnergy = tile.structure.energyContainer.getMaxEnergy();
+                return maxEnergy == 0 ? 1 : tile.structure.energyContainer.getEnergy() / maxEnergy;
+            }
+        }, 164, 16));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -63,7 +80,8 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         addButton(new GuiEnergyInfo(() -> {
             double producing = tile.structure == null ? 0 : tile.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
                                                             Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
-            return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
+            return Arrays.asList(MekanismLang.STORING.translate(tile.structure == null ? EnergyDisplay.of(0) :
+                                                                EnergyDisplay.of(tile.structure.energyContainer.getEnergy(), tile.structure.energyContainer.getMaxEnergy())),
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(producing)));
         }, this));
         addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.structure == null ? GasMode.IDLE : tile.structure.dumpMode,

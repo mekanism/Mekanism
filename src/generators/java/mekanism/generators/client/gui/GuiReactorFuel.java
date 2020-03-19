@@ -35,7 +35,7 @@ public class GuiReactorFuel extends GuiReactorInfo {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
+        addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.energyContainer.getEnergy(), tile.energyContainer.getMaxEnergy())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
               this));
         addButton(new GuiGasGauge(() -> tile.deuteriumTank, GaugeType.SMALL, this, 25, 64));

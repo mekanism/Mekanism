@@ -197,7 +197,7 @@ public class FusionReactor {
         //Transfer from casing to environment
         double caseAirHeat = caseAirConductivity * lastCaseTemperature;
         caseTemperature -= caseAirHeat / caseHeatCapacity;
-        setBufferedEnergy(getBufferedEnergy() + caseAirHeat * thermocoupleEfficiency);
+        controller.energyContainer.insert(caseAirHeat * thermocoupleEfficiency, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     public IExtendedFluidTank getWaterTank() {
@@ -218,14 +218,6 @@ public class FusionReactor {
 
     public IChemicalTank<Gas, GasStack> getFuelTank() {
         return controller.fuelTank;
-    }
-
-    public double getBufferedEnergy() {
-        return controller.getEnergy();
-    }
-
-    public void setBufferedEnergy(double energy) {
-        controller.setEnergy(energy);
     }
 
     public double getPlasmaTemp() {
@@ -250,10 +242,6 @@ public class FusionReactor {
 
     public void setCaseTemp(double temp) {
         caseTemperature = temp;
-    }
-
-    public double getBufferSize() {
-        return controller.getMaxEnergy();
     }
 
     private void kill() {

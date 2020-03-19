@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
@@ -57,17 +58,18 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             double proportion = (double) stored / (double) structure.getSteamCapacity();
             double flowRate = 0;
 
-            if (stored > 0 && getEnergy() < structure.getEnergyCapacity()) {
+            double energyNeeded = structure.energyContainer.getNeeded();
+            if (stored > 0 && energyNeeded > 0) {
                 double energyMultiplier = (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
                                           Math.min(structure.blades, structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
                 double rate = structure.lowerVolume * (structure.getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
                 rate = Math.min(rate, structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
 
                 double origRate = rate;
-                rate = Math.min(Math.min(stored, rate), (getMaxEnergy() - getEnergy()) / energyMultiplier) * proportion;
+                rate = Math.min(Math.min(stored, rate), energyNeeded / energyMultiplier) * proportion;
 
                 flowRate = rate / origRate;
-                setEnergy(getEnergy() + (int) rate * energyMultiplier);
+                structure.energyContainer.insert((int) rate * energyMultiplier, Action.EXECUTE, AutomationType.INTERNAL);
 
                 if (!structure.gasTank.isEmpty()) {
                     structure.gasTank.shrinkStack((int) rate, Action.EXECUTE);
@@ -104,24 +106,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         return structure == null ? ActionResultType.PASS : openGui(player);
-    }
-
-    @Override
-    public double getEnergy() {
-        return structure == null ? 0 : structure.electricityStored;
-    }
-
-    @Override
-    public void setEnergy(double energy) {
-        if (structure != null) {
-            structure.electricityStored = Math.max(Math.min(energy, getMaxEnergy()), 0);
-            markDirty();
-        }
-    }
-
-    @Override
-    public double getMaxEnergy() {
-        return structure == null ? 0 : structure.getEnergyCapacity();
     }
 
     @Override
@@ -229,9 +213,9 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.clientDispersers = value;
             }
         }));
-        container.track(SyncableDouble.create(this::getEnergy, value -> {
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.energyContainer.getEnergy(), value -> {
             if (structure != null) {
-                structure.electricityStored = value;
+                structure.energyContainer.setEnergy(value);
             }
         }));
         container.track(SyncableInt.create(() -> structure == null ? 0 : structure.clientFlow, value -> {

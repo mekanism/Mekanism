@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.transmitters.TransmissionType;
@@ -31,16 +30,6 @@ public final class CableUtils {
         IStrictEnergyHandler[] acceptors = new IStrictEnergyHandler[EnumUtils.DIRECTIONS.length];
         EmitUtils.forEachSide(world, pos, sides, (tile, side) -> acceptors[side.ordinal()] = EnergyCompatUtils.getStrictEnergyHandler(tile, side.getOpposite()));
         return acceptors;
-    }
-
-    @Deprecated//TODO: Remove and replace with the other ones
-    public static void emit(IMekanismStrictEnergyHandler emitter) {
-        TileEntity tileEntity = (TileEntity) emitter;
-        if (!tileEntity.getWorld().isRemote() && MekanismUtils.canFunction(tileEntity)) {
-            for (int container = 0; container < emitter.getEnergyContainerCount(); container++) {
-                emit(emitter.getEnergyContainer(container, null), tileEntity);
-            }
-        }
     }
 
     public static void emit(IEnergyContainer energyContainer, TileEntity from) {

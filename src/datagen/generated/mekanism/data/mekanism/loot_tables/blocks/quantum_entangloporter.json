@@ -50,11 +50,6 @@
                   "source": "frequency.publicFreq",
                   "target": "mekData.frequency.publicFreq",
                   "op": "replace"
-                },
-                {
-                  "source": "energy",
-                  "target": "mekData.energy",
-                  "op": "replace"
                 }
               ]
             }

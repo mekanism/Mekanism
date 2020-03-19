@@ -3,11 +3,13 @@ package mekanism.api.energy;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.util.Direction;
 
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler {
 
     /**

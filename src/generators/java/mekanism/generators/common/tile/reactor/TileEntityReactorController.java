@@ -12,13 +12,18 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
@@ -49,6 +54,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public static final int MAX_STEAM = MAX_WATER * 100;
     public static final int MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
 
+    public BasicEnergyContainer energyContainer;
     public IExtendedFluidTank waterTank;
     public IChemicalTank<Gas, GasStack> steamTank;
     public IChemicalTank<Gas, GasStack> deuteriumTank;
@@ -84,6 +90,14 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
         builder.addTank(waterTank = VariableCapacityFluidTank.input(() -> localMaxWater, fluid -> fluid.getFluid().isIn(FluidTags.WATER), this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        builder.addContainer(energyContainer = BasicEnergyContainer.output(MachineEnergyContainer.validateBlock(this).getStorage(), this));
         return builder.build();
     }
 
@@ -234,8 +248,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && !isFormed()) {
             return true;
-        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            //Never allow the gas or fluid handler cap to be enabled here even though internally we can handle both of them
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || EnergyCompatUtils.isEnergyCapability(capability)) {
+            //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
             return true;
         }
         return super.isCapabilityDisabled(capability, side);

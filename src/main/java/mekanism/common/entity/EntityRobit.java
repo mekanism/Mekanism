@@ -453,6 +453,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         return hasInventory() ? inventorySlots : Collections.emptyList();
     }
 
+    @Nonnull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return canHandleEnergy() ? energyContainers : Collections.emptyList();

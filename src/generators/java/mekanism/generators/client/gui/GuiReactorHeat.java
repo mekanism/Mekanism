@@ -36,7 +36,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
+        addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.energyContainer.getEnergy(), tile.energyContainer.getMaxEnergy())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
               this));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
@@ -87,7 +87,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
               ProgressType.SMALL_RIGHT, this, 83, 91));
         addButton(new GuiFluidGauge(() -> tile.waterTank, GaugeType.SMALL, this, 115, 84));
         addButton(new GuiGasGauge(() -> tile.steamTank, GaugeType.SMALL, this, 151, 84));
-        addButton(new GuiEnergyGauge(tile, GaugeType.SMALL, this, 115, 46));
+        addButton(new GuiEnergyGauge(tile.energyContainer, GaugeType.SMALL, this, 115, 46));
         addButton(new GuiReactorTab(this, tile, ReactorTab.FUEL));
         addButton(new GuiReactorTab(this, tile, ReactorTab.STAT));
     }
