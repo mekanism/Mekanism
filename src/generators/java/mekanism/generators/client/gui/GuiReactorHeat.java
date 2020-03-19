@@ -87,7 +87,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
               ProgressType.SMALL_RIGHT, this, 83, 91));
         addButton(new GuiFluidGauge(() -> tile.waterTank, GaugeType.SMALL, this, 115, 84));
         addButton(new GuiGasGauge(() -> tile.steamTank, GaugeType.SMALL, this, 151, 84));
-        addButton(new GuiEnergyGauge(() -> tile, GaugeType.SMALL, this, 115, 46));
+        addButton(new GuiEnergyGauge(tile, GaugeType.SMALL, this, 115, 46));
         addButton(new GuiReactorTab(this, tile, ReactorTab.FUEL));
         addButton(new GuiReactorTab(this, tile, ReactorTab.STAT));
     }

@@ -13,6 +13,20 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     private final IEnergyInfoHandler infoHandler;
 
+    public GuiEnergyGauge(IEnergyContainer container, GaugeType type, IGuiWrapper gui, int x, int y) {
+        this(new IEnergyInfoHandler() {
+            @Override
+            public double getEnergy() {
+                return container.getEnergy();
+            }
+
+            @Override
+            public double getMaxEnergy() {
+                return container.getMaxEnergy();
+            }
+        }, type, gui, x, y);
+    }
+
     public GuiEnergyGauge(IEnergyInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y);
         infoHandler = handler;
@@ -25,10 +39,10 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     @Override
     public int getScaledLevel() {
-        if (infoHandler.getEnergyStorage().getEnergy() == Double.MAX_VALUE) {
+        if (infoHandler.getEnergy() == Double.MAX_VALUE) {
             return height - 2;
         }
-        return (int) (infoHandler.getEnergyStorage().getEnergy() * (height - 2) / infoHandler.getEnergyStorage().getMaxEnergy());
+        return (int) (infoHandler.getEnergy() * (height - 2) / infoHandler.getMaxEnergy());
     }
 
     @Override
@@ -38,14 +52,16 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     @Override
     public ITextComponent getTooltipText() {
-        if (infoHandler.getEnergyStorage().isEmpty()) {
+        if (infoHandler.getEnergy() <= 0) {
             return MekanismLang.EMPTY.translate();
         }
-        return EnergyDisplay.of(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()).getTextComponent();
+        return EnergyDisplay.of(infoHandler.getEnergy(), infoHandler.getMaxEnergy()).getTextComponent();
     }
 
     public interface IEnergyInfoHandler {
 
-        IEnergyContainer getEnergyStorage();
+        double getEnergy();
+
+        double getMaxEnergy();
     }
 }

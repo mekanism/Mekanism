@@ -44,7 +44,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 
     @Override
     protected SynchronizedMatrixData getNewStructure() {
-        return new SynchronizedMatrixData();
+        return new SynchronizedMatrixData((TileEntityInductionCasing) pointer);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     @Override
     protected void onStructureDestroyed(SynchronizedMatrixData structure) {
         //Save all energy changes before destroying the structure
-        structure.tick(pointer.getWorld());
+        structure.tick();
         super.onStructureDestroyed(structure);
     }
 

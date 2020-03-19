@@ -29,9 +29,9 @@ public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube, Mekanis
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
-        addButton(new GuiEnergyGauge(tile::getEnergyContainer, GaugeType.WIDE, this, 55, 18));
+        addButton(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.WIDE, this, 55, 18));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getInputRate())),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
+              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.tier.getOutput()))), this));
     }
 
     @Override

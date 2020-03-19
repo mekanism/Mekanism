@@ -36,12 +36,18 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
+        if (maxReceive <= 0) {
+            return 0;
+        }
         double toInsert = fromForge(maxReceive);
         return toForge(toInsert - handler.insertEnergy(toInsert, Action.get(!simulate)));
     }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
+        if (maxExtract <= 0) {
+            return 0;
+        }
         return toForge(handler.extractEnergy(fromForge(maxExtract), Action.get(!simulate)));
     }
 
@@ -65,11 +71,13 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
 
     @Override
     public boolean canExtract() {
+        //TODO: Should this always return true
         return handler.extractEnergy(1, Action.SIMULATE) > 0;
     }
 
     @Override
     public boolean canReceive() {
+        //TODO: Should this always return true
         return handler.insertEnergy(1, Action.SIMULATE) < 1;
     }
 }

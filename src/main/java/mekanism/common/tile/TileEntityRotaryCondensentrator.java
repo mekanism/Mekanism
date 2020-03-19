@@ -241,6 +241,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         return findFirstRecipe(recipe -> recipe.test(gas));
     }
 
+    public MachineEnergyContainer<TileEntityRotaryCondensentrator> getEnergyContainer() {
+        return energyContainer;
+    }
+
     @Nullable
     @Override
     public CachedRecipe<RotaryRecipe> createNewCachedRecipe(@Nonnull RotaryRecipe recipe, int cacheIndex) {

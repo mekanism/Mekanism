@@ -114,7 +114,6 @@ public class BasicEnergyContainer implements IEnergyContainer {
     @Override
     public double insert(double amount, Action action, AutomationType automationType) {
         if (amount <= 0 || !canInsert.test(automationType)) {
-            //"Fail quick" if the given amount is empty (zero or negative) or we can never insert from that automation type
             return amount;
         }
         double needed = Math.min(getRate(automationType), getNeeded());
@@ -134,7 +133,6 @@ public class BasicEnergyContainer implements IEnergyContainer {
     @Override
     public double extract(double amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount <= 0 || !canExtract.test(automationType)) {
-            //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than zero
             return 0;
         }
         double ret = Math.min(Math.min(getRate(automationType), getEnergy()), amount);

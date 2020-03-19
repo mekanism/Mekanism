@@ -100,8 +100,11 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             frequencyField.setText("");
             updateButtons();
         }));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getInputRate()))), this));
+        addButton(new GuiEnergyInfo(() -> {
+            EnergyDisplay storing = tile.frequency == null ? EnergyDisplay.of(0) : EnergyDisplay.of(tile.frequency.storedEnergy.getEnergy(), tile.frequency.storedEnergy.getMaxEnergy());
+            EnergyDisplay rate = EnergyDisplay.of(tile.getInputRate());
+            return Arrays.asList(MekanismLang.STORING.translate(storing), MekanismLang.MATRIX_INPUT_RATE.translate(rate));
+        }, this));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent transfer = UnitDisplayUtils.getDisplayShort(tile.getLastTransferLoss(), unit, false);

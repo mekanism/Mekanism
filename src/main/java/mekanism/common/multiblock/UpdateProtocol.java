@@ -142,10 +142,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
         for (Direction side : EnumUtils.DIRECTIONS) {
             Coord4D sideCoord = coord.offset(side);
-            if (isViableNode(sideCoord.getPos())) {
-                if (!iteratedNodes.contains(sideCoord)) {
-                    queue.addLast(sideCoord);
-                }
+            if (isViableNode(sideCoord.getPos()) && !iteratedNodes.contains(sideCoord)) {
+                queue.addLast(sideCoord);
             }
         }
     }

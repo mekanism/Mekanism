@@ -6,6 +6,7 @@ import mekanism.client.gui.element.GuiInnerHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
+import mekanism.client.gui.element.gauge.GuiEnergyGauge.IEnergyInfoHandler;
 import mekanism.client.gui.element.tab.GuiMatrixTab;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.common.MekanismLang;
@@ -32,7 +33,17 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         super.init();
         addButton(new GuiInnerScreen(this, 50, 23, 80, 41));
         addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT));
-        addButton(new GuiEnergyGauge(() -> tile, GaugeType.MEDIUM, this, 6, 13));
+        addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {
+            @Override
+            public double getEnergy() {
+                return tile.getEnergy();
+            }
+
+            @Override
+            public double getMaxEnergy() {
+                return tile.getMaxEnergy();
+            }
+        }, GaugeType.MEDIUM, this, 6, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
               MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
               MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))

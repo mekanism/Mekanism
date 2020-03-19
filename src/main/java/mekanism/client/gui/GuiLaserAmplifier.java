@@ -34,7 +34,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     @Override
     public void init() {
         super.init();
-        addButton(new GuiEnergyGauge(tile::getEnergyContainer, GaugeType.STANDARD, this, 6, 10));
+        addButton(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.STANDARD, this, 6, 10));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiAmplifierTab(this, tile));

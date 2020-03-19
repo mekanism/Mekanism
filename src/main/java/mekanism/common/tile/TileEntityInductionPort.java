@@ -1,18 +1,22 @@
 package mekanism.common.tile;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,36 +35,39 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null && getActive()) {
-            CableUtils.emit(this);
+            //TODO: We may want to look into caching the directionsToEmit, and updating it on neighbor updates
+            Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                if (!structure.locations.contains(Coord4D.get(this).offset(direction))) {
+                    directionsToEmit.add(direction);
+                }
+            }
+            CableUtils.emit(directionsToEmit, structure.getEnergyContainer(), this);
         }
     }
 
     @Override
-    public boolean canOutputEnergy(Direction side) {
-        if (structure != null && getActive()) {
-            return !structure.locations.contains(Coord4D.get(this).offset(side));
-        }
+    public boolean canHandleEnergy() {
+        //Mark that we can handle energy
+        return true;
+    }
+
+    @Override
+    public boolean persistEnergy() {
+        //But that we do not handle energy when it comes to syncing it/saving this tile to disk
         return false;
     }
 
     @Override
-    public boolean canReceiveEnergy(Direction side) {
-        return structure != null && !getActive();
+    public double insertEnergy(int container, double amount, @Nullable Direction side, @Nonnull Action action) {
+        //Don't allow inserting if we are on output mode
+        return getActive() ? amount : super.insertEnergy(container, amount, side, action);
     }
 
     @Override
-    public double getMaxOutput() {
-        return structure == null ? 0 : structure.getRemainingOutput();
-    }
-
-    @Override
-    public double acceptEnergy(Direction side, double amount, boolean simulate) {
-        return side == null || canReceiveEnergy(side) ? addEnergy(amount, simulate) : 0;
-    }
-
-    @Override
-    public double pullEnergy(Direction side, double amount, boolean simulate) {
-        return side == null || canOutputEnergy(side) ? removeEnergy(amount, simulate) : 0;
+    public double extractEnergy(int container, double amount, @Nullable Direction side, @Nonnull Action action) {
+        //Don't allow extracting if we are on input mode
+        return getActive() ? super.extractEnergy(container, amount, side, action) : 0;
     }
 
     @Override
@@ -95,6 +102,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Nonnull
     @Override
+    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+        return canHandleEnergy() && structure != null ? structure.getEnergyContainers(side) : Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         if (side == null) {
             //Allow internal queries to view/see both all slots, we only limit the slots that can be seen
@@ -109,7 +122,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             return Collections.emptyList();
         }
         //TODO: Cache this??
-        return Collections.singletonList(structure.getInventorySlots(side).get(getActive() ? 0 : 1));
+        return Collections.singletonList(getActive() ? structure.energyInputSlot : structure.energyOutputSlot);
     }
 
     @Override

@@ -3,17 +3,11 @@ package mekanism.common.tile;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.registries.MekanismBlocks;
-import net.minecraft.tileentity.ITickableTileEntity;
 
-public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock implements ITickableTileEntity {
+public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock {
 
     public TileEntitySuperheatingElement() {
         super(MekanismBlocks.SUPERHEATING_ELEMENT);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
     }
 
     @Override

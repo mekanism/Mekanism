@@ -1,8 +1,6 @@
 package mekanism.common.tile;
 
-import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixCache;
@@ -11,7 +9,6 @@ import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
@@ -37,10 +34,12 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null && isRendering) {
-            structure.tick(getWorld());
-            List<IInventorySlot> inventorySlots = getInventorySlots(null);
-            ((EnergyInventorySlot) inventorySlots.get(0)).drainContainer();
-            ((EnergyInventorySlot) inventorySlots.get(1)).fillContainerOrConvert();
+            //We tick the structure before adding/draining from the slots, so that we make sure they get
+            // first "pickings" at attempting to get or give power, without having to worry about the
+            // rate limit of the structure being used up by the ports
+            structure.tick();
+            structure.energyInputSlot.drainContainer();
+            structure.energyOutputSlot.fillContainerOrConvert();
         }
     }
 
@@ -55,16 +54,13 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (structure == null) {
-            return ActionResultType.PASS;
-        }
-        return openGui(player);
+        return structure == null ? ActionResultType.PASS : openGui(player);
     }
 
     @Nonnull
     @Override
     protected SynchronizedMatrixData getNewStructure() {
-        return new SynchronizedMatrixData();
+        return new SynchronizedMatrixData(this);
     }
 
     @Override
@@ -82,71 +78,55 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         return Mekanism.matrixManager;
     }
 
-    @Override
+    //TODO: Stash the cached client values here rather than in the structure, that way we can easier handle zero
     public double getEnergy() {
         //Uses post queue as that is the actual total we just haven't saved it yet
-        return structure != null ? structure.getEnergyPostQueue() : 0;
+        return structure == null ? 0 : structure.getEnergy();
     }
 
-    @Override
-    public void setEnergy(double energy) {
-        if (structure != null) {
-            structure.queueSetEnergy(Math.max(Math.min(energy, getMaxEnergy()), 0));
-        }
-    }
-
-    public double addEnergy(double energy, boolean simulate) {
-        return structure != null ? structure.queueEnergyAddition(energy, simulate) : 0;
-    }
-
-    public double removeEnergy(double energy, boolean simulate) {
-        return structure != null ? structure.queueEnergyRemoval(energy, simulate) : 0;
-    }
-
-    @Override
     public double getMaxEnergy() {
-        return structure != null ? structure.getStorageCap() : 0;
+        return structure == null ? 0 : structure.getStorageCap();
     }
 
     public double getLastInput() {
-        return structure != null ? structure.getLastInput() : 0;
+        return structure == null ? 0 : structure.getLastInput();
     }
 
     public double getLastOutput() {
-        return structure != null ? structure.getLastOutput() : 0;
+        return structure == null ? 0 : structure.getLastOutput();
     }
 
     public double getTransferCap() {
-        return structure != null ? structure.getTransferCap() : 0;
+        return structure == null ? 0 : structure.getTransferCap();
     }
 
     public int getCellCount() {
-        return structure != null ? structure.getCellCount() : 0;
+        return structure == null ? 0 : structure.getCellCount();
     }
 
     public int getProviderCount() {
-        return structure != null ? structure.getProviderCount() : 0;
+        return structure == null ? 0 : structure.getProviderCount();
     }
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getEnergy(), value -> {
+        container.track(SyncableDouble.create(this::getEnergy, value -> {
             if (structure != null) {
                 structure.setCachedTotal(value);
             }
         }));
-        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getStorageCap(), value -> {
+        container.track(SyncableDouble.create(this::getMaxEnergy, value -> {
             if (structure != null) {
                 structure.setStorageCap(value);
             }
         }));
-        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getLastInput(), value -> {
+        container.track(SyncableDouble.create(this::getLastInput, value -> {
             if (structure != null) {
                 structure.setLastInput(value);
             }
         }));
-        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getLastOutput(), value -> {
+        container.track(SyncableDouble.create(this::getLastOutput, value -> {
             if (structure != null) {
                 structure.setLastOutput(value);
             }
