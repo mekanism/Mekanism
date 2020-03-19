@@ -391,14 +391,18 @@ public final class VoxelShapeUtils {
     }
 
     public static void setShape(VoxelShape shape, VoxelShape[] dest, boolean verticalAxis) {
+        setShape(shape, dest, verticalAxis, false);
+    }
+
+    public static void setShape(VoxelShape shape, VoxelShape[] dest, boolean verticalAxis, boolean invert) {
         Direction[] dirs = verticalAxis ? EnumUtils.DIRECTIONS : EnumUtils.HORIZONTAL_DIRECTIONS;
         for (Direction side : dirs) {
-            dest[verticalAxis ? side.ordinal() : side.ordinal() - 2] = verticalAxis ? VoxelShapeUtils.rotate(shape, side) : VoxelShapeUtils.rotateHorizontal(shape, side);
+            dest[verticalAxis ? side.ordinal() : side.ordinal() - 2] = verticalAxis ? VoxelShapeUtils.rotate(shape, invert ? side.getOpposite() : side) : VoxelShapeUtils.rotateHorizontal(shape, side);
         }
     }
 
     public static void setShape(VoxelShape shape, VoxelShape[] dest) {
-        setShape(shape, dest, false);
+        setShape(shape, dest, false, false);
     }
 
     @FunctionalInterface
