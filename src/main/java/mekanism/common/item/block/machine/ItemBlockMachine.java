@@ -12,6 +12,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.machine.prefab.BlockTile;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
@@ -56,18 +59,24 @@ public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> 
     @OnlyIn(Dist.CLIENT)
     public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
-        tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(stack, Dist.CLIENT)));
-        if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {
-            tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
+        if (Attribute.has(getBlock(), AttributeSecurity.class)) {
+            tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(stack, Dist.CLIENT)));
+            if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {
+                tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
+            }
         }
-        tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
+        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+            tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
+        }
         //TODO: Should we make this support "multiple" tanks
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
         }
-        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
-        if (ItemDataUtils.hasData(stack, NBTConstants.UPGRADES, NBT.TAG_LIST)) {
+        if (Attribute.has(getBlock(), AttributeInventory.class)) {
+            tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
+        }
+        if (Attribute.has(getBlock(), AttributeUpgradeSupport.class) && ItemDataUtils.hasData(stack, NBTConstants.UPGRADES, NBT.TAG_LIST)) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(stack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
                 tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
@@ -78,7 +87,7 @@ public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> 
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
-        if (item instanceof ItemBlockMachine) {
+        if (item instanceof ItemBlockMachine && Attribute.has(getBlock(), AttributeEnergy.class)) {
             return MekanismUtils.getMaxEnergy(itemStack, Attribute.get(((ItemBlockMachine) item).getBlock(), AttributeEnergy.class).getStorage());
         }
         return 0;
@@ -91,7 +100,7 @@ public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> 
 
     @Override
     public boolean canReceive(ItemStack itemStack) {
-        return true;
+        return Attribute.has(getBlock(), AttributeEnergy.class);
     }
 
     @Override

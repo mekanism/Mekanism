@@ -32,8 +32,6 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
 
     public static class BlockTileBuilder<BLOCK extends BlockTypeTile<TILE>, TILE extends TileEntityMekanism, T extends BlockTileBuilder<BLOCK, TILE, T>> extends BlockTypeBuilder<BLOCK, T> {
 
-        protected BLOCK holder;
-
         protected BlockTileBuilder(BLOCK holder) {
             super(holder);
         }

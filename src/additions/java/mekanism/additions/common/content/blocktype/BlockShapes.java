@@ -8,7 +8,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 
 public final class BlockShapes {
 
-    public static final VoxelShape[] GLOW_PANEL = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] GLOW_PANEL = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
         setShape(VoxelShapeUtils.combine(
