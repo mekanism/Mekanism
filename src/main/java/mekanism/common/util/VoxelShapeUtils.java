@@ -393,7 +393,7 @@ public final class VoxelShapeUtils {
     public static void setShape(VoxelShape shape, VoxelShape[] dest, boolean verticalAxis) {
         Direction[] dirs = verticalAxis ? EnumUtils.DIRECTIONS : EnumUtils.HORIZONTAL_DIRECTIONS;
         for (Direction side : dirs) {
-            dest[verticalAxis ? side.ordinal() : side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(shape, side);
+            dest[verticalAxis ? side.ordinal() : side.ordinal() - 2] = verticalAxis ? VoxelShapeUtils.rotate(shape, side) : VoxelShapeUtils.rotateHorizontal(shape, side);
         }
     }
 

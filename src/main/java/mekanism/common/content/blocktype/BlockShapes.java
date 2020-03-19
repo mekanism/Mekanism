@@ -410,7 +410,7 @@ public final class BlockShapes {
             makeCuboidShape(5, 5, 15, 11, 11, 16)//port_ring
         ), CHARGEPAD);
 
-        setShape(VoxelShapeUtils.combine(
+        setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
             makeCuboidShape(5, 2, 4, 11, 9, 12),//body
             makeCuboidShape(8.5, 8, 7.5, 9.49, 13.99, 8.5),//wire
             makeCuboidShape(6.5, 9, 6.5, 9.5, 11, 9.5),//shaft
@@ -431,7 +431,7 @@ public final class BlockShapes {
             makeCuboidShape(11, 6, 4, 12, 7, 12),//fin6
             makeCuboidShape(11, 4, 4, 12, 5, 12),//fin7
             makeCuboidShape(11, 2, 4, 12, 3, 12)//fin8
-        ), LASER, true);
+        ), Rotation.CLOCKWISE_180), LASER, true);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(1, 1, 1, 15, 15, 15),//Base

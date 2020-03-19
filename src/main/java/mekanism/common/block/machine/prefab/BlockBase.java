@@ -35,13 +35,20 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     }
 
     public BlockBase(TYPE type, Block.Properties properties) {
-        super(properties);
+        super(hack(type, properties));
         this.type = type;
+    }
+
+    // ugly hack but required to have a reference to our block type before setting state info; assumes single-threaded startup
+    private static BlockType cacheType;
+    private static <TYPE extends BlockType> Block.Properties hack(TYPE type, Block.Properties props) {
+        cacheType = type;
+        return props;
     }
 
     @Override
     public BlockType getType() {
-        return type;
+        return type == null ? cacheType : type;
     }
 
     @Nonnull

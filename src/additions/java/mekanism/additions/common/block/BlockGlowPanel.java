@@ -34,8 +34,8 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
             Direction side = Attribute.get(state.getBlock(), AttributeStateFacing.class).getDirection(state);
-            BlockPos adj = pos.offset(side);
-            if (!Block.hasSolidSide(world.getBlockState(adj), world, adj, side.getOpposite())) {
+            BlockPos adj = pos.offset(side.getOpposite());
+            if (!Block.hasSolidSide(world.getBlockState(adj), world, adj, side)) {
                 Block.spawnDrops(world.getBlockState(pos), world, pos, null);
                 world.removeBlock(pos, isMoving);
             }

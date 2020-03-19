@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Contract;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateFacing;
+import mekanism.common.block.attribute.AttributeStateFacing.FacePlacementType;
 import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -72,46 +73,52 @@ public class BlockStateHelper {
 
     @Contract("_, null, _ -> null")
     public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, BlockItemUseContext context) {
-        return getStateForPlacement(block, state, context.getWorld(), context.getPos(), context.getPlayer());
+        return getStateForPlacement(block, state, context.getWorld(), context.getPos(), context.getPlayer(), context.getFace());
     }
 
     @Contract("_, null, _, _, _ -> null")
-    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nullable PlayerEntity player) {
+    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nullable PlayerEntity player, @Nonnull Direction face) {
         if (state == null) {
             return null;
         }
         if (Attribute.has(block, AttributeStateFacing.class)) {
             AttributeStateFacing blockFacing = Attribute.get(block, AttributeStateFacing.class);
-            //TODO: Somehow weight this stuff towards context.getFace(), so that it has a higher likelihood of going with the face that was clicked on
             Direction newDirection = Direction.SOUTH;
-            if (blockFacing.supportsDirection(Direction.DOWN) && blockFacing.supportsDirection(Direction.UP)) {
-                float rotationPitch = player == null ? 0 : player.rotationPitch;
-                int height = Math.round(rotationPitch);
-                if (height >= 65) {
-                    newDirection = Direction.UP;
-                } else if (height <= -65) {
-                    newDirection = Direction.DOWN;
+            if (blockFacing.getPlacementType() == FacePlacementType.PLAYER_LOCATION) {
+                //TODO: Somehow weight this stuff towards context.getFace(), so that it has a higher likelihood of going with the face that was clicked on
+                if (blockFacing.supportsDirection(Direction.DOWN) && blockFacing.supportsDirection(Direction.UP)) {
+                    float rotationPitch = player == null ? 0 : player.rotationPitch;
+                    int height = Math.round(rotationPitch);
+                    if (height >= 65) {
+                        newDirection = Direction.UP;
+                    } else if (height <= -65) {
+                        newDirection = Direction.DOWN;
+                    }
                 }
-            }
-            if (newDirection != Direction.DOWN && newDirection != Direction.UP) {
-                //TODO: Can this just use newDirection = context.getPlacementHorizontalFacing().getOpposite(); or is that not accurate
-                float placementYaw = player == null ? 0 : player.rotationYaw;
-                int side = MathHelper.floor((placementYaw * 4.0F / 360.0F) + 0.5D) & 3;
-                switch (side) {
-                    case 0:
-                        newDirection = Direction.NORTH;
-                        break;
-                    case 1:
-                        newDirection = Direction.EAST;
-                        break;
-                    case 2:
-                        newDirection = Direction.SOUTH;
-                        break;
-                    case 3:
-                        newDirection = Direction.WEST;
-                        break;
+                if (newDirection != Direction.DOWN && newDirection != Direction.UP) {
+                    //TODO: Can this just use newDirection = context.getPlacementHorizontalFacing().getOpposite(); or is that not accurate
+                    float placementYaw = player == null ? 0 : player.rotationYaw;
+                    int side = MathHelper.floor((placementYaw * 4.0F / 360.0F) + 0.5D) & 3;
+                    switch (side) {
+                        case 0:
+                            newDirection = Direction.NORTH;
+                            break;
+                        case 1:
+                            newDirection = Direction.EAST;
+                            break;
+                        case 2:
+                            newDirection = Direction.SOUTH;
+                            break;
+                        case 3:
+                            newDirection = Direction.WEST;
+                            break;
+                    }
                 }
+
+            } else {
+                newDirection = blockFacing.supportsDirection(face) ? face : Direction.NORTH;
             }
+
             state = blockFacing.setDirection(state, newDirection);
         }
         if (block instanceof IStateFluidLoggable) {
