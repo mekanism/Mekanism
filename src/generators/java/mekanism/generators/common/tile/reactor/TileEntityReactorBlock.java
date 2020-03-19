@@ -22,7 +22,6 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
     public boolean changed;
 
     public TileEntityReactorBlock() {
-        //TODO: Does hierarchy have to be done this way
         this(GeneratorsBlocks.REACTOR_FRAME);
     }
 

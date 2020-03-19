@@ -104,7 +104,7 @@ public class PacketTransmitterUpdate {
                 TransmissionType transmissionType = transmitter.getTransmissionType();
                 if (message.packetType == PacketType.ENERGY) {
                     if (transmissionType == TransmissionType.ENERGY) {
-                        ((EnergyNetwork) transmitter.getTransmitterNetwork()).clientEnergyScale = message.power;
+                        ((EnergyNetwork) transmitter.getTransmitterNetwork()).energyScale = message.power;
                     }
                 } else if (message.packetType == PacketType.GAS) {
                     if (transmissionType == TransmissionType.GAS) {

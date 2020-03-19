@@ -73,14 +73,6 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         }
     }
 
-    private double getRemainingInput() {
-        return transferCap - queuedInput;
-    }
-
-    private double getRemainingOutput() {
-        return transferCap - queuedOutput;
-    }
-
     public void tick() {
         if (!invalidPositions.isEmpty()) {
             for (BlockPos invalidPosition : invalidPositions) {
@@ -210,5 +202,33 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
 
+    }
+
+    private double getRemainingInput() {
+        return transferCap - queuedInput;
+    }
+
+    private double getRemainingOutput() {
+        return transferCap - queuedOutput;
+    }
+
+    public double getMaxTransfer() {
+        return transferCap;
+    }
+
+    public double getLastInput() {
+        return lastInput;
+    }
+
+    public double getLastOutput() {
+        return lastOutput;
+    }
+
+    public int getCells() {
+        return cells.size();
+    }
+
+    public int getProviders() {
+        return providers.size();
     }
 }

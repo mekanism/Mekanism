@@ -3,6 +3,7 @@ package mekanism.generators.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IEvaporationSolar;
+import mekanism.api.RelativeSide;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.MekanismUtils;
@@ -22,8 +23,8 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    public boolean canOutputEnergy(Direction side) {
-        return side == getDirection();
+    protected RelativeSide getEnergySide() {
+        return RelativeSide.FRONT;
     }
 
     @Override

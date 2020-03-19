@@ -37,7 +37,7 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, M
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProducingEnergy())),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
         addButton(new GuiFluidGauge(() -> tile.lavaTank, GaugeType.WIDE, this, 55, 18));
-        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent transfer = UnitDisplayUtils.getDisplayShort(tile.getLastTransferLoss(), unit, false);

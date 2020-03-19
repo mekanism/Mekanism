@@ -42,17 +42,14 @@ import net.minecraftforge.eventbus.api.Event;
  *
  * @author aidancbrady
  */
-//TODO: Should GasStack have @NonNull in the params
 public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack> implements IMekanismGasHandler {
 
     private final List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
     public final VariableCapacityGasTank gasTank;
 
-    private int transferDelay = 0;
-
+    private int transferDelay;
     public boolean didTransfer;
     private boolean prevTransfer;
-
     public float gasScale;
     private int prevStored;
     private int prevTransferAmount;
@@ -240,7 +237,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     public float getScale() {
-        return Math.min(1, gasTank.isEmpty() || getCapacity() == 0 ? 0 : (float) gasTank.getStored() / getCapacity());
+        if (gasTank.isEmpty() || gasTank.getCapacity() == 0) {
+            return 0;
+        }
+        return Math.min(1, (float) gasTank.getStored() / gasTank.getCapacity());
     }
 
     @Override

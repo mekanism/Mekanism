@@ -29,7 +29,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), internalOnly, internalOnly, tile);
     }
 
-    protected static IBlockElectric validateBlock(TileEntityMekanism tile) {
+    public static IBlockElectric validateBlock(TileEntityMekanism tile) {
         Objects.requireNonNull(tile, "Tile cannot be null");
         Block block = tile.getBlockType().getBlock();
         if (!(block instanceof IBlockElectric)) {

@@ -80,7 +80,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Override
     public void tick() {
         if (isRemote()) {
-            double targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
+            double targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().energyScale : 0;
             if (Math.abs(currentPower - targetPower) > 0.01) {
                 currentPower = (9 * currentPower + targetPower) / 10;
             }

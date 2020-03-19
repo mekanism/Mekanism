@@ -39,14 +39,12 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     private final List<IExtendedFluidTank> fluidTanks;
     public final VariableCapacityFluidTank fluidTank;
 
-    private int transferDelay = 0;
-
+    private int transferDelay;
     public boolean didTransfer;
     private boolean prevTransfer;
-
     public float fluidScale;
     private int prevStored;
-    private int prevTransferAmount = 0;
+    private int prevTransferAmount;
 
     public FluidNetwork() {
         fluidTank = VariableCapacityFluidTank.create(this::getCapacity, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, this);
@@ -223,7 +221,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     public float getScale() {
-        return Math.min(1, fluidTank.isEmpty() || getCapacity() == 0 ? 0 : (float) fluidTank.getFluidAmount() / getCapacity());
+        if (fluidTank.isEmpty() || fluidTank.getCapacity() == 0) {
+            return 0;
+        }
+        return Math.min(1, (float) fluidTank.getFluidAmount() / fluidTank.getCapacity());
     }
 
     @Override

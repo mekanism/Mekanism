@@ -74,7 +74,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         // Eventually we may want to grab the 20 dynamically in case some mod is changing the burn time of a lava bucket
         builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, stack -> ForgeHooks.getBurnTime(stack) / 20, size -> new FluidStack(Fluids.LAVA, size),
               this, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
-        builder.addSlot(energySlot = EnergyInventorySlot.drain(this, 143, 35), RelativeSide.RIGHT);
+        builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), this, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
 
@@ -83,9 +83,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         super.onUpdateServer();
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
-        double prev = getEnergy();
+        double prev = getEnergyContainer().getEnergy();
         transferHeatTo(getBoost());
-        if (canOperate()) {
+        if (lavaTank.getFluidAmount() >= 10 && MekanismUtils.canFunction(this) && getEnergyContainer().getNeeded() > 0) {
             setActive(true);
             lavaTank.extract(10, Action.EXECUTE, AutomationType.INTERNAL);
             transferHeatTo(MekanismGeneratorsConfig.generators.heatGeneration.get());
@@ -97,12 +97,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         applyTemperatureChange();
         lastTransferLoss = loss[0];
         lastEnvironmentLoss = loss[1];
-        producingEnergy = getEnergy() - prev;
-    }
-
-    @Override
-    public boolean canOperate() {
-        return getEnergy() < getBaseStorage() && lavaTank.getFluidAmount() >= 10 && MekanismUtils.canFunction(this);
+        producingEnergy = getEnergyContainer().getEnergy() - prev;
     }
 
     private double getBoost() {
@@ -153,7 +148,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
             double heatLost = thermalEfficiency * getTemp();
             double workDone = heatLost * carnotEfficiency;
             transferHeatTo(-heatLost);
-            setEnergy(getEnergy() + workDone);
+            getEnergyContainer().insert(workDone, Action.EXECUTE, AutomationType.INTERNAL);
         }
         return HeatUtils.simulate(this);
     }

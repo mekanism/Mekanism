@@ -1,6 +1,9 @@
 package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
+import mekanism.api.RelativeSide;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -11,7 +14,6 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -39,7 +41,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(energySlot = EnergyInventorySlot.drain(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), this, 143, 35));
         return builder.build();
     }
 
@@ -86,10 +88,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             seesSun = world.isDaytime() && canSeeSky() && !world.getDimension().isNether();
         }
 
-        if (canOperate()) {
+        if (seesSun && MekanismUtils.canFunction(this) && getEnergyContainer().getNeeded() > 0) {
             setActive(true);
-            lastProductionAmount = getProduction();
-            setEnergy(getEnergy() + lastProductionAmount);
+            double production = getProduction();
+            lastProductionAmount = production - getEnergyContainer().insert(production, Action.EXECUTE, AutomationType.INTERNAL);
         } else {
             setActive(false);
             lastProductionAmount = 0;
@@ -99,11 +101,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     protected boolean canSeeSky() {
         World world = getWorld();
         return world != null && world.canBlockSeeSky(getPos());
-    }
-
-    @Override
-    public boolean canOperate() {
-        return getEnergy() < getMaxEnergy() && seesSun && MekanismUtils.canFunction(this);
     }
 
     public double getProduction() {
@@ -142,8 +139,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public boolean canOutputEnergy(Direction side) {
-        return side == Direction.DOWN;
+    protected RelativeSide getEnergySide() {
+        return RelativeSide.BOTTOM;
     }
 
     protected double getConfiguredMax() {

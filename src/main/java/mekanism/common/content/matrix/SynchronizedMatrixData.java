@@ -24,6 +24,11 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     @Nonnull
     private final MatrixEnergyContainer energyContainer;
 
+    private double clientLastOutput;
+    private double clientLastInput;
+    private double clientEnergy;
+    private double clientMaxTransfer;
+    private double clientMaxEnergy;
     private int clientProviders;
     private int clientCells;
 
@@ -34,7 +39,10 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     @Nonnull
     public final EnergyInventorySlot energyOutputSlot;
 
+    private final boolean remote;
+
     public SynchronizedMatrixData(TileEntityInductionCasing tile) {
+        remote = tile.isRemote();
         energyContainers = Collections.singletonList(energyContainer = new MatrixEnergyContainer(tile));
         inventorySlots = new ArrayList<>();
         inventorySlots.add(energyInputSlot = EnergyInventorySlot.drain(energyContainer, this, 146, 20));
@@ -72,7 +80,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     }
 
     public double getEnergy() {
-        return energyContainer.getEnergy();
+        return remote ? clientEnergy : energyContainer.getEnergy();
     }
 
     public void tick() {
@@ -80,76 +88,55 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     }
 
     public double getStorageCap() {
-        return energyContainer.getMaxEnergy();
+        return remote ? clientMaxEnergy : energyContainer.getMaxEnergy();
     }
 
     public double getTransferCap() {
-        return transferCap;
+        return remote ? clientMaxTransfer : energyContainer.getMaxTransfer();
     }
 
     public double getLastInput() {
-        return lastInput;
+        return remote ? clientLastInput : energyContainer.getLastInput();
     }
 
     public double getLastOutput() {
-        return lastOutput;
+        return remote ? clientLastOutput : energyContainer.getLastOutput();
     }
 
     public int getCellCount() {
-        return cells.isEmpty() ? clientCells : cells.size();
+        return remote ? clientCells : energyContainer.getCells();
     }
 
     public int getProviderCount() {
-        return providers.isEmpty() ? clientProviders : providers.size();
+        return remote ? clientProviders : energyContainer.getProviders();
     }
 
-    /**
-     * @apiNote Only call this from the client when syncing values
-     */
-    public void setCachedTotal(double cachedTotal) {
-        this.cachedTotal = cachedTotal;
+    public void setClientEnergy(double cachedTotal) {
+        this.clientEnergy = cachedTotal;
     }
 
-    /**
-     * @apiNote Only call this from the client when syncing values
-     */
-    public void setStorageCap(double storageCap) {
-        this.storageCap = storageCap;
+    public void setClientMaxEnergy(double storageCap) {
+        this.clientMaxEnergy = storageCap;
     }
 
-    /**
-     * @apiNote Only call this from the client when syncing values
-     */
-    public void setTransferCap(double transferCap) {
-        this.transferCap = transferCap;
+    public void setClientMaxTransfer(double transferCap) {
+        this.clientMaxTransfer = transferCap;
     }
 
-    /**
-     * @apiNote Only call this from the client when syncing values
-     */
-    public void setLastInput(double lastInput) {
-        this.lastInput = lastInput;
+    public void setClientLastInput(double lastInput) {
+        this.clientLastInput = lastInput;
     }
 
-    /**
-     * @apiNote Only call this from the client when syncing values
-     */
-    public void setLastOutput(double lastOutput) {
-        this.lastOutput = lastOutput;
+    public void setClientLastOutput(double lastOutput) {
+        this.clientLastOutput = lastOutput;
     }
 
-    /**
-     * @apiNote Only call this from the client when syncing values
-     */
-    public void setClientCells(int clientCells) {
-        this.clientCells = clientCells;
+    public void setClientCells(int cells) {
+        this.clientCells = cells;
     }
 
-    /**
-     * @apiNote Only call this from the client when syncing values
-     */
-    public void setClientProviders(int clientProviders) {
-        this.clientProviders = clientProviders;
+    public void setClientProviders(int providers) {
+        this.clientProviders = providers;
     }
 
     @Override

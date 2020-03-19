@@ -1,6 +1,8 @@
 package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -34,7 +36,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(energySlot = EnergyInventorySlot.drain(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), this, 143, 35));
         return builder.build();
     }
 
@@ -65,8 +67,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             currentMultiplier = getMultiplier();
             setActive(MekanismUtils.canFunction(this) && currentMultiplier > 0);
         }
-        if (getActive()) {
-            setEnergy(getEnergy() + (MekanismGeneratorsConfig.generators.windGenerationMin.get() * currentMultiplier));
+        if (currentMultiplier > 0 && MekanismUtils.canFunction(this) && getEnergyContainer().getNeeded() > 0) {
+            getEnergyContainer().insert(MekanismGeneratorsConfig.generators.windGenerationMin.get() * currentMultiplier, Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 
@@ -93,11 +95,6 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             return toGen / minG;
         }
         return 0;
-    }
-
-    @Override
-    public boolean canOperate() {
-        return getEnergy() < getBaseStorage() && getMultiplier() > 0 && MekanismUtils.canFunction(this);
     }
 
     @Override

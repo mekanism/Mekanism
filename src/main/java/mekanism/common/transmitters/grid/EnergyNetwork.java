@@ -15,13 +15,14 @@ import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
-import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
+import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
@@ -37,10 +38,11 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     private final List<IEnergyContainer> energyContainers;
     public final VariableCapacityEnergyContainer energyContainer;
 
-    public double clientEnergyScale;
-    private double lastPowerScale;
-    private double joulesTransmitted;
-    private double jouleBufferLastTick;
+    //TODO: Improve this mess, it will be easier to first rewrite the gas and fluid network though to have the scale calculations
+    // happen on the server and only bother sending sync/update packets to the client when something changes similar to how
+    // it is done for fluid tanks. And then we can copy the code to here and modify it to use our proper scale calculations
+    public double energyScale;
+    private double prevTransferAmount;
 
     public EnergyNetwork() {
         energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsDouble, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
@@ -55,16 +57,17 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
                 net.deregister();
             }
         }
+        energyScale = getScale();
         register();
     }
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(EnergyNetwork net) {
         if (isRemote()) {
-            if (!net.energyContainer.isEmpty() && net.clientEnergyScale > clientEnergyScale) {
-                clientEnergyScale = net.clientEnergyScale;
+            if (!net.energyContainer.isEmpty() && net.energyScale > energyScale) {
+                energyScale = net.energyScale;
                 energyContainer.setEnergy(net.getBuffer());
-                net.clientEnergyScale = 0;
+                net.energyScale = 0;
                 net.energyContainer.setEmpty();
             }
         } else if (!net.energyContainer.isEmpty()) {
@@ -139,37 +142,30 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     @Override
     public void onUpdate() {
         super.onUpdate();
-        clearJoulesTransmitted();
-
-        double currentPowerScale = getPowerScale();
         if (!isRemote()) {
-            if (Math.abs(currentPowerScale - lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (currentPowerScale == 0 || currentPowerScale == 1))) {
+            prevTransferAmount = 0;
+            double currentPowerScale = getScale();
+            if (Math.abs(currentPowerScale - energyScale) > 0.01 || (currentPowerScale != energyScale && (currentPowerScale == 0 || currentPowerScale == 1))) {
                 needsUpdate = true;
             }
             if (needsUpdate) {
                 MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
-                lastPowerScale = currentPowerScale;
+                energyScale = currentPowerScale;
                 needsUpdate = false;
             }
-            if (buffer.amount > 0) {
-                joulesTransmitted = tickEmit(buffer.amount);
-                buffer.amount -= joulesTransmitted;
+            if (!energyContainer.isEmpty()) {
+                prevTransferAmount = tickEmit(energyContainer.getEnergy());
+                energyContainer.extract(prevTransferAmount, Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
     }
 
-    public double getPowerScale() {
-        return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower()) * 2) / 10, 1),
-              getCapacityAsDouble() == 0 ? 0 : energyContainer.getEnergy() / getCapacityAsDouble());
-    }
-
-    public void clearJoulesTransmitted() {
-        jouleBufferLastTick = buffer.amount;
-        joulesTransmitted = 0;
-    }
-
-    public double getPower() {
-        return jouleBufferLastTick * 20;
+    public double getScale() {
+        if (energyContainer.isEmpty() || energyContainer.getMaxEnergy() == 0) {
+            return 0;
+        }
+        //TODO: Figure this out better
+        return Math.max(Math.min(Math.ceil(Math.log10(energyContainer.getEnergy() * 20) * 2) / 10, 1), energyContainer.getEnergy() / energyContainer.getMaxEnergy());
     }
 
     @Override
@@ -184,7 +180,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
 
     @Override
     public ITextComponent getFlowInfo() {
-        return MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(joulesTransmitted));
+        return MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(prevTransferAmount));
     }
 
     @Override

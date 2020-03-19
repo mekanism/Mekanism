@@ -59,7 +59,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
             active = !energyContainer.isEmpty();
             if (active) {
                 if (entity instanceof EntityRobit) {
-                    provideEnergy((EntityRobit) entity, Math.min(energyContainer.getEnergy(), 1_000));
+                    provideEnergy((EntityRobit) entity);
                 } else if (entity instanceof PlayerEntity) {
                     Optional<IItemHandler> itemHandlerCap = MekanismUtils.toOptional(entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
                     //Ensure that we have an item handler capability, because if for example the player is dead we will not
@@ -68,7 +68,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
                         int slots = itemHandler.getSlots();
                         for (int slot = 0; slot < slots; slot++) {
                             ItemStack stack = itemHandler.getStackInSlot(slot);
-                            if (!stack.isEmpty() && provideEnergy(EnergyCompatUtils.getStrictEnergyHandler(stack), energyContainer.getEnergy())) {
+                            if (!stack.isEmpty() && provideEnergy(EnergyCompatUtils.getStrictEnergyHandler(stack))) {
                                 //Only allow charging one item per player each check
                                 break;
                             }
@@ -85,10 +85,11 @@ public class TileEntityChargepad extends TileEntityMekanism {
         }
     }
 
-    private boolean provideEnergy(@Nullable IStrictEnergyHandler energyHandler, double energyToGive) {
+    private boolean provideEnergy(@Nullable IStrictEnergyHandler energyHandler) {
         if (energyHandler == null) {
             return false;
         }
+        double energyToGive = energyContainer.getEnergy();
         double simulatedRemainder = energyHandler.insertEnergy(energyToGive, Action.SIMULATE);
         if (simulatedRemainder < energyToGive) {
             //We are able to fit at least some of the energy from our container into the item

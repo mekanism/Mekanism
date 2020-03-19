@@ -32,7 +32,7 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : 0)),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
-        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiVerticalPowerBar(this, () -> tile.bioFuelTank.getFluidAmount() / (double) tile.bioFuelTank.getCapacity(), 7, 15));
     }
 
@@ -40,7 +40,7 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), 45, 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
-        drawString(EnergyDisplay.of(tile.getEnergy()).getTextComponent(), 51, 26, 0x00CD00);
+        drawString(EnergyDisplay.of(tile.getEnergyContainer().getEnergy()).getTextComponent(), 51, 26, 0x00CD00);
         drawString(GeneratorsLang.STORED_BIO_FUEL.translate(tile.bioFuelTank.getFluidAmount()), 51, 35, 0x00CD00);
         drawString(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())), 51, 44, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

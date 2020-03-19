@@ -113,22 +113,22 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         super.addContainerTrackers(container);
         container.track(SyncableDouble.create(this::getEnergy, value -> {
             if (structure != null) {
-                structure.setCachedTotal(value);
+                structure.setClientEnergy(value);
             }
         }));
         container.track(SyncableDouble.create(this::getMaxEnergy, value -> {
             if (structure != null) {
-                structure.setStorageCap(value);
+                structure.setClientMaxEnergy(value);
             }
         }));
         container.track(SyncableDouble.create(this::getLastInput, value -> {
             if (structure != null) {
-                structure.setLastInput(value);
+                structure.setClientLastInput(value);
             }
         }));
         container.track(SyncableDouble.create(this::getLastOutput, value -> {
             if (structure != null) {
-                structure.setLastOutput(value);
+                structure.setClientLastOutput(value);
             }
         }));
     }
@@ -136,7 +136,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     public void addStatsTabContainerTrackers(MekanismContainer container) {
         container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getTransferCap(), value -> {
             if (structure != null) {
-                structure.setTransferCap(value);
+                structure.setClientMaxTransfer(value);
             }
         }));
         container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volHeight, value -> {
