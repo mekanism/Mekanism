@@ -1,10 +1,13 @@
 package mekanism.common.integration;
 
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.forgeenergy.ForgeStrictEnergyHandler;
 import mekanism.common.util.CapabilityUtils;
@@ -27,7 +30,7 @@ public class EnergyCompatUtils {
         if (capability == Capabilities.STRICT_ENERGY_CAPABILITY) {
             return true;
         } else if (capability == CapabilityEnergy.ENERGY) {
-            return MekanismUtils.useForge();
+            return useForge();
         }
         return false;
     }
@@ -45,7 +48,7 @@ public class EnergyCompatUtils {
         if (CapabilityUtils.getCapability(provider, Capabilities.STRICT_ENERGY_CAPABILITY, side).isPresent()) {
             return true;
         }
-        if (MekanismUtils.useForge()) {
+        if (useForge()) {
             if (CapabilityUtils.getCapability(provider, CapabilityEnergy.ENERGY, side).isPresent()) {
                 return true;
             }
@@ -69,7 +72,7 @@ public class EnergyCompatUtils {
         if (energyCap.isPresent()) {
             return energyCap.get();
         }
-        if (MekanismUtils.useForge()) {
+        if (useForge()) {
             Optional<IEnergyStorage> forgeEnergyCap = MekanismUtils.toOptional(CapabilityUtils.getCapability(provider, CapabilityEnergy.ENERGY, side));
             if (forgeEnergyCap.isPresent()) {
                 return new ForgeStrictEnergyHandler(forgeEnergyCap.get());
@@ -91,5 +94,53 @@ public class EnergyCompatUtils {
             return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> new ForgeEnergyIntegration(handler)));
         }
         return LazyOptional.empty();
+    }
+
+    /**
+     * Whether or not Forge power should be used.
+     *
+     * @return if Forge power should be used
+     */
+    private static boolean useForge() {
+        return !MekanismConfig.general.blacklistForge.get();
+    }
+
+    /**
+     * Whether or not IC2 power should be used, taking into account whether or not it is installed or another mod is providing its API.
+     *
+     * @return if IC2 power should be used
+     */
+    private static boolean useIC2() {
+        //TODO: IC2
+        return Mekanism.hooks.IC2Loaded/* && EnergyNet.instance != null*/ && !MekanismConfig.general.blacklistIC2.get();
+    }
+
+    public enum EnergyType {
+        FORGE(MekanismConfig.general.FROM_FORGE, MekanismConfig.general.TO_FORGE),
+        EU(MekanismConfig.general.FROM_IC2, MekanismConfig.general.TO_IC2);
+
+        private final DoubleSupplier fromSupplier;
+        private final DoubleSupplier toSupplier;
+
+        EnergyType(DoubleSupplier fromSupplier, DoubleSupplier toSupplier) {
+            this.fromSupplier = fromSupplier;
+            this.toSupplier = toSupplier;
+        }
+
+        public double convertFrom(int energy) {
+            return energy * fromSupplier.getAsDouble();
+        }
+
+        public double convertFrom(double energy) {
+            return energy * fromSupplier.getAsDouble();
+        }
+
+        public int convertToAsInt(double joules) {
+            return MekanismUtils.clampToInt(convertToAsDouble(joules));
+        }
+
+        public double convertToAsDouble(double joules) {
+            return joules * toSupplier.getAsDouble();
+        }
     }
 }

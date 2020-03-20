@@ -27,9 +27,8 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.EnergyCompatUtils.EnergyType;
 import mekanism.common.integration.GenericWrench;
-import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
-import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
@@ -637,9 +636,9 @@ public final class MekanismUtils {
             case J:
                 return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
             case FE:
-                return UnitDisplayUtils.getDisplayShort(ForgeEnergyIntegration.toForgeAsDouble(energy), ElectricUnit.FORGE_ENERGY);
+                return UnitDisplayUtils.getDisplayShort(EnergyType.FORGE.convertToAsDouble(energy), ElectricUnit.FORGE_ENERGY);
             case EU:
-                return UnitDisplayUtils.getDisplayShort(IC2Integration.toEU(energy), ElectricUnit.ELECTRICAL_UNITS);
+                return UnitDisplayUtils.getDisplayShort(EnergyType.EU.convertToAsDouble(energy), ElectricUnit.ELECTRICAL_UNITS);
         }
         return MekanismLang.ERROR.translate();
     }
@@ -654,9 +653,9 @@ public final class MekanismUtils {
     public static double convertToJoules(double energy) {
         switch (MekanismConfig.general.energyUnit.get()) {
             case FE:
-                return ForgeEnergyIntegration.fromForge(energy);
+                return EnergyType.FORGE.convertFrom(energy);
             case EU:
-                return IC2Integration.fromEU(energy);
+                return EnergyType.EU.convertFrom(energy);
             default:
                 return energy;
         }
@@ -672,9 +671,9 @@ public final class MekanismUtils {
     public static double convertToDisplay(double energy) {
         switch (MekanismConfig.general.energyUnit.get()) {
             case FE:
-                return ForgeEnergyIntegration.toForgeAsDouble(energy);
+                return EnergyType.FORGE.convertToAsDouble(energy);
             case EU:
-                return IC2Integration.toEU(energy);
+                return EnergyType.EU.convertToAsDouble(energy);
             default:
                 return energy;
         }
@@ -702,25 +701,6 @@ public final class MekanismUtils {
                 return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT);
         }
         return MekanismLang.ERROR.translate();
-    }
-
-    /**
-     * Whether or not IC2 power should be used, taking into account whether or not it is installed or another mod is providing its API.
-     *
-     * @return if IC2 power should be used
-     */
-    public static boolean useIC2() {
-        //TODO: IC2
-        return Mekanism.hooks.IC2Loaded/* && EnergyNet.instance != null*/ && !MekanismConfig.general.blacklistIC2.get();
-    }
-
-    /**
-     * Whether or not Forge power should be used.
-     *
-     * @return if Forge power should be used
-     */
-    public static boolean useForge() {
-        return !MekanismConfig.general.blacklistForge.get();
     }
 
     /**
