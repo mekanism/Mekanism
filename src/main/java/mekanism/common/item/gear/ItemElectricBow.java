@@ -9,8 +9,10 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IItemNetwork;
+import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.item.IItemHUDProvider;
-import mekanism.common.item.ItemEnergized;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -22,15 +24,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArrowItem;
+import net.minecraft.item.BowItem;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.UseAction;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
@@ -38,83 +39,86 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.ForgeEventFactory;
 
-//TODO: UPDATE to more closely match logic of BowItem. Maybe even extend BowItem and then implement IItemEnergized instead
-public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IItemHUDProvider {
+public class ItemElectricBow extends BowItem implements IItemNetwork, IItemHUDProvider {
+
+    //TODO: Config max energy, damage, etc
+    private static final double MAX_ELECTRICITY = 120_000;
 
     public ItemElectricBow(Properties properties) {
-        //TODO: Config max energy, damage, etc
-        super(120_000, properties.setNoRepair());
-        addPropertyOverride(new ResourceLocation("pull"), (stack, world, entity) -> entity == null || !(entity.getActiveItemStack().getItem() instanceof ItemElectricBow)
-                                                                                    ? 0.0F : (float) (stack.getUseDuration() - entity.getItemInUseCount()) / 20.0F);
-        addPropertyOverride(new ResourceLocation("pulling"), (stack, world, entity) ->
-              entity != null && entity.isHandActive() && entity.getActiveItemStack() == stack ? 1.0F : 0.0F);
+        super(properties.setNoRepair());
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+        StorageUtils.addStoredEnergy(stack, tooltip, true);
         tooltip.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack))));
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entityLiving, int itemUseCount) {
+    public void onPlayerStoppedUsing(@Nonnull ItemStack stack, @Nonnull World world, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entityLiving;
+            //Vanilla diff - Get the energy container, because if something went wrong and we don't have one then we can exit early
             IEnergyContainer energyContainer = null;
             boolean fireState = getFireState(stack);
-            int energyNeeded = fireState ? 1200 : 120;
             if (!player.isCreative()) {
                 energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                int energyNeeded = fireState ? 1200 : 120;
                 if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
                     return;
                 }
             }
             boolean infinity = player.isCreative() || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, stack) > 0;
-            ItemStack ammo = findAmmo(player);
-
-            int maxItemUse = getUseDuration(stack) - itemUseCount;
-            maxItemUse = ForgeEventFactory.onArrowLoose(stack, world, player, maxItemUse, !stack.isEmpty() || infinity);
-            if (maxItemUse < 0) {
+            ItemStack ammo = player.findAmmo(stack);
+            int charge = ForgeEventFactory.onArrowLoose(stack, world, player, getUseDuration(stack) - timeLeft, !ammo.isEmpty() || infinity);
+            if (charge < 0) {
                 return;
             }
-
-            if (infinity || !ammo.isEmpty()) {
+            if (!ammo.isEmpty() || infinity) {
+                float velocity = getArrowVelocity(charge);
+                if (velocity < 0.1) {
+                    return;
+                }
                 if (ammo.isEmpty()) {
                     ammo = new ItemStack(Items.ARROW);
                 }
-                float f = maxItemUse / 20F;
-                f = (f * f + f * 2.0F) / 3F;
-                if (f < 0.1D) {
-                    return;
-                }
-                if (f > 1.0F) {
-                    f = 1.0F;
-                }
-                boolean noConsume = infinity && stack.getItem() instanceof ArrowItem;
+                boolean noConsume = player.isCreative() || (ammo.getItem() instanceof ArrowItem && ((ArrowItem) ammo.getItem()).isInfinite(ammo, stack, player));
                 if (!world.isRemote) {
-                    ArrowItem itemarrow = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
-                    AbstractArrowEntity entityarrow = itemarrow.createArrow(world, stack, player);
-                    entityarrow.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
-                    if (f == 1.0F) {
-                        entityarrow.setIsCritical(true);
+                    ArrowItem arrowitem = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
+                    AbstractArrowEntity arrowEntity = arrowitem.createArrow(world, ammo, player);
+                    arrowEntity = customeArrow(arrowEntity);
+                    arrowEntity.shoot(player, player.rotationPitch, player.rotationYaw, 0, velocity * 3, 1);
+                    if (velocity == 1) {
+                        arrowEntity.setIsCritical(true);
                     }
+                    int power = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
+                    if (power > 0) {
+                        arrowEntity.setDamage(arrowEntity.getDamage() + (double) power * 0.5D + 0.5D);
+                    }
+                    int punch = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, stack);
+                    if (punch > 0) {
+                        arrowEntity.setKnockbackStrength(punch);
+                    }
+                    //Vanilla diff - set it on fire if the bow's mode is set to fire, even if there is no flame enchantment
+                    if (fireState || EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME, stack) > 0) {
+                        arrowEntity.setFire(100);
+                    }
+                    //Vanilla diff - Instead of damaging the item we remove energy from it
                     if (!player.isCreative() && energyContainer != null) {
-                        energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
+                        energyContainer.extract(fireState ? 1200 : 120, Action.EXECUTE, AutomationType.MANUAL);
                     }
-                    if (noConsume) {
-                        entityarrow.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
+                    if (noConsume || player.isCreative() && (ammo.getItem() == Items.SPECTRAL_ARROW || ammo.getItem() == Items.TIPPED_ARROW)) {
+                        arrowEntity.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
                     }
-                    entityarrow.setFire(fireState ? 100 : 0);
-                    world.addEntity(entityarrow);
+                    world.addEntity(arrowEntity);
                 }
-
-                world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL,
-                      1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-
-                if (!noConsume) {
+                world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1,
+                      1.0F / (random.nextFloat() * 0.4F + 1.2F) + velocity * 0.5F);
+                if (!noConsume && !player.isCreative()) {
                     ammo.shrink(1);
                     if (ammo.isEmpty()) {
                         player.inventory.deleteStack(ammo);
@@ -123,52 +127,6 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IIte
                 player.addStat(Stats.ITEM_USED.get(this));
             }
         }
-    }
-
-    @Override
-    public int getUseDuration(ItemStack stack) {
-        return 72000;
-    }
-
-    @Nonnull
-    @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.BOW;
-    }
-
-    private ItemStack findAmmo(PlayerEntity player) {
-        if (isArrow(player.getHeldItem(Hand.OFF_HAND))) {
-            return player.getHeldItem(Hand.OFF_HAND);
-        } else if (isArrow(player.getHeldItem(Hand.MAIN_HAND))) {
-            return player.getHeldItem(Hand.MAIN_HAND);
-        }
-        for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
-            ItemStack stack = player.inventory.getStackInSlot(i);
-            if (isArrow(stack)) {
-                return stack;
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
-    protected boolean isArrow(ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() instanceof ArrowItem;
-    }
-
-    @Nonnull
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        boolean flag = !findAmmo(player).isEmpty();
-        ActionResult<ItemStack> ret = ForgeEventFactory.onArrowNock(stack, world, player, hand, flag);
-        if (ret != null) {
-            return ret;
-        }
-        if (!player.isCreative() && !flag) {
-            return new ActionResult<>(ActionResultType.FAIL, stack);
-        }
-        player.setActiveHand(hand);
-        return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 
     public void setFireState(ItemStack stack, boolean state) {
@@ -182,13 +140,38 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IIte
     @Override
     public void handlePacketData(IWorld world, ItemStack stack, PacketBuffer dataStream) {
         if (!world.isRemote()) {
-            boolean state = dataStream.readBoolean();
-            setFireState(stack, state);
+            setFireState(stack, dataStream.readBoolean());
         }
     }
 
     @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         list.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack))));
+    }
+
+    @Override
+    public boolean showDurabilityBar(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack) {
+        return StorageUtils.getDurabilityForDisplay(stack);
+    }
+
+    @Override
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
+        if (isInGroup(group)) {
+            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MAX_ELECTRICITY));
+        }
+    }
+
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+        //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
+        // Internal is used by the "null" side, which is what will get used for most items
+        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(MAX_ELECTRICITY * 0.005, () -> MAX_ELECTRICITY, BasicEnergyContainer.notExternal,
+              BasicEnergyContainer.alwaysTrue));
     }
 }

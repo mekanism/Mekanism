@@ -21,13 +21,15 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ToolType;
 
 public class ItemMekanismHoe extends HoeItem implements IHasRepairType {
 
+    private static final ToolType HOE_TOOL_TYPE = ToolType.get("hoe");
     private final BaseMekanismMaterial material;
 
     public ItemMekanismHoe(BaseMekanismMaterial material) {
-        super(material, material.getHoeAtkSpeed(), ItemDeferredRegister.getMekBaseProperties());
+        super(material, material.getHoeAtkSpeed(), ItemDeferredRegister.getMekBaseProperties().addToolType(HOE_TOOL_TYPE, material.getHarvestLevel()));
         this.material = material;
     }
 
