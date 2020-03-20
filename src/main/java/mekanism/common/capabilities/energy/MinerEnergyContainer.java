@@ -3,7 +3,7 @@ package mekanism.common.capabilities.energy;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.block.IBlockElectric;
+import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityDigitalMiner;
 
@@ -13,7 +13,7 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigitalMiner> {
 
     public static MinerEnergyContainer input(TileEntityDigitalMiner tile) {
-        IBlockElectric electricBlock = validateBlock(tile);
+        AttributeEnergy electricBlock = validateBlock(tile);
         return new MinerEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), tile);
     }
 

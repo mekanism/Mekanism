@@ -5,10 +5,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.block.IBlockElectric;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 
 @FieldsAreNonnullByDefault
@@ -17,7 +17,7 @@ import mekanism.common.tile.TileEntityElectrolyticSeparator;
 public class ElectrolyticSeparatorEnergyContainer extends MachineEnergyContainer<TileEntityElectrolyticSeparator> {
 
     public static ElectrolyticSeparatorEnergyContainer input(TileEntityElectrolyticSeparator tile) {
-        IBlockElectric electricBlock = validateBlock(tile);
+        AttributeEnergy electricBlock = validateBlock(tile);
         return new ElectrolyticSeparatorEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
     }
 

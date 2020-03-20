@@ -1,5 +1,6 @@
 package mekanism.common.tile.base;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -10,7 +11,6 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
@@ -40,7 +40,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.block.attribute.AttributeStateActive;
@@ -365,6 +364,11 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public boolean canHandleGas() {
         return gasTankHolder != null;
+    }
+
+    @Override
+    public boolean canHandleEnergy() {
+        return energyContainerHolder != null;
     }
 
     public void addComponent(ITileComponent component) {

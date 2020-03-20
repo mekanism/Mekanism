@@ -6,19 +6,6 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "minecraft:copy_nbt",
-              "source": "block_entity",
-              "ops": [
-                {
-                  "source": "energy",
-                  "target": "mekData.energy",
-                  "op": "replace"
-                }
-              ]
-            }
-          ],
           "name": "mekanismgenerators:reactor_port"
         }
       ],

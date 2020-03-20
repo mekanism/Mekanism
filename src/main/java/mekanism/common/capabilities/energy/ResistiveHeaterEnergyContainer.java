@@ -6,8 +6,8 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.block.IBlockElectric;
 import mekanism.api.inventory.AutomationType;
+import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,7 +18,7 @@ import net.minecraft.nbt.CompoundNBT;
 public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileEntityResistiveHeater> {
 
     public static ResistiveHeaterEnergyContainer input(TileEntityResistiveHeater tile) {
-        IBlockElectric electricBlock = validateBlock(tile);
+        AttributeEnergy electricBlock = validateBlock(tile);
         return new ResistiveHeaterEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
     }
 

@@ -8,8 +8,9 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.block.IBlockElectric;
 import mekanism.api.inventory.AutomationType;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -20,22 +21,22 @@ import net.minecraft.block.Block;
 public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends BasicEnergyContainer {
 
     public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> input(TILE tile) {
-        IBlockElectric electricBlock = validateBlock(tile);
+        AttributeEnergy electricBlock = validateBlock(tile);
         return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
     }
 
     public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> internal(TILE tile) {
-        IBlockElectric electricBlock = validateBlock(tile);
+        AttributeEnergy electricBlock = validateBlock(tile);
         return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), internalOnly, internalOnly, tile);
     }
 
-    public static IBlockElectric validateBlock(TileEntityMekanism tile) {
+    public static AttributeEnergy validateBlock(TileEntityMekanism tile) {
         Objects.requireNonNull(tile, "Tile cannot be null");
         Block block = tile.getBlockType().getBlock();
-        if (!(block instanceof IBlockElectric)) {
+        if (!Attribute.has(block, AttributeEnergy.class)) {
             throw new IllegalArgumentException("Block provider must be an electric block");
         }
-        return (IBlockElectric) block;
+        return Attribute.get(block, AttributeEnergy.class);
     }
 
     protected final TILE tile;

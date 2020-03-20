@@ -5,10 +5,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.block.IBlockElectric;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 
 @FieldsAreNonnullByDefault
@@ -17,7 +17,7 @@ import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 public class PRCEnergyContainer extends MachineEnergyContainer<TileEntityPressurizedReactionChamber> {
 
     public static PRCEnergyContainer input(TileEntityPressurizedReactionChamber tile) {
-        IBlockElectric electricBlock = validateBlock(tile);
+        AttributeEnergy electricBlock = validateBlock(tile);
         return new PRCEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
     }
 
