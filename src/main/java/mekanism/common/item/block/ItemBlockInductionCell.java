@@ -8,9 +8,10 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeTier;
-import mekanism.common.block.machine.prefab.BlockBase;
-import mekanism.common.content.blocktype.BlockType;
+import mekanism.common.block.machine.prefab.BlockTile;
+import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tier.InductionCellTier;
+import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.util.ITooltipFlag;
@@ -21,9 +22,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Should this implement IItemEnergized instead of IEnergizedItem
-public class ItemBlockInductionCell extends ItemBlockTooltip<BlockBase<BlockType>> implements IEnergizedItem {
+public class ItemBlockInductionCell extends ItemBlockTooltip<BlockTile<TileEntityInductionCell, BlockTypeTile<TileEntityInductionCell>>> implements IEnergizedItem {
 
-    public ItemBlockInductionCell(BlockBase<BlockType> block) {
+    public ItemBlockInductionCell(BlockTile<TileEntityInductionCell, BlockTypeTile<TileEntityInductionCell>> block) {
         super(block);
     }
 
