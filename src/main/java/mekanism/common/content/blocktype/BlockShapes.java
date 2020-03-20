@@ -579,7 +579,7 @@ public final class BlockShapes {
             makeCuboidShape(11.5, 7.5, 4.5, 12.5, 8.5, 5.5),//led2
             makeCuboidShape(3.5, 7.5, 4.5, 4.5, 8.5, 5.5),//led3
             makeCuboidShape(3.5, 7.5, 6.5, 4.5, 8.5, 7.5)//led4
-        ), Direction.NORTH), LOGISTICAL_SORTER, true);
+        ), Direction.NORTH), LOGISTICAL_SORTER, true, true);
 
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(0, 6, 0, 16, 13, 16),
