@@ -284,7 +284,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         hasGui = Attribute.has(block, AttributeGui.class);
         hasInventory = Attribute.has(block, AttributeInventory.class);
         hasSecurity = Attribute.has(block, AttributeSecurity.class);
-        isActivatable = hasSound || Attribute.has(block, AttributeSound.class);
+        isActivatable = hasSound || Attribute.has(block, AttributeStateActive.class);
         supportsComparator = Attribute.has(block, AttributeComparator.class);
     }
 

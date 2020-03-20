@@ -45,47 +45,46 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
     public void sendRemainingSplit(SplitInfo<TYPE> splitInfo) {
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
         for (Direction side : needed.keySet()) {
-            acceptAmount(side, splitInfo, splitInfo.getAmountPerTarget());
+            acceptAmount(handlers.get(side), splitInfo, splitInfo.getAmountPerTarget());
         }
     }
 
     /**
      * Gives the handler on the specified side the given amount.
      *
-     * @param side      Side of handler to give.
+     * @param handler   Handler to give to.
      * @param splitInfo Information about current overall split. The given split will be increased by the actual amount accepted, in case it is less than the offered
      *                  amount.
      * @param amount    Amount to give.
      *
      * @implNote Must call {@link SplitInfo#send(Number)} with the amount actually accepted.
      */
-    protected abstract void acceptAmount(Direction side, SplitInfo<TYPE> splitInfo, TYPE amount);
+    protected abstract void acceptAmount(HANDLER handler, SplitInfo<TYPE> splitInfo, TYPE amount);
 
     /**
      * Simulate inserting into the handler.
      *
      * @param handler The handler (should correspond with the side we are simulating).
-     * @param side    The side we are simulating
      * @param extra   All the information we are inserting.
      *
      * @return The amount it was actually willing to accept.
      */
-    protected abstract TYPE simulate(HANDLER handler, Direction side, EXTRA extra);//TODO: Remove the direction as it is now unused
+    protected abstract TYPE simulate(HANDLER handler, EXTRA extra);
 
     /**
      * Calculates how much each handler can take of toSend. If the amount requested is less than the amount per handler/target in splitInfo it immediately sends the
-     * requested amount to the handler via {@link #acceptAmount(Direction, SplitInfo, Number)}
+     * requested amount to the handler via {@link #acceptAmount(HANDLER, SplitInfo, Number)}
      *
      * @param toSend    The total amount getting sent.
      * @param splitInfo Information about current overall split.
      */
     public void sendPossible(EXTRA toSend, SplitInfo<TYPE> splitInfo) {
         for (Entry<Direction, HANDLER> entry : handlers.entrySet()) {
-            TYPE amountNeeded = simulate(entry.getValue(), entry.getKey(), toSend);
+            TYPE amountNeeded = simulate(entry.getValue(), toSend);
             if (amountNeeded.compareTo(splitInfo.getAmountPerTarget()) <= 0) {
                 //Add the amount, in case something changed from simulation only mark actual sent amount
                 // in split info
-                acceptAmount(entry.getKey(), splitInfo, amountNeeded);
+                acceptAmount(entry.getValue(), splitInfo, amountNeeded);
             } else {
                 needed.put(entry.getKey(), amountNeeded);
             }
@@ -106,7 +105,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
             Entry<Direction, TYPE> needInfo = iterator.next();
             TYPE amountNeeded = needInfo.getValue();
             if (amountNeeded.compareTo(splitInfo.getAmountPerTarget()) <= 0) {
-                acceptAmount(needInfo.getKey(), splitInfo, amountNeeded);
+                acceptAmount(handlers.get(needInfo.getKey()), splitInfo, amountNeeded);
                 //Remove it as it has now been sent
                 iterator.remove();
                 //Continue checking things in case we happen to be

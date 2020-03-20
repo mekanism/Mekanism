@@ -112,7 +112,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         super.onUpdateServer();
         chargeSlot.drainContainer();
         dischargeSlot.fillContainerOrConvert();
-        if (MekanismUtils.canFunction(this)) {
+        if (!energyContainer.isEmpty() && MekanismUtils.canFunction(this)) {
             ConfigInfo info = configComponent.getConfig(TransmissionType.ENERGY);
             if (info != null && info.isEjecting()) {
                 CableUtils.emit(info.getSidesForData(DataType.OUTPUT), energyContainer, this, tier.getOutput());

@@ -84,10 +84,10 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
                 IChemicalTank<Gas, GasStack> gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
                 if (gasTank != null) {
                     //Should always reach here
-                    return gasTank.extract(amount, Action.EXECUTE, AutomationType.INTERNAL);
+                    return gasTank.extract(amount, Action.EXECUTE, AutomationType.MANUAL);
                 }
             }
-            return gasHandlerItem.extractGas(0, amount, Action.EXECUTE);
+            return gasHandlerItem.extractGas(amount, Action.EXECUTE);
         }
         return GasStack.EMPTY;
     }
