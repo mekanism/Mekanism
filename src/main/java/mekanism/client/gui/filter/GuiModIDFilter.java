@@ -15,11 +15,11 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     protected GuiModIDFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
-    
+
     @Override
     public void init() {
         super.init();
-        
+
         if (filter.getModID() != null && !filter.getModID().isEmpty()) {
             updateStackList(filter.getModID());
         }

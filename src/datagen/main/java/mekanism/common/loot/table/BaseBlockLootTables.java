@@ -1,11 +1,11 @@
 package mekanism.common.loot.table;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
@@ -14,12 +14,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
-import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.data.loot.BlockLootTables;

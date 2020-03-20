@@ -4,5 +4,5 @@ import mekanism.common.content.blocktype.BlockType;
 
 public interface ITypeBlock {
 
-    public BlockType getType();
+    BlockType getType();
 }

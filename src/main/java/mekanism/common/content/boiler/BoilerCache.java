@@ -23,7 +23,7 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> impleme
 
     //Note: We don't care about any restrictions here as it is just for making it be persistent
     private final List<IExtendedFluidTank> fluidTanks = Collections.singletonList(BasicFluidTank.create(Integer.MAX_VALUE, this));
-    private final List<IChemicalTank<Gas, GasStack>> gasTanks = Collections.singletonList(BasicGasTank.create(Integer.MAX_VALUE,this));
+    private final List<IChemicalTank<Gas, GasStack>> gasTanks = Collections.singletonList(BasicGasTank.create(Integer.MAX_VALUE, this));
     public double temperature;
 
     @Override
@@ -72,6 +72,7 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> impleme
         return fluidTanks;
     }
 
+    @Nonnull
     @Override
     public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
         return gasTanks;

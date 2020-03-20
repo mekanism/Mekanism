@@ -1,8 +1,8 @@
 package mekanism.common.content.boiler;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;

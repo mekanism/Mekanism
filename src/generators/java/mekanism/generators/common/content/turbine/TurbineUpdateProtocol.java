@@ -1,8 +1,8 @@
 package mekanism.generators.common.content.turbine;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.content.blocktype.BlockTypeTile;

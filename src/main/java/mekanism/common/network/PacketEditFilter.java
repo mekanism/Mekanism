@@ -41,7 +41,7 @@ public class PacketEditFilter {
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
             if (message.filter instanceof TransporterFilter && tile instanceof TileEntityLogisticalSorter) {
                 List<TransporterFilter<?>> filters = ((TileEntityLogisticalSorter) tile).getFilters();
-                int index = filters.indexOf((TransporterFilter<?>) message.filter);
+                int index = filters.indexOf(message.filter);
                 if (index != -1) {
                     filters.remove(index);
                     if (!message.delete) {
@@ -50,7 +50,7 @@ public class PacketEditFilter {
                 }
             } else if (message.filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner) {
                 List<MinerFilter<?>> filters = ((TileEntityDigitalMiner) tile).getFilters();
-                int index = filters.indexOf((MinerFilter<?>) message.filter);
+                int index = filters.indexOf(message.filter);
                 if (index != -1) {
                     filters.remove(index);
                     if (!message.delete) {
@@ -59,7 +59,7 @@ public class PacketEditFilter {
                 }
             } else if (message.filter instanceof OredictionificatorFilter && tile instanceof TileEntityOredictionificator) {
                 List<OredictionificatorFilter> filters = ((TileEntityOredictionificator) tile).getFilters();
-                int index = filters.indexOf((OredictionificatorFilter) message.filter);
+                int index = filters.indexOf(message.filter);
                 if (index != -1) {
                     filters.remove(index);
                     if (!message.delete) {

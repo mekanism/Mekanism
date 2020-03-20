@@ -1,10 +1,10 @@
 package mekanism.common.registries;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import mekanism.api.tier.ITier;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
@@ -142,7 +142,7 @@ import net.minecraft.item.Item;
 //TODO: Ensure all IBlockMekanism's set the required information
 public class MekanismBlocks {
 
-    public static BlockDeferredRegister BLOCKS = new BlockDeferredRegister(Mekanism.MODID);
+    public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(Mekanism.MODID);
 
     private static final Table<FactoryTier, FactoryType, BlockRegistryObject<BlockFactory<?>, ItemBlockFactory>> FACTORIES = HashBasedTable.create();
 
@@ -343,7 +343,7 @@ public class MekanismBlocks {
     }
 
     private static <TILE extends TileEntityFactory<?>> BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> registerFactory(Factory<TILE> type) {
-        return registerTieredBlock(type.get(AttributeTier.class).getTier(), "_" + type.get(AttributeFactoryType.class).getFactoryType().getRegistryNameComponent() + "_factory", () -> new BlockFactory<TILE>(type), ItemBlockFactory::new);
+        return registerTieredBlock(type.get(AttributeTier.class).getTier(), "_" + type.get(AttributeFactoryType.class).getFactoryType().getRegistryNameComponent() + "_factory", () -> new BlockFactory<>(type), ItemBlockFactory::new);
     }
 
     private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(ITier tier, String suffix,

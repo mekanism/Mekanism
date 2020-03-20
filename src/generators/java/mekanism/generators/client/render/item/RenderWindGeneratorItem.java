@@ -1,8 +1,8 @@
 package mekanism.generators.client.render.item;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.generators.client.model.ModelWindGenerator;

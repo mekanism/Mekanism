@@ -30,8 +30,8 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE
 
         // add default particle effects
         add(new AttributeParticleFX()
-            .add(ParticleTypes.SMOKE, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, 0.52))
-            .add(RedstoneParticleData.REDSTONE_DUST, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, 0.52)));
+              .add(ParticleTypes.SMOKE, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, 0.52))
+              .add(RedstoneParticleData.REDSTONE_DUST, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, 0.52)));
         add(new AttributeStateActive(), new AttributeStateFacing(), new AttributeInventory(), new AttributeSecurity(), new AttributeRedstone(), new AttributeComparator());
         add(new AttributeUpgradeSupport(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING)));
     }
@@ -51,13 +51,12 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE
         }
 
         public static <TILE extends TileEntityMekanism> MachineBuilder<Machine<TILE>, TILE, ?> createMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, MekanismLang description) {
-            return new MachineBuilder<>(new Machine<TILE>(tileEntityRegistrar, description));
+            return new MachineBuilder<>(new Machine<>(tileEntityRegistrar, description));
         }
 
         public static <TILE extends TileEntityMekanism> MachineBuilder<FactoryMachine<TILE>, TILE, ?> createFactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
               MekanismLang description, FactoryType factoryType) {
-            MachineBuilder<FactoryMachine<TILE>, TILE, ?> builder = new MachineBuilder<>(new FactoryMachine<>(tileEntityRegistrar, description, factoryType));
-            return builder;
+            return new MachineBuilder<>(new FactoryMachine<>(tileEntityRegistrar, description, factoryType));
         }
 
         public T withSupportedUpgrades(Set<Upgrade> upgrades) {

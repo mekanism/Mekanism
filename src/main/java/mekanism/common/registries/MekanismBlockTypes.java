@@ -1,9 +1,9 @@
 package mekanism.common.registries;
 
-import java.util.EnumSet;
-import java.util.function.Supplier;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import java.util.EnumSet;
+import java.util.function.Supplier;
 import mekanism.api.Pos3D;
 import mekanism.api.Upgrade;
 import mekanism.common.MekanismLang;
@@ -112,340 +112,340 @@ public class MekanismBlockTypes {
 
     // Enrichment Chamber
     public static final FactoryMachine<TileEntityEnrichmentChamber> ENRICHMENT_CHAMBER = MachineBuilder
-        .createFactoryMachine(() -> MekanismTileEntityTypes.ENRICHMENT_CHAMBER, MekanismLang.DESCRIPTION_ENRICHMENT_CHAMBER, FactoryType.ENRICHING)
-        .withGui(() -> MekanismContainerTypes.ENRICHMENT_CHAMBER)
-        .withSound(MekanismSounds.ENRICHMENT_CHAMBER)
-        .withEnergyConfig(MekanismConfig.usage.enrichmentChamber, MekanismConfig.storage.enrichmentChamber)
-        .build();
+          .createFactoryMachine(() -> MekanismTileEntityTypes.ENRICHMENT_CHAMBER, MekanismLang.DESCRIPTION_ENRICHMENT_CHAMBER, FactoryType.ENRICHING)
+          .withGui(() -> MekanismContainerTypes.ENRICHMENT_CHAMBER)
+          .withSound(MekanismSounds.ENRICHMENT_CHAMBER)
+          .withEnergyConfig(MekanismConfig.usage.enrichmentChamber, MekanismConfig.storage.enrichmentChamber)
+          .build();
     // Crusher
     public static final FactoryMachine<TileEntityCrusher> CRUSHER = MachineBuilder
-        .createFactoryMachine(() -> MekanismTileEntityTypes.CRUSHER, MekanismLang.DESCRIPTION_CRUSHER, FactoryType.CRUSHING)
-        .withGui(() -> MekanismContainerTypes.CRUSHER)
-        .withSound(MekanismSounds.CRUSHER)
-        .withEnergyConfig(MekanismConfig.usage.crusher, MekanismConfig.storage.crusher)
-        .build();
+          .createFactoryMachine(() -> MekanismTileEntityTypes.CRUSHER, MekanismLang.DESCRIPTION_CRUSHER, FactoryType.CRUSHING)
+          .withGui(() -> MekanismContainerTypes.CRUSHER)
+          .withSound(MekanismSounds.CRUSHER)
+          .withEnergyConfig(MekanismConfig.usage.crusher, MekanismConfig.storage.crusher)
+          .build();
     // Energized Smelter
     public static final FactoryMachine<TileEntityEnergizedSmelter> ENERGIZED_SMELTER = MachineBuilder
-        .createFactoryMachine(() -> MekanismTileEntityTypes.ENERGIZED_SMELTER, MekanismLang.DESCRIPTION_ENERGIZED_SMELTER, FactoryType.SMELTING)
-        .withGui(() -> MekanismContainerTypes.ENERGIZED_SMELTER)
-        .withSound(MekanismSounds.ENERGIZED_SMELTER)
-        .withEnergyConfig(MekanismConfig.usage.energizedSmelter, MekanismConfig.storage.energizedSmelter)
-        .build();
+          .createFactoryMachine(() -> MekanismTileEntityTypes.ENERGIZED_SMELTER, MekanismLang.DESCRIPTION_ENERGIZED_SMELTER, FactoryType.SMELTING)
+          .withGui(() -> MekanismContainerTypes.ENERGIZED_SMELTER)
+          .withSound(MekanismSounds.ENERGIZED_SMELTER)
+          .withEnergyConfig(MekanismConfig.usage.energizedSmelter, MekanismConfig.storage.energizedSmelter)
+          .build();
     // Precision Sawmill
     public static final FactoryMachine<TileEntityPrecisionSawmill> PRECISION_SAWMILL = MachineBuilder
-        .createFactoryMachine(() -> MekanismTileEntityTypes.PRECISION_SAWMILL, MekanismLang.DESCRIPTION_PRECISION_SAWMILL, FactoryType.SAWING)
-        .withGui(() -> MekanismContainerTypes.PRECISION_SAWMILL)
-        .withSound(MekanismSounds.PRECISION_SAWMILL)
-        .withEnergyConfig(MekanismConfig.usage.precisionSawmill, MekanismConfig.storage.precisionSawmill)
-        .build();
+          .createFactoryMachine(() -> MekanismTileEntityTypes.PRECISION_SAWMILL, MekanismLang.DESCRIPTION_PRECISION_SAWMILL, FactoryType.SAWING)
+          .withGui(() -> MekanismContainerTypes.PRECISION_SAWMILL)
+          .withSound(MekanismSounds.PRECISION_SAWMILL)
+          .withEnergyConfig(MekanismConfig.usage.precisionSawmill, MekanismConfig.storage.precisionSawmill)
+          .build();
     // Osmium Compressor
     public static final FactoryMachine<TileEntityOsmiumCompressor> OSMIUM_COMPRESSOR = MachineBuilder
-        .createFactoryMachine(() -> MekanismTileEntityTypes.OSMIUM_COMPRESSOR, MekanismLang.DESCRIPTION_OSMIUM_COMPRESSOR, FactoryType.COMPRESSING)
-        .withGui(() -> MekanismContainerTypes.OSMIUM_COMPRESSOR)
-        .withSound(MekanismSounds.OSMIUM_COMPRESSOR)
-        .withEnergyConfig(MekanismConfig.usage.osmiumCompressor, MekanismConfig.storage.osmiumCompressor)
-        .build();
+          .createFactoryMachine(() -> MekanismTileEntityTypes.OSMIUM_COMPRESSOR, MekanismLang.DESCRIPTION_OSMIUM_COMPRESSOR, FactoryType.COMPRESSING)
+          .withGui(() -> MekanismContainerTypes.OSMIUM_COMPRESSOR)
+          .withSound(MekanismSounds.OSMIUM_COMPRESSOR)
+          .withEnergyConfig(MekanismConfig.usage.osmiumCompressor, MekanismConfig.storage.osmiumCompressor)
+          .build();
     // Combiner
     public static final FactoryMachine<TileEntityCombiner> COMBINER = MachineBuilder
-        .createFactoryMachine(() -> MekanismTileEntityTypes.COMBINER, MekanismLang.DESCRIPTION_COMBINER, FactoryType.COMBINING)
-        .withGui(() -> MekanismContainerTypes.COMBINER)
-        .withSound(MekanismSounds.COMBINER)
-        .withEnergyConfig(MekanismConfig.usage.combiner, MekanismConfig.storage.combiner)
-        .build();
+          .createFactoryMachine(() -> MekanismTileEntityTypes.COMBINER, MekanismLang.DESCRIPTION_COMBINER, FactoryType.COMBINING)
+          .withGui(() -> MekanismContainerTypes.COMBINER)
+          .withSound(MekanismSounds.COMBINER)
+          .withEnergyConfig(MekanismConfig.usage.combiner, MekanismConfig.storage.combiner)
+          .build();
     // Metallurgic Infuser
     public static final FactoryMachine<TileEntityMetallurgicInfuser> METALLURGIC_INFUSER = MachineBuilder
-        .createFactoryMachine(() -> MekanismTileEntityTypes.METALLURGIC_INFUSER, MekanismLang.DESCRIPTION_METALLURGIC_INFUSER, FactoryType.INFUSING)
-        .withGui(() -> MekanismContainerTypes.METALLURGIC_INFUSER)
-        .withSound(MekanismSounds.METALLURGIC_INFUSER)
-        .withEnergyConfig(MekanismConfig.usage.metallurgicInfuser, MekanismConfig.storage.metallurgicInfuser)
-        .withCustomShape(BlockShapes.METALLURGIC_INFUSER).build();
+          .createFactoryMachine(() -> MekanismTileEntityTypes.METALLURGIC_INFUSER, MekanismLang.DESCRIPTION_METALLURGIC_INFUSER, FactoryType.INFUSING)
+          .withGui(() -> MekanismContainerTypes.METALLURGIC_INFUSER)
+          .withSound(MekanismSounds.METALLURGIC_INFUSER)
+          .withEnergyConfig(MekanismConfig.usage.metallurgicInfuser, MekanismConfig.storage.metallurgicInfuser)
+          .withCustomShape(BlockShapes.METALLURGIC_INFUSER).build();
     // Purification Chamber
     public static final FactoryMachine<TileEntityPurificationChamber> PURIFICATION_CHAMBER = MachineBuilder
-        .createFactoryMachine(() -> MekanismTileEntityTypes.PURIFICATION_CHAMBER, MekanismLang.DESCRIPTION_PURIFICATION_CHAMBER, FactoryType.PURIFYING)
-        .withGui(() -> MekanismContainerTypes.PURIFICATION_CHAMBER)
-        .withSound(MekanismSounds.PURIFICATION_CHAMBER)
-        .withEnergyConfig(MekanismConfig.usage.purificationChamber, MekanismConfig.storage.purificationChamber)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS))
-        .build();
+          .createFactoryMachine(() -> MekanismTileEntityTypes.PURIFICATION_CHAMBER, MekanismLang.DESCRIPTION_PURIFICATION_CHAMBER, FactoryType.PURIFYING)
+          .withGui(() -> MekanismContainerTypes.PURIFICATION_CHAMBER)
+          .withSound(MekanismSounds.PURIFICATION_CHAMBER)
+          .withEnergyConfig(MekanismConfig.usage.purificationChamber, MekanismConfig.storage.purificationChamber)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS))
+          .build();
     // Chemical Injection Chamber
     public static final FactoryMachine<TileEntityChemicalInjectionChamber> CHEMICAL_INJECTION_CHAMBER = MachineBuilder
-        .createFactoryMachine(() -> MekanismTileEntityTypes.CHEMICAL_INJECTION_CHAMBER, MekanismLang.DESCRIPTION_CHEMICAL_INJECTION_CHAMBER, FactoryType.INJECTING)
-        .withGui(() -> MekanismContainerTypes.CHEMICAL_INJECTION_CHAMBER)
-        .withSound(MekanismSounds.CHEMICAL_INJECTION_CHAMBER)
-        .withEnergyConfig(MekanismConfig.usage.chemicalInjectionChamber, MekanismConfig.storage.chemicalInjectionChamber)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS))
-        .build();
+          .createFactoryMachine(() -> MekanismTileEntityTypes.CHEMICAL_INJECTION_CHAMBER, MekanismLang.DESCRIPTION_CHEMICAL_INJECTION_CHAMBER, FactoryType.INJECTING)
+          .withGui(() -> MekanismContainerTypes.CHEMICAL_INJECTION_CHAMBER)
+          .withSound(MekanismSounds.CHEMICAL_INJECTION_CHAMBER)
+          .withEnergyConfig(MekanismConfig.usage.chemicalInjectionChamber, MekanismConfig.storage.chemicalInjectionChamber)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS))
+          .build();
 
     // Pressurized Reaction Chamber
     public static final Machine<TileEntityPressurizedReactionChamber> PRESSURIZED_REACTION_CHAMBER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER, MekanismLang.DESCRIPTION_PRESSURIZED_REACTION_CHAMBER)
-        .withGui(() -> MekanismContainerTypes.PRESSURIZED_REACTION_CHAMBER)
-        .withSound(MekanismSounds.PRESSURIZED_REACTION_CHAMBER)
-        .withEnergyConfig(MekanismConfig.usage.pressurizedReactionBase, MekanismConfig.storage.pressurizedReactionBase)
-        .withCustomShape(BlockShapes.PRESSURIZED_REACTION_CHAMBER)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER, MekanismLang.DESCRIPTION_PRESSURIZED_REACTION_CHAMBER)
+          .withGui(() -> MekanismContainerTypes.PRESSURIZED_REACTION_CHAMBER)
+          .withSound(MekanismSounds.PRESSURIZED_REACTION_CHAMBER)
+          .withEnergyConfig(MekanismConfig.usage.pressurizedReactionBase, MekanismConfig.storage.pressurizedReactionBase)
+          .withCustomShape(BlockShapes.PRESSURIZED_REACTION_CHAMBER)
+          .build();
     // Chemical Crystallizer
     public static final Machine<TileEntityChemicalCrystallizer> CHEMICAL_CRYSTALLIZER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_CRYSTALLIZER, MekanismLang.DESCRIPTION_CHEMICAL_CRYSTALLIZER)
-        .withGui(() -> MekanismContainerTypes.CHEMICAL_CRYSTALLIZER)
-        .withSound(MekanismSounds.CHEMICAL_CRYSTALLIZER)
-        .withEnergyConfig(MekanismConfig.usage.chemicalCrystallizer, MekanismConfig.storage.chemicalCrystallizer)
-        .withCustomShape(BlockShapes.CHEMICAL_CRYSTALLIZER)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_CRYSTALLIZER, MekanismLang.DESCRIPTION_CHEMICAL_CRYSTALLIZER)
+          .withGui(() -> MekanismContainerTypes.CHEMICAL_CRYSTALLIZER)
+          .withSound(MekanismSounds.CHEMICAL_CRYSTALLIZER)
+          .withEnergyConfig(MekanismConfig.usage.chemicalCrystallizer, MekanismConfig.storage.chemicalCrystallizer)
+          .withCustomShape(BlockShapes.CHEMICAL_CRYSTALLIZER)
+          .build();
     // Chemical Dissolution Chamber
     public static final Machine<TileEntityChemicalDissolutionChamber> CHEMICAL_DISSOLUTION_CHAMBER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_DISSOLUTION_CHAMBER, MekanismLang.DESCRIPTION_CHEMICAL_DISSOLUTION_CHAMBER)
-        .withGui(() -> MekanismContainerTypes.CHEMICAL_DISSOLUTION_CHAMBER)
-        .withSound(MekanismSounds.CHEMICAL_DISSOLUTION_CHAMBER)
-        .withEnergyConfig(MekanismConfig.usage.chemicalDissolutionChamber, MekanismConfig.storage.chemicalDissolutionChamber)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS))
-        .withCustomShape(BlockShapes.CHEMICAL_DISSOLUTION_CHAMBER)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_DISSOLUTION_CHAMBER, MekanismLang.DESCRIPTION_CHEMICAL_DISSOLUTION_CHAMBER)
+          .withGui(() -> MekanismContainerTypes.CHEMICAL_DISSOLUTION_CHAMBER)
+          .withSound(MekanismSounds.CHEMICAL_DISSOLUTION_CHAMBER)
+          .withEnergyConfig(MekanismConfig.usage.chemicalDissolutionChamber, MekanismConfig.storage.chemicalDissolutionChamber)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS))
+          .withCustomShape(BlockShapes.CHEMICAL_DISSOLUTION_CHAMBER)
+          .build();
     // Chemical Infuser
     public static final Machine<TileEntityChemicalInfuser> CHEMICAL_INFUSER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_INFUSER, MekanismLang.DESCRIPTION_CHEMICAL_INFUSER)
-        .withGui(() -> MekanismContainerTypes.CHEMICAL_INFUSER)
-        .withSound(MekanismSounds.CHEMICAL_INFUSER)
-        .withEnergyConfig(MekanismConfig.usage.chemicalInfuser, MekanismConfig.storage.chemicalInfuser)
-        .withCustomShape(BlockShapes.CHEMICAL_INFUSER)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_INFUSER, MekanismLang.DESCRIPTION_CHEMICAL_INFUSER)
+          .withGui(() -> MekanismContainerTypes.CHEMICAL_INFUSER)
+          .withSound(MekanismSounds.CHEMICAL_INFUSER)
+          .withEnergyConfig(MekanismConfig.usage.chemicalInfuser, MekanismConfig.storage.chemicalInfuser)
+          .withCustomShape(BlockShapes.CHEMICAL_INFUSER)
+          .build();
     // Chemical Oxidizer
     public static final Machine<TileEntityChemicalOxidizer> CHEMICAL_OXIDIZER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_OXIDIZER, MekanismLang.DESCRIPTION_CHEMICAL_OXIDIZER)
-        .withGui(() -> MekanismContainerTypes.CHEMICAL_OXIDIZER)
-        .withSound(MekanismSounds.CHEMICAL_OXIDIZER)
-        .withEnergyConfig(MekanismConfig.usage.oxidationChamber, MekanismConfig.storage.oxidationChamber)
-        .withCustomShape(BlockShapes.CHEMICAL_OXIDIZER)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_OXIDIZER, MekanismLang.DESCRIPTION_CHEMICAL_OXIDIZER)
+          .withGui(() -> MekanismContainerTypes.CHEMICAL_OXIDIZER)
+          .withSound(MekanismSounds.CHEMICAL_OXIDIZER)
+          .withEnergyConfig(MekanismConfig.usage.oxidationChamber, MekanismConfig.storage.oxidationChamber)
+          .withCustomShape(BlockShapes.CHEMICAL_OXIDIZER)
+          .build();
     // Chemical Washer
     public static final Machine<TileEntityChemicalWasher> CHEMICAL_WASHER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_WASHER, MekanismLang.DESCRIPTION_CHEMICAL_WASHER)
-        .withGui(() -> MekanismContainerTypes.CHEMICAL_WASHER)
-        .withSound(MekanismSounds.CHEMICAL_WASHER)
-        .withEnergyConfig(MekanismConfig.usage.chemicalWasher, MekanismConfig.storage.chemicalWasher)
-        .withCustomShape(BlockShapes.CHEMICAL_WASHER)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_WASHER, MekanismLang.DESCRIPTION_CHEMICAL_WASHER)
+          .withGui(() -> MekanismContainerTypes.CHEMICAL_WASHER)
+          .withSound(MekanismSounds.CHEMICAL_WASHER)
+          .withEnergyConfig(MekanismConfig.usage.chemicalWasher, MekanismConfig.storage.chemicalWasher)
+          .withCustomShape(BlockShapes.CHEMICAL_WASHER)
+          .build();
     // Rotary Condensentrator
     public static final Machine<TileEntityRotaryCondensentrator> ROTARY_CONDENSENTRATOR = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.ROTARY_CONDENSENTRATOR, MekanismLang.DESCRIPTION_ROTARY_CONDENSENTRATOR)
-        .withGui(() -> MekanismContainerTypes.ROTARY_CONDENSENTRATOR)
-        .withSound(MekanismSounds.ROTARY_CONDENSENTRATOR)
-        .withEnergyConfig(MekanismConfig.usage.rotaryCondensentrator, MekanismConfig.storage.rotaryCondensentrator)
-        .withCustomShape(BlockShapes.ROTARY_CONDENSENTRATOR)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.ROTARY_CONDENSENTRATOR, MekanismLang.DESCRIPTION_ROTARY_CONDENSENTRATOR)
+          .withGui(() -> MekanismContainerTypes.ROTARY_CONDENSENTRATOR)
+          .withSound(MekanismSounds.ROTARY_CONDENSENTRATOR)
+          .withEnergyConfig(MekanismConfig.usage.rotaryCondensentrator, MekanismConfig.storage.rotaryCondensentrator)
+          .withCustomShape(BlockShapes.ROTARY_CONDENSENTRATOR)
+          .build();
     // Electrolytic Separator
     public static final Machine<TileEntityElectrolyticSeparator> ELECTROLYTIC_SEPARATOR = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.ELECTROLYTIC_SEPARATOR, MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR)
-        .withGui(() -> MekanismContainerTypes.ELECTROLYTIC_SEPARATOR)
-        .withSound(MekanismSounds.ELECTROLYTIC_SEPARATOR)
-        .withEnergyConfig(() -> MekanismConfig.general.FROM_H2.get() * 2, MekanismConfig.storage.electrolyticSeparator::get)
-        .withCustomShape(BlockShapes.ELECTROLYTIC_SEPARATOR)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.ELECTROLYTIC_SEPARATOR, MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR)
+          .withGui(() -> MekanismContainerTypes.ELECTROLYTIC_SEPARATOR)
+          .withSound(MekanismSounds.ELECTROLYTIC_SEPARATOR)
+          .withEnergyConfig(() -> MekanismConfig.general.FROM_H2.get() * 2, MekanismConfig.storage.electrolyticSeparator::get)
+          .withCustomShape(BlockShapes.ELECTROLYTIC_SEPARATOR)
+          .build();
     // Digital Miner
     public static final Machine<TileEntityDigitalMiner> DIGITAL_MINER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.DIGITAL_MINER, MekanismLang.DESCRIPTION_DIGITAL_MINER)
-        .withGui(() -> MekanismContainerTypes.DIGITAL_MINER)
-        .withEnergyConfig(MekanismConfig.usage.digitalMiner::get, MekanismConfig.storage.digitalMiner::get)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR))
-        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new DigitalMinerContainer(i, inv, (TileEntityDigitalMiner) tile)))
-        .withCustomShape(BlockShapes.DIGITAL_MINER)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.DIGITAL_MINER, MekanismLang.DESCRIPTION_DIGITAL_MINER)
+          .withGui(() -> MekanismContainerTypes.DIGITAL_MINER)
+          .withEnergyConfig(MekanismConfig.usage.digitalMiner::get, MekanismConfig.storage.digitalMiner::get)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR))
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new DigitalMinerContainer(i, inv, (TileEntityDigitalMiner) tile)))
+          .withCustomShape(BlockShapes.DIGITAL_MINER)
+          .build();
     // Formulaic Assemblicator
     public static final Machine<TileEntityFormulaicAssemblicator> FORMULAIC_ASSEMBLICATOR = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR, MekanismLang.DESCRIPTION_FORMULAIC_ASSEMBLICATOR)
-        .withGui(() -> MekanismContainerTypes.FORMULAIC_ASSEMBLICATOR)
-        .withEnergyConfig(MekanismConfig.usage.formulaicAssemblicator, MekanismConfig.storage.formulaicAssemblicator)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY))
-        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new FormulaicAssemblicatorContainer(i, inv, (TileEntityFormulaicAssemblicator) tile)))
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR, MekanismLang.DESCRIPTION_FORMULAIC_ASSEMBLICATOR)
+          .withGui(() -> MekanismContainerTypes.FORMULAIC_ASSEMBLICATOR)
+          .withEnergyConfig(MekanismConfig.usage.formulaicAssemblicator, MekanismConfig.storage.formulaicAssemblicator)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY))
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new FormulaicAssemblicatorContainer(i, inv, (TileEntityFormulaicAssemblicator) tile)))
+          .build();
     // Electric Pump
     public static final Machine<TileEntityElectricPump> ELECTRIC_PUMP = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.ELECTRIC_PUMP, MekanismLang.DESCRIPTION_ELECTRIC_PUMP)
-        .withGui(() -> MekanismContainerTypes.ELECTRIC_PUMP)
-        .withEnergyConfig(MekanismConfig.usage.electricPump, MekanismConfig.storage.electricPump)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.FILTER))
-        .withCustomShape(BlockShapes.ELECTRIC_PUMP)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.ELECTRIC_PUMP, MekanismLang.DESCRIPTION_ELECTRIC_PUMP)
+          .withGui(() -> MekanismContainerTypes.ELECTRIC_PUMP)
+          .withEnergyConfig(MekanismConfig.usage.electricPump, MekanismConfig.storage.electricPump)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.FILTER))
+          .withCustomShape(BlockShapes.ELECTRIC_PUMP)
+          .build();
     // Fluidic Plenisher
     public static final Machine<TileEntityFluidicPlenisher> FLUIDIC_PLENISHER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.FLUIDIC_PLENISHER, MekanismLang.DESCRIPTION_FLUIDIC_PLENISHER)
-        .withGui(() -> MekanismContainerTypes.FLUIDIC_PLENISHER)
-        .withEnergyConfig(MekanismConfig.usage.fluidicPlenisher, MekanismConfig.storage.fluidicPlenisher)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY))
-        .withCustomShape(BlockShapes.FLUIDIC_PLENISHER)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.FLUIDIC_PLENISHER, MekanismLang.DESCRIPTION_FLUIDIC_PLENISHER)
+          .withGui(() -> MekanismContainerTypes.FLUIDIC_PLENISHER)
+          .withEnergyConfig(MekanismConfig.usage.fluidicPlenisher, MekanismConfig.storage.fluidicPlenisher)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY))
+          .withCustomShape(BlockShapes.FLUIDIC_PLENISHER)
+          .build();
     // Solar Neutron Activator
     public static final Machine<TileEntitySolarNeutronActivator> SOLAR_NEUTRON_ACTIVATOR = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR, MekanismLang.DESCRIPTION_SOLAR_NEUTRON_ACTIVATOR)
-        .withGui(() -> MekanismContainerTypes.SOLAR_NEUTRON_ACTIVATOR)
-        .without(AttributeParticleFX.class)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
-        .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR, MekanismLang.DESCRIPTION_SOLAR_NEUTRON_ACTIVATOR)
+          .withGui(() -> MekanismContainerTypes.SOLAR_NEUTRON_ACTIVATOR)
+          .without(AttributeParticleFX.class)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
+          .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
+          .build();
     // Teleporter
     public static final Machine<TileEntityTeleporter> TELEPORTER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.TELEPORTER, MekanismLang.DESCRIPTION_TELEPORTER)
-        .withGui(() -> MekanismContainerTypes.TELEPORTER)
-        .withEnergyConfig(() -> 12500, MekanismConfig.storage.teleporter)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
-        .without(AttributeStateActive.class, AttributeStateFacing.class, AttributeParticleFX.class)
-        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new TeleporterContainer(i, inv, (TileEntityTeleporter) tile)))
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.TELEPORTER, MekanismLang.DESCRIPTION_TELEPORTER)
+          .withGui(() -> MekanismContainerTypes.TELEPORTER)
+          .withEnergyConfig(() -> 12500, MekanismConfig.storage.teleporter)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
+          .without(AttributeStateActive.class, AttributeStateFacing.class, AttributeParticleFX.class)
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new TeleporterContainer(i, inv, (TileEntityTeleporter) tile)))
+          .build();
     // Chargepad
     public static final BlockTypeTile<TileEntityChargepad> CHARGEPAD = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.CHARGEPAD, MekanismLang.DESCRIPTION_CHARGEPAD)
-        .withEnergyConfig(() -> 25, MekanismConfig.storage.chargePad)
-        .withSound(MekanismSounds.CHARGEPAD).with(new AttributeStateActive(), new AttributeStateFacing())
-        .withCustomShape(BlockShapes.CHARGEPAD)
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.CHARGEPAD, MekanismLang.DESCRIPTION_CHARGEPAD)
+          .withEnergyConfig(() -> 25, MekanismConfig.storage.chargePad)
+          .withSound(MekanismSounds.CHARGEPAD).with(new AttributeStateActive(), new AttributeStateFacing())
+          .withCustomShape(BlockShapes.CHARGEPAD)
+          .build();
     // Laser
     public static final BlockTypeTile<TileEntityLaser> LASER = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.LASER, MekanismLang.DESCRIPTION_LASER)
-        .withEnergyConfig(MekanismConfig.usage.laser, MekanismConfig.storage.laser)
-        .withSound(MekanismSounds.LASER).with(new AttributeStateActive(), new AttributeStateFacing(BlockStateHelper.facingProperty))
-        .withCustomShape(BlockShapes.LASER)
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.LASER, MekanismLang.DESCRIPTION_LASER)
+          .withEnergyConfig(MekanismConfig.usage.laser, MekanismConfig.storage.laser)
+          .withSound(MekanismSounds.LASER).with(new AttributeStateActive(), new AttributeStateFacing(BlockStateHelper.facingProperty))
+          .withCustomShape(BlockShapes.LASER)
+          .build();
     // Laser Amplifier
     public static final BlockTypeTile<TileEntityLaserAmplifier> LASER_AMPLIFIER = BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.LASER_AMPLIFIER, MekanismLang.DESCRIPTION_LASER_AMPLIFIER)
-        .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER).withEnergyConfig(null, () -> 5E9)
-        .with(new AttributeStateFacing(BlockStateHelper.facingProperty),
-            new AttributeRedstoneEmitter<>((tile) -> tile.getRedstoneLevel()), new AttributeRedstone(), new AttributeComparator(), new AttributeSecurity())
-        .withCustomShape(BlockShapes.LASER_AMPLIFIER).build();
+          .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER).withEnergyConfig(null, () -> 5E9)
+          .with(new AttributeStateFacing(BlockStateHelper.facingProperty),
+                new AttributeRedstoneEmitter<>((tile) -> tile.getRedstoneLevel()), new AttributeRedstone(), new AttributeComparator(), new AttributeSecurity())
+          .withCustomShape(BlockShapes.LASER_AMPLIFIER).build();
     // Laser Tractor Beam
     public static final BlockTypeTile<TileEntityLaserTractorBeam> LASER_TRACTOR_BEAM = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.LASER_TRACTOR_BEAM, MekanismLang.DESCRIPTION_LASER_TRACTOR_BEAM)
-        .withGui(() -> MekanismContainerTypes.LASER_TRACTOR_BEAM)
-        .withEnergyConfig(null, () -> 5E9)
-        .with(new AttributeStateFacing(BlockStateHelper.facingProperty), new AttributeComparator(), new AttributeSecurity(), new AttributeInventory())
-        .withCustomShape(BlockShapes.LASER_AMPLIFIER)
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.LASER_TRACTOR_BEAM, MekanismLang.DESCRIPTION_LASER_TRACTOR_BEAM)
+          .withGui(() -> MekanismContainerTypes.LASER_TRACTOR_BEAM)
+          .withEnergyConfig(null, () -> 5E9)
+          .with(new AttributeStateFacing(BlockStateHelper.facingProperty), new AttributeComparator(), new AttributeSecurity(), new AttributeInventory())
+          .withCustomShape(BlockShapes.LASER_AMPLIFIER)
+          .build();
     // Resistive Heater
     public static final Machine<TileEntityResistiveHeater> RESISTIVE_HEATER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.RESISTIVE_HEATER, MekanismLang.DESCRIPTION_RESISTIVE_HEATER)
-        .withGui(() -> MekanismContainerTypes.RESISTIVE_HEATER)
-        .withEnergyConfig(() -> 100, null).without(AttributeComparator.class, AttributeUpgradeSupport.class)
-        .withCustomShape(BlockShapes.RESISTIVE_HEATER)
-        .withSound(MekanismSounds.RESISTIVE_HEATER)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.RESISTIVE_HEATER, MekanismLang.DESCRIPTION_RESISTIVE_HEATER)
+          .withGui(() -> MekanismContainerTypes.RESISTIVE_HEATER)
+          .withEnergyConfig(() -> 100, null).without(AttributeComparator.class, AttributeUpgradeSupport.class)
+          .withCustomShape(BlockShapes.RESISTIVE_HEATER)
+          .withSound(MekanismSounds.RESISTIVE_HEATER)
+          .build();
     // Seismic Vibrator
     public static final Machine<TileEntitySeismicVibrator> SEISMIC_VIBRATOR = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.SEISMIC_VIBRATOR, MekanismLang.DESCRIPTION_SEISMIC_VIBRATOR)
-        .withGui(() -> MekanismContainerTypes.SEISMIC_VIBRATOR)
-        .withEnergyConfig(MekanismConfig.usage.seismicVibrator, MekanismConfig.storage.seismicVibrator)
-        .without(AttributeComparator.class, AttributeParticleFX.class, AttributeUpgradeSupport.class)
-        .withCustomShape(BlockShapes.SEISMIC_VIBRATOR)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.SEISMIC_VIBRATOR, MekanismLang.DESCRIPTION_SEISMIC_VIBRATOR)
+          .withGui(() -> MekanismContainerTypes.SEISMIC_VIBRATOR)
+          .withEnergyConfig(MekanismConfig.usage.seismicVibrator, MekanismConfig.storage.seismicVibrator)
+          .without(AttributeComparator.class, AttributeParticleFX.class, AttributeUpgradeSupport.class)
+          .withCustomShape(BlockShapes.SEISMIC_VIBRATOR)
+          .build();
     // Personal Chest
     public static final BlockTypeTile<TileEntityPersonalChest> PERSONAL_CHEST = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.PERSONAL_CHEST, MekanismLang.DESCRIPTION_PERSONAL_CHEST)
-        .withGui(() -> MekanismContainerTypes.PERSONAL_CHEST_BLOCK)
-        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new PersonalChestTileContainer(i, inv, (TileEntityPersonalChest) tile)))
-        .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
-        .withCustomShape(BlockShapes.PERSONAL_CHEST)
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.PERSONAL_CHEST, MekanismLang.DESCRIPTION_PERSONAL_CHEST)
+          .withGui(() -> MekanismContainerTypes.PERSONAL_CHEST_BLOCK)
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new PersonalChestTileContainer(i, inv, (TileEntityPersonalChest) tile)))
+          .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
+          .withCustomShape(BlockShapes.PERSONAL_CHEST)
+          .build();
     // Fuelwood Heater
     public static final BlockTypeTile<TileEntityFuelwoodHeater> FUELWOOD_HEATER = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.FUELWOOD_HEATER, MekanismLang.DESCRIPTION_FUELWOOD_HEATER)
-        .withGui(() -> MekanismContainerTypes.FUELWOOD_HEATER)
-        .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeParticleFX()
-            .add(ParticleTypes.SMOKE, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
-            .add(RedstoneParticleData.REDSTONE_DUST, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.FUELWOOD_HEATER, MekanismLang.DESCRIPTION_FUELWOOD_HEATER)
+          .withGui(() -> MekanismContainerTypes.FUELWOOD_HEATER)
+          .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeParticleFX()
+                .add(ParticleTypes.SMOKE, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
+                .add(RedstoneParticleData.REDSTONE_DUST, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
+          .build();
     // Oredictionificator
     public static final BlockTypeTile<TileEntityOredictionificator> OREDICTIONIFICATOR = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.OREDICTIONIFICATOR, MekanismLang.DESCRIPTION_OREDICTIONIFICATOR)
-        .withGui(() -> MekanismContainerTypes.OREDICTIONIFICATOR)
-        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new OredictionificatorContainer(i, inv, (TileEntityOredictionificator) tile)))
-        .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeRedstone())
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.OREDICTIONIFICATOR, MekanismLang.DESCRIPTION_OREDICTIONIFICATOR)
+          .withGui(() -> MekanismContainerTypes.OREDICTIONIFICATOR)
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new OredictionificatorContainer(i, inv, (TileEntityOredictionificator) tile)))
+          .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeRedstone())
+          .build();
     // Quantum Entangloporter
     public static final Machine<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER)
-        .withGui(() -> MekanismContainerTypes.QUANTUM_ENTANGLOPORTER)
-        .withEnergyConfig(null, null)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
-        .with(new AttributeStateFacing(BlockStateHelper.facingProperty))
-        .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeRedstone.class, AttributeComparator.class)
-        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, (TileEntityQuantumEntangloporter) tile)))
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER)
+          .withGui(() -> MekanismContainerTypes.QUANTUM_ENTANGLOPORTER)
+          .withEnergyConfig(null, null)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
+          .with(new AttributeStateFacing(BlockStateHelper.facingProperty))
+          .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeRedstone.class, AttributeComparator.class)
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, (TileEntityQuantumEntangloporter) tile)))
+          .build();
     // Logistical Sorter
     public static final Machine<TileEntityLogisticalSorter> LOGISTICAL_SORTER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.LOGISTICAL_SORTER, MekanismLang.DESCRIPTION_LOGISTICAL_SORTER)
-        .withGui(() -> MekanismContainerTypes.LOGISTICAL_SORTER)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
-        .with(new AttributeStateFacing(BlockStateHelper.facingProperty))
-        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.LOGISTICAL_SORTER, i, inv, tile)))
-        .withCustomShape(BlockShapes.LOGISTICAL_SORTER)
-        .withSound(MekanismSounds.LOGISTICAL_SORTER)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.LOGISTICAL_SORTER, MekanismLang.DESCRIPTION_LOGISTICAL_SORTER)
+          .withGui(() -> MekanismContainerTypes.LOGISTICAL_SORTER)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .with(new AttributeStateFacing(BlockStateHelper.facingProperty))
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.LOGISTICAL_SORTER, i, inv, tile)))
+          .withCustomShape(BlockShapes.LOGISTICAL_SORTER)
+          .withSound(MekanismSounds.LOGISTICAL_SORTER)
+          .build();
     // Security Desk
     public static final BlockTypeTile<TileEntitySecurityDesk> SECURITY_DESK = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.SECURITY_DESK, MekanismLang.DESCRIPTION_SECURITY_DESK)
-        .withGui(() -> MekanismContainerTypes.SECURITY_DESK)
-        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new SecurityDeskContainer(i, inv, (TileEntitySecurityDesk) tile)))
-        .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
-        .withCustomShape(BlockShapes.SECURITY_DESK)
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.SECURITY_DESK, MekanismLang.DESCRIPTION_SECURITY_DESK)
+          .withGui(() -> MekanismContainerTypes.SECURITY_DESK)
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new SecurityDeskContainer(i, inv, (TileEntitySecurityDesk) tile)))
+          .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
+          .withCustomShape(BlockShapes.SECURITY_DESK)
+          .build();
 
     // Dynamic Tank
     public static final BlockTypeTile<TileEntityDynamicTank> DYNAMIC_TANK = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_TANK, MekanismLang.DESCRIPTION_DYNAMIC_TANK)
-        .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK)
-        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile)))
-        .with(new AttributeInventory())
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_TANK, MekanismLang.DESCRIPTION_DYNAMIC_TANK)
+          .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK)
+          .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile)))
+          .with(new AttributeInventory())
+          .build();
     // Dynamic Valve
     public static final BlockTypeTile<TileEntityDynamicValve> DYNAMIC_VALVE = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_VALVE, MekanismLang.DESCRIPTION_DYNAMIC_VALVE)
-        .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK)
-        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile)))
-        .with(new AttributeInventory(), new AttributeComparator())
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_VALVE, MekanismLang.DESCRIPTION_DYNAMIC_VALVE)
+          .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK)
+          .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile)))
+          .with(new AttributeInventory(), new AttributeComparator())
+          .build();
     // Boiler Casing
     public static final BlockTypeTile<TileEntityBoilerCasing> BOILER_CASING = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.BOILER_CASING, MekanismLang.DESCRIPTION_BOILER_CASING)
-        .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
-        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.THERMOELECTRIC_BOILER, i, inv, tile)))
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.BOILER_CASING, MekanismLang.DESCRIPTION_BOILER_CASING)
+          .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
+          .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.THERMOELECTRIC_BOILER, i, inv, tile)))
+          .build();
     // Boiler Valve
     public static final BlockTypeTile<TileEntityBoilerValve> BOILER_VALVE = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.BOILER_VALVE, MekanismLang.DESCRIPTION_BOILER_VALVE)
-        .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
-        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.THERMOELECTRIC_BOILER, i, inv, tile)))
-        .with(new AttributeInventory(), new AttributeComparator())
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.BOILER_VALVE, MekanismLang.DESCRIPTION_BOILER_VALVE)
+          .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
+          .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.THERMOELECTRIC_BOILER, i, inv, tile)))
+          .with(new AttributeInventory(), new AttributeComparator())
+          .build();
     // Superheating Element
     public static final BlockTypeTile<TileEntitySuperheatingElement> SUPERHEATING_ELEMENT =
-        BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.SUPERHEATING_ELEMENT, MekanismLang.DESCRIPTION_SUPERHEATING_ELEMENT).with(new AttributeStateActive()).build();
+          BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.SUPERHEATING_ELEMENT, MekanismLang.DESCRIPTION_SUPERHEATING_ELEMENT).with(new AttributeStateActive()).build();
     // Induction Casing
     public static final BlockTypeTile<TileEntityInductionCasing> INDUCTION_CASING = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.INDUCTION_CASING, MekanismLang.DESCRIPTION_INDUCTION_CASING)
-        .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX)
-        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile)))
-        .with(new AttributeInventory(), new AttributeComparator())
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.INDUCTION_CASING, MekanismLang.DESCRIPTION_INDUCTION_CASING)
+          .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX)
+          .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile)))
+          .with(new AttributeInventory(), new AttributeComparator())
+          .build();
     // Induction Port
     public static final BlockTypeTile<TileEntityInductionPort> INDUCTION_PORT = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.INDUCTION_PORT, MekanismLang.DESCRIPTION_INDUCTION_PORT)
-        .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX)
-        .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile)))
-        .with(new AttributeInventory(), new AttributeComparator(), new AttributeStateActive())
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.INDUCTION_PORT, MekanismLang.DESCRIPTION_INDUCTION_PORT)
+          .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX)
+          .withCustomContainer((tile) -> new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile)))
+          .with(new AttributeInventory(), new AttributeComparator(), new AttributeStateActive())
+          .build();
     // Thermal Evaporation Controller
     public static final BlockTypeTile<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER)
-        .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER)
-        .with(new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(9F)).build();
+          .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER)
+          .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER)
+          .with(new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(9F)).build();
     // Thermal Evaporation Valve
     public static final BlockTypeTile<TileEntityThermalEvaporationValve> THERMAL_EVAPORATION_VALVE = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_VALVE)
-        .with(new AttributeComparator(), new AttributeCustomResistance(9F)).build();
+          .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_VALVE)
+          .with(new AttributeComparator(), new AttributeCustomResistance(9F)).build();
     // Thermal Evaporation Block
     public static final BlockTypeTile<TileEntityThermalEvaporationBlock> THERMAL_EVAPORATION_BLOCK = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_BLOCK).with(new AttributeCustomResistance(9F)).build();
+          .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_BLOCK).with(new AttributeCustomResistance(9F)).build();
     // Steel Casing
     public static final BlockType STEEL_CASING = BlockTileBuilder
-        .createBlock(MekanismLang.DESCRIPTION_STEEL_CASING).with(new AttributeCustomResistance(9F)).build();
+          .createBlock(MekanismLang.DESCRIPTION_STEEL_CASING).with(new AttributeCustomResistance(9F)).build();
 
     // Induction Cells
     public static final BlockTypeTile<TileEntityInductionCell> BASIC_INDUCTION_CELL = createInductionCell(InductionCellTier.BASIC, () -> MekanismTileEntityTypes.BASIC_INDUCTION_CELL);
@@ -491,7 +491,7 @@ public class MekanismBlockTypes {
         for (FactoryTier tier : FactoryTier.values()) {
             for (FactoryType type : FactoryType.values()) {
                 FACTORIES.put(tier, type,
-                    FactoryBuilder.createFactory(() -> MekanismTileEntityTypes.getFactoryTile(tier, type), () -> MekanismContainerTypes.FACTORY, type.getBaseMachine(), tier).build());
+                      FactoryBuilder.createFactory(() -> MekanismTileEntityTypes.getFactoryTile(tier, type), () -> MekanismContainerTypes.FACTORY, type.getBaseMachine(), tier).build());
             }
         }
     }
@@ -500,50 +500,50 @@ public class MekanismBlockTypes {
         return FACTORIES.get(tier, type);
     }
 
-    public static final <TILE extends TileEntityInductionCell> BlockTypeTile<TILE> createInductionCell(InductionCellTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
+    private static <TILE extends TileEntityInductionCell> BlockTypeTile<TILE> createInductionCell(InductionCellTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
         return BlockTileBuilder.createBlock(tile, MekanismLang.DESCRIPTION_INDUCTION_CELL)
-            .withEnergyConfig(() -> tier.getMaxEnergy())
-            .with(new AttributeTier<>(tier), new AttributeNoMobSpawn())
-            .build();
+              .withEnergyConfig(() -> tier.getMaxEnergy())
+              .with(new AttributeTier<>(tier), new AttributeNoMobSpawn())
+              .build();
     }
 
-    public static final <TILE extends TileEntityInductionProvider> BlockTypeTile<TILE> createInductionProvider(InductionProviderTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
+    private static <TILE extends TileEntityInductionProvider> BlockTypeTile<TILE> createInductionProvider(InductionProviderTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
         return BlockTileBuilder.createBlock(tile, MekanismLang.DESCRIPTION_INDUCTION_PROVIDER)
-            .with(new AttributeTier<>(tier), new AttributeNoMobSpawn())
-            .build();
+              .with(new AttributeTier<>(tier), new AttributeNoMobSpawn())
+              .build();
     }
 
-    public static final <TILE extends TileEntityBin> Machine<TILE> createBin(BinTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+    private static <TILE extends TileEntityBin> Machine<TILE> createBin(BinTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_BIN)
-            .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
-            .without(AttributeParticleFX.class, AttributeSecurity.class, AttributeUpgradeSupport.class, AttributeRedstone.class)
-            .build();
+              .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
+              .without(AttributeParticleFX.class, AttributeSecurity.class, AttributeUpgradeSupport.class, AttributeRedstone.class)
+              .build();
     }
 
-    public static final <TILE extends TileEntityEnergyCube> Machine<TILE> createEnergyCube(EnergyCubeTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+    private static <TILE extends TileEntityEnergyCube> Machine<TILE> createEnergyCube(EnergyCubeTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_ENERGY_CUBE)
-            .withGui(() -> MekanismContainerTypes.ENERGY_CUBE)
-            .withEnergyConfig(() -> tier.getMaxEnergy())
-            .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock), new AttributeStateFacing(BlockStateHelper.facingProperty))
-            .without(AttributeParticleFX.class, AttributeStateActive.class, AttributeUpgradeSupport.class)
-            .build();
+              .withGui(() -> MekanismContainerTypes.ENERGY_CUBE)
+              .withEnergyConfig(() -> tier.getMaxEnergy())
+              .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock), new AttributeStateFacing(BlockStateHelper.facingProperty))
+              .without(AttributeParticleFX.class, AttributeStateActive.class, AttributeUpgradeSupport.class)
+              .build();
     }
 
-    public static final <TILE extends TileEntityFluidTank> Machine<TILE> createFluidTank(FluidTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+    private static <TILE extends TileEntityFluidTank> Machine<TILE> createFluidTank(FluidTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_FLUID_TANK)
-            .withGui(() -> MekanismContainerTypes.FLUID_TANK)
-            .withCustomShape(BlockShapes.FLUID_TANK)
-            .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
-            .without(AttributeParticleFX.class, AttributeStateFacing.class, AttributeRedstone.class, AttributeUpgradeSupport.class)
-            .build();
+              .withGui(() -> MekanismContainerTypes.FLUID_TANK)
+              .withCustomShape(BlockShapes.FLUID_TANK)
+              .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
+              .without(AttributeParticleFX.class, AttributeStateFacing.class, AttributeRedstone.class, AttributeUpgradeSupport.class)
+              .build();
     }
 
-    public static final <TILE extends TileEntityGasTank> Machine<TILE> createGasTank(GasTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+    private static <TILE extends TileEntityGasTank> Machine<TILE> createGasTank(GasTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_GAS_TANK)
-            .withGui(() -> MekanismContainerTypes.GAS_TANK)
-            .withCustomShape(BlockShapes.GAS_TANK)
-            .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
-            .without(AttributeParticleFX.class, AttributeStateActive.class, AttributeUpgradeSupport.class)
-            .build();
+              .withGui(() -> MekanismContainerTypes.GAS_TANK)
+              .withCustomShape(BlockShapes.GAS_TANK)
+              .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
+              .without(AttributeParticleFX.class, AttributeStateActive.class, AttributeUpgradeSupport.class)
+              .build();
     }
 }

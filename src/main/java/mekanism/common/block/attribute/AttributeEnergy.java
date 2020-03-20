@@ -9,10 +9,12 @@ public class AttributeEnergy implements Attribute {
     private DoubleSupplier energyStorage = () -> 400 * energyUsage.getAsDouble();
 
     public AttributeEnergy(DoubleSupplier energyUsage, DoubleSupplier energyStorage) {
-        if (energyUsage != null)
+        if (energyUsage != null) {
             this.energyUsage = energyUsage;
-        if (energyStorage != null)
+        }
+        if (energyStorage != null) {
             this.energyStorage = energyStorage;
+        }
     }
 
     public double getUsage() {

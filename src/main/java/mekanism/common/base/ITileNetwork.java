@@ -14,5 +14,5 @@ public interface ITileNetwork {
      *
      * @param dataStream Datastream to parse
      */
-    void handlePacketData(PacketBuffer dataStream) throws Exception;
+    void handlePacketData(PacketBuffer dataStream);
 }

@@ -49,9 +49,9 @@ public final class CableUtils {
     /**
      * Emits energy from a central block by splitting the received stack among the sides given.
      *
-     * @param sides - the list of sides to output from
+     * @param sides        - the list of sides to output from
      * @param energyToSend - the energy to output
-     * @param from  - the TileEntity to output from
+     * @param from         - the TileEntity to output from
      *
      * @return the amount of gas emitted
      */

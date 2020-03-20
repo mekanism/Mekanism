@@ -26,7 +26,7 @@ public class BlockType {
 
     @SuppressWarnings("unchecked")
     public <T extends Attribute> T get(Class<T> type) {
-        return (T)attributeMap.get(type);
+        return (T) attributeMap.get(type);
     }
 
     @SafeVarargs
@@ -57,8 +57,9 @@ public class BlockType {
     public static boolean is(Block block, BlockType... types) {
         if (block instanceof ITypeBlock) {
             for (BlockType type : types) {
-                if (((ITypeBlock) block).getType() == type)
+                if (((ITypeBlock) block).getType() == type) {
                     return true;
+                }
             }
         }
         return false;

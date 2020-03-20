@@ -24,7 +24,7 @@ import net.minecraft.item.BlockItem;
 
 public class AdditionsBlocks {
 
-    public static BlockDeferredRegister BLOCKS = new BlockDeferredRegister(MekanismAdditions.MODID);
+    public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(MekanismAdditions.MODID);
 
     public static final BlockRegistryObject<BlockObsidianTNT, BlockItem> OBSIDIAN_TNT = BLOCKS.register("obsidian_tnt", BlockObsidianTNT::new);
 

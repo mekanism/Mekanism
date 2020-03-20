@@ -37,7 +37,7 @@ import net.minecraft.item.Item;
 
 public class MekanismItems {
 
-    public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(Mekanism.MODID);
+    public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(Mekanism.MODID);
 
     public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.register("electric_bow", ItemElectricBow::new);
     public static final ItemRegistryObject<ItemRobit> ROBIT = ITEMS.register("robit", ItemRobit::new);

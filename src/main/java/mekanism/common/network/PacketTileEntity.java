@@ -47,7 +47,7 @@ public class PacketTileEntity {
                 } catch (Exception e) {
                     Mekanism.logger.error("FIXME: Packet handling error", e);
                 }
-            };
+            }
             message.storedBuffer.release();
         });
         context.get().setPacketHandled(true);

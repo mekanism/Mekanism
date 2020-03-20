@@ -9,7 +9,7 @@ import net.minecraft.item.Item;
 
 public class GeneratorsItems {
 
-    public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismGenerators.MODID);
+    public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismGenerators.MODID);
 
     public static final ItemRegistryObject<Item> SOLAR_PANEL = ITEMS.register("solar_panel");
     public static final ItemRegistryObject<ItemHohlraum> HOHLRAUM = ITEMS.register("hohlraum", ItemHohlraum::new);

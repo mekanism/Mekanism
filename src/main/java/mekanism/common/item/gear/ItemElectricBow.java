@@ -43,7 +43,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IIte
         //TODO: Config max energy, damage, etc
         super(120_000, properties.setNoRepair());
         addPropertyOverride(new ResourceLocation("pull"), (stack, world, entity) -> entity == null || !(entity.getActiveItemStack().getItem() instanceof ItemElectricBow)
-                                        ? 0.0F : (float) (stack.getUseDuration() - entity.getItemInUseCount()) / 20.0F);
+                                                                                    ? 0.0F : (float) (stack.getUseDuration() - entity.getItemInUseCount()) / 20.0F);
         addPropertyOverride(new ResourceLocation("pulling"), (stack, world, entity) ->
               entity != null && entity.isHandActive() && entity.getActiveItemStack() == stack ? 1.0F : 0.0F);
     }

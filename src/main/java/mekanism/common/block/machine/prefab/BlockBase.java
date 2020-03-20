@@ -41,6 +41,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     // ugly hack but required to have a reference to our block type before setting state info; assumes single-threaded startup
     private static BlockType cacheType;
+
     private static <TYPE extends BlockType> Block.Properties hack(TYPE type, Block.Properties props) {
         cacheType = type;
         return props;
@@ -64,7 +65,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     @Override
     public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType placement, @Nullable EntityType<?> entityType) {
-        return type.has(AttributeNoMobSpawn.class) ? false : super.canCreatureSpawn(state, world, pos, placement, entityType);
+        return !type.has(AttributeNoMobSpawn.class) && super.canCreatureSpawn(state, world, pos, placement, entityType);
     }
 
     @Nonnull

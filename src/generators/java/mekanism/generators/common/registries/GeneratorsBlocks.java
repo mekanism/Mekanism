@@ -37,7 +37,7 @@ import net.minecraft.block.Block;
 
 public class GeneratorsBlocks {
 
-    public static BlockDeferredRegister BLOCKS = new BlockDeferredRegister(MekanismGenerators.MODID);
+    public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(MekanismGenerators.MODID);
 
     public static final BlockRegistryObject<BlockTileModel<TileEntityHeatGenerator, Generator<TileEntityHeatGenerator>>, ItemBlockMachine> HEAT_GENERATOR = BLOCKS.register("heat_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.HEAT_GENERATOR), (block) -> new ItemBlockMachine(block, GeneratorsISTERProvider::heat));
     public static final BlockRegistryObject<BlockTileModel<TileEntitySolarGenerator, Generator<TileEntitySolarGenerator>>, ItemBlockMachine> SOLAR_GENERATOR = BLOCKS.register("solar_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.SOLAR_GENERATOR), ItemBlockMachine::new);

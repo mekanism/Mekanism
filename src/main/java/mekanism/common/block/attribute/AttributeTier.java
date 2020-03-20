@@ -21,9 +21,12 @@ public class AttributeTier<TIER extends ITier> implements Attribute {
 
     // TODO remove this, eventually we'll natively use BlockType in transmitters
     private static Map<ITier, BlockType> typeCache = new HashMap<>();
+
     public static <T extends ITier> BlockType getPassthroughType(T tier) {
-        if (typeCache.containsKey(tier)) return typeCache.get(tier);
-        BlockType type = BlockTypeBuilder.createBlock(MekanismLang.EMPTY).with(new AttributeTier<T>(tier)).build();
+        if (typeCache.containsKey(tier)) {
+            return typeCache.get(tier);
+        }
+        BlockType type = BlockTypeBuilder.createBlock(MekanismLang.EMPTY).with(new AttributeTier<>(tier)).build();
         typeCache.put(tier, type);
         return type;
     }

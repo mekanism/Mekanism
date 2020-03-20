@@ -12,7 +12,7 @@ import net.minecraft.entity.Entity;
 
 public class AdditionsItems {
 
-    public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismAdditions.MODID);
+    public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismAdditions.MODID);
 
     public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_CREEPER_SPAWN_EGG = registerSpawnEgg(AdditionsEntityTypes.BABY_CREEPER, 0x31E02F, 0x1E1E1E);
     public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_ENDERMAN_SPAWN_EGG = registerSpawnEgg(AdditionsEntityTypes.BABY_ENDERMAN, 0x242424, 0x1E1E1E);

@@ -9,6 +9,7 @@ public interface IDisableableEnum<TYPE extends Enum<TYPE> & IDisableableEnum<TYP
 
     @Nonnull
     @Override
+    @SuppressWarnings("Convert2MethodRef")
     default TYPE getNext() {
         //Note: Do not replace this with method reference, or it will crash not being able to resolve the TYPE
         return getNext(element -> element.isEnabled());
@@ -16,6 +17,7 @@ public interface IDisableableEnum<TYPE extends Enum<TYPE> & IDisableableEnum<TYP
 
     @Nonnull
     @Override
+    @SuppressWarnings("Convert2MethodRef")
     default TYPE getPrevious() {
         //Note: Do not replace this with method reference, or it will crash not being able to resolve the TYPE
         return getPrevious(element -> element.isEnabled());

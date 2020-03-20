@@ -13,7 +13,7 @@ public class AttributeGui implements Attribute {
 
     private Supplier<ContainerTypeRegistryObject<? extends MekanismTileContainer<?>>> containerRegistrar;
     private Function<TileEntityMekanism, INamedContainerProvider> containerSupplier = (tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()),
-        (i, inv, player) -> new MekanismTileContainer<>(getContainerType(), i, inv, tile));
+          (i, inv, player) -> new MekanismTileContainer<>(getContainerType(), i, inv, tile));
 
     public AttributeGui(Supplier<ContainerTypeRegistryObject<? extends MekanismTileContainer<?>>> containerRegistrar) {
         this.containerRegistrar = containerRegistrar;

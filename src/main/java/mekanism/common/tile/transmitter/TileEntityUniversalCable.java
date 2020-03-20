@@ -22,7 +22,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
 import mekanism.common.integration.EnergyCompatUtils;

@@ -37,7 +37,7 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
         }
 
         public static <TILE extends TileEntityMekanism> BlockTileBuilder<BlockTypeTile<TILE>, TILE, ?> createBlock(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
-            return new BlockTileBuilder<>(new BlockTypeTile<TILE>(tileEntityRegistrar, description));
+            return new BlockTileBuilder<>(new BlockTypeTile<>(tileEntityRegistrar, description));
         }
 
         public T withSound(SoundEventRegistryObject<SoundEvent> soundRegistrar) {

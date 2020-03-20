@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.annotations.Contract;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateFacing;
@@ -28,6 +27,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
+import org.jetbrains.annotations.Contract;
 
 //TODO: Set default state for different blocks if the default is not ideal
 public class BlockStateHelper {
@@ -76,7 +76,7 @@ public class BlockStateHelper {
         return getStateForPlacement(block, state, context.getWorld(), context.getPos(), context.getPlayer(), context.getFace());
     }
 
-    @Contract("_, null, _, _, _ -> null")
+    @Contract("_, null, _, _, _, _ -> null")
     public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nullable PlayerEntity player, @Nonnull Direction face) {
         if (state == null) {
             return null;

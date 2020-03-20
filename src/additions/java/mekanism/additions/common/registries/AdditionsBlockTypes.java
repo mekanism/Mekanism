@@ -12,8 +12,8 @@ public class AdditionsBlockTypes {
 
     // Glow Panel
     public static final BlockType GLOW_PANEL = BlockTypeBuilder
-        .createBlock(AdditionsLang.DESCRIPTION_GLOW_PANEL)
-        .withCustomShape(BlockShapes.GLOW_PANEL)
-        .with(new AttributeStateFacing(BlockStateHelper.facingProperty, FacePlacementType.SELECTED_FACE))
-        .build();
+          .createBlock(AdditionsLang.DESCRIPTION_GLOW_PANEL)
+          .withCustomShape(BlockShapes.GLOW_PANEL)
+          .with(new AttributeStateFacing(BlockStateHelper.facingProperty, FacePlacementType.SELECTED_FACE))
+          .build();
 }

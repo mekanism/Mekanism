@@ -32,8 +32,8 @@ public class GuiSolarGenerator<TILE extends TileEntitySolarGenerator> extends Gu
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-            GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getLastProductionAmount())),
-            MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
+              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getLastProductionAmount())),
+              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
         addButton(new GuiStateTexture(this, 18, 35, tile::canSeeSun, MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "sees_sun.png"),
               MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "no_sun.png")));
     }

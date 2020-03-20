@@ -34,7 +34,7 @@ public class Generator<TILE extends TileEntityMekanism> extends BlockTypeTile<TI
 
         public static <TILE extends TileEntityMekanism> GeneratorBuilder<Generator<TILE>, TILE, ?> createGenerator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
               ILangEntry description) {
-            return new GeneratorBuilder<>(new Generator<TILE>(tileEntityRegistrar, description));
+            return new GeneratorBuilder<>(new Generator<>(tileEntityRegistrar, description));
         }
     }
 }

@@ -75,6 +75,7 @@ public class GeneratorsClientRegistration {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("Convert2MethodRef")
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.BIO_GENERATOR, GuiBioGenerator::new);
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.GAS_BURNING_GENERATOR, GuiGasGenerator::new);

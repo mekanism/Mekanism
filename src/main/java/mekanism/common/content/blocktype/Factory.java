@@ -28,14 +28,14 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
         add(new AttributeGui(containerRegistrar), new AttributeTier<>(tier));
 
         if (tier.ordinal() < FactoryTier.values().length - 1) {
-            add(new AttributeUpgradeable(() -> MekanismBlocks.getFactory(FactoryTier.values()[tier.ordinal()+1], origMachine.get(AttributeFactoryType.class).getFactoryType())));
+            add(new AttributeUpgradeable(() -> MekanismBlocks.getFactory(FactoryTier.values()[tier.ordinal() + 1], origMachine.get(AttributeFactoryType.class).getFactoryType())));
         }
     }
 
     private void setMachineData() {
         setFrom(origMachine, AttributeSound.class, AttributeFactoryType.class, AttributeUpgradeSupport.class);
         AttributeEnergy origEnergy = origMachine.get(AttributeEnergy.class);
-        add(new AttributeEnergy(() -> origEnergy.getUsage(), () -> ((FactoryTier) get(AttributeTier.class).getTier()).processes * Math.max(0.5D * origEnergy.getConfigStorage(), origEnergy.getUsage())));
+        add(new AttributeEnergy(origEnergy::getUsage, () -> ((FactoryTier) get(AttributeTier.class).getTier()).processes * Math.max(0.5D * origEnergy.getConfigStorage(), origEnergy.getUsage())));
     }
 
     public static class FactoryBuilder<FACTORY extends Factory<TILE>, TILE extends TileEntityFactory<?>, T extends MachineBuilder<FACTORY, TILE, T>> extends BlockTileBuilder<FACTORY, TILE, T> {
@@ -48,7 +48,8 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
         public static <TILE extends TileEntityFactory<?>> FactoryBuilder<Factory<TILE>, TILE, ?> createFactory(Supplier<?> tileEntityRegistrar,
               Supplier<?> containerRegistrar, FactoryMachine<?> origMachine, FactoryTier tier) {
             // this is dirty but unfortunately necessary for things to play right
-            return new FactoryBuilder<>(new Factory<TILE>((Supplier<TileEntityTypeRegistryObject<TILE>>)tileEntityRegistrar, (Supplier<ContainerTypeRegistryObject<? extends MekanismTileContainer<?>>>)containerRegistrar, origMachine, tier));
+            return new FactoryBuilder<>(new Factory<>((Supplier<TileEntityTypeRegistryObject<TILE>>) tileEntityRegistrar,
+                  (Supplier<ContainerTypeRegistryObject<? extends MekanismTileContainer<?>>>) containerRegistrar, origMachine, tier));
         }
     }
 }

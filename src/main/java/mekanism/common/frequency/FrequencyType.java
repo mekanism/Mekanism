@@ -3,8 +3,7 @@ package mekanism.common.frequency;
 public enum FrequencyType {
     BASE,
     INVENTORY,
-    SECURITY
-    ;
+    SECURITY;
 
     private static final FrequencyType[] TYPES = values();
 

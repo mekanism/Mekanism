@@ -54,8 +54,6 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
             return false;
         }
         switch (logicType) {
-            case DISABLED:
-                return false;
             case READY:
                 return getReactor().getPlasmaTemp() >= getReactor().getIgnitionTemperature(activeCooled);
             case CAPACITY:
@@ -63,6 +61,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
             case DEPLETED:
                 return (getReactor().getDeuteriumTank().getStored() < getReactor().getInjectionRate() / 2) ||
                        (getReactor().getTritiumTank().getStored() < getReactor().getInjectionRate() / 2);
+            case DISABLED:
             default:
                 return false;
         }

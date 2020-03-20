@@ -1,7 +1,7 @@
 package mekanism.generators.client.render.item;
 
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.generators.client.model.ModelBioGenerator;

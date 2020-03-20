@@ -1,11 +1,11 @@
 package mekanism.common;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.block.BlockBounding;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -124,8 +124,10 @@ public final class TagCache {
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
             if (!forceBlock || item instanceof BlockItem) {
                 //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderType() with a dummy BlockState
-                if (item instanceof BlockItem && ((BlockItem)item).getBlock() instanceof BlockBounding) continue;
-                
+                if (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof BlockBounding) {
+                    continue;
+                }
+
                 String id = item.getRegistryName().getNamespace();
                 if (modName.equals(id) || modName.equals("*")) {
                     stacks.add(new ItemStack(item));

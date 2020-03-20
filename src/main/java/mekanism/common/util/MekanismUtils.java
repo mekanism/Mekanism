@@ -1,5 +1,8 @@
 package mekanism.common.util;
 
+import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +11,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.annotations.Contract;
-import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.Upgrade;
@@ -86,6 +85,7 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
