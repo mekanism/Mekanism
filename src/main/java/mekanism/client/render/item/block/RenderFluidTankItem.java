@@ -3,10 +3,7 @@ package mekanism.client.render.item.block;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.Optional;
 import javax.annotation.Nonnull;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderType;
@@ -16,13 +13,12 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.tier.FluidTankTier;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class RenderFluidTankItem extends MekanismItemStackRenderer {
 
@@ -39,31 +35,25 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
-        Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
-        if (capability.isPresent()) {
-            IFluidHandlerItem fluidHandlerItem = capability.get();
-            if (fluidHandlerItem instanceof IMekanismFluidHandler) {
-                IExtendedFluidTank fluidTank = ((IMekanismFluidHandler) fluidHandlerItem).getFluidTank(0, null);
-                if (fluidTank != null && !fluidTank.isEmpty()) {
-                    float fluidScale = (float) fluidTank.getFluidAmount() / fluidTank.getCapacity();
-                    if (fluidScale > 0) {
-                        FluidStack fluid = fluidTank.getFluid();
-                        matrix.push();
-                        matrix.translate(-0.5, -0.5, -0.5);
-                        int modelNumber;
-                        int color;
-                        if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
-                            modelNumber = stages - 1;
-                            color = MekanismRenderer.getColorARGB(fluid, fluidScale);
-                        } else {
-                            modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
-                            color = MekanismRenderer.getColorARGB(fluid);
-                        }
-                        MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()), color,
-                              MekanismRenderer.calculateGlowLight(light, fluid));
-                        matrix.pop();
-                    }
+        FluidTankTier tier = ((ItemBlockFluidTank) stack.getItem()).getTier();
+        FluidStack fluid = StorageUtils.getStoredFluidFromNBT(stack);
+        if (!fluid.isEmpty()) {
+            float fluidScale = (float) fluid.getAmount() / tier.getStorage();
+            if (fluidScale > 0) {
+                matrix.push();
+                matrix.translate(-0.5, -0.5, -0.5);
+                int modelNumber;
+                int color;
+                if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
+                    modelNumber = stages - 1;
+                    color = MekanismRenderer.getColorARGB(fluid, fluidScale);
+                } else {
+                    modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
+                    color = MekanismRenderer.getColorARGB(fluid);
                 }
+                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()), color,
+                      MekanismRenderer.calculateGlowLight(light, fluid));
+                matrix.pop();
             }
         }
         matrix.push();
@@ -73,7 +63,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         matrix.scale(1.168F, 1.168F, 1.168F);
         //Shift the fluid slightly so that is visible with the min amount in
         matrix.translate(0, -0.06, 0);
-        modelFluidTank.render(matrix, renderer, light, overlayLight, ((ItemBlockFluidTank) stack.getItem()).getTier());
+        modelFluidTank.render(matrix, renderer, light, overlayLight, tier);
         matrix.pop();
     }
 
