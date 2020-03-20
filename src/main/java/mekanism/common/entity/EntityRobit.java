@@ -524,7 +524,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         //TODO: Make a robit specific smelting energy usage config
         return new ItemStackToItemStackCachedRecipe(recipe, inputHandler, outputHandler)
-              .setEnergyRequirements(MekanismConfig.usage.energizedSmelter::get, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
+              .setEnergyRequirements(MekanismConfig.usage.energizedSmelter::get, energyContainer)
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::onContentsChanged)
               .setOperatingTicksChanged(operatingTicks -> progress = operatingTicks);

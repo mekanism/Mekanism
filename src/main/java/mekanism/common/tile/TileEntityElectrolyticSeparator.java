@@ -12,7 +12,6 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
@@ -105,7 +104,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(fluidTank = BasicFluidTank.input(24_000, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this), RelativeSide.FRONT, RelativeSide.BACK);
+        builder.addTank(fluidTank = BasicFluidTank.input(24_000, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this),
+              RelativeSide.FRONT, RelativeSide.BACK);
         return builder.build();
     }
 
@@ -206,7 +206,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         return new ElectrolysisCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {
                   if (currentMax <= 0) {

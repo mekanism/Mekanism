@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
@@ -251,7 +250,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         return new RotaryCachedRecipe(recipe, fluidInputHandler, gasInputHandler, gasOutputHandler, fluidOutputHandler, () -> mode)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {
                   if (currentMax <= 0) {

@@ -8,7 +8,10 @@ import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.MekanismRecipe;
 
 @FieldsAreNonnullByDefault
@@ -72,10 +75,10 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     }
 
     //TODO: Do we want to change to a system similar to the InputHandler, except for energy, so that we can simulate extracting energy from our container
-    public CachedRecipe<RECIPE> setEnergyRequirements(DoubleSupplier perTickEnergy, DoubleSupplier storedEnergy, DoubleConsumer useEnergy) {
+    public CachedRecipe<RECIPE> setEnergyRequirements(DoubleSupplier perTickEnergy, IEnergyContainer energyContainer) {
         this.perTickEnergy = perTickEnergy;
-        this.storedEnergy = storedEnergy;
-        this.useEnergy = useEnergy;
+        this.storedEnergy = energyContainer::getEnergy;
+        this.useEnergy = energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL);
         return this;
     }
 

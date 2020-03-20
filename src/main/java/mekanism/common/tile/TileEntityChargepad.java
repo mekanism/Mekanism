@@ -57,27 +57,25 @@ public class TileEntityChargepad extends TileEntityMekanism {
               pos.getX() + 1, pos.getY() + 0.4, pos.getZ() + 1), CHARGE_PREDICATE);
         for (LivingEntity entity : entities) {
             active = !energyContainer.isEmpty();
-            if (active) {
-                if (entity instanceof EntityRobit) {
-                    provideEnergy((EntityRobit) entity);
-                } else if (entity instanceof PlayerEntity) {
-                    Optional<IItemHandler> itemHandlerCap = MekanismUtils.toOptional(entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
-                    //Ensure that we have an item handler capability, because if for example the player is dead we will not
-                    if (itemHandlerCap.isPresent()) {
-                        IItemHandler itemHandler = itemHandlerCap.get();
-                        int slots = itemHandler.getSlots();
-                        for (int slot = 0; slot < slots; slot++) {
-                            ItemStack stack = itemHandler.getStackInSlot(slot);
-                            if (!stack.isEmpty() && provideEnergy(EnergyCompatUtils.getStrictEnergyHandler(stack))) {
-                                //Only allow charging one item per player each check
-                                break;
-                            }
+            if (!active) {
+                //If we run out of energy, stop checking the remaining entities
+                break;
+            } else if (entity instanceof EntityRobit) {
+                provideEnergy((EntityRobit) entity);
+            } else if (entity instanceof PlayerEntity) {
+                Optional<IItemHandler> itemHandlerCap = MekanismUtils.toOptional(entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+                //Ensure that we have an item handler capability, because if for example the player is dead we will not
+                if (itemHandlerCap.isPresent()) {
+                    IItemHandler itemHandler = itemHandlerCap.get();
+                    int slots = itemHandler.getSlots();
+                    for (int slot = 0; slot < slots; slot++) {
+                        ItemStack stack = itemHandler.getStackInSlot(slot);
+                        if (!stack.isEmpty() && provideEnergy(EnergyCompatUtils.getStrictEnergyHandler(stack))) {
+                            //Only allow charging one item per player each check
+                            break;
                         }
                     }
                 }
-            } else {
-                //If we run out of energy, stop checking the remaining entities
-                break;
             }
         }
         if (active != getActive()) {

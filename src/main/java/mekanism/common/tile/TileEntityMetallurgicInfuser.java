@@ -2,13 +2,11 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
@@ -118,7 +116,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(infusionSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getWorld, this, 17, 35));
-        //TODO: Verify that it is properly querying the infusion tank's type if it changes
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             if (!infusionTank.isEmpty()) {
                 return containsRecipe(recipe -> recipe.getInfusionInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(stack));
@@ -174,7 +171,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
         return new MetallurgicInfuserCachedRecipe(recipe, infusionInputHandler, itemInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);

@@ -3,14 +3,12 @@ package mekanism.common.tile;
 import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.FluidGasToGasCachedRecipe;
@@ -163,7 +161,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITan
         return new FluidGasToGasCachedRecipe(recipe, fluidInputHandler, gasInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer::getEnergy, energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL))
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {
                   if (currentMax <= 0) {
