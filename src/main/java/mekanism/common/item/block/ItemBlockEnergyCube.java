@@ -2,37 +2,35 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
-import mekanism.common.item.IItemEnergized;
+import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.EnergyCubeTier;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockEnergyCube extends ItemBlockAdvancedTooltip<BlockEnergyCube> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockEnergyCube extends ItemBlockAdvancedTooltip<BlockEnergyCube> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setNoRepair().setISTER(ISTERProvider::energyCube));
@@ -40,17 +38,14 @@ public class ItemBlockEnergyCube extends ItemBlockAdvancedTooltip<BlockEnergyCub
 
     @Nonnull
     public EnergyCubeTier getTier() {
-        return (EnergyCubeTier) Attribute.get(getBlock(), AttributeTier.class).getTier();
+        return Attribute.getTier(getBlock(), EnergyCubeTier.class);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
-        EnergyCubeTier tier = getTier();
-        if (tier != null) {
-            tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(tier.getMaxEnergy())));
-        }
+        StorageUtils.addStoredEnergy(stack, tooltip, true);
+        tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(getTier().getMaxEnergy())));
         super.addInformation(stack, world, tooltip, flag);
     }
 
@@ -66,32 +61,17 @@ public class ItemBlockEnergyCube extends ItemBlockAdvancedTooltip<BlockEnergyCub
     }
 
     @Override
-    public void setEnergy(ItemStack itemStack, double amount) {
-        if (getTier() == EnergyCubeTier.CREATIVE && amount != Double.MAX_VALUE) {
-            return;
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
+        //Add the charged variant
+        if (isInGroup(group)) {
+            EnergyCubeTier tier = Attribute.getTier(getBlock(), EnergyCubeTier.class);
+            ItemStack stack = StorageUtils.getFilledEnergyVariant(new ItemStack(this), tier.getMaxEnergy());
+            if (tier == EnergyCubeTier.CREATIVE) {
+                //TODO: Add side specific NBT configuration here rather than in BlockEnergyCube
+            }
+            items.add(stack);
         }
-        ItemDataUtils.setDouble(itemStack, NBTConstants.ENERGY_STORED, Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
-    }
-
-    @Override
-    public double getMaxEnergy(ItemStack itemStack) {
-        EnergyCubeTier tier = getTier();
-        return tier == null ? 0 : tier.getMaxEnergy();
-    }
-
-    @Override
-    public double getMaxTransfer(ItemStack itemStack) {
-        return getMaxEnergy(itemStack) * 0.005;
-    }
-
-    @Override
-    public boolean canReceive(ItemStack itemStack) {
-        return true;
-    }
-
-    @Override
-    public boolean canSend(ItemStack itemStack) {
-        return true;
     }
 
     @Override
@@ -101,16 +81,11 @@ public class ItemBlockEnergyCube extends ItemBlockAdvancedTooltip<BlockEnergyCub
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        return 1D - (getEnergy(stack) / getMaxEnergy(stack));
-    }
-
-    @Override
-    public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack) {
-        return MathHelper.hsvToRGB(Math.max(0.0F, (float) (1 - getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+        return StorageUtils.getDurabilityForDisplay(stack);
     }
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, new ForgeEnergyItemWrapper());
+        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(Attribute.getTier(getBlock(), EnergyCubeTier.class)));
     }
 }

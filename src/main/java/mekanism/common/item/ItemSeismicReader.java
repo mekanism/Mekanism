@@ -2,6 +2,9 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -9,6 +12,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,15 +27,10 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemSeismicReader extends ItemEnergized {
 
-    public static final double ENERGY_USAGE = 250;
+    private static final double ENERGY_USAGE = 250;
 
-    public ItemSeismicReader() {
-        super(12_000);
-    }
-
-    @Override
-    public boolean canSend(ItemStack itemStack) {
-        return false;
+    public ItemSeismicReader(Properties properties) {
+        super(12_000, properties);
     }
 
     @Override
@@ -51,26 +50,25 @@ public class ItemSeismicReader extends ItemEnergized {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (getEnergy(stack) < ENERGY_USAGE && !player.isCreative()) {
-            if (!world.isRemote) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NEEDS_ENERGY.translateColored(EnumColor.RED)));
-            }
-            return new ActionResult<>(ActionResultType.SUCCESS, stack);
-        } else if (!MekanismUtils.isChunkVibrated(new ChunkPos(player.getPosition()), player.dimension)) {
-            if (!world.isRemote) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NO_VIBRATIONS.translateColored(EnumColor.RED)));
-            }
+        if (world.isRemote) {
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
-        if (!player.isCreative()) {
-            setEnergy(stack, getEnergy(stack) - ENERGY_USAGE);
-        }
-        if (!world.isRemote) {
+        if (!MekanismUtils.isChunkVibrated(new ChunkPos(player.getPosition()), player.dimension)) {
+            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NO_VIBRATIONS.translateColored(EnumColor.RED)));
+        } else {
+            if (!player.isCreative()) {
+                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                if (energyContainer == null || energyContainer.extract(ENERGY_USAGE, Action.SIMULATE, AutomationType.MANUAL) < ENERGY_USAGE) {
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NEEDS_ENERGY.translateColored(EnumColor.RED)));
+                    return new ActionResult<>(ActionResultType.SUCCESS, stack);
+                }
+                energyContainer.extract(ENERGY_USAGE, Action.EXECUTE, AutomationType.MANUAL);
+            }
             NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new SeismicReaderContainer(i, inv, hand, stack)), buf -> {
                 buf.writeEnumValue(hand);
                 buf.writeItemStack(stack);
             });
         }
-        return new ActionResult<>(ActionResultType.PASS, stack);
+        return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 }

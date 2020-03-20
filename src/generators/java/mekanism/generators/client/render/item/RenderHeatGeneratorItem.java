@@ -1,11 +1,13 @@
 package mekanism.generators.client.render.item;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.Optional;
 import javax.annotation.Nonnull;
-import mekanism.api.NBTConstants;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
-import mekanism.common.util.ItemDataUtils;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.model.ModelHeatGenerator;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
@@ -23,7 +25,15 @@ public class RenderHeatGeneratorItem extends MekanismItemStackRenderer {
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.rotate(Vector3f.YP.rotationDegrees(180));
         matrix.translate(0, -1, 0);
-        heatGenerator.render(matrix, renderer, light, overlayLight, ItemDataUtils.getDouble(stack, NBTConstants.ENERGY_STORED) > 0);
+        boolean hasEnergy = false;
+        Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
+        if (capability.isPresent()) {
+            IStrictEnergyHandler energyHandlerItem = capability.get();
+            if (energyHandlerItem.getEnergyContainerCount() > 0) {
+                hasEnergy = energyHandlerItem.getEnergy(0) > 0;
+            }
+        }
+        heatGenerator.render(matrix, renderer, light, overlayLight, hasEnergy);
     }
 
     @Override

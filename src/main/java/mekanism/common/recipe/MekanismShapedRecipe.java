@@ -12,7 +12,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.capabilities.Capabilities;
@@ -75,12 +74,13 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
         if (getRecipeOutput().isEmpty()) {
             return ItemStack.EMPTY;
         }
+        //TODO: Rewrite this again, to bypass any and all limits, and support things that don't actually expose capabilities for the stored data
         //TODO: Make sure the output doesn't have extra NBT for no reason, for example it seems that factories end up with NBT in the output?
         ItemStack toReturn = getRecipeOutput().copy();
         Item item = toReturn.getItem();
         int invLength = inv.getSizeInventory();
         //Transfer energy
-        if (item instanceof IEnergizedItem) {
+        /*if (item instanceof IEnergizedItem) {
             IEnergizedItem energizedItem = (IEnergizedItem) item;
             double maxEnergy = energizedItem.getMaxEnergy(toReturn);
             if (maxEnergy > 0) {
@@ -96,7 +96,7 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
                     energizedItem.setEnergy(toReturn, energyToSet);
                 }
             }
-        }
+        }*/
         //Transfer gas
         Optional<IGasHandler> resultCapability = MekanismUtils.toOptional(toReturn.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (resultCapability.isPresent()) {

@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.fluid;
+package mekanism.common.capabilities.fluid.item;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +15,8 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -22,8 +24,11 @@ import net.minecraftforge.fluids.FluidStack;
 @MethodsReturnNonnullByDefault
 public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
 
-    public static RateLimitFluidHandler create(IntSupplier rate, IntSupplier capacity) {
-        //TODO: Validate capacity and rate are positive?
+    public static RateLimitFluidHandler create(int rate, IntSupplier capacity) {
+        if (rate <= 0) {
+            throw new IllegalArgumentException("Rate must be greater than zero");
+        }
+        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         return new RateLimitFluidHandler(handler -> new RateLimitFluidTank(rate, capacity, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi,
               BasicFluidTank.alwaysTrue, handler));
     }
@@ -46,9 +51,9 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
 
     private static class RateLimitFluidTank extends VariableCapacityFluidTank {
 
-        private final IntSupplier rate;
+        private final int rate;
 
-        private RateLimitFluidTank(IntSupplier rate, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
+        private RateLimitFluidTank(int rate, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> isValid, IMekanismFluidHandler fluidHandler) {
             super(capacity, canExtract, canInsert, isValid, fluidHandler);
             this.rate = rate;
@@ -57,17 +62,19 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
         @Override
         protected int getRate(@Nullable AutomationType automationType) {
             //Allow unknown or manual interaction to bypass rate limit for the item
-            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsInt();
+            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate;
         }
     }
 
-    private static class FluidTankRateLimitFluidTank extends RateLimitFluidTank {
+    private static class FluidTankRateLimitFluidTank extends VariableCapacityFluidTank {
 
-        private boolean isCreative;
+        private final IntSupplier rate;
+        private final boolean isCreative;
 
         private FluidTankRateLimitFluidTank(FluidTankTier tier, IMekanismFluidHandler fluidHandler) {
-            super(tier::getOutput, tier::getStorage, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, fluidHandler);
+            super(tier::getStorage, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, fluidHandler);
             isCreative = tier == FluidTankTier.CREATIVE;
+            rate = tier::getOutput;
         }
 
         @Override
@@ -89,6 +96,12 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
         @Override
         public int setStackSize(int amount, Action action) {
             return super.setStackSize(amount, action.combine(!isCreative));
+        }
+
+        @Override
+        protected int getRate(@Nullable AutomationType automationType) {
+            //Allow unknown or manual interaction to bypass rate limit for the item
+            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsInt();
         }
     }
 }

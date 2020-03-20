@@ -19,8 +19,8 @@ public class EnergyCubeEnergyContainer extends BasicEnergyContainer {
         return new EnergyCubeEnergyContainer(tier, energyHandler);
     }
 
-    private boolean isCreative;
-    private DoubleSupplier rate;
+    private final boolean isCreative;
+    private final DoubleSupplier rate;
 
     private EnergyCubeEnergyContainer(EnergyCubeTier tier, @Nullable IMekanismStrictEnergyHandler energyHandler) {
         super(tier.getMaxEnergy(), alwaysTrue, alwaysTrue, energyHandler);

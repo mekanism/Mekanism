@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
@@ -13,6 +16,7 @@ import mekanism.common.frequency.FrequencyType;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -125,22 +129,27 @@ public class PacketPortableTeleporter {
                             TileEntityTeleporter teleporter = MekanismUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.getPos());
                             if (teleporter != null) {
                                 try {
+                                    if (!player.isCreative()) {
+                                        double energyCost = ItemPortableTeleporter.calculateEnergyCost(player, coords);
+                                        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                                        if (energyContainer == null || energyContainer.extract(energyCost, Action.SIMULATE, AutomationType.MANUAL) < energyCost) {
+                                            break;
+                                        }
+                                        energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
+                                    }
                                     teleporter.didTeleport.add(player.getUniqueID());
                                     teleporter.teleDelay = 5;
-                                    item.setEnergy(stack, item.getEnergy(stack) - ItemPortableTeleporter.calculateEnergyCost(player, coords));
                                     if (player instanceof ServerPlayerEntity) {
                                         ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
                                     }
                                     player.closeScreen();
-                                    //TODO: Check
                                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(new Coord4D(player)), world, coords.getPos());
                                     TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
                                     if (player instanceof ServerPlayerEntity) {
                                         TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coords);
                                     }
                                     world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                                    //TODO: Check
-                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), world, coords.getPos());
+                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), teleWorld, coords.getPos());
                                 } catch (Exception ignored) {
                                 }
                             }
@@ -223,13 +232,16 @@ public class PacketPortableTeleporter {
                 if (given.equals(iterFreq)) {
                     given = iterFreq;
                     if (!given.activeCoords.isEmpty()) {
-                        Coord4D coords = given.getClosestCoords(new Coord4D(player));
-                        double energyNeeded = ItemPortableTeleporter.calculateEnergyCost(player, coords);
-                        if (energyNeeded > item.getEnergy(stack)) {
-                            status = 4;
-                        } else {
-                            status = 1;
+                        if (!player.isCreative()) {
+                            Coord4D coords = given.getClosestCoords(new Coord4D(player));
+                            double energyNeeded = ItemPortableTeleporter.calculateEnergyCost(player, coords);
+                            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                            if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
+                                status = 4;
+                                break;
+                            }
                         }
+                        status = 1;
                     }
                     break;
                 }

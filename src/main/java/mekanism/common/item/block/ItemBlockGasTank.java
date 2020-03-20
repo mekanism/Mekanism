@@ -10,11 +10,10 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.capabilities.chemical.RateLimitGasHandler;
+import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.IItemSustainedInventory;
@@ -25,6 +24,7 @@ import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
@@ -33,7 +33,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -69,7 +68,7 @@ public class ItemBlockGasTank extends ItemBlockAdvancedTooltip<BlockTileModel<Ti
         if (!hasGas) {
             tooltip.add(MekanismLang.EMPTY.translate());
         }
-        int cap = ((GasTankTier) Attribute.get(getBlock(), AttributeTier.class).getTier()).getStorage();
+        int cap = Attribute.getTier(getBlock(), GasTankTier.class).getStorage();
         if (cap == Integer.MAX_VALUE) {
             tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
@@ -93,7 +92,7 @@ public class ItemBlockGasTank extends ItemBlockAdvancedTooltip<BlockTileModel<Ti
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            GasTankTier tier = (GasTankTier) Attribute.get(getBlock(), AttributeTier.class).getTier();
+            GasTankTier tier = Attribute.getTier(getBlock(), GasTankTier.class);
             if (tier == GasTankTier.CREATIVE && MekanismConfig.general.prefilledGasTanks.get()) {
                 for (Gas type : MekanismAPI.GAS_REGISTRY.getValues()) {
                     if (!type.isHidden()) {
@@ -111,17 +110,11 @@ public class ItemBlockGasTank extends ItemBlockAdvancedTooltip<BlockTileModel<Ti
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        return GasUtils.getDurabilityForDisplay(stack);
-    }
-
-    @Override
-    public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack) {
-        return MathHelper.hsvToRGB(Math.max(0.0F, (float) (1 - getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+        return StorageUtils.getDurabilityForDisplay(stack);
     }
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        GasTankTier tier = (GasTankTier) Attribute.get(getBlock(), AttributeTier.class).getTier();
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(tier));
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(Attribute.getTier(getBlock(), GasTankTier.class)));
     }
 }

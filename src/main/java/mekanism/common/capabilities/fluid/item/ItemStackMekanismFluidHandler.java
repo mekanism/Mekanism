@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.fluid;
+package mekanism.common.capabilities.fluid.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;

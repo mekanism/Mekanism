@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -18,6 +19,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
@@ -31,6 +33,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
@@ -323,10 +326,17 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     public void drop() {
         //TODO: Move this to loot table?
         ItemEntity entityItem = new ItemEntity(world, getPosX(), getPosY() + 0.3, getPosZ(), MekanismItems.ROBIT.getItemStack());
-        ItemRobit item = (ItemRobit) entityItem.getItem().getItem();
-        item.setEnergy(entityItem.getItem(), energyContainer.getEnergy());
-        item.setInventory(((ISustainedInventory) this).getInventory(), entityItem.getItem());
-        item.setName(entityItem.getItem(), getName().getFormattedText());
+        ItemStack stack = entityItem.getItem();
+        Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
+        if (capability.isPresent()) {
+            IStrictEnergyHandler energyHandlerItem = capability.get();
+            if (energyHandlerItem.getEnergyContainerCount() > 0) {
+                energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
+            }
+        }
+        ItemRobit item = (ItemRobit) stack.getItem();
+        item.setInventory(((ISustainedInventory) this).getInventory(), stack);
+        item.setName(stack, getName().getFormattedText());
         entityItem.setMotion(0, rand.nextGaussian() * 0.05F + 0.2F, 0);
         world.addEntity(entityItem);
     }

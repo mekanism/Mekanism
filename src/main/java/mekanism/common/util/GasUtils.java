@@ -57,23 +57,6 @@ public final class GasUtils {
         return toFill;
     }
 
-    public static double getDurabilityForDisplay(ItemStack stack) {
-        if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
-            //Ensure the capability is not null, as the first call to getDurabilityForDisplay happens before capability injection
-            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
-                //TODO: Support having multiple tanks at some point, none of our items
-                // currently do so, so it doesn't matter that much
-                if (gasHandlerItem.getGasTankCount() > 0) {
-                    //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                    return 1D - gasHandlerItem.getGasInTank(0).getAmount() / (double) gasHandlerItem.getGasTankCapacity(0);
-                }
-            }
-        }
-        return 1;
-    }
-
     public static boolean hasGas(ItemStack stack) {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {

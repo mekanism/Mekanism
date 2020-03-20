@@ -1,14 +1,15 @@
 package mekanism.common.block;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateFacing;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.Machine;
-import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -21,10 +22,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -147,22 +146,21 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
     @Override
     public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityEnergyCube) {
-            if (Attribute.get(this, AttributeTier.class).getTier() == EnergyCubeTier.CREATIVE) {
+            if (Attribute.getTier(this, EnergyCubeTier.class) == EnergyCubeTier.CREATIVE) {
+                //TODO: Move this to being set in the variant added to the item group
                 ConfigInfo energyConfig = ((TileEntityEnergyCube) tile).configComponent.getConfig(TransmissionType.ENERGY);
                 if (energyConfig != null) {
-                    energyConfig.fill(((ItemBlockEnergyCube) stack.getItem()).getEnergy(stack) > 0 ? DataType.OUTPUT : DataType.INPUT);
+                    Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
+                    if (capability.isPresent()) {
+                        IStrictEnergyHandler energyHandlerItem = capability.get();
+                        if (energyHandlerItem.getEnergyContainerCount() > 0) {
+                            //Validate something didn't go terribly wrong and we actually do have the container we expect to have
+                            energyConfig.fill(energyHandlerItem.getEnergy(0) > 0 ? DataType.OUTPUT : DataType.INPUT);
+                        }
+                    }
                 }
             }
         }
-    }
-
-    @Override
-    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
-        //Charged
-        ItemStack charged = new ItemStack(this);
-        ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, ((EnergyCubeTier) Attribute.get(this, AttributeTier.class).getTier()).getMaxEnergy());
-        items.add(charged);
     }
 
     @Nonnull

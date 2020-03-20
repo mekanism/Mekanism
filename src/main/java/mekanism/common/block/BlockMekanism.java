@@ -222,12 +222,14 @@ public abstract class BlockMekanism extends Block {
 
     @Nonnull
     @Override
+    @Deprecated
     public BlockState rotate(@Nonnull BlockState state, Rotation rotation) {
         return BlockStateHelper.rotate(state, rotation);
     }
 
     @Nonnull
     @Override
+    @Deprecated
     public BlockState mirror(@Nonnull BlockState state, Mirror mirror) {
         return BlockStateHelper.mirror(state, mirror);
     }

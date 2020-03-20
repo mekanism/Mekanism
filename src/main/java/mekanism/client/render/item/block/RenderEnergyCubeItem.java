@@ -1,8 +1,9 @@
 package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.Optional;
 import javax.annotation.Nonnull;
-import mekanism.api.NBTConstants;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
@@ -10,9 +11,10 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
-import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -28,9 +30,6 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier();
-        if (tier == null) {
-            return;
-        }
         matrix.push();
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.push();
@@ -39,13 +38,19 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         energyCube.render(matrix, renderer, light, overlayLight, tier, true);
         energyCube.renderSidesBatched(stack, tier, matrix, renderer, light, overlayLight);
         matrix.pop();
-        double energyPercentage = ItemDataUtils.getDouble(stack, NBTConstants.ENERGY_STORED) / tier.getMaxEnergy();
-        if (energyPercentage > 0.1) {
-            matrix.scale(0.4F, 0.4F, 0.4F);
-            matrix.translate(0, Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
-            matrix.rotate(Vector3f.YP.rotationDegrees(4 * MekanismClient.ticksPassed));
-            matrix.rotate(RenderEnergyCube.coreVec.rotationDegrees(36F + 4 * MekanismClient.ticksPassed));
-            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tier.getBaseTier().getColor(), (float) energyPercentage);
+        Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
+        if (capability.isPresent()) {
+            IStrictEnergyHandler energyHandlerItem = capability.get();
+            if (energyHandlerItem.getEnergyContainerCount() > 0) {
+                double energyPercentage = energyHandlerItem.getEnergy(0) / energyHandlerItem.getMaxEnergy(0);
+                if (energyPercentage > 0.1) {
+                    matrix.scale(0.4F, 0.4F, 0.4F);
+                    matrix.translate(0, Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
+                    matrix.rotate(Vector3f.YP.rotationDegrees(4 * MekanismClient.ticksPassed));
+                    matrix.rotate(RenderEnergyCube.coreVec.rotationDegrees(36F + 4 * MekanismClient.ticksPassed));
+                    core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tier.getBaseTier().getColor(), (float) energyPercentage);
+                }
+            }
         }
         matrix.pop();
     }

@@ -16,6 +16,7 @@ import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
+import mekanism.common.util.EnumUtils;
 
 public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<TILE> {
 
@@ -27,8 +28,8 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
         setMachineData();
         add(new AttributeGui(containerRegistrar), new AttributeTier<>(tier));
 
-        if (tier.ordinal() < FactoryTier.values().length - 1) {
-            add(new AttributeUpgradeable(() -> MekanismBlocks.getFactory(FactoryTier.values()[tier.ordinal() + 1], origMachine.get(AttributeFactoryType.class).getFactoryType())));
+        if (tier.ordinal() < EnumUtils.FACTORY_TIERS.length - 1) {
+            add(new AttributeUpgradeable(() -> MekanismBlocks.getFactory(EnumUtils.FACTORY_TIERS[tier.ordinal() + 1], origMachine.get(AttributeFactoryType.class).getFactoryType())));
         }
     }
 

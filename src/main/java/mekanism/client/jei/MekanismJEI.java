@@ -9,6 +9,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
@@ -46,7 +47,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
-import mekanism.common.item.IItemEnergized;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
@@ -100,15 +100,18 @@ public class MekanismJEI implements IModPlugin {
         return ISubtypeInterpreter.NONE;
     };
     private static final ISubtypeInterpreter ENERGY_INTERPRETER = itemStack -> {
-        if (!itemStack.hasTag() || !(itemStack.getItem() instanceof IItemEnergized)) {
+        Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(itemStack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
+        if (!itemStack.hasTag() || !capability.isPresent()) {
             return ISubtypeInterpreter.NONE;
         }
-        IItemEnergized energized = (IItemEnergized) itemStack.getItem();
-        double energy = energized.getEnergy(itemStack);
-        if (energy == 0) {
-            return "empty";
-        } else if (energy == energized.getMaxEnergy(itemStack)) {
-            return "filled";
+        IStrictEnergyHandler energyHandlerItem = capability.get();
+        if (energyHandlerItem.getEnergyContainerCount() == 1) {
+            //TODO: Eventually figure out a good way to do this with multiple energy containers
+            if (energyHandlerItem.getEnergy(0) == 0) {
+                return "empty";
+            } else if (energyHandlerItem.getNeededEnergy(0) == 0) {
+                return "filled";
+            }
         }
         return ISubtypeInterpreter.NONE;
     };
@@ -125,10 +128,10 @@ public class MekanismJEI implements IModPlugin {
             //TODO: Is there some issue with the fact that maybe these override the other ones so need to be done differently, if there is one
             // that supports say both energy and gas
             //Handle items
-            if (item instanceof IItemEnergized) {
+            ItemStack itemStack = itemProvider.getItemStack();
+            if (itemStack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).isPresent()) {
                 registry.registerSubtypeInterpreter(item, ENERGY_INTERPRETER);
             }
-            ItemStack itemStack = itemProvider.getItemStack();
             if (itemStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent()) {
                 registry.registerSubtypeInterpreter(item, GAS_TANK_NBT_INTERPRETER);
             }

@@ -1,12 +1,14 @@
 package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.Optional;
 import javax.annotation.Nonnull;
-import mekanism.api.NBTConstants;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
-import mekanism.common.util.ItemDataUtils;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -30,7 +32,15 @@ public class RenderDigitalMinerItem extends MekanismItemStackRenderer {
         matrix.translate(0.35, 0.1, 0);
         //Scale the model to the correct size
         matrix.scale(0.352F, 0.352F, 0.352F);
-        digitalMiner.render(matrix, renderer, light, overlayLight, ItemDataUtils.getDouble(stack, NBTConstants.ENERGY_STORED) > 0);
+        boolean hasEnergy = false;
+        Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
+        if (capability.isPresent()) {
+            IStrictEnergyHandler energyHandlerItem = capability.get();
+            if (energyHandlerItem.getEnergyContainerCount() > 0) {
+                hasEnergy = energyHandlerItem.getEnergy(0) > 0;
+            }
+        }
+        digitalMiner.render(matrix, renderer, light, overlayLight, hasEnergy);
         matrix.pop();
     }
 

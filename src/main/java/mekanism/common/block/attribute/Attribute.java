@@ -1,6 +1,9 @@
 package mekanism.common.block.attribute;
 
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
 import net.minecraft.block.Block;
@@ -30,11 +33,13 @@ public interface Attribute {
         }
     }
 
+    @Nullable
     static Direction getFacing(BlockState state) {
         AttributeStateFacing attr = get(state.getBlock(), AttributeStateFacing.class);
         return attr == null ? null : attr.getDirection(state);
     }
 
+    @Nullable
     static BlockState setFacing(BlockState state, Direction facing) {
         AttributeStateFacing attr = get(state.getBlock(), AttributeStateFacing.class);
         return attr == null ? null : attr.setDirection(state, facing);
@@ -45,13 +50,21 @@ public interface Attribute {
         return attr != null && attr.isActive(state);
     }
 
+    @Nonnull
     static BlockState setActive(BlockState state, boolean active) {
         AttributeStateActive attr = get(state.getBlock(), AttributeStateActive.class);
-        return attr == null ? null : attr.setActive(state, active);
+        return attr == null ? state : attr.setActive(state, active);
     }
 
-    static <T extends ITier> T getTier(Block block, Class<T> tierClass) {
-        AttributeTier<T> attr = get(block, AttributeTier.class);
+    @Nullable
+    static <TIER extends ITier> TIER getTier(Block block, Class<TIER> tierClass) {
+        AttributeTier<TIER> attr = get(block, AttributeTier.class);
         return attr == null ? null : attr.getTier();
+    }
+
+    @Nullable
+    static BaseTier getBaseTier(Block block) {
+        AttributeTier<?> attr = get(block, AttributeTier.class);
+        return attr == null ? null : attr.getTier().getBaseTier();
     }
 }

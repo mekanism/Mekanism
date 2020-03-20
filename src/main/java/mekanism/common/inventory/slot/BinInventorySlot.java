@@ -26,7 +26,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         return new BinInventorySlot(inventory, tier);
     }
 
-    private boolean isCreative;
+    private final boolean isCreative;
 
     private BinInventorySlot(@Nullable IMekanismInventory inventory, BinTier tier) {
         super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, validator, inventory, 0, 0);

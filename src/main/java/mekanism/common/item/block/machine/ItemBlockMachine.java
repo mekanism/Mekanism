@@ -17,8 +17,8 @@ import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.machine.prefab.BlockTile;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
-import mekanism.common.item.IItemEnergized;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
@@ -28,13 +28,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.UpgradeDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -45,7 +43,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockMachine(BlockTile<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
@@ -65,10 +63,8 @@ public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> 
                 tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
             }
         }
-        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
-            tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
-        }
-        //TODO: Should we make this support "multiple" tanks
+        StorageUtils.addStoredEnergy(stack, tooltip, false);
+        //TODO: Make this support "multiple" tanks, and probably expose the tank via capabilities
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
@@ -85,31 +81,12 @@ public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> 
     }
 
     @Override
-    public double getMaxEnergy(ItemStack itemStack) {
-        Item item = itemStack.getItem();
-        if (item instanceof ItemBlockMachine && Attribute.has(getBlock(), AttributeEnergy.class)) {
-            return MekanismUtils.getMaxEnergy(itemStack, Attribute.get(((ItemBlockMachine) item).getBlock(), AttributeEnergy.class).getStorage());
-        }
-        return 0;
-    }
-
-    @Override
-    public double getMaxTransfer(ItemStack itemStack) {
-        return getMaxEnergy(itemStack) * 0.005;
-    }
-
-    @Override
-    public boolean canReceive(ItemStack itemStack) {
-        return Attribute.has(getBlock(), AttributeEnergy.class);
-    }
-
-    @Override
-    public boolean canSend(ItemStack itemStack) {
-        return false;
-    }
-
-    @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, new ForgeEnergyItemWrapper());
+        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+            double maxEnergy = MekanismUtils.getMaxEnergy(stack, Attribute.get(getBlock(), AttributeEnergy.class).getStorage());
+            return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(maxEnergy * 0.005, () -> maxEnergy, BasicEnergyContainer.notExternal,
+                  BasicEnergyContainer.alwaysTrue));
+        }
+        return super.initCapabilities(stack, nbt);
     }
 }

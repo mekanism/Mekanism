@@ -70,7 +70,6 @@ public final class NBTConstants {
     public static final String EDIT_MODE = "editMode";
     public static final String EJECT = "eject";
     public static final String ENERGY_CONTAINERS = "EnergyContainers";
-    //TODO: FIXME, I don't beleive when we are done energy_stored will be used anymore
     public static final String ENERGY_STORED = "energy";
     public static final String ENERGY_USAGE = "energyUsage";
     public static final String FILTER = "filter";

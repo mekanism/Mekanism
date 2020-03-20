@@ -21,13 +21,14 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.capabilities.chemical.RateLimitGasHandler;
+import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -35,7 +36,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -99,12 +99,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        return GasUtils.getDurabilityForDisplay(stack);
-    }
-
-    @Override
-    public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack) {
-        return MathHelper.hsvToRGB(Math.max(0.0F, (float) (1 - getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+        return StorageUtils.getDurabilityForDisplay(stack);
     }
 
     @Override
@@ -129,7 +124,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> TRANSFER_RATE, MekanismConfig.general.maxFlamethrowerGas::get,
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(TRANSFER_RATE, MekanismConfig.general.maxFlamethrowerGas::get,
               (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getGas()));
     }
 

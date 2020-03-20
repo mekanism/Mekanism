@@ -21,9 +21,9 @@ public class FluidTankFluidTank extends BasicFluidTank {
         return new FluidTankFluidTank(tile);
     }
 
-    private TileEntityFluidTank tile;
-    private boolean isCreative;
-    private IntSupplier rate;
+    private final TileEntityFluidTank tile;
+    private final boolean isCreative;
+    private final IntSupplier rate;
 
     private FluidTankFluidTank(TileEntityFluidTank tile) {
         super(tile.tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, tile);

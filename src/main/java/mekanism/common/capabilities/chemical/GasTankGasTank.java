@@ -21,8 +21,8 @@ public class GasTankGasTank extends BasicGasTank {
         return new GasTankGasTank(tier, gasHandler);
     }
 
-    private boolean isCreative;
-    private IntSupplier rate;
+    private final boolean isCreative;
+    private final IntSupplier rate;
 
     private GasTankGasTank(GasTankTier tier, @Nullable IMekanismGasHandler gasHandler) {
         super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, gasHandler);

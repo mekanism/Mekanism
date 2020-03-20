@@ -10,8 +10,11 @@ import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.NBTConstants;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.render.item.ISTERProvider;
@@ -24,6 +27,7 @@ import mekanism.common.item.ItemEnergized;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -90,7 +94,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        double energy = getEnergy(stack);
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        double energy = energyContainer == null ? 0 : energyContainer.getEnergy();
         int energyCost = MekanismConfig.general.disassemblerEnergyUsageWeapon.get();
         int minDamage = MekanismConfig.general.disassemblerDamageMin.get();
         int damageDifference = MekanismConfig.general.disassemblerDamageMax.get() - minDamage;
@@ -106,34 +111,43 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             target.attackEntityFrom(DamageSource.causeMobDamage(attacker), damage);
         }
         if (energy > 0) {
-            setEnergy(stack, energy - energyCost);
+            energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
         }
         return false;
     }
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        return getEnergy(stack) != 0 ? getMode(stack).getEfficiency() : 1F;
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        return energyContainer == null || energyContainer.isEmpty() ? 1 : getMode(stack).getEfficiency();
     }
 
     @Override
     public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity entityliving) {
-        setEnergy(stack, getEnergy(stack) - getDestroyEnergy(stack, state.getBlockHardness(world, pos)));
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        if (energyContainer != null) {
+            energyContainer.extract(getDestroyEnergy(stack, state.getBlockHardness(world, pos)), Action.EXECUTE, AutomationType.MANUAL);
+        }
         return true;
     }
 
     @Override
-    public boolean onBlockStartBreak(ItemStack itemStack, BlockPos pos, PlayerEntity player) {
+    public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
         World world = player.world;
         if (!world.isRemote && !player.isCreative()) {
-            Mode mode = getMode(itemStack);
+            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+            if (energyContainer == null) {
+                //If something went wrong and we don't have an energy container, just go to super
+                return super.onBlockStartBreak(stack, pos, player);
+            }
+            Mode mode = getMode(stack);
             boolean extended = mode == Mode.EXTENDED_VEIN;
             if (extended || mode == Mode.VEIN) {
                 BlockState state = world.getBlockState(pos);
                 if (state.getBlock() instanceof BlockBounding) {
                     //Even though we now handle breaking bounding blocks properly, don't allow vein mining
                     // them as an added safety measure
-                    return super.onBlockStartBreak(itemStack, pos, player);
+                    return super.onBlockStartBreak(stack, pos, player);
                 }
                 //If it is extended or should be treated as an ore
                 if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
@@ -144,9 +158,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                             continue;
                         }
                         BlockState foundState = world.getBlockState(foundPos);
-                        int destroyEnergy = getDestroyEnergy(itemStack, foundState.getBlockHardness(world, foundPos));
-                        double energy = getEnergy(itemStack);
-                        if (energy < destroyEnergy) {
+                        int destroyEnergy = getDestroyEnergy(stack, foundState.getBlockHardness(world, foundPos));
+                        if (energyContainer.extract(destroyEnergy, Action.SIMULATE, AutomationType.MANUAL) < destroyEnergy) {
                             //If we don't have energy to break the block continue
                             //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
                             // Given we validate the blocks are the same but their block states may be different thus making them have different
@@ -167,20 +180,20 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                         if (removed) {
                             block.onPlayerDestroy(world, foundPos, foundState);
                             //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
-                            block.harvestBlock(world, player, foundPos, foundState, tileEntity, itemStack);
+                            block.harvestBlock(world, player, foundPos, foundState, tileEntity, stack);
                             player.addStat(Stats.ITEM_USED.get(this));
                             if (exp > 0) {
                                 //If we have xp drop it
                                 block.dropXpOnBlockBreak(world, foundPos, exp);
                             }
                             //Use energy
-                            setEnergy(itemStack, energy - destroyEnergy);
+                            energyContainer.extract(destroyEnergy, Action.EXECUTE, AutomationType.MANUAL);
                         }
                     }
                 }
             }
         }
-        return super.onBlockStartBreak(itemStack, pos, player);
+        return super.onBlockStartBreak(stack, pos, player);
     }
 
     private static List<BlockPos> findPositions(BlockState state, BlockPos location, World world, int maxRange) {
@@ -261,7 +274,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             //If we don't have any blocks we are going to want to do, then skip it
             return ActionResultType.PASS;
         }
-        double energy = getEnergy(stack);
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        if (energyContainer == null) {
+            return ActionResultType.FAIL;
+        }
+        double energy = energyContainer.getEnergy();
         if (energy < energyUsage) {
             //Fail if we don't have enough energy or using the item failed
             return ActionResultType.FAIL;
@@ -333,7 +350,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                 world.playSound(player, newPos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
         }
-        setEnergy(stack, energy - energyUsed);
+        energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);
         return ActionResultType.SUCCESS;
     }
 
@@ -353,7 +370,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             //If we don't have any blocks we are going to want to do, then skip it
             return ActionResultType.PASS;
         }
-        double energy = getEnergy(stack);
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        if (energyContainer == null) {
+            return ActionResultType.FAIL;
+        }
+        double energy = energyContainer.getEnergy();
         int energyUsage = MekanismConfig.general.disassemblerEnergyUsageAxe.get();
         if (energy < energyUsage) {
             //Fail if we don't have enough energy or using the item failed
@@ -406,7 +427,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                 world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
         }
-        setEnergy(stack, energy - energyUsed);
+        energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);
         return ActionResultType.SUCCESS;
     }
 
@@ -453,11 +474,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     public void toggleMode(ItemStack itemStack) {
         ItemDataUtils.setInt(itemStack, NBTConstants.MODE, getMode(itemStack).getNext().ordinal());
-    }
-
-    @Override
-    public boolean canSend(ItemStack itemStack) {
-        return false;
     }
 
     @Nonnull

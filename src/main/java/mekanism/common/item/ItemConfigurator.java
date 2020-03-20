@@ -7,12 +7,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.text.EnumColor;
@@ -31,6 +34,7 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -55,8 +59,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     private static final int ENERGY_PER_CONFIGURE = 400;
     private static final int ENERGY_PER_ITEM_DUMP = 8;
 
-    public ItemConfigurator() {
-        super(60_000);
+    public ItemConfigurator(Properties properties) {
+        super(60_000, properties);
     }
 
     @Override
@@ -90,21 +94,25 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(), dataType,
                                         dataType.getColor().getColoredName())));
-                        } else if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
-                            if (SecurityUtils.canAccess(player, tile)) {
-                                setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
-                                dataType = info.incrementDataType(relativeSide);
-                                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                                      MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType,
-                                            dataType.getColor(), dataType, dataType.getColor().getColoredName())));
-                                if (config instanceof TileEntityUpdateable) {
-                                    ((TileEntityUpdateable) config).sendUpdatePacket();
+                        } else if (SecurityUtils.canAccess(player, tile)) {
+                            if (!player.isCreative()) {
+                                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                                if (energyContainer == null || energyContainer.extract(ENERGY_PER_CONFIGURE, Action.SIMULATE, AutomationType.MANUAL) < ENERGY_PER_CONFIGURE) {
+                                    return ActionResultType.FAIL;
                                 }
-                                tile.markDirty();
-                                MekanismUtils.notifyNeighborOfChange(world, relativeSide.getDirection(config.getOrientation()), tile.getPos());
-                            } else {
-                                SecurityUtils.displayNoAccess(player);
+                                energyContainer.extract(ENERGY_PER_CONFIGURE, Action.EXECUTE, AutomationType.MANUAL);
                             }
+                            dataType = info.incrementDataType(relativeSide);
+                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                                  MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType,
+                                        dataType.getColor(), dataType, dataType.getColor().getColoredName())));
+                            if (config instanceof TileEntityUpdateable) {
+                                ((TileEntityUpdateable) config).sendUpdatePacket();
+                            }
+                            tile.markDirty();
+                            MekanismUtils.notifyNeighborOfChange(world, relativeSide.getDirection(config.getOrientation()), tile.getPos());
+                        } else {
+                            SecurityUtils.displayNoAccess(player);
                         }
                     }
                     return ActionResultType.SUCCESS;
@@ -127,17 +135,22 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                     IMekanismInventory inv = (IMekanismInventory) tile;
                     if (inv.hasInventory()) {
                         if (SecurityUtils.canAccess(player, tile)) {
+                            boolean creative = player.isCreative();
+                            IEnergyContainer energyContainer = creative ? null : StorageUtils.getEnergyContainer(stack, 0);
+                            if (!creative && energyContainer == null) {
+                                return ActionResultType.FAIL;
+                            }
                             //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
-                            List<IInventorySlot> inventorySlots = inv.getInventorySlots(null);
-                            for (IInventorySlot inventorySlot : inventorySlots) {
+                            for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
                                 if (!inventorySlot.isEmpty()) {
-                                    double configuratorEnergy = getEnergy(stack);
-                                    if (configuratorEnergy < ENERGY_PER_ITEM_DUMP) {
-                                        break;
+                                    if (!creative) {
+                                        if (energyContainer.extract(ENERGY_PER_ITEM_DUMP, Action.SIMULATE, AutomationType.MANUAL) < ENERGY_PER_ITEM_DUMP) {
+                                            break;
+                                        }
+                                        energyContainer.extract(ENERGY_PER_ITEM_DUMP, Action.EXECUTE, AutomationType.MANUAL);
                                     }
                                     Block.spawnAsEntity(world, pos, inventorySlot.getStack().copy());
                                     inventorySlot.setStack(ItemStack.EMPTY);
-                                    setEnergy(stack, configuratorEnergy - ENERGY_PER_ITEM_DUMP);
                                 }
                             }
                             return ActionResultType.SUCCESS;
@@ -178,11 +191,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
 
     public ConfiguratorMode getState(ItemStack stack) {
         return ConfiguratorMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.STATE));
-    }
-
-    @Override
-    public boolean canSend(ItemStack itemStack) {
-        return false;
     }
 
     @Override

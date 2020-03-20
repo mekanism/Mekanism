@@ -7,7 +7,6 @@ import mekanism.api.block.IColoredBlock;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.Machine;
@@ -159,6 +158,6 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
 
     @Override
     public EnumColor getColor() {
-        return Attribute.get(this, AttributeTier.class).getTier().getBaseTier().getColor();
+        return Attribute.getBaseTier(this).getColor();
     }
 }

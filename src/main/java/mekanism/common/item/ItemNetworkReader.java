@@ -4,9 +4,12 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismAPI;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -16,6 +19,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -30,8 +34,8 @@ public class ItemNetworkReader extends ItemEnergized {
 
     public static double ENERGY_PER_USE = 400;
 
-    public ItemNetworkReader() {
-        super(60_000);
+    public ItemNetworkReader(Properties properties) {
+        super(60_000, properties);
     }
 
     @Nonnull
@@ -42,12 +46,14 @@ public class ItemNetworkReader extends ItemEnergized {
         if (!world.isRemote && player != null) {
             ItemStack stack = player.getHeldItem(context.getHand());
             TileEntity tileEntity = MekanismUtils.getTileEntity(world, context.getPos());
-            boolean drain = !player.isCreative();
-            if (getEnergy(stack) >= ENERGY_PER_USE && tileEntity != null) {
-                if (drain) {
-                    setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
+            if (tileEntity != null) {
+                if (!player.isCreative()) {
+                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                    if (energyContainer == null) {
+                        return ActionResultType.FAIL;
+                    }
+                    energyContainer.extract(ENERGY_PER_USE, Action.EXECUTE, AutomationType.MANUAL);
                 }
-                Coord4D tileCoord = Coord4D.get(tileEntity);
                 Direction opposite = context.getFace().getOpposite();
                 Optional<IGridTransmitter<?, ?, ?>> gridTransmitter = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, opposite));
                 if (gridTransmitter.isPresent()) {
@@ -72,6 +78,7 @@ public class ItemNetworkReader extends ItemEnergized {
                         player.sendMessage(MekanismLang.NETWORK_READER_ABOVE_AMBIENT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transfer.getTemp()));
                         player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
                     } else {
+                        Coord4D tileCoord = Coord4D.get(tileEntity);
                         Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new ObjectOpenHashSet<>();
                         for (Direction iterSide : EnumUtils.DIRECTIONS) {
                             Coord4D coord = tileCoord.offset(iterSide);
@@ -103,10 +110,5 @@ public class ItemNetworkReader extends ItemEnergized {
             }
         }
         return ActionResultType.PASS;
-    }
-
-    @Override
-    public boolean canSend(ItemStack stack) {
-        return false;
     }
 }

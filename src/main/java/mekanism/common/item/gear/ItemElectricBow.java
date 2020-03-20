@@ -2,13 +2,17 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.NBTConstants;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -57,18 +61,27 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IIte
 
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entityLiving, int itemUseCount) {
-        if (entityLiving instanceof PlayerEntity && getEnergy(stack) > 0) {
+        if (entityLiving instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entityLiving;
-            boolean flag = player.isCreative() || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, stack) > 0;
+            IEnergyContainer energyContainer = null;
+            boolean fireState = getFireState(stack);
+            int energyNeeded = fireState ? 1200 : 120;
+            if (!player.isCreative()) {
+                energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
+                    return;
+                }
+            }
+            boolean infinity = player.isCreative() || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, stack) > 0;
             ItemStack ammo = findAmmo(player);
 
             int maxItemUse = getUseDuration(stack) - itemUseCount;
-            maxItemUse = ForgeEventFactory.onArrowLoose(stack, world, player, maxItemUse, !stack.isEmpty() || flag);
+            maxItemUse = ForgeEventFactory.onArrowLoose(stack, world, player, maxItemUse, !stack.isEmpty() || infinity);
             if (maxItemUse < 0) {
                 return;
             }
 
-            if (flag || !ammo.isEmpty()) {
+            if (infinity || !ammo.isEmpty()) {
                 if (ammo.isEmpty()) {
                     ammo = new ItemStack(Items.ARROW);
                 }
@@ -80,7 +93,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IIte
                 if (f > 1.0F) {
                     f = 1.0F;
                 }
-                boolean noConsume = flag && stack.getItem() instanceof ArrowItem;
+                boolean noConsume = infinity && stack.getItem() instanceof ArrowItem;
                 if (!world.isRemote) {
                     ArrowItem itemarrow = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
                     AbstractArrowEntity entityarrow = itemarrow.createArrow(world, stack, player);
@@ -88,13 +101,13 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IIte
                     if (f == 1.0F) {
                         entityarrow.setIsCritical(true);
                     }
-                    if (!player.isCreative()) {
-                        setEnergy(stack, getEnergy(stack) - (getFireState(stack) ? 1200 : 120));
+                    if (!player.isCreative() && energyContainer != null) {
+                        energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
                     }
                     if (noConsume) {
                         entityarrow.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
                     }
-                    entityarrow.setFire(getFireState(stack) ? 100 : 0);
+                    entityarrow.setFire(fireState ? 100 : 0);
                     world.addEntity(entityarrow);
                 }
 
@@ -103,7 +116,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IIte
 
                 if (!noConsume) {
                     ammo.shrink(1);
-                    if (ammo.getCount() == 0) {
+                    if (ammo.isEmpty()) {
                         player.inventory.deleteStack(ammo);
                     }
                 }
@@ -164,11 +177,6 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IIte
 
     public boolean getFireState(ItemStack stack) {
         return ItemDataUtils.getBoolean(stack, NBTConstants.MODE);
-    }
-
-    @Override
-    public boolean canSend(ItemStack itemStack) {
-        return false;
     }
 
     @Override

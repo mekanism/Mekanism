@@ -1,6 +1,9 @@
 package mekanism.common;
 
+import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
@@ -11,6 +14,7 @@ import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -172,9 +176,12 @@ public class CommonPlayerTickHandler {
         ItemStack feetStack = base.getItemStackFromSlot(EquipmentSlotType.FEET);
         if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners) {
             ItemFreeRunners boots = (ItemFreeRunners) feetStack.getItem();
-            if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL && boots.getEnergy(feetStack) > 0 && event.getSource() == DamageSource.FALL) {
-                boots.setEnergy(feetStack, boots.getEnergy(feetStack) - event.getAmount() * 50);
-                event.setCanceled(true);
+            if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL && event.getSource() == DamageSource.FALL) {
+                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(feetStack, 0);
+                if (energyContainer != null) {
+                    energyContainer.extract(event.getAmount() * 50, Action.EXECUTE, AutomationType.MANUAL);
+                    event.setCanceled(true);
+                }
             }
         }
     }

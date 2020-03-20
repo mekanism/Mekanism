@@ -71,13 +71,11 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
 
     @Override
     public boolean canExtract() {
-        //TODO: Should this always return true
         return handler.extractEnergy(1, Action.SIMULATE) > 0;
     }
 
     @Override
     public boolean canReceive() {
-        //TODO: Should this always return true
         return handler.insertEnergy(1, Action.SIMULATE) < 1;
     }
 }

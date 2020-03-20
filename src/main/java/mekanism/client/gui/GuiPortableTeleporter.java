@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.MekanismClient;
@@ -24,6 +25,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.security.IOwnerItem;
+import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
@@ -79,12 +81,18 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return EnergyDisplay.of(getEnergy(), getMaxEnergy()).getTextComponent();
+                IEnergyContainer container = StorageUtils.getEnergyContainer(itemStack, 0);
+                return container == null ? EnergyDisplay.of(0).getTextComponent() : EnergyDisplay.of(container.getEnergy(), container.getMaxEnergy()).getTextComponent();
             }
 
             @Override
             public double getLevel() {
-                return getEnergy() / getMaxEnergy();
+                IEnergyContainer container = StorageUtils.getEnergyContainer(itemStack, 0);
+                if (container == null) {
+                    return 0;
+                }
+                double maxEnergy = container.getMaxEnergy();
+                return maxEnergy == 0 ? 1 : container.getEnergy() / maxEnergy;
             }
         }, 158, 26));
         addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
@@ -283,13 +291,5 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     private ITextComponent getName() {
         return itemStack.getDisplayName();
-    }
-
-    private double getEnergy() {
-        return ((ItemPortableTeleporter) itemStack.getItem()).getEnergy(itemStack);
-    }
-
-    private double getMaxEnergy() {
-        return ((ItemPortableTeleporter) itemStack.getItem()).getMaxEnergy(itemStack);
     }
 }

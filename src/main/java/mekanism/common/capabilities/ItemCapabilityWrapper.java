@@ -34,7 +34,7 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
                     //Make sure that we load any data the cap needs from the stack, as it doesn't have any NBT set when it is initially initialized
                     // This also allows us to update to any direct changes on the NBT of the stack that someone may have made
                     cap.load();
-                    return LazyOptional.of(() -> cap).cast();
+                    return cap.getMatchingCapability(capability);
                 }
             }
         }
@@ -55,6 +55,13 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
 
         public ItemStack getStack() {
             return wrapper.itemStack;
+        }
+
+        /**
+         * Note: it is expected that canProcess is called before this
+         */
+        public <T> LazyOptional<T> getMatchingCapability(@Nonnull Capability<T> capability) {
+            return LazyOptional.of(() -> this).cast();
         }
     }
 }

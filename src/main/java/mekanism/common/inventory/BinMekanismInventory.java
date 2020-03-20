@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
@@ -23,7 +22,7 @@ public class BinMekanismInventory extends ItemStackMekanismInventory {
     @Nonnull
     @Override
     protected List<IInventorySlot> getInitialInventory() {
-        binSlot = BinInventorySlot.create(this, (BinTier) Attribute.get(((ItemBlockBin) stack.getItem()).getBlock(), AttributeTier.class).getTier());
+        binSlot = BinInventorySlot.create(this, Attribute.getTier(((ItemBlockBin) stack.getItem()).getBlock(), BinTier.class));
         return Collections.singletonList(binSlot);
     }
 

@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.block.machine.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
-import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntityDigitalMiner;
@@ -14,7 +13,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockDigitalMiner(BlockTile<TileEntityDigitalMiner, Machine<TileEntityDigitalMiner>> block) {
         super(block, ISTERProvider::miner);

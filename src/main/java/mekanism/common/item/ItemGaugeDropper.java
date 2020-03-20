@@ -8,8 +8,8 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.capabilities.chemical.RateLimitGasHandler;
-import mekanism.common.capabilities.fluid.RateLimitFluidHandler;
+import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
+import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -48,22 +48,7 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        if (CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY != null && Capabilities.GAS_HANDLER_CAPABILITY != null) {
-            //Ensure the capability is not null, as the first call to getDurabilityForDisplay happens before capability injection
-            double gasRatio = 0;
-            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem.getGasTankCount() > 0) {
-                    //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                    gasRatio = gasHandlerItem.getGasInTank(0).getAmount() / (double) gasHandlerItem.getGasTankCapacity(0);
-                }
-            }
-            FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
-            double fluidRatio = fluidStack.getAmount() / (double) CAPACITY;
-            return 1D - Math.max(gasRatio, fluidRatio);
-        }
-        return 1;
+        return StorageUtils.getDurabilityForDisplay(stack);
     }
 
     @Nonnull
@@ -114,6 +99,6 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitFluidHandler.create(() -> TRANSFER_RATE, () -> CAPACITY), RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> CAPACITY));
+        return new ItemCapabilityWrapper(stack, RateLimitFluidHandler.create(TRANSFER_RATE, () -> CAPACITY), RateLimitGasHandler.create(TRANSFER_RATE, () -> CAPACITY));
     }
 }

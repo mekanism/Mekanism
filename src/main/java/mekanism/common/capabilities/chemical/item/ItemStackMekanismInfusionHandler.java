@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.chemical;
+package mekanism.common.capabilities.chemical.item;
 
 import java.util.List;
 import javax.annotation.Nullable;

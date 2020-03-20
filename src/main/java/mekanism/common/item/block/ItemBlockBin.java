@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.inventory.BinMekanismInventory;
 import mekanism.common.inventory.slot.BinInventorySlot;
@@ -30,7 +29,7 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSus
     @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         BinMekanismInventory inventory = BinMekanismInventory.create(stack);
-        BinTier tier = (BinTier) Attribute.get(getBlock(), AttributeTier.class).getTier();
+        BinTier tier = Attribute.getTier(getBlock(), BinTier.class);
         if (inventory != null && tier != null) {
             BinInventorySlot slot = inventory.getBinSlot();
             if (slot.isEmpty()) {

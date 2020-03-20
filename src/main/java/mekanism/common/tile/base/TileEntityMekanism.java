@@ -1114,7 +1114,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     }
 
     public void loadEnergy(ListNBT nbtTags) {
-        if (nbtTags != null && !nbtTags.isEmpty() && canHandleFluid()) {
+        if (nbtTags != null && !nbtTags.isEmpty() && canHandleEnergy()) {
             DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags);
         }
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
@@ -11,6 +12,7 @@ import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.util.ITooltipFlag;
@@ -27,8 +29,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
 
-    public ItemRobit() {
-        super(100_000);
+    public ItemRobit(Properties properties) {
+        super(100_000, properties);
     }
 
     @Override
@@ -56,7 +58,10 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 if (!world.isRemote) {
                     EntityRobit robit = new EntityRobit(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
                     robit.setHome(Coord4D.get(chargepad));
-                    robit.getEnergyContainer().setEnergy(getEnergy(stack));
+                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                    if (energyContainer != null) {
+                        robit.getEnergyContainer().setEnergy(energyContainer.getEnergy());
+                    }
                     robit.setOwnerUUID(player.getUniqueID());
                     robit.setInventory(getInventory(stack));
                     robit.setCustomName(getName(stack));
@@ -67,11 +72,6 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
             }
         }
         return ActionResultType.PASS;
-    }
-
-    @Override
-    public boolean canSend(ItemStack itemStack) {
-        return false;
     }
 
     public void setName(ItemStack stack, String name) {
