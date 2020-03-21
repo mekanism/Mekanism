@@ -65,6 +65,10 @@ sourceSets {
     additions { setupSourceSet(sourceSets.additions, 'additions') }
     generators { setupSourceSet(sourceSets.generators, 'generators') }
     tools { setupSourceSet(sourceSets.tools, 'tools') }
+    test {
+        compileClasspath += sourceSets.api.output + sourceSets.main.output + sourceSets.additions.output + sourceSets.generators.output + sourceSets.tools.output
+        runtimeClasspath += sourceSets.api.output + sourceSets.main.output + sourceSets.additions.output + sourceSets.generators.output + sourceSets.tools.output
+    }
     //Data gen modules for the different modules
     datagenmain { setupDataGenSourceSet(sourceSets.datagenmain, null, 'main') }
     datagenadditions { setupDataGenSourceSet(sourceSets.datagenadditions, sourceSets.additions, 'additions') }
@@ -107,12 +111,12 @@ def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, S
 configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
-    def compileExtenders = [apiCompile, additionsCompile, generatorsCompile, toolsCompile,
-                            datagenmainCompile, datagenadditionsCompile, datagengeneratorsCompile, datagentoolsCompile];
-    def compileOnlyExtenders = [apiCompileOnly, additionsCompileOnly, generatorsCompileOnly, toolsCompileOnly,
-                                datagenmainCompileOnly, datagenadditionsCompileOnly, datagengeneratorsCompileOnly, datagentoolsCompileOnly];
+    def compileExtenders = [apiCompile, additionsCompile, generatorsCompile, toolsCompile, testCompile,
+                            datagenmainCompile, datagenadditionsCompile, datagengeneratorsCompile, datagentoolsCompile]
+    def compileOnlyExtenders = [apiCompileOnly, additionsCompileOnly, generatorsCompileOnly, toolsCompileOnly, testCompileOnly,
+                                datagenmainCompileOnly, datagenadditionsCompileOnly, datagengeneratorsCompileOnly, datagentoolsCompileOnly]
     def runtimeOnlyExtenders = [apiRuntimeOnly, additionsRuntimeOnly, generatorsRuntimeOnly, toolsRuntimeOnly,
-                                datagenmainRuntimeOnly, datagenadditionsRuntimeOnly, datagengeneratorsRuntimeOnly, datagentoolsRuntimeOnly];
+                                datagenmainRuntimeOnly, datagenadditionsRuntimeOnly, datagengeneratorsRuntimeOnly, datagentoolsRuntimeOnly]
     for (def compileExtender : compileExtenders) {
         compileExtender.extendsFrom(compile)
     }
@@ -253,8 +257,15 @@ minecraft {
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
 
     compileOnly "org.jetbrains:annotations:${jb_annotations}"
 

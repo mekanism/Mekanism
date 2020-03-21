@@ -78,10 +78,6 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
         super.adoptTransmittersAndAcceptorsFrom(net);
     }
 
-    public static double round(double d) {
-        return Math.round(d * 10_000) / 10_000;
-    }
-
     @Nonnull
     @Override
     public FloatingLong getBuffer() {

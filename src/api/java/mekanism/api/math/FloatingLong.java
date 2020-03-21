@@ -18,11 +18,12 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     //TODO: Implement this class, and improve java docs
     //TODO: Modify EnergyAPI to state what things should NOT be modified, given we stripped that out of the docs due to primitives not modifying the actual value
-    public static final FloatingLong ZERO = createConst(0);
-    public static final FloatingLong ONE = createConst(1);
-    public static final FloatingLong MAX_VALUE = createConst(Long.MAX_VALUE);
     private static final int DECIMAL_DIGITS = 4;//We only can support 4 digits in our decimal
     private static final short MAX_DECIMAL = 9_999;
+    public static final FloatingLong ZERO = createConst(0);
+    public static final FloatingLong ONE = createConst(1);
+    //TODO: Util method so that it is easier to declare you want a short representing say 0.001
+    public static final FloatingLong MAX_VALUE = createConst(Long.MAX_VALUE, MAX_DECIMAL);
 
     public static FloatingLong getNewZero() {
         return create(0);
@@ -46,7 +47,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         return create(value, (short) 0);
     }
 
-    //TODO: Figure out how to properly use this method
     public static FloatingLong create(long value, short decimal) {
         return new FloatingLong(value, decimal, false);
     }
@@ -69,7 +69,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         return createConst(value, (short) 0);
     }
 
-    //TODO: Figure out how to properly use this method
     public static FloatingLong createConst(long value, short decimal) {
         return new FloatingLong(value, decimal, true);
     }
