@@ -11,6 +11,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -105,8 +106,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         inputSlot.fillTank(outputSlot);
 
         if (MekanismUtils.canFunction(this) && !fluidTank.isEmpty()) {
-            double energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
+            FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 if (!finishedCalc) {
                     energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 }

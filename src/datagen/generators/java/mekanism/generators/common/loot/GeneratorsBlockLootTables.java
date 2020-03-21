@@ -16,7 +16,9 @@ public class GeneratorsBlockLootTables extends BaseBlockLootTables {
               GeneratorsBlocks.TURBINE_VENT,
               GeneratorsBlocks.SATURATING_CONDENSER,
               GeneratorsBlocks.REACTOR_LOGIC_ADAPTER,
+              GeneratorsBlocks.REACTOR_FRAME,
               GeneratorsBlocks.REACTOR_GLASS,
+              GeneratorsBlocks.REACTOR_PORT,
               GeneratorsBlocks.LASER_FOCUS_MATRIX
         );
         registerDropSelfWithContentsLootTable(
@@ -26,9 +28,7 @@ public class GeneratorsBlockLootTables extends BaseBlockLootTables {
               GeneratorsBlocks.BIO_GENERATOR,
               GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR,
               GeneratorsBlocks.WIND_GENERATOR,
-              GeneratorsBlocks.REACTOR_CONTROLLER,
-              GeneratorsBlocks.REACTOR_FRAME,
-              GeneratorsBlocks.REACTOR_PORT
+              GeneratorsBlocks.REACTOR_CONTROLLER
         );
     }
 }

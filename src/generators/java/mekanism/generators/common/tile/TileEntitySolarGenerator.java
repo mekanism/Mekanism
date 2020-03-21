@@ -3,13 +3,14 @@ package mekanism.generators.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.RelativeSide;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -23,17 +24,17 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     private boolean seesSun;
     private boolean needsRainCheck = true;
-    private double peakOutput;
+    private FloatingLong peakOutput = FloatingLong.ZERO;
     private boolean settingsChecked;
-    private double lastProductionAmount;
+    private FloatingLong lastProductionAmount = FloatingLong.ZERO;
 
     private EnergyInventorySlot energySlot;
 
     public TileEntitySolarGenerator() {
-        this(GeneratorsBlocks.SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.solarGeneration.get() * 2);
+        this(GeneratorsBlocks.SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.solarGeneration.get().multiply(2));
     }
 
-    public TileEntitySolarGenerator(IBlockProvider blockProvider, double output) {
+    public TileEntitySolarGenerator(IBlockProvider blockProvider, @Nonnull FloatingLong output) {
         super(blockProvider, output);
     }
 
@@ -67,7 +68,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // (like the End) have rainfall set, but can't actually support rain.
         float humidityEff = -0.3F * (b.getPrecipitation() != RainType.NONE ? b.getDownfall() : 0.0F);
 
-        peakOutput = getConfiguredMax() * (1.0F + tempEff + humidityEff);
+        peakOutput = getConfiguredMax().multiply(1.0F + tempEff + humidityEff);
         needsRainCheck = b.getPrecipitation() != RainType.NONE;
 
         settingsChecked = true;
@@ -88,13 +89,13 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             seesSun = world.isDaytime() && canSeeSky() && !world.getDimension().isNether();
         }
 
-        if (seesSun && MekanismUtils.canFunction(this) && getEnergyContainer().getNeeded() > 0) {
+        if (seesSun && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isEmpty()) {
             setActive(true);
-            double production = getProduction();
-            lastProductionAmount = production - getEnergyContainer().insert(production, Action.EXECUTE, AutomationType.INTERNAL);
+            FloatingLong production = getProduction();
+            lastProductionAmount = production.subtract(getEnergyContainer().insert(production, Action.EXECUTE, AutomationType.INTERNAL));
         } else {
             setActive(false);
-            lastProductionAmount = 0;
+            lastProductionAmount = FloatingLong.ZERO;
         }
     }
 
@@ -103,10 +104,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return world != null && world.canBlockSeeSky(getPos());
     }
 
-    public double getProduction() {
+    public FloatingLong getProduction() {
         World world = getWorld();
         if (world == null) {
-            return 0;
+            return FloatingLong.ZERO;
         }
         // Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
@@ -117,11 +118,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         }*/
 
         // Production is a function of the peak possible output in this biome and sun's current brightness
-        double production = peakOutput * brightness;
+        FloatingLong production = peakOutput.multiply(brightness);
 
         // If the generator is in a biome where it can rain and it's raining penalize production by 80%
         if (needsRainCheck && (world.isRaining() || world.isThundering())) {
-            production *= 0.2;
+            production.timesEqual(0.2);
         }
         return production;
     }
@@ -143,16 +144,16 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return RelativeSide.BOTTOM;
     }
 
-    protected double getConfiguredMax() {
+    protected FloatingLong getConfiguredMax() {
         return MekanismGeneratorsConfig.generators.solarGeneration.get();
     }
 
     @Override
-    public double getMaxOutput() {
+    public FloatingLong getMaxOutput() {
         return peakOutput;
     }
 
-    public double getLastProductionAmount() {
+    public FloatingLong getLastProductionAmount() {
         return lastProductionAmount;
     }
 
@@ -160,7 +161,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::canSeeSun, value -> seesSun = value));
-        container.track(SyncableDouble.create(this::getMaxOutput, value -> peakOutput = value));
-        container.track(SyncableDouble.create(this::getLastProductionAmount, value -> lastProductionAmount = value));
+        container.track(SyncableFloatingLong.create(this::getMaxOutput, value -> peakOutput = value));
+        container.track(SyncableFloatingLong.create(this::getLastProductionAmount, value -> lastProductionAmount = value));
     }
 }

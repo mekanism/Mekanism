@@ -8,6 +8,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -40,11 +41,11 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     }
 
     protected final TILE tile;
-    private final double baseEnergyPerTick;
-    private double currentMaxEnergy;
-    protected double currentEnergyPerTick;
+    private final FloatingLong baseEnergyPerTick;
+    private FloatingLong currentMaxEnergy;
+    protected FloatingLong currentEnergyPerTick;
 
-    protected MachineEnergyContainer(double maxEnergy, double energyPerTick, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
+    protected MachineEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           TILE tile) {
         super(maxEnergy, canExtract, canInsert, tile);
         this.baseEnergyPerTick = energyPerTick;
@@ -62,36 +63,32 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     }
 
     @Override
-    public double getMaxEnergy() {
+    public FloatingLong getMaxEnergy() {
         return currentMaxEnergy;
     }
 
-    public double getBaseMaxEnergy() {
+    public FloatingLong getBaseMaxEnergy() {
         return super.getMaxEnergy();
     }
 
-    public void setMaxEnergy(double maxEnergy) {
-        if (maxEnergy < 0) {
-            throw new IllegalArgumentException("Max energy must be at least zero");
-        }
+    public void setMaxEnergy(FloatingLong maxEnergy) {
+        Objects.requireNonNull(maxEnergy, "Max energy cannot be null");
         this.currentMaxEnergy = maxEnergy;
-        if (getEnergy() > getMaxEnergy()) {
+        if (getEnergy().greaterThan(getMaxEnergy())) {
             setEnergy(getMaxEnergy());
         }
     }
 
-    public double getEnergyPerTick() {
+    public FloatingLong getEnergyPerTick() {
         return currentEnergyPerTick;
     }
 
-    public double getBaseEnergyPerTick() {
+    public FloatingLong getBaseEnergyPerTick() {
         return baseEnergyPerTick;
     }
 
-    public void setEnergyPerTick(double energyPerTick) {
-        if (energyPerTick < 0) {
-            throw new IllegalArgumentException("Energy must be at least zero");
-        }
+    public void setEnergyPerTick(FloatingLong energyPerTick) {
+        Objects.requireNonNull(energyPerTick, "Energy per tick cannot be null");
         this.currentEnergyPerTick = energyPerTick;
     }
 

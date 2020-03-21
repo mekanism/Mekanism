@@ -7,10 +7,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.math.FloatingLong;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -22,9 +25,46 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class SerializerHelper {
 
     private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+
+    public static JsonElement serializeFloatingLong(FloatingLong floatingLong) {
+        JsonObject json = new JsonObject();
+        json.addProperty(JsonConstants.VALUE, floatingLong.getValue());
+        json.addProperty(JsonConstants.DECIMAL, floatingLong.getDecimal());
+        return json;
+    }
+
+    public static FloatingLong getFloatingLong(@Nonnull JsonObject json, @Nonnull String key) {
+        if (!json.has(key)) {
+            throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
+        }
+        JsonElement jsonElement = json.get(key);
+        if (!jsonElement.isJsonObject()) {
+            throw new JsonSyntaxException("Expected '" + key + "' to be an object");
+        }
+        JsonObject jsonObject = jsonElement.getAsJsonObject();
+        JsonElement valueElement = jsonObject.get(JsonConstants.VALUE);
+        if (!JSONUtils.isNumber(valueElement)) {
+            throw new JsonSyntaxException("Expected value to be a number greater than equal to zero.");
+        }
+        long value = valueElement.getAsJsonPrimitive().getAsLong();
+        if (value < 0) {//TODO: Evaluate this if we end up making it be an unsigned long maybe this needs to hcange
+            throw new JsonSyntaxException("Expected value to be greater than zero equal to zero.");
+        }
+        JsonElement decimalElement = jsonObject.get(JsonConstants.DECIMAL);
+        if (!JSONUtils.isNumber(decimalElement)) {
+            throw new JsonSyntaxException("Expected decimal to be a number greater than equal to zero.");
+        }
+        short decimal = valueElement.getAsJsonPrimitive().getAsShort();
+        if (decimal < 0) {
+            throw new JsonSyntaxException("Expected decimal to be greater than zero equal to zero.");
+        }
+        return FloatingLong.create(value, decimal);
+    }
 
     public static ItemStack getItemStack(@Nonnull JsonObject json, @Nonnull String key) {
         if (!json.has(key)) {

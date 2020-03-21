@@ -42,8 +42,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<CraftingInventory> {
 
     private final ShapedRecipe internal;

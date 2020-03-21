@@ -8,6 +8,7 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
@@ -28,7 +29,7 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tier.FactoryTier;
@@ -73,7 +74,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
      */
     public int ticksRequired = 200;
     public boolean sorting;
-    public double lastUsage;
+    //TODO: FloatingLong seems unused
+    public FloatingLong lastUsage = FloatingLong.ZERO;
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
@@ -177,7 +179,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         handleSecondaryFuel();
         sortInventory();
 
-        double prev = energyContainer.getEnergy();
+        FloatingLong prev = energyContainer.getEnergy();
         for (int i = 0; i < cachedRecipes.length; i++) {
             CachedRecipe<RECIPE> cachedRecipe = cachedRecipes[i] = getUpdatedCache(i);
             if (cachedRecipe != null) {
@@ -199,7 +201,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             }
         }
         setActive(isActive);
-        lastUsage = prev - energyContainer.getEnergy();
+        lastUsage = prev.subtract(energyContainer.getEnergy());
     }
 
     private void sortInventory() {
@@ -405,7 +407,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.trackArray(progress);
-        container.track(SyncableDouble.create(() -> lastUsage, value -> lastUsage = value));
+        container.track(SyncableFloatingLong.create(() -> lastUsage, value -> lastUsage = value));
         container.track(SyncableBoolean.create(() -> sorting, value -> sorting = value));
         container.track(SyncableInt.create(() -> ticksRequired, value -> ticksRequired = value));
     }

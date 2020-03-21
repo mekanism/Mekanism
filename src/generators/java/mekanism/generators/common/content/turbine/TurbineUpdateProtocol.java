@@ -205,7 +205,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
             structureFound.gasTank.setStackSize(Math.min(structureFound.gasTank.getStored(), structureFound.getSteamCapacity()), Action.EXECUTE);
         }
         if (!structureFound.energyContainer.isEmpty()) {
-            structureFound.energyContainer.setEnergy(Math.min(structureFound.energyContainer.getEnergy(), structureFound.getEnergyCapacity()));
+            structureFound.energyContainer.setEnergy(structureFound.energyContainer.getEnergy().min(structureFound.getEnergyCapacity()));
         }
     }
 }

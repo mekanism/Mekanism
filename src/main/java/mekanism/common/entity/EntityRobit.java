@@ -1,7 +1,5 @@
 package mekanism.common.entity;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,6 +21,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
@@ -96,7 +95,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     private static final DataParameter<String> OWNER_NAME = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> FOLLOW = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
-    public double MAX_ELECTRICITY = 100_000;
+    public static final FloatingLong MAX_ENERGY = FloatingLong.createConst(100_000);
     public Coord4D homeLocation;
     public boolean texTick;
     private int progress;
@@ -127,7 +126,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         super(type, world);
         getNavigator().setCanSwim(false);
         setCustomNameVisible(true);
-        energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ELECTRICITY, this));
+        energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ENERGY, this));
 
         //TODO: Go through all this and clean it up properly
         inventorySlots = new ArrayList<>();
@@ -197,9 +196,10 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         dataManager.register(DROP_PICKUP, false);
     }
 
-    private double getRoundedTravelEnergy() {
+    private FloatingLong getRoundedTravelEnergy() {
         double distance = Math.sqrt(getDistanceSq(prevPosX, prevPosY, prevPosZ));
-        return new BigDecimal(distance * 1.5).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+        return FloatingLong.create(distance * 1.5);
+        //return new BigDecimal(distance * 1.5).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
 
     @Override
@@ -395,7 +395,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         amount = applyPotionDamageCalculations(damageSource, amount);
         float j = getHealth();
 
-        energyContainer.extract(1_000 * amount, Action.EXECUTE, AutomationType.INTERNAL);
+        energyContainer.extract(FloatingLong.create(1_000 * amount), Action.EXECUTE, AutomationType.INTERNAL);
         getCombatTracker().trackDamage(damageSource, j, amount);
     }
 

@@ -10,6 +10,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -24,7 +25,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
     private final ItemStackIngredient inputSolid;
     private final FluidStackIngredient inputFluid;
     private final GasStackIngredient inputGas;
-    private double energyRequired;
+    private FloatingLong energyRequired = FloatingLong.ZERO;
     private final int duration;
     private final ItemStack outputItem;
     private final GasStack outputGas;
@@ -64,10 +65,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, outputItem, outputGas);
     }
 
-    public PressurizedReactionRecipeBuilder energyRequired(double energyRequired) {
-        if (energyRequired < 0) {
-            throw new IllegalArgumentException("Required energy must be at least zero");
-        }
+    public PressurizedReactionRecipeBuilder energyRequired(FloatingLong energyRequired) {
         this.energyRequired = energyRequired;
         return this;
     }
@@ -88,9 +86,9 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
             json.add(JsonConstants.ITEM_INPUT, inputSolid.serialize());
             json.add(JsonConstants.FLUID_INPUT, inputFluid.serialize());
             json.add(JsonConstants.GAS_INPUT, inputGas.serialize());
-            if (energyRequired > 0) {
+            if (!energyRequired.isEmpty()) {
                 //Only add energy required if it is not zero, as otherwise it will default to zero
-                json.addProperty(JsonConstants.ENERGY_REQUIRED, energyRequired);
+                json.add(JsonConstants.ENERGY_REQUIRED, SerializerHelper.serializeFloatingLong(energyRequired));
             }
             json.addProperty(JsonConstants.DURATION, duration);
             if (!outputItem.isEmpty()) {

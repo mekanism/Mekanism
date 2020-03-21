@@ -5,5 +5,8 @@
       "tag": "forge:storage_blocks/redstone"
     }
   },
-  "output": 90000.0
+  "output": {
+    "value": 90000,
+    "decimal": 0
+  }
 }

@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -13,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class EnergyConversionIRecipe extends ItemStackToEnergyRecipe {
 
-    public EnergyConversionIRecipe(ResourceLocation id, ItemStackIngredient input, double output) {
+    public EnergyConversionIRecipe(ResourceLocation id, ItemStackIngredient input, FloatingLong output) {
         super(id, input, output);
     }
 

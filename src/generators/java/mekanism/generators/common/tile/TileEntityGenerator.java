@@ -3,6 +3,7 @@ package mekanism.generators.common.tile;
 import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -17,13 +18,13 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     /**
      * Output per tick this generator can transfer.
      */
-    public double output;
+    public FloatingLong output;
     private BasicEnergyContainer energyContainer;
 
     /**
      * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
      */
-    public TileEntityGenerator(IBlockProvider blockProvider, double out) {
+    public TileEntityGenerator(IBlockProvider blockProvider, @Nonnull FloatingLong out) {
         super(blockProvider);
         output = out;
     }
@@ -48,7 +49,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
         }
     }
 
-    public double getMaxOutput() {
+    public FloatingLong getMaxOutput() {
         return output;
     }
 

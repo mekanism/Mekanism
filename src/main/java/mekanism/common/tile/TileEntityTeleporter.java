@@ -13,6 +13,7 @@ import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
@@ -267,7 +268,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (closestCoords == null) {
             return 3;
         }
-        if (energyContainer.getEnergy() < getToTeleport().stream().mapToInt(entity -> calculateEnergyCost(entity, closestCoords)).sum()) {
+        FloatingLong sum = FloatingLong.getNewZero();
+        for (Entity entity : getToTeleport()) {
+            sum.plusEqual(calculateEnergyCost(entity, closestCoords));
+        }
+        if (energyContainer.getEnergy().smallerThan(sum)) {
             return 4;
         }
         return 1;
@@ -321,13 +326,14 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
               entity -> !entity.isSpectator() && !didTeleport.contains(entity.getUniqueID()));
     }
 
-    private int calculateEnergyCost(Entity entity, Coord4D coords) {
-        int energyCost = MekanismConfig.usage.teleporterBase.get();
+    @Nonnull
+    public static FloatingLong calculateEnergyCost(Entity entity, Coord4D coords) {
+        FloatingLong energyCost = MekanismConfig.usage.teleporterBase.get();
         if (entity.world.getDimension().getType().equals(coords.dimension)) {
             int distance = (int) Math.sqrt(entity.getDistanceSq(coords.x, coords.y, coords.z));
-            energyCost += distance * MekanismConfig.usage.teleporterDistance.get();
+            energyCost = energyCost.add(MekanismConfig.usage.teleporterDistance.get().multiply(distance));
         } else {
-            energyCost += MekanismConfig.usage.teleporterDimensionPenalty.get();
+            energyCost = energyCost.add(MekanismConfig.usage.teleporterDimensionPenalty.get());
         }
         return energyCost;
     }

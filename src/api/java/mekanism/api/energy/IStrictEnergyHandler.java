@@ -1,9 +1,13 @@
 package mekanism.api.energy;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.math.FloatingLongTransferUtils;
+import mekanism.api.math.FloatingLong;
 
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface IStrictEnergyHandler {
 
     /**
@@ -20,7 +24,7 @@ public interface IStrictEnergyHandler {
      *
      * @return Energy in a given container. {@code 0} if the container has no energy stored.
      */
-    double getEnergy(int container);
+    FloatingLong getEnergy(int container);
 
     /**
      * Overrides the energy stored in the given container. This method may throw an error if it is called unexpectedly.
@@ -30,7 +34,7 @@ public interface IStrictEnergyHandler {
      *
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting. (Such as a negative amount of energy)
      **/
-    void setEnergy(int container, double energy);
+    void setEnergy(int container, FloatingLong energy);
 
     /**
      * Retrieves the maximum amount of energy that can be stored in a given container.
@@ -39,7 +43,7 @@ public interface IStrictEnergyHandler {
      *
      * @return The maximum energy that can be stored in the container.
      */
-    double getMaxEnergy(int container);
+    FloatingLong getMaxEnergy(int container);
 
     /**
      * Retrieves the amount of energy that is needed to fill a given container.
@@ -48,7 +52,7 @@ public interface IStrictEnergyHandler {
      *
      * @return The energy needed to fill the container.
      */
-    double getNeededEnergy(int container);
+    FloatingLong getNeededEnergy(int container);
 
     /**
      * <p>
@@ -65,7 +69,7 @@ public interface IStrictEnergyHandler {
      *
      * @implNote Negative values for {@code amount} <strong>MUST</strong> be supported, and treated as if the passed value was actually {@code 0}.
      */
-    double insertEnergy(int container, double amount, Action action);
+    FloatingLong insertEnergy(int container, FloatingLong amount, Action action);
 
     /**
      * Extracts energy from a specific container in this handler.
@@ -81,7 +85,7 @@ public interface IStrictEnergyHandler {
      *
      * @implNote Negative values for {@code amount} <strong>MUST</strong> be supported, and treated as if the passed value was actually {@code 0}.
      */
-    double extractEnergy(int container, double amount, Action action);
+    FloatingLong extractEnergy(int container, FloatingLong amount, Action action);
 
     /**
      * <p>
@@ -100,8 +104,8 @@ public interface IStrictEnergyHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the insertion. Additionally
      * negative values for {@code amount} <strong>MUST</strong> be supported, and treated as if the passed value was actually {@code 0}.
      */
-    default double insertEnergy(double amount, Action action) {
-        return EnergyTransferUtils.insert(amount, action, this::getEnergyContainerCount, this::getEnergy, this::insertEnergy);
+    default FloatingLong insertEnergy(FloatingLong amount, Action action) {
+        return FloatingLongTransferUtils.insert(amount, action, this::getEnergyContainerCount, this::getEnergy, this::insertEnergy);
     }
 
     /**
@@ -119,7 +123,7 @@ public interface IStrictEnergyHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the extraction. Additionally
      * negative values for {@code amount} <strong>MUST</strong> be supported, and treated as if the passed value was actually {@code 0}.
      */
-    default double extractEnergy(double amount, Action action) {
-        return EnergyTransferUtils.extract(amount, action, this::getEnergyContainerCount, this::extractEnergy);
+    default FloatingLong extractEnergy(FloatingLong amount, Action action) {
+        return FloatingLongTransferUtils.extract(amount, action, this::getEnergyContainerCount, this::extractEnergy);
     }
 }

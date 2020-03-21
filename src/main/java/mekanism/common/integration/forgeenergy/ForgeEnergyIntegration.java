@@ -1,6 +1,7 @@
 package mekanism.common.integration.forgeenergy;
 
 import mekanism.api.Action;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.integration.EnergyCompatUtils.EnergyType;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -18,8 +19,8 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
         if (maxReceive <= 0) {
             return 0;
         }
-        double toInsert = EnergyType.FORGE.convertFrom(maxReceive);
-        return EnergyType.FORGE.convertToAsInt(toInsert - handler.insertEnergy(toInsert, Action.get(!simulate)));
+        FloatingLong toInsert = EnergyType.FORGE.convertFrom(maxReceive);
+        return EnergyType.FORGE.convertToAsInt(toInsert.subtract(handler.insertEnergy(toInsert, Action.get(!simulate))));
     }
 
     @Override
@@ -47,11 +48,11 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
 
     @Override
     public boolean canExtract() {
-        return handler.extractEnergy(1, Action.SIMULATE) > 0;
+        return !handler.extractEnergy(FloatingLong.ONE, Action.SIMULATE).isEmpty();
     }
 
     @Override
     public boolean canReceive() {
-        return handler.insertEnergy(1, Action.SIMULATE) < 1;
+        return handler.insertEnergy(FloatingLong.ONE, Action.SIMULATE).smallerThan(FloatingLong.ONE);
     }
 }

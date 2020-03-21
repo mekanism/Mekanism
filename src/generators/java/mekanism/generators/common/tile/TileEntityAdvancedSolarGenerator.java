@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.RelativeSide;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.MekanismUtils;
@@ -19,7 +20,7 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar {
 
     public TileEntityAdvancedSolarGenerator() {
-        super(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.advancedSolarGeneration.get() * 2);
+        super(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.advancedSolarGeneration.get().multiply(2));
     }
 
     @Override
@@ -28,7 +29,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    protected double getConfiguredMax() {
+    protected FloatingLong getConfiguredMax() {
         return MekanismGeneratorsConfig.generators.advancedSolarGeneration.get();
     }
 

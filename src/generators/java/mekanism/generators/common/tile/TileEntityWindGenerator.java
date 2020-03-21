@@ -3,12 +3,13 @@ package mekanism.generators.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableFloat;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -23,13 +24,13 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     public static final float SPEED_SCALED = 256F / SPEED;
 
     private double angle;
-    private float currentMultiplier;
+    private FloatingLong currentMultiplier = FloatingLong.ZERO;
     private boolean isBlacklistDimension;
 
     private EnergyInventorySlot energySlot;
 
     public TileEntityWindGenerator() {
-        super(GeneratorsBlocks.WIND_GENERATOR, MekanismGeneratorsConfig.generators.windGenerationMax.get() * 2);
+        super(GeneratorsBlocks.WIND_GENERATOR, MekanismGeneratorsConfig.generators.windGenerationMax.get().multiply(2));
     }
 
     @Nonnull
@@ -47,7 +48,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
             // an initial activity status and the client (in MP) will show the windmills turning while not
             // generating any power
-            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName().toString());
+            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName());
             if (isBlacklistDimension) {
                 setActive(false);
             }
@@ -65,10 +66,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         if (ticker % 20 == 0) {
             // Recalculate the current multiplier once a second
             currentMultiplier = getMultiplier();
-            setActive(MekanismUtils.canFunction(this) && currentMultiplier > 0);
+            setActive(MekanismUtils.canFunction(this) && !currentMultiplier.isEmpty());
         }
-        if (currentMultiplier > 0 && MekanismUtils.canFunction(this) && getEnergyContainer().getNeeded() > 0) {
-            getEnergyContainer().insert(MekanismGeneratorsConfig.generators.windGenerationMin.get() * currentMultiplier, Action.EXECUTE, AutomationType.INTERNAL);
+        if (!currentMultiplier.isEmpty() && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isEmpty()) {
+            getEnergyContainer().insert(MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(currentMultiplier), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 
@@ -82,19 +83,18 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     /**
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
-    private float getMultiplier() {
+    private FloatingLong getMultiplier() {
         if (world != null && world.canBlockSeeSky(getPos().up(4))) {
-            final float minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
-            final float maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
-            final float minG = (float) MekanismGeneratorsConfig.generators.windGenerationMin.get();
-            final float maxG = (float) MekanismGeneratorsConfig.generators.windGenerationMax.get();
-            final float slope = (maxG - minG) / (maxY - minY);
-            final float intercept = minG - slope * minY;
-            final float clampedY = Math.min(maxY, Math.max(minY, getPos().getY() + 4));
-            final float toGen = slope * clampedY + intercept;
-            return toGen / minG;
+            int minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
+            int maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
+            float clampedY = Math.min(maxY, Math.max(minY, getPos().getY() + 4));
+            FloatingLong minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
+            FloatingLong maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
+            FloatingLong slope = maxG.subtract(minG).divide(maxY - minY);
+            FloatingLong toGen = minG.add(slope.multiply(clampedY - minY));
+            return toGen.divide(minG);
         }
-        return 0;
+        return FloatingLong.ZERO;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             MekanismUtils.makeBoundingBlock(world, pos.up(3), pos);
             MekanismUtils.makeBoundingBlock(world, pos.up(4), pos);
             // Check to see if the placement is happening in a blacklisted dimension
-            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName().toString());
+            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName());
         }
     }
 
@@ -121,7 +121,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         }
     }
 
-    public float getCurrentMultiplier() {
+    public FloatingLong getCurrentMultiplier() {
         return currentMultiplier;
     }
 
@@ -141,7 +141,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloat.create(this::getCurrentMultiplier, value -> currentMultiplier = value));
+        container.track(SyncableFloatingLong.create(this::getCurrentMultiplier, value -> currentMultiplier = value));
         container.track(SyncableBoolean.create(this::isBlacklistDimension, value -> isBlacklistDimension = value));
     }
 

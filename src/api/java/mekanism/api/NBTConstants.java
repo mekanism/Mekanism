@@ -62,6 +62,7 @@ public final class NBTConstants {
     public static final String CONTROL_TYPE = "controlType";
     public static final String DATA = "data";
     public static final String DATA_TYPE = "dataType";
+    public static final String DECIMAL = "decimal";
     public static final String DELAY = "delay";
     public static final String DIMENSION = "dimension";
     public static final String DUMP_LEFT = "dumpLeft";
@@ -153,5 +154,6 @@ public final class NBTConstants {
     public static final String UPDATE_DELAY = "updateDelay";
     public static final String UPGRADES = "upgrades";
     public static final String USED_NODES = "usedNodes";
+    public static final String VALUE = "value";
     public static final String WORLD_GEN_VERSION = "worldGenVersion";
 }

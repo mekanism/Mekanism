@@ -9,6 +9,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.FluidGasToGasCachedRecipe;
@@ -30,7 +31,7 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -54,7 +55,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITan
 
     public CachedRecipe<FluidGasToGasRecipe> cachedRecipe;
 
-    public double clientEnergyUsed;
+    public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
@@ -119,13 +120,13 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITan
         //TODO: Fix this not moving the item to the output slot
         fluidSlot.fillTank();
         gasOutputSlot.drainTank();
-        double prev = energyContainer.getEnergy();
+        FloatingLong prev = energyContainer.getEnergy();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
         //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-        clientEnergyUsed = prev - energyContainer.getEnergy();
+        clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
         GasUtils.emit(EnumSet.of(getRightSide()), outputTank, this, gasOutput);
     }
 
@@ -199,6 +200,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITan
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableFloatingLong.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
     }
 }

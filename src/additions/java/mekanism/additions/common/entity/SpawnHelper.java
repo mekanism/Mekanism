@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.gen.Heightmap;
@@ -25,7 +26,7 @@ public class SpawnHelper {
             List<SpawnListEntry> monsterSpawns = biome.getSpawns(EntityClassification.MONSTER);
             //Fail quick if no monsters can spawn in this biome anyways
             if (!monsterSpawns.isEmpty()) {
-                String biomeName = biome.getRegistryName().toString();
+                ResourceLocation biomeName = biome.getRegistryName();
                 addSpawn(AdditionsEntityTypes.BABY_CREEPER, EntityType.CREEPER, MekanismAdditionsConfig.common.babyCreeper, monsterSpawns, biomeName);
                 addSpawn(AdditionsEntityTypes.BABY_ENDERMAN, EntityType.ENDERMAN, MekanismAdditionsConfig.common.babyEnderman, monsterSpawns, biomeName);
                 addSpawn(AdditionsEntityTypes.BABY_SKELETON, EntityType.SKELETON, MekanismAdditionsConfig.common.babySkeleton, monsterSpawns, biomeName);
@@ -59,7 +60,7 @@ public class SpawnHelper {
         }
     }
 
-    private static void addSpawn(IEntityTypeProvider entityTypeProvider, EntityType<?> parent, AdditionsCommonConfig.SpawnConfig spawnConfig, List<SpawnListEntry> monsterSpawns, String biomeName) {
+    private static void addSpawn(IEntityTypeProvider entityTypeProvider, EntityType<?> parent, AdditionsCommonConfig.SpawnConfig spawnConfig, List<SpawnListEntry> monsterSpawns, ResourceLocation biomeName) {
         if (spawnConfig.shouldSpawn.get() && !spawnConfig.biomeBlackList.get().contains(biomeName)) {
             monsterSpawns.stream().filter(monsterSpawn -> monsterSpawn.entityType == parent).findFirst()
                   .ifPresent(parentEntry -> {

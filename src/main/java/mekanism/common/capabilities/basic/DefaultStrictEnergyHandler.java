@@ -1,12 +1,15 @@
 package mekanism.common.capabilities.basic;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.basic.DefaultStorageHelper.DefaultStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class DefaultStrictEnergyHandler implements IStrictEnergyHandler {
 
     public static void register() {
@@ -19,31 +22,31 @@ public class DefaultStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public double getEnergy(int container) {
-        return 0;
+    public FloatingLong getEnergy(int container) {
+        return FloatingLong.ZERO;
     }
 
     @Override
-    public void setEnergy(int container, double energy) {
+    public void setEnergy(int container, FloatingLong energy) {
     }
 
     @Override
-    public double getMaxEnergy(int container) {
-        return 0;
+    public FloatingLong getMaxEnergy(int container) {
+        return FloatingLong.ZERO;
     }
 
     @Override
-    public double getNeededEnergy(int container) {
-        return 0;
+    public FloatingLong getNeededEnergy(int container) {
+        return FloatingLong.ZERO;
     }
 
     @Override
-    public double insertEnergy(int container, double amount, Action action) {
+    public FloatingLong insertEnergy(int container, FloatingLong amount, Action action) {
         return amount;
     }
 
     @Override
-    public double extractEnergy(int container, double amount, Action action) {
-        return 0;
+    public FloatingLong extractEnergy(int container, FloatingLong amount, Action action) {
+        return FloatingLong.ZERO;
     }
 }

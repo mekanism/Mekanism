@@ -1,7 +1,6 @@
 package mekanism.common.capabilities.energy;
 
 import java.util.Objects;
-import java.util.function.DoubleSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -10,23 +9,25 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class VariableCapacityEnergyContainer extends BasicEnergyContainer {
 
-    public static VariableCapacityEnergyContainer input(DoubleSupplier maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
+    public static VariableCapacityEnergyContainer input(FloatingLongSupplier maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
         Objects.requireNonNull(maxEnergy, "Max energy supplier cannot be null");
         return new VariableCapacityEnergyContainer(maxEnergy, notExternal, alwaysTrue, energyHandler);
     }
 
-    public static VariableCapacityEnergyContainer output(DoubleSupplier maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
+    public static VariableCapacityEnergyContainer output(FloatingLongSupplier maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
         Objects.requireNonNull(maxEnergy, "Max energy supplier cannot be null");
         return new VariableCapacityEnergyContainer(maxEnergy, alwaysTrue, internalOnly, energyHandler);
     }
 
-    public static VariableCapacityEnergyContainer create(DoubleSupplier maxEnergy, Predicate<@NonNull AutomationType> canExtract,
+    public static VariableCapacityEnergyContainer create(FloatingLongSupplier maxEnergy, Predicate<@NonNull AutomationType> canExtract,
           Predicate<@NonNull AutomationType> canInsert, @Nullable IMekanismStrictEnergyHandler energyHandler) {
         Objects.requireNonNull(maxEnergy, "Max energy supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
@@ -34,16 +35,16 @@ public class VariableCapacityEnergyContainer extends BasicEnergyContainer {
         return new VariableCapacityEnergyContainer(maxEnergy, canExtract, canInsert, energyHandler);
     }
 
-    private DoubleSupplier maxEnergy;
+    private FloatingLongSupplier maxEnergy;
 
-    protected VariableCapacityEnergyContainer(DoubleSupplier maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
+    protected VariableCapacityEnergyContainer(FloatingLongSupplier maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           @Nullable IMekanismStrictEnergyHandler energyHandler) {
-        super(maxEnergy.getAsDouble(), canExtract, canInsert, energyHandler);
+        super(maxEnergy.get(), canExtract, canInsert, energyHandler);
         this.maxEnergy = maxEnergy;
     }
 
     @Override
-    public double getMaxEnergy() {
-        return maxEnergy.getAsDouble();
+    public FloatingLong getMaxEnergy() {
+        return maxEnergy.get();
     }
 }

@@ -5,20 +5,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IGasProvider;
 import net.minecraft.tags.Tag;
 
 public class FuelHandler {
 
-    public static final FuelGas EMPTY_FUEL = new FuelGas(0, 0);
+    public static final FuelGas EMPTY_FUEL = new FuelGas(0, FloatingLong.ZERO);
     private static Map<Tag<Gas>, FuelGas> tagFuels = new Object2ObjectOpenHashMap<>();
     private static Map<Gas, FuelGas> fuels = new Object2ObjectOpenHashMap<>();
 
-    public static void addGas(Tag<Gas> gasTag, int burnTicks, double energyPerMilliBucket) {
+    public static void addGas(Tag<Gas> gasTag, int burnTicks, FloatingLong energyPerMilliBucket) {
         tagFuels.put(gasTag, new FuelGas(burnTicks, energyPerMilliBucket));
     }
 
-    public static void addGas(IGasProvider gas, int burnTicks, double energyPerMilliBucket) {
+    public static void addGas(IGasProvider gas, int burnTicks, FloatingLong energyPerMilliBucket) {
         fuels.put(gas.getGas(), new FuelGas(burnTicks, energyPerMilliBucket));
     }
 
@@ -41,11 +42,11 @@ public class FuelHandler {
     public static class FuelGas {
 
         public int burnTicks;
-        public double energyPerTick;
+        public FloatingLong energyPerTick;
 
-        public FuelGas(int duration, double energyDensity) {
+        public FuelGas(int duration, FloatingLong energyDensity) {
             burnTicks = duration;
-            energyPerTick = energyDensity / duration;
+            energyPerTick = duration == 0 ? energyDensity : energyDensity.divide(duration);
         }
 
         public boolean isEmpty() {

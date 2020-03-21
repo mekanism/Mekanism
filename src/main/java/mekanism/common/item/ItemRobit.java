@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
 
     public ItemRobit(Properties properties) {
-        super(100_000, properties);
+        super(EntityRobit.MAX_ENERGY, properties);
     }
 
     @Override

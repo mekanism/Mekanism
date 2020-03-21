@@ -1,7 +1,7 @@
 package mekanism.generators.client.gui;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -25,8 +25,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, MekanismTileContainer<TileEntityWindGenerator>> {
 
-    private final DecimalFormat powerFormat = new DecimalFormat("0.##");
-
     public GuiWindGenerator(MekanismTileContainer<TileEntityWindGenerator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
@@ -39,7 +37,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get() * tile.getCurrentMultiplier() : 0)),
+              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(tile.getCurrentMultiplier())
+                                                                                          : FloatingLong.ZERO)),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiStateTexture(this, 18, 35, tile::getActive, MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "wind_on.png"),
@@ -51,8 +50,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
         drawString(tile.getName(), 45, 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         renderScaledText(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00, 75);
-        renderScaledText(GeneratorsLang.POWER.translate(powerFormat.format(MekanismUtils.convertToDisplay(
-              MekanismGeneratorsConfig.generators.windGenerationMin.get() * tile.getCurrentMultiplier()))), 51, 35, 0x00CD00, 75);
+        renderScaledText(GeneratorsLang.POWER.translate(MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.windGenerationMin.get()
+              .multiply(tile.getCurrentMultiplier())).toString(2)), 51, 35, 0x00CD00, 75);
         renderScaledText(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())), 51, 44, 0x00CD00, 75);
         int size = 44;
         if (!tile.getActive()) {

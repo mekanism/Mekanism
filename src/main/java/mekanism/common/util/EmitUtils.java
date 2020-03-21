@@ -2,8 +2,9 @@ package mekanism.common.util;
 
 import java.util.Set;
 import java.util.function.BiConsumer;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.base.SplitInfo;
-import mekanism.common.base.SplitInfo.DoubleSplitInfo;
+import mekanism.common.base.SplitInfo.FloatingLongSplitInfo;
 import mekanism.common.base.SplitInfo.IntegerSplitInfo;
 import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.base.target.Target;
@@ -72,8 +73,8 @@ public class EmitUtils {
      *
      * @return The amount that actually got sent
      */
-    public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableTargets, int totalTargets, double amountToSplit) {
-        return sendToAcceptors(availableTargets, totalTargets, new DoubleSplitInfo(amountToSplit, totalTargets), amountToSplit);
+    public static FloatingLong sendToAcceptors(Set<EnergyAcceptorTarget> availableTargets, int totalTargets, FloatingLong amountToSplit) {
+        return sendToAcceptors(availableTargets, totalTargets, new FloatingLongSplitInfo(amountToSplit, totalTargets), amountToSplit);
     }
 
     /**

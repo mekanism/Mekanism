@@ -22,8 +22,8 @@ import org.apache.logging.log4j.Logger;
  *
  * Removes the risk of vanilla forced chunks being unforced on us
  */
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ChunkManager extends WorldSavedData {
 
     private static final String CHUNK_LIST_KEY = "chunks";

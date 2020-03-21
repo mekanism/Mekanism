@@ -26,8 +26,7 @@ public class GuiReactorController extends GuiMekanismTile<TileEntityReactorContr
         super.init();
         if (tile.isFormed()) {
             addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.energyContainer.getEnergy(), tile.energyContainer.getMaxEnergy())),
-                  GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
-                  this));
+                  GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(), this));
             addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT));
             addButton(new GuiReactorTab(this, tile, ReactorTab.FUEL));
             addButton(new GuiReactorTab(this, tile, ReactorTab.STAT));

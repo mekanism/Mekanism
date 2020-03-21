@@ -1,14 +1,16 @@
 package mekanism.common.block.attribute;
 
-import java.util.function.DoubleSupplier;
+import javax.annotation.Nonnull;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 
 public class AttributeEnergy implements Attribute {
 
-    private DoubleSupplier energyUsage = () -> 0;
+    private FloatingLongSupplier energyUsage = () -> FloatingLong.ZERO;
     // 2 operations (20 secs) worth of ticks * usage
-    private DoubleSupplier energyStorage = () -> 400 * energyUsage.getAsDouble();
+    private FloatingLongSupplier energyStorage = () -> energyUsage.get().multiply(400);
 
-    public AttributeEnergy(DoubleSupplier energyUsage, DoubleSupplier energyStorage) {
+    public AttributeEnergy(FloatingLongSupplier energyUsage, FloatingLongSupplier energyStorage) {
         if (energyUsage != null) {
             this.energyUsage = energyUsage;
         }
@@ -17,15 +19,18 @@ public class AttributeEnergy implements Attribute {
         }
     }
 
-    public double getUsage() {
-        return energyUsage.getAsDouble();
+    @Nonnull
+    public FloatingLong getUsage() {
+        return energyUsage.get();
     }
 
-    public double getConfigStorage() {
-        return energyStorage.getAsDouble();
+    @Nonnull
+    public FloatingLong getConfigStorage() {
+        return energyStorage.get();
     }
 
-    public double getStorage() {
-        return Math.max(getConfigStorage(), getUsage());
+    @Nonnull
+    public FloatingLong getStorage() {
+        return getConfigStorage().max(getUsage());
     }
 }

@@ -7,6 +7,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -25,13 +26,13 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
     private final ItemStackIngredient inputSolid;
     private final FluidStackIngredient inputFluid;
     private final GasStackIngredient inputGas;
-    private final double energyRequired;
+    private final FloatingLong energyRequired;
     private final int duration;
     private final ItemStack outputItem;
     private final GasStack outputGas;
 
     public PressurizedReactionRecipe(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
-          double energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
+          FloatingLong energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
         super(id);
         this.inputSolid = inputSolid;
         this.inputFluid = inputFluid;
@@ -54,7 +55,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
         return inputGas;
     }
 
-    public double getEnergyRequired() {
+    public FloatingLong getEnergyRequired() {
         return energyRequired;
     }
 
@@ -83,7 +84,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
         inputSolid.write(buffer);
         inputFluid.write(buffer);
         inputGas.write(buffer);
-        buffer.writeDouble(energyRequired);
+        energyRequired.writeToBuffer(buffer);
         buffer.writeInt(duration);
         buffer.writeItemStack(outputItem);
         outputGas.writeToPacket(buffer);

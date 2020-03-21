@@ -12,6 +12,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -216,9 +217,10 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
         return super.extractGas(tank, amount, side, action);
     }
 
+    @Nonnull
     @Override
-    public double extractEnergy(int container, double amount, @Nullable Direction side, @Nonnull Action action) {
+    public FloatingLong extractEnergy(int container, @Nonnull FloatingLong amount, @Nullable Direction side, @Nonnull Action action) {
         //Don't allow extracting if we are on input mode
-        return getActive() ? super.extractEnergy(container, amount, side, action) : 0;
+        return getActive() ? super.extractEnergy(container, amount, side, action) : FloatingLong.ZERO;
     }
 }

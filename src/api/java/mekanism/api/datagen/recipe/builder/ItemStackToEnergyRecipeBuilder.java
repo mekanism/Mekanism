@@ -6,8 +6,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.util.ResourceLocation;
 
@@ -17,16 +19,16 @@ import net.minecraft.util.ResourceLocation;
 public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemStackToEnergyRecipeBuilder> {
 
     private final ItemStackIngredient input;
-    private final double output;
+    private final FloatingLong output;
 
-    protected ItemStackToEnergyRecipeBuilder(ItemStackIngredient input, double output, ResourceLocation serializerName) {
+    protected ItemStackToEnergyRecipeBuilder(ItemStackIngredient input, FloatingLong output, ResourceLocation serializerName) {
         super(serializerName);
         this.input = input;
         this.output = output;
     }
 
-    public static ItemStackToEnergyRecipeBuilder energyConversion(ItemStackIngredient input, double output) {
-        if (output <= 0) {
+    public static ItemStackToEnergyRecipeBuilder energyConversion(ItemStackIngredient input, FloatingLong output) {
+        if (output.isEmpty()) {
             throw new IllegalArgumentException("This energy conversion recipe requires an energy output greater than zero");
         }
         return new ItemStackToEnergyRecipeBuilder(input, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "energy_conversion"));
@@ -46,7 +48,7 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
         @Override
         public void serialize(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
-            json.addProperty(JsonConstants.OUTPUT, output);
+            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeFloatingLong(output));
         }
     }
 }

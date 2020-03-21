@@ -18,6 +18,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.config.MekanismConfig;
@@ -91,7 +92,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeDouble(storedEnergy.getEnergy());
+        storedEnergy.getEnergy().writeToBuffer(buffer);
         buffer.writeFluidStack(storedFluid.getFluid());
         ChemicalUtils.writeChemicalStack(buffer, storedGas.getStack());
         buffer.writeCompoundTag(storedItem.serializeNBT());
@@ -102,7 +103,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
         presetVariables();
-        storedEnergy.setEnergy(dataStream.readDouble());
+        storedEnergy.setEnergy(FloatingLong.fromBuffer(dataStream));
         storedFluid.setStack(dataStream.readFluidStack());
         storedGas.setStack(ChemicalUtils.readGasStack(dataStream));
         storedItem.deserializeNBT(dataStream.readCompoundTag());

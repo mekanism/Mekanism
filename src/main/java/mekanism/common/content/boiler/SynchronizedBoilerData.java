@@ -92,7 +92,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
      * @return how much heat energy is needed to convert one unit of water into steam
      */
     public static double getHeatEnthalpy() {
-        return MekanismConfig.general.maxEnergyPerSteam.get() / MekanismConfig.general.energyPerHeat.get();
+        return MekanismConfig.general.maxEnergyPerSteam.get().divideToLevel(MekanismConfig.general.energyPerHeat.get());
     }
 
     public double getHeatAvailable() {

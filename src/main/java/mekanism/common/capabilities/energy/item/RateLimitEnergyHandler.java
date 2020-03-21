@@ -3,7 +3,6 @@ package mekanism.common.capabilities.energy.item;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
@@ -14,6 +13,8 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.tier.EnergyCubeTier;
@@ -22,7 +23,7 @@ import mekanism.common.tier.EnergyCubeTier;
 @MethodsReturnNonnullByDefault
 public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
 
-    public static RateLimitEnergyHandler create(double rate, DoubleSupplier capacity) {
+    public static RateLimitEnergyHandler create(FloatingLongSupplier rate, FloatingLongSupplier capacity) {
         return create(rate, capacity, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue);
     }
 
@@ -31,11 +32,14 @@ public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
         return new RateLimitEnergyHandler(handler -> new EnergyCubeRateLimitEnergyContainer(tier, handler));
     }
 
-    public static RateLimitEnergyHandler create(double rate, DoubleSupplier capacity, Predicate<@NonNull AutomationType> canExtract,
+    public static RateLimitEnergyHandler create(FloatingLongSupplier capacity, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert) {
+        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
+        return create(() -> capacity.get().multiply(0.005), capacity, canExtract, canInsert);
+    }
+
+    public static RateLimitEnergyHandler create(FloatingLongSupplier rate, FloatingLongSupplier capacity, Predicate<@NonNull AutomationType> canExtract,
           Predicate<@NonNull AutomationType> canInsert) {
-        if (rate <= 0) {
-            throw new IllegalArgumentException("Rate must be greater than zero");
-        }
+        Objects.requireNonNull(rate, "Rate supplier cannot be null");
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
@@ -55,46 +59,38 @@ public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
 
     private static class RateLimitEnergyContainer extends VariableCapacityEnergyContainer {
 
-        private final double rate;
+        private final FloatingLongSupplier rate;
 
-        private RateLimitEnergyContainer(double rate, DoubleSupplier capacity, Predicate<@NonNull AutomationType> canExtract,
+        private RateLimitEnergyContainer(FloatingLongSupplier rate, FloatingLongSupplier capacity, Predicate<@NonNull AutomationType> canExtract,
               Predicate<@NonNull AutomationType> canInsert, IMekanismStrictEnergyHandler energyHandler) {
             super(capacity, canExtract, canInsert, energyHandler);
             this.rate = rate;
         }
 
         @Override
-        protected double getRate(@Nullable AutomationType automationType) {
+        protected FloatingLong getRate(@Nullable AutomationType automationType) {
             //Allow unknown or manual interaction to bypass rate limit for the item
-            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate;
+            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.get();
         }
     }
 
-    private static class EnergyCubeRateLimitEnergyContainer extends VariableCapacityEnergyContainer {
+    private static class EnergyCubeRateLimitEnergyContainer extends RateLimitEnergyContainer {
 
-        private final DoubleSupplier rate;
         private final boolean isCreative;
 
         private EnergyCubeRateLimitEnergyContainer(EnergyCubeTier tier, IMekanismStrictEnergyHandler energyHandler) {
-            super(tier::getMaxEnergy, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, energyHandler);
+            super(tier::getOutput, tier::getMaxEnergy, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, energyHandler);
             isCreative = tier == EnergyCubeTier.CREATIVE;
-            rate = tier::getOutput;
         }
 
         @Override
-        public double insert(double amount, Action action, AutomationType automationType) {
+        public FloatingLong insert(FloatingLong amount, Action action, AutomationType automationType) {
             return super.insert(amount, action.combine(!isCreative), automationType);
         }
 
         @Override
-        public double extract(double amount, Action action, AutomationType automationType) {
+        public FloatingLong extract(FloatingLong amount, Action action, AutomationType automationType) {
             return super.extract(amount, action.combine(!isCreative), automationType);
-        }
-
-        @Override
-        protected double getRate(@Nullable AutomationType automationType) {
-            //Allow unknown or manual interaction to bypass rate limit for the item
-            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsDouble();
         }
     }
 }

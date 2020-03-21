@@ -1,18 +1,19 @@
 package mekanism.common.base.target;
 
 import mekanism.api.Action;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.base.SplitInfo;
 
-public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Double, Double> {
+public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, FloatingLong, FloatingLong> {
 
     @Override
-    protected void acceptAmount(IStrictEnergyHandler handler, SplitInfo<Double> splitInfo, Double amount) {
-        splitInfo.send(amount - handler.insertEnergy(amount, Action.EXECUTE));
+    protected void acceptAmount(IStrictEnergyHandler handler, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
+        splitInfo.send(amount.subtract(handler.insertEnergy(amount, Action.EXECUTE)));
     }
 
     @Override
-    protected Double simulate(IStrictEnergyHandler handler, Double energyToSend) {
-        return energyToSend - handler.insertEnergy(energyToSend, Action.SIMULATE);
+    protected FloatingLong simulate(IStrictEnergyHandler handler, FloatingLong energyToSend) {
+        return energyToSend.subtract(handler.insertEnergy(energyToSend, Action.SIMULATE));
     }
 }

@@ -1,6 +1,7 @@
 package mekanism.generators.client.gui;
 
 import java.util.Arrays;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -28,11 +29,17 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
         super.init();
         addButton(new GuiTurbineTab(this, tile, TurbineTab.MAIN));
         addButton(new GuiEnergyInfo(() -> {
-            double producing = tile.structure == null ? 0 : tile.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
-                                                            Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
-            return Arrays.asList(MekanismLang.STORING.translate(tile.structure == null ? EnergyDisplay.of(0) :
-                                                                EnergyDisplay.of(tile.structure.energyContainer.getEnergy(), tile.structure.energyContainer.getMaxEnergy())),
-                  GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(producing)));
+            EnergyDisplay storing;
+            EnergyDisplay producing;
+            if (tile.structure == null) {
+                storing = EnergyDisplay.ZERO;
+                producing = EnergyDisplay.ZERO;
+            } else {
+                storing = EnergyDisplay.of(tile.structure.energyContainer.getEnergy(), tile.structure.energyContainer.getMaxEnergy());
+                producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES).multiply(
+                      tile.structure.clientFlow * Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));
+            }
+            return Arrays.asList(MekanismLang.STORING.translate(storing), GeneratorsLang.PRODUCING_AMOUNT.translate(producing));
         }, this));
     }
 
@@ -57,11 +64,11 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
             drawString(GeneratorsLang.TURBINE_PRODUCTION.translate(), 8, 72, 0x797979);
             drawString(GeneratorsLang.TURBINE_BLADES.translate(blades, coils * 4 > blades ? limiting : ""), 14, 81, 0x404040);
             drawString(GeneratorsLang.TURBINE_COILS.translate(coils, coils * 4 < blades ? limiting : ""), 14, 90, 0x404040);
-            double energyMultiplier = (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
-                                      Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+            FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES)
+                  .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
             double rate = lowerVolume * (clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
             rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
-            drawString(GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(rate * energyMultiplier)), 8, 104, 0x404040);
+            drawString(GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(energyMultiplier.multiply(rate))), 8, 104, 0x404040);
             drawString(GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(tile.structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get()), 8, 113, 0x404040);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

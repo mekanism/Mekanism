@@ -1,25 +1,30 @@
 package mekanism.common.tier;
 
 import java.util.Locale;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.config.value.CachedDoubleValue;
+import mekanism.common.config.value.CachedFloatingLongValue;
 import net.minecraft.util.IStringSerializable;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public enum EnergyCubeTier implements ITier, IStringSerializable {
-    BASIC(BaseTier.BASIC, 2_000_000, 800),
-    ADVANCED(BaseTier.ADVANCED, 8_000_000, 3_200),
-    ELITE(BaseTier.ELITE, 32_000_000, 12_800),
-    ULTIMATE(BaseTier.ULTIMATE, 128_000_000, 51_200),
-    CREATIVE(BaseTier.CREATIVE, Double.MAX_VALUE, Double.MAX_VALUE);
+    BASIC(BaseTier.BASIC, FloatingLong.createConst(2_000_000), FloatingLong.createConst(800)),
+    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(8_000_000), FloatingLong.createConst(3_200)),
+    ELITE(BaseTier.ELITE, FloatingLong.createConst(32_000_000), FloatingLong.createConst(12_800)),
+    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(128_000_000), FloatingLong.createConst(51_200)),
+    CREATIVE(BaseTier.CREATIVE, FloatingLong.MAX_VALUE, FloatingLong.MAX_VALUE);
 
-    private final double baseMaxEnergy;
-    private final double baseOutput;
+    private final FloatingLong baseMaxEnergy;
+    private final FloatingLong baseOutput;
     private final BaseTier baseTier;
-    private CachedDoubleValue storageReference;
-    private CachedDoubleValue outputReference;
+    private CachedFloatingLongValue storageReference;
+    private CachedFloatingLongValue outputReference;
 
-    EnergyCubeTier(BaseTier tier, double max, double out) {
+    EnergyCubeTier(BaseTier tier, FloatingLong max, FloatingLong out) {
         baseMaxEnergy = max;
         baseOutput = out;
         baseTier = tier;
@@ -35,26 +40,26 @@ public enum EnergyCubeTier implements ITier, IStringSerializable {
         return name().toLowerCase(Locale.ROOT);
     }
 
-    public double getMaxEnergy() {
+    public FloatingLong getMaxEnergy() {
         return storageReference == null ? getBaseMaxEnergy() : storageReference.get();
     }
 
-    public double getOutput() {
+    public FloatingLong getOutput() {
         return outputReference == null ? getBaseOutput() : outputReference.get();
     }
 
-    public double getBaseMaxEnergy() {
+    public FloatingLong getBaseMaxEnergy() {
         return baseMaxEnergy;
     }
 
-    public double getBaseOutput() {
+    public FloatingLong getBaseOutput() {
         return baseOutput;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the EnergyCubeTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedDoubleValue storageReference, CachedDoubleValue outputReference) {
+    public void setConfigReference(CachedFloatingLongValue storageReference, CachedFloatingLongValue outputReference) {
         this.storageReference = storageReference;
         this.outputReference = outputReference;
     }

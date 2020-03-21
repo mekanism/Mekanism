@@ -2,16 +2,18 @@ package mekanism.api.recipes.cache;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongConsumer;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.recipes.MekanismRecipe;
 
 @FieldsAreNonnullByDefault
@@ -34,9 +36,9 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     };
 
     //Energy Information (Default to doing nothing and not being used)
-    private DoubleSupplier perTickEnergy = () -> 0;
-    private DoubleSupplier storedEnergy = () -> 0;
-    private DoubleConsumer useEnergy = energy -> {
+    private FloatingLongSupplier perTickEnergy = () -> FloatingLong.ZERO;
+    private FloatingLongSupplier storedEnergy = () -> FloatingLong.ZERO;
+    private FloatingLongConsumer useEnergy = energy -> {
     };
 
     //Applies a function to post process getOperationsThisTick (Defaults to capping at one operation per tick)
@@ -75,7 +77,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     }
 
     //TODO: Do we want to change to a system similar to the InputHandler, except for energy, so that we can simulate extracting energy from our container
-    public CachedRecipe<RECIPE> setEnergyRequirements(DoubleSupplier perTickEnergy, IEnergyContainer energyContainer) {
+    public CachedRecipe<RECIPE> setEnergyRequirements(FloatingLongSupplier perTickEnergy, IEnergyContainer energyContainer) {
         this.perTickEnergy = perTickEnergy;
         this.storedEnergy = energyContainer::getEnergy;
         this.useEnergy = energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL);
@@ -144,12 +146,13 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         return canHolderFunction.getAsBoolean();
     }
 
-    protected double getStoredElectricity() {
-        return storedEnergy.getAsDouble();
+    protected FloatingLong getStoredElectricity() {
+        return storedEnergy.get();
     }
 
-    protected double getEnergyPerTick() {
-        return perTickEnergy.getAsDouble();
+    @Nonnull
+    protected FloatingLong getEnergyPerTick() {
+        return perTickEnergy.get();
     }
 
     private int getTicksRequired() {
@@ -160,7 +163,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     }
 
     protected void useEnergy(int operations) {
-        useEnergy.accept(operations * getEnergyPerTick());
+        useEnergy.accept(getEnergyPerTick().multiply(operations));
     }
 
     //TODO: Is there a better name for this, basically is how many times this can function this tick
@@ -174,14 +177,13 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
             //Short circuit that if we already can't perform any outputs, just return
             return currentMax;
         }
-        double energyPerTick = getEnergyPerTick();
-        if (energyPerTick == 0) {
+        FloatingLong energyPerTick = getEnergyPerTick();
+        if (energyPerTick.isEmpty()) {
             //If we don't have an energy requirement return what we were told the max is
             return currentMax;
         }
-        double operations = getStoredElectricity() / energyPerTick;
         //Make sure we don't have any integer overflow in calculating how much we have room for
-        return Math.min(operations > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) operations, currentMax);
+        return Math.min(getStoredElectricity().divide(energyPerTick).intValue(), currentMax);
     }
 
     public boolean canFunction() {

@@ -2,6 +2,7 @@ package mekanism.common.item.block.machine;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
@@ -35,8 +36,7 @@ public class ItemBlockChargepad extends ItemBlockAdvancedTooltip<BlockTileModel<
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        double maxEnergy = MekanismUtils.getMaxEnergy(stack, Attribute.get(getBlock(), AttributeEnergy.class).getStorage());
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(maxEnergy * 0.005, () -> maxEnergy, BasicEnergyContainer.notExternal,
-              BasicEnergyContainer.alwaysTrue));
+        FloatingLong maxEnergy = MekanismUtils.getMaxEnergy(stack, Attribute.get(getBlock(), AttributeEnergy.class).getStorage());
+        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> maxEnergy, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
     }
 }

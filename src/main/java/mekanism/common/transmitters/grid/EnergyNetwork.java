@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -33,7 +34,7 @@ import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 
-public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNetwork, Double> implements IMekanismStrictEnergyHandler {
+public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNetwork, FloatingLong> implements IMekanismStrictEnergyHandler {
 
     private final List<IEnergyContainer> energyContainers;
     public final VariableCapacityEnergyContainer energyContainer;
@@ -42,10 +43,10 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     // happen on the server and only bother sending sync/update packets to the client when something changes similar to how
     // it is done for fluid tanks. And then we can copy the code to here and modify it to use our proper scale calculations
     public double energyScale;
-    private double prevTransferAmount;
+    private FloatingLong prevTransferAmount = FloatingLong.ZERO;
 
     public EnergyNetwork() {
-        energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsDouble, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
+        energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsFloatingLong, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
         energyContainers = Collections.singletonList(energyContainer);
     }
 
@@ -71,7 +72,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
                 net.energyContainer.setEmpty();
             }
         } else if (!net.energyContainer.isEmpty()) {
-            energyContainer.setEnergy(energyContainer.getEnergy() + net.getBuffer());
+            energyContainer.setEnergy(energyContainer.getEnergy().add(net.getBuffer()));
             net.energyContainer.setEmpty();
         }
         super.adoptTransmittersAndAcceptorsFrom(net);
@@ -83,29 +84,29 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
 
     @Nonnull
     @Override
-    public Double getBuffer() {
+    public FloatingLong getBuffer() {
         return energyContainer.getEnergy();
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, Double> transmitter) {
-        Double energy = transmitter.getBuffer();
-        if (energy != null && energy > 0) {
-            energyContainer.setEnergy(energyContainer.getEnergy() + energy);
+    public void absorbBuffer(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
+        FloatingLong energy = transmitter.getBuffer();
+        if (energy != null && !energy.isEmpty()) {
+            energyContainer.setEnergy(energyContainer.getEnergy().add(energy));
         }
     }
 
     @Override
     public void clampBuffer() {
         if (!energyContainer.isEmpty()) {
-            double capacity = getCapacityAsDouble();
-            if (energyContainer.getEnergy() > capacity) {
+            FloatingLong capacity = getCapacityAsFloatingLong();
+            if (energyContainer.getEnergy().greaterThan(capacity)) {
                 energyContainer.setEnergy(capacity);
             }
         }
     }
 
-    private double tickEmit(double energyToSend) {
+    private FloatingLong tickEmit(FloatingLong energyToSend) {
         Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
         Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
@@ -121,7 +122,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
             EnergyAcceptorTarget target = new EnergyAcceptorTarget();
             for (Direction side : sides) {
                 IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(tile, side);
-                if (handler != null && handler.insertEnergy(1, Action.SIMULATE) < 1) {
+                if (handler != null && handler.insertEnergy(FloatingLong.ONE, Action.SIMULATE).smallerThan(FloatingLong.ONE)) {
                     target.addHandler(side, handler);
                 }
             }
@@ -131,7 +132,8 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
                 totalHandlers += curHandlers;
             }
         }
-        return EmitUtils.sendToAcceptors(targets, totalHandlers, energyToSend);
+        //TODO: Evaluate copying this
+        return EmitUtils.sendToAcceptors(targets, totalHandlers, energyToSend.copy());
     }
 
     @Override
@@ -143,7 +145,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     public void onUpdate() {
         super.onUpdate();
         if (!isRemote()) {
-            prevTransferAmount = 0;
+            prevTransferAmount = FloatingLong.ZERO;
             double currentPowerScale = getScale();
             if (Math.abs(currentPowerScale - energyScale) > 0.01 || (currentPowerScale != energyScale && (currentPowerScale == 0 || currentPowerScale == 1))) {
                 needsUpdate = true;
@@ -161,11 +163,12 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     }
 
     public double getScale() {
-        if (energyContainer.isEmpty() || energyContainer.getMaxEnergy() == 0) {
+        if (energyContainer.isEmpty() || energyContainer.getMaxEnergy().isEmpty()) {
             return 0;
         }
         //TODO: Figure this out better
-        return Math.max(Math.min(Math.ceil(Math.log10(energyContainer.getEnergy() * 20) * 2) / 10, 1), energyContainer.getEnergy() / energyContainer.getMaxEnergy());
+        //return Math.max(Math.min(Math.ceil(Math.log10(energyContainer.getEnergy() * 20) * 2) / 10, 1), energyContainer.getEnergy() / energyContainer.getMaxEnergy());
+        return FloatingLong.ONE.max(energyContainer.getEnergy().divide(energyContainer.getMaxEnergy())).doubleValue();
     }
 
     @Override

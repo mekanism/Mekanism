@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
+import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
@@ -28,12 +29,12 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
         addButton(new GuiMatrixTab(this, tile, MatrixTab.MAIN));
         addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
-            public double getEnergy() {
+            public FloatingLong getEnergy() {
                 return tile.getEnergy();
             }
 
             @Override
-            public double getMaxEnergy() {
+            public FloatingLong getMaxEnergy() {
                 return tile.getMaxEnergy();
             }
         }, GaugeType.STANDARD, this, 6, 13));
@@ -45,7 +46,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
 
             @Override
             public double getLevel() {
-                return tile.structure == null ? 0 : tile.getLastInput() / tile.structure.getTransferCap();
+                return tile.structure == null ? 0 : tile.getLastInput().divideToLevel(tile.structure.getTransferCap());
             }
         }, 30, 13));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
@@ -56,7 +57,10 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
 
             @Override
             public double getLevel() {
-                return tile.structure == null ? 0 : tile.getLastOutput() / tile.structure.getTransferCap();
+                if (tile.structure == null) {
+                    return 0;
+                }
+                return tile.getLastOutput().divideToLevel(tile.structure.getTransferCap());
             }
         }, 38, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),

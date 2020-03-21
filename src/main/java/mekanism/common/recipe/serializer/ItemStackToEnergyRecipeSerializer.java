@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
+import mekanism.api.SerializerHelper;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
@@ -28,16 +30,8 @@ public class ItemStackToEnergyRecipeSerializer<T extends ItemStackToEnergyRecipe
         JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
                             JSONUtils.getJsonObject(json, JsonConstants.INPUT);
         ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
-        double output;
-        if (!json.has(JsonConstants.OUTPUT)) {
-            throw new JsonSyntaxException("Missing '" + JsonConstants.OUTPUT + "', expected to find a double");
-        }
-        JsonElement energy = json.get(JsonConstants.OUTPUT);
-        if (!JSONUtils.isNumber(energy)) {
-            throw new JsonSyntaxException("Expected output to be a double greater than zero.");
-        }
-        output = energy.getAsJsonPrimitive().getAsDouble();
-        if (output <= 0) {
+        FloatingLong output = SerializerHelper.getFloatingLong(json, JsonConstants.OUTPUT);
+        if (output.isEmpty()) {
             throw new JsonSyntaxException("Expected output to be greater than zero.");
         }
         return this.factory.create(recipeId, inputIngredient, output);
@@ -47,7 +41,7 @@ public class ItemStackToEnergyRecipeSerializer<T extends ItemStackToEnergyRecipe
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
-            double output = buffer.readDouble();
+            FloatingLong output = FloatingLong.fromBuffer(buffer);
             return this.factory.create(recipeId, inputIngredient, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading itemstack to energy recipe from packet.", e);
@@ -67,6 +61,6 @@ public class ItemStackToEnergyRecipeSerializer<T extends ItemStackToEnergyRecipe
 
     public interface IFactory<T extends ItemStackToEnergyRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient input, double output);
+        T create(ResourceLocation id, ItemStackIngredient input, FloatingLong output);
     }
 }

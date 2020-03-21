@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
 import mekanism.api.Range3D;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
@@ -257,8 +258,14 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return capacity;
     }
 
+    @Deprecated
     public double getCapacityAsDouble() {
         return doubleCapacity;
+    }
+
+    public FloatingLong getCapacityAsFloatingLong() {
+        //TODO: Implement this, and remove getCapacityAsDouble
+        return FloatingLong.ZERO;
     }
 
     @Nullable

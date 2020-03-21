@@ -1,12 +1,11 @@
 package mekanism.additions.common.config;
 
 import java.util.ArrayList;
-import java.util.List;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
-import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedDoubleValue;
+import mekanism.common.config.value.CachedResourceLocationListValue;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -56,7 +55,7 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
         public final CachedDoubleValue weightPercentage;
         public final CachedDoubleValue minSizePercentage;
         public final CachedDoubleValue maxSizePercentage;
-        public final CachedConfigValue<List<? extends String>> biomeBlackList;
+        public final CachedResourceLocationListValue biomeBlackList;
 
         private SpawnConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, String name) {
             builder.comment("Config options regarding " + name + ".").push(name.replaceAll(" ", "-"));
@@ -72,14 +71,13 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
             this.maxSizePercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for maximum group size of " + name + " spawns, compared to the adult mob.")
                   .worldRestart()
                   .defineInRange("maxSizePercentage", 0.5, 0, 100));
-            this.biomeBlackList = CachedConfigValue.wrap(config, builder.comment("The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
+            this.biomeBlackList = CachedResourceLocationListValue.wrap(config, builder.comment("The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
                   .worldRestart()
                   .defineList("biomeBlackList", new ArrayList<>(), o -> {
                       if (o instanceof String) {
                           String string = ((String) o).toLowerCase();
                           if (ResourceLocation.isResouceNameValid(string)) {
-                              ResourceLocation biome = new ResourceLocation(string);
-                              return ForgeRegistries.BIOMES.containsKey(biome);
+                              return ForgeRegistries.BIOMES.containsKey(new ResourceLocation(string));
                           }
                       }
                       return false;

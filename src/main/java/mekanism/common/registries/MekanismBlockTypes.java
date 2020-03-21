@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.function.Supplier;
 import mekanism.api.Pos3D;
 import mekanism.api.Upgrade;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
@@ -99,6 +100,7 @@ import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.laser.TileEntityLaser;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.laser.TileEntityLaserTractorBeam;
@@ -107,6 +109,12 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 
 public class MekanismBlockTypes {
+
+    //TODO: Name these a lot better
+    private static final FloatingLong LARGE_LASER = FloatingLong.createConst(5_000_000_000L);
+    private static final FloatingLong TELEPORTER_USAGE = FloatingLong.createConst(12_500);
+    private static final FloatingLong HUNDRED = FloatingLong.createConst(100);
+    private static final FloatingLong TWENTY_FIVE = FloatingLong.createConst(25);
 
     private static final Table<FactoryTier, FactoryType, Factory<?>> FACTORIES = HashBasedTable.create();
 
@@ -238,7 +246,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.ELECTROLYTIC_SEPARATOR, MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR)
           .withGui(() -> MekanismContainerTypes.ELECTROLYTIC_SEPARATOR)
           .withSound(MekanismSounds.ELECTROLYTIC_SEPARATOR)
-          .withEnergyConfig(() -> MekanismConfig.general.FROM_H2.get() * 2, MekanismConfig.storage.electrolyticSeparator::get)
+          .withEnergyConfig(() -> MekanismConfig.general.FROM_H2.get().multiply(2), MekanismConfig.storage.electrolyticSeparator::get)
           .withCustomShape(BlockShapes.ELECTROLYTIC_SEPARATOR)
           .build();
     // Digital Miner
@@ -286,7 +294,7 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityTeleporter> TELEPORTER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.TELEPORTER, MekanismLang.DESCRIPTION_TELEPORTER)
           .withGui(() -> MekanismContainerTypes.TELEPORTER)
-          .withEnergyConfig(() -> 12500, MekanismConfig.storage.teleporter)
+          .withEnergyConfig(() -> TELEPORTER_USAGE, MekanismConfig.storage.teleporter)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .without(AttributeStateActive.class, AttributeStateFacing.class, AttributeParticleFX.class)
           .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new TeleporterContainer(i, inv, (TileEntityTeleporter) tile)))
@@ -294,7 +302,7 @@ public class MekanismBlockTypes {
     // Chargepad
     public static final BlockTypeTile<TileEntityChargepad> CHARGEPAD = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.CHARGEPAD, MekanismLang.DESCRIPTION_CHARGEPAD)
-          .withEnergyConfig(() -> 25, MekanismConfig.storage.chargePad)
+          .withEnergyConfig(() -> TWENTY_FIVE, MekanismConfig.storage.chargePad)
           .withSound(MekanismSounds.CHARGEPAD).with(new AttributeStateActive(), new AttributeStateFacing())
           .withCustomShape(BlockShapes.CHARGEPAD)
           .build();
@@ -307,15 +315,15 @@ public class MekanismBlockTypes {
           .build();
     // Laser Amplifier
     public static final BlockTypeTile<TileEntityLaserAmplifier> LASER_AMPLIFIER = BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.LASER_AMPLIFIER, MekanismLang.DESCRIPTION_LASER_AMPLIFIER)
-          .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER).withEnergyConfig(null, () -> 5E9)
+          .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER).withEnergyConfig(null, () -> LARGE_LASER)
           .with(new AttributeStateFacing(BlockStateHelper.facingProperty),
-                new AttributeRedstoneEmitter<>((tile) -> tile.getRedstoneLevel()), new AttributeRedstone(), new AttributeComparator(), new AttributeSecurity())
+                new AttributeRedstoneEmitter<>(TileEntityMekanism::getRedstoneLevel), new AttributeRedstone(), new AttributeComparator(), new AttributeSecurity())
           .withCustomShape(BlockShapes.LASER_AMPLIFIER).build();
     // Laser Tractor Beam
     public static final BlockTypeTile<TileEntityLaserTractorBeam> LASER_TRACTOR_BEAM = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.LASER_TRACTOR_BEAM, MekanismLang.DESCRIPTION_LASER_TRACTOR_BEAM)
           .withGui(() -> MekanismContainerTypes.LASER_TRACTOR_BEAM)
-          .withEnergyConfig(null, () -> 5E9)
+          .withEnergyConfig(null, () -> LARGE_LASER)
           .with(new AttributeStateFacing(BlockStateHelper.facingProperty), new AttributeComparator(), new AttributeSecurity(), new AttributeInventory())
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
           .build();
@@ -323,7 +331,7 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityResistiveHeater> RESISTIVE_HEATER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.RESISTIVE_HEATER, MekanismLang.DESCRIPTION_RESISTIVE_HEATER)
           .withGui(() -> MekanismContainerTypes.RESISTIVE_HEATER)
-          .withEnergyConfig(() -> 100, null).without(AttributeComparator.class, AttributeUpgradeSupport.class)
+          .withEnergyConfig(() -> HUNDRED, null).without(AttributeComparator.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.RESISTIVE_HEATER)
           .withSound(MekanismSounds.RESISTIVE_HEATER)
           .build();
@@ -502,7 +510,7 @@ public class MekanismBlockTypes {
 
     private static <TILE extends TileEntityInductionCell> BlockTypeTile<TILE> createInductionCell(InductionCellTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
         return BlockTileBuilder.createBlock(tile, MekanismLang.DESCRIPTION_INDUCTION_CELL)
-              .withEnergyConfig(() -> tier.getMaxEnergy())
+              .withEnergyConfig(tier::getMaxEnergy)
               .with(new AttributeTier<>(tier), new AttributeNoMobSpawn())
               .build();
     }
@@ -523,7 +531,7 @@ public class MekanismBlockTypes {
     private static <TILE extends TileEntityEnergyCube> Machine<TILE> createEnergyCube(EnergyCubeTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_ENERGY_CUBE)
               .withGui(() -> MekanismContainerTypes.ENERGY_CUBE)
-              .withEnergyConfig(() -> tier.getMaxEnergy())
+              .withEnergyConfig(tier::getMaxEnergy)
               .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock), new AttributeStateFacing(BlockStateHelper.facingProperty))
               .without(AttributeParticleFX.class, AttributeStateActive.class, AttributeUpgradeSupport.class)
               .build();

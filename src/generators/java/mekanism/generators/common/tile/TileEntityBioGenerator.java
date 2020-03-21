@@ -31,7 +31,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     private float lastFluidScale;
 
     public TileEntityBioGenerator() {
-        super(GeneratorsBlocks.BIO_GENERATOR, MekanismGeneratorsConfig.generators.bioGeneration.get() * 2);
+        super(GeneratorsBlocks.BIO_GENERATOR, MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2));
     }
 
     @Nonnull
@@ -59,7 +59,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         super.onUpdateServer();
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
-        if (MekanismUtils.canFunction(this) && getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.SIMULATE, AutomationType.INTERNAL) == 0) {
+        if (MekanismUtils.canFunction(this) && getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.SIMULATE, AutomationType.INTERNAL).isEmpty()) {
             setActive(true);
             if (bioFuelTank.shrinkStack(1, Action.EXECUTE) != 1) {
                 //TODO: Print error that something went wrong

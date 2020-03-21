@@ -5,6 +5,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -21,18 +22,18 @@ public class ElectrolyticSeparatorEnergyContainer extends MachineEnergyContainer
         return new ElectrolyticSeparatorEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
     }
 
-    private ElectrolyticSeparatorEnergyContainer(double maxEnergy, double energyPerTick, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
+    private ElectrolyticSeparatorEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           TileEntityElectrolyticSeparator tile) {
         super(maxEnergy, energyPerTick, canExtract, canInsert, tile);
     }
 
     @Override
-    public double getBaseEnergyPerTick() {
+    public FloatingLong getBaseEnergyPerTick() {
         CachedRecipe<ElectrolysisRecipe> recipe = tile.getUpdatedCache(0);
         if (recipe == null) {
             return super.getBaseEnergyPerTick();
         }
-        return super.getBaseEnergyPerTick() * recipe.getRecipe().getEnergyMultiplier();
+        return super.getBaseEnergyPerTick().multiply(recipe.getRecipe().getEnergyMultiplier());
     }
 
     @Override

@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
 import java.util.Set;
 import mekanism.api.Action;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
@@ -40,8 +41,8 @@ public final class CableUtils {
         emit(outputSides, energyContainer, from, energyContainer.getMaxEnergy());
     }
 
-    public static void emit(Set<Direction> outputSides, IEnergyContainer energyContainer, TileEntity from, double maxOutput) {
-        if (!energyContainer.isEmpty() && maxOutput > 0) {
+    public static void emit(Set<Direction> outputSides, IEnergyContainer energyContainer, TileEntity from, FloatingLong maxOutput) {
+        if (!energyContainer.isEmpty() && !maxOutput.isEmpty()) {
             energyContainer.extract(emit(outputSides, energyContainer.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
@@ -53,11 +54,11 @@ public final class CableUtils {
      * @param energyToSend - the energy to output
      * @param from         - the TileEntity to output from
      *
-     * @return the amount of gas emitted
+     * @return the amount of energy emitted
      */
-    public static double emit(Set<Direction> sides, double energyToSend, TileEntity from) {
-        if (energyToSend <= 0 || sides.isEmpty()) {
-            return 0;
+    public static FloatingLong emit(Set<Direction> sides, FloatingLong energyToSend, TileEntity from) {
+        if (energyToSend.isEmpty() || sides.isEmpty()) {
+            return FloatingLong.ZERO;
         }
         //Fake that we have one target given we know that no sides will overlap This allows us to have slightly better performance
         EnergyAcceptorTarget target = new EnergyAcceptorTarget();
@@ -75,8 +76,9 @@ public final class CableUtils {
         if (curHandlers > 0) {
             Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
             targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, energyToSend);
+            //TODO: Evaluate copying this
+            return EmitUtils.sendToAcceptors(targets, curHandlers, energyToSend.copy());
         }
-        return 0;
+        return FloatingLong.ZERO;
     }
 }

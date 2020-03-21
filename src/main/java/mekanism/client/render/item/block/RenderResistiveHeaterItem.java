@@ -21,7 +21,7 @@ public class RenderResistiveHeaterItem extends MekanismItemStackRenderer {
           TransformType transformType) {
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.translate(0.05, -0.96, 0.05);
-        resistiveHeater.render(matrix, renderer, light, overlayLight, StorageUtils.getStoredEnergyFromNBT(stack) > 0);
+        resistiveHeater.render(matrix, renderer, light, overlayLight, !StorageUtils.getStoredEnergyFromNBT(stack).isEmpty());
     }
 
     @Override

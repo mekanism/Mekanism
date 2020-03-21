@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
@@ -39,16 +40,9 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
         JsonElement gasInput = JSONUtils.isJsonArray(json, JsonConstants.GAS_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.GAS_INPUT) :
                                JSONUtils.getJsonObject(json, JsonConstants.GAS_INPUT);
         GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
-        double energyRequired = 0;
+        FloatingLong energyRequired = FloatingLong.ZERO;
         if (json.has(JsonConstants.ENERGY_REQUIRED)) {
-            JsonElement energy = json.get(JsonConstants.ENERGY_REQUIRED);
-            if (!JSONUtils.isNumber(energy)) {
-                throw new JsonSyntaxException("Expected energyRequired to be a non negative number.");
-            }
-            energyRequired = energy.getAsJsonPrimitive().getAsDouble();
-            if (energyRequired < 0) {
-                throw new JsonSyntaxException("Expected energyRequired to be non negative.");
-            }
+            energyRequired = SerializerHelper.getFloatingLong(json, JsonConstants.ENERGY_REQUIRED);
         }
 
         int duration;
@@ -90,7 +84,7 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
             ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
             FluidStackIngredient inputFluid = FluidStackIngredient.read(buffer);
             GasStackIngredient inputGas = GasStackIngredient.read(buffer);
-            double energyRequired = buffer.readDouble();
+            FloatingLong energyRequired = FloatingLong.fromBuffer(buffer);
             int duration = buffer.readInt();
             ItemStack outputItem = buffer.readItemStack();
             GasStack outputGas = GasStack.readFromPacket(buffer);
@@ -113,7 +107,7 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
 
     public interface IFactory<T extends PressurizedReactionRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient itemInput, FluidStackIngredient fluidInput, GasStackIngredient gasInput, double energyRequired, int duration,
+        T create(ResourceLocation id, ItemStackIngredient itemInput, FluidStackIngredient fluidInput, GasStackIngredient gasInput, FloatingLong energyRequired, int duration,
               ItemStack outputItem, GasStack outputGas);
     }
 }

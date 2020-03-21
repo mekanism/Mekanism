@@ -7,6 +7,7 @@ import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.RelativeSide;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -16,6 +17,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
@@ -46,7 +48,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     private double thermalEfficiency = 0.5D;
     private double invHeatCapacity = 1;
     private double heatToAbsorb = 0;
-    private double producingEnergy;
+    private FloatingLong producingEnergy = FloatingLong.ZERO;
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
 
@@ -54,7 +56,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     private EnergyInventorySlot energySlot;
 
     public TileEntityHeatGenerator() {
-        super(GeneratorsBlocks.HEAT_GENERATOR, MekanismGeneratorsConfig.generators.heatGeneration.get() * 2);
+        super(GeneratorsBlocks.HEAT_GENERATOR, MekanismGeneratorsConfig.generators.heatGeneration.get().multiply(2));
     }
 
     @Nonnull
@@ -83,9 +85,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         super.onUpdateServer();
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
-        double prev = getEnergyContainer().getEnergy();
+        FloatingLong prev = getEnergyContainer().getEnergy();
         transferHeatTo(getBoost());
-        if (lavaTank.getFluidAmount() >= 10 && MekanismUtils.canFunction(this) && getEnergyContainer().getNeeded() > 0) {
+        if (lavaTank.getFluidAmount() >= 10 && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isEmpty()) {
             setActive(true);
             lavaTank.extract(10, Action.EXECUTE, AutomationType.INTERNAL);
             transferHeatTo(MekanismGeneratorsConfig.generators.heatGeneration.get());
@@ -97,23 +99,22 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         applyTemperatureChange();
         lastTransferLoss = loss[0];
         lastEnvironmentLoss = loss[1];
-        producingEnergy = getEnergyContainer().getEnergy() - prev;
+        producingEnergy = getEnergyContainer().getEnergy().subtract(prev);
     }
 
-    private double getBoost() {
+    private FloatingLong getBoost() {
         int lavaBoost = 0;
-        double netherBoost = 0D;
         for (Direction side : EnumUtils.DIRECTIONS) {
             Coord4D coord = Coord4D.get(this).offset(side);
             if (isLava(coord.getPos())) {
                 lavaBoost++;
             }
         }
-        World world = getWorld();
+        FloatingLong boost = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(lavaBoost);
         if (world != null && world.getDimension().isNether()) {
-            netherBoost = MekanismGeneratorsConfig.generators.heatGenerationNether.get();
+            boost.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
         }
-        return (MekanismGeneratorsConfig.generators.heatGenerationLava.get() * lavaBoost) + netherBoost;
+        return boost;
     }
 
     private boolean isLava(BlockPos pos) {
@@ -136,6 +137,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         return side == Direction.DOWN ? 0 : 10000;
     }
 
+    public void transferHeatTo(FloatingLong heat) {
+        transferHeatTo(heat.doubleValue());
+    }
+
     @Override
     public void transferHeatTo(double heat) {
         heatToAbsorb += heat;
@@ -148,7 +153,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
             double heatLost = thermalEfficiency * getTemp();
             double workDone = heatLost * carnotEfficiency;
             transferHeatTo(-heatLost);
-            getEnergyContainer().insert(workDone, Action.EXECUTE, AutomationType.INTERNAL);
+            getEnergyContainer().insert(FloatingLong.create(workDone), Action.EXECUTE, AutomationType.INTERNAL);
         }
         return HeatUtils.simulate(this);
     }
@@ -190,7 +195,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         return super.getCapabilityIfEnabled(capability, side);
     }
 
-    public double getProducingEnergy() {
+    public FloatingLong getProducingEnergy() {
         return producingEnergy;
     }
 
@@ -210,7 +215,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(this::getProducingEnergy, value -> producingEnergy = value));
+        container.track(SyncableFloatingLong.create(this::getProducingEnergy, value -> producingEnergy = value));
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }

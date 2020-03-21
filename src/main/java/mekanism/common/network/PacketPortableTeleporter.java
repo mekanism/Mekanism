@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
@@ -130,9 +131,9 @@ public class PacketPortableTeleporter {
                             if (teleporter != null) {
                                 try {
                                     if (!player.isCreative()) {
-                                        double energyCost = ItemPortableTeleporter.calculateEnergyCost(player, coords);
+                                        FloatingLong energyCost = TileEntityTeleporter.calculateEnergyCost(player, coords);
                                         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                                        if (energyContainer == null || energyContainer.extract(energyCost, Action.SIMULATE, AutomationType.MANUAL) < energyCost) {
+                                        if (energyContainer == null || energyContainer.extract(energyCost, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyCost)) {
                                             break;
                                         }
                                         energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
@@ -234,11 +235,13 @@ public class PacketPortableTeleporter {
                     if (!given.activeCoords.isEmpty()) {
                         if (!player.isCreative()) {
                             Coord4D coords = given.getClosestCoords(new Coord4D(player));
-                            double energyNeeded = ItemPortableTeleporter.calculateEnergyCost(player, coords);
-                            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                            if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
-                                status = 4;
-                                break;
+                            if (coords != null) {
+                                FloatingLong energyNeeded = TileEntityTeleporter.calculateEnergyCost(player, coords);
+                                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                                if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
+                                    status = 4;
+                                    break;
+                                }
                             }
                         }
                         status = 1;

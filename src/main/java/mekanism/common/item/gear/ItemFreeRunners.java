@@ -7,6 +7,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.armor.CustomArmor;
@@ -45,7 +46,7 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
     /**
      * The maximum amount of energy this item can hold.
      */
-    private static double MAX_ELECTRICITY = 64_000;//TODO: Move this to a config?
+    private static FloatingLong MAX_ENERGY = FloatingLong.createConst(64_000);//TODO: Move this to a config?
 
     public ItemFreeRunners(Properties properties) {
         super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, properties.setNoRepair().setISTER(ISTERProvider::freeRunners));
@@ -74,7 +75,7 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MAX_ELECTRICITY));
+            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MAX_ENERGY));
         }
     }
 
@@ -90,8 +91,7 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(MAX_ELECTRICITY * 0.005, () -> MAX_ELECTRICITY, BasicEnergyContainer.notExternal,
-              BasicEnergyContainer.alwaysTrue));
+        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> MAX_ENERGY, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
     }
 
     public FreeRunnerMode getMode(ItemStack itemStack) {

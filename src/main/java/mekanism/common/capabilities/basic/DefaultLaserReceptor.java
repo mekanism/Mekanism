@@ -1,6 +1,8 @@
 package mekanism.common.capabilities.basic;
 
+import javax.annotation.Nonnull;
 import mekanism.api.lasers.ILaserReceptor;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -12,7 +14,7 @@ public class DefaultLaserReceptor implements ILaserReceptor {
     }
 
     @Override
-    public void receiveLaserEnergy(double energy, Direction side) {
+    public void receiveLaserEnergy(@Nonnull FloatingLong energy, Direction side) {
     }
 
     @Override

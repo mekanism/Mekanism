@@ -4,13 +4,14 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.multiblock.MultiblockCache;
@@ -55,21 +56,22 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             structure.newSteamInput = 0;
 
             int stored = structure.gasTank.getStored();
-            double proportion = (double) stored / (double) structure.getSteamCapacity();
             double flowRate = 0;
 
-            double energyNeeded = structure.energyContainer.getNeeded();
-            if (stored > 0 && energyNeeded > 0) {
-                double energyMultiplier = (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
-                                          Math.min(structure.blades, structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+            FloatingLong energyNeeded = structure.energyContainer.getNeeded();
+            if (stored > 0 && !energyNeeded.isEmpty()) {
+                FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES)
+                                                .multiply(Math.min(structure.blades, structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
                 double rate = structure.lowerVolume * (structure.getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
                 rate = Math.min(rate, structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
 
+                double proportion = (double) stored / (double) structure.getSteamCapacity();
                 double origRate = rate;
-                rate = Math.min(Math.min(stored, rate), energyNeeded / energyMultiplier) * proportion;
+                //TODO: FloatingLong evaluate
+                rate = Math.min(Math.min(stored, rate), energyNeeded.divide(energyMultiplier).doubleValue()) * proportion;
 
                 flowRate = rate / origRate;
-                structure.energyContainer.insert((int) rate * energyMultiplier, Action.EXECUTE, AutomationType.INTERNAL);
+                structure.energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
 
                 if (!structure.gasTank.isEmpty()) {
                     structure.gasTank.shrinkStack((int) rate, Action.EXECUTE);
@@ -213,7 +215,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.clientDispersers = value;
             }
         }));
-        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.energyContainer.getEnergy(), value -> {
+        container.track(SyncableFloatingLong.create(() -> structure == null ? FloatingLong.ZERO : structure.energyContainer.getEnergy(), value -> {
             if (structure != null) {
                 structure.energyContainer.setEnergy(value);
             }

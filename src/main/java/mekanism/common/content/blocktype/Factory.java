@@ -36,7 +36,8 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
     private void setMachineData() {
         setFrom(origMachine, AttributeSound.class, AttributeFactoryType.class, AttributeUpgradeSupport.class);
         AttributeEnergy origEnergy = origMachine.get(AttributeEnergy.class);
-        add(new AttributeEnergy(origEnergy::getUsage, () -> ((FactoryTier) get(AttributeTier.class).getTier()).processes * Math.max(0.5D * origEnergy.getConfigStorage(), origEnergy.getUsage())));
+        //TODO: Make this more readable
+        add(new AttributeEnergy(origEnergy::getUsage, () -> origEnergy.getConfigStorage().multiply(0.5).max(origEnergy.getUsage()).multiply(((FactoryTier) get(AttributeTier.class).getTier()).processes)));
     }
 
     public static class FactoryBuilder<FACTORY extends Factory<TILE>, TILE extends TileEntityFactory<?>, T extends MachineBuilder<FACTORY, TILE, T>> extends BlockTileBuilder<FACTORY, TILE, T> {

@@ -1,6 +1,7 @@
 package mekanism.generators.common.registries;
 
 import mekanism.api.Pos3D;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
@@ -37,11 +38,17 @@ import net.minecraft.particles.ParticleTypes;
 
 public class GeneratorsBlockTypes {
 
+    //TODO: Do this in a cleaner way
+    private static final FloatingLong STORAGE = FloatingLong.createConst(160_000);
+    private static final FloatingLong STORAGE2 = FloatingLong.createConst(200_000);
+    private static final FloatingLong SOLAR_STORAGE = FloatingLong.createConst(96_000);
+    private static final FloatingLong REACTOR_STORAGE = FloatingLong.createConst(1_000_000_000);
+
     // Heat Generator
     public static final Generator<TileEntityHeatGenerator> HEAT_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.HEAT_GENERATOR, GeneratorsLang.DESCRIPTION_HEAT_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.HEAT_GENERATOR)
-          .withEnergyConfig(() -> 160000)
+          .withEnergyConfig(() -> STORAGE)
           .withCustomShape(BlockShapes.HEAT_GENERATOR)
           .withSound(GeneratorsSounds.HEAT_GENERATOR)
           .with(new AttributeParticleFX()
@@ -52,7 +59,7 @@ public class GeneratorsBlockTypes {
     public static final Generator<TileEntityBioGenerator> BIO_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.BIO_GENERATOR, GeneratorsLang.DESCRIPTION_BIO_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.BIO_GENERATOR)
-          .withEnergyConfig(() -> 160000)
+          .withEnergyConfig(() -> STORAGE)
           .withCustomShape(BlockShapes.BIO_GENERATOR)
           .withSound(GeneratorsSounds.BIO_GENERATOR)
           .with(new AttributeParticleFX()
@@ -62,7 +69,7 @@ public class GeneratorsBlockTypes {
     public static final Generator<TileEntitySolarGenerator> SOLAR_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.SOLAR_GENERATOR, GeneratorsLang.DESCRIPTION_SOLAR_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.SOLAR_GENERATOR)
-          .withEnergyConfig(() -> 96000)
+          .withEnergyConfig(() -> SOLAR_STORAGE)
           .withCustomShape(BlockShapes.SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
           .build();
@@ -70,7 +77,7 @@ public class GeneratorsBlockTypes {
     public static final Generator<TileEntityWindGenerator> WIND_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.WIND_GENERATOR, GeneratorsLang.DESCRIPTION_WIND_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.WIND_GENERATOR)
-          .withEnergyConfig(() -> 200_000)
+          .withEnergyConfig(() -> STORAGE2)
           .withCustomShape(BlockShapes.WIND_GENERATOR)
           .withSound(GeneratorsSounds.WIND_GENERATOR)
           .build();
@@ -78,7 +85,7 @@ public class GeneratorsBlockTypes {
     public static final Generator<TileEntityGasGenerator> GAS_BURNING_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR, GeneratorsLang.DESCRIPTION_GAS_BURNING_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.GAS_BURNING_GENERATOR)
-          .withEnergyConfig(() -> 1000 * MekanismConfig.general.FROM_H2.get())
+          .withEnergyConfig(() -> MekanismConfig.general.FROM_H2.get().multiply(1_000))
           .withCustomShape(BlockShapes.GAS_BURNING_GENERATOR)
           .withSound(GeneratorsSounds.GAS_BURNING_GENERATOR)
           .build();
@@ -86,7 +93,7 @@ public class GeneratorsBlockTypes {
     public static final Generator<TileEntityAdvancedSolarGenerator> ADVANCED_SOLAR_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.ADVANCED_SOLAR_GENERATOR, GeneratorsLang.DESCRIPTION_ADVANCED_SOLAR_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.ADVANCED_SOLAR_GENERATOR)
-          .withEnergyConfig(() -> 200_000)
+          .withEnergyConfig(() -> STORAGE2)
           .withCustomShape(BlockShapes.ADVANCED_SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
           .build();
@@ -128,14 +135,13 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityReactorController> REACTOR_CONTROLLER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_CONTROLLER, GeneratorsLang.DESCRIPTION_REACTOR_CONTROLLER)
           .withGui(() -> GeneratorsContainerTypes.REACTOR_CONTROLLER)
-          .withEnergyConfig(() -> 1_000_000_000)
+          .withEnergyConfig(() -> REACTOR_STORAGE)
           .withSound(GeneratorsSounds.FUSION_REACTOR)
           .with(new AttributeStateActive(), new AttributeInventory())
           .build();
     // Reactor Port
     public static final BlockTypeTile<TileEntityReactorPort> REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_PORT, GeneratorsLang.DESCRIPTION_REACTOR_PORT)
-          .withEnergyConfig(() -> 1)
           .with(new AttributeStateActive())
           .build();
     // Reactor Frame

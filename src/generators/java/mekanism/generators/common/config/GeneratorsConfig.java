@@ -1,11 +1,12 @@
 package mekanism.generators.common.config;
 
 import java.util.ArrayList;
-import java.util.List;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.config.BaseMekanismConfig;
-import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedDoubleValue;
+import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.config.value.CachedResourceLocationListValue;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -20,43 +21,43 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     private final ForgeConfigSpec configSpec;
 
     //TODO: Limits on remaining things?
-    public final CachedDoubleValue advancedSolarGeneration;
-    public final CachedDoubleValue bioGeneration;
-    public final CachedDoubleValue heatGeneration;
-    public final CachedDoubleValue heatGenerationLava;
-    public final CachedDoubleValue heatGenerationNether;
-    public final CachedDoubleValue solarGeneration;
+    public final CachedFloatingLongValue advancedSolarGeneration;
+    public final CachedFloatingLongValue bioGeneration;
+    public final CachedFloatingLongValue heatGeneration;
+    public final CachedFloatingLongValue heatGenerationLava;
+    public final CachedFloatingLongValue heatGenerationNether;
+    public final CachedFloatingLongValue solarGeneration;
     public final CachedIntValue turbineBladesPerCoil;
     public final CachedDoubleValue turbineVentGasFlow;
     public final CachedDoubleValue turbineDisperserGasFlow;
     public final CachedIntValue condenserRate;
-    public final CachedDoubleValue energyPerFusionFuel;
-    public final CachedDoubleValue windGenerationMin;
-    public final CachedDoubleValue windGenerationMax;
+    public final CachedFloatingLongValue energyPerFusionFuel;
+    public final CachedFloatingLongValue windGenerationMin;
+    public final CachedFloatingLongValue windGenerationMax;
     public final CachedIntValue windGenerationMinY;
     public final CachedIntValue windGenerationMaxY;
-    public final CachedConfigValue<List<? extends String>> windGenerationDimBlacklist;
+    public final CachedResourceLocationListValue windGenerationDimBlacklist;
 
     GeneratorsConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Mekanism Generators Config. This config is synced between server and client.").push("generators");
 
-        bioGeneration = CachedDoubleValue.wrap(this, builder.comment("Amount of energy in Joules the Bio Generator produces per tick.")
-              .defineInRange("bioGeneration", 350, 0, Double.MAX_VALUE));
-        energyPerFusionFuel = CachedDoubleValue.wrap(this, builder.comment("Affects the Injection Rate, Max Temp, and Ignition Temp.")
-              .defineInRange("energyPerFusionFuel", 5E6, 0, Double.MAX_VALUE));
-        solarGeneration = CachedDoubleValue.wrap(this, builder.comment("Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.")
-              .defineInRange("solarGeneration", 50, 0, Double.MAX_VALUE));
-        advancedSolarGeneration = CachedDoubleValue.wrap(this, builder.comment("Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.")
-              .defineInRange("advancedSolarGeneration", 300, 0, Double.MAX_VALUE));
+        bioGeneration = CachedFloatingLongValue.define(this, builder, "Amount of energy in Joules the Bio Generator produces per tick.",
+              "bioGeneration", FloatingLong.createConst(350));
+        energyPerFusionFuel = CachedFloatingLongValue.define(this, builder, "Affects the Injection Rate, Max Temp, and Ignition Temp.",
+              "energyPerFusionFuel", FloatingLong.createConst(5_000_000));
+        solarGeneration = CachedFloatingLongValue.define(this, builder, "Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.",
+              "solarGeneration", FloatingLong.createConst(50));
+        advancedSolarGeneration = CachedFloatingLongValue.define(this, builder, "Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.",
+              "advancedSolarGeneration", FloatingLong.createConst(300));
 
         builder.comment("Heat Generator Settings").push(HEAT_CATEGORY);
-        heatGeneration = CachedDoubleValue.wrap(this, builder.comment("Amount of energy in Joules the Heat Generator produces per tick. (heatGenerationLava * heatGenerationLava) + heatGenerationNether")
-              .defineInRange("heatGeneration", 150, 0, Double.MAX_VALUE));
-        heatGenerationLava = CachedDoubleValue.wrap(this, builder.comment("Multiplier of effectiveness of Lava in the Heat Generator.")
-              .defineInRange("heatGenerationLava", 15, 0, Double.MAX_VALUE));
-        heatGenerationNether = CachedDoubleValue.wrap(this, builder.comment("Add this amount of Joules to the energy produced by a heat generator if it is in the Nether.")
-              .defineInRange("heatGenerationNether", 100, 0, Double.MAX_VALUE));
+        heatGeneration = CachedFloatingLongValue.define(this, builder, "Amount of energy in Joules the Heat Generator produces per tick. (heatGenerationLava * heatGenerationLava) + heatGenerationNether",
+              "heatGeneration", FloatingLong.createConst(150));
+        heatGenerationLava = CachedFloatingLongValue.define(this, builder, "Multiplier of effectiveness of Lava in the Heat Generator.",
+              "heatGenerationLava", FloatingLong.createConst(15));
+        heatGenerationNether = CachedFloatingLongValue.define(this, builder, "Add this amount of Joules to the energy produced by a heat generator if it is in the Nether.",
+              "heatGenerationNether", FloatingLong.createConst(100));
         builder.pop();
 
         builder.comment("Turbine Settings").push(TURBINE_CATEGORY);
@@ -71,18 +72,18 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Wind Generator Settings").push(WIND_CATEGORY);
-        windGenerationMin = CachedDoubleValue.wrap(this, builder.comment("Minimum base generation value of the Wind Generator.")
-              .defineInRange("windGenerationMin", 60, 0, Double.MAX_VALUE));
+        windGenerationMin = CachedFloatingLongValue.define(this, builder, "Minimum base generation value of the Wind Generator.",
+              "windGenerationMin", FloatingLong.createConst(60));
         //TODO: Should this be capped by the min generator?
-        windGenerationMax = CachedDoubleValue.wrap(this, builder.comment("Maximum base generation value of the Wind Generator.")
-              .defineInRange("windGenerationMax", 480, 0, Double.MAX_VALUE));
+        windGenerationMax = CachedFloatingLongValue.define(this, builder, "Maximum base generation value of the Wind Generator.",
+              "windGenerationMax", FloatingLong.createConst(480));
         windGenerationMinY = CachedIntValue.wrap(this, builder.comment("The minimum Y value that affects the Wind Generators Power generation.")
               .define("windGenerationMinY", 24));
         //TODO: Test this, maybe make default supplier be 255 OR 1 higher than minY
         windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation.")
               .define("windGenerationMaxY", 255,
                     value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
-        windGenerationDimBlacklist = CachedConfigValue.wrap(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
+        windGenerationDimBlacklist = CachedResourceLocationListValue.wrap(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
               .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> {
                   if (o instanceof String) {
                       String string = ((String) o).toLowerCase();

@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.particle.LaserParticleData;
@@ -34,7 +35,9 @@ import net.minecraftforge.event.world.BlockEvent;
 // If above a certain energy level and in water makes it bubble
 public class LaserManager {
 
-    public static LaserInfo fireLaser(TileEntity source, Direction direction, double energy, World world) {
+    private static final FloatingLong THRESHOLD = FloatingLong.createConst(256);
+
+    public static LaserInfo fireLaser(TileEntity source, Direction direction, FloatingLong energy, World world) {
         Pos3D from = new Pos3D(source).centre().translate(direction, 0.501);
         ServerWorld serverWorld = (ServerWorld) world;
         Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
@@ -54,13 +57,21 @@ public class LaserManager {
         to.translateExcludingSide(direction, 0.1);
 
         boolean foundEntity = false;
-        for (Entity e : world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to))) {
+        List<Entity> entitiesWithinAABB = world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to));
+        if (!entitiesWithinAABB.isEmpty()) {
             foundEntity = true;
-            if (!e.isImmuneToFire()) {
-                e.setFire((int) (energy / 1000));
-            }
-            if (energy > 256) {
-                e.attackEntityFrom(DamageSource.GENERIC, (float) energy / 1000F);
+            //TODO: Should it use power each time it does things, rather than being delayed
+            boolean canDamage = energy.greaterThan(THRESHOLD);
+            FloatingLong value = energy.divide(1_000);
+            int fireDuration = value.intValue();
+            float damage = value.floatValue();
+            for (Entity e : entitiesWithinAABB) {
+                if (!e.isImmuneToFire()) {
+                    e.setFire(fireDuration);
+                }
+                if (canDamage) {
+                    e.attackEntityFrom(DamageSource.GENERIC, damage);
+                }
             }
         }
 

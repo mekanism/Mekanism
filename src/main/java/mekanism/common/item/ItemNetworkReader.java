@@ -10,6 +10,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -32,10 +33,11 @@ import net.minecraft.world.World;
 
 public class ItemNetworkReader extends ItemEnergized {
 
-    public static double ENERGY_PER_USE = 400;
+    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(60_000);//TODO: Config
+    private static final FloatingLong ENERGY_PER_USE = FloatingLong.createConst(400);
 
     public ItemNetworkReader(Properties properties) {
-        super(60_000, properties);
+        super(MAX_ENERGY, properties);
     }
 
     @Nonnull

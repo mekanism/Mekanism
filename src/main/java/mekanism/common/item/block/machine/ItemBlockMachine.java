@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -83,9 +84,8 @@ public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         if (Attribute.has(getBlock(), AttributeEnergy.class)) {
-            double maxEnergy = MekanismUtils.getMaxEnergy(stack, Attribute.get(getBlock(), AttributeEnergy.class).getStorage());
-            return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(maxEnergy * 0.005, () -> maxEnergy, BasicEnergyContainer.notExternal,
-                  BasicEnergyContainer.alwaysTrue));
+            FloatingLong maxEnergy = MekanismUtils.getMaxEnergy(stack, Attribute.get(getBlock(), AttributeEnergy.class).getStorage());
+            return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> maxEnergy, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
         }
         return super.initCapabilities(stack, nbt);
     }

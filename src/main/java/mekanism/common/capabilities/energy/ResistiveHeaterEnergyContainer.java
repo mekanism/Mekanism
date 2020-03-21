@@ -6,6 +6,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.TileEntityResistiveHeater;
@@ -22,8 +23,8 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
         return new ResistiveHeaterEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
     }
 
-    private ResistiveHeaterEnergyContainer(double maxEnergy, double energyPerTick, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
-          TileEntityResistiveHeater tile) {
+    private ResistiveHeaterEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract,
+          Predicate<@NonNull AutomationType> canInsert, TileEntityResistiveHeater tile) {
         super(maxEnergy, energyPerTick, canExtract, canInsert, tile);
     }
 
@@ -32,23 +33,21 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
         return true;
     }
 
-    public void updateEnergyUsage(double energyUsage) {
-        if (energyUsage >= 0) {
-            currentEnergyPerTick = energyUsage;
-            setMaxEnergy(energyUsage * 400);
-        }
+    public void updateEnergyUsage(FloatingLong energyUsage) {
+        currentEnergyPerTick = energyUsage;
+        setMaxEnergy(energyUsage.multiply(400));
     }
 
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
-        nbt.putDouble(NBTConstants.ENERGY_USAGE, getEnergyPerTick());
+        nbt.put(NBTConstants.ENERGY_USAGE, getEnergyPerTick().serializeNBT());
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         super.deserializeNBT(nbt);
-        NBTUtils.setDoubleIfPresent(nbt, NBTConstants.ENERGY_USAGE, this::updateEnergyUsage);
+        NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.ENERGY_USAGE, this::updateEnergyUsage);
     }
 }

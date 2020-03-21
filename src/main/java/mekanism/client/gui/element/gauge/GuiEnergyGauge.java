@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.gauge;
 
+import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
@@ -16,12 +17,12 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
     public GuiEnergyGauge(IEnergyContainer container, GaugeType type, IGuiWrapper gui, int x, int y) {
         this(new IEnergyInfoHandler() {
             @Override
-            public double getEnergy() {
+            public FloatingLong getEnergy() {
                 return container.getEnergy();
             }
 
             @Override
-            public double getMaxEnergy() {
+            public FloatingLong getMaxEnergy() {
                 return container.getMaxEnergy();
             }
         }, type, gui, x, y);
@@ -39,10 +40,10 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     @Override
     public int getScaledLevel() {
-        if (infoHandler.getEnergy() == Double.MAX_VALUE) {
+        if (infoHandler.getEnergy().equals(FloatingLong.MAX_VALUE)) {
             return height - 2;
         }
-        return (int) (infoHandler.getEnergy() * (height - 2) / infoHandler.getMaxEnergy());
+        return (int) ((height - 2) * infoHandler.getEnergy().divideToLevel(infoHandler.getMaxEnergy()));
     }
 
     @Override
@@ -52,7 +53,7 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     @Override
     public ITextComponent getTooltipText() {
-        if (infoHandler.getEnergy() <= 0) {
+        if (infoHandler.getEnergy().isEmpty()) {
             return MekanismLang.EMPTY.translate();
         }
         return EnergyDisplay.of(infoHandler.getEnergy(), infoHandler.getMaxEnergy()).getTextComponent();
@@ -60,8 +61,8 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     public interface IEnergyInfoHandler {
 
-        double getEnergy();
+        FloatingLong getEnergy();
 
-        double getMaxEnergy();
+        FloatingLong getMaxEnergy();
     }
 }

@@ -16,6 +16,7 @@ import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
+import mekanism.common.util.UnitDisplayUtils.FloatingLongMeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.util.Direction;
@@ -54,6 +55,11 @@ public class EnumUtils {
      * Cached value of {@link MeasurementUnit#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final MeasurementUnit[] MEASUREMENT_UNITS = MeasurementUnit.values();
+
+    /**
+     * Cached value of {@link FloatingLongMeasurementUnit#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final FloatingLongMeasurementUnit[] FLOATING_LONG_MEASUREMENT_UNITS = FloatingLongMeasurementUnit.values();
 
     /**
      * Cached value of {@link TransmissionType#values()}. DO NOT MODIFY THIS LIST.

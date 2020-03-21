@@ -2,13 +2,17 @@ package mekanism.api.energy;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.math.FloatingLongTransferUtils;
+import mekanism.api.math.FloatingLong;
 import net.minecraft.util.Direction;
 
 /**
  * A sided variant of {@link IStrictEnergyHandler}
  */
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
 
     /**
@@ -49,15 +53,15 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @return Energy in a given container. {@code 0} if the container has no energy stored.
      */
-    double getEnergy(int container, @Nullable Direction side);
+    FloatingLong getEnergy(int container, @Nullable Direction side);
 
     @Override
-    default double getEnergy(int container) {
+    default FloatingLong getEnergy(int container) {
         return getEnergy(container, getEnergySideFor());
     }
 
     /**
-     * A sided variant of {@link IStrictEnergyHandler#setEnergy(int, double)}, docs copied for convenience.
+     * A sided variant of {@link IStrictEnergyHandler#setEnergy(int, FloatingLong)}, docs copied for convenience.
      *
      * Overrides the energy stored in the given container. This method may throw an error if it is called unexpectedly.
      *
@@ -67,10 +71,10 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting. (Such as a negative amount of energy)
      **/
-    void setEnergy(int container, double energy, @Nullable Direction side);
+    void setEnergy(int container, FloatingLong energy, @Nullable Direction side);
 
     @Override
-    default void setEnergy(int container, double energy) {
+    default void setEnergy(int container, FloatingLong energy) {
         setEnergy(container, energy, getEnergySideFor());
     }
 
@@ -84,10 +88,10 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @return The maximum energy that can be stored in the container.
      */
-    double getMaxEnergy(int container, @Nullable Direction side);
+    FloatingLong getMaxEnergy(int container, @Nullable Direction side);
 
     @Override
-    default double getMaxEnergy(int container) {
+    default FloatingLong getMaxEnergy(int container) {
         return getMaxEnergy(container, getEnergySideFor());
     }
 
@@ -101,15 +105,15 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @return The energy needed to fill the container.
      */
-    double getNeededEnergy(int container, @Nullable Direction side);
+    FloatingLong getNeededEnergy(int container, @Nullable Direction side);
 
     @Override
-    default double getNeededEnergy(int container) {
+    default FloatingLong getNeededEnergy(int container) {
         return getNeededEnergy(container, getEnergySideFor());
     }
 
     /**
-     * A sided variant of {@link IStrictEnergyHandler#insertEnergy(int, double, Action)}, docs copied for convenience.
+     * A sided variant of {@link IStrictEnergyHandler#insertEnergy(int, FloatingLong, Action)}, docs copied for convenience.
      *
      * <p>
      * Inserts energy into a given container and return the remainder.
@@ -126,15 +130,15 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @implNote Negative values for {@code amount} <strong>MUST</strong> be supported, and treated as if the passed value was actually {@code 0}.
      */
-    double insertEnergy(int container, double amount, @Nullable Direction side, Action action);
+    FloatingLong insertEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action);
 
     @Override
-    default double insertEnergy(int container, double amount, Action action) {
+    default FloatingLong insertEnergy(int container, FloatingLong amount, Action action) {
         return insertEnergy(container, amount, getEnergySideFor(), action);
     }
 
     /**
-     * A sided variant of {@link IStrictEnergyHandler#extractEnergy(int, double, Action)}, docs copied for convenience.
+     * A sided variant of {@link IStrictEnergyHandler#extractEnergy(int, FloatingLong, Action)}, docs copied for convenience.
      *
      * Extracts energy from a specific container in this handler.
      * <p>
@@ -150,15 +154,15 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * @implNote Negative values for {@code amount} <strong>MUST</strong> be supported, and treated as if the passed value was actually {@code 0}.
      */
-    double extractEnergy(int container, double amount, @Nullable Direction side, Action action);
+    FloatingLong extractEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action);
 
     @Override
-    default double extractEnergy(int container, double amount, Action action) {
+    default FloatingLong extractEnergy(int container, FloatingLong amount, Action action) {
         return extractEnergy(container, amount, getEnergySideFor(), action);
     }
 
     /**
-     * A sided variant of {@link IStrictEnergyHandler#insertEnergy(double, Action)}, docs copied for convenience.
+     * A sided variant of {@link IStrictEnergyHandler#insertEnergy(FloatingLong, Action)}, docs copied for convenience.
      *
      * <p>
      * Inserts energy into this handler, distribution is left <strong>entirely</strong> to this {@link IStrictEnergyHandler}.
@@ -177,13 +181,13 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the insertion. Additionally
      * negative values for {@code amount} <strong>MUST</strong> be supported, and treated as if the passed value was actually {@code 0}.
      */
-    default double insertEnergy(double amount, @Nullable Direction side, Action action) {
-        return EnergyTransferUtils.insert(amount, action, () -> getEnergyContainerCount(side), container -> getEnergy(container, side),
+    default FloatingLong insertEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
+        return FloatingLongTransferUtils.insert(amount, action, () -> getEnergyContainerCount(side), container -> getEnergy(container, side),
               (container, a, act) -> insertEnergy(container, a, side, act));
     }
 
     /**
-     * A sided variant of {@link IStrictEnergyHandler#extractEnergy(double, Action)}, docs copied for convenience.
+     * A sided variant of {@link IStrictEnergyHandler#extractEnergy(FloatingLong, Action)}, docs copied for convenience.
      *
      * Extracts energy from this handler, distribution is left <strong>entirely</strong> to this {@link IStrictEnergyHandler}.
      * <p>
@@ -200,7 +204,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the extraction. Additionally
      * negative values for {@code amount} <strong>MUST</strong> be supported, and treated as if the passed value was actually {@code 0}.
      */
-    default double extractEnergy(double amount, @Nullable Direction side, Action action) {
-        return EnergyTransferUtils.extract(amount, action, () -> getEnergyContainerCount(side), (container, a, act) -> extractEnergy(container, a, side, act));
+    default FloatingLong extractEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
+        return FloatingLongTransferUtils.extract(amount, action, () -> getEnergyContainerCount(side), (container, a, act) -> extractEnergy(container, a, side, act));
     }
 }

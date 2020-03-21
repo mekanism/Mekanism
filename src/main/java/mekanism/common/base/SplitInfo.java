@@ -1,5 +1,7 @@
 package mekanism.common.base;
 
+import mekanism.api.math.FloatingLong;
+
 public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
 
     protected int toSplitAmong;
@@ -58,43 +60,43 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
         }
     }
 
-    public static class DoubleSplitInfo extends SplitInfo<Double> {
+    public static class FloatingLongSplitInfo extends SplitInfo<FloatingLong> {
 
-        private double amountToSplit;
-        private double amountPerTarget;
-        private double sentSoFar;
+        private FloatingLong amountToSplit;
+        private FloatingLong amountPerTarget;
+        private FloatingLong sentSoFar;
 
-        public DoubleSplitInfo(double amountToSplit, int totalTargets) {
+        public FloatingLongSplitInfo(FloatingLong amountToSplit, int totalTargets) {
             super(totalTargets);
-            this.amountToSplit = amountToSplit;
-            amountPerTarget = toSplitAmong == 0 ? 0 : amountToSplit / toSplitAmong;
-            sentSoFar = 0;
+            this.amountToSplit = amountToSplit.copy();
+            amountPerTarget = toSplitAmong == 0 ? FloatingLong.ZERO : amountToSplit.divide(toSplitAmong);
+            sentSoFar = FloatingLong.getNewZero();
         }
 
         @Override
-        public void send(Double amountNeeded) {
+        public void send(FloatingLong amountNeeded) {
             //If we are giving it, then lower the amount we are checking/splitting
-            amountToSplit -= amountNeeded;
-            sentSoFar += amountNeeded;
+            amountToSplit.minusEqual(amountNeeded);
+            sentSoFar.plusEqual(amountNeeded);
             toSplitAmong--;
             //Only recalculate it if it is not willing to accept/doesn't want the
             // full per side split
-            if (amountNeeded != amountPerTarget && toSplitAmong != 0) {
-                double amountPerLast = amountPerTarget;
-                amountPerTarget = amountToSplit / toSplitAmong;
-                if (!amountPerChanged && amountPerTarget != amountPerLast) {
+            if (!amountNeeded.equals(amountPerTarget) && toSplitAmong != 0) {
+                FloatingLong amountPerLast = amountPerTarget;
+                amountPerTarget = amountToSplit.divide(toSplitAmong);
+                if (!amountPerChanged && !amountPerTarget.equals(amountPerLast)) {
                     amountPerChanged = true;
                 }
             }
         }
 
         @Override
-        public Double getAmountPerTarget() {
+        public FloatingLong getAmountPerTarget() {
             return amountPerTarget;
         }
 
         @Override
-        public Double getTotalSent() {
+        public FloatingLong getTotalSent() {
             return sentSoFar;
         }
     }

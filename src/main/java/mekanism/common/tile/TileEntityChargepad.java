@@ -10,6 +10,7 @@ import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -87,14 +88,14 @@ public class TileEntityChargepad extends TileEntityMekanism {
         if (energyHandler == null) {
             return false;
         }
-        double energyToGive = energyContainer.getEnergy();
-        double simulatedRemainder = energyHandler.insertEnergy(energyToGive, Action.SIMULATE);
-        if (simulatedRemainder < energyToGive) {
+        FloatingLong energyToGive = energyContainer.getEnergy();
+        FloatingLong simulatedRemainder = energyHandler.insertEnergy(energyToGive, Action.SIMULATE);
+        if (simulatedRemainder.smallerThan(energyToGive)) {
             //We are able to fit at least some of the energy from our container into the item
-            double extractedEnergy = energyContainer.extract(energyToGive - simulatedRemainder, Action.EXECUTE, AutomationType.INTERNAL);
-            if (extractedEnergy > 0) {
+            FloatingLong extractedEnergy = energyContainer.extract(energyToGive.subtract(simulatedRemainder), Action.EXECUTE, AutomationType.INTERNAL);
+            if (!extractedEnergy.isEmpty()) {
                 //If we were able to actually extract it from our energy container, then insert it into the item
-                if (energyHandler.insertEnergy(extractedEnergy, Action.EXECUTE) > 0) {
+                if (!energyHandler.insertEnergy(extractedEnergy, Action.EXECUTE).isEmpty()) {
                     //TODO: Print warning/error
                 }
                 return true;

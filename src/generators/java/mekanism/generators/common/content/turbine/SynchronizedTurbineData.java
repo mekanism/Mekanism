@@ -15,6 +15,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
@@ -65,7 +66,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, BasicFluidTank.internalOnly,
               fluid -> fluid.getFluid().isIn(FluidTags.WATER), null);
         ventTanks = Collections.singletonList(ventTank);
-        energyContainer = VariableCapacityEnergyContainer.create(() -> tile.structure == null ? 0 : getEnergyCapacity(),
+        energyContainer = VariableCapacityEnergyContainer.create(() -> tile.structure == null ? FloatingLong.ZERO : getEnergyCapacity(),
               automationType -> automationType != AutomationType.EXTERNAL || tile.structure != null, BasicEnergyContainer.internalOnly, null);
         energyContainers = Collections.singletonList(energyContainer);
     }
@@ -96,8 +97,9 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
         return lowerVolume * TurbineUpdateProtocol.GAS_PER_TANK;
     }
 
-    public double getEnergyCapacity() {
-        return volume * 16_000_000D; //16 MJ energy capacity per volume
+    public FloatingLong getEnergyCapacity() {
+        //TODO: Cache this value
+        return FloatingLong.createConst(volume * 16_000_000L); //16 MJ energy capacity per volume
     }
 
     @Nonnull

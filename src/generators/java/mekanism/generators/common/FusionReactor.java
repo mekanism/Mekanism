@@ -14,6 +14,7 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.LaserManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismGases;
@@ -72,8 +73,13 @@ public class FusionReactor {
         controller = c;
     }
 
-    public void addTemperatureFromEnergyInput(double energyAdded) {
-        plasmaTemperature += energyAdded / plasmaHeatCapacity * (isBurning() ? 1 : 10);
+    public void addTemperatureFromEnergyInput(FloatingLong energyAdded) {
+        //TODO: FloatingLong evaluate
+        if (isBurning()) {
+            plasmaTemperature += energyAdded.divide(plasmaHeatCapacity).doubleValue();
+        } else {
+            plasmaTemperature += energyAdded.divide(plasmaHeatCapacity).multiply(10).doubleValue();
+        }
     }
 
     private boolean hasHohlraum() {
@@ -164,7 +170,7 @@ public class FusionReactor {
         if (getFuelTank().shrinkStack(fuelBurned, Action.EXECUTE) != fuelBurned) {
             //TODO: Print warning/error
         }
-        plasmaTemperature += MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * fuelBurned / plasmaHeatCapacity;
+        plasmaTemperature += MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(fuelBurned).divide(plasmaHeatCapacity).doubleValue();
         return fuelBurned;
     }
 
@@ -197,7 +203,8 @@ public class FusionReactor {
         //Transfer from casing to environment
         double caseAirHeat = caseAirConductivity * lastCaseTemperature;
         caseTemperature -= caseAirHeat / caseHeatCapacity;
-        controller.energyContainer.insert(caseAirHeat * thermocoupleEfficiency, Action.EXECUTE, AutomationType.INTERNAL);
+        //TODO: FloatingLong Evaluate
+        controller.energyContainer.insert(FloatingLong.create(caseAirHeat * thermocoupleEfficiency), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     public IExtendedFluidTank getWaterTank() {
@@ -388,33 +395,37 @@ public class FusionReactor {
 
     public int getMinInjectionRate(boolean active) {
         double k = active ? caseWaterConductivity : 0;
+        //TODO: FloatingLong Evaluate
         double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) /
-                      (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
+                      (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
                        plasmaCaseConductivity * (k + caseAirConductivity));
         return (int) (2 * Math.ceil(aMin / 2D));
     }
 
     public double getMaxPlasmaTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() / plasmaCaseConductivity *
+        //TODO: FloatingLong Evaluate
+        return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() / plasmaCaseConductivity *
                (plasmaCaseConductivity + k + caseAirConductivity) / (k + caseAirConductivity);
     }
 
     public double getMaxCasingTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() / (k + caseAirConductivity);
+        return MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(injectionRate).divide(k + caseAirConductivity).doubleValue();
     }
 
     public double getIgnitionTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        return burnTemperature * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) /
-               (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
-                plasmaCaseConductivity * (k + caseAirConductivity));
+        //TODO: FloatingLong Evaluate
+        double energyPerFusionFuel = MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue();
+        return burnTemperature * energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) /
+               (energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
     }
 
-    public double getPassiveGeneration(boolean active, boolean current) {
+    public FloatingLong getPassiveGeneration(boolean active, boolean current) {
         double temperature = current ? caseTemperature : getMaxCasingTemperature(active);
-        return thermocoupleEfficiency * caseAirConductivity * temperature;
+        //TODO: FloatingLong Evaluate
+        return FloatingLong.create(thermocoupleEfficiency * caseAirConductivity * temperature);
     }
 
     public int getSteamPerTick(boolean current) {

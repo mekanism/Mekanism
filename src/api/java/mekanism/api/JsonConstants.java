@@ -16,6 +16,10 @@ public class JsonConstants {
     public static final String INFUSE_TYPE = "infuse_type";
     public static final String FLUID = "fluid";
 
+    //FloatingLong
+    public static final String DECIMAL = "decimal";
+    public static final String VALUE = "value";
+
     //Recipes
     public static final String TYPE = "type";
     public static final String CONDITIONS = "conditions";

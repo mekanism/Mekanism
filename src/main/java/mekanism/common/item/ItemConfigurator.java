@@ -14,6 +14,7 @@ import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
@@ -56,11 +57,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItemNetwork, IItemHUDProvider {
 
-    private static final int ENERGY_PER_CONFIGURE = 400;
-    private static final int ENERGY_PER_ITEM_DUMP = 8;
+    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(60_000);//TODO: Config
+    private static final FloatingLong ENERGY_PER_CONFIGURE = FloatingLong.createConst(400);
+    private static final FloatingLong ENERGY_PER_ITEM_DUMP = FloatingLong.createConst(8);
 
     public ItemConfigurator(Properties properties) {
-        super(60_000, properties);
+        super(MAX_ENERGY, properties);
     }
 
     @Override
@@ -97,7 +99,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                         } else if (SecurityUtils.canAccess(player, tile)) {
                             if (!player.isCreative()) {
                                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                                if (energyContainer == null || energyContainer.extract(ENERGY_PER_CONFIGURE, Action.SIMULATE, AutomationType.MANUAL) < ENERGY_PER_CONFIGURE) {
+                                if (energyContainer == null || energyContainer.extract(ENERGY_PER_CONFIGURE, Action.SIMULATE, AutomationType.MANUAL).smallerThan(ENERGY_PER_CONFIGURE)) {
                                     return ActionResultType.FAIL;
                                 }
                                 energyContainer.extract(ENERGY_PER_CONFIGURE, Action.EXECUTE, AutomationType.MANUAL);
@@ -144,7 +146,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                             for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
                                 if (!inventorySlot.isEmpty()) {
                                     if (!creative) {
-                                        if (energyContainer.extract(ENERGY_PER_ITEM_DUMP, Action.SIMULATE, AutomationType.MANUAL) < ENERGY_PER_ITEM_DUMP) {
+                                        if (energyContainer.extract(ENERGY_PER_ITEM_DUMP, Action.SIMULATE, AutomationType.MANUAL).smallerThan(ENERGY_PER_ITEM_DUMP)) {
                                             break;
                                         }
                                         energyContainer.extract(ENERGY_PER_ITEM_DUMP, Action.EXECUTE, AutomationType.MANUAL);

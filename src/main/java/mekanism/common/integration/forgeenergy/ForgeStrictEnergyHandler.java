@@ -1,11 +1,16 @@
 package mekanism.common.integration.forgeenergy;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.EnergyCompatUtils.EnergyType;
 import net.minecraftforge.energy.IEnergyStorage;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
 
     private final IEnergyStorage storage;
@@ -20,27 +25,27 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public double getEnergy(int container) {
-        return container == 0 ? EnergyType.FORGE.convertFrom(storage.getEnergyStored()) : 0;
+    public FloatingLong getEnergy(int container) {
+        return container == 0 ? EnergyType.FORGE.convertFrom(storage.getEnergyStored()) : FloatingLong.ZERO;
     }
 
     @Override
-    public void setEnergy(int container, double energy) {
+    public void setEnergy(int container, FloatingLong energy) {
         //Not implemented or directly needed
     }
 
     @Override
-    public double getMaxEnergy(int container) {
-        return container == 0 ? EnergyType.FORGE.convertFrom(storage.getMaxEnergyStored()) : 0;
+    public FloatingLong getMaxEnergy(int container) {
+        return container == 0 ? EnergyType.FORGE.convertFrom(storage.getMaxEnergyStored()) : FloatingLong.ZERO;
     }
 
     @Override
-    public double getNeededEnergy(int container) {
-        return container == 0 ? EnergyType.FORGE.convertFrom(Math.max(0, storage.getMaxEnergyStored() - storage.getEnergyStored())) : 0;
+    public FloatingLong getNeededEnergy(int container) {
+        return container == 0 ? EnergyType.FORGE.convertFrom(Math.max(0, storage.getMaxEnergyStored() - storage.getEnergyStored())) : FloatingLong.ZERO;
     }
 
     @Override
-    public double insertEnergy(int container, double amount, @Nonnull Action action) {
+    public FloatingLong insertEnergy(int container, FloatingLong amount, @Nonnull Action action) {
         if (container == 0 && storage.canReceive()) {
             int toInsert = EnergyType.FORGE.convertToAsInt(amount);
             return EnergyType.FORGE.convertFrom(toInsert - storage.receiveEnergy(toInsert, action.simulate()));
@@ -49,10 +54,10 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public double extractEnergy(int container, double amount, @Nonnull Action action) {
+    public FloatingLong extractEnergy(int container, FloatingLong amount, @Nonnull Action action) {
         if (container == 0 && storage.canExtract()) {
             return EnergyType.FORGE.convertFrom(storage.extractEnergy(EnergyType.FORGE.convertToAsInt(amount), action.simulate()));
         }
-        return 0;
+        return FloatingLong.ZERO;
     }
 }

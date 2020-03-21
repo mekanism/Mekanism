@@ -12,6 +12,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
@@ -33,8 +34,8 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
-import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -83,7 +84,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
      */
     public GasMode dumpRight = GasMode.IDLE;
     public CachedRecipe<ElectrolysisRecipe> cachedRecipe;
-    public double clientEnergyUsed;
+    public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
@@ -148,13 +149,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
         leftOutputSlot.drainTank();
         rightOutputSlot.drainTank();
-        double prev = energyContainer.getEnergy();
+        FloatingLong prev = energyContainer.getEnergy();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
         //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-        clientEnergyUsed = prev - energyContainer.getEnergy();
+        clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
 
         int dumpAmount = 8 * (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
         handleTank(leftTank, dumpLeft, getLeftSide(), dumpAmount);
@@ -274,6 +275,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         super.addContainerTrackers(container);
         container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumpLeft, value -> dumpLeft = value));
         container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumpRight, value -> dumpRight = value));
-        container.track(SyncableDouble.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableFloatingLong.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
     }
 }

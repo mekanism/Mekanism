@@ -3,6 +3,7 @@ package mekanism.common.tile.laser;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.providers.IBlockProvider;
@@ -18,7 +19,7 @@ public abstract class TileEntityLaserReceptor extends TileEntityBasicLaser imple
     }
 
     @Override
-    public void receiveLaserEnergy(double energy, Direction side) {
+    public void receiveLaserEnergy(@Nonnull FloatingLong energy, Direction side) {
         //TODO: Do we care about checking the side
         energyContainer.insert(energy, Action.EXECUTE, AutomationType.INTERNAL);
     }

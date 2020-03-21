@@ -5,6 +5,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -21,17 +22,17 @@ public class PRCEnergyContainer extends MachineEnergyContainer<TileEntityPressur
         return new PRCEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
     }
 
-    private PRCEnergyContainer(double maxEnergy, double energyPerTick, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
-          TileEntityPressurizedReactionChamber tile) {
+    private PRCEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract,
+          Predicate<@NonNull AutomationType> canInsert, TileEntityPressurizedReactionChamber tile) {
         super(maxEnergy, energyPerTick, canExtract, canInsert, tile);
     }
 
     @Override
-    public double getBaseEnergyPerTick() {
+    public FloatingLong getBaseEnergyPerTick() {
         CachedRecipe<PressurizedReactionRecipe> recipe = tile.getUpdatedCache(0);
         if (recipe == null) {
             return super.getBaseEnergyPerTick();
         }
-        return super.getBaseEnergyPerTick() + recipe.getRecipe().getEnergyRequired();
+        return super.getBaseEnergyPerTick().add(recipe.getRecipe().getEnergyRequired());
     }
 }

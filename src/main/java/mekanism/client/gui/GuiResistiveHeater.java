@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
+import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -77,7 +78,13 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     private void setEnergyUsage() {
         if (!energyUsageField.getText().isEmpty()) {
-            int toUse = Integer.parseInt(energyUsageField.getText());
+            FloatingLong toUse;
+            try {
+                toUse = FloatingLong.ZERO.max(FloatingLong.parseFloatingLong(energyUsageField.getText()));
+            } catch (Exception e) {
+                energyUsageField.setText("");
+                return;
+            }
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(toUse)));
             energyUsageField.setText("");
         }

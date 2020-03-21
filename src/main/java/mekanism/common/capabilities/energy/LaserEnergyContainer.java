@@ -7,6 +7,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -24,7 +25,7 @@ public class LaserEnergyContainer extends BasicEnergyContainer {
         return new LaserEnergyContainer(electricBlock.getStorage(), canExtract, canInsert, tile);
     }
 
-    private LaserEnergyContainer(double maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
+    private LaserEnergyContainer(FloatingLong maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           @Nullable IMekanismStrictEnergyHandler energyHandler) {
         super(maxEnergy, canExtract, canInsert, energyHandler);
     }

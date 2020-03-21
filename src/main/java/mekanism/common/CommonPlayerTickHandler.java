@@ -4,6 +4,7 @@ import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
@@ -179,7 +180,7 @@ public class CommonPlayerTickHandler {
             if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL && event.getSource() == DamageSource.FALL) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(feetStack, 0);
                 if (energyContainer != null) {
-                    energyContainer.extract(event.getAmount() * 50, Action.EXECUTE, AutomationType.MANUAL);
+                    energyContainer.extract(FloatingLong.createConst(event.getAmount() * 50), Action.EXECUTE, AutomationType.MANUAL);
                     event.setCanceled(true);
                 }
             }

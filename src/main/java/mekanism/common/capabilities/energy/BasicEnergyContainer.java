@@ -9,6 +9,7 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
@@ -25,45 +26,37 @@ public class BasicEnergyContainer implements IEnergyContainer {
     public static final Predicate<@NonNull AutomationType> internalOnly = automationType -> automationType == AutomationType.INTERNAL;
     public static final Predicate<@NonNull AutomationType> notExternal = automationType -> automationType != AutomationType.EXTERNAL;
 
-    public static BasicEnergyContainer create(double maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
-        if (maxEnergy < 0) {
-            throw new IllegalArgumentException("Max energy must be at least zero");
-        }
+    public static BasicEnergyContainer create(FloatingLong maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
+        Objects.requireNonNull(maxEnergy, "Max energy cannot be null");
         return new BasicEnergyContainer(maxEnergy, alwaysTrue, alwaysTrue, energyHandler);
     }
 
-    public static BasicEnergyContainer input(double maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
-        if (maxEnergy < 0) {
-            throw new IllegalArgumentException("Max energy must be at least zero");
-        }
+    public static BasicEnergyContainer input(FloatingLong maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
+        Objects.requireNonNull(maxEnergy, "Max energy cannot be null");
         return new BasicEnergyContainer(maxEnergy, notExternal, alwaysTrue, energyHandler);
     }
 
-    public static BasicEnergyContainer output(double maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
-        if (maxEnergy < 0) {
-            throw new IllegalArgumentException("Max energy must be at least zero");
-        }
+    public static BasicEnergyContainer output(FloatingLong maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
+        Objects.requireNonNull(maxEnergy, "Max energy cannot be null");
         return new BasicEnergyContainer(maxEnergy, alwaysTrue, internalOnly, energyHandler);
     }
 
-    public static BasicEnergyContainer create(double maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
+    public static BasicEnergyContainer create(FloatingLong maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           @Nullable IMekanismStrictEnergyHandler energyHandler) {
-        if (maxEnergy < 0) {
-            throw new IllegalArgumentException("Max energy must be at least zero");
-        }
+        Objects.requireNonNull(maxEnergy, "Max energy cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         return new BasicEnergyContainer(maxEnergy, canExtract, canInsert, energyHandler);
     }
 
-    private double stored = 0;
+    private FloatingLong stored = FloatingLong.getNewZero();
     protected final Predicate<@NonNull AutomationType> canExtract;
     protected final Predicate<@NonNull AutomationType> canInsert;
-    private final double maxEnergy;
+    private final FloatingLong maxEnergy;
     @Nullable
     private final IMekanismStrictEnergyHandler energyHandler;
 
-    protected BasicEnergyContainer(double maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
+    protected BasicEnergyContainer(FloatingLong maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           @Nullable IMekanismStrictEnergyHandler energyHandler) {
         this.maxEnergy = maxEnergy;
         this.canExtract = canExtract;
@@ -79,18 +72,16 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public double getEnergy() {
+    public FloatingLong getEnergy() {
         return stored;
     }
 
     @Override
-    public void setEnergy(double energy) {
-        //TODO: Evaluate usages of this
-        if (energy < 0) {
-            //Throws a RuntimeException as specified is allowed when something unexpected happens
-            // As setEnergy is more meant to be used as an internal method
-            throw new RuntimeException("Negative energy for container: " + energy);
-        } else if (stored != energy) {
+    public void setEnergy(FloatingLong energy) {
+        //TODO: Evaluate usages of this, especially now with FloatingLong, as we probably
+        // want to reimplement the concept of grow/shrink
+        if (!stored.equals(energy)) {
+            //TODO: FloatingLong do we need to copy this
             stored = energy;
             onContentsChanged();
         }
@@ -106,50 +97,50 @@ public class BasicEnergyContainer implements IEnergyContainer {
      * @implNote By default this returns {@link Double#MAX_VALUE} so as to not actually limit the container's rate.
      * @apiNote By default this is ignored for direct setting of the stack/stack size
      */
-    protected double getRate(@Nullable AutomationType automationType) {
+    protected FloatingLong getRate(@Nullable AutomationType automationType) {
         //TODO: Decide if we want to split this into a rate for inserting and a rate for extracting.
-        return Double.MAX_VALUE;
+        return FloatingLong.MAX_VALUE;
     }
 
     @Override
-    public double insert(double amount, Action action, AutomationType automationType) {
-        if (amount <= 0 || !canInsert.test(automationType)) {
+    public FloatingLong insert(FloatingLong amount, Action action, AutomationType automationType) {
+        if (amount.isEmpty() || !canInsert.test(automationType)) {
             return amount;
         }
-        double needed = Math.min(getRate(automationType), getNeeded());
-        if (needed <= 0) {
+        FloatingLong needed = getRate(automationType).min(getNeeded());
+        if (needed.isEmpty()) {
             //Fail if we are a full container or our rate is zero
             return amount;
         }
-        double toAdd = Math.min(amount, needed);
+        FloatingLong toAdd = amount.min(needed);
         if (action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
-            setEnergy(getEnergy() + toAdd);
+            stored.plusEqual(toAdd);
         }
-        return amount - toAdd;
+        return amount.add(toAdd);
     }
 
     @Override
-    public double extract(double amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount <= 0 || !canExtract.test(automationType)) {
-            return 0;
+    public FloatingLong extract(FloatingLong amount, Action action, AutomationType automationType) {
+        if (isEmpty() || amount.isEmpty() || !canExtract.test(automationType)) {
+            return FloatingLong.ZERO;
         }
-        double ret = Math.min(Math.min(getRate(automationType), getEnergy()), amount);
-        if (ret > 0 && action.execute()) {
+        FloatingLong ret = getRate(automationType).min(getEnergy()).min(amount);
+        if (!ret.isEmpty() && action.execute()) {
             //Note: this also will mark that the contents changed
-            setEnergy(getEnergy() - ret);
+            stored.minusEqual(ret);
         }
         return ret;
     }
 
     @Override
-    public double getMaxEnergy() {
+    public FloatingLong getMaxEnergy() {
         return maxEnergy;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        NBTUtils.setDoubleIfPresent(nbt, NBTConstants.STORED, this::setEnergy);
+        NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.STORED, this::setEnergy);
     }
 }

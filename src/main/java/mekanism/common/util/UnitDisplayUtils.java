@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
@@ -14,43 +15,36 @@ import net.minecraft.util.text.ITextComponent;
 public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextComponents the two getDisplay methods build, and have them have better translation keys with formats
 
     /**
-     * Displays the unit as text. Does handle negative numbers, and will place a negative sign in front of the output string showing this. Use string.replace to remove
-     * the negative sign if unwanted
+     * Displays the unit as text. Does not handle negative numbers, as {@link FloatingLong} does not have a concept of negatives
      */
-    public static ITextComponent getDisplay(double value, ElectricUnit unit, int decimalPlaces, boolean isShort) {
+    public static ITextComponent getDisplay(FloatingLong value, ElectricUnit unit, int decimalPlaces, boolean isShort) {
         ILangEntry label = unit.pluralLangEntry;
-        String prefix = "";
-        if (value < 0) {
-            value = Math.abs(value);
-            prefix = "-";
-        }
         if (isShort) {
             label = unit.shortLangEntry;
-        } else if (value == 1 || value == -1) {
+        } else if (value.equals(FloatingLong.ONE)) {
             label = unit.singularLangEntry;
         }
-        if (value == 0) {
+        if (value.isEmpty()) {
             return TextComponentUtil.build(value + " ", label);
         }
-        for (int i = 0; i < EnumUtils.MEASUREMENT_UNITS.length; i++) {
-            MeasurementUnit lowerMeasure = EnumUtils.MEASUREMENT_UNITS[i];
-            if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
-                return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
+        for (int i = 0; i < EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length; i++) {
+            FloatingLongMeasurementUnit lowerMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i];
+            if (i == 0 && lowerMeasure.below(value)) {
+                return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
             }
-            if (lowerMeasure.ordinal() + 1 >= EnumUtils.MEASUREMENT_UNITS.length) {
-                return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
-            }
-            if (i + 1 < EnumUtils.MEASUREMENT_UNITS.length) {
-                MeasurementUnit upperMeasure = EnumUtils.MEASUREMENT_UNITS[i + 1];
-                if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
-                    return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
+            if (i + 1 >= EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length) {
+                return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
+            } else {
+                FloatingLongMeasurementUnit upperMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i + 1];
+                if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value.equals(value)) {
+                    return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
                 }
             }
         }
-        return TextComponentUtil.build(prefix + roundDecimals(value, decimalPlaces), label);
+        return TextComponentUtil.build(value.toString(decimalPlaces), label);
     }
 
-    public static ITextComponent getDisplayShort(double value, ElectricUnit unit) {
+    public static ITextComponent getDisplayShort(FloatingLong value, ElectricUnit unit) {
         return getDisplay(value, unit, 2, true);
     }
 
@@ -218,6 +212,60 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
 
         public boolean below(double d) {
             return d < value;
+        }
+    }
+
+    /**
+     * Metric system of measurement.
+     */
+    public enum FloatingLongMeasurementUnit {
+        MILLI("Milli", "m", FloatingLong.createConst(.001)),
+        BASE("", "", FloatingLong.ONE),
+        KILO("Kilo", "k", FloatingLong.createConst(1_000)),
+        MEGA("Mega", "M", FloatingLong.createConst(1_000_000)),
+        GIGA("Giga", "G", FloatingLong.createConst(1_000_000_000)),
+        TERA("Tera", "T", FloatingLong.createConst(1_000_000_000_000L)),
+        PETA("Peta", "P", FloatingLong.createConst(1_000_000_000_000_000L)),
+        EXA("Exa", "E", FloatingLong.createConst(1_000_000_000_000_000_000L));
+
+        /**
+         * long name for the unit
+         */
+        private final String name;
+
+        /**
+         * short unit version of the unit
+         */
+        private final String symbol;
+
+        /**
+         * Point by which a number is consider to be of this unit
+         */
+        private final FloatingLong value;
+
+        FloatingLongMeasurementUnit(String name, String symbol, FloatingLong value) {
+            this.name = name;
+            this.symbol = symbol;
+            this.value = value;
+        }
+
+        public String getName(boolean getShort) {
+            if (getShort) {
+                return symbol;
+            }
+            return name;
+        }
+
+        public FloatingLong process(FloatingLong d) {
+            return d.divide(value);
+        }
+
+        public boolean above(FloatingLong d) {
+            return d.greaterThan(value);
+        }
+
+        public boolean below(FloatingLong d) {
+            return d.smallerThan(value);
         }
     }
 

@@ -2,6 +2,7 @@ package mekanism.common.item.block.machine;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
@@ -61,8 +62,7 @@ public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockTile
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        double maxEnergy = MekanismUtils.getMaxEnergy(stack, Attribute.get(getBlock(), AttributeEnergy.class).getStorage());
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(maxEnergy * 0.005, () -> maxEnergy, BasicEnergyContainer.notExternal,
-              BasicEnergyContainer.alwaysTrue));
+        FloatingLong maxEnergy = MekanismUtils.getMaxEnergy(stack, Attribute.get(getBlock(), AttributeEnergy.class).getStorage());
+        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> maxEnergy, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
     }
 }

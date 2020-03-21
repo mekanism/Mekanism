@@ -2,8 +2,10 @@ package mekanism.common.capabilities.proxy;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.ISidedStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.holder.IHolder;
@@ -11,6 +13,7 @@ import net.minecraft.util.Direction;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ProxyStrictEnergyHandler implements IStrictEnergyHandler {
 
     private final ISidedStrictEnergyHandler energyHandler;
@@ -35,44 +38,44 @@ public class ProxyStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public double getEnergy(int container) {
+    public FloatingLong getEnergy(int container) {
         return energyHandler.getEnergy(container, side);
     }
 
     @Override
-    public void setEnergy(int container, double energy) {
+    public void setEnergy(int container, FloatingLong energy) {
         if (!readOnly) {
             energyHandler.setEnergy(container, energy, side);
         }
     }
 
     @Override
-    public double getMaxEnergy(int container) {
+    public FloatingLong getMaxEnergy(int container) {
         return energyHandler.getMaxEnergy(container, side);
     }
 
     @Override
-    public double getNeededEnergy(int container) {
+    public FloatingLong getNeededEnergy(int container) {
         return energyHandler.getNeededEnergy(container, side);
     }
 
     @Override
-    public double insertEnergy(int container, double amount, Action action) {
+    public FloatingLong insertEnergy(int container, FloatingLong amount, Action action) {
         return readOnly || readOnlyInsert ? amount : energyHandler.insertEnergy(container, amount, side, action);
     }
 
     @Override
-    public double extractEnergy(int container, double amount, Action action) {
-        return readOnly || readOnlyExtract ? 0 : energyHandler.extractEnergy(container, amount, side, action);
+    public FloatingLong extractEnergy(int container, FloatingLong amount, Action action) {
+        return readOnly || readOnlyExtract ? FloatingLong.ZERO : energyHandler.extractEnergy(container, amount, side, action);
     }
 
     @Override
-    public double insertEnergy(double amount, Action action) {
+    public FloatingLong insertEnergy(FloatingLong amount, Action action) {
         return readOnly || readOnlyInsert ? amount : energyHandler.insertEnergy(amount, side, action);
     }
 
     @Override
-    public double extractEnergy(double amount, Action action) {
-        return readOnly || readOnlyExtract ? 0 : energyHandler.extractEnergy(amount, side, action);
+    public FloatingLong extractEnergy(FloatingLong amount, Action action) {
+        return readOnly || readOnlyExtract ? FloatingLong.ZERO : energyHandler.extractEnergy(amount, side, action);
     }
 }

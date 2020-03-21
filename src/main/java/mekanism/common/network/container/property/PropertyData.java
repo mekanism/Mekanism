@@ -1,6 +1,7 @@
 package mekanism.common.network.container.property;
 
 import mekanism.api.chemical.ChemicalUtils;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.container.PacketUpdateContainer;
@@ -64,6 +65,8 @@ public abstract class PropertyData {
                 return new InfusionStackPropertyData(property, ChemicalUtils.readInfusionStack(buffer));
             case FREQUENCY:
                 return FrequencyPropertyData.readFrequency(property, buffer);
+            case FLOATING_LONG:
+                return new FloatingLongPropertyData(property, FloatingLong.fromBuffer(buffer));
             case LIST:
                 return ListPropertyData.readList(property, buffer);
             default:

@@ -2,22 +2,22 @@ package mekanism.common.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedPrimitiveValue;
+import mekanism.common.config.value.CachedResolvableConfigValue;
 
 public abstract class BaseMekanismConfig implements IMekanismConfig {
 
-    private final List<CachedConfigValue<?>> cachedConfigValues = new ArrayList<>();
+    private final List<CachedResolvableConfigValue<?, ?>> cachedConfigValues = new ArrayList<>();
     private final List<CachedPrimitiveValue<?>> cachedPrimitiveValues = new ArrayList<>();
 
     @Override
     public void clearCache() {
-        cachedConfigValues.forEach(CachedConfigValue::clearCache);
+        cachedConfigValues.forEach(CachedResolvableConfigValue::clearCache);
         cachedPrimitiveValues.forEach(CachedPrimitiveValue::clearCache);
     }
 
     @Override
-    public <T> void addCachedValue(CachedConfigValue<T> configValue) {
+    public <T, R> void addCachedValue(CachedResolvableConfigValue<T, R> configValue) {
         cachedConfigValues.add(configValue);
     }
 

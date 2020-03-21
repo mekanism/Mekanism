@@ -33,6 +33,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.client.sound.SoundHandler;
@@ -69,8 +70,8 @@ import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInfusionStack;
@@ -212,7 +213,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //End variables IMekanismStrictEnergyHandler
 
     //Variables for handling ITileElectric
-    private double lastEnergyReceived;
+    private FloatingLong lastEnergyReceived = FloatingLong.ZERO;
     //End variables ITileElectric
 
     //Variables for handling ITileSecurity
@@ -479,7 +480,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 }
             }
             onUpdateServer();
-            lastEnergyReceived = 0;
+            lastEnergyReceived = FloatingLong.ZERO;
         }
         ticker++;
         if (supportsRedstone()) {
@@ -610,15 +611,15 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
         if (canHandleEnergy() && handlesEnergy()) {
             //TODO: Transition this over?
-            container.track(SyncableDouble.create(this::getInputRate, this::setInputRate));
+            container.track(SyncableFloatingLong.create(this::getInputRate, this::setInputRate));
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
-                container.track(SyncableDouble.create(energyContainer::getEnergy, energyContainer::setEnergy));
+                container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
                 if (energyContainer instanceof MachineEnergyContainer<?>) {
                     MachineEnergyContainer<?> machineEnergy = (MachineEnergyContainer<?>) energyContainer;
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
-                        container.track(SyncableDouble.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
-                        container.track(SyncableDouble.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
+                        container.track(SyncableFloatingLong.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
+                        container.track(SyncableFloatingLong.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
                     }
                 }
             }
@@ -1121,12 +1122,12 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //End methods IMekanismStrictEnergyHandler
 
     //Methods for implementing ITileElectric
-    public double getInputRate() {
+    public FloatingLong getInputRate() {
         return lastEnergyReceived;
     }
 
     //TODO: Re-implement lastEnergyReceived for when we accept energy
-    public void setInputRate(double inputRate) {
+    public void setInputRate(FloatingLong inputRate) {
         this.lastEnergyReceived = inputRate;
     }
     //End methods ITileElectric

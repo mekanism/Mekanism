@@ -14,6 +14,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongConsumer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -136,6 +138,12 @@ public class NBTUtils {
     public static void setInfusionStackIfPresent(CompoundNBT nbt, String key, Consumer<InfusionStack> setter) {
         if (nbt.contains(key, NBT.TAG_COMPOUND)) {
             setter.accept(InfusionStack.readFromNBT(nbt.getCompound(key)));
+        }
+    }
+
+    public static void setFloatingLongIfPresent(CompoundNBT nbt, String key, FloatingLongConsumer setter) {
+        if (nbt.contains(key, NBT.TAG_COMPOUND)) {
+            setter.accept(FloatingLong.readFromNBT(nbt.getCompound(key)));
         }
     }
 

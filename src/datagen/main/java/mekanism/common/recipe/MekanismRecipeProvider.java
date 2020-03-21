@@ -23,6 +23,7 @@ import mekanism.api.datagen.recipe.builder.MetallurgicInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IItemProvider;
@@ -466,12 +467,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addEnergyConversionRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "energy_conversion/";
-        double redstoneEnergy = 10_000;
+        FloatingLong redstoneEnergy = FloatingLong.createConst(10_000);
         addEnergyConversionRecipe(consumer, basePath, "redstone", Tags.Items.DUSTS_REDSTONE, redstoneEnergy);
-        addEnergyConversionRecipe(consumer, basePath, "redstone_block", Tags.Items.STORAGE_BLOCKS_REDSTONE, 9 * redstoneEnergy);
+        addEnergyConversionRecipe(consumer, basePath, "redstone_block", Tags.Items.STORAGE_BLOCKS_REDSTONE, redstoneEnergy.multiply(9));
     }
 
-    private void addEnergyConversionRecipe(Consumer<IFinishedRecipe> consumer, String basePath, String name, Tag<Item> inputTag, double output) {
+    private void addEnergyConversionRecipe(Consumer<IFinishedRecipe> consumer, String basePath, String name, Tag<Item> inputTag, FloatingLong output) {
         ItemStackToEnergyRecipeBuilder.energyConversion(
               ItemStackIngredient.from(inputTag),
               output
@@ -1814,7 +1815,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               60,
               MekanismItems.HDPE_PELLET.getItemStack(),
               MekanismGases.OXYGEN.getGasStack(5)
-        ).energyRequired(1_000)
+        ).energyRequired(FloatingLong.createConst(1_000))
               .addCriterion(Criterion.HAS_PRESSURIZED_REACTION_CHAMBER)
               .build(consumer, Mekanism.rl(basePath + "ethene_oxygen"));
         //Water + ethene
@@ -1825,7 +1826,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               400,
               MekanismItems.SUBSTRATE.getItemStack(8),
               MekanismGases.OXYGEN.getGasStack(10)
-        ).energyRequired(200)
+        ).energyRequired(FloatingLong.createConst(200))
               .addCriterion(Criterion.HAS_PRESSURIZED_REACTION_CHAMBER)
               .build(consumer, Mekanism.rl(basePath + "water_ethene"));
         //Water + hydrogen

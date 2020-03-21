@@ -13,7 +13,10 @@
     "amount": 100,
     "gas": "mekanism:ethene"
   },
-  "energyRequired": 200.0,
+  "energyRequired": {
+    "value": 200,
+    "decimal": 0
+  },
   "duration": 400,
   "itemOutput": {
     "item": "mekanism:substrate",

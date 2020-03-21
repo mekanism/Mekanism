@@ -1,11 +1,16 @@
 package mekanism.api.energy;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
 
     /**
@@ -13,7 +18,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      *
      * @return Energy in this container. {@code 0} if no energy is stored.
      */
-    double getEnergy();
+    FloatingLong getEnergy();
 
     /**
      * Overrides the amount of energy in this {@link IEnergyContainer}.
@@ -23,7 +28,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting. (Such as a negative amount of energy)
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setEnergy(double energy);
+    void setEnergy(FloatingLong energy);
 
     /**
      * <p>
@@ -41,23 +46,23 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      * @implNote Negative values for {@code amount} <strong>MUST</strong> be supported, and treated as if the passed value was actually {@code 0}. Also if the internal
      * amount does get updated make sure to call {@link #onContentsChanged()}
      */
-    default double insert(double amount, Action action, AutomationType automationType) {
-        if (amount <= 0) {
+    default FloatingLong insert(FloatingLong amount, Action action, AutomationType automationType) {
+        if (amount.isEmpty()) {
             //"Fail quick" if the given amount is empty (zero or negative)
             return amount;
         }
-        double needed = getNeeded();
-        if (needed <= 0) {
+        FloatingLong needed = getNeeded();
+        if (needed.isEmpty()) {
             //Fail if we are a full container
             return amount;
         }
-        double toAdd = Math.min(amount, needed);
+        FloatingLong toAdd = amount.min(needed);
         if (action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
-            setEnergy(getEnergy() + toAdd);
+            setEnergy(getEnergy().add(toAdd));
         }
-        return amount - toAdd;
+        return amount.subtract(toAdd);
     }
 
     /**
@@ -75,14 +80,14 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      * @implNote Negative values for {@code amount} <strong>MUST</strong> be supported, and treated as if the passed value was actually {@code 0}. Also if the internal
      * amount does get updated make sure to call {@link #onContentsChanged()}
      */
-    default double extract(double amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount <= 0) {
-            return 0;
+    default FloatingLong extract(FloatingLong amount, Action action, AutomationType automationType) {
+        if (isEmpty() || amount.isEmpty()) {
+            return FloatingLong.ZERO;
         }
-        double ret = Math.min(getEnergy(), amount);
-        if (ret > 0 && action.execute()) {
+        FloatingLong ret = getEnergy().min(amount);
+        if (!ret.isEmpty() && action.execute()) {
             // Note: this also will mark that the contents changed
-            setEnergy(getEnergy() - ret);
+            setEnergy(getEnergy().subtract(ret));
         }
         return ret;
     }
@@ -92,7 +97,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      *
      * @return The maximum amount of energy allowed in this {@link IEnergyContainer}.
      */
-    double getMaxEnergy();
+    FloatingLong getMaxEnergy();
 
     /**
      * Called when the contents of this container changes.
@@ -105,14 +110,14 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      * @return True if the container is empty, false otherwise.
      */
     default boolean isEmpty() {
-        return getEnergy() == 0;
+        return getEnergy().isEmpty();
     }
 
     /**
      * Convenience method for emptying this {@link IEnergyContainer}.
      */
     default void setEmpty() {
-        setEnergy(0);
+        setEnergy(FloatingLong.ZERO);
     }
 
     /**
@@ -120,8 +125,8 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      *
      * @return Amount of energy needed
      */
-    default double getNeeded() {
-        return Math.max(0, getMaxEnergy() - getEnergy());
+    default FloatingLong getNeeded() {
+        return FloatingLong.ZERO.max(getMaxEnergy().subtract(getEnergy()));
     }
 
 
@@ -129,7 +134,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
     default CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         if (!isEmpty()) {
-            nbt.putDouble(NBTConstants.STORED, getEnergy());
+            nbt.put(NBTConstants.STORED, getEnergy().serializeNBT());
         }
         return nbt;
     }

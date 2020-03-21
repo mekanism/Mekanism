@@ -204,7 +204,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     public double getSecondaryEnergyPerTick() {
-        return MekanismUtils.getSecondaryEnergyPerTickMean(this, TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK);
+        return MekanismUtils.getGasPerTickMean(this, TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK);
     }
 
     @Override

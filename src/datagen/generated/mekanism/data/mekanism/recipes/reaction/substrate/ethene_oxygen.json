@@ -13,7 +13,10 @@
     "amount": 10,
     "gas": "mekanism:oxygen"
   },
-  "energyRequired": 1000.0,
+  "energyRequired": {
+    "value": 1000,
+    "decimal": 0
+  },
   "duration": 60,
   "itemOutput": {
     "item": "mekanism:hdpe_pellet"

@@ -13,6 +13,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
@@ -25,7 +26,7 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> imple
 
     //Note: We don't care about any restrictions here as it is just for making it be persistent
     private final List<IChemicalTank<Gas, GasStack>> gasTanks = Collections.singletonList(BasicGasTank.create(Integer.MAX_VALUE, this));
-    private final List<IEnergyContainer> energyContainers = Collections.singletonList(BasicEnergyContainer.create(Double.MAX_VALUE, this));
+    private final List<IEnergyContainer> energyContainers = Collections.singletonList(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, this));
     public GasMode dumpMode = GasMode.IDLE;
 
     @Override

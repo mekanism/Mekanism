@@ -1,20 +1,25 @@
 package mekanism.common.tier;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.config.value.CachedDoubleValue;
+import mekanism.common.config.value.CachedFloatingLongValue;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public enum InductionProviderTier implements ITier {
-    BASIC(BaseTier.BASIC, 64_000),
-    ADVANCED(BaseTier.ADVANCED, 512_000),
-    ELITE(BaseTier.ELITE, 4_096_000),
-    ULTIMATE(BaseTier.ULTIMATE, 32_768_000);
+    BASIC(BaseTier.BASIC, FloatingLong.createConst(64_000)),
+    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(512_000)),
+    ELITE(BaseTier.ELITE, FloatingLong.createConst(4_096_000)),
+    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(32_768_000));
 
-    private final double baseOutput;
+    private final FloatingLong baseOutput;
     private final BaseTier baseTier;
-    private CachedDoubleValue outputReference;
+    private CachedFloatingLongValue outputReference;
 
-    InductionProviderTier(BaseTier tier, double out) {
+    InductionProviderTier(BaseTier tier, FloatingLong out) {
         baseOutput = out;
         baseTier = tier;
     }
@@ -24,18 +29,18 @@ public enum InductionProviderTier implements ITier {
         return baseTier;
     }
 
-    public double getOutput() {
+    public FloatingLong getOutput() {
         return outputReference == null ? getBaseOutput() : outputReference.get();
     }
 
-    public double getBaseOutput() {
+    public FloatingLong getBaseOutput() {
         return baseOutput;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the InductionProviderTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedDoubleValue outputReference) {
+    public void setConfigReference(CachedFloatingLongValue outputReference) {
         this.outputReference = outputReference;
     }
 }

@@ -4,12 +4,11 @@ import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
@@ -21,7 +20,6 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -37,22 +35,10 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem {
 
-    public ItemPortableTeleporter(Properties properties) {
-        super(1_000_000, properties);
-    }
+    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000);//TODO: Config
 
-    public static double calculateEnergyCost(Entity entity, Coord4D coords) {
-        if (coords == null) {
-            return 0;
-        }
-        int neededEnergy = MekanismConfig.usage.teleporterBase.get();
-        if (entity.world.getDimension().getType().equals(coords.dimension)) {
-            int distance = (int) Math.sqrt(entity.getDistanceSq(coords.x, coords.y, coords.z));
-            neededEnergy += distance * MekanismConfig.usage.teleporterDistance.get();
-        } else {
-            neededEnergy += MekanismConfig.usage.teleporterDimensionPenalty.get();
-        }
-        return neededEnergy;
+    public ItemPortableTeleporter(Properties properties) {
+        super(MAX_ENERGY, properties);
     }
 
     @Override

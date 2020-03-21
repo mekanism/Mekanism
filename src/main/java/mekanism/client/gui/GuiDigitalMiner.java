@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 import mekanism.api.TileNetworkList;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -58,11 +59,11 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
               .hover(getOnHover(() -> tile.missingStack.isEmpty() ? MekanismLang.MINER_WELL.translate() : MekanismLang.MINER_MISSING_BLOCK.translate())));
         addButton(new GuiEnergyInfo(() -> {
             MinerEnergyContainer energyContainer = tile.getEnergyContainer();
-            double perTick = energyContainer.getEnergyPerTick();
+            FloatingLong perTick = energyContainer.getEnergyPerTick();
             ArrayList<ITextComponent> ret = new ArrayList<>(4);
             ret.add(MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(energyContainer.getMaxEnergy())));
             ret.add(MekanismLang.NEEDED_PER_TICK.translate(EnergyDisplay.of(perTick)));
-            if (perTick > energyContainer.getMaxEnergy()) {
+            if (perTick.greaterThan(energyContainer.getMaxEnergy())) {
                 ret.add(MekanismLang.MINER_INSUFFICIENT_BUFFER.translateColored(EnumColor.RED));
             }
             ret.add(MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(energyContainer.getNeeded())));
@@ -102,7 +103,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         drawString(tile.getName(), 69, 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         ILangEntry runningType;
-        if (tile.getEnergyContainer().getEnergyPerTick() > tile.getEnergyContainer().getMaxEnergy()) {
+        if (tile.getEnergyContainer().getEnergyPerTick().greaterThan(tile.getEnergyContainer().getMaxEnergy())) {
             runningType = MekanismLang.MINER_LOW_POWER;
         } else if (tile.running) {
             runningType = MekanismLang.MINER_RUNNING;

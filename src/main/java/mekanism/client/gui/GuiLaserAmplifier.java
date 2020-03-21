@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
@@ -129,30 +130,28 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
     private void setMinThreshold() {
         if (!minField.getText().isEmpty()) {
-            double toUse;
+            FloatingLong toUse;
             try {
-                toUse = Math.max(0, Double.parseDouble(minField.getText()));
+                toUse = FloatingLong.ZERO.max(FloatingLong.parseFloatingLong(minField.getText()));
             } catch (Exception e) {
                 minField.setText("");
                 return;
             }
-            TileNetworkList data = TileNetworkList.withContents(0, toUse);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, toUse)));
             minField.setText("");
         }
     }
 
     private void setMaxThreshold() {
         if (!maxField.getText().isEmpty()) {
-            double toUse;
+            FloatingLong toUse;
             try {
-                toUse = Math.max(0, Double.parseDouble(maxField.getText()));
+                toUse = FloatingLong.ZERO.max(FloatingLong.parseFloatingLong(maxField.getText()));
             } catch (Exception e) {
                 maxField.setText("");
                 return;
             }
-            TileNetworkList data = TileNetworkList.withContents(1, toUse);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, toUse)));
             maxField.setText("");
         }
     }

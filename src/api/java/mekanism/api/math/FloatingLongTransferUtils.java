@@ -1,6 +1,6 @@
-package mekanism.api.energy;
+package mekanism.api.math;
 
-import it.unimi.dsi.fastutil.ints.Int2DoubleFunction;
+import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.function.IntSupplier;
@@ -10,42 +10,42 @@ import mekanism.api.Action;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EnergyTransferUtils {//TODO: Rename this and use it by the heat handlers
+public class FloatingLongTransferUtils {
 
     /**
      * Util method for a generic insert implementation for various handlers. Mainly for internal use only
      */
-    public static double insert(double stack, Action action, IntSupplier containerCount, Int2DoubleFunction inContainerGetter, InsertDouble insertEnergy) {
+    public static FloatingLong insert(FloatingLong stack, Action action, IntSupplier containerCount, Int2ObjectFunction<FloatingLong> inContainerGetter, InsertFloatingLong insert) {
         int containers = containerCount.getAsInt();
         if (containers == 1) {
-            return insertEnergy.insert(0, stack, action);
+            return insert.insert(0, stack, action);
         }
         IntList matchingContainers = new IntArrayList();
         IntList emptyContainers = new IntArrayList();
         for (int container = 0; container < containers; container++) {
-            double inContainer = inContainerGetter.applyAsDouble(container);
-            if (inContainer == 0) {
+            FloatingLong inContainer = inContainerGetter.apply(container);
+            if (inContainer.isEmpty()) {
                 emptyContainers.add(container);
             } else {
                 matchingContainers.add(container);
             }
         }
-        double toInsert = stack;
+        FloatingLong toInsert = stack;
         //Start by trying to insert into the tanks that have the same type
         for (int container : matchingContainers) {
-            double remainder = insertEnergy.insert(container, toInsert, action);
-            if (remainder == 0) {
-                //If we have no remaining energy, return that we fit it all
-                return 0;
+            FloatingLong remainder = insert.insert(container, toInsert, action);
+            if (remainder.isEmpty()) {
+                //If we have no remainder, return that we fit it all
+                return FloatingLong.ZERO;
             }
             //Update what we have left to insert, to be the amount we were unable to insert
             toInsert = remainder;
         }
-        for (int tank : emptyContainers) {
-            double remainder = insertEnergy.insert(tank, toInsert, action);
-            if (remainder == 0) {
-                //If we have no remaining energy, return that we fit it all
-                return 0;
+        for (int container : emptyContainers) {
+            FloatingLong remainder = insert.insert(container, toInsert, action);
+            if (remainder.isEmpty()) {
+                //If we have no remainder, return that we fit it all
+                return FloatingLong.ZERO;
             }
             //Update what we have left to insert, to be the amount we were unable to insert
             toInsert = remainder;
@@ -56,20 +56,24 @@ public class EnergyTransferUtils {//TODO: Rename this and use it by the heat han
     /**
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
      */
-    public static double extract(double amount, Action action, IntSupplier containerCount, ExtractDouble extractEnergy) {
+    public static FloatingLong extract(FloatingLong amount, Action action, IntSupplier containerCount, ExtractFloatingLong extract) {
         int containers = containerCount.getAsInt();
         if (containers == 1) {
-            return extractEnergy.extract(0, amount, action);
+            return extract.extract(0, amount, action);
         }
-        double extracted = 0;
-        double toExtract = amount;
+        FloatingLong extracted = FloatingLong.ZERO;
+        FloatingLong toExtract = amount.copy();
         for (int container = 0; container < containers; container++) {
-            double drained = extractEnergy.extract(container, toExtract, action);
-            if (drained > 0) {
+            FloatingLong drained = extract.extract(container, toExtract, action);
+            if (!drained.isEmpty()) {
                 //If we were able to extract something, do so
-                extracted += drained;
-                toExtract -= drained;
-                if (toExtract == 0) {
+                if (extracted.isEmpty()) {
+                    extracted = drained;
+                } else {
+                    extracted.plusEqual(drained);
+                }
+                toExtract.minusEqual(drained);
+                if (toExtract.isEmpty()) {
                     //If we are done extracting break and return the amount extracted
                     break;
                 }
@@ -80,14 +84,14 @@ public class EnergyTransferUtils {//TODO: Rename this and use it by the heat han
     }
 
     @FunctionalInterface
-    public interface InsertDouble {
+    public interface InsertFloatingLong {
 
-        double insert(int container, double amount, Action action);
+        FloatingLong insert(int container, FloatingLong amount, Action action);
     }
 
     @FunctionalInterface
-    public interface ExtractDouble {
+    public interface ExtractFloatingLong {
 
-        double extract(int container, double amount, Action action);
+        FloatingLong extract(int container, FloatingLong amount, Action action);
     }
 }

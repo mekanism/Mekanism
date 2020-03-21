@@ -43,6 +43,7 @@ import mekanism.common.network.container.PacketUpdateContainerBoolean;
 import mekanism.common.network.container.PacketUpdateContainerByte;
 import mekanism.common.network.container.PacketUpdateContainerDouble;
 import mekanism.common.network.container.PacketUpdateContainerFloat;
+import mekanism.common.network.container.PacketUpdateContainerFloatingLong;
 import mekanism.common.network.container.PacketUpdateContainerFluidStack;
 import mekanism.common.network.container.PacketUpdateContainerFrequency;
 import mekanism.common.network.container.PacketUpdateContainerGasStack;
@@ -208,6 +209,7 @@ public class PacketHandler {
         registerUpdateContainer(PacketUpdateContainerGasStack.class, PacketUpdateContainerGasStack::decode);
         registerUpdateContainer(PacketUpdateContainerInfusionStack.class, PacketUpdateContainerInfusionStack::decode);
         registerUpdateContainer(PacketUpdateContainerFrequency.class, PacketUpdateContainerFrequency::decode);
+        registerUpdateContainer(PacketUpdateContainerFloatingLong.class, PacketUpdateContainerFloatingLong::decode);
         //List sync packets
         registerUpdateContainer(PacketUpdateContainerStringList.class, PacketUpdateContainerStringList::decode);
         registerUpdateContainer(PacketUpdateContainerFilterList.class, PacketUpdateContainerFilterList::decode);

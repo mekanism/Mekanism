@@ -11,6 +11,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -58,16 +59,18 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         return false;
     }
 
+    @Nonnull
     @Override
-    public double insertEnergy(int container, double amount, @Nullable Direction side, @Nonnull Action action) {
+    public FloatingLong insertEnergy(int container, @Nonnull FloatingLong amount, @Nullable Direction side, @Nonnull Action action) {
         //Don't allow inserting if we are on output mode
         return getActive() ? amount : super.insertEnergy(container, amount, side, action);
     }
 
+    @Nonnull
     @Override
-    public double extractEnergy(int container, double amount, @Nullable Direction side, @Nonnull Action action) {
+    public FloatingLong extractEnergy(int container, @Nonnull FloatingLong amount, @Nullable Direction side, @Nonnull Action action) {
         //Don't allow extracting if we are on input mode
-        return getActive() ? super.extractEnergy(container, amount, side, action) : 0;
+        return getActive() ? super.extractEnergy(container, amount, side, action) : FloatingLong.ZERO;
     }
 
     @Override

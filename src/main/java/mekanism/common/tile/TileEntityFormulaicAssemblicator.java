@@ -13,6 +13,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
@@ -231,8 +232,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                         }
                     }
                 } else {
-                    double energyPerTick = energyContainer.getEnergyPerTick();
-                    if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
+                    FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
+                    if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                         energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                         operatingTicks++;
                     }

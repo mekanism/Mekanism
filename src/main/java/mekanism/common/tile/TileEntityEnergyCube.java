@@ -119,7 +119,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
             }
         }
         //TODO: Convert this to using MekanismUtils.getScale?
-        int newScale = (int) (energyContainer.getEnergy() * 20 / energyContainer.getMaxEnergy());
+        int newScale = (int) (20 * energyContainer.getEnergy().divideToLevel(energyContainer.getMaxEnergy()));
         if (newScale != prevScale) {
             prevScale = newScale;
             sendUpdatePacket();

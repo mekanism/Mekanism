@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -27,10 +28,11 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemSeismicReader extends ItemEnergized {
 
-    private static final double ENERGY_USAGE = 250;
+    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(12_000);//TODO: Config
+    private static final FloatingLong ENERGY_USAGE = FloatingLong.createConst(250);
 
     public ItemSeismicReader(Properties properties) {
-        super(12_000, properties);
+        super(MAX_ENERGY, properties);
     }
 
     @Override
@@ -58,7 +60,7 @@ public class ItemSeismicReader extends ItemEnergized {
         } else {
             if (!player.isCreative()) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                if (energyContainer == null || energyContainer.extract(ENERGY_USAGE, Action.SIMULATE, AutomationType.MANUAL) < ENERGY_USAGE) {
+                if (energyContainer == null || energyContainer.extract(ENERGY_USAGE, Action.SIMULATE, AutomationType.MANUAL).smallerThan(ENERGY_USAGE)) {
                     player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NEEDS_ENERGY.translateColored(EnumColor.RED)));
                     return new ActionResult<>(ActionResultType.SUCCESS, stack);
                 }

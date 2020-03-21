@@ -1,10 +1,11 @@
 package mekanism.common.integration;
 
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -119,28 +120,28 @@ public class EnergyCompatUtils {
         FORGE(MekanismConfig.general.FROM_FORGE, MekanismConfig.general.TO_FORGE),
         EU(MekanismConfig.general.FROM_IC2, MekanismConfig.general.TO_IC2);
 
-        private final DoubleSupplier fromSupplier;
-        private final DoubleSupplier toSupplier;
+        private final FloatingLongSupplier fromSupplier;
+        private final FloatingLongSupplier toSupplier;
 
-        EnergyType(DoubleSupplier fromSupplier, DoubleSupplier toSupplier) {
+        EnergyType(FloatingLongSupplier fromSupplier, FloatingLongSupplier toSupplier) {
             this.fromSupplier = fromSupplier;
             this.toSupplier = toSupplier;
         }
 
-        public double convertFrom(int energy) {
-            return energy * fromSupplier.getAsDouble();
+        public FloatingLong convertFrom(int energy) {
+            return fromSupplier.get().multiply(energy);
         }
 
-        public double convertFrom(double energy) {
-            return energy * fromSupplier.getAsDouble();
+        public FloatingLong convertFrom(FloatingLong energy) {
+            return energy.multiply(fromSupplier.get());
         }
 
-        public int convertToAsInt(double joules) {
-            return MekanismUtils.clampToInt(convertToAsDouble(joules));
+        public int convertToAsInt(FloatingLong joules) {
+            return convertToAsFloatingLong(joules).intValue();
         }
 
-        public double convertToAsDouble(double joules) {
-            return joules * toSupplier.getAsDouble();
+        public FloatingLong convertToAsFloatingLong(FloatingLong joules) {
+            return joules.multiply(toSupplier.get());
         }
     }
 }

@@ -101,7 +101,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             updateButtons();
         }));
         addButton(new GuiEnergyInfo(() -> {
-            EnergyDisplay storing = tile.frequency == null ? EnergyDisplay.of(0) : EnergyDisplay.of(tile.frequency.storedEnergy.getEnergy(), tile.frequency.storedEnergy.getMaxEnergy());
+            EnergyDisplay storing = tile.frequency == null ? EnergyDisplay.ZERO : EnergyDisplay.of(tile.frequency.storedEnergy.getEnergy(), tile.frequency.storedEnergy.getMaxEnergy());
             EnergyDisplay rate = EnergyDisplay.of(tile.getInputRate());
             return Arrays.asList(MekanismLang.STORING.translate(storing), MekanismLang.MATRIX_INPUT_RATE.translate(rate));
         }, this));

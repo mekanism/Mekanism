@@ -6,6 +6,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import net.minecraft.util.Direction;
 
 @ParametersAreNonnullByDefault
@@ -63,13 +64,13 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler 
     }
 
     @Override
-    default double getEnergy(int container, @Nullable Direction side) {
+    default FloatingLong getEnergy(int container, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        return energyContainer == null ? 0 : energyContainer.getEnergy();
+        return energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
     }
 
     @Override
-    default void setEnergy(int container, double energy, @Nullable Direction side) {
+    default void setEnergy(int container, FloatingLong energy, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         if (energyContainer != null) {
             energyContainer.setEnergy(energy);
@@ -77,26 +78,26 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler 
     }
 
     @Override
-    default double getMaxEnergy(int container, @Nullable Direction side) {
+    default FloatingLong getMaxEnergy(int container, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        return energyContainer == null ? 0 : energyContainer.getMaxEnergy();
+        return energyContainer == null ? FloatingLong.ZERO : energyContainer.getMaxEnergy();
     }
 
     @Override
-    default double getNeededEnergy(int container, @Nullable Direction side) {
+    default FloatingLong getNeededEnergy(int container, @Nullable Direction side) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        return energyContainer == null ? 0 : energyContainer.getNeeded();
+        return energyContainer == null ? FloatingLong.ZERO : energyContainer.getNeeded();
     }
 
     @Override
-    default double insertEnergy(int container, double amount, @Nullable Direction side, Action action) {
+    default FloatingLong insertEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
         return energyContainer == null ? amount : energyContainer.insert(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }
 
     @Override
-    default double extractEnergy(int container, double amount, @Nullable Direction side, Action action) {
+    default FloatingLong extractEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        return energyContainer == null ? 0 : energyContainer.extract(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
+        return energyContainer == null ? FloatingLong.ZERO : energyContainer.extract(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }
 }

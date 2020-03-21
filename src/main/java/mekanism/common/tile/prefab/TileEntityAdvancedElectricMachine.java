@@ -175,7 +175,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED || (upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS))) {
-            gasUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_GAS_PER_TICK);
+            gasUsage = MekanismUtils.getGasPerTickMean(this, BASE_GAS_PER_TICK);
         }
     }
 

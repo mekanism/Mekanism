@@ -2,11 +2,13 @@ package mekanism.common.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedFloatValue;
+import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.GasTankTier;
@@ -29,17 +31,17 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue dynamicTankEasterEgg;
     public final CachedConfigValue<List<String>> cardboardModBlacklist;
     public final CachedIntValue UPDATE_DELAY;
-    public final CachedDoubleValue FROM_IC2;
-    public final CachedDoubleValue TO_IC2;
-    public final CachedDoubleValue FROM_FORGE;
-    public final CachedDoubleValue TO_FORGE;
-    public final CachedDoubleValue FROM_H2;
+    public final CachedFloatingLongValue FROM_IC2;
+    public final CachedFloatingLongValue TO_IC2;
+    public final CachedFloatingLongValue FROM_FORGE;
+    public final CachedFloatingLongValue TO_FORGE;
+    public final CachedFloatingLongValue FROM_H2;
     public final CachedIntValue ETHENE_BURN_TIME;
-    public final CachedIntValue disassemblerEnergyUsage;
-    public final CachedIntValue disassemblerEnergyUsageHoe;
-    public final CachedIntValue disassemblerEnergyUsageShovel;
-    public final CachedIntValue disassemblerEnergyUsageAxe;
-    public final CachedIntValue disassemblerEnergyUsageWeapon;
+    public final CachedFloatingLongValue disassemblerEnergyUsage;
+    public final CachedFloatingLongValue disassemblerEnergyUsageHoe;
+    public final CachedFloatingLongValue disassemblerEnergyUsageShovel;
+    public final CachedFloatingLongValue disassemblerEnergyUsageAxe;
+    public final CachedFloatingLongValue disassemblerEnergyUsageWeapon;
     public final CachedIntValue disassemblerMiningRange;
     public final CachedIntValue disassemblerMiningCount;
     public final CachedBooleanValue disassemblerSlowMode;
@@ -48,7 +50,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue disassemblerExtendedMining;
     public final CachedIntValue disassemblerDamageMin;
     public final CachedIntValue disassemblerDamageMax;
-    public final CachedDoubleValue disassemblerBatteryCapacity;
+    public final CachedFloatingLongValue disassemblerBatteryCapacity;
     public final CachedIntValue maxUpgradeMultiplier;
     public final CachedIntValue minerSilkMultiplier;
     public final CachedBooleanValue prefilledGasTanks;
@@ -66,21 +68,21 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue evaporationTempMultiplier;
     public final CachedDoubleValue evaporationSolarMultiplier;
     public final CachedDoubleValue evaporationMaxTemp;
-    public final CachedDoubleValue energyPerHeat;
-    public final CachedDoubleValue maxEnergyPerSteam;
+    public final CachedFloatingLongValue energyPerHeat;
+    public final CachedFloatingLongValue maxEnergyPerSteam;
     public final CachedDoubleValue superheatingHeatTransfer;
     public final CachedDoubleValue heatPerFuelTick;
     public final CachedBooleanValue allowTransmitterAlloyUpgrade;
     public final CachedBooleanValue allowChunkloading;
     public final CachedBooleanValue allowProtection;
     public final CachedIntValue portableTeleporterDelay;
-    public final CachedDoubleValue quantumEntangloporterEnergyBuffer;
+    public final CachedFloatingLongValue quantumEntangloporterEnergyBuffer;
     public final CachedIntValue quantumEntangloporterFluidBuffer;
     public final CachedIntValue quantumEntangloporterGasBuffer;
     public final CachedBooleanValue blacklistIC2;
     public final CachedBooleanValue blacklistForge;
     public final CachedIntValue laserRange;
-    public final CachedIntValue laserEnergyNeededPerHardness;
+    public final CachedFloatingLongValue laserEnergyNeededPerHardness;
     //TODO: Replace this with a void invalid contents, rather than throwing a runtime exception for things, log a warning and then void the contents
     public final CachedBooleanValue voidInvalidGases;
     public final CachedIntValue digitalMinerMaxRadius;
@@ -107,34 +109,35 @@ public class GeneralConfig extends BaseMekanismConfig {
         blacklistIC2 = CachedBooleanValue.wrap(this, builder.comment("Disables IC2 power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistIC2", false));
-        FROM_IC2 = CachedDoubleValue.wrap(this, builder.comment("Conversion multiplier from EU to Joules (EU * JoulesToEU = Joules)")
-              .define("JoulesToEU", 10D));
-        TO_IC2 = CachedDoubleValue.wrap(this, builder.comment("Conversion multiplier from Joules to EU (Joules * EUToJoules = EU)")
-              .define("EUToJoules", 0.1D));
+        FROM_IC2 = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from EU to Joules (EU * JoulesToEU = Joules)",
+              "JoulesToEU", FloatingLong.createConst(10), CachedFloatingLongValue.POSITIVE);
+        TO_IC2 = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Joules to EU (Joules * EUToJoules = EU)",
+              "EUToJoules", FloatingLong.createConst(0.1), CachedFloatingLongValue.POSITIVE);
         blacklistForge = CachedBooleanValue.wrap(this, builder.comment("Disables Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistForge", false));
-        FROM_FORGE = CachedDoubleValue.wrap(this, builder.comment("Conversion multiplier from Forge Energy to Joules (FE * JoulesToForge = Joules)")
-              .define("JoulesToForge", 2.5D));
-        TO_FORGE = CachedDoubleValue.wrap(this, builder.comment("Conversion multiplier from Joules to Forge Energy (Joules * ForgeToJoules = FE)")
-              .define("ForgeToJoules", 0.4D));
-        FROM_H2 = CachedDoubleValue.wrap(this, builder.comment("How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethylene burn rate and Gas generator energy capacity.")
-              .define("HydrogenEnergyDensity", 200D));
+        FROM_FORGE = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Forge Energy to Joules (FE * JoulesToForge = Joules)",
+              "JoulesToForge", FloatingLong.createConst(2.5), CachedFloatingLongValue.POSITIVE);
+        TO_FORGE = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Joules to Forge Energy (Joules * ForgeToJoules = FE)",
+              "ForgeToJoules", FloatingLong.createConst(0.4), CachedFloatingLongValue.POSITIVE);
+        FROM_H2 = CachedFloatingLongValue.define(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethylene burn rate and Gas generator energy capacity.",
+              "HydrogenEnergyDensity", FloatingLong.createConst(200), CachedFloatingLongValue.POSITIVE);
         ETHENE_BURN_TIME = CachedIntValue.wrap(this, builder.comment("Burn time for Ethylene (1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus).")
               .define("EthyleneBurnTime", 40));
         builder.pop();
 
         builder.comment("Atomic Disassembler Settings").push(DISASSEMBLER_CATEGORY);
-        disassemblerEnergyUsage = CachedIntValue.wrap(this, builder.comment("Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)")
-              .define("energyUsage", 10));
-        disassemblerEnergyUsageHoe = CachedIntValue.wrap(this, builder.comment("Cost in Joules of using the Atomic Disassembler as a hoe.")
-              .define("energyUsageHoe", 10));
-        disassemblerEnergyUsageShovel = CachedIntValue.wrap(this, builder.comment("Cost in Joules of using the Atomic Disassembler as a shovel for making paths.")
-              .define("energyUsageShovel", 10));
-        disassemblerEnergyUsageAxe = CachedIntValue.wrap(this, builder.comment("Cost in Joules of using the Atomic Disassembler as an axe for stripping logs.")
-              .define("energyUsageAxe", 10));
-        disassemblerEnergyUsageWeapon = CachedIntValue.wrap(this, builder.comment("Cost in Joules of using the Atomic Disassembler as a weapon.")
-              .define("energyUsageWeapon", 2_000));
+        FloatingLong ten = FloatingLong.createConst(10);
+        disassemblerEnergyUsage = CachedFloatingLongValue.define(this, builder, "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)",
+              "energyUsage", ten);
+        disassemblerEnergyUsageHoe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Atomic Disassembler as a hoe.",
+              "energyUsageHoe", ten);
+        disassemblerEnergyUsageShovel = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Atomic Disassembler as a shovel for making paths.",
+              "energyUsageShovel", ten);
+        disassemblerEnergyUsageAxe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Atomic Disassembler as an axe for stripping logs.",
+              "energyUsageAxe", ten);
+        disassemblerEnergyUsageWeapon = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Atomic Disassembler as a weapon.",
+              "energyUsageWeapon", FloatingLong.createConst(2_000));
         disassemblerMiningRange = CachedIntValue.wrap(this, builder.comment("The Range of the Atomic Disassembler Extended Vein Mining.")
               .define("miningRange", 10));
         disassemblerMiningCount = CachedIntValue.wrap(this, builder.comment("The max Atomic Disassembler Vein Mining Block Count.")
@@ -151,9 +154,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("damageMin", 4));
         disassemblerDamageMax = CachedIntValue.wrap(this, builder.comment("The amount of damage the Atomic Disassembler does when it has at least DisassemblerEnergyUsageWeapon power stored. (Value is in number of half hearts)")
               .define("damageMax", 20));
-        disassemblerBatteryCapacity = CachedDoubleValue.wrap(this, builder.comment("Maximum amount (joules) of energy the Atomic Disassembler can contain")
-              .worldRestart()
-              .defineInRange("batteryCapacity", 1_000_000D, 0, Double.MAX_VALUE));
+        disassemblerBatteryCapacity = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Atomic Disassembler can contain",
+              "batteryCapacity", FloatingLong.createConst(1_000_000), true);
         builder.pop();
 
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
@@ -195,10 +197,10 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("maxTemp", 3_000D, 1, Double.MAX_VALUE));
         builder.pop();
 
-        energyPerHeat = CachedDoubleValue.wrap(this, builder.comment("Joules required by the Resistive Heater to produce one unit of heat. Also affects Thermoelectric Boiler's Water->Steam rate.")
-              .define("energyPerHeat", 1_000D));
-        maxEnergyPerSteam = CachedDoubleValue.wrap(this, builder.comment("Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.")
-              .define("maxEnergyPerSteam", 100D));
+        energyPerHeat = CachedFloatingLongValue.define(this, builder, "Joules required by the Resistive Heater to produce one unit of heat. Also affects Thermoelectric Boiler's Water->Steam rate.",
+              "energyPerHeat", FloatingLong.createConst(1_000));
+        maxEnergyPerSteam = CachedFloatingLongValue.define(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
+              "maxEnergyPerSteam", FloatingLong.createConst(100));
         superheatingHeatTransfer = CachedDoubleValue.wrap(this, builder.comment("Amount of heat each Boiler heating element produces.")
               .define("superheatingHeatTransfer", 10_000D));
         heatPerFuelTick = CachedDoubleValue.wrap(this, builder.comment("Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.")
@@ -213,9 +215,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("portableTeleporterDelay", 0));
 
         builder.comment("Quantum Entangloporter Settings").push(ENTANGLOPORTER_CATEGORY);
-        quantumEntangloporterEnergyBuffer = CachedDoubleValue.wrap(this, builder.comment("Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier energy cube capacity.")
-              .worldRestart()
-              .defineInRange("energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), 0, Double.MAX_VALUE));
+        quantumEntangloporterEnergyBuffer = CachedFloatingLongValue.define(this, builder, "Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier energy cube capacity.",
+              "energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), true);
         quantumEntangloporterFluidBuffer = CachedIntValue.wrap(this, builder.comment("Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
               .defineInRange("fluidBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 0, Integer.MAX_VALUE));
@@ -226,8 +227,8 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         laserRange = CachedIntValue.wrap(this, builder.comment("How far (in blocks) a laser can travel.")
               .define("laserRange", 64));
-        laserEnergyNeededPerHardness = CachedIntValue.wrap(this, builder.comment("Energy needed to destroy or attract blocks with a Laser (per block hardness level).")
-              .define("laserEnergyNeededPerHardness", 100_000));
+        laserEnergyNeededPerHardness = CachedFloatingLongValue.define(this, builder, "Energy needed to destroy or attract blocks with a Laser (per block hardness level).",
+              "laserEnergyNeededPerHardness", FloatingLong.createConst(100_000));
         digitalMinerMaxRadius = CachedIntValue.wrap(this, builder.comment("Maximum radius in blocks that the Digital Miner can reach. (Increasing this may have negative effects on stability "
                                                                           + "and/or performance. We strongly recommend you leave it at the default value).")
               .defineInRange("digitalMinerMaxRadius", 32, 1, Integer.MAX_VALUE));

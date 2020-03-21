@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.inventory.IInventorySlot;
@@ -24,11 +25,11 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     @Nonnull
     private final MatrixEnergyContainer energyContainer;
 
-    private double clientLastOutput;
-    private double clientLastInput;
-    private double clientEnergy;
-    private double clientMaxTransfer;
-    private double clientMaxEnergy;
+    private FloatingLong clientLastOutput = FloatingLong.ZERO;
+    private FloatingLong clientLastInput = FloatingLong.ZERO;
+    private FloatingLong clientEnergy = FloatingLong.ZERO;
+    private FloatingLong clientMaxTransfer = FloatingLong.ZERO;
+    private FloatingLong clientMaxEnergy = FloatingLong.ZERO;
     private int clientProviders;
     private int clientCells;
 
@@ -79,7 +80,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         return energyContainer;
     }
 
-    public double getEnergy() {
+    public FloatingLong getEnergy() {
         return remote ? clientEnergy : energyContainer.getEnergy();
     }
 
@@ -87,19 +88,19 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         energyContainer.tick();
     }
 
-    public double getStorageCap() {
+    public FloatingLong getStorageCap() {
         return remote ? clientMaxEnergy : energyContainer.getMaxEnergy();
     }
 
-    public double getTransferCap() {
+    public FloatingLong getTransferCap() {
         return remote ? clientMaxTransfer : energyContainer.getMaxTransfer();
     }
 
-    public double getLastInput() {
+    public FloatingLong getLastInput() {
         return remote ? clientLastInput : energyContainer.getLastInput();
     }
 
-    public double getLastOutput() {
+    public FloatingLong getLastOutput() {
         return remote ? clientLastOutput : energyContainer.getLastOutput();
     }
 
@@ -111,23 +112,23 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         return remote ? clientProviders : energyContainer.getProviders();
     }
 
-    public void setClientEnergy(double cachedTotal) {
+    public void setClientEnergy(FloatingLong cachedTotal) {
         this.clientEnergy = cachedTotal;
     }
 
-    public void setClientMaxEnergy(double storageCap) {
+    public void setClientMaxEnergy(FloatingLong storageCap) {
         this.clientMaxEnergy = storageCap;
     }
 
-    public void setClientMaxTransfer(double transferCap) {
+    public void setClientMaxTransfer(FloatingLong transferCap) {
         this.clientMaxTransfer = transferCap;
     }
 
-    public void setClientLastInput(double lastInput) {
+    public void setClientLastInput(FloatingLong lastInput) {
         this.clientLastInput = lastInput;
     }
 
-    public void setClientLastOutput(double lastOutput) {
+    public void setClientLastOutput(FloatingLong lastOutput) {
         this.clientLastOutput = lastOutput;
     }
 

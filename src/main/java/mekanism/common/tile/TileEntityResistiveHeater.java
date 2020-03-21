@@ -6,6 +6,7 @@ import mekanism.api.Action;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
@@ -66,19 +67,19 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        double toUse = 0;
+        FloatingLong toUse = FloatingLong.ZERO;
         if (MekanismUtils.canFunction(this)) {
             toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
-            if (toUse > 0) {
-                heatToAbsorb += toUse / MekanismConfig.general.energyPerHeat.get();
+            if (!toUse.isEmpty()) {
+                heatToAbsorb += toUse.divide(MekanismConfig.general.energyPerHeat.get()).doubleValue();
                 energyContainer.extract(toUse, Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
-        setActive(toUse > 0);
+        setActive(!toUse.isEmpty());
         double[] loss = simulateHeat();
         applyTemperatureChange();
         lastEnvironmentLoss = loss[1];
-        float newSoundScale = (float) Math.max(0, toUse / 100_000);
+        float newSoundScale = toUse.divide(100_000).floatValue();
         if (Math.abs(newSoundScale - soundScale) > 0.01) {
             soundScale = newSoundScale;
             sendUpdatePacket();
@@ -102,7 +103,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
-            energyContainer.updateEnergyUsage(MekanismUtils.convertToJoules(dataStream.readInt()));
+            energyContainer.updateEnergyUsage(MekanismUtils.convertToJoules(FloatingLong.fromBuffer(dataStream)));
         }
     }
 

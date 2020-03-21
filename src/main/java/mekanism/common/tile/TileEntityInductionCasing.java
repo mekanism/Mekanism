@@ -1,13 +1,14 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
@@ -79,25 +80,25 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     }
 
     //TODO: Stash the cached client values here rather than in the structure, that way we can easier handle zero
-    public double getEnergy() {
+    public FloatingLong getEnergy() {
         //Uses post queue as that is the actual total we just haven't saved it yet
-        return structure == null ? 0 : structure.getEnergy();
+        return structure == null ? FloatingLong.ZERO : structure.getEnergy();
     }
 
-    public double getMaxEnergy() {
-        return structure == null ? 0 : structure.getStorageCap();
+    public FloatingLong getMaxEnergy() {
+        return structure == null ? FloatingLong.ZERO : structure.getStorageCap();
     }
 
-    public double getLastInput() {
-        return structure == null ? 0 : structure.getLastInput();
+    public FloatingLong getLastInput() {
+        return structure == null ? FloatingLong.ZERO : structure.getLastInput();
     }
 
-    public double getLastOutput() {
-        return structure == null ? 0 : structure.getLastOutput();
+    public FloatingLong getLastOutput() {
+        return structure == null ? FloatingLong.ZERO : structure.getLastOutput();
     }
 
-    public double getTransferCap() {
-        return structure == null ? 0 : structure.getTransferCap();
+    public FloatingLong getTransferCap() {
+        return structure == null ? FloatingLong.ZERO : structure.getTransferCap();
     }
 
     public int getCellCount() {
@@ -111,22 +112,22 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(this::getEnergy, value -> {
+        container.track(SyncableFloatingLong.create(this::getEnergy, value -> {
             if (structure != null) {
                 structure.setClientEnergy(value);
             }
         }));
-        container.track(SyncableDouble.create(this::getMaxEnergy, value -> {
+        container.track(SyncableFloatingLong.create(this::getMaxEnergy, value -> {
             if (structure != null) {
                 structure.setClientMaxEnergy(value);
             }
         }));
-        container.track(SyncableDouble.create(this::getLastInput, value -> {
+        container.track(SyncableFloatingLong.create(this::getLastInput, value -> {
             if (structure != null) {
                 structure.setClientLastInput(value);
             }
         }));
-        container.track(SyncableDouble.create(this::getLastOutput, value -> {
+        container.track(SyncableFloatingLong.create(this::getLastOutput, value -> {
             if (structure != null) {
                 structure.setClientLastOutput(value);
             }
@@ -134,7 +135,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     }
 
     public void addStatsTabContainerTrackers(MekanismContainer container) {
-        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getTransferCap(), value -> {
+        container.track(SyncableFloatingLong.create(() -> structure == null ? FloatingLong.ZERO : structure.getTransferCap(), value -> {
             if (structure != null) {
                 structure.setClientMaxTransfer(value);
             }

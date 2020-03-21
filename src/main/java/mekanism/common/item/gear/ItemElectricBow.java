@@ -6,6 +6,7 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IItemNetwork;
@@ -45,7 +46,9 @@ import net.minecraftforge.event.ForgeEventFactory;
 public class ItemElectricBow extends BowItem implements IItemNetwork, IItemHUDProvider {
 
     //TODO: Config max energy, damage, etc
-    private static final double MAX_ELECTRICITY = 120_000;
+    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(120_000);
+    private static final FloatingLong FIRE_ENERGY = FloatingLong.createConst(1_200);
+    private static final FloatingLong NORMAL_ENERGY = FloatingLong.createConst(120);
 
     public ItemElectricBow(Properties properties) {
         super(properties.setNoRepair());
@@ -67,8 +70,8 @@ public class ItemElectricBow extends BowItem implements IItemNetwork, IItemHUDPr
             boolean fireState = getFireState(stack);
             if (!player.isCreative()) {
                 energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                int energyNeeded = fireState ? 1200 : 120;
-                if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
+                FloatingLong energyNeeded = fireState ? FIRE_ENERGY : NORMAL_ENERGY;
+                if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
                     return;
                 }
             }
@@ -109,7 +112,7 @@ public class ItemElectricBow extends BowItem implements IItemNetwork, IItemHUDPr
                     }
                     //Vanilla diff - Instead of damaging the item we remove energy from it
                     if (!player.isCreative() && energyContainer != null) {
-                        energyContainer.extract(fireState ? 1200 : 120, Action.EXECUTE, AutomationType.MANUAL);
+                        energyContainer.extract(fireState ? FIRE_ENERGY : NORMAL_ENERGY, Action.EXECUTE, AutomationType.MANUAL);
                     }
                     if (noConsume || player.isCreative() && (ammo.getItem() == Items.SPECTRAL_ARROW || ammo.getItem() == Items.TIPPED_ARROW)) {
                         arrowEntity.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
@@ -163,7 +166,7 @@ public class ItemElectricBow extends BowItem implements IItemNetwork, IItemHUDPr
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MAX_ELECTRICITY));
+            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MAX_ENERGY));
         }
     }
 
@@ -171,7 +174,6 @@ public class ItemElectricBow extends BowItem implements IItemNetwork, IItemHUDPr
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(MAX_ELECTRICITY * 0.005, () -> MAX_ELECTRICITY, BasicEnergyContainer.notExternal,
-              BasicEnergyContainer.alwaysTrue));
+        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> MAX_ENERGY, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
     }
 }

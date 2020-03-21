@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
@@ -60,8 +61,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         if (MekanismUtils.canFunction(this)) {
-            double energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
+            FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
+            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 setActive(true);
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
             } else {

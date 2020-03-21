@@ -3,6 +3,7 @@ package mekanism.common.tile.laser;
 import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
@@ -11,8 +12,8 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
@@ -22,8 +23,9 @@ import net.minecraft.network.PacketBuffer;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements ITileNetwork {
 
-    public double minThreshold;
-    public double maxThreshold = 5E9;
+    private static final FloatingLong MAX = FloatingLong.createConst(5_000_000_000L);
+    public FloatingLong minThreshold = FloatingLong.ZERO;
+    public FloatingLong maxThreshold = MAX;
     public int ticks = 0;
     public int time = 0;
     public boolean emittingRedstone;
@@ -62,12 +64,12 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     private boolean shouldFire() {
-        return ticks >= time && energyContainer.getEnergy() >= minThreshold && MekanismUtils.canFunction(this);
+        return ticks >= time && energyContainer.getEnergy().compareTo(minThreshold) >= 0 && MekanismUtils.canFunction(this);
     }
 
     @Override
-    protected double toFire() {
-        return shouldFire() ? Math.min(super.toFire(), maxThreshold) : 0;
+    protected FloatingLong toFire() {
+        return shouldFire() ? super.toFire().min(maxThreshold) : FloatingLong.ZERO;
     }
 
     @Override
@@ -84,10 +86,10 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         if (!isRemote()) {
             switch (dataStream.readInt()) {
                 case 0:
-                    minThreshold = Math.min(energyContainer.getMaxEnergy(), MekanismUtils.convertToJoules(dataStream.readDouble()));
+                    minThreshold = energyContainer.getMaxEnergy().min(MekanismUtils.convertToJoules(FloatingLong.fromBuffer(dataStream)));
                     break;
                 case 1:
-                    maxThreshold = Math.min(energyContainer.getMaxEnergy(), MekanismUtils.convertToJoules(dataStream.readDouble()));
+                    maxThreshold = energyContainer.getMaxEnergy().min(MekanismUtils.convertToJoules(FloatingLong.fromBuffer(dataStream)));
                     break;
                 case 2:
                     time = dataStream.readInt();
@@ -102,8 +104,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        minThreshold = nbtTags.getDouble(NBTConstants.MIN);
-        maxThreshold = nbtTags.getDouble(NBTConstants.MAX);
+        NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.MIN, value -> minThreshold = value);
+        NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.MAX, value -> maxThreshold = value);
         time = nbtTags.getInt(NBTConstants.TIME);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.OUTPUT_MODE, RedstoneOutput::byIndexStatic, mode -> outputMode = mode);
     }
@@ -112,8 +114,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putDouble(NBTConstants.MIN, minThreshold);
-        nbtTags.putDouble(NBTConstants.MAX, maxThreshold);
+        nbtTags.put(NBTConstants.MIN, minThreshold.serializeNBT());
+        nbtTags.put(NBTConstants.MAX, maxThreshold.serializeNBT());
         nbtTags.putInt(NBTConstants.TIME, time);
         nbtTags.putInt(NBTConstants.OUTPUT_MODE, outputMode.ordinal());
         return nbtTags;
@@ -127,8 +129,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(() -> minThreshold, value -> minThreshold = value));
-        container.track(SyncableDouble.create(() -> maxThreshold, value -> maxThreshold = value));
+        container.track(SyncableFloatingLong.create(() -> minThreshold, value -> minThreshold = value));
+        container.track(SyncableFloatingLong.create(() -> maxThreshold, value -> maxThreshold = value));
         container.track(SyncableInt.create(() -> time, value -> time = value));
         container.track(SyncableEnum.create(RedstoneOutput::byIndexStatic, RedstoneOutput.OFF, () -> outputMode, value -> outputMode = value));
     }

@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.providers.IBlockProvider;
@@ -31,8 +32,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     protected LaserEnergyContainer energyContainer;
     private Coord4D digging;
-    private double diggingProgress;
-    private double lastFired;
+    private FloatingLong diggingProgress = FloatingLong.getNewZero();
+    private FloatingLong lastFired = FloatingLong.ZERO;
 
     public TileEntityBasicLaser(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -56,7 +57,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             Coord4D hitCoord = new Coord4D(mop, world);
             if (!hitCoord.equals(digging)) {
                 digging = mop.getType() == Type.MISS ? null : hitCoord;
-                diggingProgress = 0;
+                diggingProgress = FloatingLong.getNewZero();
             }
             if (mop.getType() != Type.MISS) {
                 BlockState blockHit = world.getBlockState(hitCoord.getPos());
@@ -65,8 +66,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 if (hardness >= 0) {
                     Optional<ILaserReceptor> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()));
                     if (!capability.isPresent() || capability.get().canLasersDig()) {
-                        diggingProgress += lastFired;
-                        if (diggingProgress < hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
+                        diggingProgress.plusEqual(lastFired);
+                        if (diggingProgress.smallerThan(MekanismConfig.general.laserEnergyNeededPerHardness.get().multiply(hardness))) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
                         }
                     }
@@ -78,9 +79,9 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        double firing = energyContainer.extract(toFire(), Action.SIMULATE, AutomationType.INTERNAL);
-        if (firing > 0) {
-            if (firing != lastFired || !getActive()) {
+        FloatingLong firing = energyContainer.extract(toFire(), Action.SIMULATE, AutomationType.INTERNAL);
+        if (!firing.isEmpty()) {
+            if (!firing.equals(lastFired) || !getActive()) {
                 setActive(true);
                 lastFired = firing;
                 sendUpdatePacket();
@@ -89,7 +90,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             Coord4D hitCoord = new Coord4D(info.movingPos, world);
             if (!hitCoord.equals(digging)) {
                 digging = info.movingPos.getType() == Type.MISS ? null : hitCoord;
-                diggingProgress = 0;
+                diggingProgress = FloatingLong.getNewZero();
             }
             if (info.movingPos.getType() != Type.MISS) {
                 BlockState blockHit = world.getBlockState(hitCoord.getPos());
@@ -98,10 +99,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 if (hardness >= 0) {
                     Optional<ILaserReceptor> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace()));
                     if (!capability.isPresent() || capability.get().canLasersDig()) {
-                        diggingProgress += firing;
-                        if (diggingProgress >= hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
+                        diggingProgress.plusEqual(firing);
+                        if (diggingProgress.compareTo(MekanismConfig.general.laserEnergyNeededPerHardness.get().multiply(hardness)) >= 0) {
                             handleBreakBlock(hitCoord);
-                            diggingProgress = 0;
+                            diggingProgress = FloatingLong.getNewZero();
                         }
                         //TODO: Else tell client to spawn hit effect, instead of having there be client side onUpdate code for TileEntityLaser
                     }
@@ -111,9 +112,11 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             setEmittingRedstone(info.foundEntity);
         } else if (getActive()) {
             setActive(false);
-            diggingProgress = 0;
-            if (lastFired > 0) {
-                lastFired = 0;
+            if (!diggingProgress.isEmpty()) {
+                diggingProgress = FloatingLong.getNewZero();
+            }
+            if (!lastFired.isEmpty()) {
+                lastFired = FloatingLong.ZERO;
                 sendUpdatePacket();
             }
         }
@@ -126,21 +129,21 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         LaserManager.breakBlock(coord, true, world, pos);
     }
 
-    protected double toFire() {
-        return Double.MAX_VALUE;
+    protected FloatingLong toFire() {
+        return FloatingLong.MAX_VALUE;
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        lastFired = nbtTags.getDouble(NBTConstants.LAST_FIRED);
+        NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.LAST_FIRED, value -> lastFired = value);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putDouble(NBTConstants.LAST_FIRED, lastFired);
+        nbtTags.put(NBTConstants.LAST_FIRED, lastFired.serializeNBT());
         return nbtTags;
     }
 
@@ -148,14 +151,14 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = super.getUpdateTag();
-        updateTag.putDouble(NBTConstants.LAST_FIRED, lastFired);
+        updateTag.put(NBTConstants.LAST_FIRED, lastFired.serializeNBT());
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        NBTUtils.setDoubleIfPresent(tag, NBTConstants.LAST_FIRED, fired -> lastFired = fired);
+        NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.LAST_FIRED, fired -> lastFired = fired);
     }
 
     public LaserEnergyContainer getEnergyContainer() {

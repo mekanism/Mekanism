@@ -82,7 +82,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             @Override
             public ITextComponent getTooltip() {
                 IEnergyContainer container = StorageUtils.getEnergyContainer(itemStack, 0);
-                return container == null ? EnergyDisplay.of(0).getTextComponent() : EnergyDisplay.of(container.getEnergy(), container.getMaxEnergy()).getTextComponent();
+                return container == null ? EnergyDisplay.ZERO.getTextComponent() : EnergyDisplay.of(container.getEnergy(), container.getMaxEnergy()).getTextComponent();
             }
 
             @Override
@@ -91,8 +91,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                 if (container == null) {
                     return 0;
                 }
-                double maxEnergy = container.getMaxEnergy();
-                return maxEnergy == 0 ? 1 : container.getEnergy() / maxEnergy;
+                return container.getEnergy().divideToLevel(container.getMaxEnergy());
             }
         }, 158, 26));
         addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));

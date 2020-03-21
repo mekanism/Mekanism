@@ -1,22 +1,26 @@
 package mekanism.common.tier;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.util.EnumUtils;
 
-//TODO: Should cable capacity be upped to a double
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public enum CableTier implements ITier {
-    BASIC(BaseTier.BASIC, 3_200),
-    ADVANCED(BaseTier.ADVANCED, 12_800),
-    ELITE(BaseTier.ELITE, 64_000),
-    ULTIMATE(BaseTier.ULTIMATE, 320_000);
+    BASIC(BaseTier.BASIC, FloatingLong.createConst(3_200)),
+    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(12_800)),
+    ELITE(BaseTier.ELITE, FloatingLong.createConst(64_000)),
+    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(320_000));
 
-    private final int baseCapacity;
+    private final FloatingLong baseCapacity;
     private final BaseTier baseTier;
-    private CachedIntValue capacityReference;
+    private CachedFloatingLongValue capacityReference;
 
-    CableTier(BaseTier tier, int capacity) {
+    CableTier(BaseTier tier, FloatingLong capacity) {
         baseCapacity = capacity;
         baseTier = tier;
     }
@@ -35,18 +39,18 @@ public enum CableTier implements ITier {
         return baseTier;
     }
 
-    public int getCableCapacity() {
+    public FloatingLong getCableCapacity() {
         return capacityReference == null ? getBaseCapacity() : capacityReference.get();
     }
 
-    public int getBaseCapacity() {
+    public FloatingLong getBaseCapacity() {
         return baseCapacity;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the CableTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedIntValue capacityReference) {
+    public void setConfigReference(CachedFloatingLongValue capacityReference) {
         this.capacityReference = capacityReference;
     }
 }

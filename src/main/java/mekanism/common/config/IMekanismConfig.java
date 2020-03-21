@@ -1,7 +1,7 @@
 package mekanism.common.config;
 
-import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedPrimitiveValue;
+import mekanism.common.config.value.CachedResolvableConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 
@@ -15,7 +15,7 @@ public interface IMekanismConfig {
 
     void clearCache();
 
-    <T> void addCachedValue(CachedConfigValue<T> configValue);
+    <T, R> void addCachedValue(CachedResolvableConfigValue<T, R> configValue);
 
     <T> void addCachedValue(CachedPrimitiveValue<T> configValue);
 

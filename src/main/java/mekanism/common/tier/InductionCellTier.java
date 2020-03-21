@@ -1,20 +1,25 @@
 package mekanism.common.tier;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.config.value.CachedDoubleValue;
+import mekanism.common.config.value.CachedFloatingLongValue;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public enum InductionCellTier implements ITier {
-    BASIC(BaseTier.BASIC, 1E9D),
-    ADVANCED(BaseTier.ADVANCED, 8E9D),
-    ELITE(BaseTier.ELITE, 64E9D),
-    ULTIMATE(BaseTier.ULTIMATE, 512E9D);
+    BASIC(BaseTier.BASIC, FloatingLong.createConst(1_000_000_000L)),
+    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(8_000_000_000L)),
+    ELITE(BaseTier.ELITE, FloatingLong.createConst(64_000_000_000L)),
+    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(512_000_000_000L));
 
-    private final double baseMaxEnergy;
+    private final FloatingLong baseMaxEnergy;
     private final BaseTier baseTier;
-    private CachedDoubleValue storageReference;
+    private CachedFloatingLongValue storageReference;
 
-    InductionCellTier(BaseTier tier, double max) {
+    InductionCellTier(BaseTier tier, FloatingLong max) {
         baseMaxEnergy = max;
         baseTier = tier;
     }
@@ -24,18 +29,18 @@ public enum InductionCellTier implements ITier {
         return baseTier;
     }
 
-    public double getMaxEnergy() {
+    public FloatingLong getMaxEnergy() {
         return storageReference == null ? getBaseMaxEnergy() : storageReference.get();
     }
 
-    public double getBaseMaxEnergy() {
+    public FloatingLong getBaseMaxEnergy() {
         return baseMaxEnergy;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the InductionCellTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedDoubleValue storageReference) {
+    public void setConfigReference(CachedFloatingLongValue storageReference) {
         this.storageReference = storageReference;
     }
 }

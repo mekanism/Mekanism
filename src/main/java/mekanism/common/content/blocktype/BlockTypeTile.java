@@ -1,8 +1,8 @@
 package mekanism.common.content.blocktype;
 
-import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -48,11 +48,11 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
             return with(new AttributeGui(containerRegistrar));
         }
 
-        public T withEnergyConfig(DoubleSupplier energyUsage, DoubleSupplier energyStorage) {
+        public T withEnergyConfig(FloatingLongSupplier energyUsage, FloatingLongSupplier energyStorage) {
             return with(new AttributeEnergy(energyUsage, energyStorage));
         }
 
-        public T withEnergyConfig(DoubleSupplier energyStorage) {
+        public T withEnergyConfig(FloatingLongSupplier energyStorage) {
             return with(new AttributeEnergy(null, energyStorage));
         }
 

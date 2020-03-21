@@ -158,7 +158,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.GAS || upgrade == Upgrade.SPEED) {
-            injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
+            injectUsage = MekanismUtils.getGasPerTickMean(this, BASE_INJECT_USAGE);
         }
     }
 

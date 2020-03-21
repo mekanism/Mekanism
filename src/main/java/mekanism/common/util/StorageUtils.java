@@ -16,6 +16,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -44,7 +45,7 @@ public class StorageUtils {
                           EnergyDisplay.of(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container))));
                 }
             } else if (showMissing) {
-                tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(0)));
+                tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
             }
         }
     }
@@ -64,13 +65,13 @@ public class StorageUtils {
      * Gets the energy if one is stored from an item's container going off the basis there is a single energy container. This is for cases when we may not actually have
      * an energy handler attached to our item but it may have stored data in its container from when it was a block
      */
-    public static double getStoredEnergyFromNBT(ItemStack stack) {
-        BasicEnergyContainer container = BasicEnergyContainer.create(Double.MAX_VALUE, null);
+    public static FloatingLong getStoredEnergyFromNBT(ItemStack stack) {
+        BasicEnergyContainer container = BasicEnergyContainer.create(FloatingLong.MAX_VALUE, null);
         DataHandlerUtils.readContainers(Collections.singletonList(container), ItemDataUtils.getList(stack, NBTConstants.ENERGY_CONTAINERS));
         return container.getEnergy();
     }
 
-    public static ItemStack getFilledEnergyVariant(ItemStack toFill, double capacity) {
+    public static ItemStack getFilledEnergyVariant(ItemStack toFill, FloatingLong capacity) {
         //Manually handle this as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
         BasicEnergyContainer container = BasicEnergyContainer.create(capacity, null);
         container.setEnergy(capacity);
@@ -123,7 +124,7 @@ public class StorageUtils {
             //TODO: Support having multiple containers at some point, none of our items currently do so, so it doesn't matter that much
             if (energyHandlerItem.getEnergyContainerCount() > 0) {
                 //Validate something didn't go terribly wrong and we actually do have the container we expect to have
-                energyRatio = energyHandlerItem.getEnergy(0) / energyHandlerItem.getMaxEnergy(0);
+                energyRatio = energyHandlerItem.getEnergy(0).divideToLevel(energyHandlerItem.getMaxEnergy(0));
             }
         }
         return 1D - Math.max(Math.max(gasRatio, fluidRatio), energyRatio);
@@ -150,7 +151,7 @@ public class StorageUtils {
         if (container.isEmpty()) {
             container.setEnergy(mergeContainer.getEnergy());
         } else if (!mergeContainer.isEmpty()) {
-            mergeContainer.setEnergy(mergeContainer.getEnergy() + mergeContainer.getEnergy());
+            mergeContainer.setEnergy(mergeContainer.getEnergy().add(mergeContainer.getEnergy()));
         }
     }
 }

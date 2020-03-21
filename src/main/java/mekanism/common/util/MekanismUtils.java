@@ -18,6 +18,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -225,9 +226,9 @@ public final class MekanismUtils {
      *
      * @return required energy per tick
      */
-    public static double getEnergyPerTick(IUpgradeTile mgmt, double def) {
+    public static FloatingLong getEnergyPerTick(IUpgradeTile mgmt, FloatingLong def) {
         if (mgmt.supportsUpgrades()) {
-            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.ENERGY));
+            return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.ENERGY)));
         }
         return def;
     }
@@ -240,7 +241,7 @@ public final class MekanismUtils {
      *
      * @return max secondary energy per tick
      */
-    public static double getSecondaryEnergyPerTickMean(IUpgradeTile mgmt, int def) {
+    public static double getGasPerTickMean(IUpgradeTile mgmt, int def) {
         if (mgmt.supportsUpgrades()) {
             if (mgmt.getComponent().supports(Upgrade.GAS)) {
                 return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
@@ -258,9 +259,9 @@ public final class MekanismUtils {
      *
      * @return max energy
      */
-    public static double getMaxEnergy(IUpgradeTile mgmt, double def) {
+    public static FloatingLong getMaxEnergy(IUpgradeTile mgmt, FloatingLong def) {
         if (mgmt.supportsUpgrades()) {
-            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(mgmt, Upgrade.ENERGY));
+            return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(mgmt, Upgrade.ENERGY)));
         }
         return def;
     }
@@ -273,10 +274,10 @@ public final class MekanismUtils {
      *
      * @return max energy
      */
-    public static double getMaxEnergy(ItemStack itemStack, double def) {
+    public static FloatingLong getMaxEnergy(ItemStack itemStack, FloatingLong def) {
         Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemStack));
         float numUpgrades = upgrades.get(Upgrade.ENERGY) == null ? 0 : (float) upgrades.get(Upgrade.ENERGY);
-        return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), numUpgrades / Upgrade.ENERGY.getMax());
+        return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), numUpgrades / Upgrade.ENERGY.getMax()));
     }
 
     /**
@@ -631,14 +632,14 @@ public final class MekanismUtils {
         return new Vec3d(player.getPosX(), posY, player.getPosZ());
     }
 
-    public static ITextComponent getEnergyDisplayShort(double energy) {
+    public static ITextComponent getEnergyDisplayShort(FloatingLong energy) {
         switch (MekanismConfig.general.energyUnit.get()) {
             case J:
                 return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
             case FE:
-                return UnitDisplayUtils.getDisplayShort(EnergyType.FORGE.convertToAsDouble(energy), ElectricUnit.FORGE_ENERGY);
+                return UnitDisplayUtils.getDisplayShort(EnergyType.FORGE.convertToAsFloatingLong(energy), ElectricUnit.FORGE_ENERGY);
             case EU:
-                return UnitDisplayUtils.getDisplayShort(EnergyType.EU.convertToAsDouble(energy), ElectricUnit.ELECTRICAL_UNITS);
+                return UnitDisplayUtils.getDisplayShort(EnergyType.EU.convertToAsFloatingLong(energy), ElectricUnit.ELECTRICAL_UNITS);
         }
         return MekanismLang.ERROR.translate();
     }
@@ -650,7 +651,7 @@ public final class MekanismUtils {
      *
      * @return energy converted to joules
      */
-    public static double convertToJoules(double energy) {
+    public static FloatingLong convertToJoules(FloatingLong energy) {
         switch (MekanismConfig.general.energyUnit.get()) {
             case FE:
                 return EnergyType.FORGE.convertFrom(energy);
@@ -668,12 +669,12 @@ public final class MekanismUtils {
      *
      * @return energy converted to configured unit
      */
-    public static double convertToDisplay(double energy) {
+    public static FloatingLong convertToDisplay(FloatingLong energy) {
         switch (MekanismConfig.general.energyUnit.get()) {
             case FE:
-                return EnergyType.FORGE.convertToAsDouble(energy);
+                return EnergyType.FORGE.convertToAsFloatingLong(energy);
             case EU:
-                return EnergyType.EU.convertToAsDouble(energy);
+                return EnergyType.EU.convertToAsFloatingLong(energy);
             default:
                 return energy;
         }
@@ -1049,6 +1050,21 @@ public final class MekanismUtils {
     public static int redstoneLevelFromContents(double amount, double capacity) {
         double fractionFull = capacity == 0 ? 0 : amount / capacity;
         return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+    }
+
+    /**
+     * @param amount   Amount currently stored
+     * @param capacity Total amount that can be stored.
+     *
+     * @return A redstone level based on the percentage of the amount stored.
+     */
+    public static int redstoneLevelFromContents(FloatingLong amount, FloatingLong capacity) {
+        if (capacity.isEmpty() || amount.isEmpty()) {
+            return 0;
+        }
+        //TODO: This should always be <= 15, do we want to make sure it is. We can probably just add some unit tests to make sure
+        // We can aso probably do some form of internal optimizations to do a batch calculation
+        return 1 + amount.divide(capacity).multiply(14).intValue();
     }
 
     /**

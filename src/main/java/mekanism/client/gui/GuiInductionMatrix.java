@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
+import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiInnerHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -35,12 +36,12 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT));
         addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
-            public double getEnergy() {
+            public FloatingLong getEnergy() {
                 return tile.getEnergy();
             }
 
             @Override
-            public double getMaxEnergy() {
+            public FloatingLong getMaxEnergy() {
                 return tile.getMaxEnergy();
             }
         }, GaugeType.MEDIUM, this, 6, 13));
