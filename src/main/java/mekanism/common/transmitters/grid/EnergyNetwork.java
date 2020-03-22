@@ -12,11 +12,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
@@ -24,6 +24,8 @@ import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.integration.EnergyCompatUtils;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
@@ -44,6 +46,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     // it is done for fluid tanks. And then we can copy the code to here and modify it to use our proper scale calculations
     public double energyScale;
     private FloatingLong prevTransferAmount = FloatingLong.ZERO;
+    private FloatingLong floatingLongCapacity = FloatingLong.ZERO;
 
     public EnergyNetwork() {
         energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsFloatingLong, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
@@ -100,6 +103,30 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
                 energyContainer.setEnergy(capacity);
             }
         }
+    }
+
+    @Override
+    public synchronized void updateCapacity() {
+        floatingLongCapacity = FloatingLong.getNewZero();
+        for (IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter : transmitters) {
+            if (transmitter instanceof TileEntityTransmitter) {
+                TileEntity tileEntity = ((TileEntityTransmitter<?, ?, ?>) transmitter).getTileEntity();
+                if (tileEntity instanceof TileEntityUniversalCable) {
+                    //TODO: Add a way to get this via the IGridTransmitter
+                    floatingLongCapacity.plusEqual(((TileEntityUniversalCable) tileEntity).getCableCapacity());
+                } else {
+                    floatingLongCapacity.plusEqual(FloatingLong.create(transmitter.getCapacity()));
+                }
+            } else {
+                floatingLongCapacity.plusEqual(FloatingLong.create(transmitter.getCapacity()));
+            }
+        }
+        capacity = floatingLongCapacity.intValue();
+    }
+
+    @Nonnull
+    public FloatingLong getCapacityAsFloatingLong() {
+        return floatingLongCapacity;
     }
 
     private FloatingLong tickEmit(FloatingLong energyToSend) {

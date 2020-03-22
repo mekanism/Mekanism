@@ -491,6 +491,7 @@
   "gui.mekanism.gas": "Gas: %s",
   "gui.mekanism.infinite": "Infinite",
   "gui.mekanism.infuse_type": "Infuse Type: %s",
+  "gui.mekanism.liquid": "Liquid: %s",
   "gui.mekanism.max": "Max: %s",
   "gui.mekanism.max_output": "Max Output: %s/t",
   "gui.mekanism.min": "Min: %s",

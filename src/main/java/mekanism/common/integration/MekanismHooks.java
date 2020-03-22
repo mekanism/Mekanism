@@ -1,6 +1,7 @@
 package mekanism.common.integration;
 
 import mekanism.common.integration.projecte.NSSHelper;
+import mekanism.common.integration.theoneprobe.TOPProvider;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;

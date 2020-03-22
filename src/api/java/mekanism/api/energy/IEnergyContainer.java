@@ -129,7 +129,6 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
         return FloatingLong.ZERO.max(getMaxEnergy().subtract(getEnergy()));
     }
 
-
     @Override
     default CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();

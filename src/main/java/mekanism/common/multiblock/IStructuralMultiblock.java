@@ -1,5 +1,6 @@
 package mekanism.common.multiblock;
 
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -16,4 +17,7 @@ public interface IStructuralMultiblock {
     void setController(Coord4D coord);
 
     void doUpdate();
+
+    @Nullable
+    Coord4D getController();
 }

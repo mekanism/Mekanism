@@ -1,7 +1,6 @@
 package mekanism.generators.client.gui;
 
 import java.util.Arrays;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -36,9 +35,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
         addButton(new GuiInnerScreen(this, 48, 23, 80, 49));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(tile.getCurrentMultiplier())
-                                                                                          : FloatingLong.ZERO)),
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(GeneratorsLang.PRODUCING_AMOUNT.translate(
+              tile.getActive() ? EnergyDisplay.of(MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(tile.getCurrentMultiplier())) : EnergyDisplay.ZERO),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiStateTexture(this, 18, 35, tile::getActive, MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "wind_on.png"),

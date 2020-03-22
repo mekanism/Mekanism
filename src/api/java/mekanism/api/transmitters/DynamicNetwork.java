@@ -13,7 +13,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
 import mekanism.api.Range3D;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
@@ -38,7 +37,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
     protected Range3D packetRange = null;
     protected int capacity = 0;
-    protected double doubleCapacity = 0;
     protected boolean needsUpdate = false;
     protected int updateDelay = 0;
     protected boolean firstUpdate = true;
@@ -250,22 +248,11 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public synchronized void updateCapacity() {
-        doubleCapacity = transmitters.stream().mapToDouble(IGridTransmitter::getCapacity).sum();
-        capacity = doubleCapacity > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) doubleCapacity;
+        capacity = transmitters.stream().mapToInt(IGridTransmitter::getCapacity).sum();
     }
 
     public int getCapacity() {
         return capacity;
-    }
-
-    @Deprecated
-    public double getCapacityAsDouble() {
-        return doubleCapacity;
-    }
-
-    public FloatingLong getCapacityAsFloatingLong() {
-        //TODO: Implement this, and remove getCapacityAsDouble
-        return FloatingLong.ZERO;
     }
 
     @Nullable

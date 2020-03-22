@@ -1,9 +1,12 @@
 package mekanism.api.math;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -20,6 +23,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     //TODO: Modify EnergyAPI to state what things should NOT be modified, given we stripped that out of the docs due to primitives not modifying the actual value
     private static final int DECIMAL_DIGITS = 4;//We only can support 4 digits in our decimal
     private static final short MAX_DECIMAL = 9_999;
+    private static final short SINGLE_UNIT = MAX_DECIMAL + 1;
     public static final FloatingLong ZERO = createConst(0);
     public static final FloatingLong ONE = createConst(1);
     //TODO: Util method so that it is easier to declare you want a short representing say 0.001
@@ -32,14 +36,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     public static FloatingLong create(double value) {
         //TODO: Try to optimize/improve this at the very least it rounds incorrectly
         long lValue = (long) value;
-        String valueAsString = Double.toString(value);
-        int index = valueAsString.indexOf(".");
-        short decimal;
-        if (index == -1) {
-            decimal = 0;
-        } else {
-            decimal = Short.parseShort(valueAsString.substring(index, Math.min(index + DECIMAL_DIGITS, valueAsString.length())));
-        }
+        short decimal = parseDecimal(Double.toString(value));
         return create(lValue, decimal);
     }
 
@@ -54,14 +51,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     public static FloatingLong createConst(double value) {
         //TODO: Try to optimize/improve this at the very least it rounds incorrectly
         long lValue = (long) value;
-        String valueAsString = Double.toString(value);
-        int index = valueAsString.indexOf(".");
-        short decimal;
-        if (index == -1) {
-            decimal = 0;
-        } else {
-            decimal = Short.parseShort(valueAsString.substring(index + 1, Math.min(index + 1 + DECIMAL_DIGITS, valueAsString.length())));
-        }
+        short decimal = parseDecimal(Double.toString(value));
         return create(lValue, decimal);
     }
 
@@ -95,6 +85,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     private void checkCanModify() {
         if (isConstant) {
             //TODO: Throw an exception
+            MekanismAPI.logger.warn("TRIED TO MODIFY A CONSTANT FLOATING LONG");
         }
     }
 
@@ -131,8 +122,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     // given that way we can internally do all the calculations using primitives rather than spamming a lot of objects
     public void minusEqual(FloatingLong toSubtract) {
         checkCanModify();
-        //TODO: Take the decimal into account
-        setAndClampValues(value - toSubtract.value, decimal);
+        //TODO: Handle it going negative
+        long newValue = value - toSubtract.value;
+        short newDecimal = (short) (decimal - toSubtract.decimal);
+        if (newDecimal < 0) {
+            newDecimal += SINGLE_UNIT;
+            newValue--;
+        }
+        setAndClampValues(newValue, newDecimal);
     }
 
     //TODO: NOTE: We probably need to look through this to make sure we don't accidentally go negative??
@@ -145,8 +142,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     public void plusEqual(FloatingLong toAdd) {
         checkCanModify();
-        //TODO: Take the decimal into account
-        setAndClampValues(value + toAdd.value, decimal);
+        //TODO: Fix potential overflow?
+        long newValue = value + toAdd.value;
+        short newDecimal = (short) (decimal + toAdd.decimal);
+        if (newDecimal > MAX_DECIMAL) {
+            newDecimal -= SINGLE_UNIT;
+            newValue++;
+        }
+        setAndClampValues(newValue, newDecimal);
     }
 
     public FloatingLong add(FloatingLong toAdd) {
@@ -162,8 +165,12 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     public void timesEqual(FloatingLong toMultiply) {
         checkCanModify();
-        //TODO: Take the decimal into account
-        setAndClampValues(value * toMultiply.value, decimal);
+        //TODO: Make a more direct implementation that doesn't go through big decimal
+        //TODO: Check how the multiplication works if we need to specify a scale
+        BigDecimal multiplication = new BigDecimal(toString()).multiply(new BigDecimal(toMultiply.toString()));
+        long value = multiplication.longValue();
+        short decimal = parseDecimal(multiplication.toString());
+        setAndClampValues(value, decimal);
     }
 
     public FloatingLong multiply(FloatingLong toMultiply) {
@@ -173,7 +180,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     }
 
     //TODO: Evaluate this and what helpers are needed for interacting with primitives
-    public FloatingLong multiply(int toMultiply) {
+    public FloatingLong multiply(long toMultiply) {
         //TODO: FIXME/IMPROVE
         return multiply(FloatingLong.create(toMultiply));
     }
@@ -183,16 +190,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         return multiply(FloatingLong.createConst(toMultiply));
     }
 
-    public FloatingLong multiply(float toMultiply) {
-        //TODO: FIXME/IMPROVE
-        return multiply(FloatingLong.createConst(toMultiply));
-    }
-
     public void divideEquals(FloatingLong toDivide) {
         checkCanModify();
         //TODO: Validate toDivide is not zero
-        //TODO: Take the decimal into account
-        setAndClampValues(value / toDivide.value, decimal);
+        //TODO: Make a more direct implementation that doesn't go through big decimal
+        BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+        long value = divide.longValue();
+        short decimal = parseDecimal(divide.toString());
+        setAndClampValues(value, decimal);
     }
 
     public FloatingLong divide(FloatingLong toDivide) {
@@ -201,7 +206,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         return toReturn;
     }
 
-    public FloatingLong divide(int toDivide) {
+    public FloatingLong divide(long toDivide) {
         //TODO: FIXME/IMPROVE
         return divide(FloatingLong.create(toDivide));
     }
@@ -302,19 +307,66 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     @Override
     public String toString() {
-        //TODO: Do the decimal more properly, as I somehow doubt it can just be directly appended
-        return value + "." + decimal;
+        return toString(DECIMAL_DIGITS);
     }
 
     public String toString(int decimalPlaces) {
-        //TODO: Do the decimal more properly, as I somehow doubt it can just be directly appended
-        return value + "." + decimal;
+        if (decimal == 0) {
+            return Long.toString(value);
+        }
+        if (decimalPlaces > DECIMAL_DIGITS) {
+            decimalPlaces = DECIMAL_DIGITS;
+        }
+        String valueAsString = value + ".";
+        String decimalAsString = Short.toString(decimal);
+        int numberDigits = decimalAsString.length();
+        if (numberDigits > decimalPlaces) {
+            //We need to trim it
+            decimalAsString = decimalAsString.substring(0, decimalPlaces);
+        } else if (numberDigits < decimalPlaces) {
+            //We need to prepend some zeros
+            decimalAsString = getZeros(decimalPlaces - numberDigits) + decimalAsString;
+        }
+        return valueAsString + decimalAsString;
     }
 
     //TODO: Copy and modify java docs from Long.valueOf
-    public static FloatingLong parseFloatingLong(String value) {
-        //TODO: IMPLEMENT AND FIX ME
-        return FloatingLong.ZERO;
+    public static FloatingLong parseFloatingLong(String string) {
+        //TODO: IMPLEMENT AND FIX ME so that it can handle invalid strings
+        long value;
+        int index = string.indexOf(".");
+        if (index == -1) {
+            value = Long.parseLong(string);
+        } else {
+            value = Long.parseLong(string.substring(0, index));
+        }
+        short decimal = parseDecimal(string, index);
+        return create(value, decimal);
+    }
+
+    private static short parseDecimal(String string) {
+        return parseDecimal(string, string.indexOf("."));
+    }
+
+    private static short parseDecimal(String string, int index) {
+        if (index == -1) {
+            return 0;
+        }
+        String decimalAsString = string.substring(index + 1);
+        int numberDigits = decimalAsString.length();
+        if (numberDigits < DECIMAL_DIGITS) {
+            //We need to pad it on the right with zeros
+            decimalAsString += getZeros(DECIMAL_DIGITS - numberDigits);
+        }
+        return Short.parseShort(decimalAsString);
+    }
+
+    private static String getZeros(int number) {
+        StringBuilder zeros = new StringBuilder();
+        for (int i = 0; i < number; i++) {
+            zeros.append('0');
+        }
+        return zeros.toString();
     }
 
     public static FloatingLong readFromNBT(@Nullable CompoundNBT nbtTags) {
@@ -335,25 +387,21 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     @Override
     public int intValue() {
-        if (value > Integer.MAX_VALUE) {
-            return Integer.MAX_VALUE;
-        }
-        return (int) value;
+        return value > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) value;
     }
 
     @Override
     public long longValue() {
-        return getValue();
+        return value;
     }
 
     @Override
     public float floatValue() {
-        //TODO: Store the 10_000 constant somewhere?
-        return intValue() + decimal / 10_000F;
+        return intValue() + decimal / (float) SINGLE_UNIT;
     }
 
     @Override
     public double doubleValue() {
-        return longValue() + decimal / 10_000D;
+        return longValue() + decimal / (double) SINGLE_UNIT;
     }
 }

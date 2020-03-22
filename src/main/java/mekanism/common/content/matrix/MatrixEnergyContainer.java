@@ -24,6 +24,8 @@ import net.minecraft.util.math.BlockPos;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MatrixEnergyContainer implements IEnergyContainer {
+    //TODO: Figure out if this is still accepting power while the matrix is unformed, or maybe the rate is not being obeyed
+    // I think when the casing is broken when it first reforms, it does not have a transfer cap setup properly
 
     private Map<BlockPos, InductionProviderTier> providers = new Object2ObjectOpenHashMap<>();
     private Map<BlockPos, IEnergyContainer> cells = new Object2ObjectOpenHashMap<>();
@@ -79,6 +81,21 @@ public class MatrixEnergyContainer implements IEnergyContainer {
             }
             invalidPositions.add(pos);
         }
+    }
+
+    public void invalidate() {
+        //Force save
+        tick();
+        //And reset everything
+        cells.clear();
+        providers.clear();
+        queuedOutput = FloatingLong.getNewZero();
+        queuedInput = FloatingLong.getNewZero();
+        lastOutput = FloatingLong.ZERO;
+        lastInput = FloatingLong.ZERO;
+        cachedTotal = FloatingLong.getNewZero();
+        transferCap = FloatingLong.getNewZero();
+        storageCap = FloatingLong.getNewZero();
     }
 
     public void tick() {

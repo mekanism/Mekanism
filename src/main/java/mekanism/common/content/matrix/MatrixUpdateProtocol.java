@@ -66,7 +66,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     @Override
     protected void onStructureDestroyed(SynchronizedMatrixData structure) {
         //Save all energy changes before destroying the structure
-        structure.tick();
+        structure.invalidate();
         super.onStructureDestroyed(structure);
     }
 

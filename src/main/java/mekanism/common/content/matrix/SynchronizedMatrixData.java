@@ -88,6 +88,10 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         energyContainer.tick();
     }
 
+    public void invalidate() {
+        energyContainer.invalidate();
+    }
+
     public FloatingLong getStorageCap() {
         return remote ? clientMaxEnergy : energyContainer.getMaxEnergy();
     }

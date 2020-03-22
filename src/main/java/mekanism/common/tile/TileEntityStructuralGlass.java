@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
@@ -52,6 +53,12 @@ public class TileEntityStructuralGlass extends TileEntityUpdateable implements I
                 multiblock.doUpdate();
             }
         }
+    }
+
+    @Nullable
+    @Override
+    public Coord4D getController() {
+        return master;
     }
 
     @Override
