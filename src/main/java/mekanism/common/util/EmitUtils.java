@@ -6,7 +6,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.base.SplitInfo;
 import mekanism.common.base.SplitInfo.FloatingLongSplitInfo;
 import mekanism.common.base.SplitInfo.IntegerSplitInfo;
-import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.base.target.Target;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -73,7 +72,8 @@ public class EmitUtils {
      *
      * @return The amount that actually got sent
      */
-    public static FloatingLong sendToAcceptors(Set<EnergyAcceptorTarget> availableTargets, int totalTargets, FloatingLong amountToSplit) {
+    public static <HANDLER, TARGET extends Target<HANDLER, FloatingLong, FloatingLong>> FloatingLong sendToAcceptors(Set<TARGET> availableTargets, int totalTargets,
+          FloatingLong amountToSplit) {
         return sendToAcceptors(availableTargets, totalTargets, new FloatingLongSplitInfo(amountToSplit, totalTargets), amountToSplit);
     }
 

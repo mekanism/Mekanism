@@ -36,10 +36,11 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
     protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
     protected Range3D packetRange = null;
-    protected int capacity = 0;
+    protected int capacity;
     protected boolean needsUpdate = false;
-    protected int updateDelay = 0;
+    protected int updateDelay;
     protected boolean firstUpdate = true;
+    protected boolean updateSaveShares;
     @Nullable
     protected World world = null;
     private Set<DelayQueue> updateQueue = new ObjectLinkedOpenHashSet<>();
@@ -61,15 +62,17 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                     }
 
                     transmitter.setTransmitterNetwork((NETWORK) this);
+                    //Update the capacity here, to make sure that we can actually absorb the buffer properly
+                    updateCapacity(transmitter);
                     absorbBuffer(transmitter);
                     transmitters.add(transmitter);
                 }
             }
 
-            updateCapacity();
             clampBuffer();
             queueClientUpdate(transmittersToAdd);
             transmittersToAdd.clear();
+            updateSaveShares = true;
         }
 
         if (!changedAcceptors.isEmpty()) {
@@ -133,9 +136,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         clampBuffer();
 
         //Update all shares
-        for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
-            transmitter.updateShare();
-        }
+        updateSaveShares();
 
         //Now invalidate the transmitters
         for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
@@ -182,6 +183,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 acceptorDirections.put(coord, entry.getValue());
             }
         }
+        //Update the capacity
+        updateCapacity();
     }
 
     public Range3D getPacketRange() {
@@ -235,10 +238,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
     }
 
-    public int getSize() {
-        return transmitters.size();
-    }
-
     public boolean isEmpty() {
         return transmitters.isEmpty();
     }
@@ -247,8 +246,35 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return possibleAcceptors.size();
     }
 
+    /**
+     * @param transmitter The transmitter that was added
+     */
+    protected synchronized void updateCapacity(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
+        int transmitterCapacity = transmitter.getCapacity();
+        if (transmitterCapacity > Integer.MAX_VALUE - capacity) {
+            //Ensure we don't overflow
+            capacity = Integer.MAX_VALUE;
+        } else {
+            capacity += transmitterCapacity;
+        }
+    }
+
     public synchronized void updateCapacity() {
-        capacity = transmitters.stream().mapToInt(IGridTransmitter::getCapacity).sum();
+        int sum = 0;
+        for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
+            int transmitterCapacity = transmitter.getCapacity();
+            if (transmitterCapacity > Integer.MAX_VALUE - capacity) {
+                //Ensure we don't overflow
+                sum = Integer.MAX_VALUE;
+                break;
+            } else {
+                sum += transmitterCapacity;
+            }
+        }
+        if (capacity != sum) {
+            capacity = sum;
+            updateSaveShares = true;
+        }
     }
 
     public int getCapacity() {
@@ -291,7 +317,15 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                     needsUpdate = true;
                 }
             }
+            if (updateSaveShares) {
+                //Update the save shares
+                updateSaveShares();
+            }
         }
+    }
+
+    protected void updateSaveShares() {
+        updateSaveShares = false;
     }
 
     @Override

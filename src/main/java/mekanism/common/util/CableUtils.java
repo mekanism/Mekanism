@@ -76,8 +76,7 @@ public final class CableUtils {
         if (curHandlers > 0) {
             Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
             targets.add(target);
-            //TODO: Evaluate copying this
-            return EmitUtils.sendToAcceptors(targets, curHandlers, energyToSend.copy());
+            return EmitUtils.sendToAcceptors(targets, curHandlers, energyToSend);
         }
         return FloatingLong.ZERO;
     }

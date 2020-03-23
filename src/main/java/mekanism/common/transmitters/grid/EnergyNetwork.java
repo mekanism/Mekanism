@@ -21,11 +21,10 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.target.EnergyAcceptorTarget;
+import mekanism.common.base.target.EnergyTransmitterSaveTarget;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.integration.EnergyCompatUtils;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
@@ -66,6 +65,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(EnergyNetwork net) {
+        super.adoptTransmittersAndAcceptorsFrom(net);
         if (isRemote()) {
             if (!net.energyContainer.isEmpty() && net.energyScale > energyScale) {
                 energyScale = net.energyScale;
@@ -77,7 +77,6 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
             energyContainer.setEnergy(energyContainer.getEnergy().add(net.getBuffer()));
             net.energyContainer.setEmpty();
         }
-        super.adoptTransmittersAndAcceptorsFrom(net);
     }
 
     @Nonnull
@@ -105,27 +104,51 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     }
 
     @Override
-    public synchronized void updateCapacity() {
-        floatingLongCapacity = FloatingLong.getNewZero();
-        for (IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter : transmitters) {
-            if (transmitter instanceof TileEntityTransmitter) {
-                TileEntity tileEntity = ((TileEntityTransmitter<?, ?, ?>) transmitter).getTileEntity();
-                if (tileEntity instanceof TileEntityUniversalCable) {
-                    //TODO: Add a way to get this via the IGridTransmitter
-                    floatingLongCapacity.plusEqual(((TileEntityUniversalCable) tileEntity).getCableCapacity());
-                } else {
-                    floatingLongCapacity.plusEqual(FloatingLong.create(transmitter.getCapacity()));
-                }
-            } else {
-                floatingLongCapacity.plusEqual(FloatingLong.create(transmitter.getCapacity()));
-            }
+    protected synchronized void updateCapacity(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
+        if (floatingLongCapacity.isEmpty()) {
+            floatingLongCapacity = transmitter.getCapacityAsFloatingLong().copy();
+        } else {
+            floatingLongCapacity.plusEqual(transmitter.getCapacityAsFloatingLong());
         }
         capacity = floatingLongCapacity.intValue();
+    }
+
+    @Override
+    public synchronized void updateCapacity() {
+        FloatingLong sum = FloatingLong.getNewZero();
+        for (IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter : transmitters) {
+            sum.plusEqual(transmitter.getCapacityAsFloatingLong());
+        }
+        if (!floatingLongCapacity.equals(sum)) {
+            floatingLongCapacity = sum;
+            capacity = floatingLongCapacity.intValue();
+            updateSaveShares = true;
+        }
     }
 
     @Nonnull
     public FloatingLong getCapacityAsFloatingLong() {
         return floatingLongCapacity;
+    }
+
+    @Override
+    protected void updateSaveShares() {
+        super.updateSaveShares();
+        int size = transmittersSize();
+        if (size > 0) {
+            //Just pretend we are always accessing it from the north
+            Direction side = Direction.NORTH;
+            Set<EnergyTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
+            for (IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter : transmitters) {
+                EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget();
+                saveTarget.addHandler(side, transmitter);
+                saveTargets.add(saveTarget);
+            }
+            EmitUtils.sendToAcceptors(saveTargets, size, energyContainer.getEnergy().copy());
+            for (EnergyTransmitterSaveTarget saveTarget : saveTargets) {
+                saveTarget.saveShare(side);
+            }
+        }
     }
 
     private FloatingLong tickEmit(FloatingLong energyToSend) {
@@ -154,7 +177,6 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
                 totalHandlers += curHandlers;
             }
         }
-        //TODO: FloatingLong Evaluate copying this
         return EmitUtils.sendToAcceptors(targets, totalHandlers, energyToSend.copy());
     }
 
@@ -213,7 +235,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
 
     @Override
     public void onContentsChanged() {
-        //TODO: Do we want to mark the network as dirty
+        updateSaveShares = true;
     }
 
     public static class EnergyTransferEvent extends Event {

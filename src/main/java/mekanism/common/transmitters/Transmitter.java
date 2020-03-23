@@ -42,7 +42,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     @Override
     public int getTransmitterNetworkSize() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().getSize() : 0;
+        return hasTransmitterNetwork() ? getTransmitterNetwork().transmittersSize() : 0;
     }
 
     @Override

@@ -1,8 +1,10 @@
 package mekanism.common.capabilities.basic;
 
 import java.util.Collection;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -120,6 +122,12 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
         return 0;
     }
 
+    @Nonnull
+    @Override
+    public FloatingLong getCapacityAsFloatingLong() {
+        return FloatingLong.ZERO;
+    }
+
     @Override
     public int getCapacity() {
         return 0;
@@ -176,10 +184,6 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
 
     @Override
     public void takeShare() {
-    }
-
-    @Override
-    public void updateShare() {
     }
 
     @Override

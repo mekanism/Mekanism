@@ -29,13 +29,13 @@ import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -46,7 +46,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public final PipeTier tier;
 
     @Nonnull
-    private FluidStack lastWrite = FluidStack.EMPTY;
+    public FluidStack lastWrite = FluidStack.EMPTY;
     private ProxyFluidHandler readOnlyHandler;
     private final Map<Direction, ProxyFluidHandler> fluidHandlers;
     private final List<IExtendedFluidTank> tanks;
@@ -80,7 +80,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Override
     public void tick() {
         if (!isRemote()) {
-            updateShare();
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
                 for (IFluidHandler connectedAcceptor : PipeUtils.getConnectedAcceptors(getPos(), getWorld(), connections)) {
@@ -134,51 +133,14 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public void updateShare() {
-        if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0) {
-            FluidStack last = getSaveShare();
-            if ((!last.isEmpty() && (lastWrite.isEmpty() || !lastWrite.isFluidStackIdentical(last))) || (last.isEmpty() && !lastWrite.isEmpty())) {
-                lastWrite = last;
-                markDirty();
-            }
-        }
-    }
-
-    @Nonnull
-    private FluidStack getSaveShare() {
-        if (getTransmitter().hasTransmitterNetwork()) {
-            FluidNetwork network = getTransmitter().getTransmitterNetwork();
-            if (network.fluidTank.isEmpty()) {
-                return FluidStack.EMPTY;
-            }
-            //TODO: FIXME, this is very wrong, as not all transmitters may be the same size
-            int toSave = network.fluidTank.getFluidAmount() / network.transmittersSize();
-            if (network.firstTransmitter().equals(getTransmitter())) {
-                toSave += network.fluidTank.getFluidAmount() % network.transmittersSize();
-            }
-            return new FluidStack(network.getBuffer(), toSave);
-        }
-        return buffer.getFluid().copy();
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        if (!isRemote() && getTransmitter().hasTransmitterNetwork() && !lastWrite.isEmpty()) {
-            FluidNetwork network = getTransmitter().getTransmitterNetwork();
-            if (!network.fluidTank.isEmpty() && !lastWrite.isEmpty()) {
-                int amount = lastWrite.getAmount();
-                if (network.fluidTank.shrinkStack(amount, Action.EXECUTE) != amount) {
-                    //TODO: Print warning/error
-                }
-            }
-        }
-        super.onChunkUnloaded();
-    }
-
-    @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setFluidStackIfPresent(nbtTags, NBTConstants.FLUID_STORED, buffer::setStack);
+        if (nbtTags.contains(NBTConstants.FLUID_STORED, NBT.TAG_COMPOUND)) {
+            lastWrite = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
+        } else {
+            lastWrite = FluidStack.EMPTY;
+        }
+        buffer.setStack(lastWrite);
     }
 
     @Nonnull
@@ -303,7 +265,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Nonnull
     private FluidStack takeFluid(@Nonnull FluidStack fluid, Action action) {
         if (getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().emit(fluid, action);
+            return getTransmitter().getTransmitterNetwork().fluidTank.insert(fluid, action, AutomationType.INTERNAL);
         }
         return buffer.insert(fluid, action, AutomationType.INTERNAL);
     }

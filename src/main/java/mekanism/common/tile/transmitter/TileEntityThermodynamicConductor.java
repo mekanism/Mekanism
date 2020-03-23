@@ -69,10 +69,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public void updateShare() {
-    }
-
-    @Override
     public TransmitterType getTransmitterType() {
         return TransmitterType.THERMODYNAMIC_CONDUCTOR;
     }

@@ -50,7 +50,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * <p>
      * <strong>IMPORTANT:</strong> This {@link FloatingLong} <em>MUST NOT</em> be modified. This method is not for altering internal contents. Any implementers who are
-     * able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the stack returned here will be a copy.
+     * able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the value returned here will be a copy.
      * </p>
      *
      * <p>
@@ -92,6 +92,15 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      *
      * Retrieves the maximum amount of energy that can be stored in a given container.
      *
+     * <p>
+     * <strong>IMPORTANT:</strong> This {@link FloatingLong} <em>MUST NOT</em> be modified. This method is not for altering internal max energy. Any implementers who are
+     * able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the value returned here will be a copy.
+     * </p>
+     *
+     * <p>
+     * <strong><em>SERIOUSLY: DO NOT MODIFY THE RETURNED FLOATING LONG</em></strong>
+     * </p>
+     *
      * @param container Container to query.
      * @param side      The side we are interacting with the handler from (null for internal).
      *
@@ -108,6 +117,15 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * A sided variant of {@link IStrictEnergyHandler#getNeededEnergy(int)}, docs copied for convenience.
      *
      * Retrieves the amount of energy that is needed to fill a given container.
+     *
+     * <p>
+     * <strong>IMPORTANT:</strong> This {@link FloatingLong} <em>MUST NOT</em> be modified. This method is not for altering remaining needed amount. Any implementers who
+     * are able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the value returned here will be a copy.
+     * </p>
+     *
+     * <p>
+     * <strong><em>SERIOUSLY: DO NOT MODIFY THE RETURNED FLOATING LONG</em></strong>
+     * </p>
      *
      * @param container Container to query.
      * @param side      The side we are interacting with the handler from (null for internal).

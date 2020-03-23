@@ -2,8 +2,10 @@ package mekanism.common.transmitters;
 
 import java.util.Collection;
 import java.util.Optional;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -21,6 +23,12 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
 
     public TransmitterImpl(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> multiPart) {
         setTileEntity(multiPart);
+    }
+
+    @Nonnull
+    @Override
+    public FloatingLong getCapacityAsFloatingLong() {
+        return getTileEntity().getCapacityAsFloatingLong();
     }
 
     @Override
@@ -102,11 +110,6 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     @Override
     public void takeShare() {
         containingTile.takeShare();
-    }
-
-    @Override
-    public void updateShare() {
-        containingTile.updateShare();
     }
 
     @Nullable

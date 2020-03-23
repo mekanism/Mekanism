@@ -31,12 +31,12 @@ import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> implements IMekanismStrictEnergyHandler {
@@ -47,13 +47,13 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     private final Map<Direction, ProxyStrictEnergyHandler> strictEnergyHandlers;
     private final List<IEnergyContainer> energyContainers;
     public BasicEnergyContainer buffer;
-    private FloatingLong lastWrite = FloatingLong.ZERO;
+    public FloatingLong lastWrite = FloatingLong.ZERO;
 
     public TileEntityUniversalCable(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), CableTier.class);
         strictEnergyHandlers = new EnumMap<>(Direction.class);
-        buffer = BasicEnergyContainer.create(getCableCapacity(), BasicEnergyContainer.alwaysFalse, BasicEnergyContainer.alwaysTrue, this);
+        buffer = BasicEnergyContainer.create(getCapacityAsFloatingLong(), BasicEnergyContainer.alwaysFalse, BasicEnergyContainer.alwaysTrue, this);
         energyContainers = Collections.singletonList(buffer);
     }
 
@@ -78,7 +78,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Override
     public void tick() {
         if (!isRemote()) {
-            updateShare();
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
                 for (IStrictEnergyHandler connectedAcceptor : CableUtils.getConnectedAcceptors(getPos(), getWorld(), connections)) {
@@ -98,9 +97,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
 
     private FloatingLong getAvailablePull() {
         if (getTransmitter().hasTransmitterNetwork()) {
-            return getCableCapacity().min(getTransmitter().getTransmitterNetwork().energyContainer.getNeeded());
+            return getCapacityAsFloatingLong().min(getTransmitter().getTransmitterNetwork().energyContainer.getNeeded());
         }
-        return getCableCapacity().min(buffer.getNeeded());
+        return getCapacityAsFloatingLong().min(buffer.getNeeded());
     }
 
     @Nonnull
@@ -136,36 +135,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     }
 
     @Override
-    public void updateShare() {
-        if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0) {
-            FloatingLong last = getSaveShare();
-            if (!last.equals(lastWrite)) {
-                lastWrite = last;
-                markDirty();
-            }
-        }
-    }
-
-    private FloatingLong getSaveShare() {
-        if (getTransmitter().hasTransmitterNetwork()) {
-            EnergyNetwork network = getTransmitter().getTransmitterNetwork();
-            if (network.energyContainer.isEmpty()) {
-                return FloatingLong.ZERO;
-            }
-            //TODO: FIXME, this is very wrong, as not all transmitters may be the same size
-            int size = network.transmittersSize();
-            FloatingLong toSave = network.energyContainer.getEnergy().divide(size);
-            if (network.firstTransmitter().equals(getTransmitter())) {
-                toSave.plusEqual(network.energyContainer.getEnergy().modulo(size));
-            }
-            return toSave;
-            //TODO: Figure out unless the above works fine
-            //return EnergyNetwork.round(getTransmitter().getTransmitterNetwork().energyContainer.getEnergy() * (1F / getTransmitter().getTransmitterNetwork().transmittersSize()));
-        }
-        return buffer.getEnergy().copy();
-    }
-
-    @Override
     public TransmitterType getTransmitterType() {
         return TransmitterType.UNIVERSAL_CABLE;
     }
@@ -173,14 +142,23 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.ENERGY_STORED, buffer::setEnergy);
+        if (nbtTags.contains(NBTConstants.ENERGY_STORED, NBT.TAG_COMPOUND)) {
+            lastWrite = FloatingLong.readFromNBT(nbtTags.getCompound(NBTConstants.ENERGY_STORED));
+        } else {
+            lastWrite = FloatingLong.ZERO;
+        }
+        buffer.setEnergy(lastWrite);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.put(NBTConstants.ENERGY_STORED, lastWrite.serializeNBT());
+        if (lastWrite.isEmpty()) {
+            nbtTags.remove(NBTConstants.ENERGY_STORED);
+        } else {
+            nbtTags.put(NBTConstants.ENERGY_STORED, lastWrite.serializeNBT());
+        }
         return nbtTags;
     }
 
@@ -237,13 +215,13 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
         }
     }
 
-    public FloatingLong getCableCapacity() {
+    public FloatingLong getCapacityAsFloatingLong() {
         return tier.getCableCapacity();
     }
 
     @Override
     public int getCapacity() {
-        return getCableCapacity().intValue();
+        return getCapacityAsFloatingLong().intValue();
     }
 
     /**

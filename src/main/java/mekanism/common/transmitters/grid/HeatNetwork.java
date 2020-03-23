@@ -60,6 +60,11 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
     }
 
     @Override
+    protected synchronized void updateCapacity(IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter) {
+        //The capacity is always zero so no point in doing calculations.
+    }
+
+    @Override
     public synchronized void updateCapacity() {
         //The capacity is always zero so no point in doing calculations.
     }

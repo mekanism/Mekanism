@@ -83,6 +83,11 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     }
 
     @Override
+    protected synchronized void updateCapacity(IGridTransmitter<TileEntity, InventoryNetwork, Void> transmitter) {
+        //The capacity is always zero so no point in doing calculations.
+    }
+
+    @Override
     public synchronized void updateCapacity() {
         //The capacity is always zero so no point in doing calculations.
     }

@@ -18,7 +18,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      *
      * <p>
      * <strong>IMPORTANT:</strong> This {@link FloatingLong} <em>MUST NOT</em> be modified. This method is not for altering internal contents. Any implementers who are
-     * able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the stack returned here will be a copy.
+     * able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the value returned here will be a copy.
      * </p>
      *
      * <p>
@@ -107,9 +107,18 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
     /**
      * Retrieves the maximum amount of energy allowed to exist in this {@link IEnergyContainer}.
      *
+     * <p>
+     * <strong>IMPORTANT:</strong> This {@link FloatingLong} <em>MUST NOT</em> be modified. This method is not for altering internal max energy. Any implementers who are
+     * able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the value returned here will be a copy.
+     * </p>
+     *
+     * <p>
+     * <strong><em>SERIOUSLY: DO NOT MODIFY THE RETURNED FLOATING LONG</em></strong>
+     * </p>
+     *
      * @return The maximum amount of energy allowed in this {@link IEnergyContainer}.
      */
-    FloatingLong getMaxEnergy();//TODO: Specify to not modify getMaxEnergy
+    FloatingLong getMaxEnergy();
 
     /**
      * Called when the contents of this container changes.
@@ -134,6 +143,15 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
 
     /**
      * Gets the amount of energy needed by this {@link IEnergyContainer} to reach a filled state.
+     *
+     * <p>
+     * <strong>IMPORTANT:</strong> This {@link FloatingLong} <em>MUST NOT</em> be modified. This method is not for altering remaining needed amount. Any implementers who
+     * are able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the value returned here will be a copy.
+     * </p>
+     *
+     * <p>
+     * <strong><em>SERIOUSLY: DO NOT MODIFY THE RETURNED FLOATING LONG</em></strong>
+     * </p>
      *
      * @return Amount of energy needed
      */

@@ -34,12 +34,12 @@ import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IMekanismGasHandler {
@@ -47,7 +47,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public final TubeTier tier;
 
     @Nonnull
-    private GasStack lastWrite = GasStack.EMPTY;
+    public GasStack lastWrite = GasStack.EMPTY;
     private ProxyGasHandler readOnlyHandler;
     private final Map<Direction, ProxyGasHandler> gasHandlers;
     private final List<IChemicalTank<Gas, GasStack>> tanks;
@@ -81,7 +81,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public void tick() {
         if (!isRemote()) {
-            updateShare();
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
                 for (IGasHandler connectedAcceptor : GasUtils.getConnectedAcceptors(getPos(), getWorld(), connections)) {
@@ -136,52 +135,14 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
-    public void updateShare() {
-        if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0) {
-            GasStack last = getSaveShare();
-            //TODO: Look to see if this can be cleaned up further
-            if ((!last.isEmpty() && (lastWrite.isEmpty() || !lastWrite.isStackIdentical(last))) || (last.isEmpty() && !lastWrite.isEmpty())) {
-                lastWrite = last;
-                markDirty();
-            }
-        }
-    }
-
-    @Nonnull
-    private GasStack getSaveShare() {
-        if (getTransmitter().hasTransmitterNetwork()) {
-            GasNetwork network = getTransmitter().getTransmitterNetwork();
-            if (network.gasTank.isEmpty()) {
-                return GasStack.EMPTY;
-            }
-            //TODO: FIXME, this is very wrong, as not all transmitters may be the same size
-            int toSave = network.gasTank.getStored() / network.transmittersSize();
-            if (network.firstTransmitter().equals(getTransmitter())) {
-                toSave += network.gasTank.getStored() % network.transmittersSize();
-            }
-            return new GasStack(network.getBuffer(), toSave);
-        }
-        return buffer.getStack().copy();
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        if (!isRemote() && getTransmitter().hasTransmitterNetwork()) {
-            GasNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
-            if (!transmitterNetwork.gasTank.isEmpty() && !lastWrite.isEmpty()) {
-                int amount = lastWrite.getAmount();
-                if (transmitterNetwork.gasTank.shrinkStack(amount, Action.EXECUTE) != amount) {
-                    //TODO: Print warning/error
-                }
-            }
-        }
-        super.onChunkUnloaded();
-    }
-
-    @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setGasStackIfPresent(nbtTags, NBTConstants.GAS_STORED, buffer::setStack);
+        if (nbtTags.contains(NBTConstants.GAS_STORED, NBT.TAG_COMPOUND)) {
+            lastWrite = GasStack.readFromNBT(nbtTags.getCompound(NBTConstants.GAS_STORED));
+        } else {
+            lastWrite = GasStack.EMPTY;
+        }
+        buffer.setStack(lastWrite);
     }
 
     @Nonnull
@@ -286,7 +247,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     private GasStack takeGas(GasStack gasStack, Action action) {
         if (getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().emit(gasStack, action);
+            return getTransmitter().getTransmitterNetwork().gasTank.insert(gasStack, action, AutomationType.INTERNAL);
         }
         return buffer.insert(gasStack, action, AutomationType.INTERNAL);
     }

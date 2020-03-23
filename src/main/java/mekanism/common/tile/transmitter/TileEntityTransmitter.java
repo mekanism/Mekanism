@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -307,6 +308,12 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
     }
 
+    @Nonnull
+    public FloatingLong getCapacityAsFloatingLong() {
+        //Note: If you plan on actually using this, override it in your tile
+        return FloatingLong.create(getCapacity());
+    }
+
     public abstract int getCapacity();
 
     @Nullable
@@ -330,8 +337,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     public abstract void takeShare();
-
-    public abstract void updateShare();
 
     @Nonnull
     @Override

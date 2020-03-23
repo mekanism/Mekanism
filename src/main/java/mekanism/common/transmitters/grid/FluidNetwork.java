@@ -18,6 +18,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.target.FluidHandlerTarget;
+import mekanism.common.base.target.FluidTransmitterSaveTarget;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.util.CapabilityUtils;
@@ -63,6 +64,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(FluidNetwork net) {
+        super.adoptTransmittersAndAcceptorsFrom(net);
         if (isRemote()) {
             if (!net.fluidTank.isEmpty() && net.fluidScale > fluidScale) {
                 fluidScale = net.fluidScale;
@@ -83,7 +85,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             }
             net.fluidTank.setEmpty();
         }
-        super.adoptTransmittersAndAcceptorsFrom(net);
     }
 
     @Nonnull
@@ -123,6 +124,27 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         }
     }
 
+    @Override
+    protected void updateSaveShares() {
+        super.updateSaveShares();
+        int size = transmittersSize();
+        if (size > 0) {
+            FluidStack fluidType = fluidTank.getFluid();
+            //Just pretend we are always accessing it from the north
+            Direction side = Direction.NORTH;
+            Set<FluidTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
+            for (IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter : transmitters) {
+                FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType);
+                saveTarget.addHandler(side, transmitter);
+                saveTargets.add(saveTarget);
+            }
+            EmitUtils.sendToAcceptors(saveTargets, size, fluidType.getAmount(), fluidType);
+            for (FluidTransmitterSaveTarget saveTarget : saveTargets) {
+                saveTarget.saveShare(side);
+            }
+        }
+    }
+
     private int tickEmit(@Nonnull FluidStack fluidToSend) {
         Set<FluidHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
@@ -153,30 +175,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, fluidToSend.getAmount(), fluidToSend);
     }
 
-    public FluidStack emit(@Nonnull FluidStack stack, Action action) {
-        if (stack.isEmpty() || (!fluidTank.isEmpty() && !fluidTank.isFluidEqual(stack))) {
-            return stack;
-        }
-        int toAdd = Math.min(fluidTank.getNeeded(), stack.getAmount());
-        if (action.execute()) {
-            if (fluidTank.isEmpty()) {
-                fluidTank.setStack(new FluidStack(stack, toAdd));
-            } else {
-                //Otherwise try to grow the stack
-                if (fluidTank.growStack(toAdd, Action.EXECUTE) != toAdd) {
-                    //TODO: Print warning/error
-                }
-            }
-        }
-        return new FluidStack(stack, stack.getAmount() - toAdd);
-    }
-
     @Override
     public void onUpdate() {
         super.onUpdate();
         if (!isRemote()) {
-            //TODO: FIXME, seems to have issues when a pipe is removed that it removes more than it should
-            // goes from 10 buckets stored to 1112 mB stored
             float scale = MekanismUtils.getScale(fluidScale, fluidTank);
             if (scale != fluidScale) {
                 fluidScale = scale;
@@ -243,7 +245,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public void onContentsChanged() {
-        //TODO: Do we want to mark the network as dirty
+        updateSaveShares = true;
     }
 
     public static class FluidTransferEvent extends Event {

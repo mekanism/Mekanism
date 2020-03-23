@@ -22,6 +22,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.target.GasHandlerTarget;
+import mekanism.common.base.target.GasTransmitterSaveTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
 import mekanism.common.util.CapabilityUtils;
@@ -71,6 +72,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
+        super.adoptTransmittersAndAcceptorsFrom(net);
         if (isRemote()) {
             if (!net.gasTank.isEmpty() && net.gasScale > gasScale) {
                 gasScale = net.gasScale;
@@ -91,7 +93,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             }
             net.gasTank.setEmpty();
         }
-        super.adoptTransmittersAndAcceptorsFrom(net);
     }
 
     @Nonnull
@@ -131,6 +132,27 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         }
     }
 
+    @Override
+    protected void updateSaveShares() {
+        super.updateSaveShares();
+        int size = transmittersSize();
+        if (size > 0) {
+            GasStack gasType = gasTank.getStack();
+            //Just pretend we are always accessing it from the north
+            Direction side = Direction.NORTH;
+            Set<GasTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
+            for (IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter : transmitters) {
+                GasTransmitterSaveTarget saveTarget = new GasTransmitterSaveTarget(gasType);
+                saveTarget.addHandler(side, transmitter);
+                saveTargets.add(saveTarget);
+            }
+            EmitUtils.sendToAcceptors(saveTargets, size, gasType.getAmount(), gasType);
+            for (GasTransmitterSaveTarget saveTarget : saveTargets) {
+                saveTarget.saveShare(side);
+            }
+        }
+    }
+
     private int tickEmit(@Nonnull GasStack stack) {
         Set<GasHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
@@ -160,28 +182,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             }
         }
         return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, stack.getAmount(), stack);
-    }
-
-    /**
-     * @return remainder
-     */
-    @Nonnull
-    public GasStack emit(@Nonnull GasStack stack, Action action) {
-        if (stack.isEmpty() || (!gasTank.isEmpty() && !gasTank.isTypeEqual(stack))) {
-            return stack;
-        }
-        int toAdd = Math.min(gasTank.getNeeded(), stack.getAmount());
-        if (action.execute()) {
-            if (gasTank.isEmpty()) {
-                gasTank.setStack(new GasStack(stack, toAdd));
-            } else {
-                //Otherwise try to grow the stack
-                if (gasTank.growStack(toAdd, Action.EXECUTE) != toAdd) {
-                    //TODO: Print warning/error
-                }
-            }
-        }
-        return new GasStack(stack, stack.getAmount() - toAdd);
     }
 
     @Override
@@ -254,7 +254,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public void onContentsChanged() {
-        //TODO: Do we want to mark the network as dirty
+        updateSaveShares = true;
     }
 
     public static class GasTransferEvent extends Event {

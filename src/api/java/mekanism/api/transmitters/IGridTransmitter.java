@@ -1,8 +1,10 @@
 package mekanism.api.transmitters;
 
 import java.util.Collection;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.math.FloatingLong;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -39,6 +41,9 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     double getTransmitterNetworkCapacity();
 
+    @Nonnull
+    FloatingLong getCapacityAsFloatingLong();
+
     int getCapacity();
 
     World world();
@@ -62,8 +67,6 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     NETWORK getExternalNetwork(Coord4D from);
 
     void takeShare();
-
-    void updateShare();
 
     /**
      * @return The transmitter's buffer.

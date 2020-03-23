@@ -6,7 +6,6 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -82,8 +81,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     private void checkCanModify() {
         if (isConstant) {
-            //TODO: Throw an exception
-            MekanismAPI.logger.warn("TRIED TO MODIFY A CONSTANT FLOATING LONG");
+            throw new IllegalStateException("Tried to modify a floating constant long");
         }
     }
 
@@ -108,10 +106,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     public FloatingLong copy() {
         return new FloatingLong(value, decimal, false);
-    }
-
-    public FloatingLong modulo(long mod) {
-        return create(value % mod, decimal);
     }
 
     //TODO: Do we want to do the sub implementations as a copy and then the in place value
@@ -355,6 +349,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         if (numberDigits < DECIMAL_DIGITS) {
             //We need to pad it on the right with zeros
             decimalAsString += getZeros(DECIMAL_DIGITS - numberDigits);
+        } else if (numberDigits > DECIMAL_DIGITS) {
+            //We need to trim it to make sure it will be in range of a short
+            decimalAsString = decimalAsString.substring(0, DECIMAL_DIGITS);
         }
         return Short.parseShort(decimalAsString);
     }
@@ -385,7 +382,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     @Override
     public int intValue() {
-        return value > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) value;
+        return MathUtils.clampToInt(value);
     }
 
     @Override

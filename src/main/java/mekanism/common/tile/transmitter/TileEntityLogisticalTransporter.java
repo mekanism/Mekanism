@@ -299,10 +299,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public void takeShare() {
     }
 
-    @Override
-    public void updateShare() {
-    }
-
     @Nonnull
     @Override
     public TransporterImpl getTransmitter() {
