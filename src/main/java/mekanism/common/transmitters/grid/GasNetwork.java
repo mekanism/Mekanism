@@ -47,11 +47,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     private final List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
     public final VariableCapacityGasTank gasTank;
 
-    private int transferDelay;
-    public boolean didTransfer;
-    private boolean prevTransfer;
     public float gasScale;
-    private int prevStored;
     private int prevTransferAmount;
 
     public GasNetwork() {
@@ -67,7 +63,9 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 net.deregister();
             }
         }
-        gasScale = getScale();
+        if (!gasTank.isEmpty() && gasTank.getCapacity() > 0) {
+            gasScale = Math.min(1, (float) gasTank.getStored() / gasTank.getCapacity());
+        }
         register();
     }
 
@@ -105,16 +103,15 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
         GasStack gas = transmitter.getBuffer();
-        if (gas.isEmpty()) {
+        if (gas == null || gas.isEmpty()) {
+            //Note: We support null given technically the API says it is nullable, so if someone makes a custom IGridTransmitter
+            // with it being null would have issues
             return;
         }
         if (gasTank.isEmpty()) {
             gasTank.setStack(gas.copy());
-            return;
-        }
-
-        //TODO: better multiple buffer impl
-        if (gas.isTypeEqual(gasTank.getType())) {
+        } else if (gas.isTypeEqual(gasTank.getType())) {
+            //TODO: better multiple buffer impl
             int amount = gas.getAmount();
             if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
                 //TODO: Print warning/error
@@ -191,56 +188,24 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     public void onUpdate() {
         super.onUpdate();
         if (!isRemote()) {
-            prevTransferAmount = 0;
-            if (transferDelay == 0) {
-                didTransfer = false;
-            } else {
-                transferDelay--;
-            }
-
-            int stored = gasTank.getStored();
-            if (stored != prevStored) {
-                prevStored = stored;
+            float scale = MekanismUtils.getScale(gasScale, gasTank);
+            if (scale != gasScale) {
+                gasScale = scale;
                 needsUpdate = true;
             }
-            if (didTransfer != prevTransfer || needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, getBuffer(), didTransfer));
+            if (needsUpdate) {
+                MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, getBuffer(), gasScale));
                 needsUpdate = false;
             }
-
-            prevTransfer = didTransfer;
-            if (!gasTank.isEmpty()) {
+            if (gasTank.isEmpty()) {
+                prevTransferAmount = 0;
+            } else {
                 prevTransferAmount = tickEmit(gasTank.getStack());
-                if (prevTransferAmount > 0) {
-                    didTransfer = true;
-                    transferDelay = 2;
-                }
                 if (gasTank.shrinkStack(prevTransferAmount, Action.EXECUTE) != prevTransferAmount) {
                     //TODO: Print warning/error
                 }
             }
         }
-    }
-
-    @Override
-    public void clientTick() {
-        super.clientTick();
-        gasScale = Math.max(gasScale, getScale());
-        if (didTransfer && gasScale < 1) {
-            gasScale = Math.max(getScale(), Math.min(1, gasScale + 0.02F));
-        } else if (!didTransfer && gasScale > 0) {
-            gasScale = Math.max(getScale(), Math.max(0, gasScale - 0.02F));
-            if (gasScale == 0) {
-                gasTank.setEmpty();
-            }
-        }
-    }
-
-    public float getScale() {
-        if (gasTank.isEmpty() || gasTank.getCapacity() == 0) {
-            return 0;
-        }
-        return Math.min(1, (float) gasTank.getStored() / gasTank.getCapacity());
     }
 
     @Override
@@ -295,14 +260,13 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     public static class GasTransferEvent extends Event {
 
         public final GasNetwork gasNetwork;
-
         public final GasStack transferType;
-        public final boolean didTransfer;
+        public final float gasScale;
 
-        public GasTransferEvent(GasNetwork network, GasStack type, boolean did) {
+        public GasTransferEvent(GasNetwork network, GasStack type, float scale) {
             gasNetwork = network;
             transferType = type;
-            didTransfer = did;
+            gasScale = scale;
         }
     }
 }

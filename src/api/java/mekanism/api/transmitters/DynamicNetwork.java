@@ -301,6 +301,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     @Override
     public void clientTick() {
+        //TODO: No implementations use this anymore, do we want to remove the dynamic network ticking on the client
     }
 
     public void queueClientUpdate(Collection<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> newTransmitters) {

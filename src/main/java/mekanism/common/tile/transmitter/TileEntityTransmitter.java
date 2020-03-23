@@ -7,6 +7,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.block.IHasTileEntity;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.DynamicNetwork;
@@ -23,7 +25,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -42,8 +43,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     private N lastClientNetwork = null;
 
-    public TileEntityTransmitter(TileEntityType<? extends TileEntityTransmitter> type) {
-        super(type);
+    public TileEntityTransmitter(IBlockProvider blockProvider) {
+        super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType());
         transmitterDelegate = new TransmitterImpl<>(this);
     }
 

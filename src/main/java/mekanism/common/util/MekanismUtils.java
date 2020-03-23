@@ -18,6 +18,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.Mekanism;
@@ -183,7 +184,7 @@ public final class MekanismUtils {
         return 0;
     }
 
-    //TODO: Use this method in various places
+    //TODO: Use these methods in various places
     public static float getScale(float prevScale, IExtendedFluidTank tank) {
         return getScale(prevScale, tank.getFluidAmount(), tank.getCapacity(), tank.isEmpty());
     }
@@ -193,11 +194,27 @@ public final class MekanismUtils {
     }
 
     public static float getScale(float prevScale, int stored, int capacity, boolean empty) {
-        float targetScale = (float) stored / capacity;
+        return getScale(prevScale, capacity == 0 ? 0 : (float) stored / capacity, empty);
+    }
+
+    public static float getScale(float prevScale, IEnergyContainer container) {
+        float targetScale;
+        FloatingLong maxEnergy = container.getMaxEnergy();
+        if (maxEnergy.isEmpty()) {
+            targetScale = 0;
+        } else {
+            FloatingLong scale = container.getEnergy().divide(maxEnergy);
+            //TODO: FloatingLong check if this has any overflow issues
+            targetScale = scale.floatValue();
+        }
+        return getScale(prevScale, targetScale, container.isEmpty());
+    }
+
+    public static float getScale(float prevScale, float targetScale, boolean empty) {
         if (Math.abs(prevScale - targetScale) > 0.01) {
             return (9 * prevScale + targetScale) / 10;
         } else if (!empty && prevScale == 0) {
-            //If we have any contents in the tank make sure we end up rendering it
+            //If we have any contents make sure we end up rendering it
             return targetScale;
         }
         return prevScale;

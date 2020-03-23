@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
-import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
@@ -58,7 +57,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     private int delayCount = 0;
 
     public TileEntityLogisticalTransporter(IBlockProvider blockProvider) {
-        super(((IHasTileEntity<TileEntityLogisticalTransporter>) blockProvider.getBlock()).getTileType());
+        super(blockProvider);
         Block block = blockProvider.getBlock();
         if (block instanceof BlockLogisticalTransporter) {
             this.tier = Attribute.getTier(blockProvider.getBlock(), TransporterTier.class);

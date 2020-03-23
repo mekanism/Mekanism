@@ -113,7 +113,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
         float scale = MekanismUtils.getScale(prevScale, fluidTank);
         if (scale != prevScale) {
-            needsPacket = true;
             if (prevScale == 0 || scale == 0) {
                 //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
                 // as the fluid may have changed and have a light value
@@ -122,6 +121,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 MekanismUtils.recheckLighting(world, pos);
             }
             prevScale = scale;
+            needsPacket = true;
         }
         inputSlot.handleTank(outputSlot, editMode);
         if (getActive()) {

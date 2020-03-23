@@ -35,7 +35,6 @@ import mekanism.common.frequency.FrequencyType;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTransmitterUpdate;
-import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.registries.MekanismBlocks;
@@ -357,31 +356,28 @@ public class Mekanism {
 
     private void onEnergyTransferred(EnergyTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.ENERGY, event.energyNetwork.firstTransmitter().coord(), event.power), event.energyNetwork);
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.energyNetwork, event.energyScale), event.energyNetwork);
         } catch (Exception ignored) {
         }
     }
 
     private void onGasTransferred(GasTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.GAS, event.gasNetwork.firstTransmitter().coord(), event.transferType, event.didTransfer),
-                  event.gasNetwork);
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.gasNetwork, event.transferType, event.gasScale), event.gasNetwork);
         } catch (Exception ignored) {
         }
     }
 
     private void onLiquidTransferred(FluidTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.FLUID, event.fluidNetwork.firstTransmitter().coord(), event.fluidType, event.didTransfer),
-                  event.fluidNetwork);
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.fluidNetwork, event.fluidType, event.fluidScale), event.fluidNetwork);
         } catch (Exception ignored) {
         }
     }
 
     private void onTransmittersAddedEvent(TransmittersAddedEvent event) {
         try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.UPDATE, event.network.firstTransmitter().coord(), event.newNetwork, event.newTransmitters),
-                  event.network);
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.newNetwork, event.newTransmitters), event.network);
         } catch (Exception ignored) {
         }
     }

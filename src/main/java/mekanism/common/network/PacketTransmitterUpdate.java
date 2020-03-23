@@ -24,47 +24,52 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
+//TODO: Do we want to split this into multiple packets
 public class PacketTransmitterUpdate {
 
     private PacketType packetType;
 
     private Coord4D coord4D;
 
-    private double power;
+    private float energyScale;
 
     @Nonnull
     private GasStack gasStack = GasStack.EMPTY;
-    private boolean didGasTransfer;
+    private float gasScale;
 
     @Nonnull
     private FluidStack fluidStack = FluidStack.EMPTY;
-    private boolean didFluidTransfer;
+    private float fluidScale;
 
     private boolean newNetwork;
     private Collection<IGridTransmitter<?, ?, ?>> transmittersAdded;
     private Collection<Coord4D> transmitterCoords;
 
-    public PacketTransmitterUpdate(PacketType type, Coord4D coord, Object... data) {
-        this(type, coord);
-        switch (packetType) {
-            case UPDATE:
-                newNetwork = (Boolean) data[0];
-                transmittersAdded = (Collection<IGridTransmitter<?, ?, ?>>) data[1];
-                break;
-            case ENERGY:
-                power = (Double) data[0];
-                break;
-            case GAS:
-                gasStack = (GasStack) data[0];
-                didGasTransfer = (Boolean) data[1];
-                break;
-            case FLUID:
-                fluidStack = (FluidStack) data[0];
-                didFluidTransfer = (Boolean) data[1];
-                break;
-            default:
-                break;
-        }
+    public PacketTransmitterUpdate(DynamicNetwork<?, ?, ?> network, boolean newNetwork, Collection<IGridTransmitter<?, ?, ?>> transmittersAdded) {
+        this(network, PacketType.UPDATE);
+        this.newNetwork = newNetwork;
+        this.transmittersAdded = transmittersAdded;
+    }
+
+    public PacketTransmitterUpdate(EnergyNetwork network, float energyScale) {
+        this(network, PacketType.ENERGY);
+        this.energyScale = energyScale;
+    }
+
+    public PacketTransmitterUpdate(GasNetwork network, @Nonnull GasStack gasStack, float gasScale) {
+        this(network, PacketType.GAS);
+        this.gasStack = gasStack;
+        this.gasScale = gasScale;
+    }
+
+    public PacketTransmitterUpdate(FluidNetwork network, @Nonnull FluidStack fluidStack, float fluidScale) {
+        this(network, PacketType.FLUID);
+        this.fluidStack = fluidStack;
+        this.fluidScale = fluidScale;
+    }
+
+    private PacketTransmitterUpdate(DynamicNetwork<?, ?, ?> network, PacketType type) {
+        this(type, network.firstTransmitter().coord());
     }
 
     private PacketTransmitterUpdate(PacketType type, Coord4D coord) {
@@ -104,19 +109,19 @@ public class PacketTransmitterUpdate {
                 TransmissionType transmissionType = transmitter.getTransmissionType();
                 if (message.packetType == PacketType.ENERGY) {
                     if (transmissionType == TransmissionType.ENERGY) {
-                        ((EnergyNetwork) transmitter.getTransmitterNetwork()).energyScale = message.power;
+                        ((EnergyNetwork) transmitter.getTransmitterNetwork()).energyScale = message.energyScale;
                     }
                 } else if (message.packetType == PacketType.GAS) {
                     if (transmissionType == TransmissionType.GAS) {
                         GasNetwork net = (GasNetwork) transmitter.getTransmitterNetwork();
                         net.gasTank.setStack(message.gasStack);
-                        net.didTransfer = message.didGasTransfer;
+                        net.gasScale = message.gasScale;
                     }
                 } else if (message.packetType == PacketType.FLUID) {
                     if (transmissionType == TransmissionType.FLUID) {
                         FluidNetwork net = (FluidNetwork) transmitter.getTransmitterNetwork();
                         net.fluidTank.setStack(message.fluidStack);
-                        net.didTransfer = message.didFluidTransfer;
+                        net.fluidScale = message.fluidScale;
                     }
                 }
             }
@@ -137,16 +142,16 @@ public class PacketTransmitterUpdate {
                 }
                 break;
             case ENERGY:
-                buf.writeDouble(pkt.power);
+                buf.writeFloat(pkt.energyScale);
                 break;
             case GAS:
                 pkt.gasStack.writeToPacket(buf);
-                buf.writeBoolean(pkt.didGasTransfer);
+                buf.writeFloat(pkt.gasScale);
                 break;
             case FLUID:
-                //TODO: Use this in more places
+                //TODO: Use FluidStack#writeToPacket in more places
                 pkt.fluidStack.writeToPacket(buf);
-                buf.writeBoolean(pkt.didFluidTransfer);
+                buf.writeFloat(pkt.fluidScale);
                 break;
             default:
                 break;
@@ -164,13 +169,13 @@ public class PacketTransmitterUpdate {
                 packet.transmitterCoords.add(Coord4D.read(buf));
             }
         } else if (packet.packetType == PacketType.ENERGY) {
-            packet.power = buf.readDouble();
+            packet.energyScale = buf.readFloat();
         } else if (packet.packetType == PacketType.GAS) {
             packet.gasStack = GasStack.readFromPacket(buf);
-            packet.didGasTransfer = buf.readBoolean();
+            packet.gasScale = buf.readFloat();
         } else if (packet.packetType == PacketType.FLUID) {
             packet.fluidStack = FluidStack.readFromPacket(buf);
-            packet.didFluidTransfer = buf.readBoolean();
+            packet.fluidScale = buf.readFloat();
         }
         return packet;
     }

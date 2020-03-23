@@ -10,7 +10,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
-import mekanism.api.block.IHasTileEntity;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
@@ -46,8 +45,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     public final PipeTier tier;
 
-    public float currentScale;
-
     @Nonnull
     private FluidStack lastWrite = FluidStack.EMPTY;
     private ProxyFluidHandler readOnlyHandler;
@@ -56,7 +53,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public BasicFluidTank buffer;
 
     public TileEntityMechanicalPipe(IBlockProvider blockProvider) {
-        super(((IHasTileEntity<TileEntityMechanicalPipe>) blockProvider.getBlock()).getTileType());
+        super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), PipeTier.class);
         fluidHandlers = new EnumMap<>(Direction.class);
         buffer = BasicFluidTank.create(getCapacity(), BasicFluidTank.alwaysFalse, BasicFluidTank.alwaysTrue, this);
@@ -150,16 +147,18 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Nonnull
     private FluidStack getSaveShare() {
         if (getTransmitter().hasTransmitterNetwork()) {
-            FluidNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
-            if (!transmitterNetwork.fluidTank.isEmpty()) {
-                int toSave = transmitterNetwork.fluidTank.getFluidAmount() / transmitterNetwork.transmittersSize();
-                if (transmitterNetwork.firstTransmitter().equals(getTransmitter())) {
-                    toSave += transmitterNetwork.fluidTank.getFluidAmount() % transmitterNetwork.transmittersSize();
-                }
-                return new FluidStack(transmitterNetwork.getBuffer(), toSave);
+            FluidNetwork network = getTransmitter().getTransmitterNetwork();
+            if (network.fluidTank.isEmpty()) {
+                return FluidStack.EMPTY;
             }
+            //TODO: FIXME, this is very wrong, as not all transmitters may be the same size
+            int toSave = network.fluidTank.getFluidAmount() / network.transmittersSize();
+            if (network.firstTransmitter().equals(getTransmitter())) {
+                toSave += network.fluidTank.getFluidAmount() % network.transmittersSize();
+            }
+            return new FluidStack(network.getBuffer(), toSave);
         }
-        return FluidStack.EMPTY;
+        return buffer.getFluid().copy();
     }
 
     @Override
@@ -245,7 +244,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Nonnull
     @Override
     public FluidStack getBuffer() {
-        return buffer == null ? FluidStack.EMPTY : buffer.getFluid();
+        return buffer.getFluid();
     }
 
     @Override

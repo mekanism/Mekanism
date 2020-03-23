@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
-import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -41,7 +40,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     public double heatToAbsorb = 0;
 
     public TileEntityThermodynamicConductor(IBlockProvider blockProvider) {
-        super(((IHasTileEntity<TileEntityThermodynamicConductor>) blockProvider.getBlock()).getTileType());
+        super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), ConductorTier.class);
     }
 

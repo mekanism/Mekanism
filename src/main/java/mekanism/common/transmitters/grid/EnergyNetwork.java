@@ -41,10 +41,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     private final List<IEnergyContainer> energyContainers;
     public final VariableCapacityEnergyContainer energyContainer;
 
-    //TODO: Improve this mess, it will be easier to first rewrite the gas and fluid network though to have the scale calculations
-    // happen on the server and only bother sending sync/update packets to the client when something changes similar to how
-    // it is done for fluid tanks. And then we can copy the code to here and modify it to use our proper scale calculations
-    public double energyScale;
+    public float energyScale;
     private FloatingLong prevTransferAmount = FloatingLong.ZERO;
     private FloatingLong floatingLongCapacity = FloatingLong.ZERO;
 
@@ -61,7 +58,9 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
                 net.deregister();
             }
         }
-        energyScale = getScale();
+        if (!energyContainer.isEmpty() && !energyContainer.getMaxEnergy().isEmpty()) {
+            energyScale = Math.min(1, energyContainer.getEnergy().divide(energyContainer.getMaxEnergy()).floatValue());
+        }
         register();
     }
 
@@ -155,7 +154,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
                 totalHandlers += curHandlers;
             }
         }
-        //TODO: Evaluate copying this
+        //TODO: FloatingLong Evaluate copying this
         return EmitUtils.sendToAcceptors(targets, totalHandlers, energyToSend.copy());
     }
 
@@ -168,30 +167,22 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     public void onUpdate() {
         super.onUpdate();
         if (!isRemote()) {
-            prevTransferAmount = FloatingLong.ZERO;
-            double currentPowerScale = getScale();
-            if (Math.abs(currentPowerScale - energyScale) > 0.01 || (currentPowerScale != energyScale && (currentPowerScale == 0 || currentPowerScale == 1))) {
+            float scale = MekanismUtils.getScale(energyScale, energyContainer);
+            if (scale != energyScale) {
+                energyScale = scale;
                 needsUpdate = true;
             }
             if (needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
-                energyScale = currentPowerScale;
+                MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, energyScale));
                 needsUpdate = false;
             }
-            if (!energyContainer.isEmpty()) {
+            if (energyContainer.isEmpty()) {
+                prevTransferAmount = FloatingLong.ZERO;
+            } else {
                 prevTransferAmount = tickEmit(energyContainer.getEnergy());
                 energyContainer.extract(prevTransferAmount, Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
-    }
-
-    public double getScale() {
-        if (energyContainer.isEmpty() || energyContainer.getMaxEnergy().isEmpty()) {
-            return 0;
-        }
-        //TODO: Figure this out better
-        //return Math.max(Math.min(Math.ceil(Math.log10(energyContainer.getEnergy() * 20) * 2) / 10, 1), energyContainer.getEnergy() / energyContainer.getMaxEnergy());
-        return FloatingLong.ONE.max(energyContainer.getEnergy().divide(energyContainer.getMaxEnergy())).doubleValue();
     }
 
     @Override
@@ -228,12 +219,11 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     public static class EnergyTransferEvent extends Event {
 
         public final EnergyNetwork energyNetwork;
+        public final float energyScale;
 
-        public final double power;
-
-        public EnergyTransferEvent(EnergyNetwork network, double currentPower) {
+        public EnergyTransferEvent(EnergyNetwork network, float scale) {
             energyNetwork = network;
-            power = currentPower;
+            energyScale = scale;
         }
     }
 }

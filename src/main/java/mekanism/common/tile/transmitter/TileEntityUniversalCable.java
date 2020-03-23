@@ -10,7 +10,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
-import mekanism.api.block.IHasTileEntity;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -48,11 +47,10 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     private final Map<Direction, ProxyStrictEnergyHandler> strictEnergyHandlers;
     private final List<IEnergyContainer> energyContainers;
     public BasicEnergyContainer buffer;
-    public double currentPower;
-    public FloatingLong lastWrite = FloatingLong.ZERO;
+    private FloatingLong lastWrite = FloatingLong.ZERO;
 
     public TileEntityUniversalCable(IBlockProvider blockProvider) {
-        super(((IHasTileEntity<TileEntityUniversalCable>) blockProvider.getBlock()).getTileType());
+        super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), CableTier.class);
         strictEnergyHandlers = new EnumMap<>(Direction.class);
         buffer = BasicEnergyContainer.create(getCableCapacity(), BasicEnergyContainer.alwaysFalse, BasicEnergyContainer.alwaysTrue, this);
@@ -79,12 +77,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
 
     @Override
     public void tick() {
-        if (isRemote()) {
-            double targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().energyScale : 0;
-            if (Math.abs(currentPower - targetPower) > 0.01) {
-                currentPower = (9 * currentPower + targetPower) / 10;
-            }
-        } else {
+        if (!isRemote()) {
             updateShare();
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
@@ -155,19 +148,21 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
 
     private FloatingLong getSaveShare() {
         if (getTransmitter().hasTransmitterNetwork()) {
-            EnergyNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
-            if (!transmitterNetwork.energyContainer.isEmpty()) {
-                int size = transmitterNetwork.transmittersSize();
-                FloatingLong toSave = transmitterNetwork.energyContainer.getEnergy().divide(size);
-                if (transmitterNetwork.firstTransmitter().equals(getTransmitter())) {
-                    toSave.plusEqual(transmitterNetwork.energyContainer.getEnergy().modulo(size));
-                }
-                return toSave;
+            EnergyNetwork network = getTransmitter().getTransmitterNetwork();
+            if (network.energyContainer.isEmpty()) {
+                return FloatingLong.ZERO;
             }
+            //TODO: FIXME, this is very wrong, as not all transmitters may be the same size
+            int size = network.transmittersSize();
+            FloatingLong toSave = network.energyContainer.getEnergy().divide(size);
+            if (network.firstTransmitter().equals(getTransmitter())) {
+                toSave.plusEqual(network.energyContainer.getEnergy().modulo(size));
+            }
+            return toSave;
             //TODO: Figure out unless the above works fine
             //return EnergyNetwork.round(getTransmitter().getTransmitterNetwork().energyContainer.getEnergy() * (1F / getTransmitter().getTransmitterNetwork().transmittersSize()));
         }
-        return FloatingLong.ZERO;
+        return buffer.getEnergy().copy();
     }
 
     @Override

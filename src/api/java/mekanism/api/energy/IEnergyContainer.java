@@ -109,7 +109,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      *
      * @return The maximum amount of energy allowed in this {@link IEnergyContainer}.
      */
-    FloatingLong getMaxEnergy();
+    FloatingLong getMaxEnergy();//TODO: Specify to not modify getMaxEnergy
 
     /**
      * Called when the contents of this container changes.

@@ -39,11 +39,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     private final List<IExtendedFluidTank> fluidTanks;
     public final VariableCapacityFluidTank fluidTank;
 
-    private int transferDelay;
-    public boolean didTransfer;
-    private boolean prevTransfer;
     public float fluidScale;
-    private int prevStored;
     private int prevTransferAmount;
 
     public FluidNetwork() {
@@ -59,7 +55,9 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 net.deregister();
             }
         }
-        fluidScale = getScale();
+        if (!fluidTank.isEmpty() && fluidTank.getCapacity() > 0) {
+            fluidScale = Math.min(1, (float) fluidTank.getFluidAmount() / fluidTank.getCapacity());
+        }
         register();
     }
 
@@ -97,15 +95,15 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
         FluidStack fluid = transmitter.getBuffer();
-        if (fluid.isEmpty()) {
+        if (fluid == null || fluid.isEmpty()) {
+            //Note: We support null given technically the API says it is nullable, so if someone makes a custom IGridTransmitter
+            // with it being null would have issues
             return;
         }
         if (fluidTank.isEmpty()) {
             fluidTank.setStack(fluid.copy());
-            return;
-        }
-        //TODO better multiple buffer impl
-        if (fluidTank.isFluidEqual(fluid)) {
+        } else if (fluidTank.isFluidEqual(fluid)) {
+            //TODO better multiple buffer impl
             int amount = fluid.getAmount();
             if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
                 //TODO: Print warning/error
@@ -177,54 +175,26 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     public void onUpdate() {
         super.onUpdate();
         if (!isRemote()) {
-            prevTransferAmount = 0;
-            if (transferDelay == 0) {
-                didTransfer = false;
-            } else {
-                transferDelay--;
-            }
-            int stored = fluidTank.getFluidAmount();
-            if (stored != prevStored) {
+            //TODO: FIXME, seems to have issues when a pipe is removed that it removes more than it should
+            // goes from 10 buckets stored to 1112 mB stored
+            float scale = MekanismUtils.getScale(fluidScale, fluidTank);
+            if (scale != fluidScale) {
+                fluidScale = scale;
                 needsUpdate = true;
             }
-            prevStored = stored;
-            if (didTransfer != prevTransfer || needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, getBuffer(), didTransfer));
+            if (needsUpdate) {
+                MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, getBuffer(), fluidScale));
                 needsUpdate = false;
             }
-            prevTransfer = didTransfer;
-            if (!fluidTank.isEmpty()) {
+            if (fluidTank.isEmpty()) {
+                prevTransferAmount = 0;
+            } else {
                 prevTransferAmount = tickEmit(fluidTank.getFluid());
-                if (prevTransferAmount > 0) {
-                    didTransfer = true;
-                    transferDelay = 2;
-                }
                 if (fluidTank.shrinkStack(prevTransferAmount, Action.EXECUTE) != prevTransferAmount) {
                     //TODO: Print warning/error
                 }
             }
         }
-    }
-
-    @Override
-    public void clientTick() {
-        super.clientTick();
-        fluidScale = Math.max(fluidScale, getScale());
-        if (didTransfer && fluidScale < 1) {
-            fluidScale = Math.max(getScale(), Math.min(1, fluidScale + 0.02F));
-        } else if (!didTransfer && fluidScale > 0) {
-            fluidScale = getScale();
-            if (fluidScale == 0) {
-                fluidTank.setEmpty();
-            }
-        }
-    }
-
-    public float getScale() {
-        if (fluidTank.isEmpty() || fluidTank.getCapacity() == 0) {
-            return 0;
-        }
-        return Math.min(1, (float) fluidTank.getFluidAmount() / fluidTank.getCapacity());
     }
 
     @Override
@@ -281,12 +251,12 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         public final FluidNetwork fluidNetwork;
 
         public final FluidStack fluidType;
-        public final boolean didTransfer;
+        public final float fluidScale;
 
-        public FluidTransferEvent(FluidNetwork network, @Nonnull FluidStack type, boolean did) {
+        public FluidTransferEvent(FluidNetwork network, @Nonnull FluidStack type, float scale) {
             fluidNetwork = network;
             fluidType = type;
-            didTransfer = did;
+            fluidScale = scale;
         }
     }
 }

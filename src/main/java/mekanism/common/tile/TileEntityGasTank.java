@@ -110,6 +110,8 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(gasTank = GasTankGasTank.create(tier, this));
+        //TODO: For some reason does not update properly and allow for insertion, when the side changes
+        // front face
         return builder.build();
     }
 

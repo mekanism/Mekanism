@@ -10,7 +10,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
-import mekanism.api.block.IHasTileEntity;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
@@ -47,8 +46,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     public final TubeTier tier;
 
-    public float currentScale;
-
     @Nonnull
     private GasStack lastWrite = GasStack.EMPTY;
     private ProxyGasHandler readOnlyHandler;
@@ -57,7 +54,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public BasicGasTank buffer;
 
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
-        super(((IHasTileEntity<TileEntityPressurizedTube>) blockProvider.getBlock()).getTileType());
+        super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), TubeTier.class);
         gasHandlers = new EnumMap<>(Direction.class);
         buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, this);
@@ -83,12 +80,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public void tick() {
-        if (isRemote()) {
-            float targetScale = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().gasScale : (float) buffer.getStored() / (float) buffer.getCapacity();
-            if (Math.abs(currentScale - targetScale) > 0.01) {
-                currentScale = (9 * currentScale + targetScale) / 10;
-            }
-        } else {
+        if (!isRemote()) {
             updateShare();
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
@@ -158,16 +150,18 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     private GasStack getSaveShare() {
         if (getTransmitter().hasTransmitterNetwork()) {
-            GasNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
-            if (!transmitterNetwork.gasTank.isEmpty()) {
-                int toSave = transmitterNetwork.gasTank.getStored() / transmitterNetwork.transmittersSize();
-                if (transmitterNetwork.firstTransmitter().equals(getTransmitter())) {
-                    toSave += transmitterNetwork.gasTank.getStored() % transmitterNetwork.transmittersSize();
-                }
-                return new GasStack(transmitterNetwork.getBuffer(), toSave);
+            GasNetwork network = getTransmitter().getTransmitterNetwork();
+            if (network.gasTank.isEmpty()) {
+                return GasStack.EMPTY;
             }
+            //TODO: FIXME, this is very wrong, as not all transmitters may be the same size
+            int toSave = network.gasTank.getStored() / network.transmittersSize();
+            if (network.firstTransmitter().equals(getTransmitter())) {
+                toSave += network.gasTank.getStored() % network.transmittersSize();
+            }
+            return new GasStack(network.getBuffer(), toSave);
         }
-        return GasStack.EMPTY;
+        return buffer.getStack().copy();
     }
 
     @Override
