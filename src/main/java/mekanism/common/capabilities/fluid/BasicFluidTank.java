@@ -143,8 +143,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default this returns {@link Integer#MAX_VALUE} so as to not actually limit the tank's rate.
-     * @apiNote By default this is ignored for direct setting of the stack/stack size
+     * @implNote By default this returns {@link Integer#MAX_VALUE} so as to not actually limit the tank's rate. By default this is also ignored for direct setting of the
+     * stack/stack size
      */
     protected int getRate(@Nullable AutomationType automationType) {
         //TODO: Decide if we want to split this into a rate for inserting and a rate for extracting.
@@ -168,12 +168,6 @@ public class BasicFluidTank implements IExtendedFluidTank {
         onContentsChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
-     */
     @Override
     public FluidStack insert(@Nonnull FluidStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isFluidValid(stack) || !canInsert.test(stack, automationType)) {
@@ -207,12 +201,6 @@ public class BasicFluidTank implements IExtendedFluidTank {
         return stack;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
-     */
     @Override
     public FluidStack extract(int amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1 || !canExtract.test(stored, automationType)) {
@@ -293,8 +281,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying.
      */
     @Override
     public boolean isEmpty() {
@@ -304,8 +291,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying.
      */
     @Override
     public boolean isFluidEqual(FluidStack other) {
@@ -315,8 +301,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying.
      */
     @Override
     public int getFluidAmount() {
@@ -331,8 +316,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying.
      */
     @Override
     public CompoundNBT serializeNBT() {

@@ -139,12 +139,6 @@ public class BasicInventorySlot implements IInventorySlot {
         onContentsChanged();
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
-     */
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isItemValid(stack) || !canInsert.test(stack, automationType)) {
@@ -178,12 +172,6 @@ public class BasicInventorySlot implements IInventorySlot {
         return stack;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
-     */
     @Override
     public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1 || !canExtract.test(current, automationType)) {
@@ -275,8 +263,7 @@ public class BasicInventorySlot implements IInventorySlot {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
      */
     @Override
     public int growStack(int amount, Action action) {
@@ -292,8 +279,7 @@ public class BasicInventorySlot implements IInventorySlot {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
      */
     @Override
     public boolean isEmpty() {
@@ -303,8 +289,7 @@ public class BasicInventorySlot implements IInventorySlot {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
      */
     @Override
     public int getCount() {

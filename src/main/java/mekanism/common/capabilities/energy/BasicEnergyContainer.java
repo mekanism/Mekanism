@@ -9,10 +9,10 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -71,8 +71,14 @@ public class BasicEnergyContainer implements IEnergyContainer {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @apiNote We return a cached value from this that if modified won't actually end up having any information about the container get changed.
+     */
     @Override
     public FloatingLong getEnergy() {
+        //TODO: Debate doing what the JavaDoc says. See BasicInventorySlot#getStack for details
         return stored;
     }
 
@@ -94,8 +100,8 @@ public class BasicEnergyContainer implements IEnergyContainer {
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default this returns {@link Double#MAX_VALUE} so as to not actually limit the container's rate.
-     * @apiNote By default this is ignored for direct setting of the stack/stack size
+     * @implNote By default this returns {@link FloatingLong#MAX_VALUE} so as to not actually limit the container's rate. By default this is also ignored for direct
+     * setting of the stack/stack size
      */
     protected FloatingLong getRate(@Nullable AutomationType automationType) {
         //TODO: Decide if we want to split this into a rate for inserting and a rate for extracting.
@@ -134,9 +140,33 @@ public class BasicEnergyContainer implements IEnergyContainer {
         return ret;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten as we return a cached/copy of our amount in {@link #getEnergy()}, and we can optimize out the copying.
+     */
+    @Override
+    public boolean isEmpty() {
+        return stored.isEmpty();
+    }
+
     @Override
     public FloatingLong getMaxEnergy() {
         return maxEnergy;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getEnergy()}, and we can optimize out the copying.
+     */
+    @Override
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = new CompoundNBT();
+        if (!isEmpty()) {
+            nbt.put(NBTConstants.STORED, stored.serializeNBT());
+        }
+        return nbt;
     }
 
     @Override

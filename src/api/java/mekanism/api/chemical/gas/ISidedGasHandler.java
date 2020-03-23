@@ -48,9 +48,8 @@ public interface ISidedGasHandler extends IGasHandler {
      * Returns the {@link GasStack} in a given tank.
      *
      * <p>
-     * <strong>IMPORTANT:</strong> This {@link GasStack} <em>MUST NOT</em> be modified. This method is not for
-     * altering internal contents. Any implementers who are able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely
-     * that the stack returned here will be a copy.
+     * <strong>IMPORTANT:</strong> This {@link GasStack} <em>MUST NOT</em> be modified. This method is not for altering internal contents. Any implementers who are able
+     * to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the stack returned here will be a copy.
      * </p>
      *
      * <p>
