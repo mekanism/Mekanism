@@ -2,6 +2,7 @@ package mekanism.common.config.value;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraft.util.ResourceLocation;
@@ -21,11 +22,7 @@ public class CachedResourceLocationListValue extends CachedResolvableConfigValue
     protected List<ResourceLocation> resolve(List<? extends String> encoded) {
         //We ignore any strings that are invalid resource locations
         // validation should have happened before we got here, but in case something went wrong we don't want to crash and burn
-        return encoded.stream()
-              .map(String::toLowerCase)
-              .filter(ResourceLocation::isResouceNameValid)
-              .map(ResourceLocation::new)
-              .collect(Collectors.toCollection(() -> new ArrayList<>(encoded.size())));
+        return encoded.stream().map(s -> ResourceLocation.tryCreate(s.toLowerCase())).filter(Objects::nonNull).collect(Collectors.toCollection(() -> new ArrayList<>(encoded.size())));
     }
 
     @Override

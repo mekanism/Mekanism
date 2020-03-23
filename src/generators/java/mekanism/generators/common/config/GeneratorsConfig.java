@@ -86,9 +86,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         windGenerationDimBlacklist = CachedResourceLocationListValue.wrap(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
               .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> {
                   if (o instanceof String) {
-                      String string = ((String) o).toLowerCase();
-                      if (ResourceLocation.isResouceNameValid(string)) {
-                          ResourceLocation dim = new ResourceLocation(string);
+                      ResourceLocation dim = ResourceLocation.tryCreate(((String) o).toLowerCase());
+                      if (dim != null) {
                           DimensionType dimensionType = DimensionType.byName(dim);
                           //byName defaults to overworld if it does not match. So make sure overworld was actually the one specified
                           if (dimensionType == DimensionType.OVERWORLD) {

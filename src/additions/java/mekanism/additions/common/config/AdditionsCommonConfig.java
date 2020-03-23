@@ -75,9 +75,9 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
                   .worldRestart()
                   .defineList("biomeBlackList", new ArrayList<>(), o -> {
                       if (o instanceof String) {
-                          String string = ((String) o).toLowerCase();
-                          if (ResourceLocation.isResouceNameValid(string)) {
-                              return ForgeRegistries.BIOMES.containsKey(new ResourceLocation(string));
+                          ResourceLocation rl = ResourceLocation.tryCreate(((String) o).toLowerCase());
+                          if (rl != null) {
+                              return ForgeRegistries.BIOMES.containsKey(rl);
                           }
                       }
                       return false;

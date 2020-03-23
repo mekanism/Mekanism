@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 @MethodsReturnNonnullByDefault
 public class FloatingLong extends Number implements Comparable<FloatingLong>, INBTSerializable<CompoundNBT> {
 
-    //TODO: Implement this class, and improve java docs
+    //TODO: Implement this class, and improve java docs. Organize and move all static methods either to the top or the bottom
     //TODO: Modify EnergyAPI to state what things should NOT be modified, given we stripped that out of the docs due to primitives not modifying the actual value
     private static final int DECIMAL_DIGITS = 4;//We only can support 4 digits in our decimal
     private static final short MAX_DECIMAL = 9_999;
@@ -63,8 +63,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         return new FloatingLong(value, decimal, true);
     }
 
-    //TODO: Max short value: 32,767
-    //TODO: max decimal we can easily represent: 0.9_999?
     private long value;
     private short decimal;
     private final boolean isConstant;
@@ -113,7 +111,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     }
 
     public FloatingLong modulo(long mod) {
-        return create(getValue() % mod);
+        return create(value % mod, decimal);
     }
 
     //TODO: Do we want to do the sub implementations as a copy and then the in place value
