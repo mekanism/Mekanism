@@ -1,6 +1,5 @@
-package meanism.api.math;
+package mekanism.api.math;
 
-import mekanism.api.math.FloatingLong;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

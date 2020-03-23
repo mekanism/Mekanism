@@ -118,7 +118,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
             // Note: this also will mark that the contents changed
             stored.plusEqual(toAdd);
         }
-        return amount.add(toAdd);
+        return amount.subtract(toAdd);
     }
 
     @Override
