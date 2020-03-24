@@ -36,14 +36,16 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSus
                 tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
             } else {
                 tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, slot.getStack().getDisplayName()));
-                tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY,
-                      slot.getCount() == Integer.MAX_VALUE ? MekanismLang.INFINITE : slot.getCount()));
+                if (tier == BinTier.CREATIVE) {
+                    tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, MekanismLang.INFINITE));
+                } else {
+                    tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, slot.getCount()));
+                }
             }
-            int cap = tier.getStorage();
-            if (cap == Integer.MAX_VALUE) {
+            if (tier == BinTier.CREATIVE) {
                 tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
             } else {
-                tooltip.add(MekanismLang.CAPACITY_ITEMS.translateColored(EnumColor.INDIGO, EnumColor.GRAY, cap));
+                tooltip.add(MekanismLang.CAPACITY_ITEMS.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getStorage()));
             }
         }
     }

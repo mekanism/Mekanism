@@ -43,18 +43,19 @@ public class ItemBlockGasTank extends ItemBlockAdvancedTooltip<BlockTileModel<Ti
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        GasTankTier tier = Attribute.getTier(getBlock(), GasTankTier.class);
         StorageUtils.addStoredGas(stack, tooltip, true, MekanismLang.EMPTY, stored -> {
             if (stored.isEmpty()) {
                 return MekanismLang.EMPTY.translate();
+            } else if (tier == GasTankTier.CREATIVE) {
+                return MekanismLang.GENERIC_STORED.translateColored(EnumColor.ORANGE, stored, EnumColor.GRAY, MekanismLang.INFINITE);
             }
-            return MekanismLang.GENERIC_STORED.translateColored(EnumColor.ORANGE, stored, EnumColor.GRAY,
-                  stored.getAmount() == Integer.MAX_VALUE ? MekanismLang.INFINITE : stored.getAmount());
+            return MekanismLang.GENERIC_STORED.translateColored(EnumColor.ORANGE, stored, EnumColor.GRAY, stored.getAmount());
         });
-        int cap = Attribute.getTier(getBlock(), GasTankTier.class).getStorage();
-        if (cap == Integer.MAX_VALUE) {
+        if (tier == GasTankTier.CREATIVE) {
             tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
-            tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, cap));
+            tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getStorage()));
         }
         super.addInformation(stack, world, tooltip, flag);
     }

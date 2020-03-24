@@ -85,19 +85,19 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        FluidTankTier tier = getTier();
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
-        } else if (fluidStack.getAmount() == Integer.MAX_VALUE) {
+        } else if (tier == FluidTankTier.CREATIVE) {
             tooltip.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
             tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
         }
-        int cap = getTier().getStorage();
-        if (cap == Integer.MAX_VALUE) {
+        if (tier == FluidTankTier.CREATIVE) {
             tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
-            tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, cap));
+            tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getStorage()));
         }
     }
 
