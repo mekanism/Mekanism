@@ -33,4 +33,34 @@ class FloatingLongTest {
 
         Assertions.assertEquals(FloatingLong.create((double)56.0876), result);
     }
+
+    @Test
+    @DisplayName("Test basic addition with a decimal overflow")
+    void testBasicAdd() {
+        FloatingLong fl1 = FloatingLong.create((long)509876, (short)5555);
+        FloatingLong fl2 = FloatingLong.create((long)13479, (short)6789);
+        FloatingLong result = fl1.add(fl2);
+
+        Assertions.assertEquals(FloatingLong.create((double)523356.2344), result);
+    }
+
+    @Test
+    @DisplayName("Test addition where the value portion overflows")
+    void testOverFlowAdd() {
+        FloatingLong fl1 = FloatingLong.create(Long.MAX_VALUE, (short)1);
+        FloatingLong fl2 = FloatingLong.create((long)9, (short)2);
+        FloatingLong result = fl1.add(fl2);
+
+        Assertions.assertEquals(FloatingLong.create(Long.MAX_VALUE, Short.MAX_VALUE), result);
+    }
+
+    @Test
+    @DisplayName("Test addition where the decimal overflow causes the long to overflow")
+    void testDecimalOverflowAdd() {
+        FloatingLong fl1 = FloatingLong.create(Long.MAX_VALUE-5, (short)9185);
+        FloatingLong fl2 = FloatingLong.create((long)5, (short)3091);
+        FloatingLong result = fl1.add(fl2);
+
+        Assertions.assertEquals(FloatingLong.create(Long.MAX_VALUE, Short.MAX_VALUE), result);
+    }
 }

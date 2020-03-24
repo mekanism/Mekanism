@@ -140,12 +140,20 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     public void plusEqual(FloatingLong toAdd) {
         checkCanModify();
-        //TODO: Fix potential overflow?
-        long newValue = value + toAdd.value;
-        short newDecimal = (short) (decimal + toAdd.decimal);
-        if (newDecimal > MAX_DECIMAL) {
-            newDecimal -= SINGLE_UNIT;
-            newValue++;
+        long newValue = 0;
+        short newDecimal = 0;
+
+        try {
+            newValue = Math.addExact(value, toAdd.value);
+            newDecimal = (short) (decimal + toAdd.decimal);
+            if (newDecimal > MAX_DECIMAL) {
+                newDecimal -= SINGLE_UNIT;
+                newValue= Math.addExact(newValue, 1); //could overflow here too, same exception will be thrown
+            }
+        }
+        catch(ArithmeticException e) {
+            newValue = Long.MAX_VALUE;
+            newDecimal = Short.MAX_VALUE;
         }
         setAndClampValues(newValue, newDecimal);
     }
@@ -162,8 +170,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     }
 
     private static long multiplyLongs(long d1, long d2) {
-        //TODO: check overflow first
-        return d1 * d2;
+        long result = 0;
+        try {
+            result = Math.multiplyExact(d1, d2); //multiplyExact will throw an exception if we overflow
+        }
+        catch (ArithmeticException e) {
+            return Long.MAX_VALUE;
+        }
+        return result;
     }
 
     private static FloatingLong multiplyLongAndDecimal(long d1, short d2) {
