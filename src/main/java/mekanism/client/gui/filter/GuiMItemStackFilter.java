@@ -59,9 +59,6 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
               () -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 148, getGuiTop() + 45, 14, 16, getButtonLocation("exclamation"),
               () -> filter.requireStack = !filter.requireStack, getOnHoverReplace(filter)));
-        //TODO: Move fuzzy mode to the logistical sorter
-        /*addButton(new MekanismImageButton(this, getGuiLeft() + 15, getGuiTop() + 45, 14, getButtonLocation("fuzzy"),
-              () -> filter.fuzzy = !filter.fuzzy, getOnHover(() -> MekanismLang.MINER_FUZZY_MODE.translate(YesNo.of(filter.fuzzy)))));*/
     }
 
     @Override
@@ -83,6 +80,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                 ItemStack stack = minecraft.player.inventory.getItemStack();
                 if (!stack.isEmpty() && !hasShiftDown()) {
                     if (stack.getItem() instanceof BlockItem) {
+                        //TODO: Either look at unbreakable blocks or make a tag for a blacklist
                         if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                             filter.setItemStack(stack.copy());
                             filter.getItemStack().setCount(1);

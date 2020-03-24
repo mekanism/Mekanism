@@ -11,8 +11,9 @@ import net.minecraft.inventory.container.Slot;
 
 public abstract class RobitContainer extends MekanismEntityContainer<EntityRobit> {
 
-    protected RobitContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, EntityRobit entity) {
-        super(type, id, inv, entity);
+    protected RobitContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, EntityRobit robit) {
+        super(type, id, inv, robit);
+        robit.addContainerTrackers(getType(), this);
     }
 
     @Override

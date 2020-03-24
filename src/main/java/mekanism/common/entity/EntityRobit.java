@@ -37,8 +37,8 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
-import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -88,7 +88,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: When Galaticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, ICachedRecipeHolder<ItemStackToItemStackRecipe>, ITrackableContainer,
+public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, ICachedRecipeHolder<ItemStackToItemStackRecipe>,
       IMekanismStrictEnergyHandler {
 
     private static final DataParameter<String> OWNER_UUID = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
@@ -96,10 +96,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     private static final DataParameter<Boolean> FOLLOW = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
     public static final FloatingLong MAX_ENERGY = FloatingLong.createConst(100_000);
+    private static final FloatingLong DISTANCE_MULTIPLIER = FloatingLong.createConst(1.5);
     public Coord4D homeLocation;
     public boolean texTick;
     private int progress;
-    //TODO: Note the robit smelts at double normal speed, we may want to make this configurable/
+    //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
     //TODO: Allow for upgrades in the robit?
     private final int ticksRequired = 100;
 
@@ -168,9 +169,9 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(1, new RobitAIPickup(this, 1.0F));
-        goalSelector.addGoal(2, new RobitAIFollow(this, 1.0F, 4.0F, 2.0F));
-        goalSelector.addGoal(3, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        goalSelector.addGoal(1, new RobitAIPickup(this, 1));
+        goalSelector.addGoal(2, new RobitAIFollow(this, 1, 4, 2));
+        goalSelector.addGoal(3, new LookAtGoal(this, PlayerEntity.class, 8));
         goalSelector.addGoal(3, new LookRandomlyGoal(this));
         goalSelector.addGoal(4, new SwimGoal(this));
     }
@@ -197,9 +198,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     private FloatingLong getRoundedTravelEnergy() {
-        double distance = Math.sqrt(getDistanceSq(prevPosX, prevPosY, prevPosZ));
-        return FloatingLong.create(distance * 1.5);
-        //return new BigDecimal(distance * 1.5).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+        return DISTANCE_MULTIPLIER.multiply(Math.sqrt(getDistanceSq(prevPosX, prevPosY, prevPosZ)));
     }
 
     @Override
@@ -246,19 +245,17 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     private void collectItems() {
         List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, getBoundingBox().grow(1.5, 1.5, 1.5));
-
         if (!items.isEmpty()) {
             for (ItemEntity item : items) {
                 if (item.cannotPickup() || item.getItem().getItem() instanceof ItemRobit || !item.isAlive()) {
                     continue;
                 }
-                for (int i = 0; i < 27; i++) {
-                    IInventorySlot slot = inventorySlots.get(i);
+                for (IInventorySlot slot : inventoryContainerSlots) {
                     if (slot.isEmpty()) {
                         slot.setStack(item.getItem());
                         onItemPickup(item, item.getItem().getCount());
                         item.remove();
-                        playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                        playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         break;
                     }
                     ItemStack itemStack = slot.getStack();
@@ -274,7 +271,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                         if (item.getItem().isEmpty()) {
                             item.remove();
                         }
-                        playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                        playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         break;
                     }
                 }
@@ -530,8 +527,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
               .setOperatingTicksChanged(operatingTicks -> progress = operatingTicks);
     }
 
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        container.track(SyncableInt.create(() -> progress, value -> progress = value));
+    public void addContainerTrackers(@Nonnull ContainerType<?> containerType, MekanismContainer container) {
+        if (containerType == MekanismContainerTypes.MAIN_ROBIT.getContainerType()) {
+            container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
+        } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.getContainerType()) {
+            container.track(SyncableInt.create(() -> progress, value -> progress = value));
+        }
     }
 }

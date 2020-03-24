@@ -24,8 +24,6 @@ import net.minecraft.util.math.BlockPos;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MatrixEnergyContainer implements IEnergyContainer {
-    //TODO: Figure out if this is still accepting power while the matrix is unformed, or maybe the rate is not being obeyed
-    // I think when the casing is broken when it first reforms, it does not have a transfer cap setup properly
 
     private Map<BlockPos, InductionProviderTier> providers = new Object2ObjectOpenHashMap<>();
     private Map<BlockPos, IEnergyContainer> cells = new Object2ObjectOpenHashMap<>();
@@ -169,8 +167,6 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     public void setEnergy(FloatingLong energy) {
         //Throws a RuntimeException as specified is allowed when something unexpected happens
         // As setEnergy is more meant to be used as an internal method
-        //TODO: Maybe we need to just set some arbitrary cached value, given I believe the only place this
-        // might end up getting called is from the container tracker
         throw new RuntimeException("Unexpected call to setEnergy. The matrix energy container does not support directly setting the energy.");
     }
 
@@ -221,7 +217,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     @Override
     public CompoundNBT serializeNBT() {
-        //TODO: Figure out the serialization/deserialization
+        //Note: We don't actually have any specific serialization
         return new CompoundNBT();
     }
 

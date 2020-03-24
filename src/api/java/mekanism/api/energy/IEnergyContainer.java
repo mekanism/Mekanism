@@ -67,7 +67,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
             return amount;
         }
         FloatingLong toAdd = amount.min(needed);
-        if (action.execute()) {
+        if (!toAdd.isEmpty() && action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
             setEnergy(getEnergy().add(toAdd));
@@ -81,7 +81,8 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      * The returned value must be {@link FloatingLong#ZERO} if nothing is extracted, otherwise its must be less than or equal to {@code amount}.
      * </p>
      *
-     * @param amount         Amount of energy to extract (may be greater than the current stored amount or the container's capacity)
+     * @param amount         Amount of energy to extract (may be greater than the current stored amount or the container's capacity) This must not be modified by the
+     *                       handler.
      * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      * @param automationType The method that this container is being interacted from.
      *
@@ -96,12 +97,12 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
         if (isEmpty() || amount.isEmpty()) {
             return FloatingLong.ZERO;
         }
-        FloatingLong ret = getEnergy().min(amount);
+        FloatingLong ret = getEnergy().min(amount).copy();
         if (!ret.isEmpty() && action.execute()) {
             // Note: this also will mark that the contents changed
             setEnergy(getEnergy().subtract(ret));
         }
-        return ret.copy();
+        return ret;
     }
 
     /**

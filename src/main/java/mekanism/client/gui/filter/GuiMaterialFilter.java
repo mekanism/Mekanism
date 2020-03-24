@@ -45,6 +45,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
         ItemStack stack = minecraft.player.inventory.getItemStack();
         if (!stack.isEmpty() && !hasShiftDown()) {
             if (stack.getItem() instanceof BlockItem) {
+                //TODO: Either look at unbreakable blocks or make a tag for a blacklist
                 if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                     filter.setMaterialItem(stack.copy());
                     filter.getMaterialItem().setCount(1);

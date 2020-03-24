@@ -76,6 +76,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
             ItemStack toUse = ItemStack.EMPTY;
             if (!stack.isEmpty() && !hasShiftDown()) {
                 if (stack.getItem() instanceof BlockItem) {
+                    //TODO: Either look at unbreakable blocks or make a tag for a blacklist
                     if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                         toUse = stack.copy();
                         toUse.setCount(1);
