@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -81,7 +82,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     private void checkCanModify() {
         if (isConstant) {
-            throw new IllegalStateException("Tried to modify a floating constant long");
+            //TODO: Throw an exception
+            MekanismAPI.logger.warn("TRIED TO MODIFY A CONSTANT FLOATING LONG");
         }
     }
 
@@ -106,6 +108,10 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     public FloatingLong copy() {
         return new FloatingLong(value, decimal, false);
+    }
+
+    public FloatingLong modulo(long mod) {
+        return create(value % mod, decimal);
     }
 
     //TODO: Do we want to do the sub implementations as a copy and then the in place value
@@ -155,14 +161,23 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         timesEqual(FloatingLong.createConst(toMultiply));
     }
 
-    private static FloatingLong sanitizeDecimal(long decimal) {
-        return create(decimal/(SINGLE_UNIT), (short)(decimal%(SINGLE_UNIT)) );
-    }
-
     private static long multiplyLongs(long d1, long d2) {
         //TODO: check overflow first
         return d1 * d2;
     }
+
+    private static FloatingLong multiplyLongAndDecimal(long d1, short d2) {
+        //This can't overflow!
+        if(d1 > Long.MAX_VALUE)
+            return create(((d1 / SINGLE_UNIT) * d2), (short)(d1 % SINGLE_UNIT * d2));
+        return create((d1 * d2 / SINGLE_UNIT), (short)(d1 * d2 % SINGLE_UNIT));
+    }
+
+    private static FloatingLong multiplyDecimals(short d1, short d2) {
+        long temp = d1 * d2 / SINGLE_UNIT; //If we wanted to round here, just get modulus and add if >= 0.5*SINGLE_UNIT
+        return create(0, (short) temp);
+    }
+
 
     public void timesEqual(FloatingLong toMultiply) {
         checkCanModify();
@@ -171,9 +186,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
         //TODO: primitive types can overflow here. Need to implement checks here probably as a wrapper to the multiply
         temp = create( multiplyLongs(value, toMultiply.value) ); //ac
-        temp.add(sanitizeDecimal( multiplyLongs(value, toMultiply.decimal) )); //ad
-        temp.add(sanitizeDecimal( multiplyLongs(decimal, toMultiply.value) )); //bc
-        temp.add(sanitizeDecimal( multiplyLongs(decimal, toMultiply.decimal) )); //bd
+        temp = temp.add( multiplyLongAndDecimal(value, toMultiply.decimal) ); //ad
+        temp = temp.add( multiplyLongAndDecimal(toMultiply.value, decimal) ); //bc
+        temp = temp.add( multiplyDecimals(decimal, toMultiply.decimal) ); //bd
 
         setAndClampValues(temp.value, temp.decimal);
     }
@@ -362,9 +377,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         if (numberDigits < DECIMAL_DIGITS) {
             //We need to pad it on the right with zeros
             decimalAsString += getZeros(DECIMAL_DIGITS - numberDigits);
-        } else if (numberDigits > DECIMAL_DIGITS) {
-            //We need to trim it to make sure it will be in range of a short
-            decimalAsString = decimalAsString.substring(0, DECIMAL_DIGITS);
         }
         return Short.parseShort(decimalAsString);
     }
@@ -395,7 +407,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     @Override
     public int intValue() {
-        return MathUtils.clampToInt(value);
+        return value > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) value;
     }
 
     @Override
