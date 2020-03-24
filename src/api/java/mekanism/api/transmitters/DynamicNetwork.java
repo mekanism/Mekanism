@@ -44,9 +44,14 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     @Nullable
     protected World world = null;
     private Set<DelayQueue> updateQueue = new ObjectLinkedOpenHashSet<>();
+    private boolean forceScaleUpdate = false;
 
     public void addNewTransmitters(Collection<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> newTransmitters) {
         transmittersToAdd.addAll(newTransmitters);
+        if (!forceScaleUpdate) {
+            //If we currently have no transmitters, mark that we want to force our scale to update to the target after the initial adding
+            forceScaleUpdate = isEmpty();
+        }
     }
 
     public void commit() {
@@ -73,6 +78,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
             queueClientUpdate(transmittersToAdd);
             transmittersToAdd.clear();
             updateSaveShares = true;
+            if (forceScaleUpdate) {
+                forceScaleUpdate = false;
+                forceScaleUpdate();
+            }
         }
 
         if (!changedAcceptors.isEmpty()) {
@@ -127,6 +136,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     public abstract void absorbBuffer(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter);
 
     public abstract void clampBuffer();
+
+    protected void forceScaleUpdate() {
+    }
 
     public void invalidate() {
         //Remove invalid transmitters first for share calculations

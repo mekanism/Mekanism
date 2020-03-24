@@ -56,20 +56,25 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 net.deregister();
             }
         }
-        if (!fluidTank.isEmpty() && fluidTank.getCapacity() > 0) {
-            fluidScale = Math.min(1, (float) fluidTank.getFluidAmount() / fluidTank.getCapacity());
-        }
         register();
     }
 
     @Override
+    protected void forceScaleUpdate() {
+        if (!fluidTank.isEmpty() && fluidTank.getCapacity() > 0) {
+            fluidScale = Math.min(1, (float) fluidTank.getFluidAmount() / fluidTank.getCapacity());
+        }
+    }
+
+    @Override
     public void adoptTransmittersAndAcceptorsFrom(FluidNetwork net) {
+        int oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
+        //Merge the fluid scales
+        fluidScale = (fluidScale * oldCapacity + net.fluidScale * net.capacity) / getCapacity();
         if (isRemote()) {
-            if (!net.fluidTank.isEmpty() && net.fluidScale > fluidScale) {
-                fluidScale = net.fluidScale;
+            if (fluidTank.isEmpty() && !net.fluidTank.isEmpty()) {
                 fluidTank.setStack(net.getBuffer());
-                net.fluidScale = 0;
                 net.fluidTank.setEmpty();
             }
         } else if (!net.fluidTank.isEmpty()) {

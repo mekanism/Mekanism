@@ -57,23 +57,25 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
                 net.deregister();
             }
         }
-        if (!energyContainer.isEmpty() && !energyContainer.getMaxEnergy().isEmpty()) {
-            energyScale = Math.min(1, energyContainer.getEnergy().divide(energyContainer.getMaxEnergy()).floatValue());
-        }
         register();
     }
 
     @Override
+    protected void forceScaleUpdate() {
+        if (!energyContainer.isEmpty() && !energyContainer.getMaxEnergy().isEmpty()) {
+            energyScale = Math.min(1, energyContainer.getEnergy().divide(energyContainer.getMaxEnergy()).floatValue());
+        }
+    }
+
+    @Override
     public void adoptTransmittersAndAcceptorsFrom(EnergyNetwork net) {
+        FloatingLong oldCapacity = getCapacityAsFloatingLong();
         super.adoptTransmittersAndAcceptorsFrom(net);
-        if (isRemote()) {
-            if (!net.energyContainer.isEmpty() && net.energyScale > energyScale) {
-                energyScale = net.energyScale;
-                energyContainer.setEnergy(net.getBuffer());
-                net.energyScale = 0;
-                net.energyContainer.setEmpty();
-            }
-        } else if (!net.energyContainer.isEmpty()) {
+        //Merge the energy scales
+        FloatingLong ourScale = energyScale == 0 ? FloatingLong.ZERO : oldCapacity.multiply(energyScale);
+        FloatingLong theirScale = net.energyScale == 0 ? FloatingLong.ZERO : net.getCapacityAsFloatingLong().multiply(net.energyScale);
+        energyScale = ourScale.add(theirScale).divide(getCapacityAsFloatingLong()).floatValue();
+        if (!isRemote() && !net.energyContainer.isEmpty()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(net.getBuffer()));
             net.energyContainer.setEmpty();
         }

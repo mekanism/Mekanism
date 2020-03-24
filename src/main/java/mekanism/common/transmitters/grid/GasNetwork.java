@@ -64,20 +64,25 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 net.deregister();
             }
         }
-        if (!gasTank.isEmpty() && gasTank.getCapacity() > 0) {
-            gasScale = Math.min(1, (float) gasTank.getStored() / gasTank.getCapacity());
-        }
         register();
     }
 
     @Override
+    protected void forceScaleUpdate() {
+        if (!gasTank.isEmpty() && gasTank.getCapacity() > 0) {
+            gasScale = Math.min(1, (float) gasTank.getStored() / gasTank.getCapacity());
+        }
+    }
+
+    @Override
     public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
+        int oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
+        //Merge the gas scales
+        gasScale = (gasScale * oldCapacity + net.gasScale * net.capacity) / getCapacity();
         if (isRemote()) {
-            if (!net.gasTank.isEmpty() && net.gasScale > gasScale) {
-                gasScale = net.gasScale;
+            if (gasTank.isEmpty() && !net.gasTank.isEmpty()) {
                 gasTank.setStack(net.getBuffer());
-                net.gasScale = 0;
                 net.gasTank.setEmpty();
             }
         } else if (!net.gasTank.isEmpty()) {
