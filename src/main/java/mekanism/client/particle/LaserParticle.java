@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.api.Pos3D;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
@@ -32,8 +33,7 @@ public class LaserParticle extends SpriteTexturedParticle {
         particleGreen = 0;
         particleBlue = 0;
         particleAlpha = 0.1F;
-        //TODO: We probably want the 50,000 to scale with the max energy of the laser?
-        particleScale = (float) Math.min(energy.divide(50_000).doubleValue(), 0.6);
+        particleScale = (float) Math.min(energy.divide(MekanismConfig.usage.laser.get().multiply(10)).doubleValue(), 0.6);
         halfLength = (float) (end.distance(start) / 2);
         direction = dir;
     }

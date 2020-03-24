@@ -39,7 +39,7 @@ public class LaserParticleData implements IParticleData {
     @Nonnull
     @Override
     public String getParameters() {
-        return String.format(Locale.ROOT, "%s %d %.2f %d \"%s\"", getType().getRegistryName(), direction.ordinal(), this.distance, this.energy.getValue(), this.energy.getDecimal());
+        return String.format(Locale.ROOT, "%s %d %.2f %d %d", getType().getRegistryName(), direction.ordinal(), distance, energy.getValue(), energy.getDecimal());
     }
 
     public static final IDeserializer<LaserParticleData> DESERIALIZER = new IDeserializer<LaserParticleData>() {
@@ -51,8 +51,10 @@ public class LaserParticleData implements IParticleData {
             reader.expect(' ');
             double distance = reader.readDouble();
             reader.expect(' ');
-            FloatingLong energy = FloatingLong.parseFloatingLong(reader.readQuotedString());
-            return new LaserParticleData(direction, distance, energy);
+            long value = reader.readLong();
+            reader.expect(' ');
+            short decimal = (short) reader.readInt();
+            return new LaserParticleData(direction, distance, FloatingLong.create(value, decimal));
         }
 
         @Override

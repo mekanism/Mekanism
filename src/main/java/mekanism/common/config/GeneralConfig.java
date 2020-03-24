@@ -17,7 +17,6 @@ import mekanism.common.util.UnitDisplayUtils.TempType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
-//TODO: Make electrolytic separator recipes actually scale with the config value energy in case From H2 changes
 public class GeneralConfig extends BaseMekanismConfig {
 
     private static final String CONVERSION_CATEGORY = "energy_conversion";

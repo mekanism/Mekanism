@@ -137,7 +137,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
             //Note: this also will mark that the contents changed
             stored.minusEqual(ret);
         }
-        return ret;
+        return ret.copy();
     }
 
     /**

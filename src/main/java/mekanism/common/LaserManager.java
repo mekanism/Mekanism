@@ -31,8 +31,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.world.BlockEvent;
 
-//TODO: Make the laser "shrink" the further distance it goes
-// If above a certain energy level and in water makes it bubble
+//TODO: Make the laser "shrink" the further distance it goes, If above a certain energy level and in water makes it bubble
 public class LaserManager {
 
     private static final FloatingLong THRESHOLD = FloatingLong.createConst(256);
