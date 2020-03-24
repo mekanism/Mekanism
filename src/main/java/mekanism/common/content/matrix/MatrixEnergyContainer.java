@@ -107,14 +107,10 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         int compare = queuedInput.compareTo(queuedOutput);
         if (compare < 0) {
             //queuedInput is smaller - we are removing energy
-            FloatingLong lastChange = queuedOutput.subtract(queuedInput);
-            removeEnergy(lastChange);
-            cachedTotal.plusEqual(lastChange);
+            removeEnergy(queuedOutput.subtract(queuedInput));
         } else if (compare > 0) {
             //queuedInput is larger - we are adding energy
-            FloatingLong lastChange = queuedInput.subtract(queuedOutput);
-            addEnergy(lastChange);
-            cachedTotal.plusEqual(lastChange);
+            addEnergy(queuedInput.subtract(queuedOutput));
         }
         lastInput = queuedInput;
         lastOutput = queuedOutput;
@@ -123,6 +119,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     private void addEnergy(FloatingLong energy) {
+        cachedTotal.plusEqual(energy);
         for (IEnergyContainer container : cells.values()) {
             //Note: inserting into the cell's energy container handles marking the cell for saving if it changes
             FloatingLong remainder = container.insert(energy, Action.EXECUTE, AutomationType.INTERNAL);
@@ -139,6 +136,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     private void removeEnergy(FloatingLong energy) {
+        cachedTotal.minusEqual(energy);
         for (IEnergyContainer container : cells.values()) {
             //Note: extracting from the cell's energy container handles marking the cell for saving if it changes
             FloatingLong extracted = container.extract(energy, Action.EXECUTE, AutomationType.INTERNAL);
