@@ -177,7 +177,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     private static FloatingLong multiplyLongAndDecimal(long d1, short d2) {
         //This can't overflow!
-        if(d1 > Long.MAX_VALUE)
+        if(d1 > Long.MAX_VALUE / SINGLE_UNIT)
             return create(((d1 / SINGLE_UNIT) * d2), (short)(d1 % SINGLE_UNIT * d2));
         return create((d1 * d2 / SINGLE_UNIT), (short)(d1 * d2 % SINGLE_UNIT));
     }
