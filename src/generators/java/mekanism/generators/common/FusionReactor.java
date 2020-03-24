@@ -74,7 +74,7 @@ public class FusionReactor {
     }
 
     public void addTemperatureFromEnergyInput(FloatingLong energyAdded) {
-        //TODO: FloatingLong evaluate
+        //TODO: Switch this to all being in the FloatingLong once temperature starts using floating longs
         if (isBurning()) {
             plasmaTemperature += energyAdded.divide(plasmaHeatCapacity).doubleValue();
         } else {
@@ -395,7 +395,7 @@ public class FusionReactor {
 
     public int getMinInjectionRate(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        //TODO: FloatingLong Evaluate
+        //TODO: Switch this to all being in the FloatingLong once temperature starts using floating longs
         double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) /
                       (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
                        plasmaCaseConductivity * (k + caseAirConductivity));
@@ -404,7 +404,7 @@ public class FusionReactor {
 
     public double getMaxPlasmaTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        //TODO: FloatingLong Evaluate
+        //TODO: Switch this to all being in the FloatingLong once temperature starts using floating longs
         return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() / plasmaCaseConductivity *
                (plasmaCaseConductivity + k + caseAirConductivity) / (k + caseAirConductivity);
     }
@@ -416,7 +416,7 @@ public class FusionReactor {
 
     public double getIgnitionTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        //TODO: FloatingLong Evaluate
+        //TODO: Switch this to all being in the FloatingLong once temperature starts using floating longs
         double energyPerFusionFuel = MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue();
         return burnTemperature * energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) /
                (energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
@@ -424,7 +424,7 @@ public class FusionReactor {
 
     public FloatingLong getPassiveGeneration(boolean active, boolean current) {
         double temperature = current ? caseTemperature : getMaxCasingTemperature(active);
-        //TODO: FloatingLong Evaluate
+        //TODO: Switch the multiplication to all being done via FloatingLongs once temperature starts using floating longs
         return FloatingLong.create(thermocoupleEfficiency * caseAirConductivity * temperature);
     }
 
