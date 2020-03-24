@@ -213,14 +213,12 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         return toDivide.isEmpty() ? 1 : divide(toDivide).doubleValue();
     }
 
-    //TODO: Note this doesn't create any new objects (or do we want it to)
-    // We need to go through usages and see what would be best, we may just want to copy only if we would be returning this
+    //TODO: Note this doesn't create any new objects
     public FloatingLong max(FloatingLong other) {
         return smallerThan(other) ? other : this;
     }
 
-    //TODO: Note this doesn't create any new objects (or do we want it to)
-    // We need to go through usages and see what would be best, we may just want to copy only if we would be returning this
+    //TODO: Note this doesn't create any new objects
     public FloatingLong min(FloatingLong other) {
         return greaterThan(other) ? other : this;
     }

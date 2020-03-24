@@ -27,7 +27,7 @@ public class EnergyTransmitterSaveTarget extends Target<IGridTransmitter<IStrict
 
     @Override
     protected FloatingLong simulate(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter, FloatingLong energyToSend) {
-        return energyToSend.min(transmitter.getCapacityAsFloatingLong().subtract(currentStored));
+        return energyToSend.copy().min(transmitter.getCapacityAsFloatingLong().subtract(currentStored));
     }
 
     public void saveShare(Direction handlerDirection) {
