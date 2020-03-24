@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
@@ -31,6 +32,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
@@ -210,11 +212,9 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     private ProxyStrictEnergyHandler readOnlyStrictEnergyHandler;
     private Map<Direction, ProxyStrictEnergyHandler> strictEnergyHandlers;
-    //End variables IMekanismStrictEnergyHandler
 
-    //Variables for handling ITileElectric
-    private FloatingLong lastEnergyReceived = FloatingLong.ZERO;
-    //End variables ITileElectric
+    private FloatingLong lastEnergyReceived = FloatingLong.getNewZero();
+    //End variables IMekanismStrictEnergyHandler
 
     //Variables for handling ITileSecurity
     private TileComponentSecurity securityComponent;
@@ -479,7 +479,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 }
             }
             onUpdateServer();
-            lastEnergyReceived = FloatingLong.ZERO;
+            lastEnergyReceived = FloatingLong.getNewZero();
         }
         ticker++;
         if (supportsRedstone()) {
@@ -1118,18 +1118,30 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags);
         }
     }
-    //End methods IMekanismStrictEnergyHandler
 
-    //Methods for implementing ITileElectric
+    @Nonnull
+    @Override
+    public FloatingLong insertEnergy(int container, @Nonnull FloatingLong amount, @Nullable Direction side, @Nonnull Action action) {
+        IEnergyContainer energyContainer = getEnergyContainer(container, side);
+        if (energyContainer == null) {
+            return amount;
+        }
+        FloatingLong remainder = energyContainer.insert(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
+        if (action.execute()) {
+            lastEnergyReceived.plusEqual(amount.subtract(remainder));
+        }
+        return remainder;
+    }
+
     public FloatingLong getInputRate() {
         return lastEnergyReceived;
     }
 
     //TODO: Re-implement lastEnergyReceived for when we accept energy
-    public void setInputRate(FloatingLong inputRate) {
+    protected void setInputRate(FloatingLong inputRate) {
         this.lastEnergyReceived = inputRate;
     }
-    //End methods ITileElectric
+    //End methods IMekanismStrictEnergyHandler
 
     //Methods for implementing ITileSecurity
     @Override
