@@ -1079,8 +1079,6 @@ public final class MekanismUtils {
         if (capacity.isEmpty() || amount.isEmpty()) {
             return 0;
         }
-        //TODO: This should always be <= 15, do we want to make sure it is. We can probably just add some unit tests to make sure
-        // We can aso probably do some form of internal optimizations to do a batch calculation
         return 1 + amount.divide(capacity).multiply(14).intValue();
     }
 
