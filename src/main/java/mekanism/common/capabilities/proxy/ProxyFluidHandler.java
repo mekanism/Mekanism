@@ -14,22 +14,13 @@ import net.minecraftforge.fluids.FluidStack;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ProxyFluidHandler implements IExtendedFluidHandler {
+public class ProxyFluidHandler extends ProxyHandler implements IExtendedFluidHandler {
 
     private final ISidedFluidHandler fluidHandler;
-    @Nullable
-    private final Direction side;
-    private final boolean readOnly;
-    private final boolean readOnlyInsert;
-    private final boolean readOnlyExtract;
 
-    //TODO: Should this take a supplier for the fluid handler in case it somehow gets invalidated??
     public ProxyFluidHandler(ISidedFluidHandler fluidHandler, @Nullable Direction side, @Nullable IHolder holder) {
+        super(side, holder);
         this.fluidHandler = fluidHandler;
-        this.side = side;
-        this.readOnly = this.side == null;
-        this.readOnlyInsert = holder != null && !holder.canInsert(side);
-        this.readOnlyExtract = holder != null && !holder.canExtract(side);
     }
 
     @Override
@@ -61,26 +52,26 @@ public class ProxyFluidHandler implements IExtendedFluidHandler {
 
     @Override
     public FluidStack insertFluid(int tank, FluidStack stack, Action action) {
-        return readOnly || readOnlyInsert ? stack : fluidHandler.insertFluid(tank, stack, side, action);
+        return readOnly || readOnlyInsert.getAsBoolean() ? stack : fluidHandler.insertFluid(tank, stack, side, action);
     }
 
     @Override
     public FluidStack extractFluid(int tank, int amount, Action action) {
-        return readOnly || readOnlyExtract ? FluidStack.EMPTY : fluidHandler.extractFluid(tank, amount, side, action);
+        return readOnly || readOnlyExtract.getAsBoolean() ? FluidStack.EMPTY : fluidHandler.extractFluid(tank, amount, side, action);
     }
 
     @Override
     public FluidStack insertFluid(FluidStack stack, Action action) {
-        return readOnly || readOnlyInsert ? stack : fluidHandler.insertFluid(stack, side, action);
+        return readOnly || readOnlyInsert.getAsBoolean() ? stack : fluidHandler.insertFluid(stack, side, action);
     }
 
     @Override
     public FluidStack extractFluid(int amount, Action action) {
-        return readOnly || readOnlyExtract ? FluidStack.EMPTY : fluidHandler.extractFluid(amount, side, action);
+        return readOnly || readOnlyExtract.getAsBoolean() ? FluidStack.EMPTY : fluidHandler.extractFluid(amount, side, action);
     }
 
     @Override
     public FluidStack extractFluid(FluidStack stack, Action action) {
-        return readOnly || readOnlyExtract ? FluidStack.EMPTY : fluidHandler.extractFluid(stack, side, action);
+        return readOnly || readOnlyExtract.getAsBoolean() ? FluidStack.EMPTY : fluidHandler.extractFluid(stack, side, action);
     }
 }

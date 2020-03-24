@@ -14,22 +14,13 @@ import net.minecraft.util.Direction;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ProxyGasHandler implements IGasHandler {
+public class ProxyGasHandler extends ProxyHandler implements IGasHandler {
 
     private final ISidedGasHandler gasHandler;
-    @Nullable
-    private final Direction side;
-    private final boolean readOnly;
-    private final boolean readOnlyInsert;
-    private final boolean readOnlyExtract;
 
-    //TODO: Should this take a supplier for the gas handler in case it somehow gets invalidated??
     public ProxyGasHandler(ISidedGasHandler gasHandler, @Nullable Direction side, @Nullable IHolder holder) {
+        super(side, holder);
         this.gasHandler = gasHandler;
-        this.side = side;
-        this.readOnly = this.side == null;
-        this.readOnlyInsert = holder != null && !holder.canInsert(side);
-        this.readOnlyExtract = holder != null && !holder.canExtract(side);
     }
 
     @Override
@@ -61,26 +52,26 @@ public class ProxyGasHandler implements IGasHandler {
 
     @Override
     public GasStack insertGas(int tank, GasStack stack, Action action) {
-        return readOnly || readOnlyInsert ? stack : gasHandler.insertGas(tank, stack, side, action);
+        return readOnly || readOnlyInsert.getAsBoolean() ? stack : gasHandler.insertGas(tank, stack, side, action);
     }
 
     @Override
     public GasStack extractGas(int tank, int amount, Action action) {
-        return readOnly || readOnlyExtract ? GasStack.EMPTY : gasHandler.extractGas(tank, amount, side, action);
+        return readOnly || readOnlyExtract.getAsBoolean() ? GasStack.EMPTY : gasHandler.extractGas(tank, amount, side, action);
     }
 
     @Override
     public GasStack insertGas(GasStack stack, Action action) {
-        return readOnly || readOnlyInsert ? stack : gasHandler.insertGas(stack, side, action);
+        return readOnly || readOnlyInsert.getAsBoolean() ? stack : gasHandler.insertGas(stack, side, action);
     }
 
     @Override
     public GasStack extractGas(int amount, Action action) {
-        return readOnly || readOnlyExtract ? GasStack.EMPTY : gasHandler.extractGas(amount, side, action);
+        return readOnly || readOnlyExtract.getAsBoolean() ? GasStack.EMPTY : gasHandler.extractGas(amount, side, action);
     }
 
     @Override
     public GasStack extractGas(GasStack stack, Action action) {
-        return readOnly || readOnlyExtract ? GasStack.EMPTY : gasHandler.extractGas(stack, side, action);
+        return readOnly || readOnlyExtract.getAsBoolean() ? GasStack.EMPTY : gasHandler.extractGas(stack, side, action);
     }
 }

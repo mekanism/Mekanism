@@ -14,22 +14,13 @@ import net.minecraft.util.Direction;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ProxyStrictEnergyHandler implements IStrictEnergyHandler {
+public class ProxyStrictEnergyHandler extends ProxyHandler implements IStrictEnergyHandler {
 
     private final ISidedStrictEnergyHandler energyHandler;
-    @Nullable
-    private final Direction side;
-    private final boolean readOnly;
-    private final boolean readOnlyInsert;
-    private final boolean readOnlyExtract;
 
-    //TODO: Should this take a supplier for the energy handler in case it somehow gets invalidated??
     public ProxyStrictEnergyHandler(ISidedStrictEnergyHandler energyHandler, @Nullable Direction side, @Nullable IHolder holder) {
+        super(side, holder);
         this.energyHandler = energyHandler;
-        this.side = side;
-        this.readOnly = this.side == null;
-        this.readOnlyInsert = holder != null && !holder.canInsert(side);
-        this.readOnlyExtract = holder != null && !holder.canExtract(side);
     }
 
     @Override
@@ -61,21 +52,21 @@ public class ProxyStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public FloatingLong insertEnergy(int container, FloatingLong amount, Action action) {
-        return readOnly || readOnlyInsert ? amount : energyHandler.insertEnergy(container, amount, side, action);
+        return readOnly || readOnlyInsert.getAsBoolean() ? amount : energyHandler.insertEnergy(container, amount, side, action);
     }
 
     @Override
     public FloatingLong extractEnergy(int container, FloatingLong amount, Action action) {
-        return readOnly || readOnlyExtract ? FloatingLong.ZERO : energyHandler.extractEnergy(container, amount, side, action);
+        return readOnly || readOnlyExtract.getAsBoolean() ? FloatingLong.ZERO : energyHandler.extractEnergy(container, amount, side, action);
     }
 
     @Override
     public FloatingLong insertEnergy(FloatingLong amount, Action action) {
-        return readOnly || readOnlyInsert ? amount : energyHandler.insertEnergy(amount, side, action);
+        return readOnly || readOnlyInsert.getAsBoolean() ? amount : energyHandler.insertEnergy(amount, side, action);
     }
 
     @Override
     public FloatingLong extractEnergy(FloatingLong amount, Action action) {
-        return readOnly || readOnlyExtract ? FloatingLong.ZERO : energyHandler.extractEnergy(amount, side, action);
+        return readOnly || readOnlyExtract.getAsBoolean() ? FloatingLong.ZERO : energyHandler.extractEnergy(amount, side, action);
     }
 }
