@@ -155,14 +155,27 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         timesEqual(FloatingLong.createConst(toMultiply));
     }
 
+    private static FloatingLong sanitizeDecimal(long decimal) {
+        return create(decimal/(SINGLE_UNIT), (short)(decimal%(SINGLE_UNIT)) );
+    }
+
+    private static long multiplyLongs(long d1, long d2) {
+        //TODO: check overflow first
+        return d1 * d2;
+    }
+
     public void timesEqual(FloatingLong toMultiply) {
         checkCanModify();
-        //TODO: Make a more direct implementation that doesn't go through big decimal
-        //TODO: Check how the multiplication works if we need to specify a scale
-        BigDecimal multiplication = new BigDecimal(toString()).multiply(new BigDecimal(toMultiply.toString()));
-        long value = multiplication.longValue();
-        short decimal = parseDecimal(multiplication.toString());
-        setAndClampValues(value, decimal);
+        FloatingLong temp;
+        //(a+b)*(c+d) where numbers represent decimal, numbers represent value
+
+        //TODO: primitive types can overflow here. Need to implement checks here probably as a wrapper to the multiply
+        temp = create( multiplyLongs(value, toMultiply.value) ); //ac
+        temp.add(sanitizeDecimal( multiplyLongs(value, toMultiply.decimal) )); //ad
+        temp.add(sanitizeDecimal( multiplyLongs(decimal, toMultiply.value) )); //bc
+        temp.add(sanitizeDecimal( multiplyLongs(decimal, toMultiply.decimal) )); //bd
+
+        setAndClampValues(temp.value, temp.decimal);
     }
 
     public FloatingLong multiply(FloatingLong toMultiply) {
