@@ -53,7 +53,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
         matrix.pop();
 
         profiler.endStartSection(ProfilerConstants.CORE);//End frame start core
-        int energyScale = tile.getEnergyScale();
+        float energyScale = tile.getEnergyScale();
         if (energyScale > 0) {
             matrix.push();
             matrix.translate(0.5, 0.5, 0.5);
@@ -63,7 +63,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
             float scaledTicks = 4 * ticks;
             matrix.rotate(Vector3f.YP.rotationDegrees(scaledTicks));
             matrix.rotate(coreVec.rotationDegrees(36F + scaledTicks));
-            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.tier.getBaseTier().getColor(), energyScale / 20F);
+            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.tier.getBaseTier().getColor(), energyScale);
             matrix.pop();
         }
         profiler.endSection();

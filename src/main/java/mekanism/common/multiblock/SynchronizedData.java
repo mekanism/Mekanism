@@ -2,6 +2,7 @@ package mekanism.common.multiblock;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -9,6 +10,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 
 public abstract class SynchronizedData<T extends SynchronizedData<T>> implements IMekanismInventory {
@@ -43,6 +45,18 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return Collections.emptyList();
+    }
+
+    public Set<Direction> getDirectionsToEmit(Coord4D coord) {
+        //TODO: Decide if we want to cache this at some point for the different ports/valves
+        // and then have it update on neighbor update
+        Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
+        for (Direction direction : EnumUtils.DIRECTIONS) {
+            if (!locations.contains(coord.offset(direction))) {
+                directionsToEmit.add(direction);
+            }
+        }
+        return directionsToEmit;
     }
 
     @Override

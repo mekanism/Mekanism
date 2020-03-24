@@ -36,7 +36,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         energyCube.renderSidesBatched(stack, tier, matrix, renderer, light, overlayLight);
         matrix.pop();
         double energyPercentage = StorageUtils.getStoredEnergyFromNBT(stack).divideToLevel(tier.getMaxEnergy());
-        if (energyPercentage > 0.1) {
+        if (energyPercentage > 0) {
             matrix.scale(0.4F, 0.4F, 0.4F);
             matrix.translate(0, Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
             matrix.rotate(Vector3f.YP.rotationDegrees(4 * MekanismClient.ticksPassed));

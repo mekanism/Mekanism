@@ -1,9 +1,7 @@
 package mekanism.generators.common.tile.turbine;
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -12,7 +10,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
@@ -27,14 +24,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null) {
-            //TODO: We may want to look into caching the directionsToEmit, and updating it on neighbor updates
-            Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
-            for (Direction direction : EnumUtils.DIRECTIONS) {
-                if (!structure.locations.contains(Coord4D.get(this).offset(direction))) {
-                    directionsToEmit.add(direction);
-                }
-            }
-            CableUtils.emit(directionsToEmit, structure.energyContainer, this);
+            CableUtils.emit(structure.getDirectionsToEmit(Coord4D.get(this)), structure.energyContainer, this);
         }
     }
 

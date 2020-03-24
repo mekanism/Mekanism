@@ -42,7 +42,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
      * This Energy Cube's tier.
      */
     public EnergyCubeTier tier;//TODO: Make this private
-    private int prevScale;
+    private float prevScale;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
@@ -118,8 +118,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
                 CableUtils.emit(info.getSidesForData(DataType.OUTPUT), energyContainer, this, tier.getOutput());
             }
         }
-        //TODO: Convert this to using MekanismUtils.getScale?
-        int newScale = (int) (20 * energyContainer.getEnergy().divideToLevel(energyContainer.getMaxEnergy()));
+        float newScale = MekanismUtils.getScale(prevScale, energyContainer);
         if (newScale != prevScale) {
             prevScale = newScale;
             sendUpdatePacket();
@@ -187,7 +186,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         return new EnergyCubeUpgradeData(redstone, getControlType(), getEnergyContainer(), chargeSlot, dischargeSlot, getComponents());
     }
 
-    public int getEnergyScale() {
+    public float getEnergyScale() {
         return prevScale;
     }
 
@@ -195,13 +194,13 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     @Override
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = super.getUpdateTag();
-        updateTag.putInt(NBTConstants.SCALE, prevScale);
+        updateTag.putFloat(NBTConstants.SCALE, prevScale);
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
     }
 }

@@ -16,7 +16,6 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
-import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
@@ -53,25 +52,7 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        boolean hasGas = false;
-        if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
-            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
-            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem.getGasTankCount() > 0) {
-                    //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                    GasStack storedGas = gasHandlerItem.getGasInTank(0);
-                    if (!storedGas.isEmpty()) {
-                        tooltip.add(MekanismLang.STORED.translate(storedGas, storedGas.getAmount()));
-                        hasGas = true;
-                    }
-                }
-            }
-        }
-        if (!hasGas) {
-            tooltip.add(MekanismLang.NO_GAS.translate());
-        }
+        StorageUtils.addStoredGas(stack, tooltip, true);
     }
 
     @Override

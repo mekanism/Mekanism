@@ -3,6 +3,7 @@ package mekanism.common.util;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -11,7 +12,9 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -19,6 +22,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -31,8 +35,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class StorageUtils {
 
-    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissing) {
-        //TODO: Do something like this for the gas capability? The big issue is some of the tooltips are different for that
+    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap) {
         if (Capabilities.STRICT_ENERGY_CAPABILITY != null) {
             //Ensure the capability is not null, as the first call to addInformation happens before capability injection
             Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
@@ -40,12 +43,37 @@ public class StorageUtils {
                 IStrictEnergyHandler energyHandlerItem = capability.get();
                 int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
                 for (int container = 0; container < energyContainerCount; container++) {
-                    //TODO: Do we want a way of having it specify which tank?
                     tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
                           EnergyDisplay.of(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container))));
                 }
-            } else if (showMissing) {
+            } else if (showMissingCap) {
                 tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
+            }
+        }
+    }
+
+    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap) {
+        addStoredGas(stack, tooltip, showMissingCap, MekanismLang.NO_GAS, stored -> {
+            if (stored.isEmpty()) {
+                return MekanismLang.NO_GAS.translate();
+            }
+            return MekanismLang.STORED.translate(stored, stored.getAmount());
+        });
+    }
+
+    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry,
+          Function<GasStack, ITextComponent> storedFunction) {
+        if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
+            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
+            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+            if (capability.isPresent()) {
+                IGasHandler gasHandlerItem = capability.get();
+                int tanks = gasHandlerItem.getGasTankCount();
+                for (int tank = 0; tank < tanks; tank++) {
+                    tooltip.add(storedFunction.apply(gasHandlerItem.getGasInTank(tank)));
+                }
+            } else if (showMissingCap) {
+                tooltip.add(emptyLangEntry.translate());
             }
         }
     }
@@ -94,40 +122,48 @@ public class StorageUtils {
 
     public static double getDurabilityForDisplay(ItemStack stack) {
         //Note we ensure the capabilities are not null, as the first call to getDurabilityForDisplay happens before capability injection
-        if (Capabilities.GAS_HANDLER_CAPABILITY == null || CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null || Capabilities.STRICT_ENERGY_CAPABILITY == null) {
+        if (Capabilities.GAS_HANDLER_CAPABILITY == null || Capabilities.INFUSION_HANDLER_CAPABILITY == null ||
+            CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null || Capabilities.STRICT_ENERGY_CAPABILITY == null) {
             return 1;
         }
-        double gasRatio = 0;
-        double fluidRatio = 0;
-        double energyRatio = 0;
+        double bestRatio = 0;
         Optional<IGasHandler> gasCapability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (gasCapability.isPresent()) {
             IGasHandler gasHandlerItem = gasCapability.get();
-            //TODO: Support having multiple tanks at some point, none of our items currently do so, so it doesn't matter that much
-            if (gasHandlerItem.getGasTankCount() > 0) {
-                //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                gasRatio = gasHandlerItem.getGasInTank(0).getAmount() / (double) gasHandlerItem.getGasTankCapacity(0);
+            int tanks = gasHandlerItem.getGasTankCount();
+            for (int tank = 0; tank < tanks; tank++) {
+                bestRatio = Math.max(bestRatio, getRatio(gasHandlerItem.getGasInTank(tank).getAmount(), gasHandlerItem.getGasTankCapacity(tank)));
+            }
+        }
+        Optional<IInfusionHandler> infusionCapability = MekanismUtils.toOptional(stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
+        if (infusionCapability.isPresent()) {
+            IInfusionHandler infusionHandlerItem = infusionCapability.get();
+            int tanks = infusionHandlerItem.getInfusionTankCount();
+            for (int tank = 0; tank < tanks; tank++) {
+                bestRatio = Math.max(bestRatio, getRatio(infusionHandlerItem.getInfusionInTank(tank).getAmount(), infusionHandlerItem.getInfusionTankCapacity(tank)));
             }
         }
         Optional<IFluidHandlerItem> fluidCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
         if (fluidCapability.isPresent()) {
             IFluidHandlerItem fluidHandlerItem = fluidCapability.get();
-            //TODO: Support having multiple tanks at some point, none of our items currently do so, so it doesn't matter that much
-            if (fluidHandlerItem.getTanks() > 0) {
-                //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                fluidRatio = fluidHandlerItem.getFluidInTank(0).getAmount() / (double) fluidHandlerItem.getTankCapacity(0);
+            int tanks = fluidHandlerItem.getTanks();
+            for (int tank = 0; tank < tanks; tank++) {
+                bestRatio = Math.max(bestRatio, getRatio(fluidHandlerItem.getFluidInTank(tank).getAmount(), fluidHandlerItem.getTankCapacity(tank)));
             }
         }
         Optional<IStrictEnergyHandler> energyCapability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
         if (energyCapability.isPresent()) {
             IStrictEnergyHandler energyHandlerItem = energyCapability.get();
-            //TODO: Support having multiple containers at some point, none of our items currently do so, so it doesn't matter that much
-            if (energyHandlerItem.getEnergyContainerCount() > 0) {
-                //Validate something didn't go terribly wrong and we actually do have the container we expect to have
-                energyRatio = energyHandlerItem.getEnergy(0).divideToLevel(energyHandlerItem.getMaxEnergy(0));
+            int containers = energyHandlerItem.getEnergyContainerCount();
+            for (int container = 0; container < containers; container++) {
+                bestRatio = Math.max(bestRatio, energyHandlerItem.getEnergy(container).divideToLevel(energyHandlerItem.getMaxEnergy(container)));
             }
         }
-        return 1D - Math.max(Math.max(gasRatio, fluidRatio), energyRatio);
+        return 1 - bestRatio;
+    }
+
+    private static double getRatio(int amount, int capacity) {
+        return capacity == 0 ? 1 : amount / (double) capacity;
     }
 
     public static void mergeTanks(IExtendedFluidTank tank, IExtendedFluidTank mergeTank) {

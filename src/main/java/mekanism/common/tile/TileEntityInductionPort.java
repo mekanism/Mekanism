@@ -1,9 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -17,7 +15,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,14 +33,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null && getActive()) {
-            //TODO: We may want to look into caching the directionsToEmit, and updating it on neighbor updates
-            Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
-            for (Direction direction : EnumUtils.DIRECTIONS) {
-                if (!structure.locations.contains(Coord4D.get(this).offset(direction))) {
-                    directionsToEmit.add(direction);
-                }
-            }
-            CableUtils.emit(directionsToEmit, structure.getEnergyContainer(), this);
+            CableUtils.emit(structure.getDirectionsToEmit(Coord4D.get(this)), structure.getEnergyContainer(), this);
         }
     }
 

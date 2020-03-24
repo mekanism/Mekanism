@@ -53,25 +53,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        boolean hasGas = false;
-        if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
-            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
-            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem.getGasTankCount() > 0) {
-                    //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                    GasStack storedGas = gasHandlerItem.getGasInTank(0);
-                    if (!storedGas.isEmpty()) {
-                        tooltip.add(MekanismLang.STORED.translate(storedGas, storedGas.getAmount()));
-                        hasGas = true;
-                    }
-                }
-            }
-        }
-        if (!hasGas) {
-            tooltip.add(MekanismLang.NO_GAS.translate());
-        }
+        StorageUtils.addStoredGas(stack, tooltip, true);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
 
@@ -131,18 +113,15 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
     @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         boolean hasGas = false;
-        if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
-            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
-            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem.getGasTankCount() > 0) {
-                    //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                    GasStack storedGas = gasHandlerItem.getGasInTank(0);
-                    if (!storedGas.isEmpty()) {
-                        list.add(MekanismLang.FLAMETHROWER_STORED.translate(storedGas.getAmount()));
-                        hasGas = true;
-                    }
+        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        if (capability.isPresent()) {
+            IGasHandler gasHandlerItem = capability.get();
+            if (gasHandlerItem.getGasTankCount() > 0) {
+                //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                GasStack storedGas = gasHandlerItem.getGasInTank(0);
+                if (!storedGas.isEmpty()) {
+                    list.add(MekanismLang.FLAMETHROWER_STORED.translate(storedGas.getAmount()));
+                    hasGas = true;
                 }
             }
         }
