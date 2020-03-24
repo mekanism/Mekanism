@@ -9,6 +9,7 @@ import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.MetallurgicInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
@@ -71,7 +72,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               FluidStackIngredient.from(MekanismTags.Fluids.HEAVY_WATER, 2),
               GeneratorsGases.DEUTERIUM.getGasStack(2),
               MekanismGases.OXYGEN.getGasStack(1)
-        ).energyMultiplier(2)
+        ).energyMultiplier(FloatingLong.createConst(2))
               .addCriterion(Criterion.HAS_ELECTROLYTIC_SEPARATOR)
               .build(consumer, MekanismGenerators.rl(basePath + "heavy_water"));
     }

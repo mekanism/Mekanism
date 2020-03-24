@@ -10,6 +10,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import net.minecraft.util.ResourceLocation;
 
@@ -21,7 +22,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
     private final FluidStackIngredient input;
     private final GasStack leftGasOutput;
     private final GasStack rightGasOutput;
-    private double energyMultiplier = 1;
+    private FloatingLong energyMultiplier = FloatingLong.ONE;
 
     protected ElectrolysisRecipeBuilder(FluidStackIngredient input, GasStack leftGasOutput, GasStack rightGasOutput) {
         super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "separating"));
@@ -37,8 +38,8 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         return new ElectrolysisRecipeBuilder(input, leftGasOutput, rightGasOutput);
     }
 
-    public ElectrolysisRecipeBuilder energyMultiplier(double multiplier) {
-        if (multiplier < 1) {
+    public ElectrolysisRecipeBuilder energyMultiplier(FloatingLong multiplier) {
+        if (multiplier.smallerThan(FloatingLong.ONE)) {
             throw new IllegalArgumentException("Energy multiplier must be greater than or equal to one");
         }
         this.energyMultiplier = multiplier;
@@ -59,9 +60,9 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         @Override
         public void serialize(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
-            if (energyMultiplier > 1) {
+            if (energyMultiplier.greaterThan(FloatingLong.ONE)) {
                 //Only add energy usage if it is greater than one, as otherwise it will default to one
-                json.addProperty(JsonConstants.ENERGY_MULTIPLIER, energyMultiplier);
+                json.add(JsonConstants.ENERGY_MULTIPLIER, SerializerHelper.serializeFloatingLong(energyMultiplier));
             }
             json.add(JsonConstants.LEFT_GAS_OUTPUT, SerializerHelper.serializeGasStack(leftGasOutput));
             json.add(JsonConstants.RIGHT_GAS_OUTPUT, SerializerHelper.serializeGasStack(rightGasOutput));

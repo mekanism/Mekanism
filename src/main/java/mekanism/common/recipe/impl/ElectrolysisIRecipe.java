@@ -2,6 +2,7 @@ package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -14,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class ElectrolysisIRecipe extends ElectrolysisRecipe {
 
-    public ElectrolysisIRecipe(ResourceLocation id, FluidStackIngredient input, double energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
+    public ElectrolysisIRecipe(ResourceLocation id, FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
         super(id, input, energyMultiplier, leftGasOutput, rightGasOutput);
     }
 

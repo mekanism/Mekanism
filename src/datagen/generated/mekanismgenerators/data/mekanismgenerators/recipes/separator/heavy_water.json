@@ -4,7 +4,10 @@
     "amount": 2,
     "tag": "forge:heavy_water"
   },
-  "energyMultiplier": 2.0,
+  "energyMultiplier": {
+    "value": 2,
+    "decimal": 0
+  },
   "leftGasOutput": {
     "gas": "mekanismgenerators:deuterium",
     "amount": 2

@@ -79,7 +79,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         return Mekanism.matrixManager;
     }
 
-    //TODO: Stash the cached client values here rather than in the structure, that way we can easier handle zero
     public FloatingLong getEnergy() {
         //Uses post queue as that is the actual total we just haven't saved it yet
         return structure == null ? FloatingLong.ZERO : structure.getEnergy();

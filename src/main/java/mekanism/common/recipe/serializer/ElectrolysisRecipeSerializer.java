@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.Mekanism;
@@ -32,14 +33,10 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
         FluidStackIngredient inputIngredient = FluidStackIngredient.deserialize(input);
         GasStack leftGasOutput = SerializerHelper.getGasStack(json, JsonConstants.LEFT_GAS_OUTPUT);
         GasStack rightGasOutput = SerializerHelper.getGasStack(json, JsonConstants.RIGHT_GAS_OUTPUT);
-        double energyMultiplier = 1;
+        FloatingLong energyMultiplier = FloatingLong.ONE;
         if (json.has(JsonConstants.ENERGY_MULTIPLIER)) {
-            JsonElement energy = json.get(JsonConstants.ENERGY_MULTIPLIER);
-            if (!JSONUtils.isNumber(energy)) {
-                throw new JsonSyntaxException("Expected energyMultiplier to be a number greater than or equal to one.");
-            }
-            energyMultiplier = energy.getAsJsonPrimitive().getAsDouble();
-            if (energyMultiplier < 1) {
+            energyMultiplier = SerializerHelper.getFloatingLong(json, JsonConstants.ENERGY_MULTIPLIER);
+            if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
                 throw new JsonSyntaxException("Expected energyMultiplier to be at least one.");
             }
         }
@@ -53,7 +50,7 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             FluidStackIngredient input = FluidStackIngredient.read(buffer);
-            double energyMultiplier = buffer.readDouble();
+            FloatingLong energyMultiplier = FloatingLong.fromBuffer(buffer);
             GasStack leftGasOutput = GasStack.readFromPacket(buffer);
             GasStack rightGasOutput = GasStack.readFromPacket(buffer);
             return this.factory.create(recipeId, input, energyMultiplier, leftGasOutput, rightGasOutput);
@@ -75,6 +72,6 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
 
     public interface IFactory<T extends ElectrolysisRecipe> {
 
-        T create(ResourceLocation id, FluidStackIngredient input, double energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput);
+        T create(ResourceLocation id, FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput);
     }
 }
