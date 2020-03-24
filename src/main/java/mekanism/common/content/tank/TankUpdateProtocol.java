@@ -63,7 +63,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     protected void onFormed() {
         super.onFormed();
         if (!structureFound.fluidTank.isEmpty()) {
-            structureFound.fluidTank.setStackSize(Math.min(structureFound.fluidTank.getFluidAmount(), structureFound.volume * FLUID_PER_TANK), Action.EXECUTE);
+            structureFound.fluidTank.setStackSize(Math.min(structureFound.fluidTank.getFluidAmount(), structureFound.fluidTank.getCapacity()), Action.EXECUTE);
         }
     }
 

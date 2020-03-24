@@ -29,6 +29,7 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     @Nonnull
     private List<IInventorySlot> inventorySlots;
     private List<IExtendedFluidTank> fluidTanks;
+    private int tankCapacity;
 
     public SynchronizedTankData(TileEntityDynamicTank tile) {
         fluidTank = new DynamicFluidTank(tile);
@@ -67,6 +68,16 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
                 fluidTanks.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
             }
         }
+    }
+
+    public int getTankCapacity() {
+        return tankCapacity;
+    }
+
+    @Override
+    public void setVolume(int volume) {
+        super.setVolume(volume);
+        tankCapacity = getVolume() * TankUpdateProtocol.FLUID_PER_TANK;
     }
 
     @Nonnull

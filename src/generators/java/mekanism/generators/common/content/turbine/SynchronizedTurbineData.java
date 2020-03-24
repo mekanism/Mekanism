@@ -43,6 +43,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     public List<IEnergyContainer> energyContainers;
 
     public GasMode dumpMode = GasMode.IDLE;
+    private FloatingLong energyCapacity = FloatingLong.ZERO;
 
     public int blades;
     public int vents;
@@ -98,8 +99,13 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     }
 
     public FloatingLong getEnergyCapacity() {
-        //TODO: Cache this value
-        return FloatingLong.createConst(volume * 16_000_000L); //16 MJ energy capacity per volume
+        return energyCapacity;
+    }
+
+    @Override
+    public void setVolume(int volume) {
+        super.setVolume(volume);
+        energyCapacity = FloatingLong.createConst(getVolume() * 16_000_000L); //16 MJ energy capacity per volume
     }
 
     @Nonnull

@@ -191,9 +191,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 }
             } else if (structure.fluidTank.isEmpty() || structure.fluidTank.getFluid().isFluidEqual(fluidInItem)) {
                 boolean filled = false;
-                int stored = structure.fluidTank.getFluidAmount();
-                int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - stored;
-                FluidStack drained = handler.drain(needed, player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
+                FluidStack drained = handler.drain(structure.fluidTank.getNeeded(), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
                 ItemStack container = handler.getContainer();
                 if (!drained.isEmpty()) {
                     if (player.isCreative()) {
@@ -242,7 +240,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         CompoundNBT updateTag = super.getUpdateTag();
         if (structure != null && isRendering) {
             updateTag.putFloat(NBTConstants.SCALE, prevScale);
-            updateTag.putInt(NBTConstants.VOLUME, structure.volume);
+            updateTag.putInt(NBTConstants.VOLUME, structure.getVolume());
             updateTag.put(NBTConstants.FLUID_STORED, structure.fluidTank.getFluid().writeToNBT(new CompoundNBT()));
             ListNBT valves = new ListNBT();
             for (ValveData valveData : structure.valves) {
@@ -260,9 +258,9 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        if (clientHasStructure && isRendering) {
+        if (clientHasStructure && isRendering && structure != null) {
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
-            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.volume = value);
+            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.setVolume(value));
             NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.fluidTank.setStack(value));
             valveViewing.clear();
             if (tag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
@@ -286,9 +284,9 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableEnum.create(ContainerEditMode::byIndexStatic, ContainerEditMode.BOTH, this::getContainerEditMode, this::setContainerEditMode));
-        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volume, value -> {
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getVolume(), value -> {
             if (structure != null) {
-                structure.volume = value;
+                structure.setVolume(value);
             }
         }));
         container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.fluidTank.getFluid(), value -> {

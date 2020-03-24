@@ -38,7 +38,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, 0x404040);
-        drawString(MekanismLang.VOLUME.translate(tile.structure == null ? 0 : tile.structure.volume), 53, 26, 0x00CD00);
+        drawString(MekanismLang.VOLUME.translate(tile.structure == null ? 0 : tile.structure.getVolume()), 53, 26, 0x00CD00);
         FluidStack fluidStored = tile.structure == null ? FluidStack.EMPTY : tile.structure.fluidTank.getFluid();
         if (fluidStored.isEmpty()) {
             renderScaledText(MekanismLang.NO_FLUID.translate(), 53, 44, 0x00CD00, 74);

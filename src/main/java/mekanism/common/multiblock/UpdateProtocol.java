@@ -115,7 +115,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                     structure.volLength = length;
                     structure.volHeight = height;
                     structure.volWidth = width;
-                    structure.volume = structure.volLength * structure.volHeight * structure.volWidth;
+                    structure.setVolume(structure.volLength * structure.volHeight * structure.volWidth);
                     structure.renderLocation = coord.translate(0, 1, 0);
                     structure.minLocation = coord.translate(xmin, ymin, zmin);
                     structure.maxLocation = coord.translate(xmax, ymax, zmax);

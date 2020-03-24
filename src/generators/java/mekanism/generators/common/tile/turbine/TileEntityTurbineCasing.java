@@ -149,7 +149,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
         CompoundNBT updateTag = super.getUpdateTag();
         if (structure != null && isRendering) {
             updateTag.putFloat(NBTConstants.SCALE, prevSteamScale);
-            updateTag.putInt(NBTConstants.VOLUME, structure.volume);
+            updateTag.putInt(NBTConstants.VOLUME, structure.getVolume());
             updateTag.putInt(NBTConstants.LOWER_VOLUME, structure.lowerVolume);
             updateTag.put(NBTConstants.GAS_STORED, structure.gasTank.getStack().write(new CompoundNBT()));
             updateTag.put(NBTConstants.COMPLEX, structure.complex.write(new CompoundNBT()));
@@ -161,9 +161,9 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        if (clientHasStructure && isRendering) {
+        if (clientHasStructure && isRendering && structure != null) {
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevSteamScale = scale);
-            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.volume = value);
+            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.setVolume(value));
             NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> structure.lowerVolume = value);
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.gasTank.setStack(value));
             NBTUtils.setCoord4DIfPresent(tag, NBTConstants.COMPLEX, value -> structure.complex = value);
@@ -175,9 +175,9 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volume, value -> {
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getVolume(), value -> {
             if (structure != null) {
-                structure.volume = value;
+                structure.setVolume(value);
             }
         }));
         container.track(SyncableInt.create(() -> structure == null ? 0 : structure.lowerVolume, value -> {

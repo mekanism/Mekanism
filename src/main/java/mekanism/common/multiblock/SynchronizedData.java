@@ -23,7 +23,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
 
     public int volHeight;
 
-    public int volume;
+    private int volume;
 
     public String inventoryID;
 
@@ -70,7 +70,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
         code = 31 * code + volLength;
         code = 31 * code + volWidth;
         code = 31 * code + volHeight;
-        code = 31 * code + volume;
+        code = 31 * code + getVolume();
         return code;
     }
 
@@ -86,6 +86,14 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
         if (data.volLength != volLength || data.volWidth != volWidth || data.volHeight != volHeight) {
             return false;
         }
-        return data.volume == volume;
+        return data.getVolume() == getVolume();
+    }
+
+    public int getVolume() {
+        return volume;
+    }
+
+    public void setVolume(int volume) {
+        this.volume = volume;
     }
 }
