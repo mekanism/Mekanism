@@ -299,7 +299,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     }
 
     public Block getBlockType() {
-        //TODO: Should this be getBlockState().getBlock()
         return blockProvider.getBlock();
     }
 

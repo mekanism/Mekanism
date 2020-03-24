@@ -55,7 +55,6 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     public Void apply(ITheOneProbe probe) {
         probe.registerProvider(this);
         probe.registerProbeConfigProvider(ProbeConfigProvider.INSTANCE);
-        //TODO: Validate this doesn't cause any class loading issues on servers, if so move the creators to their own class
         EnergyElement.ID = probe.registerElementFactory(EnergyElement::fromBuffer);
         FluidElement.ID = probe.registerElementFactory(FluidElement::new);
         GasElement.ID = probe.registerElementFactory(GasElement::new);

@@ -1,8 +1,8 @@
 package mekanism.common.integration.forgeenergy;
 
 import mekanism.api.Action;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.EnergyCompatUtils.EnergyType;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -30,18 +30,40 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
 
     @Override
     public int getEnergyStored() {
-        if (handler.getEnergyContainerCount() > 0) {
-            //TODO: Improve on this
-            return EnergyType.FORGE.convertToAsInt(handler.getEnergy(0));
+        int containers = handler.getEnergyContainerCount();
+        if (containers > 0) {
+            int energy = 0;
+            for (int container = 0; container < containers; container++) {
+                int total = EnergyType.FORGE.convertToAsInt(handler.getEnergy(container));
+                if (total > Integer.MAX_VALUE - energy) {
+                    //Ensure we don't overflow
+                    energy = Integer.MAX_VALUE;
+                    break;
+                } else {
+                    energy += total;
+                }
+            }
+            return energy;
         }
         return 0;
     }
 
     @Override
     public int getMaxEnergyStored() {
-        if (handler.getEnergyContainerCount() > 0) {
-            //TODO: Improve on this
-            return EnergyType.FORGE.convertToAsInt(handler.getMaxEnergy(0));
+        int containers = handler.getEnergyContainerCount();
+        if (containers > 0) {
+            int maxEnergy = 0;
+            for (int container = 0; container < containers; container++) {
+                int max = EnergyType.FORGE.convertToAsInt(handler.getMaxEnergy(container));
+                if (max > Integer.MAX_VALUE - maxEnergy) {
+                    //Ensure we don't overflow
+                    maxEnergy = Integer.MAX_VALUE;
+                    break;
+                } else {
+                    maxEnergy += max;
+                }
+            }
+            return maxEnergy;
         }
         return 0;
     }
