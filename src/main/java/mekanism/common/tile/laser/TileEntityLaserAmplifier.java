@@ -86,10 +86,10 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         if (!isRemote()) {
             switch (dataStream.readInt()) {
                 case 0:
-                    minThreshold = energyContainer.getMaxEnergy().min(MekanismUtils.convertToJoules(FloatingLong.fromBuffer(dataStream)));
+                    minThreshold = energyContainer.getMaxEnergy().copy().min(MekanismUtils.convertToJoules(FloatingLong.fromBuffer(dataStream)));
                     break;
                 case 1:
-                    maxThreshold = energyContainer.getMaxEnergy().min(MekanismUtils.convertToJoules(FloatingLong.fromBuffer(dataStream)));
+                    maxThreshold = energyContainer.getMaxEnergy().copy().min(MekanismUtils.convertToJoules(FloatingLong.fromBuffer(dataStream)));
                     break;
                 case 2:
                     time = dataStream.readInt();

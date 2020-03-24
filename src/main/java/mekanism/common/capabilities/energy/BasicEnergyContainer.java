@@ -58,7 +58,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     protected BasicEnergyContainer(FloatingLong maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           @Nullable IMekanismStrictEnergyHandler energyHandler) {
-        this.maxEnergy = maxEnergy;
+        this.maxEnergy = maxEnergy.copy();
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.energyHandler = energyHandler;
@@ -87,8 +87,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
         //TODO: Evaluate usages of this, especially now with FloatingLong, as we probably
         // want to reimplement the concept of grow/shrink
         if (!stored.equals(energy)) {
-            //TODO: FloatingLong do we need to copy this
-            stored = energy;
+            stored = energy.copy();
             onContentsChanged();
         }
     }
@@ -119,7 +118,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
             return amount;
         }
         FloatingLong toAdd = amount.min(needed);
-        if (action.execute()) {
+        if (!toAdd.isEmpty() && action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
             stored.plusEqual(toAdd);
@@ -133,13 +132,13 @@ public class BasicEnergyContainer implements IEnergyContainer {
         if (isEmpty() || amount.isEmpty() || !canExtract.test(automationType)) {
             return FloatingLong.ZERO;
         }
-        FloatingLong ret = getRate(automationType).min(getEnergy()).min(amount);
+        FloatingLong ret = getRate(automationType).min(getEnergy()).min(amount).copy();
         if (!ret.isEmpty() && action.execute()) {
             //Note: this also will mark that the contents changed
             stored.minusEqual(ret);
             onContentsChanged();
         }
-        return ret.copy();
+        return ret;
     }
 
     /**

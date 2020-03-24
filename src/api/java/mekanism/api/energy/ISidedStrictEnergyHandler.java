@@ -172,7 +172,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * </p>
      *
      * @param container Container to extract from.
-     * @param amount    Amount of energy to extract (may be greater than the current stored amount or the container's capacity)
+     * @param amount    Amount of energy to extract (may be greater than the current stored amount or the container's capacity) This must not be modified by the handler.
      * @param action    The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      * @param side      The side we are interacting with the handler from (null for internal).
      *
@@ -220,7 +220,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * The returned value must be {@link FloatingLong#ZERO} if nothing is extracted, otherwise its must be less than or equal to {@code amount}.
      * </p>
      *
-     * @param amount Amount of energy to extract (may be greater than the current stored amount or the container's capacity)
+     * @param amount Amount of energy to extract (may be greater than the current stored amount or the container's capacity) This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      * @param side   The side we are interacting with the handler from (null for internal).
      *

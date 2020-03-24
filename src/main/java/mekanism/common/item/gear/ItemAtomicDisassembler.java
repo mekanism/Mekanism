@@ -75,7 +75,7 @@ import net.minecraftforge.eventbus.api.Event.Result;
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider {
 
     public ItemAtomicDisassembler(Properties properties) {
-        //TODO: Set some tool types?
+        //TODO: Set some tool types? What would we set the "harvest level to"
         super(MekanismConfig.general.disassemblerBatteryCapacity.get(), properties.setNoRepair().setISTER(ISTERProvider::disassembler));
     }
 
