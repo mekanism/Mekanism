@@ -101,7 +101,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
             // Note: this also will mark that the contents changed
             setEnergy(getEnergy().subtract(ret));
         }
-        return ret;
+        return ret.copy();
     }
 
     /**

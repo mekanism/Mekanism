@@ -143,9 +143,10 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                     ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
                     if (!itemInput.isEmpty()) {
                         FloatingLong output = foundRecipe.getOutput(itemInput);
-                        if (!output.isEmpty() && energyContainer.insert(output, Action.SIMULATE, AutomationType.INTERNAL).isEmpty()) {
+                        //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
+                        if (!output.isEmpty() && energyContainer.insert(output, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
                             //If we can accept it all, then add it and decrease our input
-                            if (!energyContainer.insert(output, Action.EXECUTE, AutomationType.INTERNAL).isEmpty()) {
+                            if (!energyContainer.insert(output, Action.EXECUTE, AutomationType.MANUAL).isEmpty()) {
                                 //TODO: Print warning/error
                             }
                             int amountUsed = itemInput.getCount();

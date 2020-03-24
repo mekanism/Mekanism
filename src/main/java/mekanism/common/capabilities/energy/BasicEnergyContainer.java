@@ -123,6 +123,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
             stored.plusEqual(toAdd);
+            onContentsChanged();
         }
         return amount.subtract(toAdd);
     }
@@ -136,6 +137,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
         if (!ret.isEmpty() && action.execute()) {
             //Note: this also will mark that the contents changed
             stored.minusEqual(ret);
+            onContentsChanged();
         }
         return ret.copy();
     }

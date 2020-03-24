@@ -144,9 +144,10 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                 Pair<ItemStack, STACK> conversion = getConversion();
                 if (conversion != null) {
                     STACK output = conversion.getSecond();
-                    if (!output.isEmpty() && chemicalTank.insert(output, Action.SIMULATE, AutomationType.INTERNAL).isEmpty()) {
+                    //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
+                    if (!output.isEmpty() && chemicalTank.insert(output, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
                         //If we can accept it all, then add it and decrease our input
-                        if (!chemicalTank.insert(output, Action.EXECUTE, AutomationType.INTERNAL).isEmpty()) {
+                        if (!chemicalTank.insert(output, Action.EXECUTE, AutomationType.MANUAL).isEmpty()) {
                             //TODO: Print warning/error
                         }
                         int amountUsed = conversion.getFirst().getCount();

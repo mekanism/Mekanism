@@ -59,7 +59,7 @@ public class SerializerHelper {
         if (!JSONUtils.isNumber(decimalElement)) {
             throw new JsonSyntaxException("Expected decimal to be a number greater than equal to zero.");
         }
-        short decimal = valueElement.getAsJsonPrimitive().getAsShort();
+        short decimal = decimalElement.getAsJsonPrimitive().getAsShort();
         if (decimal < 0) {
             throw new JsonSyntaxException("Expected decimal to be greater than zero equal to zero.");
         }
