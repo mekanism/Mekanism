@@ -6,7 +6,6 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -135,20 +134,18 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     public void plusEqual(FloatingLong toAdd) {
         checkCanModify();
-        long newValue = 0;
-        short newDecimal = 0;
-
+        long newValue;
+        short newDecimal;
         try {
             newValue = Math.addExact(value, toAdd.value);
             newDecimal = (short) (decimal + toAdd.decimal);
             if (newDecimal > MAX_DECIMAL) {
                 newDecimal -= SINGLE_UNIT;
-                newValue= Math.addExact(newValue, 1); //could overflow here too, same exception will be thrown
+                newValue = Math.addExact(newValue, 1); //could overflow here too, same exception will be thrown
             }
-        }
-        catch(ArithmeticException e) {
-            newValue = Long.MAX_VALUE;
-            newDecimal = Short.MAX_VALUE;
+        } catch (ArithmeticException e) {
+            newValue = MAX_VALUE.value;
+            newDecimal = MAX_VALUE.decimal;
         }
         setAndClampValues(newValue, newDecimal);
     }
@@ -165,40 +162,36 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     }
 
     private static long multiplyLongs(long d1, long d2) {
-        long result = 0;
         try {
-            result = Math.multiplyExact(d1, d2); //multiplyExact will throw an exception if we overflow
-        }
-        catch (ArithmeticException e) {
+            //multiplyExact will throw an exception if we overflow
+            return Math.multiplyExact(d1, d2);
+        } catch (ArithmeticException e) {
             return Long.MAX_VALUE;
         }
-        return result;
     }
 
     private static FloatingLong multiplyLongAndDecimal(long d1, short d2) {
         //This can't overflow!
-        if(d1 > Long.MAX_VALUE / SINGLE_UNIT)
-            return create(((d1 / SINGLE_UNIT) * d2), (short)(d1 % SINGLE_UNIT * d2));
-        return create((d1 * d2 / SINGLE_UNIT), (short)(d1 * d2 % SINGLE_UNIT));
+        if (d1 > Long.MAX_VALUE / SINGLE_UNIT) {
+            return create((d1 / SINGLE_UNIT) * d2, (short) (d1 % SINGLE_UNIT * d2));
+        }
+        return create(d1 * d2 / SINGLE_UNIT, (short) (d1 * d2 % SINGLE_UNIT));
     }
 
     private static FloatingLong multiplyDecimals(short d1, short d2) {
-        long temp = d1 * d2 / SINGLE_UNIT; //If we wanted to round here, just get modulus and add if >= 0.5*SINGLE_UNIT
+        //If we wanted to round here, just get modulus and add if >= 0.5*SINGLE_UNIT
+        long temp = (long) d1 * (long) d2 / SINGLE_UNIT;
         return create(0, (short) temp);
     }
 
 
     public void timesEqual(FloatingLong toMultiply) {
         checkCanModify();
-        FloatingLong temp;
         //(a+b)*(c+d) where numbers represent decimal, numbers represent value
-
-        //TODO: primitive types can overflow here. Need to implement checks here probably as a wrapper to the multiply
-        temp = create( multiplyLongs(value, toMultiply.value) ); //ac
-        temp = temp.add( multiplyLongAndDecimal(value, toMultiply.decimal) ); //ad
-        temp = temp.add( multiplyLongAndDecimal(toMultiply.value, decimal) ); //bc
-        temp = temp.add( multiplyDecimals(decimal, toMultiply.decimal) ); //bd
-
+        FloatingLong temp = create(multiplyLongs(value, toMultiply.value));//a * c
+        temp.plusEqual(multiplyLongAndDecimal(value, toMultiply.decimal));//a * d
+        temp.plusEqual(multiplyLongAndDecimal(toMultiply.value, decimal));//b * c
+        temp.plusEqual(multiplyDecimals(decimal, toMultiply.decimal));//b * d
         setAndClampValues(temp.value, temp.decimal);
     }
 

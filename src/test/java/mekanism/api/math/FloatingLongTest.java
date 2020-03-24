@@ -1,6 +1,5 @@
 package mekanism.api.math;
 
-import mekanism.api.math.FloatingLong;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,50 +16,40 @@ class FloatingLongTest {
     @Test
     @DisplayName("Test basic multiplication")
     void testBasicMultiply() {
-        FloatingLong fl1 = FloatingLong.create(27.1);
-        FloatingLong fl2 = FloatingLong.create(47.1);
-        FloatingLong result = fl1.multiply(fl2);
-
-        Assertions.assertEquals(FloatingLong.create((double)1276.41), result);
+        FloatingLong a = FloatingLong.create(27.1);
+        FloatingLong b = FloatingLong.create(47.1);
+        Assertions.assertEquals(FloatingLong.createConst(1_276.41), a.multiply(b));
     }
 
     @Test
     @DisplayName("Test that the intermediate values are sanitized and merged properly with high decimal values")
     void testSanitation() {
-        FloatingLong fl1 = FloatingLong.create((long)5, (short)6789);
-        FloatingLong fl2 = FloatingLong.create((long)9, (short)8765);
-        FloatingLong result = fl1.multiply(fl2);
-
-        Assertions.assertEquals(FloatingLong.create((double)56.0876), result);
+        FloatingLong a = FloatingLong.create(5, (short) 6_789);
+        FloatingLong b = FloatingLong.create(9, (short) 8_765);
+        Assertions.assertEquals(FloatingLong.createConst(56.0876), a.multiply(b));
     }
 
     @Test
     @DisplayName("Test basic addition with a decimal overflow")
     void testBasicAdd() {
-        FloatingLong fl1 = FloatingLong.create((long)509876, (short)5555);
-        FloatingLong fl2 = FloatingLong.create((long)13479, (short)6789);
-        FloatingLong result = fl1.add(fl2);
-
-        Assertions.assertEquals(FloatingLong.create((double)523356.2344), result);
+        FloatingLong a = FloatingLong.create(509_876, (short) 5_555);
+        FloatingLong b = FloatingLong.create(13_479, (short) 6_789);
+        Assertions.assertEquals(FloatingLong.createConst(523_356.2344), a.add(b));
     }
 
     @Test
     @DisplayName("Test addition where the value portion overflows")
     void testOverFlowAdd() {
-        FloatingLong fl1 = FloatingLong.create(Long.MAX_VALUE, (short)1);
-        FloatingLong fl2 = FloatingLong.create((long)9, (short)2);
-        FloatingLong result = fl1.add(fl2);
-
-        Assertions.assertEquals(FloatingLong.create(Long.MAX_VALUE, Short.MAX_VALUE), result);
+        FloatingLong a = FloatingLong.create(Long.MAX_VALUE, (short) 1);
+        FloatingLong b = FloatingLong.create(9, (short) 2);
+        Assertions.assertEquals(FloatingLong.MAX_VALUE, a.add(b));
     }
 
     @Test
     @DisplayName("Test addition where the decimal overflow causes the long to overflow")
     void testDecimalOverflowAdd() {
-        FloatingLong fl1 = FloatingLong.create(Long.MAX_VALUE-5, (short)9185);
-        FloatingLong fl2 = FloatingLong.create((long)5, (short)3091);
-        FloatingLong result = fl1.add(fl2);
-
-        Assertions.assertEquals(FloatingLong.create(Long.MAX_VALUE, Short.MAX_VALUE), result);
+        FloatingLong a = FloatingLong.create(Long.MAX_VALUE - 5, (short) 9_185);
+        FloatingLong b = FloatingLong.create(5, (short) 3_091);
+        Assertions.assertEquals(FloatingLong.MAX_VALUE, a.add(b));
     }
 }
