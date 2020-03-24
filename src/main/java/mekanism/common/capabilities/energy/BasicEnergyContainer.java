@@ -84,8 +84,6 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public void setEnergy(FloatingLong energy) {
-        //TODO: Evaluate usages of this, especially now with FloatingLong, as we probably
-        // want to reimplement the concept of grow/shrink
         if (!stored.equals(energy)) {
             stored = energy.copy();
             onContentsChanged();
