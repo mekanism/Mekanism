@@ -149,8 +149,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
         leftOutputSlot.drainTank();
         rightOutputSlot.drainTank();
-        FloatingLong prev = energyContainer.getEnergy();
+        FloatingLong prev = energyContainer.getEnergy().copy();
+        CachedRecipe<ElectrolysisRecipe> oldCache = cachedRecipe;
         cachedRecipe = getUpdatedCache(0);
+        if (oldCache != cachedRecipe) {
+            //If it is not the same literal object ensure we take our recipe's energy per tick into account
+            energyContainer.updateEnergyPerTick();
+        }
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
@@ -203,7 +208,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Nullable
     @Override
     public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(@Nonnull ElectrolysisRecipe recipe, int cacheIndex) {
-        energyContainer.updateEnergyPerTick();
         return new ElectrolysisCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)

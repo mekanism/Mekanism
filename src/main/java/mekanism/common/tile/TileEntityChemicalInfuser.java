@@ -129,7 +129,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITa
         leftInputSlot.fillTank();
         rightInputSlot.fillTank();
         outputSlot.drainTank();
-        FloatingLong prev = energyContainer.getEnergy();
+        FloatingLong prev = energyContainer.getEnergy().copy();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();
