@@ -40,7 +40,7 @@ public class SerializerHelper {
             throw new JsonSyntaxException("Expected '" + key + "' to be a json primitive representing a FloatingLong");
         }
         try {
-            return FloatingLong.parseFloatingLong(jsonElement.getAsNumber().toString());
+            return FloatingLong.parseFloatingLong(jsonElement.getAsNumber().toString(), true);
         } catch (NumberFormatException e) {
             throw new JsonSyntaxException("Expected '" + key + "' to be a valid FloatingLong (positive decimal number)");
         }

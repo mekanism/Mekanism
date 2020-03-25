@@ -31,7 +31,7 @@ public class ItemStackToEnergyRecipeSerializer<T extends ItemStackToEnergyRecipe
                             JSONUtils.getJsonObject(json, JsonConstants.INPUT);
         ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
         FloatingLong output = SerializerHelper.getFloatingLong(json, JsonConstants.OUTPUT);
-        if (output.isEmpty()) {
+        if (output.isZero()) {
             throw new JsonSyntaxException("Expected output to be greater than zero.");
         }
         return this.factory.create(recipeId, inputIngredient, output);

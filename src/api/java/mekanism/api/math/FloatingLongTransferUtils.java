@@ -24,7 +24,7 @@ public class FloatingLongTransferUtils {
         IntList emptyContainers = new IntArrayList();
         for (int container = 0; container < containers; container++) {
             FloatingLong inContainer = inContainerGetter.apply(container);
-            if (inContainer.isEmpty()) {
+            if (inContainer.isZero()) {
                 emptyContainers.add(container);
             } else {
                 matchingContainers.add(container);
@@ -34,7 +34,7 @@ public class FloatingLongTransferUtils {
         //Start by trying to insert into the tanks that have the same type
         for (int container : matchingContainers) {
             FloatingLong remainder = insert.insert(container, toInsert, action);
-            if (remainder.isEmpty()) {
+            if (remainder.isZero()) {
                 //If we have no remainder, return that we fit it all
                 return FloatingLong.ZERO;
             }
@@ -43,7 +43,7 @@ public class FloatingLongTransferUtils {
         }
         for (int container : emptyContainers) {
             FloatingLong remainder = insert.insert(container, toInsert, action);
-            if (remainder.isEmpty()) {
+            if (remainder.isZero()) {
                 //If we have no remainder, return that we fit it all
                 return FloatingLong.ZERO;
             }
@@ -65,15 +65,15 @@ public class FloatingLongTransferUtils {
         FloatingLong toExtract = amount.copy();
         for (int container = 0; container < containers; container++) {
             FloatingLong drained = extract.extract(container, toExtract, action);
-            if (!drained.isEmpty()) {
+            if (!drained.isZero()) {
                 //If we were able to extract something, do so
-                if (extracted.isEmpty()) {
+                if (extracted.isZero()) {
                     extracted = drained;
                 } else {
-                    extracted.plusEqual(drained);
+                    extracted = extracted.plusEqual(drained);
                 }
-                toExtract.minusEqual(drained);
-                if (toExtract.isEmpty()) {
+                toExtract = toExtract.minusEqual(drained);
+                if (toExtract.isZero()) {
                     //If we are done extracting break and return the amount extracted
                     break;
                 }

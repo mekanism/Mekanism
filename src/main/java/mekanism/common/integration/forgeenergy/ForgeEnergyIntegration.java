@@ -70,7 +70,7 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
 
     @Override
     public boolean canExtract() {
-        return !handler.extractEnergy(FloatingLong.ONE, Action.SIMULATE).isEmpty();
+        return !handler.extractEnergy(FloatingLong.ONE, Action.SIMULATE).isZero();
     }
 
     @Override

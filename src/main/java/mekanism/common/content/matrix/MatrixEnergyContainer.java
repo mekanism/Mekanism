@@ -31,14 +31,14 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     //TODO: Eventually we could look into extending FloatingLong to have a "BigInt" styled implementation that is used by the class
     // at the very least for keeping track of the cached values and rates
-    private FloatingLong queuedOutput = FloatingLong.getNewZero();
-    private FloatingLong queuedInput = FloatingLong.getNewZero();
+    private FloatingLong queuedOutput = FloatingLong.ZERO;
+    private FloatingLong queuedInput = FloatingLong.ZERO;
     private FloatingLong lastOutput = FloatingLong.ZERO;
     private FloatingLong lastInput = FloatingLong.ZERO;
 
-    private FloatingLong cachedTotal = FloatingLong.getNewZero();
-    private FloatingLong transferCap = FloatingLong.getNewZero();
-    private FloatingLong storageCap = FloatingLong.getNewZero();
+    private FloatingLong cachedTotal = FloatingLong.ZERO;
+    private FloatingLong transferCap = FloatingLong.ZERO;
+    private FloatingLong storageCap = FloatingLong.ZERO;
 
     private final TileEntityInductionCasing tile;
 
@@ -50,13 +50,13 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         //As we already have the two different variables just pass them instead of accessing world to get tile again
         MachineEnergyContainer<TileEntityInductionCell> energyContainer = cell.getEnergyContainer();
         cells.put(coord.getPos(), energyContainer);
-        storageCap.plusEqual(energyContainer.getMaxEnergy());
-        cachedTotal.plusEqual(energyContainer.getEnergy());
+        storageCap = storageCap.plusEqual(energyContainer.getMaxEnergy());
+        cachedTotal = cachedTotal.plusEqual(energyContainer.getEnergy());
     }
 
     public void addProvider(Coord4D coord, TileEntityInductionProvider provider) {
         providers.put(coord.getPos(), provider.tier);
-        transferCap.plusEqual(provider.tier.getOutput());
+        transferCap = transferCap.plusEqual(provider.tier.getOutput());
     }
 
     //TODO: I believe this is needed or at least will be after we eventually rewrite some of the multiblock system
@@ -68,14 +68,14 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         if (!invalidPositions.contains(pos)) {
             if (providers.containsKey(pos)) {
                 //It is a provider
-                transferCap.minusEqual(providers.get(pos).getOutput());
+                transferCap = transferCap.minusEqual(providers.get(pos).getOutput());
             } else if (cells.containsKey(pos)) {
                 //It is a cell
                 //TODO: Handle this better, as I believe we *technically* could have this cause the cached total to become negative
                 // It may work better if we just flush the buffer writing immediately, and then recalculate the cached totals/caps
                 IEnergyContainer cellContainer = cells.get(pos);
-                storageCap.plusEqual(cellContainer.getMaxEnergy());
-                cachedTotal.minusEqual(cellContainer.getEnergy());
+                storageCap = storageCap.plusEqual(cellContainer.getMaxEnergy());
+                cachedTotal = cachedTotal.minusEqual(cellContainer.getEnergy());
             }
             invalidPositions.add(pos);
         }
@@ -87,13 +87,13 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         //And reset everything
         cells.clear();
         providers.clear();
-        queuedOutput = FloatingLong.getNewZero();
-        queuedInput = FloatingLong.getNewZero();
+        queuedOutput = FloatingLong.ZERO;
+        queuedInput = FloatingLong.ZERO;
         lastOutput = FloatingLong.ZERO;
         lastInput = FloatingLong.ZERO;
-        cachedTotal = FloatingLong.getNewZero();
-        transferCap = FloatingLong.getNewZero();
-        storageCap = FloatingLong.getNewZero();
+        cachedTotal = FloatingLong.ZERO;
+        transferCap = FloatingLong.ZERO;
+        storageCap = FloatingLong.ZERO;
     }
 
     public void tick() {
@@ -114,18 +114,18 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         }
         lastInput = queuedInput;
         lastOutput = queuedOutput;
-        queuedInput = FloatingLong.getNewZero();
-        queuedOutput = FloatingLong.getNewZero();
+        queuedInput = FloatingLong.ZERO;
+        queuedOutput = FloatingLong.ZERO;
     }
 
     private void addEnergy(FloatingLong energy) {
-        cachedTotal.plusEqual(energy);
+        cachedTotal = cachedTotal.plusEqual(energy);
         for (IEnergyContainer container : cells.values()) {
             //Note: inserting into the cell's energy container handles marking the cell for saving if it changes
             FloatingLong remainder = container.insert(energy, Action.EXECUTE, AutomationType.INTERNAL);
             if (remainder.smallerThan(energy)) {
                 //Our cell accepted at least some energy
-                if (remainder.isEmpty()) {
+                if (remainder.isZero()) {
                     //Check less than equal rather than just equal in case something went wrong
                     // and break if we don't have any energy left to add
                     break;
@@ -136,13 +136,13 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     private void removeEnergy(FloatingLong energy) {
-        cachedTotal.minusEqual(energy);
+        cachedTotal = cachedTotal.minusEqual(energy);
         for (IEnergyContainer container : cells.values()) {
             //Note: extracting from the cell's energy container handles marking the cell for saving if it changes
             FloatingLong extracted = container.extract(energy, Action.EXECUTE, AutomationType.INTERNAL);
-            if (!extracted.isEmpty()) {
-                energy.minusEqual(extracted);
-                if (energy.isEmpty()) {
+            if (!extracted.isZero()) {
+                energy = energy.minusEqual(extracted);
+                if (energy.isZero()) {
                     //Check less than equal rather than just equal in case something went wrong
                     // and break if we don't need to remove any more energy
                     break;
@@ -170,25 +170,25 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     @Override
     public FloatingLong insert(FloatingLong amount, Action action, AutomationType automationType) {
-        if (amount.isEmpty() || tile.structure == null) {
+        if (amount.isZero() || tile.structure == null) {
             return amount;
         }
         FloatingLong toAdd = amount.min(getRemainingInput()).min(getNeeded());
-        if (toAdd.isEmpty()) {
+        if (toAdd.isZero()) {
             //Exit if we don't actually have anything to add, either due to how much we need
             // or due to the our remaining rate limit
             return amount;
         }
         if (action.execute()) {
             //Increase how much we are inputting
-            queuedInput.plusEqual(toAdd);
+            queuedInput = queuedInput.plusEqual(toAdd);
         }
         return amount.subtract(toAdd);
     }
 
     @Override
     public FloatingLong extract(FloatingLong amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount.isEmpty() || tile.structure == null) {
+        if (isEmpty() || amount.isZero() || tile.structure == null) {
             return FloatingLong.ZERO;
         }
         //We limit it overall by the amount we can extract plus how much energy we have
@@ -196,9 +196,9 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         // It is possible that the energy we have stored is a lot less than the amount we
         // can output at once such as if the matrix is almost empty.
         amount = amount.min(getRemainingOutput()).min(getEnergy());
-        if (!amount.isEmpty() && action.execute()) {
+        if (!amount.isZero() && action.execute()) {
             //Increase how much we are outputting by the amount we accepted
-            queuedOutput.plusEqual(amount);
+            queuedOutput = queuedOutput.plusEqual(amount);
         }
         return amount;
     }

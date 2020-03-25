@@ -49,7 +49,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
         return new BasicEnergyContainer(maxEnergy, canExtract, canInsert, energyHandler);
     }
 
-    private FloatingLong stored = FloatingLong.getNewZero();
+    private FloatingLong stored = FloatingLong.ZERO;
     protected final Predicate<@NonNull AutomationType> canExtract;
     protected final Predicate<@NonNull AutomationType> canInsert;
     private final FloatingLong maxEnergy;
@@ -107,19 +107,19 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public FloatingLong insert(FloatingLong amount, Action action, AutomationType automationType) {
-        if (amount.isEmpty() || !canInsert.test(automationType)) {
+        if (amount.isZero() || !canInsert.test(automationType)) {
             return amount;
         }
         FloatingLong needed = getRate(automationType).min(getNeeded());
-        if (needed.isEmpty()) {
+        if (needed.isZero()) {
             //Fail if we are a full container or our rate is zero
             return amount;
         }
         FloatingLong toAdd = amount.min(needed);
-        if (!toAdd.isEmpty() && action.execute()) {
+        if (!toAdd.isZero() && action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
-            stored.plusEqual(toAdd);
+            stored = stored.plusEqual(toAdd);
             onContentsChanged();
         }
         return amount.subtract(toAdd);
@@ -127,13 +127,13 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public FloatingLong extract(FloatingLong amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount.isEmpty() || !canExtract.test(automationType)) {
+        if (isEmpty() || amount.isZero() || !canExtract.test(automationType)) {
             return FloatingLong.ZERO;
         }
         FloatingLong ret = getRate(automationType).min(getEnergy()).min(amount).copy();
-        if (!ret.isEmpty() && action.execute()) {
+        if (!ret.isZero() && action.execute()) {
             //Note: this also will mark that the contents changed
-            stored.minusEqual(ret);
+            stored = stored.minusEqual(ret);
             onContentsChanged();
         }
         return ret;
@@ -146,7 +146,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
      */
     @Override
     public boolean isEmpty() {
-        return stored.isEmpty();
+        return stored.isZero();
     }
 
     @Override

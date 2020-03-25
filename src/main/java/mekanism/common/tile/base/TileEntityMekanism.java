@@ -213,7 +213,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     private ProxyStrictEnergyHandler readOnlyStrictEnergyHandler;
     private Map<Direction, ProxyStrictEnergyHandler> strictEnergyHandlers;
 
-    private FloatingLong lastEnergyReceived = FloatingLong.getNewZero();
+    private FloatingLong lastEnergyReceived = FloatingLong.ZERO;
     //End variables IMekanismStrictEnergyHandler
 
     //Variables for handling ITileSecurity
@@ -479,7 +479,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 }
             }
             onUpdateServer();
-            lastEnergyReceived = FloatingLong.getNewZero();
+            lastEnergyReceived = FloatingLong.ZERO;
         }
         ticker++;
         if (supportsRedstone()) {
@@ -1128,7 +1128,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
         FloatingLong remainder = energyContainer.insert(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
         if (action.execute()) {
-            lastEnergyReceived.plusEqual(amount.subtract(remainder));
+            lastEnergyReceived = lastEnergyReceived.plusEqual(amount.subtract(remainder));
         }
         return remainder;
     }

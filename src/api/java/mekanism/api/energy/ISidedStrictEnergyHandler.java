@@ -154,7 +154,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * @param side      The side we are interacting with the handler from (null for internal).
      *
      * @return The remaining energy that was not inserted (if the entire amount is accepted, then return {@link FloatingLong#ZERO}). The returned {@link FloatingLong} can
-     * be safely modified afterwards, if it is not {@link FloatingLong#ZERO}.
+     * be safely modified afterwards.
      */
     FloatingLong insertEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action);
 
@@ -177,7 +177,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * @param side      The side we are interacting with the handler from (null for internal).
      *
      * @return Energy extracted from the container, must be {@link FloatingLong#ZERO} if no energy can be extracted. The returned {@link FloatingLong} can be safely
-     * modified after, if it is not {@link FloatingLong#ZERO}, so the container should return a new or copied {@link FloatingLong}.
+     * modified after, so the container should return a new or copied {@link FloatingLong}.
      */
     FloatingLong extractEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action);
 
@@ -201,7 +201,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * @param side   The side we are interacting with the handler from (null for internal).
      *
      * @return The remaining energy that was not inserted (if the entire amount is accepted, then return {@link FloatingLong#ZERO}). The returned {@link FloatingLong} can
-     * be safely modified after, if it is not {@link FloatingLong#ZERO}.
+     * be safely modified after.
      *
      * @implNote The default implementation of this method, attempts to insert into containers that contain the energy, and if it will not all fit, falls back to
      * inserting into any empty containers.

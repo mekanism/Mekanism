@@ -59,7 +59,7 @@ public class CachedFloatingLongValue extends CachedResolvableConfigValue<Floatin
 
     @Override
     protected FloatingLong resolve(String encoded) {
-        return FloatingLong.parseFloatingLong(encoded);
+        return FloatingLong.parseFloatingLong(encoded, true);
     }
 
     @Override

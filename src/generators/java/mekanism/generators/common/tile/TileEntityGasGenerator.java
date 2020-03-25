@@ -74,7 +74,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         fuelSlot.fillTank();
 
         boolean operate = (!fuelTank.isEmpty() || burnTicks > 0) && MekanismUtils.canFunction(this);
-        if (operate && getEnergyContainer().insert(generationRate, Action.SIMULATE, AutomationType.INTERNAL).isEmpty()) {
+        if (operate && getEnergyContainer().insert(generationRate, Action.SIMULATE, AutomationType.INTERNAL).isZero()) {
             setActive(true);
             if (fuelTank.getStored() != 0) {
                 FuelGas fuel = FuelHandler.getFuel(fuelTank.getType());
@@ -112,7 +112,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     }
 
     private int getToUse() {
-        if (generationRate.isEmpty() || fuelTank.isEmpty()) {
+        if (generationRate.isZero() || fuelTank.isEmpty()) {
             return 0;
         }
         int max = (int) Math.ceil(256F * (fuelTank.getStored() / (float) fuelTank.getCapacity()));

@@ -51,23 +51,23 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      * @param automationType The method that this container is being interacted from.
      *
      * @return The remaining energy that was not inserted (if the entire amount is accepted, then return {@link FloatingLong#ZERO}). The returned {@link FloatingLong} can
-     * be safely modified afterwards, if it is not {@link FloatingLong#ZERO}.
+     * be safely modified afterwards.
      *
      * @implNote The {@link FloatingLong} <em>should not</em> be modified in this function! If the internal amount does get updated make sure to call {@link
      * #onContentsChanged()}. It is also recommended to override this if your internal {@link FloatingLong} is mutable so that a copy does not have to be made every run.
      */
     default FloatingLong insert(FloatingLong amount, Action action, AutomationType automationType) {
-        if (amount.isEmpty()) {
+        if (amount.isZero()) {
             //"Fail quick" if the given amount is empty
             return amount;
         }
         FloatingLong needed = getNeeded();
-        if (needed.isEmpty()) {
+        if (needed.isZero()) {
             //Fail if we are a full container
             return amount;
         }
         FloatingLong toAdd = amount.min(needed);
-        if (!toAdd.isEmpty() && action.execute()) {
+        if (!toAdd.isZero() && action.execute()) {
             //If we want to actually insert the energy, then update the current energy
             // Note: this also will mark that the contents changed
             setEnergy(getEnergy().add(toAdd));
@@ -87,18 +87,18 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      * @param automationType The method that this container is being interacted from.
      *
      * @return Energy extracted from the container, must be {@link FloatingLong#ZERO} if no energy can be extracted. The returned {@link FloatingLong} can be safely
-     * modified after, if it is not {@link FloatingLong#ZERO}, so the container should return a new or copied {@link FloatingLong}.
+     * modified after, so the container should return a new or copied {@link FloatingLong}.
      *
-     * @implNote The returned {@link FloatingLong} can be safely modified after, if it is not {@link FloatingLong#ZERO}, so a new or copied {@link FloatingLong} should be
-     * returned. If the internal amount does get updated make sure to call {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link
-     * FloatingLong} is mutable so that a copy does not have to be made every run.
+     * @implNote The returned {@link FloatingLong} can be safely modified after, so a new or copied {@link FloatingLong} should be returned. If the internal amount does
+     * get updated make sure to call {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link FloatingLong} is mutable so that a copy
+     * does not have to be made every run.
      */
     default FloatingLong extract(FloatingLong amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount.isEmpty()) {
+        if (isEmpty() || amount.isZero()) {
             return FloatingLong.ZERO;
         }
         FloatingLong ret = getEnergy().min(amount).copy();
-        if (!ret.isEmpty() && action.execute()) {
+        if (!ret.isZero() && action.execute()) {
             // Note: this also will mark that the contents changed
             setEnergy(getEnergy().subtract(ret));
         }
@@ -132,7 +132,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      * @return True if the container is empty, false otherwise.
      */
     default boolean isEmpty() {
-        return getEnergy().isEmpty();
+        return getEnergy().isZero();
     }
 
     /**

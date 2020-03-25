@@ -90,7 +90,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             seesSun = world.isDaytime() && canSeeSky() && !world.getDimension().isNether();
         }
 
-        if (seesSun && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isEmpty()) {
+        if (seesSun && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero()) {
             setActive(true);
             FloatingLong production = getProduction();
             lastProductionAmount = production.subtract(getEnergyContainer().insert(production, Action.EXECUTE, AutomationType.INTERNAL));
@@ -123,7 +123,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
         // If the generator is in a biome where it can rain and it's raining penalize production by 80%
         if (needsRainCheck && (world.isRaining() || world.isThundering())) {
-            production.timesEqual(RAIN_MULTIPLIER);
+            production = production.timesEqual(RAIN_MULTIPLIER);
         }
         return production;
     }

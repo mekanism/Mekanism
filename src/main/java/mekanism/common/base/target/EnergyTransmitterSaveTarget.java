@@ -17,11 +17,7 @@ public class EnergyTransmitterSaveTarget extends Target<IGridTransmitter<IStrict
     @Override
     protected void acceptAmount(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
         amount = amount.min(transmitter.getCapacityAsFloatingLong().subtract(currentStored));
-        if (currentStored.isEmpty()) {
-            currentStored = amount.copy();
-        } else {
-            currentStored.plusEqual(amount);
-        }
+        currentStored = currentStored.plusEqual(amount);
         splitInfo.send(amount);
     }
 
@@ -36,7 +32,7 @@ public class EnergyTransmitterSaveTarget extends Target<IGridTransmitter<IStrict
             TileEntity tile = ((TransmitterImpl<?, ?, ?>) transmitter).getTileEntity();
             if (tile instanceof TileEntityUniversalCable) {
                 TileEntityUniversalCable cable = (TileEntityUniversalCable) tile;
-                if (!currentStored.isEmpty() || !cable.lastWrite.isEmpty()) {
+                if (!currentStored.isZero() || !cable.lastWrite.isZero()) {
                     cable.lastWrite = currentStored;
                     cable.markDirty();
                 }

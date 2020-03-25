@@ -29,7 +29,7 @@ public class RenderDigitalMinerItem extends MekanismItemStackRenderer {
         matrix.translate(0.35, 0.1, 0);
         //Scale the model to the correct size
         matrix.scale(0.352F, 0.352F, 0.352F);
-        digitalMiner.render(matrix, renderer, light, overlayLight, !StorageUtils.getStoredEnergyFromNBT(stack).isEmpty());
+        digitalMiner.render(matrix, renderer, light, overlayLight, !StorageUtils.getStoredEnergyFromNBT(stack).isZero());
         matrix.pop();
     }
 

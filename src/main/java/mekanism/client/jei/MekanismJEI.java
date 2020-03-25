@@ -107,9 +107,9 @@ public class MekanismJEI implements IModPlugin {
         IStrictEnergyHandler energyHandlerItem = capability.get();
         if (energyHandlerItem.getEnergyContainerCount() == 1) {
             //TODO: Eventually figure out a good way to do this with multiple energy containers
-            if (energyHandlerItem.getEnergy(0).isEmpty()) {
+            if (energyHandlerItem.getEnergy(0).isZero()) {
                 return "empty";
-            } else if (energyHandlerItem.getNeededEnergy(0).isEmpty()) {
+            } else if (energyHandlerItem.getNeededEnergy(0).isZero()) {
                 return "filled";
             }
         }
