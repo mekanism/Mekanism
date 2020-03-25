@@ -114,8 +114,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.put(NBTConstants.MIN, minThreshold.serializeNBT());
-        nbtTags.put(NBTConstants.MAX, maxThreshold.serializeNBT());
+        nbtTags.putString(NBTConstants.MIN, minThreshold.toString());
+        nbtTags.putString(NBTConstants.MAX, maxThreshold.toString());
         nbtTags.putInt(NBTConstants.TIME, time);
         nbtTags.putInt(NBTConstants.OUTPUT_MODE, outputMode.ordinal());
         return nbtTags;

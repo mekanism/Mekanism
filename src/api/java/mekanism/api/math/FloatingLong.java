@@ -3,20 +3,16 @@ package mekanism.api.math;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.NBTConstants;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.common.util.INBTSerializable;
 
 /**
  * A class representing a positive number with an internal value defined by a long, and a floating point number stored in a short
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FloatingLong extends Number implements Comparable<FloatingLong>, INBTSerializable<CompoundNBT> {
+public class FloatingLong extends Number implements Comparable<FloatingLong> {
 
     //TODO: Eventually we should define a way of doing a set of operations all at once, and outputting a new value
     // given that way we can internally do all the calculations using primitives rather than spamming a lot of objects
@@ -129,20 +125,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
      */
     public static FloatingLong createConst(long value, short decimal) {
         return new FloatingLong(value, decimal, true);
-    }
-
-    /**
-     * Reads a mutable {@link FloatingLong} from NBT
-     *
-     * @param nbt The {@link CompoundNBT} to read from
-     *
-     * @return A mutable {@link FloatingLong}, or {@link #ZERO} if the given nbt is null or empty.
-     */
-    public static FloatingLong readFromNBT(@Nullable CompoundNBT nbt) {
-        if (nbt == null || nbt.isEmpty()) {
-            return ZERO;
-        }
-        return create(nbt.getLong(NBTConstants.VALUE), nbt.getShort(NBTConstants.DECIMAL));
     }
 
     /**
@@ -653,23 +635,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     @Override
     public double doubleValue() {
         return longValue() + decimal / (double) SINGLE_UNIT;
-    }
-
-    @Override
-    public CompoundNBT serializeNBT() {
-        //TODO: Do we want to do this in a different form to make sure that it will support unsigned longs
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.putLong(NBTConstants.VALUE, value);
-        nbt.putShort(NBTConstants.DECIMAL, decimal);
-        return nbt;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        if (isConstant) {
-            throw new IllegalStateException("Tried to modify a floating constant long");
-        }
-        setAndClampValues(nbt.getLong(NBTConstants.VALUE), nbt.getShort(NBTConstants.DECIMAL));
     }
 
     /**

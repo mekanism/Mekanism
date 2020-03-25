@@ -163,7 +163,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.STORED, stored.serializeNBT());
+            nbt.putString(NBTConstants.STORED, stored.toString());
         }
         return nbt;
     }

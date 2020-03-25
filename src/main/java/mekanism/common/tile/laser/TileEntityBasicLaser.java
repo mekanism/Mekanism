@@ -143,7 +143,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.put(NBTConstants.LAST_FIRED, lastFired.serializeNBT());
+        nbtTags.putString(NBTConstants.LAST_FIRED, lastFired.toString());
         return nbtTags;
     }
 
@@ -151,7 +151,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = super.getUpdateTag();
-        updateTag.put(NBTConstants.LAST_FIRED, lastFired.serializeNBT());
+        updateTag.putString(NBTConstants.LAST_FIRED, lastFired.toString());
         return updateTag;
     }
 

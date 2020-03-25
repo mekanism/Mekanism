@@ -164,7 +164,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
     default CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.STORED, getEnergy().serializeNBT());
+            nbt.putString(NBTConstants.STORED, getEnergy().toString());
         }
         return nbt;
     }

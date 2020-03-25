@@ -142,8 +142,12 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains(NBTConstants.ENERGY_STORED, NBT.TAG_COMPOUND)) {
-            lastWrite = FloatingLong.readFromNBT(nbtTags.getCompound(NBTConstants.ENERGY_STORED));
+        if (nbtTags.contains(NBTConstants.ENERGY_STORED, NBT.TAG_STRING)) {
+            try {
+                lastWrite = FloatingLong.parseFloatingLong(nbtTags.getString(NBTConstants.ENERGY_STORED));
+            } catch (NumberFormatException e) {
+                lastWrite = FloatingLong.ZERO;
+            }
         } else {
             lastWrite = FloatingLong.ZERO;
         }
@@ -157,7 +161,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
         if (lastWrite.isZero()) {
             nbtTags.remove(NBTConstants.ENERGY_STORED);
         } else {
-            nbtTags.put(NBTConstants.ENERGY_STORED, lastWrite.serializeNBT());
+            nbtTags.putString(NBTConstants.ENERGY_STORED, lastWrite.toString());
         }
         return nbtTags;
     }
