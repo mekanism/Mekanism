@@ -242,7 +242,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
      */
     @Override
     public int compareTo(FloatingLong toCompare) {
-        //TODO: Can the values technically be negative and if so do we need to stop them from being so
         if (value < toCompare.value) {
             //If our primary value is smaller than toCompare's value we are always less than
             return -2;
@@ -251,7 +250,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
             return 2;
         }
         //Primary value is equal, check the decimal
-        //TODO: Check if this is even the correct way to compare the decimal as I am not fully sure how we are going to encode it yet
         if (decimal < toCompare.decimal) {
             //If our primary value is equal, but our decimal smaller than toCompare's we are less than
             return -1;
