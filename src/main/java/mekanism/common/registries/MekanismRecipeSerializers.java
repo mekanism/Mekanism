@@ -18,7 +18,7 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.MekanismShapedRecipe;
+import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
 import mekanism.common.recipe.bin.BinExtractRecipe;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.recipe.impl.ChemicalCrystallizerIRecipe;

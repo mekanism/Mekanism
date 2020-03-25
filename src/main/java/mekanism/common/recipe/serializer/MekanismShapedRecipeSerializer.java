@@ -3,7 +3,7 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.MekanismShapedRecipe;
+import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
