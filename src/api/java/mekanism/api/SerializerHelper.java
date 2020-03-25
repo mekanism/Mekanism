@@ -31,39 +31,19 @@ public class SerializerHelper {
 
     private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-    public static JsonElement serializeFloatingLong(FloatingLong floatingLong) {
-        JsonObject json = new JsonObject();
-        json.addProperty(JsonConstants.VALUE, floatingLong.getValue());
-        json.addProperty(JsonConstants.DECIMAL, floatingLong.getDecimal());
-        return json;
-    }
-
     public static FloatingLong getFloatingLong(@Nonnull JsonObject json, @Nonnull String key) {
         if (!json.has(key)) {
             throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
         }
         JsonElement jsonElement = json.get(key);
-        if (!jsonElement.isJsonObject()) {
-            throw new JsonSyntaxException("Expected '" + key + "' to be an object");
+        if (!jsonElement.isJsonPrimitive()) {
+            throw new JsonSyntaxException("Expected '" + key + "' to be a json primitive representing a FloatingLong");
         }
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-        JsonElement valueElement = jsonObject.get(JsonConstants.VALUE);
-        if (!JSONUtils.isNumber(valueElement)) {
-            throw new JsonSyntaxException("Expected value to be a number greater than equal to zero.");
+        try {
+            return FloatingLong.parseFloatingLong(jsonElement.getAsNumber().toString());
+        } catch (NumberFormatException e) {
+            throw new JsonSyntaxException("Expected '" + key + "' to be a valid FloatingLong (positive decimal number)");
         }
-        long value = valueElement.getAsJsonPrimitive().getAsLong();
-        if (value < 0) {//TODO: Evaluate this if we end up making it be an unsigned long maybe this needs to hcange
-            throw new JsonSyntaxException("Expected value to be greater than zero equal to zero.");
-        }
-        JsonElement decimalElement = jsonObject.get(JsonConstants.DECIMAL);
-        if (!JSONUtils.isNumber(decimalElement)) {
-            throw new JsonSyntaxException("Expected decimal to be a number greater than equal to zero.");
-        }
-        short decimal = decimalElement.getAsJsonPrimitive().getAsShort();
-        if (decimal < 0) {
-            throw new JsonSyntaxException("Expected decimal to be greater than zero equal to zero.");
-        }
-        return FloatingLong.create(value, decimal);
     }
 
     public static ItemStack getItemStack(@Nonnull JsonObject json, @Nonnull String key) {

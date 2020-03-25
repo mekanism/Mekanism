@@ -19,13 +19,11 @@ import net.minecraftforge.common.util.INBTSerializable;
 public class FloatingLong extends Number implements Comparable<FloatingLong>, INBTSerializable<CompoundNBT> {
 
     //TODO: Implement this class, and improve java docs. Organize and move all static methods either to the top or the bottom
-    //TODO: Modify EnergyAPI to state what things should NOT be modified, given we stripped that out of the docs due to primitives not modifying the actual value
     private static final int DECIMAL_DIGITS = 4;//We only can support 4 digits in our decimal
     private static final short MAX_DECIMAL = 9_999;
     private static final short SINGLE_UNIT = MAX_DECIMAL + 1;
     public static final FloatingLong ZERO = createConst(0);
     public static final FloatingLong ONE = createConst(1);
-    //TODO: Util method so that it is easier to declare you want a short representing say 0.001
     public static final FloatingLong MAX_VALUE = createConst(Long.MAX_VALUE, MAX_DECIMAL);
 
     public static FloatingLong getNewZero() {
@@ -88,7 +86,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     //DO NOT CALL THIS IF YOU ARE A CONSTANT
     private void setAndClampValues(long value, short decimal) {
         if (value < 0) {
-            //TODO: Remove this clamp for value and allow it to be an unsigned long
+            //TODO: Remove this clamp for value and allow it to be an unsigned long, and convert string parsing and creation
             value = 0;
         }
         if (decimal < 0) {
@@ -108,9 +106,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         return new FloatingLong(value, decimal, false);
     }
 
-    //TODO: Do we want to do the sub implementations as a copy and then the in place value
-    // or is it slightly more optimized to do the calculation and then just make a new object with that value
-    //TODO: We also may want to define a way of doing a set of operations all at once, and outputting a new value
+    //TODO: Define a way of doing a set of operations all at once, and outputting a new value
     // given that way we can internally do all the calculations using primitives rather than spamming a lot of objects
     public void minusEqual(FloatingLong toSubtract) {
         checkCanModify();
@@ -151,7 +147,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     }
 
     public void timesEqual(double toMultiply) {
-        //TODO: FIXME/IMPROVE
         timesEqual(FloatingLong.createConst(toMultiply));
     }
 
@@ -173,12 +168,10 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     //TODO: Evaluate this and what helpers are needed for interacting with primitives
     public FloatingLong multiply(long toMultiply) {
-        //TODO: FIXME/IMPROVE
         return multiply(FloatingLong.create(toMultiply));
     }
 
     public FloatingLong multiply(double toMultiply) {
-        //TODO: FIXME/IMPROVE
         return multiply(FloatingLong.createConst(toMultiply));
     }
 
@@ -199,12 +192,10 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     }
 
     public FloatingLong divide(long toDivide) {
-        //TODO: FIXME/IMPROVE
         return divide(FloatingLong.create(toDivide));
     }
 
     public FloatingLong divide(double toDivide) {
-        //TODO: FIXME/IMPROVE
         return divide(FloatingLong.create(toDivide));
     }
 
@@ -291,7 +282,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     @Override
     public int hashCode() {
-        //TODO: Do we want to modify this in some way
         return Objects.hash(value, decimal);
     }
 
@@ -320,9 +310,17 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         return valueAsString + decimalAsString;
     }
 
-    //TODO: Copy and modify java docs from Long.valueOf
+    /**
+     * Parses the string argument as a signed decimal {@link FloatingLong}. The characters in the string must all be decimal digits, with a decimal point being valid to
+     * convey where the decimal starts.
+     *
+     * @param string a {@code String} containing the {@link FloatingLong} representation to be parsed
+     *
+     * @return the {@link FloatingLong} represented by the argument in decimal.
+     *
+     * @throws NumberFormatException if the string does not contain a parsable {@link FloatingLong}.
+     */
     public static FloatingLong parseFloatingLong(String string) {
-        //TODO: IMPLEMENT AND FIX ME so that it can handle invalid strings
         long value;
         int index = string.indexOf(".");
         if (index == -1) {

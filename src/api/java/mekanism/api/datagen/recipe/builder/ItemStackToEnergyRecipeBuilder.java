@@ -6,7 +6,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.math.FloatingLong;
@@ -48,7 +47,7 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
         @Override
         public void serialize(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
-            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeFloatingLong(output));
+            json.addProperty(JsonConstants.OUTPUT, output);
         }
     }
 }

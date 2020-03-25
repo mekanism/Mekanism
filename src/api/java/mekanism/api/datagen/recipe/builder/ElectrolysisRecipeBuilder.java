@@ -62,7 +62,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
             json.add(JsonConstants.INPUT, input.serialize());
             if (energyMultiplier.greaterThan(FloatingLong.ONE)) {
                 //Only add energy usage if it is greater than one, as otherwise it will default to one
-                json.add(JsonConstants.ENERGY_MULTIPLIER, SerializerHelper.serializeFloatingLong(energyMultiplier));
+                json.addProperty(JsonConstants.ENERGY_MULTIPLIER, energyMultiplier);
             }
             json.add(JsonConstants.LEFT_GAS_OUTPUT, SerializerHelper.serializeGasStack(leftGasOutput));
             json.add(JsonConstants.RIGHT_GAS_OUTPUT, SerializerHelper.serializeGasStack(rightGasOutput));

@@ -88,7 +88,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
             json.add(JsonConstants.GAS_INPUT, inputGas.serialize());
             if (!energyRequired.isEmpty()) {
                 //Only add energy required if it is not zero, as otherwise it will default to zero
-                json.add(JsonConstants.ENERGY_REQUIRED, SerializerHelper.serializeFloatingLong(energyRequired));
+                json.addProperty(JsonConstants.ENERGY_REQUIRED, energyRequired);
             }
             json.addProperty(JsonConstants.DURATION, duration);
             if (!outputItem.isEmpty()) {
