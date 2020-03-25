@@ -20,7 +20,7 @@ public class PacketUpdateContainerFloatingLong extends PacketUpdateContainer<Pac
 
     private PacketUpdateContainerFloatingLong(PacketBuffer buffer) {
         super(buffer);
-        this.value = FloatingLong.fromBuffer(buffer);
+        this.value = FloatingLong.readFromBuffer(buffer);
     }
 
     @Override

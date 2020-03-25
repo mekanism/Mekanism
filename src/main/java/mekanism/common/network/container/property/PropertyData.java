@@ -66,7 +66,7 @@ public abstract class PropertyData {
             case FREQUENCY:
                 return FrequencyPropertyData.readFrequency(property, buffer);
             case FLOATING_LONG:
-                return new FloatingLongPropertyData(property, FloatingLong.fromBuffer(buffer));
+                return new FloatingLongPropertyData(property, FloatingLong.readFromBuffer(buffer));
             case LIST:
                 return ListPropertyData.readList(property, buffer);
             default:

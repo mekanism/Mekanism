@@ -103,7 +103,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
-            energyContainer.updateEnergyUsage(MekanismUtils.convertToJoules(FloatingLong.fromBuffer(dataStream)));
+            energyContainer.updateEnergyUsage(MekanismUtils.convertToJoules(FloatingLong.readFromBuffer(dataStream)));
         }
     }
 

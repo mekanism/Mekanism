@@ -23,7 +23,7 @@ public class EnergyElement extends TOPElement {
 
     public static EnergyElement fromBuffer(ByteBuf buf) {
         PacketBuffer buffer = new PacketBuffer(buf);
-        return new EnergyElement(FloatingLong.fromBuffer(buffer), FloatingLong.fromBuffer(buffer));
+        return new EnergyElement(FloatingLong.readFromBuffer(buffer), FloatingLong.readFromBuffer(buffer));
     }
 
     @Override

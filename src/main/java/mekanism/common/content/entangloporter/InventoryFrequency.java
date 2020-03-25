@@ -103,7 +103,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
         presetVariables();
-        storedEnergy.setEnergy(FloatingLong.fromBuffer(dataStream));
+        storedEnergy.setEnergy(FloatingLong.readFromBuffer(dataStream));
         storedFluid.setStack(dataStream.readFluidStack());
         storedGas.setStack(ChemicalUtils.readGasStack(dataStream));
         storedItem.deserializeNBT(dataStream.readCompoundTag());

@@ -22,6 +22,7 @@ import net.minecraft.world.biome.Biome.RainType;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
+    private static final FloatingLong RAIN_MULTIPLIER = FloatingLong.createConst(0.2);
     private boolean seesSun;
     private boolean needsRainCheck = true;
     private FloatingLong peakOutput = FloatingLong.ZERO;
@@ -122,7 +123,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
         // If the generator is in a biome where it can rain and it's raining penalize production by 80%
         if (needsRainCheck && (world.isRaining() || world.isThundering())) {
-            production.timesEqual(0.2);
+            production.timesEqual(RAIN_MULTIPLIER);
         }
         return production;
     }

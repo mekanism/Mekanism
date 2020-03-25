@@ -108,26 +108,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     //TODO: Define a way of doing a set of operations all at once, and outputting a new value
     // given that way we can internally do all the calculations using primitives rather than spamming a lot of objects
-    public void minusEqual(FloatingLong toSubtract) {
-        checkCanModify();
-        //TODO: Handle it going negative
-        long newValue = value - toSubtract.value;
-        short newDecimal = (short) (decimal - toSubtract.decimal);
-        if (newDecimal < 0) {
-            newDecimal += SINGLE_UNIT;
-            newValue--;
-        }
-        setAndClampValues(newValue, newDecimal);
-    }
-
-    //TODO: NOTE: We probably need to look through this to make sure we don't accidentally go negative??
-    // Or was that just an edge case for how we did calculations for the induction matrix
-    public FloatingLong subtract(FloatingLong toSubtract) {
-        FloatingLong toReturn = copy();
-        toReturn.minusEqual(toSubtract);
-        return toReturn;
-    }
-
     public void plusEqual(FloatingLong toAdd) {
         checkCanModify();
         long newValue;
@@ -146,14 +126,133 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         setAndClampValues(newValue, newDecimal);
     }
 
+    public void minusEqual(FloatingLong toSubtract) {
+        checkCanModify();
+        //TODO: Handle it going negative
+        long newValue = value - toSubtract.value;
+        short newDecimal = (short) (decimal - toSubtract.decimal);
+        if (newDecimal < 0) {
+            newDecimal += SINGLE_UNIT;
+            newValue--;
+        }
+        setAndClampValues(newValue, newDecimal);
+    }
+
+    public void timesEqual(FloatingLong toMultiply) {
+        checkCanModify();
+        //(a+b)*(c+d) where numbers represent decimal, numbers represent value
+        FloatingLong temp = create(multiplyLongs(value, toMultiply.value));//a * c
+        temp.plusEqual(multiplyLongAndDecimal(value, toMultiply.decimal));//a * d
+        temp.plusEqual(multiplyLongAndDecimal(toMultiply.value, decimal));//b * c
+        temp.plusEqual(multiplyDecimals(decimal, toMultiply.decimal));//b * d
+        setAndClampValues(temp.value, temp.decimal);
+    }
+
+    public void divideEquals(FloatingLong toDivide) {
+        checkCanModify();
+        //TODO: Validate toDivide is not zero
+        //TODO: Make a more direct implementation that doesn't go through big decimal
+        BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+        long value = divide.longValue();
+        short decimal = parseDecimal(divide.toString());
+        setAndClampValues(value, decimal);
+    }
+
     public FloatingLong add(FloatingLong toAdd) {
         FloatingLong toReturn = copy();
         toReturn.plusEqual(toAdd);
         return toReturn;
     }
 
-    public void timesEqual(double toMultiply) {
-        timesEqual(FloatingLong.createConst(toMultiply));
+    public FloatingLong add(long toAdd) {
+        if (toAdd < 0) {
+            throw new IllegalArgumentException("Addition called with negative number, this is not supported. FloatingLongs are always positive.");
+        }
+        return add(FloatingLong.create(toAdd));
+    }
+
+    public FloatingLong add(double toAdd) {
+        if (toAdd < 0) {
+            throw new IllegalArgumentException("Addition called with negative number, this is not supported. FloatingLongs are always positive.");
+        }
+        return add(FloatingLong.create(toAdd));
+    }
+
+    public FloatingLong subtract(FloatingLong toSubtract) {
+        //TODO: NOTE: We probably need to look through this to make sure we don't accidentally go negative??
+        // Or was that just an edge case for how we did calculations for the induction matrix
+        FloatingLong toReturn = copy();
+        toReturn.minusEqual(toSubtract);
+        return toReturn;
+    }
+
+    public FloatingLong subtract(long toSubtract) {
+        if (toSubtract < 0) {
+            throw new IllegalArgumentException("Subtraction called with negative number, this is not supported. FloatingLongs are always positive.");
+        }
+        return subtract(FloatingLong.create(toSubtract));
+    }
+
+    public FloatingLong subtract(double toSubtract) {
+        if (toSubtract < 0) {
+            throw new IllegalArgumentException("Subtraction called with negative number, this is not supported. FloatingLongs are always positive.");
+        }
+        return subtract(FloatingLong.create(toSubtract));
+    }
+
+    public FloatingLong multiply(FloatingLong toMultiply) {
+        FloatingLong toReturn = copy();
+        toReturn.timesEqual(toMultiply);
+        return toReturn;
+    }
+
+    public FloatingLong multiply(long toMultiply) {
+        if (toMultiply < 0) {
+            throw new IllegalArgumentException("Multiply called with negative number, this is not supported. FloatingLongs are always positive.");
+        }
+        return multiply(FloatingLong.create(toMultiply));
+    }
+
+    public FloatingLong multiply(double toMultiply) {
+        if (toMultiply < 0) {
+            throw new IllegalArgumentException("Multiply called with negative number, this is not supported. FloatingLongs are always positive.");
+        }
+        return multiply(FloatingLong.createConst(toMultiply));
+    }
+
+    public FloatingLong divide(FloatingLong toDivide) {
+        FloatingLong toReturn = copy();
+        toReturn.divideEquals(toDivide);
+        return toReturn;
+    }
+
+    public FloatingLong divide(long toDivide) {
+        if (toDivide < 0) {
+            throw new IllegalArgumentException("Division called with negative number, this is not supported. FloatingLongs are always positive.");
+        }
+        return divide(FloatingLong.create(toDivide));
+    }
+
+    public FloatingLong divide(double toDivide) {
+        if (toDivide < 0) {
+            throw new IllegalArgumentException("Division called with negative number, this is not supported. FloatingLongs are always positive.");
+        }
+        return divide(FloatingLong.create(toDivide));
+    }
+
+    public double divideToLevel(FloatingLong toDivide) {
+        //TODO: optimize out creating another object
+        return toDivide.isEmpty() ? 1 : divide(toDivide).doubleValue();
+    }
+
+    //TODO: Note this doesn't create any new objects
+    public FloatingLong max(FloatingLong other) {
+        return smallerThan(other) ? other : this;
+    }
+
+    //TODO: Note this doesn't create any new objects
+    public FloatingLong min(FloatingLong other) {
+        return greaterThan(other) ? other : this;
     }
 
     private static long multiplyLongs(long d1, long d2) {
@@ -179,83 +278,12 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         return create(0, (short) temp);
     }
 
-
-    public void timesEqual(FloatingLong toMultiply) {
-        checkCanModify();
-        //(a+b)*(c+d) where numbers represent decimal, numbers represent value
-        FloatingLong temp = create(multiplyLongs(value, toMultiply.value));//a * c
-        temp.plusEqual(multiplyLongAndDecimal(value, toMultiply.decimal));//a * d
-        temp.plusEqual(multiplyLongAndDecimal(toMultiply.value, decimal));//b * c
-        temp.plusEqual(multiplyDecimals(decimal, toMultiply.decimal));//b * d
-        setAndClampValues(temp.value, temp.decimal);
+    public boolean smallerThan(FloatingLong toCompare) {
+        return compareTo(toCompare) < 0;
     }
 
-    public FloatingLong multiply(FloatingLong toMultiply) {
-        FloatingLong toReturn = copy();
-        toReturn.timesEqual(toMultiply);
-        return toReturn;
-    }
-
-    //TODO: Evaluate this and what helpers are needed for interacting with primitives
-    public FloatingLong multiply(long toMultiply) {
-        return multiply(FloatingLong.create(toMultiply));
-    }
-
-    public FloatingLong multiply(double toMultiply) {
-        return multiply(FloatingLong.createConst(toMultiply));
-    }
-
-    public void divideEquals(FloatingLong toDivide) {
-        checkCanModify();
-        //TODO: Validate toDivide is not zero
-        //TODO: Make a more direct implementation that doesn't go through big decimal
-        BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-        long value = divide.longValue();
-        short decimal = parseDecimal(divide.toString());
-        setAndClampValues(value, decimal);
-    }
-
-    public FloatingLong divide(FloatingLong toDivide) {
-        FloatingLong toReturn = copy();
-        toReturn.divideEquals(toDivide);
-        return toReturn;
-    }
-
-    public FloatingLong divide(long toDivide) {
-        return divide(FloatingLong.create(toDivide));
-    }
-
-    public FloatingLong divide(double toDivide) {
-        return divide(FloatingLong.create(toDivide));
-    }
-
-    public double divideToLevel(FloatingLong toDivide) {
-        //TODO: optimize out creating another object
-        return toDivide.isEmpty() ? 1 : divide(toDivide).doubleValue();
-    }
-
-    //TODO: Note this doesn't create any new objects
-    public FloatingLong max(FloatingLong other) {
-        return smallerThan(other) ? other : this;
-    }
-
-    //TODO: Note this doesn't create any new objects
-    public FloatingLong min(FloatingLong other) {
-        return greaterThan(other) ? other : this;
-    }
-
-    @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.putLong(NBTConstants.VALUE, value);
-        nbt.putShort(NBTConstants.DECIMAL, decimal);
-        return nbt;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        checkCanModify();
-        setAndClampValues(nbt.getLong(NBTConstants.VALUE), nbt.getShort(NBTConstants.DECIMAL));
+    public boolean greaterThan(FloatingLong toCompare) {
+        return compareTo(toCompare) > 0;
     }
 
     /**
@@ -291,14 +319,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         return 0;
     }
 
-    public boolean smallerThan(FloatingLong toCompare) {
-        return compareTo(toCompare) < 0;
-    }
-
-    public boolean greaterThan(FloatingLong toCompare) {
-        return compareTo(toCompare) > 0;
-    }
-
     public boolean equals(FloatingLong other) {
         return value == other.value && decimal == other.decimal;
     }
@@ -311,6 +331,45 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
     @Override
     public int hashCode() {
         return Objects.hash(value, decimal);
+    }
+
+    @Override
+    public int intValue() {
+        return MathUtils.clampToInt(value);
+    }
+
+    @Override
+    public long longValue() {
+        return value;
+    }
+
+    @Override
+    public float floatValue() {
+        return intValue() + decimal / (float) SINGLE_UNIT;
+    }
+
+    @Override
+    public double doubleValue() {
+        return longValue() + decimal / (double) SINGLE_UNIT;
+    }
+
+    @Override
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putLong(NBTConstants.VALUE, value);
+        nbt.putShort(NBTConstants.DECIMAL, decimal);
+        return nbt;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundNBT nbt) {
+        checkCanModify();
+        setAndClampValues(nbt.getLong(NBTConstants.VALUE), nbt.getShort(NBTConstants.DECIMAL));
+    }
+
+    public void writeToBuffer(PacketBuffer buffer) {
+        buffer.writeVarLong(value);
+        buffer.writeShort(decimal);
     }
 
     @Override
@@ -395,32 +454,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         return create(nbtTags.getLong(NBTConstants.VALUE), nbtTags.getShort(NBTConstants.DECIMAL));
     }
 
-    public static FloatingLong fromBuffer(PacketBuffer buffer) {
+    public static FloatingLong readFromBuffer(PacketBuffer buffer) {
         return new FloatingLong(buffer.readVarLong(), buffer.readShort(), false);
-    }
-
-    public void writeToBuffer(PacketBuffer buffer) {
-        buffer.writeVarLong(value);
-        buffer.writeShort(decimal);
-    }
-
-    @Override
-    public int intValue() {
-        return MathUtils.clampToInt(value);
-    }
-
-    @Override
-    public long longValue() {
-        return value;
-    }
-
-    @Override
-    public float floatValue() {
-        return intValue() + decimal / (float) SINGLE_UNIT;
-    }
-
-    @Override
-    public double doubleValue() {
-        return longValue() + decimal / (double) SINGLE_UNIT;
     }
 }

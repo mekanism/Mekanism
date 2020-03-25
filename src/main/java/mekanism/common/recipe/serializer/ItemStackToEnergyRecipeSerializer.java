@@ -41,7 +41,7 @@ public class ItemStackToEnergyRecipeSerializer<T extends ItemStackToEnergyRecipe
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
-            FloatingLong output = FloatingLong.fromBuffer(buffer);
+            FloatingLong output = FloatingLong.readFromBuffer(buffer);
             return this.factory.create(recipeId, inputIngredient, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading itemstack to energy recipe from packet.", e);
