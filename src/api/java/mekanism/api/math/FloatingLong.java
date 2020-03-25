@@ -130,12 +130,18 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
 
     public void plusEqual(FloatingLong toAdd) {
         checkCanModify();
-        //TODO: Fix potential overflow?
-        long newValue = value + toAdd.value;
-        short newDecimal = (short) (decimal + toAdd.decimal);
-        if (newDecimal > MAX_DECIMAL) {
-            newDecimal -= SINGLE_UNIT;
-            newValue++;
+        long newValue;
+        short newDecimal;
+        try {
+            newValue = Math.addExact(value, toAdd.value);
+            newDecimal = (short) (decimal + toAdd.decimal);
+            if (newDecimal > MAX_DECIMAL) {
+                newDecimal -= SINGLE_UNIT;
+                newValue = Math.addExact(newValue, 1); //could overflow here too, same exception will be thrown
+            }
+        } catch (ArithmeticException e) {
+            newValue = MAX_VALUE.value;
+            newDecimal = MAX_VALUE.decimal;
         }
         setAndClampValues(newValue, newDecimal);
     }
@@ -150,14 +156,38 @@ public class FloatingLong extends Number implements Comparable<FloatingLong>, IN
         timesEqual(FloatingLong.createConst(toMultiply));
     }
 
+    private static long multiplyLongs(long d1, long d2) {
+        try {
+            //multiplyExact will throw an exception if we overflow
+            return Math.multiplyExact(d1, d2);
+        } catch (ArithmeticException e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    private static FloatingLong multiplyLongAndDecimal(long d1, short d2) {
+        //This can't overflow!
+        if (d1 > Long.MAX_VALUE / SINGLE_UNIT) {
+            return create((d1 / SINGLE_UNIT) * d2, (short) (d1 % SINGLE_UNIT * d2));
+        }
+        return create(d1 * d2 / SINGLE_UNIT, (short) (d1 * d2 % SINGLE_UNIT));
+    }
+
+    private static FloatingLong multiplyDecimals(short d1, short d2) {
+        //If we wanted to round here, just get modulus and add if >= 0.5*SINGLE_UNIT
+        long temp = (long) d1 * (long) d2 / SINGLE_UNIT;
+        return create(0, (short) temp);
+    }
+
+
     public void timesEqual(FloatingLong toMultiply) {
         checkCanModify();
-        //TODO: Make a more direct implementation that doesn't go through big decimal
-        //TODO: Check how the multiplication works if we need to specify a scale
-        BigDecimal multiplication = new BigDecimal(toString()).multiply(new BigDecimal(toMultiply.toString()));
-        long value = multiplication.longValue();
-        short decimal = parseDecimal(multiplication.toString());
-        setAndClampValues(value, decimal);
+        //(a+b)*(c+d) where numbers represent decimal, numbers represent value
+        FloatingLong temp = create(multiplyLongs(value, toMultiply.value));//a * c
+        temp.plusEqual(multiplyLongAndDecimal(value, toMultiply.decimal));//a * d
+        temp.plusEqual(multiplyLongAndDecimal(toMultiply.value, decimal));//b * c
+        temp.plusEqual(multiplyDecimals(decimal, toMultiply.decimal));//b * d
+        setAndClampValues(temp.value, temp.decimal);
     }
 
     public FloatingLong multiply(FloatingLong toMultiply) {

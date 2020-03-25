@@ -12,4 +12,44 @@ class FloatingLongTest {
     void testMaxClamping() {
         Assertions.assertEquals(FloatingLong.MAX_VALUE, FloatingLong.create(Long.MAX_VALUE, Short.MAX_VALUE));
     }
+
+    @Test
+    @DisplayName("Test basic multiplication")
+    void testBasicMultiply() {
+        FloatingLong a = FloatingLong.create(27.1);
+        FloatingLong b = FloatingLong.create(47.1);
+        Assertions.assertEquals(FloatingLong.createConst(1_276.41), a.multiply(b));
+    }
+
+    @Test
+    @DisplayName("Test that the intermediate values are sanitized and merged properly with high decimal values")
+    void testSanitation() {
+        FloatingLong a = FloatingLong.create(5, (short) 6_789);
+        FloatingLong b = FloatingLong.create(9, (short) 8_765);
+        Assertions.assertEquals(FloatingLong.createConst(56.0876), a.multiply(b));
+    }
+
+    @Test
+    @DisplayName("Test basic addition with a decimal overflow")
+    void testBasicAdd() {
+        FloatingLong a = FloatingLong.create(509_876, (short) 5_555);
+        FloatingLong b = FloatingLong.create(13_479, (short) 6_789);
+        Assertions.assertEquals(FloatingLong.createConst(523_356.2344), a.add(b));
+    }
+
+    @Test
+    @DisplayName("Test addition where the value portion overflows")
+    void testOverFlowAdd() {
+        FloatingLong a = FloatingLong.create(Long.MAX_VALUE, (short) 1);
+        FloatingLong b = FloatingLong.create(9, (short) 2);
+        Assertions.assertEquals(FloatingLong.MAX_VALUE, a.add(b));
+    }
+
+    @Test
+    @DisplayName("Test addition where the decimal overflow causes the long to overflow")
+    void testDecimalOverflowAdd() {
+        FloatingLong a = FloatingLong.create(Long.MAX_VALUE - 5, (short) 9_185);
+        FloatingLong b = FloatingLong.create(5, (short) 3_091);
+        Assertions.assertEquals(FloatingLong.MAX_VALUE, a.add(b));
+    }
 }
