@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("NumericOverflow")
 @DisplayName("Test the implementation of FloatingLong")
 class FloatingLongTest {
 
@@ -42,7 +43,7 @@ class FloatingLongTest {
     void testUnsignedOverFlowAdd() {
         FloatingLong a = FloatingLong.create(Long.MAX_VALUE, (short) 1);
         FloatingLong b = FloatingLong.create(9, (short) 2);
-        Assertions.assertEquals(FloatingLong.create(Long.MAX_VALUE + 9, (short)3), a.add(b));
+        Assertions.assertEquals(FloatingLong.create(Long.MAX_VALUE + 9, (short) 3), a.add(b));
     }
 
     @Test
@@ -73,7 +74,7 @@ class FloatingLongTest {
     @DisplayName("Test division with a very large numerator")
     void testDivisionLargeNumerator() {
         FloatingLong a = FloatingLong.create(Long.MAX_VALUE, (short) 0);
-        FloatingLong b = FloatingLong.create((long)7*7*73*127*92737, (short) 0);
-        Assertions.assertEquals(FloatingLong.create((long)649657*337), a.divide(b));
+        FloatingLong b = FloatingLong.create((long) 7 * 7 * 73 * 127 * 92737, (short) 0);
+        Assertions.assertEquals(FloatingLong.create((long) 649657 * 337), a.divide(b));
     }
 }
