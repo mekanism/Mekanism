@@ -804,7 +804,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     private static FloatingLong multiplyLongAndDecimal(long value, short decimal) {
         //This can't overflow!
-        if (value > Long.divideUnsigned(-1L, (long)SINGLE_UNIT)) {
+        if (Long.compareUnsigned(value, Long.divideUnsigned(-1L, (long)SINGLE_UNIT)) > 0) {
             return create(Long.divideUnsigned(value, SINGLE_UNIT) * decimal, (short) (value % SINGLE_UNIT * decimal));
         }
         return create(Long.divideUnsigned(value * decimal, SINGLE_UNIT), (short) (value * decimal % SINGLE_UNIT));

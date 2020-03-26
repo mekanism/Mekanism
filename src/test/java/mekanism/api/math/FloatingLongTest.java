@@ -10,7 +10,7 @@ class FloatingLongTest {
     @Test
     @DisplayName("Test value past max clamping to the max value")
     void testMaxClamping() {
-        Assertions.assertEquals(FloatingLong.MAX_VALUE, FloatingLong.create(Long.MAX_VALUE, Short.MAX_VALUE));
+        Assertions.assertEquals(FloatingLong.MAX_VALUE, FloatingLong.create(-1, Short.MAX_VALUE));
     }
 
     @Test
@@ -38,18 +38,26 @@ class FloatingLongTest {
     }
 
     @Test
+    @DisplayName("Test addition where the value portion should overflow to negative")
+    void testUnsignedOverFlowAdd() {
+        FloatingLong a = FloatingLong.create(Long.MAX_VALUE, (short) 1);
+        FloatingLong b = FloatingLong.create(9, (short) 2);
+        Assertions.assertEquals(FloatingLong.create(Long.MAX_VALUE + 9, (short)3), a.add(b));
+    }
+
+    @Test
     @DisplayName("Test addition where the value portion overflows")
     void testOverFlowAdd() {
         FloatingLong a = FloatingLong.create(Long.MAX_VALUE, (short) 1);
-        FloatingLong b = FloatingLong.create(9, (short) 2);
+        FloatingLong b = FloatingLong.create(Long.MAX_VALUE + 2, (short) 2);
         Assertions.assertEquals(FloatingLong.MAX_VALUE, a.add(b));
     }
 
     @Test
     @DisplayName("Test addition where the decimal overflow causes the long to overflow")
     void testDecimalOverflowAdd() {
-        FloatingLong a = FloatingLong.create(Long.MAX_VALUE - 5, (short) 9_185);
-        FloatingLong b = FloatingLong.create(5, (short) 3_091);
+        FloatingLong a = FloatingLong.create(Long.MAX_VALUE, (short) 9_185);
+        FloatingLong b = FloatingLong.create(Long.MAX_VALUE + 1, (short) 3_091);
         Assertions.assertEquals(FloatingLong.MAX_VALUE, a.add(b));
     }
 
