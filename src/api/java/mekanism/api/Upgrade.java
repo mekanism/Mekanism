@@ -44,7 +44,8 @@ public enum Upgrade implements IHasTranslationKey {
             ListNBT list = nbtTags.getList(NBTConstants.UPGRADES, NBT.TAG_COMPOUND);
             for (int tagCount = 0; tagCount < list.size(); tagCount++) {
                 CompoundNBT compound = list.getCompound(tagCount);
-                upgrades.put(byIndexStatic(compound.getInt(NBTConstants.TYPE)), compound.getInt(NBTConstants.AMOUNT));
+                Upgrade upgrade = byIndexStatic(compound.getInt(NBTConstants.TYPE));
+                upgrades.put(upgrade, Math.min(upgrade.maxStack, compound.getInt(NBTConstants.AMOUNT)));
             }
         }
         return upgrades;

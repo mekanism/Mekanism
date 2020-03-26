@@ -29,7 +29,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue logPackets;
     public final CachedBooleanValue dynamicTankEasterEgg;
     public final CachedConfigValue<List<String>> cardboardModBlacklist;
-    public final CachedIntValue UPDATE_DELAY;
+    public final CachedIntValue blockDeactivationDelay;
     public final CachedFloatingLongValue FROM_IC2;
     public final CachedFloatingLongValue TO_IC2;
     public final CachedFloatingLongValue FROM_FORGE;
@@ -101,8 +101,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("dynamicTankEasterEgg", false));
         cardboardModBlacklist = CachedConfigValue.wrap(this, builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box.")
               .define("cardboardModBlacklist", new ArrayList<>()));
-        UPDATE_DELAY = CachedIntValue.wrap(this, builder.comment("How many ticks must pass until a block's active state can sync with the client.")
-              .define("UPDATE_DELAY", 10));
+        blockDeactivationDelay = CachedIntValue.wrap(this, builder.comment("How many ticks must pass until a block's active state is synced with the client. Note: turning on is synced immediately.")
+              .define("blockDeactivationDelay", 100));
 
         builder.comment("Energy Conversion Rate Settings").push(CONVERSION_CATEGORY);
         blacklistIC2 = CachedBooleanValue.wrap(this, builder.comment("Disables IC2 power integration. Requires world restart (server-side option in SMP).")

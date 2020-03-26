@@ -266,6 +266,8 @@ dependencies {
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
+    //We use https://github.com/quicktheories/QuickTheories to allow for implementing property based testing
+    testImplementation "org.quicktheories:quicktheories:${quicktheories_version}"
 
     compileOnly "org.jetbrains:annotations:${jb_annotations}"
 

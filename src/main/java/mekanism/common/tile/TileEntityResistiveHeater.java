@@ -70,12 +70,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         FloatingLong toUse = FloatingLong.ZERO;
         if (MekanismUtils.canFunction(this)) {
             toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
-            if (!toUse.isEmpty()) {
+            if (!toUse.isZero()) {
                 heatToAbsorb += toUse.divide(MekanismConfig.general.energyPerHeat.get()).doubleValue();
                 energyContainer.extract(toUse, Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
-        setActive(!toUse.isEmpty());
+        setActive(!toUse.isZero());
         double[] loss = simulateHeat();
         applyTemperatureChange();
         lastEnvironmentLoss = loss[1];
@@ -103,7 +103,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
-            energyContainer.updateEnergyUsage(MekanismUtils.convertToJoules(FloatingLong.fromBuffer(dataStream)));
+            energyContainer.updateEnergyUsage(MekanismUtils.convertToJoules(FloatingLong.readFromBuffer(dataStream)));
         }
     }
 

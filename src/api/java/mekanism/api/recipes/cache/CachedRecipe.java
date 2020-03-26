@@ -178,7 +178,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
             return currentMax;
         }
         FloatingLong energyPerTick = getEnergyPerTick();
-        if (energyPerTick.isEmpty()) {
+        if (energyPerTick.isZero()) {
             //If we don't have an energy requirement return what we were told the max is
             return currentMax;
         }

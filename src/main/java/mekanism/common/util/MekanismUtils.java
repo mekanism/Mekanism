@@ -200,7 +200,7 @@ public final class MekanismUtils {
     public static float getScale(float prevScale, IEnergyContainer container) {
         float targetScale;
         FloatingLong maxEnergy = container.getMaxEnergy();
-        if (maxEnergy.isEmpty()) {
+        if (maxEnergy.isZero()) {
             targetScale = 0;
         } else {
             FloatingLong scale = container.getEnergy().divide(maxEnergy);
@@ -1076,7 +1076,7 @@ public final class MekanismUtils {
      * @return A redstone level based on the percentage of the amount stored.
      */
     public static int redstoneLevelFromContents(FloatingLong amount, FloatingLong capacity) {
-        if (capacity.isEmpty() || amount.isEmpty()) {
+        if (capacity.isZero() || amount.isZero()) {
             return 0;
         }
         return 1 + amount.divide(capacity).multiply(14).intValue();

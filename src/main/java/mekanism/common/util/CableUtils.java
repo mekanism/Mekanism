@@ -42,7 +42,7 @@ public final class CableUtils {
     }
 
     public static void emit(Set<Direction> outputSides, IEnergyContainer energyContainer, TileEntity from, FloatingLong maxOutput) {
-        if (!energyContainer.isEmpty() && !maxOutput.isEmpty()) {
+        if (!energyContainer.isEmpty() && !maxOutput.isZero()) {
             energyContainer.extract(emit(outputSides, energyContainer.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
@@ -57,7 +57,7 @@ public final class CableUtils {
      * @return the amount of energy emitted
      */
     public static FloatingLong emit(Set<Direction> sides, FloatingLong energyToSend, TileEntity from) {
-        if (energyToSend.isEmpty() || sides.isEmpty()) {
+        if (energyToSend.isZero() || sides.isEmpty()) {
             return FloatingLong.ZERO;
         }
         //Fake that we have one target given we know that no sides will overlap This allows us to have slightly better performance

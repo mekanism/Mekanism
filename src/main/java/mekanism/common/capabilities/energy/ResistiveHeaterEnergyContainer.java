@@ -41,7 +41,7 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
-        nbt.put(NBTConstants.ENERGY_USAGE, getEnergyPerTick().serializeNBT());
+        nbt.putString(NBTConstants.ENERGY_USAGE, getEnergyPerTick().toString());
         return nbt;
     }
 

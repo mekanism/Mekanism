@@ -22,7 +22,7 @@ public class RenderHeatGeneratorItem extends MekanismItemStackRenderer {
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.rotate(Vector3f.YP.rotationDegrees(180));
         matrix.translate(0, -1, 0);
-        heatGenerator.render(matrix, renderer, light, overlayLight, !StorageUtils.getStoredEnergyFromNBT(stack).isEmpty());
+        heatGenerator.render(matrix, renderer, light, overlayLight, !StorageUtils.getStoredEnergyFromNBT(stack).isZero());
     }
 
     @Override

@@ -84,7 +84,7 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
             ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
             FluidStackIngredient inputFluid = FluidStackIngredient.read(buffer);
             GasStackIngredient inputGas = GasStackIngredient.read(buffer);
-            FloatingLong energyRequired = FloatingLong.fromBuffer(buffer);
+            FloatingLong energyRequired = FloatingLong.readFromBuffer(buffer);
             int duration = buffer.readInt();
             ItemStack outputItem = buffer.readItemStack();
             GasStack outputGas = GasStack.readFromPacket(buffer);

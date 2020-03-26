@@ -268,9 +268,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (closestCoords == null) {
             return 3;
         }
-        FloatingLong sum = FloatingLong.getNewZero();
+        FloatingLong sum = FloatingLong.ZERO;
         for (Entity entity : getToTeleport()) {
-            sum.plusEqual(calculateEnergyCost(entity, closestCoords));
+            sum = sum.plusEqual(calculateEnergyCost(entity, closestCoords));
         }
         if (energyContainer.getEnergy().smallerThan(sum)) {
             return 4;

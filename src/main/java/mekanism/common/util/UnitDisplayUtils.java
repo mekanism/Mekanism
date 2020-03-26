@@ -24,7 +24,7 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
         } else if (value.equals(FloatingLong.ONE)) {
             label = unit.singularLangEntry;
         }
-        if (value.isEmpty()) {
+        if (value.isZero()) {
             return TextComponentUtil.build(value + " ", label);
         }
         for (int i = 0; i < EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length; i++) {

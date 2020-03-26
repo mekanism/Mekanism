@@ -53,7 +53,7 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     @Override
     public ITextComponent getTooltipText() {
-        if (infoHandler.getEnergy().isEmpty()) {
+        if (infoHandler.getEnergy().isZero()) {
             return MekanismLang.EMPTY.translate();
         }
         return EnergyDisplay.of(infoHandler.getEnergy(), infoHandler.getMaxEnergy()).getTextComponent();

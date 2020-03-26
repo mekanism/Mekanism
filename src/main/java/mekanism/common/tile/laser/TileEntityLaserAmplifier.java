@@ -86,10 +86,10 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         if (!isRemote()) {
             switch (dataStream.readInt()) {
                 case 0:
-                    minThreshold = energyContainer.getMaxEnergy().copy().min(MekanismUtils.convertToJoules(FloatingLong.fromBuffer(dataStream)));
+                    minThreshold = energyContainer.getMaxEnergy().copy().min(MekanismUtils.convertToJoules(FloatingLong.readFromBuffer(dataStream)));
                     break;
                 case 1:
-                    maxThreshold = energyContainer.getMaxEnergy().copy().min(MekanismUtils.convertToJoules(FloatingLong.fromBuffer(dataStream)));
+                    maxThreshold = energyContainer.getMaxEnergy().copy().min(MekanismUtils.convertToJoules(FloatingLong.readFromBuffer(dataStream)));
                     break;
                 case 2:
                     time = dataStream.readInt();
@@ -114,8 +114,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.put(NBTConstants.MIN, minThreshold.serializeNBT());
-        nbtTags.put(NBTConstants.MAX, maxThreshold.serializeNBT());
+        nbtTags.putString(NBTConstants.MIN, minThreshold.toString());
+        nbtTags.putString(NBTConstants.MAX, maxThreshold.toString());
         nbtTags.putInt(NBTConstants.TIME, time);
         nbtTags.putInt(NBTConstants.OUTPUT_MODE, outputMode.ordinal());
         return nbtTags;

@@ -86,7 +86,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         fuelSlot.fillOrBurn();
         FloatingLong prev = getEnergyContainer().getEnergy();
         transferHeatTo(getBoost());
-        if (MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isEmpty() &&
+        if (MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero() &&
             lavaTank.extract(FLUID_RATE, Action.SIMULATE, AutomationType.INTERNAL).getAmount() == FLUID_RATE) {
             setActive(true);
             lavaTank.extract(FLUID_RATE, Action.EXECUTE, AutomationType.INTERNAL);
@@ -109,7 +109,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         FloatingLong boost = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(Arrays.stream(EnumUtils.DIRECTIONS)
               .filter(side -> world.getFluidState(pos.offset(side)).isTagged(FluidTags.LAVA)).count());
         if (world.getDimension().isNether()) {
-            boost.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
+            boost = boost.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
         }
         return boost;
     }

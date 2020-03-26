@@ -330,7 +330,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         radius = newRadius;
         if (changed) {
             energyContainer.updateMinerEnergyPerTick();
-            if (hasWorld() && isRemote()) {
+            if (hasWorld() && !isRemote()) {
                 // If the radius changed and we're on the server, go ahead and refresh the chunk set
                 getChunkLoader().refreshChunkTickets();
             }

@@ -5,8 +5,5 @@
       "tag": "forge:dusts/redstone"
     }
   },
-  "output": {
-    "value": 10000,
-    "decimal": 0
-  }
+  "output": 10000
 }

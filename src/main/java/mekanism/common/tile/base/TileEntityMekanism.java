@@ -213,7 +213,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     private ProxyStrictEnergyHandler readOnlyStrictEnergyHandler;
     private Map<Direction, ProxyStrictEnergyHandler> strictEnergyHandlers;
 
-    private FloatingLong lastEnergyReceived = FloatingLong.getNewZero();
+    private FloatingLong lastEnergyReceived = FloatingLong.ZERO;
     //End variables IMekanismStrictEnergyHandler
 
     //Variables for handling ITileSecurity
@@ -223,7 +223,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //Variables for handling ITileActive
     private boolean currentActive;
     private int updateDelay;
-    protected IntSupplier delaySupplier = MekanismConfig.general.UPDATE_DELAY;
+    protected IntSupplier delaySupplier = MekanismConfig.general.blockDeactivationDelay;
     //End variables ITileActive
 
     //Variables for handling ITileSound
@@ -474,12 +474,13 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 if (updateDelay > 0) {
                     updateDelay--;
                     if (updateDelay == 0 && getClientActive() != currentActive) {
-                        setActive(currentActive);
+                        //If it doesn't match and we are done with the delay period, then update it
+                        world.setBlockState(pos, Attribute.setActive(getBlockState(), currentActive));
                     }
                 }
             }
             onUpdateServer();
-            lastEnergyReceived = FloatingLong.getNewZero();
+            lastEnergyReceived = FloatingLong.ZERO;
         }
         ticker++;
         if (supportsRedstone()) {
@@ -1128,7 +1129,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
         FloatingLong remainder = energyContainer.insert(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
         if (action.execute()) {
-            lastEnergyReceived.plusEqual(amount.subtract(remainder));
+            lastEnergyReceived = lastEnergyReceived.plusEqual(amount.subtract(remainder));
         }
         return remainder;
     }
@@ -1167,11 +1168,17 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             Block block = state.getBlock();
             if (Attribute.has(block, AttributeStateActive.class)) {
                 currentActive = active;
-
-                if (updateDelay == 0 && getClientActive() != active) {
-                    state = Attribute.setActive(state, active);
-                    world.setBlockState(pos, state);
-                    updateDelay = delaySupplier.getAsInt();
+                if (getClientActive() != active) {
+                    if (active) {
+                        //Always turn on instantly, and then clear the current delayed switch
+                        state = Attribute.setActive(state, true);
+                        world.setBlockState(pos, state);
+                        updateDelay = 0;
+                    } else if (updateDelay == 0) {
+                        //If we are turning it off, and are not currently waiting for it to turn off,
+                        // then start the timer for setting it to inactive
+                        updateDelay = delaySupplier.getAsInt();
+                    }
                 }
             }
         }

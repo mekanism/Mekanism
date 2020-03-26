@@ -55,7 +55,6 @@ public abstract class MekanismContainer extends Container {
     protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
     protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
     private final List<ISyncableData> trackedData = new ArrayList<>();
-    private boolean initialSyncDone;
 
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv) {
         super(type.getContainerType(), id);
@@ -376,8 +375,7 @@ public abstract class MekanismContainer extends Container {
             List<PropertyData> dirtyData = new ArrayList<>();
             for (short i = 0; i < trackedData.size(); i++) {
                 ISyncableData data = trackedData.get(i);
-                //If we haven't done an initial sync yet, treat everything as dirty to make sure we sync it initially to the client
-                DirtyType dirtyType = initialSyncDone ? data.isDirty() : DirtyType.DIRTY;
+                DirtyType dirtyType = data.isDirty();
                 if (dirtyType != DirtyType.CLEAN) {
                     dirtyData.add(data.getPropertyData(i, dirtyType));
                 }
@@ -390,7 +388,6 @@ public abstract class MekanismContainer extends Container {
             } else if (size > 1) {
                 sendChange(new PacketUpdateContainerBatch((short) windowId, dirtyData));
             }
-            initialSyncDone = true;
         }
     }
 
@@ -398,6 +395,27 @@ public abstract class MekanismContainer extends Container {
         for (IContainerListener listener : listeners) {
             if (listener instanceof ServerPlayerEntity) {
                 Mekanism.packetHandler.sendTo(packet, (ServerPlayerEntity) listener);
+            }
+        }
+    }
+
+    @Override
+    public void addListener(@Nonnull IContainerListener listener) {
+        boolean alreadyHas = listeners.contains(listener);
+        super.addListener(listener);
+        if (!alreadyHas && listener instanceof ServerPlayerEntity) {
+            //Send all contents to the listener when it first gets added
+            List<PropertyData> dirtyData = new ArrayList<>();
+            for (short i = 0; i < trackedData.size(); i++) {
+                dirtyData.add(trackedData.get(i).getPropertyData(i, DirtyType.DIRTY));
+            }
+            int size = dirtyData.size();
+            if (size == 1) {
+                //If we only have a single element send a type specific packet to reduce overhead of
+                // having to include type and count
+                Mekanism.packetHandler.sendTo(dirtyData.get(0).getSinglePacket((short) windowId), (ServerPlayerEntity) listener);
+            } else if (size > 1) {
+                Mekanism.packetHandler.sendTo(new PacketUpdateContainerBatch((short) windowId, dirtyData), (ServerPlayerEntity) listener);
             }
         }
     }

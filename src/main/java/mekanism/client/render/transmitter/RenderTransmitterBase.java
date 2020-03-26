@@ -38,8 +38,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
         super(renderer);
     }
 
-    protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, int rgb, float alpha, int light, int overlayLight,
-          TextureAtlasSprite icon) {
+    protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, int rgb, float alpha, int light, int overlayLight, TextureAtlasSprite icon) {
         renderModel(transmitter, matrix, builder, MekanismRenderer.getRed(rgb), MekanismRenderer.getGreen(rgb), MekanismRenderer.getBlue(rgb), alpha, light, overlayLight, icon,
               Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName() + transmitter.getConnectionType(side).getName().toUpperCase()).collect(Collectors.toList()));
     }

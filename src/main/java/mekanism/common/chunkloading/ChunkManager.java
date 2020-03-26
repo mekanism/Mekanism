@@ -1,15 +1,20 @@
 package mekanism.common.chunkloading;
 
+import java.util.Comparator;
 import java.util.Iterator;
-import java.util.function.LongConsumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.Upgrade;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.tile.component.TileComponentChunkLoader;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.TicketType;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
 import org.apache.logging.log4j.LogManager;
@@ -29,8 +34,8 @@ public class ChunkManager extends WorldSavedData {
     private static final String CHUNK_LIST_KEY = "chunks";
     private static final Logger LOGGER = LogManager.getLogger("Mekanism ChunkManager");
     private static final String SAVEDATA_KEY = "mekanism_force_chunks";
-    ///** Ticket type to keep the chunk loaded initially for a short time, so the Chunkloaders can register theirs */
-    //private static final TicketType<ChunkPos> INITIAL_LOAD_TICKET_TYPE = TicketType.create("mekanism:initial_chunkload", Comparator.comparingLong(ChunkPos::asLong), 10);
+    /** Ticket type to keep the chunk loaded initially for a short time, so the Chunkloaders can register theirs */
+    private static final TicketType<ChunkPos> INITIAL_LOAD_TICKET_TYPE = TicketType.create("mekanism:initial_chunkload", Comparator.comparingLong(ChunkPos::asLong), 10);
 
     private ChunkMultimap chunks = new ChunkMultimap();
 
@@ -63,24 +68,27 @@ public class ChunkManager extends WorldSavedData {
     public static void worldLoad(ServerWorld world) {
         ChunkManager savedData = getInstance(world);
         LOGGER.info("Loading {} chunks for dimension {}", savedData.chunks.size(), world.dimension.getType().getRegistryName());
-        savedData.chunks.keySet().forEach((LongConsumer) key -> {
+        savedData.chunks.long2ObjectEntrySet().fastForEach(entry -> {
+            boolean shouldLoad = false;
+            long key = entry.getLongKey();
             //option 1 - for each position, find TE and get it to refresh chunks
             Chunk chunk = world.getChunk((int) key, (int) (key >> 32));
-            for (Iterator<BlockPos> iterator = savedData.chunks.get(key).iterator(); iterator.hasNext(); ) {
+            for (Iterator<BlockPos> iterator = entry.getValue().iterator(); iterator.hasNext(); ) {
                 BlockPos blockPos = iterator.next();
-                TileEntity tileEntity = chunk.getTileEntity(blockPos);
-                if (tileEntity instanceof IChunkLoader) {
-                    ((IChunkLoader) tileEntity).getChunkLoader().refreshChunkTickets();
-                } else {
-                    LOGGER.warn("Tile at {} was either null or not an IChunkLoader?! Tile: {}", blockPos, tileEntity);
+                Block block = chunk.getBlockState(blockPos).getBlock();
+                if (Attribute.has(block, AttributeUpgradeSupport.class) && Attribute.get(block, AttributeUpgradeSupport.class).getSupportedUpgrades().contains(Upgrade.ANCHOR)) {
+                    shouldLoad = true;
+                }else {
+                    LOGGER.warn("Block at {} was does not support Anchor Upgrades?! Block: {}", blockPos, block.getRegistryName());
                     iterator.remove();
                     savedData.markDirty();
                 }
             }
-
-            //option 2 - add a separate ticket (which has a timout) to let the chunk tick for a short while (chunkloader will refresh if it's able)
-            /*ChunkPos pos = new ChunkPos(key);
-            world.getChunkProvider().registerTicket(INITIAL_LOAD_TICKET_TYPE, pos, TileComponentChunkLoader.TICKET_DISTANCE, pos);*/
+            if (shouldLoad) {
+                //option 2 - add a separate ticket (which has a timout) to let the chunk tick for a short while (chunkloader will refresh if it's able)
+                ChunkPos pos = new ChunkPos(key);
+                world.getChunkProvider().registerTicket(INITIAL_LOAD_TICKET_TYPE, pos, TileComponentChunkLoader.TICKET_DISTANCE, pos);
+            }
         });
     }
 

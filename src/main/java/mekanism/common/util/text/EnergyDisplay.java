@@ -35,7 +35,7 @@ public class EnergyDisplay implements IHasTextComponent {
     public ITextComponent getTextComponent() {
         if (energy.equals(FloatingLong.MAX_VALUE)) {
             return MekanismLang.INFINITE.translate();
-        } else if (max.isEmpty()) {
+        } else if (max.isZero()) {
             return MekanismUtils.getEnergyDisplayShort(energy);
         }
         //Pass max back as a new Energy Display so that if we have 0/infinite it shows that properly without us having to add extra handling

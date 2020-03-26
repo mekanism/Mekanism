@@ -142,8 +142,12 @@ public class NBTUtils {
     }
 
     public static void setFloatingLongIfPresent(CompoundNBT nbt, String key, FloatingLongConsumer setter) {
-        if (nbt.contains(key, NBT.TAG_COMPOUND)) {
-            setter.accept(FloatingLong.readFromNBT(nbt.getCompound(key)));
+        if (nbt.contains(key, NBT.TAG_STRING)) {
+            try {
+                setter.accept(FloatingLong.parseFloatingLong(nbt.getString(key)));
+            } catch (NumberFormatException e) {
+                setter.accept(FloatingLong.ZERO);
+            }
         }
     }
 

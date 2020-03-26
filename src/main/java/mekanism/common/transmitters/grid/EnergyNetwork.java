@@ -62,7 +62,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
 
     @Override
     protected void forceScaleUpdate() {
-        if (!energyContainer.isEmpty() && !energyContainer.getMaxEnergy().isEmpty()) {
+        if (!energyContainer.isEmpty() && !energyContainer.getMaxEnergy().isZero()) {
             energyScale = Math.min(1, energyContainer.getEnergy().divide(energyContainer.getMaxEnergy()).floatValue());
         }
     }
@@ -90,7 +90,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     @Override
     public void absorbBuffer(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
         FloatingLong energy = transmitter.getBuffer();
-        if (energy != null && !energy.isEmpty()) {
+        if (energy != null && !energy.isZero()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(energy));
         }
     }
@@ -107,19 +107,15 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
 
     @Override
     protected synchronized void updateCapacity(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
-        if (floatingLongCapacity.isEmpty()) {
-            floatingLongCapacity = transmitter.getCapacityAsFloatingLong().copy();
-        } else {
-            floatingLongCapacity.plusEqual(transmitter.getCapacityAsFloatingLong());
-        }
+        floatingLongCapacity = floatingLongCapacity.plusEqual(transmitter.getCapacityAsFloatingLong());
         capacity = floatingLongCapacity.intValue();
     }
 
     @Override
     public synchronized void updateCapacity() {
-        FloatingLong sum = FloatingLong.getNewZero();
+        FloatingLong sum = FloatingLong.ZERO;
         for (IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter : transmitters) {
-            sum.plusEqual(transmitter.getCapacityAsFloatingLong());
+            sum = sum.plusEqual(transmitter.getCapacityAsFloatingLong());
         }
         if (!floatingLongCapacity.equals(sum)) {
             floatingLongCapacity = sum;

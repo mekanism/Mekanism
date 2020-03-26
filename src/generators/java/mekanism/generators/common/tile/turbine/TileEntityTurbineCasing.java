@@ -59,7 +59,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             double flowRate = 0;
 
             FloatingLong energyNeeded = structure.energyContainer.getNeeded();
-            if (stored > 0 && !energyNeeded.isEmpty()) {
+            if (stored > 0 && !energyNeeded.isZero()) {
                 FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES)
                                                 .multiply(Math.min(structure.blades, structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
                 double rate = structure.lowerVolume * (structure.getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());

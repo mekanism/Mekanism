@@ -66,9 +66,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         if (ticker % 20 == 0) {
             // Recalculate the current multiplier once a second
             currentMultiplier = getMultiplier();
-            setActive(MekanismUtils.canFunction(this) && !currentMultiplier.isEmpty());
+            setActive(MekanismUtils.canFunction(this) && !currentMultiplier.isZero());
         }
-        if (!currentMultiplier.isEmpty() && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isEmpty()) {
+        if (!currentMultiplier.isZero() && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero()) {
             getEnergyContainer().insert(MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(currentMultiplier), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }

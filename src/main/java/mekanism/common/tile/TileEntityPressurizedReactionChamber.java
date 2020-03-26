@@ -50,6 +50,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine<PressurizedReactionRecipe> implements ITankManager {
 
+    private static final int BASE_DURATION = 100;
     private static final int MAX_GAS = 10_000;
     public BasicFluidTank inputFluidTank;
     public BasicGasTank inputGasTank;
@@ -66,7 +67,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     private EnergyInventorySlot energySlot;
 
     public TileEntityPressurizedReactionChamber() {
-        super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 100);
+        super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, BASE_DURATION);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
@@ -154,7 +155,19 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
+        CachedRecipe<PressurizedReactionRecipe> oldCache = this.cachedRecipe;
         cachedRecipe = getUpdatedCache(0);
+        if (oldCache != cachedRecipe) {
+            //If it is not the same literal object
+            int recipeDuration = cachedRecipe == null ? BASE_DURATION : cachedRecipe.getRecipe().getDuration();
+            boolean update = BASE_TICKS_REQUIRED != recipeDuration;
+            BASE_TICKS_REQUIRED = recipeDuration;
+            if (update) {
+                recalculateUpgrades(Upgrade.SPEED);
+            }
+            //Ensure we take our recipe's energy per tick into account
+            energyContainer.updateEnergyPerTick();
+        }
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
@@ -193,14 +206,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     @Nullable
     @Override
     public CachedRecipe<PressurizedReactionRecipe> createNewCachedRecipe(@Nonnull PressurizedReactionRecipe recipe, int cacheIndex) {
-        //TODO: Is this fine, or do we need it somewhere that will get called in more places than ONLY when the cache is being made
-        boolean update = BASE_TICKS_REQUIRED != recipe.getDuration();
-        BASE_TICKS_REQUIRED = recipe.getDuration();
-        if (update) {
-            recalculateUpgrades(Upgrade.SPEED);
-        }
-        //Ensure we take our recipe's energy per tick into account
-        energyContainer.updateEnergyPerTick();
         return new PressurizedReactionCachedRecipe(recipe, itemInputHandler, fluidInputHandler, gasInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)

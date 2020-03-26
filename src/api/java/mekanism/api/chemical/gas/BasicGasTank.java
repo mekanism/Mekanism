@@ -38,6 +38,14 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
         return create(capacity, canExtract, canInsert, alwaysTrue, gasHandler);
     }
 
+    public static BasicGasTank create(int capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
+        Objects.requireNonNull(validator, "Infuse type validity check cannot be null");
+        return new BasicGasTank(capacity, alwaysTrueBi, alwaysTrueBi, validator, gasHandler);
+    }
+
     public static BasicGasTank input(int capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");

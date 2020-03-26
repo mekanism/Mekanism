@@ -32,7 +32,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     protected LaserEnergyContainer energyContainer;
     private Coord4D digging;
-    private FloatingLong diggingProgress = FloatingLong.getNewZero();
+    private FloatingLong diggingProgress = FloatingLong.ZERO;
     private FloatingLong lastFired = FloatingLong.ZERO;
 
     public TileEntityBasicLaser(IBlockProvider blockProvider) {
@@ -57,7 +57,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             Coord4D hitCoord = new Coord4D(mop, world);
             if (!hitCoord.equals(digging)) {
                 digging = mop.getType() == Type.MISS ? null : hitCoord;
-                diggingProgress = FloatingLong.getNewZero();
+                diggingProgress = FloatingLong.ZERO;
             }
             if (mop.getType() != Type.MISS) {
                 BlockState blockHit = world.getBlockState(hitCoord.getPos());
@@ -66,7 +66,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 if (hardness >= 0) {
                     Optional<ILaserReceptor> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()));
                     if (!capability.isPresent() || capability.get().canLasersDig()) {
-                        diggingProgress.plusEqual(lastFired);
+                        diggingProgress = diggingProgress.plusEqual(lastFired);
                         if (diggingProgress.smallerThan(MekanismConfig.general.laserEnergyNeededPerHardness.get().multiply(hardness))) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
                         }
@@ -80,7 +80,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     protected void onUpdateServer() {
         super.onUpdateServer();
         FloatingLong firing = energyContainer.extract(toFire(), Action.SIMULATE, AutomationType.INTERNAL);
-        if (!firing.isEmpty()) {
+        if (!firing.isZero()) {
             if (!firing.equals(lastFired) || !getActive()) {
                 setActive(true);
                 lastFired = firing;
@@ -90,7 +90,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             Coord4D hitCoord = new Coord4D(info.movingPos, world);
             if (!hitCoord.equals(digging)) {
                 digging = info.movingPos.getType() == Type.MISS ? null : hitCoord;
-                diggingProgress = FloatingLong.getNewZero();
+                diggingProgress = FloatingLong.ZERO;
             }
             if (info.movingPos.getType() != Type.MISS) {
                 BlockState blockHit = world.getBlockState(hitCoord.getPos());
@@ -99,10 +99,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 if (hardness >= 0) {
                     Optional<ILaserReceptor> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace()));
                     if (!capability.isPresent() || capability.get().canLasersDig()) {
-                        diggingProgress.plusEqual(firing);
+                        diggingProgress = diggingProgress.plusEqual(firing);
                         if (diggingProgress.compareTo(MekanismConfig.general.laserEnergyNeededPerHardness.get().multiply(hardness)) >= 0) {
                             handleBreakBlock(hitCoord);
-                            diggingProgress = FloatingLong.getNewZero();
+                            diggingProgress = FloatingLong.ZERO;
                         }
                         //TODO: Else tell client to spawn hit effect, instead of having there be client side onUpdate code for TileEntityLaser
                     }
@@ -112,10 +112,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             setEmittingRedstone(info.foundEntity);
         } else if (getActive()) {
             setActive(false);
-            if (!diggingProgress.isEmpty()) {
-                diggingProgress = FloatingLong.getNewZero();
+            if (!diggingProgress.isZero()) {
+                diggingProgress = FloatingLong.ZERO;
             }
-            if (!lastFired.isEmpty()) {
+            if (!lastFired.isZero()) {
                 lastFired = FloatingLong.ZERO;
                 sendUpdatePacket();
             }
@@ -143,7 +143,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.put(NBTConstants.LAST_FIRED, lastFired.serializeNBT());
+        nbtTags.putString(NBTConstants.LAST_FIRED, lastFired.toString());
         return nbtTags;
     }
 
@@ -151,7 +151,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = super.getUpdateTag();
-        updateTag.put(NBTConstants.LAST_FIRED, lastFired.serializeNBT());
+        updateTag.putString(NBTConstants.LAST_FIRED, lastFired.toString());
         return updateTag;
     }
 

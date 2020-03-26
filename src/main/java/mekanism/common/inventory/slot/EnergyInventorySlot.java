@@ -46,18 +46,18 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         return new EnergyInventorySlot(energyContainer, worldSupplier, stack -> {
             //Always allow extraction if something went horribly wrong and we are not an energy container item or we are no longer a valid conversion
             // This might happen after a reload for example
-            return !EnergyCompatUtils.hasStrictEnergyHandler(stack) && potentialConversionSupplier.apply(stack).isEmpty();
+            return !EnergyCompatUtils.hasStrictEnergyHandler(stack) && potentialConversionSupplier.apply(stack).isZero();
         }, stack -> {
             if (fillInsertCheck(energyContainer, stack)) {
                 return true;
             }
             FloatingLong conversion = potentialConversionSupplier.apply(stack);
             //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
-            return !conversion.isEmpty() && energyContainer.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).smallerThan(conversion);
+            return !conversion.isZero() && energyContainer.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).smallerThan(conversion);
         }, stack -> {
             //Note: we mark all energy handler items as valid and have a more restrictive insert check so that we allow full containers when they are done being filled
             // We also allow energy conversion of items that can be converted
-            return EnergyCompatUtils.hasStrictEnergyHandler(stack) || !getPotentialConversion(worldSupplier.get(), stack).isEmpty();
+            return EnergyCompatUtils.hasStrictEnergyHandler(stack) || !getPotentialConversion(worldSupplier.get(), stack).isZero();
         }, inventory, x, y);
     }
 
@@ -85,7 +85,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             if (energyContainer.isEmpty()) {
                 //If the energy container is empty, accept the energy item as long as it is not full
                 for (int container = 0; container < itemHandler.getEnergyContainerCount(); container++) {
-                    if (!itemHandler.getNeededEnergy(container).isEmpty()) {
+                    if (!itemHandler.getNeededEnergy(container).isZero()) {
                         //True if we have any space in this container
                         return true;
                     }
@@ -103,7 +103,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         if (itemHandler != null) {
             for (int container = 0; container < itemHandler.getEnergyContainerCount(); container++) {
                 FloatingLong energyInContainer = itemHandler.getEnergy(container);
-                if (!energyInContainer.isEmpty() && energyContainer.insert(energyInContainer, Action.SIMULATE, AutomationType.INTERNAL).smallerThan(energyInContainer)) {
+                if (!energyInContainer.isZero() && energyContainer.insert(energyInContainer, Action.SIMULATE, AutomationType.INTERNAL).smallerThan(energyInContainer)) {
                     //True if we can fill the container with any of our contents
                     // Note: We need to recheck the fact there is energy in case the item has multiple containers
                     return true;
@@ -134,7 +134,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      * Fills the energy container from slot, allowing for the item to also be converted to energy if need be (example redstone -> energy)
      */
     public void fillContainerOrConvert() {
-        if (!isEmpty() && !energyContainer.getNeeded().isEmpty()) {
+        if (!isEmpty() && !energyContainer.getNeeded().isZero()) {
             //Fill the container from the item
             if (!fillContainerFromItem()) {
                 //If filling from item failed, try doing it by conversion
@@ -144,9 +144,9 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                     if (!itemInput.isEmpty()) {
                         FloatingLong output = foundRecipe.getOutput(itemInput);
                         //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
-                        if (!output.isEmpty() && energyContainer.insert(output, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
+                        if (!output.isZero() && energyContainer.insert(output, Action.SIMULATE, AutomationType.MANUAL).isZero()) {
                             //If we can accept it all, then add it and decrease our input
-                            if (!energyContainer.insert(output, Action.EXECUTE, AutomationType.MANUAL).isEmpty()) {
+                            if (!energyContainer.insert(output, Action.EXECUTE, AutomationType.MANUAL).isZero()) {
                                 //TODO: Print warning/error
                             }
                             int amountUsed = itemInput.getCount();
@@ -164,7 +164,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      * Fills energy container from slot, does not try converting the item via any conversions conversion
      */
     public void fillContainer() {
-        if (!isEmpty() && !energyContainer.getNeeded().isEmpty()) {
+        if (!isEmpty() && !energyContainer.getNeeded().isZero()) {
             //Try filling from the container's item
             fillContainerFromItem();
         }
@@ -180,21 +180,21 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             boolean didTransfer = false;
             for (int container = 0; container < itemHandler.getEnergyContainerCount(); container++) {
                 FloatingLong energyInItem = itemHandler.getEnergy(container);
-                if (!energyInItem.isEmpty()) {
+                if (!energyInItem.isZero()) {
                     //Simulate inserting energy from each container in the item into our container
                     FloatingLong simulatedRemainder = energyContainer.insert(energyInItem, Action.SIMULATE, AutomationType.INTERNAL);
                     if (simulatedRemainder.smallerThan(energyInItem)) {
                         //If we were simulated that we could actually insert any, then
                         // extract up to as much energy as we were able to accept from the item
                         FloatingLong extractedEnergy = itemHandler.extractEnergy(container, energyInItem.subtract(simulatedRemainder), Action.EXECUTE);
-                        if (!extractedEnergy.isEmpty()) {
+                        if (!extractedEnergy.isZero()) {
                             //If we were able to actually extract it from the item, then insert it into our energy container
-                            if (!energyContainer.insert(extractedEnergy, Action.EXECUTE, AutomationType.INTERNAL).isEmpty()) {
+                            if (!energyContainer.insert(extractedEnergy, Action.EXECUTE, AutomationType.INTERNAL).isZero()) {
                                 //TODO: Print warning/error
                             }
                             //and mark that we were able to transfer at least some of it
                             didTransfer = true;
-                            if (energyContainer.getNeeded().isEmpty()) {
+                            if (energyContainer.getNeeded().isZero()) {
                                 //If our energy container is full then exit early rather than continuing
                                 // to check about filling the container from the item
                                 break;
@@ -224,9 +224,9 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 if (simulatedRemainder.smallerThan(storedEnergy)) {
                     //We are able to fit at least some of the energy from our container into the item
                     FloatingLong extractedEnergy = energyContainer.extract(storedEnergy.subtract(simulatedRemainder), Action.EXECUTE, AutomationType.INTERNAL);
-                    if (!extractedEnergy.isEmpty()) {
+                    if (!extractedEnergy.isZero()) {
                         //If we were able to actually extract it from our energy container, then insert it into the item
-                        if (!itemHandler.insertEnergy(extractedEnergy, Action.EXECUTE).isEmpty()) {
+                        if (!itemHandler.insertEnergy(extractedEnergy, Action.EXECUTE).isZero()) {
                             //TODO: Print warning/error
                         }
                         onContentsChanged();

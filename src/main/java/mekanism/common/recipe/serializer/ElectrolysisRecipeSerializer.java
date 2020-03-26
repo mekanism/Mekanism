@@ -50,7 +50,7 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             FluidStackIngredient input = FluidStackIngredient.read(buffer);
-            FloatingLong energyMultiplier = FloatingLong.fromBuffer(buffer);
+            FloatingLong energyMultiplier = FloatingLong.readFromBuffer(buffer);
             GasStack leftGasOutput = GasStack.readFromPacket(buffer);
             GasStack rightGasOutput = GasStack.readFromPacket(buffer);
             return this.factory.create(recipeId, input, energyMultiplier, leftGasOutput, rightGasOutput);

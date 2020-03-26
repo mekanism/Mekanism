@@ -47,12 +47,12 @@ public class TransporterManager {
     }
 
     private static int simulateInsert(IItemHandler handler, InventoryInfo inventoryInfo, ItemStack stack, int count) {
+        int maxStackSize = stack.getMaxStackSize();
         for (int slot = 0; slot < handler.getSlots(); slot++) {
             if (count == 0) {
                 // Nothing more to insert
                 break;
             }
-
             int max = handler.getSlotLimit(slot);
             //If no items are allowed in the slot, pass it up before checking anything about the items
             if (max == 0) {
@@ -71,13 +71,41 @@ public class TransporterManager {
             // Number of items in the destination
             int destCount = inventoryInfo.stackSizes.getInt(slot);
 
-            if (destCount > 0 && !InventoryUtils.areItemsStackable(inventoryInfo.inventory.get(slot), stack)) {
-                // If the destination isn't empty and not stackable, move along
-                continue;
-            } else if (destCount == 0) {
+            int mergedCount = count + destCount;
+            boolean needsSimulation = false;
+            if (destCount > 0) {
+                if (!InventoryUtils.areItemsStackable(inventoryInfo.inventory.get(slot), stack)) {
+                    //If the destination isn't empty and not stackable, move along
+                    continue;
+                } else if (max > maxStackSize && mergedCount > maxStackSize) {
+                    //If we have items in the destination, and the max amount is larger than
+                    // the max size of the stack, and the total number of items will also be larger
+                    // than the max stack size, we need to simulate to see how much we are actually
+                    // able to insert
+                    needsSimulation = true;
+                    //If the stack's actual size is less than or equal to the max stack size
+                    // then we need to increase the size by one for purposes of properly
+                    // being able to simulate what the "limit" of the slot is rather
+                    // than sending one extra item to the slot only for it to fail
+                    //Note: Some things such as IInventory to IItemHandler wrappers
+                    // don't actually have any restrictions on stack size, so even doing this
+                    // does not help stopping the one extra item from being sent due to the fact
+                    // that it allows inserting larger than the max stack size if it is already
+                    // packages in an amount that is larger than a single stack
+                    if (stack.getCount() <= maxStackSize) {
+                        //Note: Because we check the size of the stack against the max stack size
+                        // even if there are multiple slots that need this, we only end up copying
+                        // our stack a single time to resize it
+                        stack = StackUtils.size(stack, maxStackSize + 1);
+                    }
+                }
+            } else {
                 // If the item stack is empty, we need to do a simulated insert since we can't tell if the stack
                 // in question would be allowed in this slot. Otherwise, we depend on areItemsStackable to keep us
                 // out of trouble
+                needsSimulation = true;
+            }
+            if (needsSimulation) {
                 ItemStack simulatedRemainder = handler.insertItem(slot, stack, true);
                 int accepted = stack.getCount() - simulatedRemainder.getCount();
                 if (accepted == 0) {
@@ -88,14 +116,14 @@ public class TransporterManager {
                     // so we mark the amount we accepted as the slot's actual limit
                     max = accepted;
                 }
-                //If we actually are going to insert it, because there are currently no items
-                // in the destination, we set the item to the one we are sending so that we can compare
-                // it with InventoryUtils.areItemsStackable. This makes it so that we do not send multiple
-                // items of different types to the same slot just because they are not there yet
-                inventoryInfo.inventory.set(slot, StackUtils.size(stack, 1));
+                if (destCount == 0) {
+                    //If we actually are going to insert it, because there are currently no items
+                    // in the destination, we set the item to the one we are sending so that we can compare
+                    // it with InventoryUtils.areItemsStackable. This makes it so that we do not send multiple
+                    // items of different types to the same slot just because they are not there yet
+                    inventoryInfo.inventory.set(slot, StackUtils.size(stack, 1));
+                }
             }
-
-            int mergedCount = count + destCount;
             if (mergedCount > max) {
                 // Not all the items will fit; put max in and save leftovers
                 inventoryInfo.stackSizes.set(slot, max);

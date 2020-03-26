@@ -59,7 +59,7 @@ public class LaserParticleData implements IParticleData {
 
         @Override
         public LaserParticleData read(@Nonnull ParticleType<LaserParticleData> type, PacketBuffer buf) {
-            return new LaserParticleData(buf.readEnumValue(Direction.class), buf.readDouble(), FloatingLong.fromBuffer(buf));
+            return new LaserParticleData(buf.readEnumValue(Direction.class), buf.readDouble(), FloatingLong.readFromBuffer(buf));
         }
     };
 }

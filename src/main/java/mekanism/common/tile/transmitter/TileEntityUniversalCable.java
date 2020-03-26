@@ -83,7 +83,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
                 for (IStrictEnergyHandler connectedAcceptor : CableUtils.getConnectedAcceptors(getPos(), getWorld(), connections)) {
                     if (connectedAcceptor != null) {
                         FloatingLong received = connectedAcceptor.extractEnergy(getAvailablePull(), Action.SIMULATE);
-                        if (!received.isEmpty() && takeEnergy(received, Action.SIMULATE).isEmpty()) {
+                        if (!received.isZero() && takeEnergy(received, Action.SIMULATE).isZero()) {
                             //If we received some energy and are able to insert it all
                             FloatingLong remainder = takeEnergy(received, Action.EXECUTE);
                             connectedAcceptor.extractEnergy(received.subtract(remainder), Action.EXECUTE);
@@ -142,8 +142,12 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains(NBTConstants.ENERGY_STORED, NBT.TAG_COMPOUND)) {
-            lastWrite = FloatingLong.readFromNBT(nbtTags.getCompound(NBTConstants.ENERGY_STORED));
+        if (nbtTags.contains(NBTConstants.ENERGY_STORED, NBT.TAG_STRING)) {
+            try {
+                lastWrite = FloatingLong.parseFloatingLong(nbtTags.getString(NBTConstants.ENERGY_STORED));
+            } catch (NumberFormatException e) {
+                lastWrite = FloatingLong.ZERO;
+            }
         } else {
             lastWrite = FloatingLong.ZERO;
         }
@@ -154,10 +158,10 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (lastWrite.isEmpty()) {
+        if (lastWrite.isZero()) {
             nbtTags.remove(NBTConstants.ENERGY_STORED);
         } else {
-            nbtTags.put(NBTConstants.ENERGY_STORED, lastWrite.serializeNBT());
+            nbtTags.putString(NBTConstants.ENERGY_STORED, lastWrite.toString());
         }
         return nbtTags;
     }
@@ -190,7 +194,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
 
     @Override
     public boolean noBufferOrFallback() {
-        return getBufferWithFallback().isEmpty();
+        return getBufferWithFallback().isZero();
     }
 
     @Nonnull
@@ -198,7 +202,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     public FloatingLong getBufferWithFallback() {
         FloatingLong buffer = getBuffer();
         //If we don't have a buffer try falling back to the network's buffer
-        if (buffer.isEmpty() && getTransmitter().hasTransmitterNetwork()) {
+        if (buffer.isZero() && getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().getBuffer();
         }
         return buffer;
@@ -208,7 +212,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     public void takeShare() {
         if (getTransmitter().hasTransmitterNetwork()) {
             EnergyNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
-            if (!transmitterNetwork.energyContainer.isEmpty() && !lastWrite.isEmpty()) {
+            if (!transmitterNetwork.energyContainer.isEmpty() && !lastWrite.isZero()) {
                 transmitterNetwork.energyContainer.setEnergy(transmitterNetwork.energyContainer.getEnergy().subtract(lastWrite));
                 buffer.setEnergy(lastWrite);
             }

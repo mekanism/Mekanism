@@ -40,6 +40,5 @@ public class ElectrolyticSeparatorEnergyContainer extends MachineEnergyContainer
     public void updateEnergyPerTick() {
         //Update our energy per tick to be based off of our recipe
         this.currentEnergyPerTick = getBaseEnergyPerTick();
-        //TODO: Test that separator actually uses the correct amount of power
     }
 }

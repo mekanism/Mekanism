@@ -9,9 +9,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
-//TODO: Use ItemStack#getOrCreateTag in various places
 //TODO: For some things like energy (example energy tablet), do we want to make the NBT go away once it is fully drained again
 // this probably would be the best way to do it for mod compat with auto crafters
+//TODO: Rewrite this into a helper object that gets made for a stack so that we can easier make sure it doesn't add any extra data when we don't want it
 public final class ItemDataUtils {
 
     @Nonnull

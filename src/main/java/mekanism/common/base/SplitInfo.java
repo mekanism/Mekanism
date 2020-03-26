@@ -70,14 +70,14 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
             super(totalTargets);
             this.amountToSplit = amountToSplit.copy();
             amountPerTarget = toSplitAmong == 0 ? FloatingLong.ZERO : amountToSplit.divide(toSplitAmong);
-            sentSoFar = FloatingLong.getNewZero();
+            sentSoFar = FloatingLong.ZERO;
         }
 
         @Override
         public void send(FloatingLong amountNeeded) {
             //If we are giving it, then lower the amount we are checking/splitting
-            amountToSplit.minusEqual(amountNeeded);
-            sentSoFar.plusEqual(amountNeeded);
+            amountToSplit = amountToSplit.minusEqual(amountNeeded);
+            sentSoFar = sentSoFar.plusEqual(amountNeeded);
             toSplitAmong--;
             //Only recalculate it if it is not willing to accept/doesn't want the
             // full per side split

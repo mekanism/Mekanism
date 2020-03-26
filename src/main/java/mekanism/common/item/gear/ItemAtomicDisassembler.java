@@ -111,7 +111,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         } else {
             target.attackEntityFrom(DamageSource.causeMobDamage(attacker), damage);
         }
-        if (energyContainer != null && !energy.isEmpty()) {
+        if (energyContainer != null && !energy.isZero()) {
             energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
         }
         return false;
@@ -336,7 +336,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                     continue;
                 }
                 //Add energy cost
-                energyUsed.plusEqual(energyUsage);
+                energyUsed = energyUsed.plusEqual(energyUsage);
                 if (useResult > 0) {
                     //Processing happened in the hook so we use our desired fuel amount
                     continue;
@@ -422,7 +422,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                     continue;
                 } //else we are allowed to use the item
                 //Add energy cost
-                energyUsed.plusEqual(energyUsage);
+                energyUsed = energyUsed.plusEqual(energyUsage);
                 //Replace the block. Note it just directly sets it (in the same way that AxeItem does).
                 world.setBlockState(newPos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
                 world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
