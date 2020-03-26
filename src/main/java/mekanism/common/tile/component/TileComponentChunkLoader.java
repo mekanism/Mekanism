@@ -51,6 +51,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     private BlockPos prevPos;
 
     private boolean hasRegistered;
+    private boolean isFirstTick = true;
 
     public TileComponentChunkLoader(T tile) {
         this.tile = tile;
@@ -63,14 +64,18 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     private void releaseChunkTickets(@Nonnull World world) {
-        LOGGER.info("Attemptying to remove chunk tickets. Pos: {} World: {}", prevPos, world);
+        releaseChunkTickets(world, prevPos);
+    }
+
+    private void releaseChunkTickets(@Nonnull World world, @Nullable BlockPos pos) {
+        LOGGER.debug("Attempting to remove chunk tickets. Pos: {} World: {}", pos, world.getDimension().getType().getRegistryName());
         ServerChunkProvider chunkProvider = (ServerChunkProvider) world.getChunkProvider();
         Iterator<ChunkPos> chunkIt = chunkSet.iterator();
         ChunkManager manager = ChunkManager.getInstance((ServerWorld) world);
         while (chunkIt.hasNext()) {
             ChunkPos chunkPos = chunkIt.next();
-            if (prevPos != null) {
-                manager.deregisterChunk(chunkPos, prevPos);
+            if (pos != null) {
+                manager.deregisterChunk(chunkPos, pos);
             }
             chunkProvider.releaseTicket(TICKET_TYPE, chunkPos, TICKET_DISTANCE, this);
             chunkIt.remove();
@@ -98,10 +103,16 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     @Override
     public void tick() {
         World world = tile.getWorld();
-        if (world == null || !(world.getChunkProvider() instanceof ServerChunkProvider)) {
-            return;
-        }
-        if (!tile.isRemote()) {
+        if (world != null && !world.isRemote && world.getChunkProvider() instanceof ServerChunkProvider) {
+            if (isFirstTick) {
+                isFirstTick = false;
+                if (!canOperate()) {
+                    //If we just loaded but are not actually able to operate
+                    // release any tickets we have assigned to us that we loaded with
+                    releaseChunkTickets(world, tile.getPos());
+                }
+            }
+
             if (hasRegistered && prevWorld != null && (prevPos == null || prevWorld != world || prevPos != tile.getPos())) {
                 releaseChunkTickets(prevWorld);
             }
