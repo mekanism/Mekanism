@@ -294,6 +294,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     public FloatingLong timesEqual(FloatingLong toMultiply) {
         //(a+b)*(c+d) where numbers represent decimal, numbers represent value
+        if (multiplyLongsWillOverFlow(value, toMultiply.value))
+            return MAX_VALUE;
         FloatingLong temp = create(multiplyLongs(value, toMultiply.value));//a * c
         temp = temp.plusEqual(multiplyLongAndDecimal(value, toMultiply.decimal));//a * d
         temp = temp.plusEqual(multiplyLongAndDecimal(toMultiply.value, decimal));//b * c
@@ -775,17 +777,27 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
+     * Internal helper to determine if the result of unsigned long multiplication will overflow.
+     */
+    private static boolean multiplyLongsWillOverFlow(long a, long b) {
+        return (a != 0 && b != 0 && Long.compareUnsigned(b, Long.divideUnsigned(-1, a)) > 0 );
+    }
+
+    /**
      * Internal helper to multiply two longs and clamp if they overflow.
      */
     private static long multiplyLongs(long a, long b) {
         if (a == 0 || b == 0) {
             return 0;
+        } else if (multiplyLongsWillOverFlow(a, b)) {
+            return -1;
         }
-        long result = a * b;
+        return a*b;
+        /*long result = a * b;
         if (a == result / b) {
             return result;
         }
-        return -1;
+        return -1;*/
     }
 
     /**
