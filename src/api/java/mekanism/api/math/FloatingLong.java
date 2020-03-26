@@ -793,6 +793,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * Internal helper to multiply two longs and clamp if they overflow.
      */
     private static long multiplyLongs(long a, long b) {
+        if (a == 0 || b == 0)
+            return 0;
         long result = a * b;
         if (a == result / b)
             return result;
