@@ -211,7 +211,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return {@code true} if this {@link FloatingLong} should be treated as zero, {@code false} otherwise.
      */
     public boolean isZero() {
-        return value <= 0 && decimal <= 0;
+        return value == 0 && decimal <= 0;
     }
 
     /**
@@ -236,21 +236,20 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public FloatingLong plusEqual(FloatingLong toAdd) {
         long newValue;
         short newDecimal;
-        if((value < 0 && toAdd.value < 0) || ((value < 0 || toAdd.value < 0) && (value + toAdd.value >= 0))) {
+        if ((value < 0 && toAdd.value < 0) || ((value < 0 || toAdd.value < 0) && (value + toAdd.value >= 0))) {
             return setAndClampValues(-1, MAX_DECIMAL);
-        } else {
-            newValue = value + toAdd.value;
-            newDecimal = (short) (decimal + toAdd.decimal);
-            if (newDecimal > MAX_DECIMAL) {
-                if (newValue == -1)
-                    newDecimal = MAX_DECIMAL;
-                else {
-                    newDecimal -= SINGLE_UNIT;
-                    newValue++;
-                }
-            }
-            return setAndClampValues(newValue, newDecimal);
         }
+        newValue = value + toAdd.value;
+        newDecimal = (short) (decimal + toAdd.decimal);
+        if (newDecimal > MAX_DECIMAL) {
+            if (newValue == -1) {
+                newDecimal = MAX_DECIMAL;
+            } else {
+                newDecimal -= SINGLE_UNIT;
+                newValue++;
+            }
+        }
+        return setAndClampValues(newValue, newDecimal);
     }
 
     /**
@@ -317,7 +316,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (toDivide.isZero()) {
             throw new ArithmeticException("Division by zero");
         }
-
         BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
         long value = divide.longValue();
         short decimal = parseDecimal(divide.toString());
@@ -347,6 +345,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @throws IllegalArgumentException if {@code toAdd} is negative.
      */
     public FloatingLong add(long toAdd) {
+        //TODO: Decide if we want to let the param be unsigned
         if (toAdd < 0) {
             throw new IllegalArgumentException("Addition called with negative number, this is not supported. FloatingLongs are always positive.");
         }
@@ -393,6 +392,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @throws IllegalArgumentException if {@code toSubtract} is negative.
      */
     public FloatingLong subtract(long toSubtract) {
+        //TODO: Decide if we want to let the param be unsigned
         if (toSubtract < 0) {
             throw new IllegalArgumentException("Subtraction called with negative number, this is not supported. FloatingLongs are always positive.");
         }
@@ -439,6 +439,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @throws IllegalArgumentException if {@code toMultiply} is negative.
      */
     public FloatingLong multiply(long toMultiply) {
+        //TODO: Decide if we want to let the param be unsigned
         if (toMultiply < 0) {
             throw new IllegalArgumentException("Multiply called with negative number, this is not supported. FloatingLongs are always positive.");
         }
@@ -488,6 +489,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @throws IllegalArgumentException if {@code toDivide} is negative.
      */
     public FloatingLong divide(long toDivide) {
+        //TODO: Decide if we want to let the param be unsigned
         if (toDivide < 0) {
             throw new IllegalArgumentException("Division called with negative number, this is not supported. FloatingLongs are always positive.");
         }
@@ -584,10 +586,11 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     @Override
     public int compareTo(FloatingLong toCompare) {
-        if (value < toCompare.value) {
+        int valueCompare = Long.compareUnsigned(value, toCompare.value);
+        if (valueCompare < 0) {
             //If our primary value is smaller than toCompare's value we are always less than
             return -2;
-        } else if (value > toCompare.value) {
+        } else if (valueCompare > 0) {
             //If our primary value is bigger than toCompare's value we are always greater than
             return 2;
         }
@@ -634,9 +637,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         return MathUtils.clampToInt(value);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote We clamp the value to MAX_LONG rather than having it overflow into the negatives and being unsigned.
+     */
     @Override
     public long longValue() {
-        return value;
+        return value < 0 ? Long.MAX_VALUE : value;
     }
 
     /**
@@ -651,6 +659,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
 
     @Override
     public double doubleValue() {
+        //TODO: Decide how to handle as unsigned long can fit in a double
         return longValue() + decimal / (double) SINGLE_UNIT;
     }
 
@@ -677,12 +686,12 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     public String toString(int decimalPlaces) {
         if (decimal == 0) {
-            return Long.toString(value);
+            return Long.toUnsignedString(value);
         }
         if (decimalPlaces > DECIMAL_DIGITS) {
             decimalPlaces = DECIMAL_DIGITS;
         }
-        String valueAsString = value + ".";
+        String valueAsString = Long.toUnsignedString(value) + ".";
         String decimalAsString = Short.toString(decimal);
         int numberDigits = decimalAsString.length();
         if (numberDigits > decimalPlaces) {
@@ -724,9 +733,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         long value;
         int index = string.indexOf(".");
         if (index == -1) {
-            value = Long.parseLong(string);
+            value = Long.parseUnsignedLong(string);
         } else {
-            value = Long.parseLong(string.substring(0, index));
+            value = Long.parseUnsignedLong(string.substring(0, index));
         }
         short decimal = parseDecimal(string, index);
         return isConstant ? createConst(value, decimal) : create(value, decimal);
@@ -761,7 +770,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (index == -1) {
             return 0;
         }
-        boolean needsRounding = false;
         String decimalAsString = string.substring(index + 1);
         int numberDigits = decimalAsString.length();
         if (numberDigits < DECIMAL_DIGITS) {
@@ -769,8 +777,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             decimalAsString += getZeros(DECIMAL_DIGITS - numberDigits);
         } else if (numberDigits > DECIMAL_DIGITS) {
             //We need to trim it to make sure it will be in range of a short
-            //First check if the number afterwards would cause this to need to round or not
-            needsRounding = Short.parseShort(String.valueOf(decimalAsString.charAt(DECIMAL_DIGITS))) >= 5;
             decimalAsString = decimalAsString.substring(0, DECIMAL_DIGITS);
         }
         return Short.parseShort(decimalAsString);
@@ -794,8 +800,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     private static long multiplyLongs(long a, long b) {
         long result = a * b;
-        if (a == result / b)
+        if (a == result / b) {
             return result;
+        }
         return -1;
     }
 
@@ -804,7 +811,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     private static FloatingLong multiplyLongAndDecimal(long value, short decimal) {
         //This can't overflow!
-        if (Long.compareUnsigned(value, Long.divideUnsigned(-1L, (long)SINGLE_UNIT)) > 0) {
+        if (Long.compareUnsigned(value, Long.divideUnsigned(-1, SINGLE_UNIT)) > 0) {
             return create(Long.divideUnsigned(value, SINGLE_UNIT) * decimal, (short) (value % SINGLE_UNIT * decimal));
         }
         return create(Long.divideUnsigned(value * decimal, SINGLE_UNIT), (short) (value * decimal % SINGLE_UNIT));
