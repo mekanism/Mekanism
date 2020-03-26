@@ -32,12 +32,12 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
 
     @Override
     public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        return TransitResponse.EMPTY;
+        return request.getEmptyResponse();
     }
 
     @Override
     public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        return TransitResponse.EMPTY;
+        return request.getEmptyResponse();
     }
 
     @Override

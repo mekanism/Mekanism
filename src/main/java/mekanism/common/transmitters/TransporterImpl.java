@@ -1,14 +1,14 @@
 package mekanism.common.transmitters;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.IntConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
@@ -273,14 +273,14 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         stack.homeLocation = original;
         stack.color = color;
         if (!stack.canInsertToTransporter(this, from, outputter)) {
-            return TransitResponse.EMPTY;
+            return request.getEmptyResponse();
         }
         TransitResponse response = stack.recalculatePath(request, this, min);
-        return getTransitResponse(doEmit, stack, response);
+        return updateTransit(doEmit, stack, response);
     }
 
     @Nonnull
-    private TransitResponse getTransitResponse(boolean doEmit, TransporterStack stack, TransitResponse response) {
+    private TransitResponse updateTransit(boolean doEmit, TransporterStack stack, TransitResponse response) {
         if (!response.isEmpty()) {
             stack.itemStack = response.getStack();
             if (doEmit) {
@@ -290,9 +290,8 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(tile, tile.makeSyncPacket(stackId, stack)), tile);
                 MekanismUtils.saveChunk(tile);
             }
-            return response;
         }
-        return TransitResponse.EMPTY;
+        return response;
     }
 
     @Override
@@ -303,10 +302,10 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         stack.homeLocation = Coord4D.get(outputter);
         stack.color = color;
         if (!canReceiveFrom(outputter, from) || !stack.canInsertToTransporter(this, from, outputter)) {
-            return TransitResponse.EMPTY;
+            return request.getEmptyResponse();
         }
         TransitResponse response = stack.recalculateRRPath(request, outputter, this, min);
-        return getTransitResponse(doEmit, stack, response);
+        return updateTransit(doEmit, stack, response);
     }
 
     @Override

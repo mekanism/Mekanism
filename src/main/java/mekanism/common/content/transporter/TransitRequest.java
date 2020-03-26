@@ -1,11 +1,12 @@
 package mekanism.common.content.transporter;
 
+import java.util.Map;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
+import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
@@ -13,14 +14,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class TransitRequest {
 
+    private final TransitResponse EMPTY_RESPONSE = new TransitResponse();
+
     /**
-     * Complicated map- associates item types with both total available item count and slot IDs and available item amounts for each slot.
+     * Maps item types to respective inventory slot data.
      */
-    private Map<HashedItem, Pair<Integer, Int2IntMap>> itemMap = new Object2ObjectOpenHashMap<>();
+    private Map<HashedItem, SlotData> itemMap = new Object2ObjectOpenHashMap<>();
 
     public static TransitRequest getFromTransport(TransporterStack stack) {
         return getFromStack(stack.itemStack);
@@ -75,7 +77,7 @@ public class TransitRequest {
         return ret;
     }
 
-    public Map<HashedItem, Pair<Integer, Int2IntMap>> getItemMap() {
+    public Map<HashedItem, SlotData> getItemMap() {
         return itemMap;
     }
 
@@ -85,17 +87,8 @@ public class TransitRequest {
 
     public void addItem(ItemStack stack, int slot) {
         HashedItem hashed = new HashedItem(stack);
-        if (itemMap.containsKey(hashed)) {
-            Pair<Integer, Int2IntMap> itemInfo = itemMap.get(hashed);
-            int count = itemInfo.getLeft() + stack.getCount();
-            Int2IntMap slotMap = itemInfo.getRight();
-            slotMap.put(slot, stack.getCount());
-            itemMap.put(hashed, Pair.of(count, slotMap));
-        } else {
-            Int2IntMap slotMap = new Int2IntOpenHashMap();
-            slotMap.put(slot, stack.getCount());
-            itemMap.put(hashed, Pair.of(stack.getCount(), slotMap));
-        }
+        itemMap.putIfAbsent(hashed, new SlotData(hashed));
+        itemMap.get(hashed).addSlot(slot, stack);
     }
 
     public ItemStack getSingleStack() {
@@ -106,36 +99,32 @@ public class TransitRequest {
         return itemMap.keySet().stream().anyMatch(item -> InventoryUtils.areItemsStackable(stack, item.getStack()));
     }
 
+    public TransitResponse createResponse(ItemStack toSend, SlotData slotData) {
+        return new TransitResponse(toSend, slotData);
+    }
+
+    public TransitResponse getEmptyResponse() {
+        return EMPTY_RESPONSE;
+    }
+
     /**
      * A TransitResponse contains information regarding the partial ItemStacks which were allowed entry into a destination inventory. Note that a TransitResponse should
      * only contain a single item type, although it may be spread out across multiple slots.
      *
      * @author aidancbrady
      */
-    public static class TransitResponse {
+    public class TransitResponse {
 
-        public static final TransitResponse EMPTY = new TransitResponse();
-
-        /** slot ID to item count map - this details how many items we will be pulling from each slot */
-        private Int2IntMap idMap = new Int2IntOpenHashMap();
         private ItemStack toSend = ItemStack.EMPTY;
+
+        private SlotData slotData;
 
         private TransitResponse() {
         }
 
-        public TransitResponse(ItemStack i, Int2IntMap slots) {
-            toSend = i;
-
-            // generate our ID/ItemStack map based on the amount of items we're sending
-            int amount = getSendingAmount();
-            for (Int2IntMap.Entry entry : slots.int2IntEntrySet()) {
-                int toUse = Math.min(amount, entry.getIntValue());
-                idMap.put(entry.getIntKey(), toUse);
-                amount -= toUse;
-                if (amount == 0) {
-                    break;
-                }
-            }
+        public TransitResponse(ItemStack toSend, SlotData slotData) {
+            this.toSend = toSend;
+            this.slotData = slotData;
         }
 
         public ItemStack getStack() {
@@ -146,16 +135,72 @@ public class TransitRequest {
             return toSend.getCount();
         }
 
+        public void use(int slot, int amount) {
+            slotData.use(slot, amount);
+            if (slotData.getTotalCount() == 0) {
+                itemMap.remove(slotData.itemType);
+            }
+        }
+
         public boolean isEmpty() {
-            return this == EMPTY || idMap.isEmpty() || toSend.isEmpty();
+            return toSend.isEmpty() || slotData.getTotalCount() == 0;
         }
 
         public ItemStack getRejected(ItemStack orig) {
             return StackUtils.size(orig, orig.getCount() - getSendingAmount());
         }
 
-        public InvStack getInvStack(TileEntity tile, Direction side) {
-            return new InvStack(tile, toSend, idMap, side);
+        public void use(TileEntity tile, Direction side) {
+            // fail fast if the response is empty
+            if (isEmpty()) {
+                return;
+            }
+
+            InvStack stack = new InvStack(tile, toSend, slotData.slotCountMap, side);
+            stack.use(this);
+        }
+    }
+
+    /**
+     * SlotData reflects slot count information for a unique item type within an inventory.
+     * @author aidancbrady
+     *
+     */
+    public static class SlotData {
+        private HashedItem itemType;
+        private int totalCount = 0;
+        private Int2IntMap slotCountMap = new Int2IntOpenHashMap();
+
+        public SlotData(HashedItem itemType) {
+            this.itemType = itemType;
+        }
+
+        public int getTotalCount() {
+            return totalCount;
+        }
+
+        public int getSlotCount(int slot) {
+            return slotCountMap.get(slot);
+        }
+
+        public void addSlot(int slot, ItemStack stack) {
+            if (slotCountMap.containsKey(slot)) {
+                Mekanism.logger.error("Attempted to track an already-tracked slot in a new TransitRequest.");
+                Mekanism.logger.error("Item: " + stack.getDisplayName());
+                return;
+            }
+
+            slotCountMap.put(slot, stack.getCount());
+            totalCount += stack.getCount();
+        }
+
+        public void use(int slot, int amount) {
+            int stored = getSlotCount(slot);
+            totalCount -= amount;
+            slotCountMap.put(slot, stored - amount);
+            if (stored == amount) {
+                slotCountMap.remove(slot);
+            }
         }
     }
 }

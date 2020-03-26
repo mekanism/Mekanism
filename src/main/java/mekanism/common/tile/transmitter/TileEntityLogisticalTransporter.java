@@ -1,11 +1,11 @@
 package mekanism.common.tile.transmitter;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
@@ -143,7 +143,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
                     // If the insert succeeded, remove the inserted count and try again for another 10 ticks
                     if (!response.isEmpty()) {
-                        response.getInvStack(tile, side.getOpposite()).use(response.getSendingAmount());
+                        response.use(tile, side.getOpposite());
                         delay = 10;
                     } else {
                         // Insert failed; increment the backoff and calculate delay. Note that we cap retries

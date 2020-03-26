@@ -3,6 +3,7 @@ package mekanism.common.content.transporter;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import mekanism.common.Mekanism;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
@@ -85,7 +86,7 @@ public final class InvStack {
      *
      * @param amount - the amount of items to remove
      */
-    public void use(int amount) {
+    private void use(int amount, TransitResponse response) {
         IItemHandler handler = InventoryUtils.assertItemHandler("InvStack", tile, side);
         if (handler != null) {
             for (Int2IntMap.Entry entry : itemMap.int2IntEntrySet()) {
@@ -98,6 +99,12 @@ public final class InvStack {
                     Mekanism.logger.warn("Tile: " + tile + " " + tile.getPos());
                 }
                 amount -= toUse;
+
+                // update the SlotData to reflect the new item count
+                // this change will be reflected in the original TransitRequest as well
+                if (response != null) {
+                    response.use(entry.getIntKey(), toUse);
+                }
                 if (amount == 0) {
                     return;
                 }
@@ -105,11 +112,12 @@ public final class InvStack {
         }
     }
 
-    /**
-     * Removes all the items being tracked by this InvStack.
-     */
-    public void use() {
-        use(getStack().getCount());
+    public void use(TransitResponse response) {
+        use(response.getSendingAmount(), response);
+    }
+
+    public void useAll() {
+        use(getStack().getCount(), null);
     }
 
     private static Int2IntMap getMap(int slotID, ItemStack stack) {

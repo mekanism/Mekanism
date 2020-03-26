@@ -107,7 +107,7 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
             //We need it to be inventory slot info
             return;
         }
-        TransitRequest ejectMap = null;
+        TransitRequest ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo);
         Set<Direction> outputs = info.getSidesForData(DataType.OUTPUT);
         for (Direction side : outputs) {
             TileEntity tile = MekanismUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
@@ -115,26 +115,19 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
                 //If the spot is not loaded just skip trying to eject to it
                 continue;
             }
-            if (ejectMap == null) {
-                ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo);
-                if (ejectMap.isEmpty()) {
-                    break;
-                }
+            if (ejectMap.isEmpty()) {
+                break;
             }
-            TransitRequest finalEjectMap = ejectMap;
             TransitResponse response;
             Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()));
             if (capability.isPresent()) {
-                response = capability.get().insert(this.tile, finalEjectMap, outputColor, true, 0);
+                response = capability.get().insert(this.tile, ejectMap, outputColor, true, 0);
             } else {
-                response = InventoryUtils.putStackInInventory(tile, finalEjectMap, side, false);
+                response = InventoryUtils.putStackInInventory(tile, ejectMap, side, false);
             }
             if (!response.isEmpty()) {
-                response.getInvStack(this.tile, side).use();
-                //Set map to null so next loop recalculates the eject map so that all sides get a chance to be ejected to
-                // assuming that there is still any left
-                //TODO: Eventually make some way to just directly update the TransitRequest with remaining parts
-                ejectMap = null;
+                // use the items returned by the TransitResponse; will be visible next loop
+                response.use(this.tile, side);
             }
         }
         tickDelay = 10;

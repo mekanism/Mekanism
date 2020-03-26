@@ -1,9 +1,9 @@
 package mekanism.common.registries;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import java.util.EnumSet;
 import java.util.function.Supplier;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import mekanism.api.Pos3D;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
@@ -374,6 +374,7 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .with(new AttributeStateFacing(BlockStateHelper.facingProperty))
           .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeRedstone.class, AttributeComparator.class)
+          .withCustomShape(BlockShapes.QUANTUM_ENTANGLOPORTER)
           .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, (TileEntityQuantumEntangloporter) tile)))
           .build();
     // Logistical Sorter

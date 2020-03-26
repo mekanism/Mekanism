@@ -1,9 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
@@ -15,15 +11,19 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -288,7 +288,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, getOppositeDirection(), false);
                 }
                 if (!response.isEmpty()) {
-                    response.getInvStack(ejectTile, getOppositeDirection()).use();
+                    response.use(ejectTile, getOppositeDirection());
                 }
                 delayTicks = 10;
             }
@@ -407,7 +407,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (doPull && getPullInv() != null) {
             InvStack stack = InventoryUtils.takeDefinedItem(getPullInv(), Direction.UP, filter.replaceStack.copy(), 1, 1);
             if (stack != null) {
-                stack.use();
+                stack.useAll();
                 return StackUtils.size(filter.replaceStack, 1);
             }
         }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
@@ -23,7 +24,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class TransporterStack {
 
@@ -167,7 +167,7 @@ public class TransporterStack {
     public TransitResponse recalculatePath(TransitRequest request, ILogisticalTransporter transporter, int min) {
         Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min);
         if (newPath == null) {
-            return TransitResponse.EMPTY;
+            return request.getEmptyResponse();
         }
         idleDir = null;
         setPath(newPath.getPath(), Path.DEST);
@@ -178,7 +178,7 @@ public class TransporterStack {
     public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, int min) {
         Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min);
         if (newPath == null) {
-            return TransitResponse.EMPTY;
+            return request.getEmptyResponse();
         }
         idleDir = null;
         setPath(newPath.getPath(), Path.DEST);

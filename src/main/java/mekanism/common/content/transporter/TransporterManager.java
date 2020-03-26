@@ -1,19 +1,19 @@
 package mekanism.common.content.transporter;
 
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.content.transporter.TransitRequest.SlotData;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.util.CapabilityUtils;
@@ -26,7 +26,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class TransporterManager {
 
@@ -157,7 +156,7 @@ public class TransporterManager {
                 Direction tileSide = config.getOrientation();
                 EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(tileSide, side.getOpposite()));
                 if (configColor != null && configColor != color) {
-                    return TransitResponse.EMPTY;
+                    return request.getEmptyResponse();
                 }
             }
         }
@@ -167,7 +166,7 @@ public class TransporterManager {
         Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
         if (!capability.isPresent()) {
             Mekanism.logger.error("Failed to predict insert; not an IItemHandler: {}", tile);
-            return TransitResponse.EMPTY;
+            return request.getEmptyResponse();
         }
         IItemHandler handler = capability.get();
 
@@ -190,7 +189,7 @@ public class TransporterManager {
                 if (stack != null && stack.getPathType() != Path.NONE) {
                     if (simulateInsert(handler, inventoryInfo, stack.itemStack, stack.itemStack.getCount()) > 0) {
                         // Failed to successfully insert this in-flight item; there's no room for anyone else
-                        return TransitResponse.EMPTY;
+                        return request.getEmptyResponse();
                     }
                 }
             }
@@ -199,10 +198,10 @@ public class TransporterManager {
         // Now for each of the items in the request, simulate the insert, using the state from all the in-flight
         // items to ensure we have an accurate model of what will happen in future. We try each stack in the
         // request; it might be possible to not send the first item, but the second could work, etc.
-        for (Entry<HashedItem, Pair<Integer, Int2IntMap>> requestEntry : request.getItemMap().entrySet()) {
+        for (Entry<HashedItem, SlotData> requestEntry : request.getItemMap().entrySet()) {
             // Create a sending ItemStack with the hashed item type and total item count within the request
             ItemStack stack = requestEntry.getKey().getStack();
-            int numToSend = requestEntry.getValue().getLeft();
+            int numToSend = requestEntry.getValue().getTotalCount();
             //Directly pass the stack AND the actual amount we want, so that it does not need to copy the stack if there is no room
             int numLeftOver = simulateInsert(handler, inventoryInfo, stack, numToSend);
 
@@ -212,9 +211,9 @@ public class TransporterManager {
             }
 
             // Otherwise, construct the appropriately size stack to send and return that
-            return new TransitResponse(StackUtils.size(stack, numToSend - numLeftOver), requestEntry.getValue().getRight());
+            return request.createResponse(StackUtils.size(stack, numToSend - numLeftOver), requestEntry.getValue());
         }
-        return TransitResponse.EMPTY;
+        return request.getEmptyResponse();
     }
 
     private static class InventoryInfo {
