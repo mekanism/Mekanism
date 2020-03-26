@@ -294,8 +294,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     public FloatingLong timesEqual(FloatingLong toMultiply) {
         //(a+b)*(c+d) where numbers represent decimal, numbers represent value
-        if (multiplyLongsWillOverFlow(value, toMultiply.value))
+        if (multiplyLongsWillOverFlow(value, toMultiply.value)) {
             return MAX_VALUE;
+        }
         FloatingLong temp = create(multiplyLongs(value, toMultiply.value));//a * c
         temp = temp.plusEqual(multiplyLongAndDecimal(value, toMultiply.decimal));//a * d
         temp = temp.plusEqual(multiplyLongAndDecimal(toMultiply.value, decimal));//b * c
@@ -322,7 +323,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         }
         BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
         long value = divide.longValue();
-        short decimal = parseDecimal(divide.toString());
+        short decimal = parseDecimal(divide.toPlainString());
         return setAndClampValues(value, decimal);
     }
 
@@ -780,7 +781,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * Internal helper to determine if the result of unsigned long multiplication will overflow.
      */
     private static boolean multiplyLongsWillOverFlow(long a, long b) {
-        return (a != 0 && b != 0 && Long.compareUnsigned(b, Long.divideUnsigned(-1, a)) > 0 );
+        return (a != 0 && b != 0 && Long.compareUnsigned(b, Long.divideUnsigned(-1, a)) > 0);
     }
 
     /**
@@ -792,7 +793,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         } else if (multiplyLongsWillOverFlow(a, b)) {
             return -1;
         }
-        return a*b;
+        return a * b;
     }
 
     /**

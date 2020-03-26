@@ -1,6 +1,7 @@
 package mekanism.api.math;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.quicktheories.WithQuickTheories;
@@ -21,16 +22,20 @@ class FloatingLongPropertyTest implements WithQuickTheories {
         return FloatingLong.parseFloatingLong(value.toPlainString());
     }
 
-    private static FloatingLong multiplyViaBigDecimal(FloatingLong a, FloatingLong b) {
-        return clampFromBigDecimal(new BigDecimal(a.toString()).multiply(new BigDecimal(b.toString())));
-    }
-
     private static FloatingLong addViaBigDecimal(FloatingLong a, FloatingLong b) {
         return clampFromBigDecimal(new BigDecimal(a.toString()).add(new BigDecimal(b.toString())));
     }
 
     private static FloatingLong subtractViaBigDecimal(FloatingLong a, FloatingLong b) {
         return clampFromBigDecimal(new BigDecimal(a.toString()).subtract(new BigDecimal(b.toString())));
+    }
+
+    private static FloatingLong multiplyViaBigDecimal(FloatingLong a, FloatingLong b) {
+        return clampFromBigDecimal(new BigDecimal(a.toString()).multiply(new BigDecimal(b.toString())));
+    }
+
+    private static FloatingLong divideViaBigDecimal(FloatingLong a, FloatingLong b) {
+        return clampFromBigDecimal(new BigDecimal(a.toString()).divide(new BigDecimal(b.toString()), 4, RoundingMode.HALF_EVEN));
     }
 
     private TheoryBuilder4<Long, Integer, Long, Integer> theoryForAllPairs() {
@@ -50,16 +55,6 @@ class FloatingLongPropertyTest implements WithQuickTheories {
     }
 
     @Test
-    @DisplayName("Test multiplying and clamping at max value for overflow")
-    void testMultiplying() {
-        theoryForAllPairs().check((v1, d1, v2, d2) -> {
-            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
-            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
-            return a.multiply(b).equals(multiplyViaBigDecimal(a, b));
-        });
-    }
-
-    @Test
     @DisplayName("Test addition and clamping at max value for overflow")
     void testAddition() {
         theoryForAllPairs().check((v1, d1, v2, d2) -> {
@@ -76,6 +71,26 @@ class FloatingLongPropertyTest implements WithQuickTheories {
             FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
             FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
             return a.subtract(b).equals(subtractViaBigDecimal(a, b));
+        });
+    }
+
+    @Test
+    @DisplayName("Test multiplying and clamping at max value for overflow")
+    void testMultiplying() {
+        theoryForAllPairs().check((v1, d1, v2, d2) -> {
+            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
+            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
+            return a.multiply(b).equals(multiplyViaBigDecimal(a, b));
+        });
+    }
+
+    @Test
+    @DisplayName("Test dividing and clamping at max value for overflow")
+    void testDivision() {
+        theoryForAllPairs().check((v1, d1, v2, d2) -> {
+            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
+            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
+            return b.isZero() || a.divide(b).equals(divideViaBigDecimal(a, b));
         });
     }
 }
