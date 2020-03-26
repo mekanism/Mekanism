@@ -793,11 +793,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             return -1;
         }
         return a*b;
-        /*long result = a * b;
-        if (a == result / b) {
-            return result;
-        }
-        return -1;*/
     }
 
     /**
