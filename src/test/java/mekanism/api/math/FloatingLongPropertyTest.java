@@ -9,8 +9,6 @@ import org.quicktheories.dsl.TheoryBuilder4;
 @DisplayName("Test the implementation of FloatingLong by testing Properties of FloatingLong")
 class FloatingLongPropertyTest implements WithQuickTheories {
 
-    //TODO: Add tests for division
-
     private static final BigDecimal maxFloatingLong = new BigDecimal(FloatingLong.MAX_VALUE.toString());
 
     //If the value goes past the max value for floating longs this instead clamps it at the max floating long value
@@ -36,9 +34,10 @@ class FloatingLongPropertyTest implements WithQuickTheories {
     }
 
     private TheoryBuilder4<Long, Integer, Long, Integer> theoryForAllPairs() {
-        return qt().forAll(longs().between(0, Long.MAX_VALUE),
+        return qt().forAll(
+              longs().all(),
               integers().between(0, 9_999),
-              longs().between(0, Long.MAX_VALUE),
+              longs().all(),
               integers().between(0, 9_999)
         );
     }
