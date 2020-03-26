@@ -66,7 +66,7 @@ class FloatingLongTest {
     void testBasicDivision() {
         FloatingLong a = FloatingLong.create(6, (short) 1000);
         FloatingLong b = FloatingLong.create(3, (short) 1000);
-        //Assertions.assertEquals(FloatingLong.create((double)1.9677), a.divide(b));
+        Assertions.assertEquals(FloatingLong.create((double)1.9677), a.divide(b));
     }
 
     @Test
