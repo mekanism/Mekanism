@@ -11,7 +11,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.network.PacketBuffer;
 
 /**
- * A class representing a positive number with an internal value defined by a long, and a floating point number stored in a short
+ * A class representing a positive number with an internal value defined by an unsigned long, and a floating point number stored in a short
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -48,7 +48,11 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     /**
      * A constant holding the maximum value for a {@link FloatingLong}
      */
-    public static final FloatingLong MAX_VALUE = createConst(Long.MAX_VALUE, MAX_DECIMAL);
+    public static final FloatingLong MAX_VALUE = createConst(-1, MAX_DECIMAL);
+    /**
+     * A constant holding the maximum value for a {@link FloatingLong} represented as a double
+     */
+    private static final double MAX_AS_DOUBLE = Double.parseDouble(MAX_VALUE.toString());
 
     /**
      * Creates a mutable {@link FloatingLong} from a given primitive double.
@@ -57,13 +61,15 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      *
      * @return A mutable {@link FloatingLong} from a given primitive double.
      *
-     * @apiNote If this method is called with negative numbers it will be clamped to zero. If this is called with a value larger than max long, it will instead be clamped
-     * to {@link #MAX_VALUE}.
+     * @apiNote If this method is called with negative numbers it will be clamped to {@link #ZERO}. If this is called with a value larger than {@link #MAX_VALUE}, it will
+     * instead be clamped to {@link #MAX_VALUE}.
      * @implNote Does not round double value, and instead just drops any trailing digits
      */
     public static FloatingLong create(double value) {
-        if (value > Long.MAX_VALUE) {
+        if (value > MAX_AS_DOUBLE) {
             return MAX_VALUE;
+        } else if (value < 0) {
+            return ZERO;
         }
         long lValue = (long) value;
         short decimal = parseDecimal(df.format(value));
@@ -71,27 +77,25 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Creates a mutable {@link FloatingLong} from a given primitive long.
+     * Creates a mutable {@link FloatingLong} from a given primitive unsigned long.
      *
      * @param value The value to use for the whole number portion of the {@link FloatingLong}
      *
      * @return A mutable {@link FloatingLong} from a given primitive long.
-     *
-     * @apiNote If this method is called with negative numbers it will be clamped to zero.
      */
     public static FloatingLong create(long value) {
         return create(value, (short) 0);
     }
 
     /**
-     * Creates a mutable {@link FloatingLong} from a given primitive long.
+     * Creates a mutable {@link FloatingLong} from a given primitive unsigned long, and decimal represented as a short.
      *
      * @param value   The value to use for the whole number portion of the {@link FloatingLong}
      * @param decimal The short value to use for the decimal portion of the {@link FloatingLong}
      *
      * @return A mutable {@link FloatingLong} from a given primitive long, and short.
      *
-     * @apiNote If this method is called with negative numbers they will be clamped to zero.
+     * @apiNote If this method is called with negative numbers for {@code decimal} it will be clamped to zero.
      */
     public static FloatingLong create(long value, short decimal) {
         return new FloatingLong(value, decimal, false);
@@ -104,13 +108,15 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      *
      * @return A constant {@link FloatingLong} from a given primitive double.
      *
-     * @apiNote If this method is called with negative numbers it will be clamped to zero. If this is called with a value larger than max long, it will instead be clamped
-     * to {@link #MAX_VALUE}.
+     * @apiNote If this method is called with negative numbers it will be clamped to {@link #ZERO}. If this is called with a value larger than {@link #MAX_VALUE}, it will
+     * instead be clamped to {@link #MAX_VALUE}.
      * @implNote Does not round double value, and instead just drops any trailing digits
      */
     public static FloatingLong createConst(double value) {
-        if (value > Long.MAX_VALUE) {
+        if (value > MAX_AS_DOUBLE) {
             return MAX_VALUE;
+        } else if (value < 0) {
+            return ZERO;
         }
         long lValue = (long) value;
         short decimal = parseDecimal(df.format(value));
@@ -118,27 +124,25 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Creates a constant {@link FloatingLong} from a given primitive long.
+     * Creates a constant {@link FloatingLong} from a given primitive unsigned long.
      *
      * @param value The value to use for the whole number portion of the {@link FloatingLong}
      *
      * @return A constant {@link FloatingLong} from a given primitive long.
-     *
-     * @apiNote If this method is called with negative numbers it will be clamped to zero.
      */
     public static FloatingLong createConst(long value) {
         return createConst(value, (short) 0);
     }
 
     /**
-     * Creates a constant {@link FloatingLong} from a given primitive long.
+     * Creates a constant {@link FloatingLong} from a given primitive unsigned long, and decimal represented as a short.
      *
      * @param value   The value to use for the whole number portion of the {@link FloatingLong}
      * @param decimal The short value to use for the decimal portion of the {@link FloatingLong}
      *
      * @return A constant {@link FloatingLong} from a given primitive long, and short.
      *
-     * @apiNote If this method is called with negative numbers they will be clamped to zero.
+     * @apiNote If this method is called with negative numbers for {@code decimal} it will be clamped to zero.
      */
     public static FloatingLong createConst(long value, short decimal) {
         return new FloatingLong(value, decimal, true);
@@ -166,7 +170,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * @return the long representing the whole number value of this {@link FloatingLong}
+     * @return the unsigned long representing the whole number value of this {@link FloatingLong}
      */
     public long getValue() {
         return value;
@@ -190,10 +194,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return If this {@link FloatingLong} is constant, it returns a new object otherwise it returns this {@link FloatingLong} after updating the internal values.
      */
     private FloatingLong setAndClampValues(long value, short decimal) {
-        if (value < 0) {
-            //TODO: Remove this clamp for value and allow it to be an unsigned long, and convert string parsing and creation
-            value = 0;
-        }
         if (decimal < 0) {
             decimal = 0;
         } else if (decimal > MAX_DECIMAL) {
@@ -213,7 +213,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return {@code true} if this {@link FloatingLong} should be treated as zero, {@code false} otherwise.
      */
     public boolean isZero() {
-        return value <= 0 && decimal <= 0;
+        return value == 0 && decimal <= 0;
     }
 
     /**
@@ -238,17 +238,18 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public FloatingLong plusEqual(FloatingLong toAdd) {
         long newValue;
         short newDecimal;
-        try {
-            newValue = Math.addExact(value, toAdd.value);
-            newDecimal = (short) (decimal + toAdd.decimal);
-            if (newDecimal > MAX_DECIMAL) {
+        if ((value < 0 && toAdd.value < 0) || ((value < 0 || toAdd.value < 0) && (value + toAdd.value >= 0))) {
+            return setAndClampValues(-1, MAX_DECIMAL);
+        }
+        newValue = value + toAdd.value;
+        newDecimal = (short) (decimal + toAdd.decimal);
+        if (newDecimal > MAX_DECIMAL) {
+            if (newValue == -1) {
+                newDecimal = MAX_DECIMAL;
+            } else {
                 newDecimal -= SINGLE_UNIT;
-                newValue = Math.addExact(newValue, 1);
+                newValue++;
             }
-        } catch (ArithmeticException e) {
-            //Catch if our long value would overflow and instead cap it
-            newValue = MAX_VALUE.value;
-            newDecimal = MAX_VALUE.decimal;
         }
         return setAndClampValues(newValue, newDecimal);
     }
@@ -293,6 +294,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     public FloatingLong timesEqual(FloatingLong toMultiply) {
         //(a+b)*(c+d) where numbers represent decimal, numbers represent value
+        if (multiplyLongsWillOverFlow(value, toMultiply.value)) {
+            return MAX_VALUE;
+        }
         FloatingLong temp = create(multiplyLongs(value, toMultiply.value));//a * c
         temp = temp.plusEqual(multiplyLongAndDecimal(value, toMultiply.decimal));//a * d
         temp = temp.plusEqual(multiplyLongAndDecimal(toMultiply.value, decimal));//b * c
@@ -317,10 +321,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (toDivide.isZero()) {
             throw new ArithmeticException("Division by zero");
         }
-        //TODO: Make a more direct implementation that doesn't go through big decimal
         BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
         long value = divide.longValue();
-        short decimal = parseDecimal(divide.toString());
+        short decimal = parseDecimal(divide.toPlainString());
         return setAndClampValues(value, decimal);
     }
 
@@ -337,19 +340,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to add a long primitive to this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
+     * Helper method to add an unsigned long primitive to this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
      * FloatingLong#MAX_VALUE} rather than overflowing.
      *
-     * @param toAdd The value to add, must be greater than or equal to zero
+     * @param toAdd The value to add represented as an unsigned long.
      *
-     * @return The {@link FloatingLong} representing the value of adding the given long to this {@link FloatingLong}.
-     *
-     * @throws IllegalArgumentException if {@code toAdd} is negative.
+     * @return The {@link FloatingLong} representing the value of adding the given unsigned long to this {@link FloatingLong}.
      */
     public FloatingLong add(long toAdd) {
-        if (toAdd < 0) {
-            throw new IllegalArgumentException("Addition called with negative number, this is not supported. FloatingLongs are always positive.");
-        }
         return add(FloatingLong.create(toAdd));
     }
 
@@ -383,19 +381,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to subtract a long primitive from this {@link FloatingLong} and returns the result in a new object. This gets clamped at the lower bound of {@link
-     * FloatingLong#ZERO} rather than becoming negative.
+     * Helper method to subtract an unsigned long primitive from this {@link FloatingLong} and returns the result in a new object. This gets clamped at the lower bound of
+     * {@link FloatingLong#ZERO} rather than becoming negative.
      *
-     * @param toSubtract The value to subtract, must be greater than or equal to zero.
+     * @param toSubtract The value to subtract represented as an unsigned long.
      *
-     * @return The {@link FloatingLong} representing the value of subtracting the given long from this {@link FloatingLong}.
-     *
-     * @throws IllegalArgumentException if {@code toSubtract} is negative.
+     * @return The {@link FloatingLong} representing the value of subtracting the given unsigned long from this {@link FloatingLong}.
      */
     public FloatingLong subtract(long toSubtract) {
-        if (toSubtract < 0) {
-            throw new IllegalArgumentException("Subtraction called with negative number, this is not supported. FloatingLongs are always positive.");
-        }
         return subtract(FloatingLong.create(toSubtract));
     }
 
@@ -429,19 +422,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to multiple a long primitive with this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Helper method to multiple an unsigned long primitive with this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
-     * @param toMultiply The value to multiply by, must be greater than or equal to zero.
+     * @param toMultiply The value to multiply by represented as an unsigned long.
      *
-     * @return The {@link FloatingLong} representing the value of multiplying the given long with this {@link FloatingLong}.
-     *
-     * @throws IllegalArgumentException if {@code toMultiply} is negative.
+     * @return The {@link FloatingLong} representing the value of multiplying the given unsigned long with this {@link FloatingLong}.
      */
     public FloatingLong multiply(long toMultiply) {
-        if (toMultiply < 0) {
-            throw new IllegalArgumentException("Multiply called with negative number, this is not supported. FloatingLongs are always positive.");
-        }
         return multiply(FloatingLong.create(toMultiply));
     }
 
@@ -477,20 +465,16 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to divide this {@link FloatingLong} by a long primitive and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Helper method to divide this {@link FloatingLong} by an unsigned long primitive and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
-     * @param toDivide The value} to divide by, must be greater than zero.
+     * @param toDivide The value} to divide by represented as an unsigned long. Must not be zero
      *
-     * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given long.
+     * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given unsigned long.
      *
-     * @throws ArithmeticException      if {@code toDivide} is zero.
-     * @throws IllegalArgumentException if {@code toDivide} is negative.
+     * @throws ArithmeticException if {@code toDivide} is zero.
      */
     public FloatingLong divide(long toDivide) {
-        if (toDivide < 0) {
-            throw new IllegalArgumentException("Division called with negative number, this is not supported. FloatingLongs are always positive.");
-        }
         return divide(FloatingLong.create(toDivide));
     }
 
@@ -578,29 +562,26 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * less than zero if smaller than toCompare
      * <br>
      * greater than zero if bigger than toCompare
-     * @implNote {@code 2} or {@code -2} if the overall value is different
+     * @implNote {@code 1} or {@code -1} if the overall value is different
      * <br>
-     * {@code 1} or {@code -1} if the value is the same but the decimal is different
+     * {@code 2} or {@code -2} if the value is the same but the decimal is different
      */
     @Override
     public int compareTo(FloatingLong toCompare) {
-        if (value < toCompare.value) {
-            //If our primary value is smaller than toCompare's value we are always less than
-            return -2;
-        } else if (value > toCompare.value) {
-            //If our primary value is bigger than toCompare's value we are always greater than
-            return 2;
+        int valueCompare = Long.compareUnsigned(value, toCompare.value);
+        if (valueCompare == 0) {
+            //Primary value is equal, check the decimal
+            if (decimal < toCompare.decimal) {
+                //If our primary value is equal, but our decimal smaller than toCompare's we are less than
+                return -2;
+            } else if (decimal > toCompare.decimal) {
+                //If our primary value is equal, but our decimal bigger than toCompare's we are greater than
+                return 2;
+            }
+            //Else we are equal
+            return 0;
         }
-        //Primary value is equal, check the decimal
-        if (decimal < toCompare.decimal) {
-            //If our primary value is equal, but our decimal smaller than toCompare's we are less than
-            return -1;
-        } else if (decimal > toCompare.decimal) {
-            //If our primary value is equal, but our decimal bigger than toCompare's we are greater than
-            return 1;
-        }
-        //Else we are equal
-        return 0;
+        return valueCompare;
     }
 
     /**
@@ -631,27 +612,37 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     @Override
     public int intValue() {
-        return MathUtils.clampToInt(value);
-    }
-
-    @Override
-    public long longValue() {
-        return value;
+        return MathUtils.clampUnsignedToInt(value);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @implNote We clamp the int portion to MAX_INT rather than having it overflow into the negatives.
+     * @implNote We clamp the value to MAX_LONG rather than having it overflow into the negatives and being unsigned.
+     */
+    @Override
+    public long longValue() {
+        return MathUtils.clampUnsignedToLong(value);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Converts the unsigned long portion to a float in the same way Guava's UnsignedLong does, and then adds our decimal portion
      */
     @Override
     public float floatValue() {
-        return intValue() + decimal / (float) SINGLE_UNIT;
+        return MathUtils.unsignedLongToFloat(value) + decimal / (float) SINGLE_UNIT;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * Converts the unsigned long portion to a double in the same way Guava's UnsignedLong does, and then adds our decimal portion
+     */
     @Override
     public double doubleValue() {
-        return longValue() + decimal / (double) SINGLE_UNIT;
+        return MathUtils.unsignedLongToDouble(value) + decimal / (double) SINGLE_UNIT;
     }
 
     /**
@@ -677,12 +668,12 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     public String toString(int decimalPlaces) {
         if (decimal == 0) {
-            return Long.toString(value);
+            return Long.toUnsignedString(value);
         }
         if (decimalPlaces > DECIMAL_DIGITS) {
             decimalPlaces = DECIMAL_DIGITS;
         }
-        String valueAsString = value + ".";
+        String valueAsString = Long.toUnsignedString(value) + ".";
         String decimalAsString = Short.toString(decimal);
         int numberDigits = decimalAsString.length();
         if (numberDigits > decimalPlaces) {
@@ -724,9 +715,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         long value;
         int index = string.indexOf(".");
         if (index == -1) {
-            value = Long.parseLong(string);
+            value = Long.parseUnsignedLong(string);
         } else {
-            value = Long.parseLong(string.substring(0, index));
+            value = Long.parseUnsignedLong(string.substring(0, index));
         }
         short decimal = parseDecimal(string, index);
         return isConstant ? createConst(value, decimal) : create(value, decimal);
@@ -761,7 +752,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (index == -1) {
             return 0;
         }
-        boolean needsRounding = false;
         String decimalAsString = string.substring(index + 1);
         int numberDigits = decimalAsString.length();
         if (numberDigits < DECIMAL_DIGITS) {
@@ -769,8 +759,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             decimalAsString += getZeros(DECIMAL_DIGITS - numberDigits);
         } else if (numberDigits > DECIMAL_DIGITS) {
             //We need to trim it to make sure it will be in range of a short
-            //First check if the number afterwards would cause this to need to round or not
-            needsRounding = Short.parseShort(String.valueOf(decimalAsString.charAt(DECIMAL_DIGITS))) >= 5;
             decimalAsString = decimalAsString.substring(0, DECIMAL_DIGITS);
         }
         return Short.parseShort(decimalAsString);
@@ -790,15 +778,22 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
+     * Internal helper to determine if the result of unsigned long multiplication will overflow.
+     */
+    private static boolean multiplyLongsWillOverFlow(long a, long b) {
+        return (a != 0 && b != 0 && Long.compareUnsigned(b, Long.divideUnsigned(-1, a)) > 0);
+    }
+
+    /**
      * Internal helper to multiply two longs and clamp if they overflow.
      */
     private static long multiplyLongs(long a, long b) {
-        try {
-            //multiplyExact will throw an exception if we overflow
-            return Math.multiplyExact(a, b);
-        } catch (ArithmeticException e) {
-            return Long.MAX_VALUE;
+        if (a == 0 || b == 0) {
+            return 0;
+        } else if (multiplyLongsWillOverFlow(a, b)) {
+            return -1;
         }
+        return a * b;
     }
 
     /**
@@ -806,10 +801,10 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     private static FloatingLong multiplyLongAndDecimal(long value, short decimal) {
         //This can't overflow!
-        if (value > Long.MAX_VALUE / SINGLE_UNIT) {
-            return create((value / SINGLE_UNIT) * decimal, (short) (value % SINGLE_UNIT * decimal));
+        if (Long.compareUnsigned(value, Long.divideUnsigned(-1, SINGLE_UNIT)) > 0) {
+            return create(Long.divideUnsigned(value, SINGLE_UNIT) * decimal, (short) (value % SINGLE_UNIT * decimal));
         }
-        return create(value * decimal / SINGLE_UNIT, (short) (value * decimal % SINGLE_UNIT));
+        return create(Long.divideUnsigned(value * decimal, SINGLE_UNIT), (short) (value * decimal % SINGLE_UNIT));
     }
 
     /**

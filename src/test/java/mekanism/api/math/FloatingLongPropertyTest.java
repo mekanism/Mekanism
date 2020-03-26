@@ -1,6 +1,7 @@
 package mekanism.api.math;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.quicktheories.WithQuickTheories;
@@ -8,8 +9,6 @@ import org.quicktheories.dsl.TheoryBuilder4;
 
 @DisplayName("Test the implementation of FloatingLong by testing Properties of FloatingLong")
 class FloatingLongPropertyTest implements WithQuickTheories {
-
-    //TODO: Add tests for division
 
     private static final BigDecimal maxFloatingLong = new BigDecimal(FloatingLong.MAX_VALUE.toString());
 
@@ -23,10 +22,6 @@ class FloatingLongPropertyTest implements WithQuickTheories {
         return FloatingLong.parseFloatingLong(value.toPlainString());
     }
 
-    private static FloatingLong multiplyViaBigDecimal(FloatingLong a, FloatingLong b) {
-        return clampFromBigDecimal(new BigDecimal(a.toString()).multiply(new BigDecimal(b.toString())));
-    }
-
     private static FloatingLong addViaBigDecimal(FloatingLong a, FloatingLong b) {
         return clampFromBigDecimal(new BigDecimal(a.toString()).add(new BigDecimal(b.toString())));
     }
@@ -35,10 +30,19 @@ class FloatingLongPropertyTest implements WithQuickTheories {
         return clampFromBigDecimal(new BigDecimal(a.toString()).subtract(new BigDecimal(b.toString())));
     }
 
+    private static FloatingLong multiplyViaBigDecimal(FloatingLong a, FloatingLong b) {
+        return clampFromBigDecimal(new BigDecimal(a.toString()).multiply(new BigDecimal(b.toString())));
+    }
+
+    private static FloatingLong divideViaBigDecimal(FloatingLong a, FloatingLong b) {
+        return clampFromBigDecimal(new BigDecimal(a.toString()).divide(new BigDecimal(b.toString()), 4, RoundingMode.HALF_EVEN));
+    }
+
     private TheoryBuilder4<Long, Integer, Long, Integer> theoryForAllPairs() {
-        return qt().forAll(longs().between(0, Long.MAX_VALUE),
+        return qt().forAll(
+              longs().all(),
               integers().between(0, 9_999),
-              longs().between(0, Long.MAX_VALUE),
+              longs().all(),
               integers().between(0, 9_999)
         );
     }
@@ -48,16 +52,6 @@ class FloatingLongPropertyTest implements WithQuickTheories {
     void testFromDouble() {
         qt().forAll(doubles().between(0, Double.MAX_VALUE))
         .check(value -> FloatingLong.createConst(value).equals(clampFromBigDecimal(new BigDecimal(Double.toString(value)))));
-    }
-
-    @Test
-    @DisplayName("Test multiplying and clamping at max value for overflow")
-    void testMultiplying() {
-        theoryForAllPairs().check((v1, d1, v2, d2) -> {
-            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
-            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
-            return a.multiply(b).equals(multiplyViaBigDecimal(a, b));
-        });
     }
 
     @Test
@@ -77,6 +71,26 @@ class FloatingLongPropertyTest implements WithQuickTheories {
             FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
             FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
             return a.subtract(b).equals(subtractViaBigDecimal(a, b));
+        });
+    }
+
+    @Test
+    @DisplayName("Test multiplying and clamping at max value for overflow")
+    void testMultiplying() {
+        theoryForAllPairs().check((v1, d1, v2, d2) -> {
+            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
+            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
+            return a.multiply(b).equals(multiplyViaBigDecimal(a, b));
+        });
+    }
+
+    @Test
+    @DisplayName("Test dividing and clamping at max value for overflow")
+    void testDivision() {
+        theoryForAllPairs().check((v1, d1, v2, d2) -> {
+            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
+            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
+            return b.isZero() || a.divide(b).equals(divideViaBigDecimal(a, b));
         });
     }
 }
