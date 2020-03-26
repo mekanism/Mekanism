@@ -17,6 +17,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -67,7 +68,12 @@ public class ItemNetworkReader extends ItemEnergized {
                     player.sendMessage(MekanismLang.NETWORK_READER_NEEDED.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkNeeded()));
                     player.sendMessage(MekanismLang.NETWORK_READER_BUFFER.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkBuffer()));
                     player.sendMessage(MekanismLang.NETWORK_READER_THROUGHPUT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkFlow()));
-                    player.sendMessage(MekanismLang.NETWORK_READER_CAPACITY.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkCapacity()));
+                    DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
+                    if (transmitterNetwork instanceof EnergyNetwork) {
+                        player.sendMessage(MekanismLang.NETWORK_READER_CAPACITY.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, ((EnergyNetwork) transmitterNetwork).getCapacityAsFloatingLong()));
+                    } else {
+                        player.sendMessage(MekanismLang.NETWORK_READER_CAPACITY.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkCapacity()));
+                    }
                     CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, opposite).ifPresent(transfer ->
                           player.sendMessage(MekanismLang.NETWORK_READER_ABOVE_AMBIENT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transfer.getTemp())));
                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));

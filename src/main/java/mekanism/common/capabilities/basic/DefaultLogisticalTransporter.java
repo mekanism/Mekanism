@@ -118,7 +118,7 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public double getTransmitterNetworkCapacity() {
+    public int getTransmitterNetworkCapacity() {
         return 0;
     }
 

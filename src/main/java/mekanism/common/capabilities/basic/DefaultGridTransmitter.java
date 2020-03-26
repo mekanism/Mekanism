@@ -62,7 +62,7 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, B
     }
 
     @Override
-    public double getTransmitterNetworkCapacity() {
+    public int getTransmitterNetworkCapacity() {
         return 0;
     }
 

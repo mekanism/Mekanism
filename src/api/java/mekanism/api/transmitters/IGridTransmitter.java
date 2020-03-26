@@ -39,7 +39,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     ITextComponent getTransmitterNetworkBuffer();
 
-    double getTransmitterNetworkCapacity();
+    int getTransmitterNetworkCapacity();
 
     @Nonnull
     FloatingLong getCapacityAsFloatingLong();
