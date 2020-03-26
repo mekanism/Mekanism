@@ -87,8 +87,7 @@ public class TransitRequest {
 
     public void addItem(ItemStack stack, int slot) {
         HashedItem hashed = new HashedItem(stack);
-        itemMap.putIfAbsent(hashed, new SlotData(hashed));
-        itemMap.get(hashed).addSlot(slot, stack);
+        itemMap.computeIfAbsent(hashed, SlotData::new).addSlot(slot, stack);
     }
 
     public ItemStack getSingleStack() {

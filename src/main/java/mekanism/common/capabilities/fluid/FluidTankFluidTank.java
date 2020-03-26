@@ -54,12 +54,10 @@ public class FluidTankFluidTank extends BasicFluidTank {
         }
         if (!remainder.isEmpty()) {
             //If we have any left over check if we can send it to the tank that is above
-            if (!tile.getActive()) {
-                TileEntityFluidTank tileAbove = MekanismUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getWorld(), this.tile.getPos().up());
-                if (tileAbove != null) {
-                    //Note: We do external so that it is not limited by the internal rate limits
-                    remainder = tileAbove.fluidTank.insert(remainder, action, AutomationType.EXTERNAL);
-                }
+            TileEntityFluidTank tileAbove = MekanismUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getWorld(), this.tile.getPos().up());
+            if (tileAbove != null) {
+                //Note: We do external so that it is not limited by the internal rate limits
+                remainder = tileAbove.fluidTank.insert(remainder, action, AutomationType.EXTERNAL);
             }
         }
         return remainder;
