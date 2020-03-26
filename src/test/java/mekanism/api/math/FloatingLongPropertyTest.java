@@ -15,12 +15,12 @@ class FloatingLongPropertyTest implements WithQuickTheories {
 
     //If the value goes past the max value for floating longs this instead clamps it at the max floating long value
     private static FloatingLong clampFromBigDecimal(BigDecimal value) {
-        if (value.compareTo(maxFloatingLong) > 0) {
+        if (value.compareTo(maxFloatingLong) >= 0) {
             return FloatingLong.MAX_VALUE;
-        } else if (value.compareTo(BigDecimal.ZERO) < 0) {
+        } else if (value.compareTo(BigDecimal.ZERO) <= 0) {
             return FloatingLong.ZERO;
         }
-        return FloatingLong.parseFloatingLong(value.toString());
+        return FloatingLong.parseFloatingLong(value.toPlainString());
     }
 
     private static FloatingLong multiplyViaBigDecimal(FloatingLong a, FloatingLong b) {
@@ -41,6 +41,13 @@ class FloatingLongPropertyTest implements WithQuickTheories {
               longs().between(0, Long.MAX_VALUE),
               integers().between(0, 9_999)
         );
+    }
+
+    @Test
+    @DisplayName("Test parsing positive doubles")
+    void testFromDouble() {
+        qt().forAll(doubles().between(0, Double.MAX_VALUE))
+        .check(value -> FloatingLong.createConst(value).equals(clampFromBigDecimal(new BigDecimal(Double.toString(value)))));
     }
 
     @Test

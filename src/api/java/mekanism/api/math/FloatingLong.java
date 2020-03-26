@@ -2,6 +2,9 @@ package mekanism.api.math;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -13,6 +16,12 @@ import net.minecraft.network.PacketBuffer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FloatingLong extends Number implements Comparable<FloatingLong> {
+
+    private static final DecimalFormat df;
+
+    static {
+        df = new DecimalFormat("0.0000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+    }
 
     //TODO: Eventually we should define a way of doing a set of operations all at once, and outputting a new value
     // given that way we can internally do all the calculations using primitives rather than spamming a lot of objects
@@ -48,12 +57,16 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      *
      * @return A mutable {@link FloatingLong} from a given primitive double.
      *
-     * @apiNote If this method is called with negative numbers it will be clamped to zero.
+     * @apiNote If this method is called with negative numbers it will be clamped to zero. If this is called with a value larger than max long, it will instead be clamped
+     * to {@link #MAX_VALUE}.
+     * @implNote Does not round double value, and instead just drops any trailing digits
      */
     public static FloatingLong create(double value) {
-        //TODO: Try to optimize/improve this at the very least it rounds incorrectly, and specify in the docs how it handles the rounding
+        if (value > Long.MAX_VALUE) {
+            return MAX_VALUE;
+        }
         long lValue = (long) value;
-        short decimal = parseDecimal(Double.toString(value));
+        short decimal = parseDecimal(df.format(value));
         return create(lValue, decimal);
     }
 
@@ -91,13 +104,17 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      *
      * @return A constant {@link FloatingLong} from a given primitive double.
      *
-     * @apiNote If this method is called with negative numbers it will be clamped to zero.
+     * @apiNote If this method is called with negative numbers it will be clamped to zero. If this is called with a value larger than max long, it will instead be clamped
+     * to {@link #MAX_VALUE}.
+     * @implNote Does not round double value, and instead just drops any trailing digits
      */
     public static FloatingLong createConst(double value) {
-        //TODO: Try to optimize/improve this at the very least it rounds incorrectly, and specify in the docs how it handles the rounding
+        if (value > Long.MAX_VALUE) {
+            return MAX_VALUE;
+        }
         long lValue = (long) value;
-        short decimal = parseDecimal(Double.toString(value));
-        return create(lValue, decimal);
+        short decimal = parseDecimal(df.format(value));
+        return createConst(lValue, decimal);
     }
 
     /**
@@ -744,6 +761,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (index == -1) {
             return 0;
         }
+        boolean needsRounding = false;
         String decimalAsString = string.substring(index + 1);
         int numberDigits = decimalAsString.length();
         if (numberDigits < DECIMAL_DIGITS) {
@@ -751,6 +769,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             decimalAsString += getZeros(DECIMAL_DIGITS - numberDigits);
         } else if (numberDigits > DECIMAL_DIGITS) {
             //We need to trim it to make sure it will be in range of a short
+            //First check if the number afterwards would cause this to need to round or not
+            needsRounding = Short.parseShort(String.valueOf(decimalAsString.charAt(DECIMAL_DIGITS))) >= 5;
             decimalAsString = decimalAsString.substring(0, DECIMAL_DIGITS);
         }
         return Short.parseShort(decimalAsString);
