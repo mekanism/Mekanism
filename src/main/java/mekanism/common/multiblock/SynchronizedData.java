@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -25,7 +26,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
 
     private int volume;
 
-    public String inventoryID;
+    public UUID inventoryID;
 
     public boolean didTick;
 

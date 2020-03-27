@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
@@ -343,7 +344,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                 }
             }
 
-            List<String> idsFound = new ArrayList<>();
+            List<UUID> idsFound = new ArrayList<>();
             for (Coord4D obj : structureFound.locations) {
                 TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
                 if (tile instanceof TileEntityMultiblock && ((TileEntityMultiblock<?>) tile).cachedID != null) {
@@ -352,17 +353,18 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
             }
 
             MultiblockCache<T> cache = getNewCache();
-            String idToUse = null;
+            MultiblockManager<T> manager = getManager();
+            UUID idToUse = null;
             if (idsFound.isEmpty()) {
-                idToUse = getManager().getUniqueInventoryID();
+                idToUse = manager.getUniqueInventoryID();
             } else {
                 List<ItemStack> rejectedItems = new ArrayList<>();
-                for (String id : idsFound) {
-                    if (getManager().inventories.get(id) != null) {
+                for (UUID id : idsFound) {
+                    if (manager.inventories.get(id) != null) {
                         if (cache == null) {
-                            cache = getManager().pullInventory(pointer.getWorld(), id);
+                            cache = manager.pullInventory(pointer.getWorld(), id);
                         } else {
-                            mergeCaches(rejectedItems, cache, getManager().pullInventory(pointer.getWorld(), id));
+                            mergeCaches(rejectedItems, cache, manager.pullInventory(pointer.getWorld(), id));
                         }
                         idToUse = id;
                     }

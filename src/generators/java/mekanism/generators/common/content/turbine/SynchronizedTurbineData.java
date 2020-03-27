@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -31,7 +32,7 @@ import net.minecraft.util.Direction;
 public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbineData> implements IMekanismGasHandler, IMekanismStrictEnergyHandler {
 
     public static final float ROTATION_THRESHOLD = 0.001F;
-    public static Object2FloatMap<String> clientRotationMap = new Object2FloatOpenHashMap<>();
+    public static Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
 
     public final MultiblockGasTank<TileEntityTurbineCasing> gasTank;
     private final List<IChemicalTank<Gas, GasStack>> gasTanks;

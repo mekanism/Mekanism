@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -21,12 +22,14 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extends TileEntityMekanism implements IMultiblock<T> {
 
@@ -60,7 +63,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
      * This multiblock segment's cached inventory ID
      */
     @Nullable
-    public String cachedID = null;
+    public UUID cachedID = null;
 
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -139,6 +142,14 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         }
     }
 
+    @Override
+    public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
+        if (player.isShiftKeyDown() || structure == null) {
+            return ActionResultType.PASS;
+        }
+        return openGui(player);
+    }
+
     @Nonnull
     protected abstract T getNewStructure();
 
@@ -162,7 +173,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 updateTag.put(NBTConstants.RENDER_LOCATION, structure.renderLocation.write(new CompoundNBT()));
             }
             if (structure.inventoryID != null) {
-                updateTag.putString(NBTConstants.INVENTORY_ID, structure.inventoryID);
+                updateTag.putUniqueId(NBTConstants.INVENTORY_ID, structure.inventoryID);
             }
         }
         return updateTag;
@@ -182,12 +193,11 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> structure.volWidth = value);
                 NBTUtils.setIntIfPresent(tag, NBTConstants.LENGTH, value -> structure.volLength = value);
                 NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> structure.renderLocation = value);
-                if (tag.contains(NBTConstants.INVENTORY_ID, NBT.TAG_STRING)) {
-                    structure.inventoryID = tag.getString(NBTConstants.INVENTORY_ID);
+                if (tag.hasUniqueId(NBTConstants.INVENTORY_ID)) {
+                    structure.inventoryID = tag.getUniqueId(NBTConstants.INVENTORY_ID);
                 } else {
                     structure.inventoryID = null;
                 }
-                //TODO: Test sparkle
                 if (structure.renderLocation != null && !prevStructure) {
                     Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength, structure.volWidth, structure.volHeight,
                           tile -> MultiblockManager.areEqual(this, tile));
@@ -201,8 +211,8 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (structure == null) {
-            if (nbtTags.contains(NBTConstants.INVENTORY_ID, NBT.TAG_STRING)) {
-                cachedID = nbtTags.getString(NBTConstants.INVENTORY_ID);
+            if (nbtTags.hasUniqueId(NBTConstants.INVENTORY_ID)) {
+                cachedID = nbtTags.getUniqueId(NBTConstants.INVENTORY_ID);
                 cachedData.load(nbtTags);
             }
         }
@@ -213,7 +223,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (cachedID != null) {
-            nbtTags.putString(NBTConstants.INVENTORY_ID, cachedID);
+            nbtTags.putUniqueId(NBTConstants.INVENTORY_ID, cachedID);
             cachedData.save(nbtTags);
         }
         return nbtTags;

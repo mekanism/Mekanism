@@ -26,13 +26,9 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -133,11 +129,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             }
             markDirty();
         }
-    }
-
-    @Override
-    public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        return structure == null ? ActionResultType.PASS : openGui(player);
     }
 
     @Nonnull

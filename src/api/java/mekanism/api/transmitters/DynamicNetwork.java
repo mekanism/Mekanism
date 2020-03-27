@@ -47,10 +47,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     private Set<DelayQueue> updateQueue = new ObjectLinkedOpenHashSet<>();
     private boolean forceScaleUpdate = false;
 
-    private String uuid;
+    private UUID uuid;
 
     public DynamicNetwork() {
-        uuid = UUID.randomUUID().toString();
+        uuid = UUID.randomUUID();
     }
 
     public void addNewTransmitters(Collection<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> newTransmitters) {
@@ -418,7 +418,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return changedAcceptors;
     }
 
-    public String getUUID() {
+    public UUID getUUID() {
         return uuid;
     }
 

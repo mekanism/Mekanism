@@ -1,5 +1,6 @@
 package mekanism.generators.common.tile.turbine;
 
+import java.util.UUID;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
@@ -12,16 +13,16 @@ public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
     }
 
     @Override
-    public void setMultiblock(String id) {
+    public void setMultiblock(UUID id) {
         if (id == null && multiblockUUID != null) {
             SynchronizedTurbineData.clientRotationMap.removeFloat(multiblockUUID);
         }
-
         super.setMultiblock(id);
-
-        TileEntityTurbineRotor tile = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, getWorld(), getPos().down());
-        if (tile != null) {
-            tile.updateRotors();
+        if (!isRemote()) {
+            TileEntityTurbineRotor tile = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, getWorld(), getPos().down());
+            if (tile != null) {
+                tile.updateRotors();
+            }
         }
     }
 }

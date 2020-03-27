@@ -13,11 +13,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -51,11 +47,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
-    public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        return structure == null ? ActionResultType.PASS : openGui(player);
     }
 
     @Nonnull

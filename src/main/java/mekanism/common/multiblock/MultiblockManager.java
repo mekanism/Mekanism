@@ -3,11 +3,13 @@ package mekanism.common.multiblock;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
@@ -23,7 +25,7 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
     /**
      * A map containing references to all multiblock inventory caches.
      */
-    public Map<String, MultiblockCache<T>> inventories = new Object2ObjectOpenHashMap<>();
+    public Map<UUID, MultiblockCache<T>> inventories = new Object2ObjectOpenHashMap<>();
 
     public MultiblockManager(String s) {
         name = s;
@@ -36,8 +38,9 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
         }
     }
 
-    public static String getStructureId(TileEntityMultiblock<?> tile) {
-        return tile.structure != null ? tile.getSynchronizedData().inventoryID : null;
+    @Nullable
+    public static UUID getStructureId(TileEntityMultiblock<?> tile) {
+        return tile.structure == null ? null : tile.getSynchronizedData().inventoryID;
     }
 
     public static boolean areEqual(TileEntity tile1, TileEntity tile2) {
@@ -61,9 +64,9 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
      *
      * @return correct multiblock inventory cache
      */
-    public MultiblockCache<T> pullInventory(World world, String id) {
+    public MultiblockCache<T> pullInventory(World world, UUID id) {
         MultiblockCache<T> toReturn = inventories.get(id);
-        for (Coord4D obj : inventories.get(id).locations) {
+        for (Coord4D obj : toReturn.locations) {
             TileEntityMultiblock<T> tile = (TileEntityMultiblock<T>) MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, obj.getPos());
             if (tile != null) {
                 tile.cachedData = tile.getNewCache();
@@ -79,15 +82,15 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
      *
      * @return unique inventory ID
      */
-    public String getUniqueInventoryID() {
-        return UUID.randomUUID().toString();
+    public UUID getUniqueInventoryID() {
+        return UUID.randomUUID();
     }
 
     public void tickSelf(World world) {
-        ArrayList<String> idsToKill = new ArrayList<>();
-        Map<String, Set<Coord4D>> tilesToKill = new Object2ObjectOpenHashMap<>();
-        for (Entry<String, MultiblockCache<T>> entry : inventories.entrySet()) {
-            String inventoryID = entry.getKey();
+        List<UUID> idsToKill = new ArrayList<>();
+        Map<UUID, Set<Coord4D>> tilesToKill = new Object2ObjectOpenHashMap<>();
+        for (Entry<UUID, MultiblockCache<T>> entry : inventories.entrySet()) {
+            UUID inventoryID = entry.getKey();
             for (Coord4D obj : entry.getValue().locations) {
                 if (obj.dimension.equals(world.getDimension().getType()) && world.isBlockPresent(obj.getPos())) {
                     TileEntity tile = MekanismUtils.getTileEntity(world, obj.getPos());
@@ -104,12 +107,12 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
                 idsToKill.add(inventoryID);
             }
         }
-        for (Entry<String, Set<Coord4D>> entry : tilesToKill.entrySet()) {
+        for (Entry<UUID, Set<Coord4D>> entry : tilesToKill.entrySet()) {
             for (Coord4D obj : entry.getValue()) {
                 inventories.get(entry.getKey()).locations.remove(obj);
             }
         }
-        for (String inventoryID : idsToKill) {
+        for (UUID inventoryID : idsToKill) {
             inventories.remove(inventoryID);
         }
     }

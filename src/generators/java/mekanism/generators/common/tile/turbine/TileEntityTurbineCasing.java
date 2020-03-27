@@ -4,8 +4,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
@@ -27,13 +27,9 @@ import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements ITileNetwork {
@@ -103,11 +99,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 sendUpdatePacket();
             }
         }
-    }
-
-    @Override
-    public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        return structure == null ? ActionResultType.PASS : openGui(player);
     }
 
     @Override

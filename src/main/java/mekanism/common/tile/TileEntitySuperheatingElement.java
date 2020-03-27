@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.UUID;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.registries.MekanismBlocks;
@@ -11,7 +12,7 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
     }
 
     @Override
-    public void setMultiblock(String id) {
+    public void setMultiblock(UUID id) {
         boolean packet = false;
         if (id == null && multiblockUUID != null) {
             SynchronizedBoilerData.hotMap.removeBoolean(multiblockUUID);
