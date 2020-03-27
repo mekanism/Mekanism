@@ -1,15 +1,16 @@
 package mekanism.api.transmitters;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
 import mekanism.api.Range3D;
@@ -45,6 +46,12 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected World world = null;
     private Set<DelayQueue> updateQueue = new ObjectLinkedOpenHashSet<>();
     private boolean forceScaleUpdate = false;
+
+    private String uuid;
+
+    public DynamicNetwork() {
+        uuid = UUID.randomUUID().toString();
+    }
 
     public void addNewTransmitters(Collection<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> newTransmitters) {
         transmittersToAdd.addAll(newTransmitters);
@@ -409,6 +416,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> getChangedAcceptors() {
         return changedAcceptors;
+    }
+
+    public String getUUID() {
+        return uuid;
     }
 
     public static class TransmittersAddedEvent extends Event {

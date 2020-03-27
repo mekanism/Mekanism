@@ -5,24 +5,31 @@ import java.util.Map;
 import java.util.Set;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
+import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.transmitters.grid.InventoryNetwork;
 import net.minecraft.util.Direction;
 
 public class PathfinderCache {
 
-    private static Map<PathData, CachedPath> cachedPaths = new Object2ObjectOpenHashMap<>();
+    private static Map<String, Map<PathData, CachedPath>> cachedPaths = new Object2ObjectOpenHashMap<>();
 
-    public static void onChanged(Coord4D location) {
-        reset();
+    public static void onChanged(InventoryNetwork... networks) {
+        for (InventoryNetwork network : networks) {
+            cachedPaths.remove(network.getUUID());
+        }
     }
 
-    public static void addCachedPath(PathData data, List<Coord4D> coords, double cost) {
-        cachedPaths.put(data, new CachedPath(coords, cost));
+    public static void addCachedPath(ILogisticalTransporter start, PathData data, List<Coord4D> coords, double cost) {
+        cachedPaths.computeIfAbsent(start.getTransmitterNetwork().getUUID(), uuid -> new Object2ObjectOpenHashMap<>()).put(data, new CachedPath(coords, cost));
     }
 
-    public static CachedPath getCache(Coord4D start, Coord4D end, Set<Direction> sides) {
+    public static CachedPath getCache(ILogisticalTransporter start, Coord4D end, Set<Direction> sides) {
+        if (!cachedPaths.containsKey(start.getTransmitterNetwork().getUUID()))
+            return null;
+
         CachedPath ret = null;
         for (Direction side : sides) {
-            CachedPath test = cachedPaths.get(new PathData(start, end, side));
+            CachedPath test = cachedPaths.get(start.getTransmitterNetwork().getUUID()).get(new PathData(start.coord(), end, side));
             if (ret == null || (test != null && test.getCost() < ret.getCost())) {
                 ret = test;
             }

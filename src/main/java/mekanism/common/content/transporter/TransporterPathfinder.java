@@ -76,7 +76,7 @@ public final class TransporterPathfinder {
         TransitResponse response = data.getResponse();
         if (response.getSendingAmount() >= min) {
             Coord4D dest = data.getLocation();
-            CachedPath test = PathfinderCache.getCache(start.coord(), dest, data.getSides());
+            CachedPath test = PathfinderCache.getCache(start, dest, data.getSides());
             if (test != null && checkPath(start.world(), test.getPath(), stack, chunkMap)) {
                 return new Destination(test.getPath(), false, response, test.getCost());
             }
@@ -88,7 +88,7 @@ public final class TransporterPathfinder {
             }, start.world(), dest, start.coord(), stack, chunkMap);
             List<Coord4D> path = p.getPath();
             if (path.size() >= 2) {
-                PathfinderCache.addCachedPath(new PathData(start.coord(), dest, p.getSide()), path, p.finalScore);
+                PathfinderCache.addCachedPath(start, new PathData(start.coord(), dest, p.getSide()), path, p.finalScore);
                 return new Destination(path, false, response, p.finalScore);
             }
         }

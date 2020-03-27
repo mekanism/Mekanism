@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -80,14 +79,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     @Override
-    public void onWorldSeparate() {
-        super.onWorldSeparate();
-        if (!isRemote()) {
-            PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
-        }
-    }
-
-    @Override
     public TileEntity getCachedAcceptor(Direction side) {
         return getCachedTile(side);
     }
@@ -154,12 +145,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
                 }
             }
         }
-    }
-
-    @Override
-    public void onWorldJoin() {
-        super.onWorldJoin();
-        PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
     }
 
     @Override
@@ -253,7 +238,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
         TransporterUtils.incrementColor(getTransmitter());
-        PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
+        PathfinderCache.onChanged(getTransmitter().getTransmitterNetwork());
         sendUpdatePacket();
         EnumColor color = getTransmitter().getColor();
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,

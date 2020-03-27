@@ -1,15 +1,16 @@
 package mekanism.common.transmitters.grid;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
@@ -67,11 +68,17 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote()) {
-            //Future!
-        }
+    public void commit() {
+        super.commit();
+        // update the cache when the network has been changed (called when transmitters are added)
+        PathfinderCache.onChanged(this);
+    }
+
+    @Override
+    public void deregister() {
+        super.deregister();
+        // update the cache when the network has been removed (when transmitters are removed)
+        PathfinderCache.onChanged(this);
     }
 
     @Override
