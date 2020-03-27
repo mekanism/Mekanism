@@ -238,8 +238,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         if (structure != null && isRendering) {
             updateTag.putFloat(NBTConstants.SCALE, prevWaterScale);
             updateTag.putFloat(NBTConstants.SCALE_ALT, prevSteamScale);
-            updateTag.putInt(NBTConstants.VOLUME, structure.waterVolume);
-            updateTag.putInt(NBTConstants.LOWER_VOLUME, structure.steamVolume);
+            updateTag.putInt(NBTConstants.VOLUME, structure.getWaterVolume());
+            updateTag.putInt(NBTConstants.LOWER_VOLUME, structure.getSteamVolume());
             updateTag.put(NBTConstants.FLUID_STORED, structure.waterTank.getFluid().writeToNBT(new CompoundNBT()));
             updateTag.put(NBTConstants.GAS_STORED, structure.steamTank.getStack().write(new CompoundNBT()));
             updateTag.put(NBTConstants.RENDER_Y, structure.upperRenderLocation.write(new CompoundNBT()));
@@ -263,8 +263,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         if (clientHasStructure && isRendering) {
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevSteamScale = scale);
-            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.waterVolume = value);
-            NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> structure.steamVolume = value);
+            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.setWaterVolume(value));
+            NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> structure.setSteamVolume(value));
             NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.waterTank.setStack(value));
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.steamTank.setStack(value));
             NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_Y, value -> structure.upperRenderLocation = value);
@@ -290,14 +290,14 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.waterVolume, value -> {
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getWaterVolume(), value -> {
             if (structure != null) {
-                structure.waterVolume = value;
+                structure.setWaterVolume(value);
             }
         }));
-        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.steamVolume, value -> {
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getSteamVolume(), value -> {
             if (structure != null) {
-                structure.steamVolume = value;
+                structure.setSteamVolume(value);
             }
         }));
         container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.waterTank.getFluid(), value -> {

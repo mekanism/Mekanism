@@ -124,7 +124,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         final Coord4D renderLocation = structure.renderLocation;
         final int volLength = structure.volLength;
         final int volWidth = structure.volWidth;
-        structure.waterVolume = new NodeCounter(new NodeChecker() {
+        structure.setWaterVolume(new NodeCounter(new NodeChecker() {
             @Override
             public final boolean isValid(Coord4D coord) {
                 BlockPos coordPos = coord.getPos();
@@ -136,15 +136,15 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
                        z >= renderLocation.z && z < renderLocation.z + volWidth &&
                        (pointer.getWorld().isAirBlock(coordPos) || isViableNode(coordPos));
             }
-        }).calculate(initAir);
+        }).calculate(initAir));
 
         //Make sure all air blocks are connected
-        if (totalAir > structure.waterVolume) {
+        if (totalAir > structure.getWaterVolume()) {
             return false;
         }
 
         int steamHeight = (structure.renderLocation.y + structure.volHeight - 2) - initDisperser.y;
-        structure.steamVolume = structure.volWidth * structure.volLength * steamHeight;
+        structure.setSteamVolume(structure.volWidth * structure.volLength * steamHeight);
         structure.upperRenderLocation = new Coord4D(structure.renderLocation.x, initDisperser.y + 1, structure.renderLocation.z, pointer.getWorld().getDimension().getType());
         return true;
     }
@@ -177,10 +177,10 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     protected void onFormed() {
         super.onFormed();
         if (!structureFound.waterTank.isEmpty()) {
-            structureFound.waterTank.setStackSize(Math.min(structureFound.waterTank.getFluidAmount(), structureFound.waterTank.getCapacity()), Action.EXECUTE);
+            structureFound.waterTank.setStackSize(Math.min(structureFound.waterTank.getFluidAmount(), structureFound.getWaterTankCapacity()), Action.EXECUTE);
         }
         if (!structureFound.steamTank.isEmpty()) {
-            structureFound.steamTank.setStackSize(Math.min(structureFound.steamTank.getStored(), structureFound.steamTank.getCapacity()), Action.EXECUTE);
+            structureFound.steamTank.setStackSize(Math.min(structureFound.steamTank.getStored(), structureFound.getSteamTankCapacity()), Action.EXECUTE);
         }
     }
 
