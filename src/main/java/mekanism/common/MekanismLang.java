@@ -76,6 +76,7 @@ public enum MekanismLang implements ILangEntry {
     FREE_RUNNERS_MODE("tooltip", "mode.free_runners"),
     JETPACK_MODE("tooltip", "mode.jetpack"),
     SCUBA_TANK_MODE("tooltip", "mode.scuba_tank"),
+    FREE_RUNNERS_STORED("tooltip", "stored.free_runners"),
     FLAMETHROWER_STORED("tooltip", "stored.flamethrower"),
     JETPACK_STORED("tooltip", "stored.jetpack"),
     //Gui stuff

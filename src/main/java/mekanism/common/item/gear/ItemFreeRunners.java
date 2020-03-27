@@ -109,8 +109,8 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
     @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         if (slotType == getEquipmentSlot()) {
-            //TODO: Display the energy stored in the free runners?
             list.add(MekanismLang.FREE_RUNNERS_MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
+            StorageUtils.addStoredEnergy(stack, list, true, MekanismLang.FREE_RUNNERS_STORED);
         }
     }
 
