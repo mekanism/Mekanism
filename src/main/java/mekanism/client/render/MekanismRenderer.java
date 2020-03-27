@@ -335,6 +335,7 @@ public class MekanismRenderer {
         //TODO: Why are these reset in post and the rest reset in Pre?
         RenderLogisticalTransporter.onStitch(map);
         RenderMechanicalPipe.onStitch();
+        RenderTransmitterBase.onStitch();
     }
 
     public enum FluidType {
