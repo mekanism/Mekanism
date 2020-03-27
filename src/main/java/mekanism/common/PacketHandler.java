@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import mekanism.api.Range3D;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketClearRecipeCache;
@@ -119,6 +120,8 @@ public class PacketHandler {
                 output.writeDouble((Double) data);
             } else if (data instanceof Float) {
                 output.writeFloat((Float) data);
+            } else if (data instanceof FloatingLong) {
+                ((FloatingLong) data).writeToBuffer(output);
             } else if (data instanceof String) {
                 output.writeString((String) data);
             } else if (data instanceof UUID) {
