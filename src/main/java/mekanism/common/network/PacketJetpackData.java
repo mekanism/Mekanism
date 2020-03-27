@@ -6,11 +6,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.item.gear.ItemJetpack;
-import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -23,12 +19,6 @@ public class PacketJetpackData {
 
     private PacketJetpackData(JetpackPacket type) {
         packetType = type;
-    }
-
-    public static PacketJetpackData MODE_CHANGE(boolean change) {
-        PacketJetpackData m = new PacketJetpackData(JetpackPacket.MODE);
-        m.value = change;
-        return m;
     }
 
     public static PacketJetpackData UPDATE(UUID uuid, boolean state) {
@@ -60,16 +50,6 @@ public class PacketJetpackData {
                 if (!player.world.isRemote) {
                     Mekanism.packetHandler.sendToDimension(message, player.world.getDimension().getType());
                 }
-            } else if (message.packetType == JetpackPacket.MODE) {
-                // Use has changed the mode of their jetpack; update it
-                ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-                if (!stack.isEmpty() && stack.getItem() instanceof ItemJetpack) {
-                    if (!message.value) {
-                        ((ItemJetpack) stack.getItem()).incrementMode(stack);
-                    } else {
-                        ((ItemJetpack) stack.getItem()).setMode(stack, JetpackMode.DISABLED);
-                    }
-                }
             } else if (message.packetType == JetpackPacket.FULL) {
                 // This is a full sync; merge it into our player state
                 Mekanism.playerState.setActiveJetpacks(message.activeJetpacks);
@@ -80,9 +60,7 @@ public class PacketJetpackData {
 
     public static void encode(PacketJetpackData pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.packetType);
-        if (pkt.packetType == JetpackPacket.MODE) {
-            buf.writeBoolean(pkt.value);
-        } else if (pkt.packetType == JetpackPacket.UPDATE) {
+        if (pkt.packetType == JetpackPacket.UPDATE) {
             buf.writeUniqueId(pkt.uuid);
             buf.writeBoolean(pkt.value);
         } else if (pkt.packetType == JetpackPacket.FULL) {
@@ -95,9 +73,7 @@ public class PacketJetpackData {
 
     public static PacketJetpackData decode(PacketBuffer buf) {
         PacketJetpackData packet = new PacketJetpackData(buf.readEnumValue(JetpackPacket.class));
-        if (packet.packetType == JetpackPacket.MODE) {
-            packet.value = buf.readBoolean();
-        } else if (packet.packetType == JetpackPacket.UPDATE) {
+        if (packet.packetType == JetpackPacket.UPDATE) {
             packet.uuid = buf.readUniqueId();
             packet.value = buf.readBoolean();
         } else if (packet.packetType == JetpackPacket.FULL) {
@@ -113,7 +89,6 @@ public class PacketJetpackData {
 
     public enum JetpackPacket {
         UPDATE,
-        FULL,
-        MODE
+        FULL
     }
 }

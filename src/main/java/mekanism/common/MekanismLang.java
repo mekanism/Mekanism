@@ -23,6 +23,8 @@ public enum MekanismLang implements ILangEntry {
     KEY_MODE("key", "mode"),
     KEY_ARMOR_MODE("key", "armor_mode"),
     KEY_FEET_MODE("key", "feet_mode"),
+    KEY_DETAILS_MODE("key", "details"),
+    KEY_DESCRIPTION_MODE("key", "description"),
     //Holiday
     HOLIDAY_BORDER("holiday", "border"),
     HOLIDAY_SIGNATURE("holiday", "signature"),
@@ -420,14 +422,16 @@ public enum MekanismLang implements ILangEntry {
     SIDE_DATA_ENERGY("side_data", "energy"),
     SIDE_DATA_EXTRA("side_data", "extra"),
     //Free runner modes
+    FREE_RUNNER_MODE_CHANGE("free_runner", "mode_change"),
     FREE_RUNNER_NORMAL("free_runner", "normal"),
     FREE_RUNNER_DISABLED("free_runner", "disabled"),
     //Jetpack Modes
+    JETPACK_MODE_CHANGE("jetpack", "mode_change"),
     JETPACK_NORMAL("jetpack", "normal"),
     JETPACK_HOVER("jetpack", "hover"),
     JETPACK_DISABLED("jetpack", "disabled"),
     //Disassembler Mode
-    DISASSEMBLER_MODE_TOGGLE("disassembler", "mode_toggle"),
+    DISASSEMBLER_MODE_CHANGE("disassembler", "mode_change"),
     DISASSEMBLER_EFFICIENCY("disassembler", "efficiency"),
     DISASSEMBLER_NORMAL("disassembler", "normal"),
     DISASSEMBLER_SLOW("disassembler", "slow"),
@@ -436,7 +440,7 @@ public enum MekanismLang implements ILangEntry {
     DISASSEMBLER_EXTENDED_VEIN("disassembler", "extended_vein"),
     DISASSEMBLER_OFF("disassembler", "off"),
     //Flamethrower Modes
-    FLAMETHROWER_MODE_BUMP("flamethrower", "mode_bump"),
+    FLAMETHROWER_MODE_CHANGE("flamethrower", "mode_change"),
     FLAMETHROWER_COMBAT("flamethrower", "combat"),
     FLAMETHROWER_HEAT("flamethrower", "heat"),
     FLAMETHROWER_INFERNO("flamethrower", "inferno"),

@@ -121,6 +121,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
 
     private void addMisc() {
         add(AdditionsLang.CHANNEL, "Channel: %s");
+        add(AdditionsLang.CHANNEL_CHANGE, "Channel changed to: %s");
         add(AdditionsLang.WALKIE_DISABLED, "Voice server disabled.");
         add(AdditionsLang.KEY_VOICE, "Voice");
 

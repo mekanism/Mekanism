@@ -30,10 +30,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockEnergyCube extends ItemBlockAdvancedTooltip<BlockEnergyCube> implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setNoRepair().setISTER(ISTERProvider::energyCube));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setNoRepair().setISTER(ISTERProvider::energyCube));
     }
 
     @Nonnull
@@ -51,7 +51,7 @@ public class ItemBlockEnergyCube extends ItemBlockAdvancedTooltip<BlockEnergyCub
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
         tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(stack, Dist.CLIENT)));
         if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {

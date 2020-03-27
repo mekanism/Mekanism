@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,6 +24,7 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemHUDProvider;
+import mekanism.common.item.IModeItem;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
@@ -49,7 +50,6 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
@@ -72,7 +72,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.Event.Result;
 
-public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider {
+public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IModeItem {
 
     public ItemAtomicDisassembler(Properties properties) {
         //TODO: Set some tool types? What would we set the "harvest level to"
@@ -88,7 +88,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
-        Mode mode = getMode(stack);
+        DisassemblerMode mode = getMode(stack);
         tooltip.add(MekanismLang.MODE.translate(EnumColor.INDIGO, mode));
         tooltip.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.INDIGO, mode.getEfficiency()));
     }
@@ -141,9 +141,9 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                 //If something went wrong and we don't have an energy container, just go to super
                 return super.onBlockStartBreak(stack, pos, player);
             }
-            Mode mode = getMode(stack);
-            boolean extended = mode == Mode.EXTENDED_VEIN;
-            if (extended || mode == Mode.VEIN) {
+            DisassemblerMode mode = getMode(stack);
+            boolean extended = mode == DisassemblerMode.EXTENDED_VEIN;
+            if (extended || mode == DisassemblerMode.VEIN) {
                 BlockState state = world.getBlockState(pos);
                 if (state.getBlock() instanceof BlockBounding) {
                     //Even though we now handle breaking bounding blocks properly, don't allow vein mining
@@ -222,23 +222,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             }
         }
         return found;
-    }
-
-    @Nonnull
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (player.isShiftKeyDown()) {
-            if (!world.isRemote) {
-                toggleMode(stack);
-                Mode mode = getMode(stack);
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.DISASSEMBLER_MODE_TOGGLE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, mode,
-                            MekanismLang.GENERIC_PARENTHESIS.translateColored(EnumColor.AQUA, mode.getEfficiency()))));
-            }
-            return new ActionResult<>(ActionResultType.SUCCESS, stack);
-        }
-        return new ActionResult<>(ActionResultType.PASS, stack);
     }
 
     @Nonnull
@@ -469,12 +452,12 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return hardness == 0 ? destroyEnergy.divide(2) : destroyEnergy;
     }
 
-    public Mode getMode(ItemStack itemStack) {
-        return Mode.getFromInt(ItemDataUtils.getInt(itemStack, NBTConstants.MODE));
+    public DisassemblerMode getMode(ItemStack itemStack) {
+        return DisassemblerMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.MODE));
     }
 
-    public void toggleMode(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, NBTConstants.MODE, getMode(itemStack).getNext().ordinal());
+    public void setMode(ItemStack itemStack, DisassemblerMode mode) {
+        ItemDataUtils.setInt(itemStack, NBTConstants.MODE, mode.ordinal());
     }
 
     @Nonnull
@@ -490,27 +473,48 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
-        Mode mode = getMode(stack);
+        DisassemblerMode mode = getMode(stack);
         list.add(MekanismLang.MODE.translate(EnumColor.INDIGO, mode));
         list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.INDIGO, mode.getEfficiency()));
     }
 
-    public enum Mode implements IDisableableEnum<Mode>, IHasTranslationKey {
+    @Override
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        DisassemblerMode mode = getMode(stack);
+        DisassemblerMode newMode = mode.adjust(shift);
+        if (mode != newMode) {
+            setMode(stack, newMode);
+            if (displayChangeMessage) {
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                      MekanismLang.DISASSEMBLER_MODE_CHANGE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, mode, EnumColor.AQUA, mode.getEfficiency())));
+            }
+        }
+    }
+
+    @Nonnull
+    @Override
+    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+        DisassemblerMode mode = getMode(stack);
+        return MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.INDIGO, mode, EnumColor.AQUA, mode.getEfficiency());
+    }
+
+    public enum DisassemblerMode implements IDisableableEnum<DisassemblerMode>, IHasTranslationKey {
         NORMAL(MekanismLang.DISASSEMBLER_NORMAL, 20, 3, () -> true),
-        SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, 1, MekanismConfig.general.disassemblerSlowMode::get),
-        FAST(MekanismLang.DISASSEMBLER_FAST, 128, 5, MekanismConfig.general.disassemblerFastMode::get),
-        VEIN(MekanismLang.DISASSEMBLER_VEIN, 20, 3, MekanismConfig.general.disassemblerVeinMining::get),
-        EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, 3, MekanismConfig.general.disassemblerExtendedMining::get),
+        SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, 1, MekanismConfig.general.disassemblerSlowMode),
+        FAST(MekanismLang.DISASSEMBLER_FAST, 128, 5, MekanismConfig.general.disassemblerFastMode),
+        VEIN(MekanismLang.DISASSEMBLER_VEIN, 20, 3, MekanismConfig.general.disassemblerVeinMining),
+        EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, 3, MekanismConfig.general.disassemblerExtendedMining),
         OFF(MekanismLang.DISASSEMBLER_OFF, 0, 0, () -> true);
 
-        private static Mode[] VALUES = values();
-        private final Supplier<Boolean> checkEnabled;
+        private static DisassemblerMode[] MODES = values();
+
+        private final BooleanSupplier checkEnabled;
         private final ILangEntry langEntry;
         private final int efficiency;
         //Must be odd, or zero
         private final int diameter;
 
-        Mode(ILangEntry langEntry, int efficiency, int diameter, Supplier<Boolean> checkEnabled) {
+        DisassemblerMode(ILangEntry langEntry, int efficiency, int diameter, BooleanSupplier checkEnabled) {
             this.langEntry = langEntry;
             this.efficiency = efficiency;
             this.diameter = diameter;
@@ -520,16 +524,18 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         /**
          * Gets a Mode from its ordinal. NOTE: if this mode is not enabled then it will reset to NORMAL
          */
-        public static Mode getFromInt(int index) {
-            Mode mode = VALUES[Math.floorMod(index, VALUES.length)];
+        public static DisassemblerMode byIndexStatic(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            DisassemblerMode mode = MODES[Math.floorMod(index, MODES.length)];
             return mode.isEnabled() ? mode : NORMAL;
         }
 
         @Nonnull
         @Override
-        public Mode byIndex(int index) {
+        public DisassemblerMode byIndex(int index) {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return VALUES[Math.floorMod(index, VALUES.length)];
+            //Note: We can't just use byIndexStatic, as we want to be able to return disabled modes
+            return MODES[Math.floorMod(index, MODES.length)];
         }
 
         @Override
@@ -547,7 +553,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
         @Override
         public boolean isEnabled() {
-            return checkEnabled.get();
+            return checkEnabled.getAsBoolean();
         }
     }
 }

@@ -18,7 +18,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedBooleanValue enableAmbientLighting;
     public final CachedIntValue ambientLightingLevel;
     public final CachedBooleanValue opaqueTransmitters;
-    public final CachedBooleanValue allowConfiguratorModeScroll;
+    public final CachedBooleanValue allowModeScroll;
     public final CachedBooleanValue enableMultiblockFormationParticles;
     public final CachedBooleanValue alignHUDLeft;
     public final CachedBooleanValue enableHUD;
@@ -45,8 +45,8 @@ public class ClientConfig extends BaseMekanismConfig {
               .defineInRange("ambientLightingLevel", 15, 1, 15));
         opaqueTransmitters = CachedBooleanValue.wrap(this, builder.comment("If true, don't render Cables/Pipes/Tubes as transparent and don't render their contents.")
               .define("opaqueTransmitters", false));
-        allowConfiguratorModeScroll = CachedBooleanValue.wrap(this, builder.comment("Allow sneak+scroll to change Configurator modes.")
-              .define("allowConfiguratorModeScroll", true));
+        allowModeScroll = CachedBooleanValue.wrap(this, builder.comment("Allow sneak + scroll to change item modes.")
+              .define("allowModeScroll", true));
         enableMultiblockFormationParticles = CachedBooleanValue.wrap(this, builder.comment("Set to false to prevent particle spam when loading multiblocks (notification message will display instead).")
               .define("enableMultiblockFormationParticles", true));
         alignHUDLeft = CachedBooleanValue.wrap(this, builder.comment("Align HUD with left (if true) or right (if false)")

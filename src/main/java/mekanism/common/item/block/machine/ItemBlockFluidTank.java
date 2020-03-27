@@ -13,13 +13,13 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.IItemNetwork;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
 import mekanism.common.item.IItemSustainedInventory;
-import mekanism.common.item.block.ItemBlockAdvancedTooltip;
+import mekanism.common.item.IModeItem;
+import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.FluidTankTier;
@@ -27,6 +27,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.block.Block;
@@ -34,7 +35,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.block.ILiquidContainer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
@@ -42,7 +42,6 @@ import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ActionResult;
@@ -71,10 +70,10 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank> implements IItemSustainedInventory, ISecurityItem, IItemNetwork {
+public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> implements IItemSustainedInventory, ISecurityItem, IModeItem {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::fluidTank));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::fluidTank));
     }
 
     @Nonnull
@@ -83,8 +82,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
         FluidTankTier tier = getTier();
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (fluidStack.isEmpty()) {
@@ -103,7 +101,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
         tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(stack, Dist.CLIENT)));
         if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {
@@ -287,9 +285,21 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     }
 
     @Override
-    public void handlePacketData(IWorld world, ItemStack stack, PacketBuffer dataStream) {
-        if (!world.isRemote()) {
-            setBucketMode(stack, dataStream.readBoolean());
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        if (Math.abs(shift) % 2 == 1) {
+            //We are changing by an odd amount, so toggle the mode
+            boolean newState = !getBucketMode(stack);
+            setBucketMode(stack, newState);
+            if (displayChangeMessage) {
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                      MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(newState, true))));
+            }
         }
+    }
+
+    @Nonnull
+    @Override
+    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+        return MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(getBucketMode(stack), true));
     }
 }

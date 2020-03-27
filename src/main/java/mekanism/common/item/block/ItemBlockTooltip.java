@@ -7,7 +7,6 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -19,32 +18,36 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends ItemBlockMekanism<BLOCK> {
 
-    public ItemBlockTooltip(BLOCK block) {
-        this(block, ItemDeferredRegister.getMekBaseProperties());
-    }
+    private final boolean hasDetails;
 
     public ItemBlockTooltip(BLOCK block, Item.Properties properties) {
+        this(block, false, properties);
+    }
+
+    public ItemBlockTooltip(BLOCK block, boolean hasDetails, Properties properties) {
         super(block, properties);
+        this.hasDetails = hasDetails;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            addStats(stack, world, tooltip, flag);
-            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getLocalizedName()));
+        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.descriptionKey)) {
+            tooltip.add(getBlock().getDescription().translate());
+        } else if (hasDetails && MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
+            addDetails(stack, world, tooltip, flag.isAdvanced());
         } else {
-            addDescription(stack, world, tooltip, flag);
+            addStats(stack, world, tooltip, flag.isAdvanced());
+            if (hasDetails) {
+                tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
+            }
+            tooltip.add(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getLocalizedName()));
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void addDescription(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        //TODO: Previously had a max width thing, is this needed or does vanilla handle it
-        tooltip.add(getBlock().getDescription().translate());
+    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
     }
 }

@@ -6,10 +6,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.item.gear.ItemScubaTank;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -22,12 +19,6 @@ public class PacketScubaTankData {
 
     private PacketScubaTankData(ScubaTankPacket type) {
         packetType = type;
-    }
-
-    public static PacketScubaTankData MODE_CHANGE(boolean change) {
-        PacketScubaTankData m = new PacketScubaTankData(ScubaTankPacket.MODE);
-        m.value = change;
-        return m;
     }
 
     public static PacketScubaTankData UPDATE(UUID uuid, boolean state) {
@@ -58,12 +49,6 @@ public class PacketScubaTankData {
                 if (!player.world.isRemote) {
                     Mekanism.packetHandler.sendToDimension(message, player.world.getDimension().getType());
                 }
-            } else if (message.packetType == ScubaTankPacket.MODE) {
-                // Use has changed the mode of their gasmask; update it
-                ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-                if (!stack.isEmpty() && stack.getItem() instanceof ItemScubaTank) {
-                    ((ItemScubaTank) stack.getItem()).toggleFlowing(stack);
-                }
             } else if (message.packetType == ScubaTankPacket.FULL) {
                 // This is a full sync; merge into our player state
                 Mekanism.playerState.setActiveGasmasks(message.activeGasmasks);
@@ -74,9 +59,7 @@ public class PacketScubaTankData {
 
     public static void encode(PacketScubaTankData pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.packetType);
-        if (pkt.packetType == ScubaTankPacket.MODE) {
-            buf.writeBoolean(pkt.value);
-        } else if (pkt.packetType == ScubaTankPacket.UPDATE) {
+        if (pkt.packetType == ScubaTankPacket.UPDATE) {
             buf.writeUniqueId(pkt.uuid);
             buf.writeBoolean(pkt.value);
         } else if (pkt.packetType == ScubaTankPacket.FULL) {
@@ -89,9 +72,7 @@ public class PacketScubaTankData {
 
     public static PacketScubaTankData decode(PacketBuffer buf) {
         PacketScubaTankData packet = new PacketScubaTankData(buf.readEnumValue(ScubaTankPacket.class));
-        if (packet.packetType == ScubaTankPacket.MODE) {
-            packet.value = buf.readBoolean();
-        } else if (packet.packetType == ScubaTankPacket.UPDATE) {
+        if (packet.packetType == ScubaTankPacket.UPDATE) {
             packet.uuid = buf.readUniqueId();
             packet.value = buf.readBoolean();
         } else if (packet.packetType == ScubaTankPacket.FULL) {
@@ -106,7 +87,6 @@ public class PacketScubaTankData {
 
     public enum ScubaTankPacket {
         UPDATE,
-        FULL,
-        MODE
+        FULL
     }
 }

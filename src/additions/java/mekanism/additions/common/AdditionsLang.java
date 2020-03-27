@@ -4,8 +4,9 @@ import mekanism.common.base.ILangEntry;
 import net.minecraft.util.Util;
 
 public enum AdditionsLang implements ILangEntry {
-    CHANNEL("tooltip", "channel"),
-    WALKIE_DISABLED("tooltip", "walkie_disabled"),
+    CHANNEL("walkie", "channel"),
+    CHANNEL_CHANGE("walkie", "channel.change"),
+    WALKIE_DISABLED("walkie", "disabled"),
     KEY_VOICE("key", "voice"),
     DESCRIPTION_OBSIDIAN_TNT("description", "obsidian_tnt"),
     DESCRIPTION_GLOW_PANEL("description", "glow_panel");

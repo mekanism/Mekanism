@@ -181,5 +181,5 @@
   "item.mekanismadditions.walkie_talkie": "Rádio Transmissor",
   "item.mekanismadditions.white_balloon": "Branco Balão",
   "item.mekanismadditions.yellow_balloon": "Amarelo Balão",
-  "tooltip.mekanismadditions.channel": "Canal: %s"
+  "walkie.mekanismadditions.channel": "Canal: %s"
 }

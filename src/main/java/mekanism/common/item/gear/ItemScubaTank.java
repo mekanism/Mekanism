@@ -19,12 +19,14 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemHUDProvider;
+import mekanism.common.item.IModeItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
@@ -36,7 +38,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider {
+public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IModeItem {
 
     public static final ScubaTankMaterial SCUBA_TANK_MATERIAL = new ScubaTankMaterial();
 
@@ -68,10 +70,6 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider {
         return ScubaTankArmor.SCUBA_TANK;
     }
 
-    public void toggleFlowing(ItemStack stack) {
-        setFlowing(stack, !getFlowing(stack));
-    }
-
     public boolean getFlowing(ItemStack stack) {
         return ItemDataUtils.getBoolean(stack, NBTConstants.RUNNING);
     }
@@ -95,6 +93,30 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider {
             }
             list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.OXYGEN, stored.getAmount()));
         }
+    }
+
+    @Override
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        if (Math.abs(shift) % 2 == 1) {
+            //We are changing by an odd amount, so toggle the mode
+            boolean newState = !getFlowing(stack);
+            setFlowing(stack, newState);
+            if (displayChangeMessage) {
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                      MekanismLang.FLOWING.translateColored(EnumColor.GRAY, OnOff.of(newState, true))));
+            }
+        }
+    }
+
+    @Override
+    public boolean supportsSlotType(@Nonnull EquipmentSlotType slotType) {
+        return slotType == getEquipmentSlot();
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+        return null;
     }
 
     @ParametersAreNonnullByDefault

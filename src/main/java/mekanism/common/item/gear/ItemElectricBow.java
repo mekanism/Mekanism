@@ -9,11 +9,11 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.IItemNetwork;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.item.IItemHUDProvider;
+import mekanism.common.item.IModeItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -30,20 +30,18 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.ForgeEventFactory;
 
-public class ItemElectricBow extends BowItem implements IItemNetwork, IItemHUDProvider {
+public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvider {
 
     //TODO: Config max energy, damage, etc
     private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(120_000);
@@ -141,13 +139,6 @@ public class ItemElectricBow extends BowItem implements IItemNetwork, IItemHUDPr
     }
 
     @Override
-    public void handlePacketData(IWorld world, ItemStack stack, PacketBuffer dataStream) {
-        if (!world.isRemote()) {
-            setFireState(stack, dataStream.readBoolean());
-        }
-    }
-
-    @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         list.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack))));
     }
@@ -175,5 +166,24 @@ public class ItemElectricBow extends BowItem implements IItemNetwork, IItemHUDPr
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
         return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> MAX_ENERGY, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
+    }
+
+    @Override
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        if (Math.abs(shift) % 2 == 1) {
+            //We are changing by an odd amount, so toggle the mode
+            boolean newState = !getFireState(stack);
+            setFireState(stack, newState);
+            if (displayChangeMessage) {
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                      MekanismLang.FIRE_MODE.translateColored(EnumColor.GRAY, OnOff.of(newState, true))));
+            }
+        }
+    }
+
+    @Nonnull
+    @Override
+    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+        return MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack), true));
     }
 }

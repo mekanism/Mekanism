@@ -1,5 +1,6 @@
 package mekanism.common.registration.impl;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.common.registration.DoubleDeferredRegister;
@@ -16,7 +17,12 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
     //TODO: Create a helper wrapper that just takes a block properties??
     public <BLOCK extends Block> BlockRegistryObject<BLOCK, BlockItem> register(String name, Supplier<? extends BLOCK> blockSupplier) {
-        return register(name, blockSupplier, block -> new BlockItem(block, ItemDeferredRegister.getMekBaseProperties()));
+        return registerDefaultProperties(name, blockSupplier, BlockItem::new);
+    }
+
+    public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerDefaultProperties(String name, Supplier<? extends BLOCK> blockSupplier,
+          BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
+        return register(name, blockSupplier, block -> itemCreator.apply(block, ItemDeferredRegister.getMekBaseProperties()));
     }
 
     public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Supplier<? extends BLOCK> blockSupplier,

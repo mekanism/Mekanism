@@ -37,14 +37,13 @@ public class ItemSeismicReader extends ItemEnergized {
 
     @Override
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getLocalizedName()));
-            tooltip.add(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.sneakKey.getLocalizedName(),
-                  EnumColor.AQUA, MekanismKeyHandler.modeSwitchKey.getLocalizedName()));
-        } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
+        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.descriptionKey)) {
+            tooltip.add(MekanismLang.DESCRIPTION_SEISMIC_READER.translate());
+        } else if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
             super.addInformation(stack, world, tooltip, flag);
         } else {
-            tooltip.add(MekanismLang.DESCRIPTION_SEISMIC_READER.translate());
+            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
+            tooltip.add(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getLocalizedName()));
         }
     }
 

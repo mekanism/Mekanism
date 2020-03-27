@@ -181,5 +181,5 @@
   "item.mekanismadditions.walkie_talkie": "步話機",
   "item.mekanismadditions.white_balloon": "白色 氣球",
   "item.mekanismadditions.yellow_balloon": "黃色 氣球",
-  "tooltip.mekanismadditions.channel": "頻道: %s"
+  "walkie.mekanismadditions.channel": "頻道: %s"
 }

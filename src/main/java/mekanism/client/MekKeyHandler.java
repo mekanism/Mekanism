@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
+import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
 
 public abstract class MekKeyHandler {
@@ -37,18 +38,24 @@ public abstract class MekKeyHandler {
     }
 
     public static boolean getIsKeyPressed(KeyBinding keyBinding) {
-        try {
-            InputMappings.Input key = keyBinding.getKey();
+        if (keyBinding.isKeyDown()) {
+            return true;
+        }
+        InputMappings.Input key = keyBinding.getKey();
+        //If we failed, due to us being a key modifier as our key, check the old way
+        if (KeyModifier.isKeyCodeModifier(key)) {
             int keyCode = key.getKeyCode();
             if (keyCode != InputMappings.INPUT_INVALID.getKeyCode()) {
                 long windowHandle = Minecraft.getInstance().getMainWindow().getHandle();
-                if (key.getType() == InputMappings.Type.KEYSYM) {
-                    return InputMappings.isKeyDown(windowHandle, keyCode);
-                } else if (key.getType() == InputMappings.Type.MOUSE) {
-                    return GLFW.glfwGetMouseButton(windowHandle, keyCode) == GLFW.GLFW_PRESS;
+                try {
+                    if (key.getType() == InputMappings.Type.KEYSYM) {
+                        return InputMappings.isKeyDown(windowHandle, keyCode);
+                    } else if (key.getType() == InputMappings.Type.MOUSE) {
+                        return GLFW.glfwGetMouseButton(windowHandle, keyCode) == GLFW.GLFW_PRESS;
+                    }
+                } catch (Exception ignored) {
                 }
             }
-        } catch (Exception ignored) {
         }
         return false;
     }
@@ -60,7 +67,7 @@ public abstract class MekKeyHandler {
             boolean lastState = keyDown.get(i);
             if (state != lastState || (state && repeatings.get(i))) {
                 if (state) {
-                    keyDown(keyBinding, state == lastState);
+                    keyDown(keyBinding, lastState);
                 } else {
                     keyUp(keyBinding);
                 }
@@ -75,8 +82,12 @@ public abstract class MekKeyHandler {
 
     public static class Builder {
 
-        private List<KeyBinding> bindings = new ArrayList<>(3);
-        private BitSet repeatFlags = new BitSet();
+        private final List<KeyBinding> bindings;
+        private final BitSet repeatFlags = new BitSet();
+
+        public Builder(int expectedCapacity) {
+            this.bindings = new ArrayList<>(expectedCapacity);
+        }
 
         /**
          * Add a keybinding to the list

@@ -8,14 +8,13 @@ import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
 import mekanism.common.item.IItemSustainedInventory;
-import mekanism.common.item.block.ItemBlockAdvancedTooltip;
+import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -28,15 +27,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip<BlockTileModel<?, ?>> implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?>> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockPersonalChest(BlockTileModel<?, ?> block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
         tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(stack, Dist.CLIENT)));
         if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {

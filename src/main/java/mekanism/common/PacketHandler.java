@@ -21,10 +21,10 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketGuiButtonPress;
-import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketKey;
 import mekanism.common.network.PacketMekanismTags;
+import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortalFX;
@@ -171,7 +171,7 @@ public class PacketHandler {
     public void initialize() {
         registerMessage(PacketRobit.class, PacketRobit::encode, PacketRobit::decode, PacketRobit::handle);
         registerMessage(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
-        registerMessage(PacketItemStack.class, PacketItemStack::encode, PacketItemStack::decode, PacketItemStack::handle);
+        registerClientToServer(PacketModeChange.class, PacketModeChange::encode, PacketModeChange::decode, PacketModeChange::handle);
         registerMessage(PacketTileEntity.class, PacketTileEntity::encode, PacketTileEntity::decode, PacketTileEntity::handle);
         registerMessage(PacketPortalFX.class, PacketPortalFX::encode, PacketPortalFX::decode, PacketPortalFX::handle);
         registerMessage(PacketDataRequest.class, PacketDataRequest::encode, PacketDataRequest::decode, PacketDataRequest::handle);

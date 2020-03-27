@@ -34,10 +34,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockGasTank extends ItemBlockAdvancedTooltip<BlockTileModel<TileEntityGasTank, Machine<TileEntityGasTank>>> implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockGasTank extends ItemBlockTooltip<BlockTileModel<TileEntityGasTank, Machine<TileEntityGasTank>>> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockGasTank(BlockTileModel<TileEntityGasTank, Machine<TileEntityGasTank>> block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ItemBlockGasTank extends ItemBlockAdvancedTooltip<BlockTileModel<Ti
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
         tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(stack, Dist.CLIENT)));
         if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {

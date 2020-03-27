@@ -24,12 +24,14 @@ import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemHUDProvider;
+import mekanism.common.item.IModeItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -42,7 +44,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemFlamethrower extends Item implements IItemHUDProvider {
+public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeItem {
 
     private final int TRANSFER_RATE = 16;
 
@@ -92,10 +94,6 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
         }
     }
 
-    public void incrementMode(ItemStack stack) {
-        setMode(stack, getMode(stack).getNext());
-    }
-
     public FlamethrowerMode getMode(ItemStack stack) {
         return FlamethrowerMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.MODE));
     }
@@ -129,6 +127,25 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
             list.add(MekanismLang.FLAMETHROWER_STORED.translate(MekanismLang.NO_GAS.translate()));
         }
         list.add(MekanismLang.MODE.translate(getMode(stack)));
+    }
+
+    @Override
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        FlamethrowerMode mode = getMode(stack);
+        FlamethrowerMode newMode = mode.adjust(shift);
+        if (mode != newMode) {
+            setMode(stack, newMode);
+            if (displayChangeMessage) {
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                      MekanismLang.FLAMETHROWER_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)));
+            }
+        }
+    }
+
+    @Nonnull
+    @Override
+    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+        return getMode(stack).getTextComponent();
     }
 
     public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasTextComponent {

@@ -181,5 +181,5 @@
   "item.mekanismadditions.walkie_talkie": "Vysílačka",
   "item.mekanismadditions.white_balloon": "Bílá Balón",
   "item.mekanismadditions.yellow_balloon": "Žlutá Balón",
-  "tooltip.mekanismadditions.channel": "Kanál: %s"
+  "walkie.mekanismadditions.channel": "Kanál: %s"
 }

@@ -181,5 +181,5 @@
   "item.mekanismadditions.walkie_talkie": "Переносная рация",
   "item.mekanismadditions.white_balloon": "Белый Воздушный шар",
   "item.mekanismadditions.yellow_balloon": "Желтый Воздушный шар",
-  "tooltip.mekanismadditions.channel": "Канал: %s"
+  "walkie.mekanismadditions.channel": "Канал: %s"
 }

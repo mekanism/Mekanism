@@ -4,13 +4,12 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.item.gear.ItemFreeRunners;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
+//TODO: Figure out why this packet even exists, why does the client care what other players have
+// free runners on, and also if they do care, why do we not send full initially like we do with the other data types
 public class PacketFreeRunnerData {
 
     private FreeRunnerPacket packetType;
@@ -40,15 +39,6 @@ public class PacketFreeRunnerData {
                 if (!player.world.isRemote) {
                     Mekanism.packetHandler.sendToDimension(new PacketFreeRunnerData(FreeRunnerPacket.UPDATE, message.uuid, message.value), player.world.getDimension().getType());
                 }
-            } else if (message.packetType == FreeRunnerPacket.MODE) {
-                ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
-                if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
-                    if (!message.value) {
-                        ((ItemFreeRunners) stack.getItem()).incrementMode(stack);
-                    } else {
-                        ((ItemFreeRunners) stack.getItem()).setMode(stack, ItemFreeRunners.FreeRunnerMode.DISABLED);
-                    }
-                }
             }
         });
         context.get().setPacketHandled(true);
@@ -56,9 +46,7 @@ public class PacketFreeRunnerData {
 
     public static void encode(PacketFreeRunnerData pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.packetType);
-        if (pkt.packetType == FreeRunnerPacket.MODE) {
-            buf.writeBoolean(pkt.value);
-        } else if (pkt.packetType == FreeRunnerPacket.UPDATE) {
+        if (pkt.packetType == FreeRunnerPacket.UPDATE) {
             buf.writeUniqueId(pkt.uuid);
             buf.writeBoolean(pkt.value);
         } else if (pkt.packetType == FreeRunnerPacket.FULL) {
@@ -75,9 +63,7 @@ public class PacketFreeRunnerData {
         FreeRunnerPacket packetType = buf.readEnumValue(FreeRunnerPacket.class);
         boolean value = false;
         UUID uuid = null;
-        if (packetType == FreeRunnerPacket.MODE) {
-            value = buf.readBoolean();
-        } else if (packetType == FreeRunnerPacket.UPDATE) {
+        if (packetType == FreeRunnerPacket.UPDATE) {
             uuid = buf.readUniqueId();
             value = buf.readBoolean();
         } else if (packetType == FreeRunnerPacket.FULL) {
@@ -92,7 +78,6 @@ public class PacketFreeRunnerData {
 
     public enum FreeRunnerPacket {
         UPDATE,
-        FULL,
-        MODE
+        FULL
     }
 }

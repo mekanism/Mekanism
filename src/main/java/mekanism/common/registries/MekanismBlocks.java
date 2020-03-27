@@ -352,11 +352,11 @@ public class MekanismBlocks {
     }
 
     private static BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> registerOre(Resource resource) {
-        return BLOCKS.register(resource.getRegistrySuffix() + "_ore", () -> new BlockOre(resource), ItemBlockTooltip::new);
+        return BLOCKS.registerDefaultProperties(resource.getRegistrySuffix() + "_ore", () -> new BlockOre(resource), ItemBlockTooltip::new);
     }
 
     private static <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerBlock(String name, Supplier<? extends BLOCK> blockSupplier) {
-        return BLOCKS.register(name, blockSupplier, ItemBlockTooltip::new);
+        return BLOCKS.registerDefaultProperties(name, blockSupplier, ItemBlockTooltip::new);
     }
 
     /**

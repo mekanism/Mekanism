@@ -35,10 +35,10 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
+        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
             tooltip.add(getUpgradeType(stack).getDescription());
         } else {
-            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getLocalizedName()));
+            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
         }
     }
 

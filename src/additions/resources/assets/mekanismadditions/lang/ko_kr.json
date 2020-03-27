@@ -181,5 +181,5 @@
   "item.mekanismadditions.walkie_talkie": "Walkie-Talkie",
   "item.mekanismadditions.white_balloon": "하양색 풍선",
   "item.mekanismadditions.yellow_balloon": "노랑색 풍선",
-  "tooltip.mekanismadditions.channel": "채널: %s"
+  "walkie.mekanismadditions.channel": "채널: %s"
 }

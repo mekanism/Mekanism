@@ -23,11 +23,13 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemHUDProvider;
+import mekanism.common.item.IModeItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
@@ -39,7 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider {
+public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IModeItem {
 
     public static final JetpackMaterial JETPACK_MATERIAL = new JetpackMaterial();
 
@@ -75,10 +77,6 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider {
         return JetpackArmor.JETPACK;
     }
 
-    public void incrementMode(ItemStack stack) {
-        setMode(stack, getMode(stack).getNext());
-    }
-
     public JetpackMode getMode(ItemStack stack) {
         return JetpackMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.MODE));
     }
@@ -108,6 +106,30 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider {
             }
             list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, stored.getAmount()));
         }
+    }
+
+    @Override
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        JetpackMode mode = getMode(stack);
+        JetpackMode newMode = mode.adjust(shift);
+        if (mode != newMode) {
+            setMode(stack, newMode);
+            if (displayChangeMessage) {
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                      MekanismLang.JETPACK_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)));
+            }
+        }
+    }
+
+    @Override
+    public boolean supportsSlotType(@Nonnull EquipmentSlotType slotType) {
+        return slotType == getEquipmentSlot();
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+        return null;
     }
 
     public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {

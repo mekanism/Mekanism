@@ -181,6 +181,6 @@
   "item.mekanismadditions.walkie_talkie": "Walkie-Talkie",
   "item.mekanismadditions.white_balloon": "Blanco Globo",
   "item.mekanismadditions.yellow_balloon": "Amarillo Globo",
-  "tooltip.mekanismadditions.channel": "Canal: %s",
-  "tooltip.mekanismadditions.walkie_disabled": "Sevidor de voz desactivado."
+  "walkie.mekanismadditions.channel": "Canal: %s",
+  "walkie.mekanismadditions.disabled": "Sevidor de voz desactivado."
 }

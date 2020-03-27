@@ -192,6 +192,7 @@
   "item.mekanismadditions.white_balloon": "uoo\uA781\uA781\u0250\u15FA \u01DD\u0287\u1D09\u0265M",
   "item.mekanismadditions.yellow_balloon": "uoo\uA781\uA781\u0250\u15FA \u028Do\uA781\uA781\u01DD\u2144",
   "key.mekanismadditions.voice": "\u01DD\u0254\u1D09o\u039B",
-  "tooltip.mekanismadditions.channel": "%s :\uA781\u01DDuu\u0250\u0265\u0186",
-  "tooltip.mekanismadditions.walkie_disabled": "\u02D9p\u01DD\uA781q\u0250s\u1D09p \u0279\u01DD\u028C\u0279\u01DDs \u01DD\u0254\u1D09o\u039B"
+  "walkie.mekanismadditions.channel": "%s :\uA781\u01DDuu\u0250\u0265\u0186",
+  "walkie.mekanismadditions.channel.change": "%s :o\u0287 p\u01DD\u1D77u\u0250\u0265\u0254 \uA781\u01DDuu\u0250\u0265\u0186",
+  "walkie.mekanismadditions.disabled": "\u02D9p\u01DD\uA781q\u0250s\u1D09p \u0279\u01DD\u028C\u0279\u01DDs \u01DD\u0254\u1D09o\u039B"
 }

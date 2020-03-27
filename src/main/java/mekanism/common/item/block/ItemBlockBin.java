@@ -12,12 +12,9 @@ import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.text.TextComponentUtil;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSustainedInventory {
 
@@ -26,8 +23,7 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSus
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
         BinMekanismInventory inventory = BinMekanismInventory.create(stack);
         BinTier tier = Attribute.getTier(getBlock(), BinTier.class);
         if (inventory != null && tier != null) {

@@ -19,10 +19,12 @@ import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.item.IItemHUDProvider;
+import mekanism.common.item.IModeItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
@@ -39,7 +41,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUDProvider {
+public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUDProvider, IModeItem {
 
     public static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
 
@@ -102,16 +104,36 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
         ItemDataUtils.setInt(itemStack, NBTConstants.MODE, mode.ordinal());
     }
 
-    public void incrementMode(ItemStack itemStack) {
-        setMode(itemStack, getMode(itemStack).getNext());
-    }
-
     @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         if (slotType == getEquipmentSlot()) {
             list.add(MekanismLang.FREE_RUNNERS_MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
             StorageUtils.addStoredEnergy(stack, list, true, MekanismLang.FREE_RUNNERS_STORED);
         }
+    }
+
+    @Override
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        FreeRunnerMode mode = getMode(stack);
+        FreeRunnerMode newMode = mode.adjust(shift);
+        if (mode != newMode) {
+            setMode(stack, newMode);
+            if (displayChangeMessage) {
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                      MekanismLang.FREE_RUNNER_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)));
+            }
+        }
+    }
+
+    @Override
+    public boolean supportsSlotType(@Nonnull EquipmentSlotType slotType) {
+        return slotType == getEquipmentSlot();
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+        return null;
     }
 
     public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent {

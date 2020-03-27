@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
-import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
@@ -20,6 +19,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemHUDProvider;
+import mekanism.common.item.IModeItem;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -28,8 +28,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -68,47 +66,23 @@ public class RenderTickHandler {
     @SubscribeEvent
     public void tickEnd(RenderTickEvent event) {
         if (event.phase == Phase.END) {
-            if (minecraft.player != null && minecraft.world != null && !minecraft.isGamePaused()) {
+            if (minecraft.player != null && minecraft.player.world != null && !minecraft.isGamePaused() && minecraft.fontRenderer != null) {
                 FontRenderer font = minecraft.fontRenderer;
-                if (font == null) {
-                    return;
-                }
-
                 PlayerEntity player = minecraft.player;
                 World world = minecraft.player.world;
-                BlockRayTraceResult pos = MekanismUtils.rayTrace(player);
-                if (pos.getType() != Type.MISS) {
-                    BlockPos blockPos = pos.getPos();
-                    if (MekanismUtils.isBlockLoaded(world, blockPos)) {
-                        Block block = world.getBlockState(blockPos).getBlock();
-                        if (block != Blocks.AIR && MekanismAPI.debug && minecraft.currentScreen == null && !minecraft.gameSettings.showDebugInfo) {
-                            String tileDisplay = "";
-                            TileEntity tile = MekanismUtils.getTileEntity(world, blockPos);
-                            if (tile != null && tile.getClass() != null) {
-                                tileDisplay = tile.getClass().getSimpleName();
-                            }
-                            font.drawStringWithShadow("Block: " + block.getTranslationKey(), 1, 1, 0x404040);
-                            font.drawStringWithShadow("Metadata: " + world.getBlockState(blockPos), 1, 10, 0x404040);
-                            font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(blockPos), 1, 19, 0x404040);
-                            font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 28, 0x404040);
-                            font.drawStringWithShadow("Side: " + pos.getFace(), 1, 37, 0x404040);
-                        }
-                    }
-                }
-
                 //TODO: use vanilla status bar text? Note, the vanilla status bar text stays a lot longer than we have our message
                 // display for, so we would need to somehow modify it. This can be done via ATs but does cause it to always appear
                 // to be more faded in color, and blinks to full color just before disappearing
-                if (modeSwitchTimer > 1 && minecraft.currentScreen == null && player.getHeldItemMainhand().getItem() instanceof ItemConfigurator) {
+                if (modeSwitchTimer > 1 && minecraft.currentScreen == null && IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND)) {
                     ItemStack stack = player.getHeldItemMainhand();
-                    ConfiguratorMode mode = ((ItemConfigurator) stack.getItem()).getState(stack);
-
-                    int x = minecraft.getMainWindow().getScaledWidth();
-                    int y = minecraft.getMainWindow().getScaledHeight();
-                    //TODO: Check this, though if we use vanilla status bar text it may be a lot simpler instead
-                    String text = mode.getTextComponent().getFormattedText();
-                    int color = new ColorRGBA(1, 1, 1, (float) modeSwitchTimer / 100F).argb();
-                    font.drawString(text, x / 2 - font.getStringWidth(text) / 2, y - 60, color);
+                    ITextComponent scrollTextComponent = ((IModeItem) stack.getItem()).getScrollTextComponent(stack);
+                    if (scrollTextComponent != null) {
+                        int x = minecraft.getMainWindow().getScaledWidth();
+                        int y = minecraft.getMainWindow().getScaledHeight();
+                        String text = scrollTextComponent.getFormattedText();
+                        int color = new ColorRGBA(1, 1, 1, (float) modeSwitchTimer / 100F).argb();
+                        font.drawString(text, x / 2 - font.getStringWidth(text) / 2, y - 60, color);
+                    }
                 }
 
                 modeSwitchTimer = Math.max(modeSwitchTimer - 1, 0);
@@ -136,7 +110,7 @@ public class RenderTickHandler {
 
                 // Traverse a copy of jetpack state and do animations
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
-                    PlayerEntity p = minecraft.world.getPlayerByUuid(uuid);
+                    PlayerEntity p = world.getPlayerByUuid(uuid);
                     if (p == null) {
                         continue;
                     }
@@ -172,7 +146,7 @@ public class RenderTickHandler {
                 // Traverse a copy of gasmask state and do animations
                 if (world.getDayTime() % 4 == 0) {
                     for (UUID uuid : Mekanism.playerState.getActiveGasmasks()) {
-                        PlayerEntity p = minecraft.world.getPlayerByUuid(uuid);
+                        PlayerEntity p = world.getPlayerByUuid(uuid);
                         if (p == null || !p.isInWater()) {
                             continue;
                         }

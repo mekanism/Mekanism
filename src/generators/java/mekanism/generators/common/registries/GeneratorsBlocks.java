@@ -60,6 +60,6 @@ public class GeneratorsBlocks {
     public static final BlockRegistryObject<BlockLaserFocusMatrix, ItemBlockTooltip<BlockLaserFocusMatrix>> LASER_FOCUS_MATRIX = registerTooltipBlock("laser_focus_matrix", BlockLaserFocusMatrix::new);
 
     private static <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerTooltipBlock(String name, Supplier<BLOCK> blockCreator) {
-        return BLOCKS.register(name, blockCreator, ItemBlockTooltip::new);
+        return BLOCKS.registerDefaultProperties(name, blockCreator, ItemBlockTooltip::new);
     }
 }

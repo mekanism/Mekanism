@@ -307,6 +307,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.KEY_MODE, "Item Mode Switch");
         add(MekanismLang.KEY_ARMOR_MODE, "Armor Mode Switch");
         add(MekanismLang.KEY_FEET_MODE, "Feet Mode Switch");
+        add(MekanismLang.KEY_DETAILS_MODE, "Show details");
+        add(MekanismLang.KEY_DESCRIPTION_MODE, "Show description");
         //Holiday
         add(MekanismLang.HOLIDAY_BORDER, "%s%s%1$s");
         add(MekanismLang.HOLIDAY_SIGNATURE, "-aidancbrady");
@@ -332,7 +334,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_PER_TICK, "%s/t");
         //Hold for
         add(MekanismLang.HOLD_FOR_DETAILS, "Hold %s for details.");
-        add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %s and %s for a description.");
+        add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %s for a description.");
         //Commands
         add(MekanismLang.COMMAND_CHUNK, "%s chunk %d, %d");
         add(MekanismLang.COMMAND_CHUNK_WATCH, "Chunk %d, %d added to watch list");
@@ -713,14 +715,16 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SIDE_DATA_ENERGY, "Energy");
         add(MekanismLang.SIDE_DATA_EXTRA, "Extra");
         //Free runner modes
+        add(MekanismLang.FREE_RUNNER_MODE_CHANGE, "Free runner mode changed to: %s");
         add(MekanismLang.FREE_RUNNER_NORMAL, "Regular");
         add(MekanismLang.FREE_RUNNER_DISABLED, "Disabled");
         //Jetpack Modes
+        add(MekanismLang.JETPACK_MODE_CHANGE, "Jetpack mode changed to: %s");
         add(MekanismLang.JETPACK_NORMAL, "Regular");
         add(MekanismLang.JETPACK_HOVER, "Hover");
         add(MekanismLang.JETPACK_DISABLED, "Disabled");
         //Disassembler Mode
-        add(MekanismLang.DISASSEMBLER_MODE_TOGGLE, "Mode toggled to: %s %s");
+        add(MekanismLang.DISASSEMBLER_MODE_CHANGE, "Mode toggled to: %s (%s)");
         add(MekanismLang.DISASSEMBLER_EFFICIENCY, "Efficiency: %s");
         add(MekanismLang.DISASSEMBLER_NORMAL, "normal");
         add(MekanismLang.DISASSEMBLER_SLOW, "slow");
@@ -729,7 +733,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, "extended vein mining");
         add(MekanismLang.DISASSEMBLER_OFF, "off");
         //Flamethrower Modes
-        add(MekanismLang.FLAMETHROWER_MODE_BUMP, "Flamethrower mode bumped to %s");
+        add(MekanismLang.FLAMETHROWER_MODE_CHANGE, "Flamethrower mode changed to: %s");
         add(MekanismLang.FLAMETHROWER_COMBAT, "Combat");
         add(MekanismLang.FLAMETHROWER_HEAT, "Heat");
         add(MekanismLang.FLAMETHROWER_INFERNO, "Inferno");

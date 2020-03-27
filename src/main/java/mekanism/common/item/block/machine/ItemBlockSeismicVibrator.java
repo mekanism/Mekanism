@@ -13,7 +13,7 @@ import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.item.IItemSustainedInventory;
-import mekanism.common.item.block.ItemBlockAdvancedTooltip;
+import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.MekanismUtils;
@@ -23,7 +23,6 @@ import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,15 +32,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockTile<?, ?>> implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockSeismicVibrator extends ItemBlockTooltip<BlockTile<?, ?>> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSeismicVibrator(BlockTile<?, ?> block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::seismicVibrator));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::seismicVibrator));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
         tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(stack, Dist.CLIENT)));
         if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {

@@ -2,7 +2,6 @@ package mekanism.client;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,18 +17,16 @@ import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
-import mekanism.common.item.ItemConfigurator;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
+import mekanism.common.item.IModeItem;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketFreeRunnerData;
-import mekanism.common.network.PacketItemStack;
+import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
@@ -76,7 +73,7 @@ public class ClientTickHandler {
                     return minecraft.currentScreen == null && minecraft.gameSettings.keyBindJump.isKeyDown();
                 } else if (mode == JetpackMode.HOVER) {
                     boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
-                    boolean descending = MekanismKeyHandler.sneakKey.isKeyDown();
+                    boolean descending = minecraft.gameSettings.keyBindSneak.isKeyDown();
                     //if ((!ascending && !descending) || (ascending && descending) || minecraft.currentScreen != null || (descending && minecraft.currentScreen == null))
                     //Simplifies to
                     if (!ascending || descending || minecraft.currentScreen != null) {
@@ -215,7 +212,7 @@ public class ClientTickHandler {
 
             if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemJetpack) {
                 MekanismClient.updateKey(minecraft.gameSettings.keyBindJump, KeySync.ASCEND);
-                MekanismClient.updateKey(MekanismKeyHandler.sneakKey, KeySync.DESCEND);
+                MekanismClient.updateKey(minecraft.gameSettings.keyBindSneak, KeySync.DESCEND);
             }
 
             if (!minecraft.player.isCreative() && !minecraft.player.isSpectator()) {
@@ -234,7 +231,7 @@ public class ClientTickHandler {
                     minecraft.player.fallDistance = 0.0F;
                 } else if (mode == JetpackMode.HOVER) {
                     boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
-                    boolean descending = MekanismKeyHandler.sneakKey.isKeyDown();
+                    boolean descending = minecraft.gameSettings.keyBindSneak.isKeyDown();
                     if ((!ascending && !descending) || (ascending && descending) || minecraft.currentScreen != null) {
                         if (motion.getY() > 0) {
                             minecraft.player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, 0), motion.getZ());
@@ -275,24 +272,12 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void onMouseEvent(MouseScrollEvent event) {
-        if (MekanismConfig.client.allowConfiguratorModeScroll.get() && minecraft.player != null && minecraft.player.isShiftKeyDown()) {
-            ItemStack stack = minecraft.player.getHeldItemMainhand();
-            if (stack.getItem() instanceof ItemConfigurator) {
-                double delta = event.getScrollDelta();
-                if (delta != 0) {
-                    ItemConfigurator configurator = (ItemConfigurator) stack.getItem();
-                    RenderTickHandler.modeSwitchTimer = 100;
-                    int newVal = configurator.getState(stack).ordinal() + ((int) delta) % EnumUtils.CONFIGURATOR_MODES.length;
-                    if (newVal > 0) {
-                        newVal = newVal % EnumUtils.CONFIGURATOR_MODES.length;
-                    } else if (newVal < 0) {
-                        newVal = EnumUtils.CONFIGURATOR_MODES.length + newVal;
-                    }
-                    ConfiguratorMode newMode = ConfiguratorMode.byIndexStatic(newVal);
-                    configurator.setState(stack, newMode);
-                    Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(newMode)));
-                    event.setCanceled(true);
-                }
+        if (MekanismConfig.client.allowModeScroll.get() && minecraft.player != null && minecraft.player.isShiftKeyDown()) {
+            int shift = (int) event.getScrollDelta();
+            if (shift != 0 && IModeItem.isModeItem(minecraft.player, EquipmentSlotType.MAINHAND)) {
+                RenderTickHandler.modeSwitchTimer = 100;
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, shift));
+                event.setCanceled(true);
             }
         }
     }

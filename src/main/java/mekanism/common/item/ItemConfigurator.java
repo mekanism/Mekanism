@@ -14,16 +14,15 @@ import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
@@ -42,20 +41,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItemNetwork, IItemHUDProvider {
+public class ItemConfigurator extends ItemEnergized implements IMekWrench, IModeItem, IItemHUDProvider {
 
     private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(60_000);//TODO: Config
     private static final FloatingLong ENERGY_PER_CONFIGURE = FloatingLong.createConst(400);
@@ -206,15 +203,27 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     }
 
     @Override
-    public void handlePacketData(IWorld world, ItemStack stack, PacketBuffer dataStream) {
-        if (!world.isRemote()) {
-            setState(stack, dataStream.readEnumValue(ConfiguratorMode.class));
-        }
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+        list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getState(stack)));
     }
 
     @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
-        list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getState(stack)));
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        ConfiguratorMode mode = getState(stack);
+        ConfiguratorMode newMode = mode.adjust(shift);
+        if (mode != newMode) {
+            setState(stack, newMode);
+            if (displayChangeMessage) {
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                      MekanismLang.CONFIGURE_STATE.translateColored(EnumColor.GRAY, newMode)));
+            }
+        }
+    }
+
+    @Nonnull
+    @Override
+    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+        return getState(stack).getTextComponent();
     }
 
     @ParametersAreNonnullByDefault

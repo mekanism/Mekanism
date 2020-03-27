@@ -181,5 +181,5 @@
   "item.mekanismadditions.walkie_talkie": "Walkie talkie",
   "item.mekanismadditions.white_balloon": "Bianco Palloncino",
   "item.mekanismadditions.yellow_balloon": "Giallo Palloncino",
-  "tooltip.mekanismadditions.channel": "Canale: %s"
+  "walkie.mekanismadditions.channel": "Canale: %s"
 }

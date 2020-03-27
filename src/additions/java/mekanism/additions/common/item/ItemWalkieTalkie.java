@@ -7,24 +7,23 @@ import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
-import mekanism.common.base.IItemNetwork;
+import mekanism.common.MekanismLang;
+import mekanism.common.item.IModeItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemWalkieTalkie extends Item implements IItemNetwork {
+public class ItemWalkieTalkie extends Item implements IModeItem {
 
     public ItemWalkieTalkie(Item.Properties properties) {
         super(properties.maxStackSize(1));
@@ -79,9 +78,23 @@ public class ItemWalkieTalkie extends Item implements IItemNetwork {
     }
 
     @Override
-    public void handlePacketData(IWorld world, ItemStack stack, PacketBuffer dataStream) {
-        if (!world.isRemote()) {
-            setChannel(stack, dataStream.readInt());
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        if (getOn(stack)) {
+            int channel = getChannel(stack);
+            int newChannel = Math.floorMod(channel + shift - 1, 8) + 1;
+            if (channel != newChannel) {
+                setChannel(stack, newChannel);
+                if (displayChangeMessage) {
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                          AdditionsLang.CHANNEL_CHANGE.translateColored(EnumColor.GRAY, newChannel)));
+                }
+            }
         }
+    }
+
+    @Nonnull
+    @Override
+    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+        return AdditionsLang.CHANNEL.translateColored(EnumColor.GRAY, getChannel(stack));
     }
 }
