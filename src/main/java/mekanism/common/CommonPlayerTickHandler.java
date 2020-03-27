@@ -1,10 +1,12 @@
 package mekanism.common;
 
+import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
@@ -32,6 +34,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommonPlayerTickHandler {
@@ -165,25 +168,75 @@ public class CommonPlayerTickHandler {
     public void onEntityAttacked(LivingAttackEvent event) {
         LivingEntity base = event.getEntityLiving();
         //Gas Mask checks
-        ItemStack headStack = base.getItemStackFromSlot(EquipmentSlotType.HEAD);
-        if (!headStack.isEmpty() && headStack.getItem() instanceof ItemGasMask) {
-            ItemStack chestStack = base.getItemStackFromSlot(EquipmentSlotType.CHEST);
-            if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
-                GasUtils.hasGas(chestStack) && event.getSource() == DamageSource.MAGIC) {
-                event.setCanceled(true);
+        if (event.getSource() == DamageSource.MAGIC) {
+            ItemStack headStack = base.getItemStackFromSlot(EquipmentSlotType.HEAD);
+            if (!headStack.isEmpty() && headStack.getItem() instanceof ItemGasMask) {
+                ItemStack chestStack = base.getItemStackFromSlot(EquipmentSlotType.CHEST);
+                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
+                    GasUtils.hasGas(chestStack)) {
+                    event.setCanceled(true);
+                    return;
+                }
             }
         }
         //Free runner checks
-        ItemStack feetStack = base.getItemStackFromSlot(EquipmentSlotType.FEET);
-        if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners) {
-            ItemFreeRunners boots = (ItemFreeRunners) feetStack.getItem();
-            if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL && event.getSource() == DamageSource.FALL) {
-                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(feetStack, 0);
-                if (energyContainer != null) {
-                    energyContainer.extract(FloatingLong.createConst(event.getAmount() * 50), Action.EXECUTE, AutomationType.MANUAL);
+        //Note: We have this here in addition to listening to LivingHurt, so as if we can fully block the damage
+        // then we don't play the hurt effect/sound, as cancelling LivingHurtEvent still causes that to happen
+        if (event.getSource() == DamageSource.FALL) {
+            IEnergyContainer energyContainer = getFreeRunnerEnergyContainer(base);
+            if (energyContainer != null) {
+                FloatingLong energyRequirement = MekanismConfig.general.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
+                FloatingLong simulatedExtract = energyContainer.extract(energyRequirement, Action.SIMULATE, AutomationType.MANUAL);
+                if (simulatedExtract.equals(energyRequirement)) {
+                    //If we could fully negate the damage cancel the event
+                    energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
                     event.setCanceled(true);
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onLivingHurt(LivingHurtEvent event) {
+        if (event.getSource() == DamageSource.FALL) {
+            //Free runner checks
+            IEnergyContainer energyContainer = getFreeRunnerEnergyContainer(event.getEntityLiving());
+            if (energyContainer != null) {
+                FloatingLong energyRequirement = MekanismConfig.general.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
+                FloatingLong extracted = energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
+                if (!extracted.isZero()) {
+                    //If we managed to remove any power, then we want to lower (or negate) the amount of fall damage
+                    FloatingLong remainder = energyRequirement.subtract(extracted);
+                    if (remainder.isZero()) {
+                        //If we used all the power we required, then cancel the event
+                        event.setCanceled(true);
+                    } else {
+                        float newDamage = remainder.divide(MekanismConfig.general.freeRunnerFallEnergyCost.get()).floatValue();
+                        if (newDamage == 0) {
+                            //If we ended up being close enough that it rounds down to zero, just cancel it anyways
+                            event.setCanceled(true);
+                        } else {
+                            //Otherwise reduce the damage
+                            event.setAmount(newDamage);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @return null if free runners are not being worn or they don't have an energy container for some reason
+     */
+    @Nullable
+    private IEnergyContainer getFreeRunnerEnergyContainer(LivingEntity base) {
+        ItemStack feetStack = base.getItemStackFromSlot(EquipmentSlotType.FEET);
+        if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners) {
+            ItemFreeRunners boots = (ItemFreeRunners) feetStack.getItem();
+            if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL) {
+                return StorageUtils.getEnergyContainer(feetStack, 0);
+            }
+        }
+        return null;
     }
 }

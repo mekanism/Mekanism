@@ -55,6 +55,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue prefilledGasTanks;
     public final CachedIntValue armoredJetpackArmor;
     public final CachedIntValue armoredJetpackToughness;
+    public final CachedFloatingLongValue freeRunnerFallEnergyCost;
     public final CachedBooleanValue aestheticWorldDamage;
     public final CachedBooleanValue opsBypassRestrictions;
     public final CachedIntValue maxJetpackGas;
@@ -168,6 +169,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("armoredJetpackArmor", 12));
         armoredJetpackToughness = CachedIntValue.wrap(this, builder.comment("Toughness value of the Armored Jetpack.")
               .define("armoredJetpackToughness", 2));
+        freeRunnerFallEnergyCost = CachedFloatingLongValue.define(this, builder, "Energy cost/multiplier in Joules for reducing fall damage with free runners. Energy cost is: FallDamage * freeRunnerFallEnergyCost. (1 FallDamage is 1 half heart)",
+              "freeRunnerFallEnergyCost", FloatingLong.createConst(50));
         aestheticWorldDamage = CachedBooleanValue.wrap(this, builder.comment("If enabled, lasers can break blocks and the flamethrower starts fires.")
               .define("aestheticWorldDamage", true));
         opsBypassRestrictions = CachedBooleanValue.wrap(this, builder.comment("Ops can bypass the block security restrictions if enabled.")

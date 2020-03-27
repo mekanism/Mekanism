@@ -810,6 +810,7 @@
   "tooltip.mekanism.security": "Security: %s",
   "tooltip.mekanism.stored": "Stored %s: %s",
   "tooltip.mekanism.stored.flamethrower": "Flamethrower: %s",
+  "tooltip.mekanism.stored.free_runners": "Runners Energy: %s",
   "tooltip.mekanism.stored.jetpack": "Jetpack Fuel: %s",
   "tooltip.mekanism.stored_energy": "Stored energy: %s",
   "transmission.mekanism.energy": "Energy",

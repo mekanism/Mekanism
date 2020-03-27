@@ -51,9 +51,10 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public int superheatingElements;
 
-    public int waterVolume;
-
-    public int steamVolume;
+    private int waterVolume;
+    private int steamVolume;
+    private int waterTankCapacity;
+    private int steamTankCapacity;
 
     public Coord4D upperRenderLocation;
 
@@ -62,11 +63,9 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     private List<IChemicalTank<Gas, GasStack>> gasTanks;
 
     public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
-        waterTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.waterVolume * BoilerUpdateProtocol.WATER_PER_TANK,
-              fluid -> fluid.getFluid().isIn(FluidTags.WATER));
+        waterTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
         fluidTanks = Collections.singletonList(waterTank);
-        steamTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK,
-              gas -> gas == MekanismGases.STEAM.getGas());
+        steamTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getSteamTankCapacity(), gas -> gas == MekanismGases.STEAM.getGas());
         gasTanks = Collections.singletonList(steamTank);
     }
 
@@ -133,6 +132,32 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
         temperature += heatToAbsorb / locations.size();
         heatToAbsorb = 0;
         return temperature;
+    }
+
+    public int getWaterTankCapacity() {
+        return waterTankCapacity;
+    }
+
+    public int getSteamTankCapacity() {
+        return steamTankCapacity;
+    }
+
+    public int getWaterVolume() {
+        return waterVolume;
+    }
+
+    public void setWaterVolume(int volume) {
+        waterVolume = volume;
+        waterTankCapacity = getWaterVolume() * BoilerUpdateProtocol.WATER_PER_TANK;
+    }
+
+    public int getSteamVolume() {
+        return steamVolume;
+    }
+
+    public void setSteamVolume(int volume) {
+        steamVolume = volume;
+        steamTankCapacity = getSteamVolume() * BoilerUpdateProtocol.STEAM_PER_TANK;
     }
 
     @Nonnull

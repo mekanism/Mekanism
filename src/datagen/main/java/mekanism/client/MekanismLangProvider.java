@@ -360,6 +360,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.FREE_RUNNERS_MODE, "Runners Mode: %s");
         add(MekanismLang.JETPACK_MODE, "Jetpack Mode: %s");
         add(MekanismLang.SCUBA_TANK_MODE, "Scuba Tank: %s");
+        add(MekanismLang.FREE_RUNNERS_STORED, "Runners Energy: %s");
         add(MekanismLang.FLAMETHROWER_STORED, "Flamethrower: %s");
         add(MekanismLang.JETPACK_STORED, "Jetpack Fuel: %s");
         //Gui stuff

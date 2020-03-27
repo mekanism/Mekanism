@@ -36,6 +36,10 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 public class StorageUtils {
 
     public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap) {
+        addStoredEnergy(stack, tooltip, showMissingCap, MekanismLang.STORED_ENERGY);
+    }
+
+    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, ILangEntry langEntry) {
         if (Capabilities.STRICT_ENERGY_CAPABILITY != null) {
             //Ensure the capability is not null, as the first call to addInformation happens before capability injection
             Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
@@ -43,11 +47,11 @@ public class StorageUtils {
                 IStrictEnergyHandler energyHandlerItem = capability.get();
                 int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
                 for (int container = 0; container < energyContainerCount; container++) {
-                    tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
+                    tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
                           EnergyDisplay.of(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container))));
                 }
             } else if (showMissingCap) {
-                tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
+                tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
             }
         }
     }
