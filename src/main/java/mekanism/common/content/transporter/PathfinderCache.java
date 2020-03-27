@@ -1,29 +1,29 @@
 package mekanism.common.content.transporter;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import net.minecraft.util.Direction;
 
 public class PathfinderCache {
 
-    private static Map<PathData, List<Coord4D>> cachedPaths = new Object2ObjectOpenHashMap<>();
+    private static Map<PathData, CachedPath> cachedPaths = new Object2ObjectOpenHashMap<>();
 
     public static void onChanged(Coord4D location) {
         reset();
     }
 
-    public static void addCachedPath(PathData data, List<Coord4D> coords) {
-        cachedPaths.put(data, coords);
+    public static void addCachedPath(PathData data, List<Coord4D> coords, double cost) {
+        cachedPaths.put(data, new CachedPath(coords, cost));
     }
 
-    public static List<Coord4D> getCache(Coord4D start, Coord4D end, Set<Direction> sides) {
-        List<Coord4D> ret = null;
+    public static CachedPath getCache(Coord4D start, Coord4D end, Set<Direction> sides) {
+        CachedPath ret = null;
         for (Direction side : sides) {
-            List<Coord4D> test = cachedPaths.get(new PathData(start, end, side));
-            if (ret == null || (test != null && test.size() < ret.size())) {
+            CachedPath test = cachedPaths.get(new PathData(start, end, side));
+            if (ret == null || (test != null && test.getCost() < ret.getCost())) {
                 ret = test;
             }
         }
@@ -32,6 +32,25 @@ public class PathfinderCache {
 
     public static void reset() {
         cachedPaths.clear();
+    }
+
+    public static class CachedPath {
+
+        private List<Coord4D> path;
+        private double cost;
+
+        public CachedPath(List<Coord4D> path, double cost) {
+            this.path = path;
+            this.cost = cost;
+        }
+
+        public List<Coord4D> getPath() {
+            return path;
+        }
+
+        public double getCost() {
+            return cost;
+        }
     }
 
     public static class PathData {

@@ -1,10 +1,5 @@
 package mekanism.common.content.transporter;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -14,9 +9,16 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.content.transporter.PathfinderCache.CachedPath;
 import mekanism.common.content.transporter.PathfinderCache.PathData;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
@@ -33,7 +35,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
-import org.apache.commons.lang3.tuple.Pair;
 
 public final class TransporterPathfinder {
 
@@ -75,9 +76,9 @@ public final class TransporterPathfinder {
         TransitResponse response = data.getResponse();
         if (response.getSendingAmount() >= min) {
             Coord4D dest = data.getLocation();
-            List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, data.getSides());
-            if (test != null && checkPath(start.world(), test, stack, chunkMap)) {
-                return new Destination(test, false, response, 0).calculateScore(start.world(), chunkMap);
+            CachedPath test = PathfinderCache.getCache(start.coord(), dest, data.getSides());
+            if (test != null && checkPath(start.world(), test.getPath(), stack, chunkMap)) {
+                return new Destination(test.getPath(), false, response, test.getCost());
             }
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
@@ -87,7 +88,7 @@ public final class TransporterPathfinder {
             }, start.world(), dest, start.coord(), stack, chunkMap);
             List<Coord4D> path = p.getPath();
             if (path.size() >= 2) {
-                PathfinderCache.addCachedPath(new PathData(start.coord(), dest, p.getSide()), path);
+                PathfinderCache.addCachedPath(new PathData(start.coord(), dest, p.getSide()), path, p.finalScore);
                 return new Destination(path, false, response, p.finalScore);
             }
         }
