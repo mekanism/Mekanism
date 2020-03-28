@@ -2,6 +2,7 @@ package mekanism.common.transmitters.grid;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -21,6 +22,10 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
     public double heatTransferred = 0;
 
     public HeatNetwork() {
+    }
+
+    public HeatNetwork(UUID networkID) {
+        super(networkID);
     }
 
     public HeatNetwork(Collection<HeatNetwork> networks) {

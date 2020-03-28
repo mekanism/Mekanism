@@ -6,6 +6,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import net.minecraft.util.Direction;
@@ -32,6 +34,29 @@ public class TransmitterNetworkRegistry {
     private Set<IGridTransmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
     private Map<Coord4D, IGridTransmitter<?, ?, ?>> orphanTransmitters = new Object2ObjectOpenHashMap<>();
     private Map<Coord4D, IGridTransmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
+
+    private Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
+
+    public void addClientNetwork(UUID networkID, DynamicNetwork<?, ?, ?> network) {
+        if (clientNetworks.containsKey(networkID)) {
+            logger.warn("Network with id {} already exists", networkID);
+        } else {
+            clientNetworks.put(networkID, network);
+        }
+    }
+
+    @Nullable
+    public DynamicNetwork<?, ?, ?> getClientNetwork(UUID networkID) {
+        return clientNetworks.get(networkID);
+    }
+
+    public void removeClientNetwork(DynamicNetwork<?, ?, ?> network) {
+        clientNetworks.remove(network.getUUID());
+    }
+
+    public void clearClientNetworks() {
+        clientNetworks.clear();
+    }
 
     public static void initiate() {
         if (!loaderRegistered) {

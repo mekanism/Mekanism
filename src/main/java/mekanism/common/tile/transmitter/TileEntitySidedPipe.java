@@ -310,9 +310,6 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
         return nbtTags;
     }
 
-    protected void onRefresh() {
-    }
-
     public void refreshConnections() {
         if (handlesRedstone()) {
             boolean previouslyPowered = redstonePowered;

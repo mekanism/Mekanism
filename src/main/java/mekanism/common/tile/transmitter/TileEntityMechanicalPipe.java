@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -186,6 +187,11 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Override
     public FluidNetwork createNewNetwork() {
         return new FluidNetwork();
+    }
+
+    @Override
+    public FluidNetwork createNewNetworkWithID(UUID networkID) {
+        return new FluidNetwork(networkID);
     }
 
     @Override

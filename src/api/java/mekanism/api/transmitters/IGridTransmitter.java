@@ -1,6 +1,7 @@
 package mekanism.api.transmitters;
 
 import java.util.Collection;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -61,6 +62,8 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     void setOrphan(boolean orphaned);
 
     NETWORK createEmptyNetwork();
+
+    NETWORK createEmptyNetworkWithID(UUID networkID);
 
     NETWORK mergeNetworks(Collection<NETWORK> toMerge);
 

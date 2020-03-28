@@ -3,6 +3,7 @@ package mekanism.client;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.UUID;
+import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.network.PacketKey;
@@ -37,6 +38,7 @@ public class MekanismClient {
         Mekanism.playerState.clear();
         Mekanism.activeVibrators.clear();
         Mekanism.freeRunnerOn.clear();
+        TransmitterNetworkRegistry.getInstance().clearClientNetworks();
 
         for (IModule module : Mekanism.modulesLoaded) {
             module.resetClient();

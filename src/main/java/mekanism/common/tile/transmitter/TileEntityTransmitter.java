@@ -3,10 +3,11 @@ package mekanism.common.tile.transmitter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
@@ -17,7 +18,6 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.PacketDataRequest;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
@@ -25,6 +25,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -39,7 +40,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public TransmitterImpl<A, N, BUFFER> transmitterDelegate;
 
     public boolean unloaded = true;
-    private boolean dataRequest = false;
     public boolean delayedRefresh = false;
 
     private N lastClientNetwork = null;
@@ -55,6 +55,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     public abstract N createNewNetwork();
+
+    public abstract N createNewNetworkWithID(UUID networkID);
 
     public abstract N createNetworkByMerging(Collection<N> networks);
 
@@ -76,12 +78,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
             // time to ensure that the transmitter has been registered.
             delayedRefresh = false;
             refreshConnections();
-        }
-        if (isRemote()) {
-            if (!dataRequest) {
-                dataRequest = true;
-                Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
-            }
         }
     }
 
@@ -157,11 +153,11 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         }
     }
 
+    //TODO: Re-evaluate
     private void refreshNetwork() {
         //Queue an update for all the transmitters in the network just in case something went wrong
         // and to update the rendering of them
         N network = getTransmitter().getTransmitterNetwork();
-        network.queueClientUpdate(network.getTransmitters());
         //Copy values into an array so that we don't risk a CME
         IGridTransmitter<A, N, BUFFER>[] transmitters = network.getTransmitters().toArray(new IGridTransmitter[0]);
         //TODO: Make some better way of refreshing the connections, given we only need to refresh
@@ -354,5 +350,47 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
             return Capabilities.ALLOY_INTERACTION_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        TransmitterImpl<A, N, BUFFER> transmitter = getTransmitter();
+        if (transmitter.hasTransmitterNetwork()) {
+            updateTag.putUniqueId(NBTConstants.NETWORK, transmitter.getTransmitterNetwork().getUUID());
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        //TODO: Do we want to save the last network id
+        //TODO: Make the "first" transmitter sync contents/ratio?
+        TransmitterImpl<A, N, BUFFER> transmitter = getTransmitter();
+        if (tag.hasUniqueId(NBTConstants.NETWORK)) {
+            UUID networkID = tag.getUniqueId(NBTConstants.NETWORK);
+            if (transmitter.hasTransmitterNetwork() && transmitter.getTransmitterNetwork().getUUID().equals(networkID)) {
+                //Nothing needs to be done
+                return;
+            }
+            TransmitterNetworkRegistry networkRegistry = TransmitterNetworkRegistry.getInstance();
+            DynamicNetwork<?, ?, ?> clientNetwork = networkRegistry.getClientNetwork(networkID);
+            if (clientNetwork == null) {
+                N network = transmitter.createEmptyNetworkWithID(networkID);
+                network.register();
+                transmitter.setTransmitterNetwork(network);
+                network.updateCapacity();
+                networkRegistry.addClientNetwork(networkID, network);
+            } else {
+                //TODO: Validate network type?
+                clientNetwork.register();
+                transmitter.setTransmitterNetwork((N) clientNetwork);
+                clientNetwork.updateCapacity();
+            }
+        } else {
+            transmitter.setTransmitterNetwork(null);
+        }
     }
 }

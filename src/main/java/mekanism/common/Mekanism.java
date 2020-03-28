@@ -13,7 +13,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
-import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientProxy;
 import mekanism.client.ClientTickHandler;
@@ -171,7 +170,6 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::onEnergyTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onGasTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onLiquidTransferred);
-        MinecraftForge.EVENT_BUS.addListener(this::onTransmittersAddedEvent);
         MinecraftForge.EVENT_BUS.addListener(this::onClientTickUpdate);
         MinecraftForge.EVENT_BUS.addListener(this::chunkSave);
         MinecraftForge.EVENT_BUS.addListener(this::onChunkDataLoad);
@@ -371,13 +369,6 @@ public class Mekanism {
     private void onLiquidTransferred(FluidTransferEvent event) {
         try {
             packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.fluidNetwork, event.fluidType, event.fluidScale), event.fluidNetwork);
-        } catch (Exception ignored) {
-        }
-    }
-
-    private void onTransmittersAddedEvent(TransmittersAddedEvent event) {
-        try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.newNetwork, event.newTransmitters), event.network);
         } catch (Exception ignored) {
         }
     }

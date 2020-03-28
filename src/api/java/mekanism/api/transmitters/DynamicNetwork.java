@@ -1,21 +1,19 @@
 package mekanism.api.transmitters;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
 import mekanism.api.Range3D;
 import mekanism.api.text.IHasTextComponent;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,9 +27,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
      */
     private static final Direction[] DIRECTIONS = Direction.values();
 
+    //TODO: Can this stop being linked hash sets now that we sync with uuid?
     protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectLinkedOpenHashSet<>();
     protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectLinkedOpenHashSet<>();
-    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersAdded = new ObjectLinkedOpenHashSet<>();
 
     protected Set<Coord4D> possibleAcceptors = new ObjectOpenHashSet<>();
     protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
@@ -39,18 +37,19 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected Range3D packetRange = null;
     protected int capacity;
     protected boolean needsUpdate = false;
-    protected int updateDelay;
-    protected boolean firstUpdate = true;
     protected boolean updateSaveShares;
     @Nullable
     protected World world = null;
-    private Set<DelayQueue> updateQueue = new ObjectLinkedOpenHashSet<>();
     private boolean forceScaleUpdate = false;
 
-    private UUID uuid;
+    private final UUID uuid;
 
     public DynamicNetwork() {
-        uuid = UUID.randomUUID();
+        this(UUID.randomUUID());
+    }
+
+    public DynamicNetwork(UUID networkID) {
+        this.uuid = networkID;
     }
 
     public void addNewTransmitters(Collection<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> newTransmitters) {
@@ -82,13 +81,13 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
             }
 
             clampBuffer();
-            queueClientUpdate(transmittersToAdd);
             transmittersToAdd.clear();
             updateSaveShares = true;
             if (forceScaleUpdate) {
                 forceScaleUpdate = false;
                 forceScaleUpdate();
             }
+            needsUpdate = true;
         }
 
         if (!changedAcceptors.isEmpty()) {
@@ -188,7 +187,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : net.transmitters) {
             transmitter.setTransmitterNetwork((NETWORK) this);
             transmitters.add(transmitter);
-            transmittersAdded.add(transmitter);
         }
 
         transmittersToAdd.addAll(net.transmittersToAdd);
@@ -215,7 +213,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
             deregister();
             return null;
         }
-        IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> initTransmitter = transmitters.iterator().next();
+        IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> initTransmitter = firstTransmitter();
         Coord4D initCoord = initTransmitter.coord();
         int minX = initCoord.x;
         int minZ = initCoord.z;
@@ -238,22 +236,21 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void register() {
-        if (!isRemote()) {
-            TransmitterNetworkRegistry.getInstance().registerNetwork(this);
-        } else {
+        if (isRemote()) {
             MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte) 1));
+        } else {
+            TransmitterNetworkRegistry.getInstance().registerNetwork(this);
         }
     }
 
     public void deregister() {
         transmitters.clear();
         transmittersToAdd.clear();
-        transmittersAdded.clear();
-
-        if (!isRemote()) {
-            TransmitterNetworkRegistry.getInstance().removeNetwork(this);
-        } else {
+        if (isRemote()) {
             MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte) 0));
+            TransmitterNetworkRegistry.getInstance().removeClientNetwork(this);
+        } else {
+            TransmitterNetworkRegistry.getInstance().removeNetwork(this);
         }
     }
 
@@ -311,31 +308,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public void onUpdate() {
         if (!isRemote()) {
-            Iterator<DelayQueue> i = updateQueue.iterator();
-
-            try {
-                while (i.hasNext()) {
-                    DelayQueue q = i.next();
-                    if (q.delay > 0) {
-                        q.delay--;
-                    } else {
-                        transmittersAdded.addAll(transmitters);
-                        updateDelay = 1;
-                        i.remove();
-                    }
-                }
-            } catch (Exception ignored) {
-            }
-
-            if (updateDelay > 0) {
-                updateDelay--;
-                if (updateDelay == 0) {
-                    MinecraftForge.EVENT_BUS.post(new TransmittersAddedEvent(this, firstUpdate, (Collection) transmittersAdded));
-                    firstUpdate = false;
-                    transmittersAdded.clear();
-                    needsUpdate = true;
-                }
-            }
             if (updateSaveShares) {
                 //Update the save shares
                 updateSaveShares();
@@ -355,15 +327,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     @Override
     public void clientTick() {
         //TODO: No implementations use this anymore, do we want to remove the dynamic network ticking on the client
-    }
-
-    public void queueClientUpdate(Collection<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> newTransmitters) {
-        transmittersAdded.addAll(newTransmitters);
-        updateDelay = 5;
-    }
-
-    public void addUpdate(PlayerEntity player) {
-        updateQueue.add(new DelayQueue(player));
     }
 
     public boolean isCompatibleWith(NETWORK other) {
@@ -402,10 +365,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return transmittersToAdd;
     }
 
-    public Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> getTransmittersAdded() {
-        return transmittersAdded;
-    }
-
     public Set<Coord4D> getPossibleAcceptors() {
         return possibleAcceptors;
     }
@@ -422,19 +381,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return uuid;
     }
 
-    public static class TransmittersAddedEvent extends Event {
-
-        public DynamicNetwork<?, ?, ?> network;
-        public boolean newNetwork;
-        public Collection<IGridTransmitter<?, ?, ?>> newTransmitters;
-
-        public TransmittersAddedEvent(DynamicNetwork<?, ?, ?> net, boolean newNet, Collection<IGridTransmitter<?, ?, ?>> added) {
-            network = net;
-            newNetwork = newNet;
-            newTransmitters = added;
-        }
-    }
-
     public static class ClientTickUpdate extends Event {
 
         public DynamicNetwork<?, ?, ?> network;
@@ -443,27 +389,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         public ClientTickUpdate(DynamicNetwork<?, ?, ?> net, byte b) {
             network = net;
             operation = b;
-        }
-    }
-
-    public static class DelayQueue {
-
-        public PlayerEntity player;
-        public int delay;
-
-        public DelayQueue(PlayerEntity p) {
-            player = p;
-            delay = 5;
-        }
-
-        @Override
-        public int hashCode() {
-            return player.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return o instanceof DelayQueue && ((DelayQueue) o).player.equals(this.player);
         }
     }
 }

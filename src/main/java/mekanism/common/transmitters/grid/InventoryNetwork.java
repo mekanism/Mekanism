@@ -1,11 +1,12 @@
 package mekanism.common.transmitters.grid;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -24,6 +25,10 @@ import net.minecraft.world.chunk.IChunk;
 public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork, Void> {
 
     public InventoryNetwork() {
+    }
+
+    public InventoryNetwork(UUID networkID) {
+        super(networkID);
     }
 
     public InventoryNetwork(Collection<InventoryNetwork> networks) {

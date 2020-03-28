@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -45,6 +46,12 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     private FloatingLong floatingLongCapacity = FloatingLong.ZERO;
 
     public EnergyNetwork() {
+        energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsFloatingLong, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
+        energyContainers = Collections.singletonList(energyContainer);
+    }
+
+    public EnergyNetwork(UUID networkID) {
+        super(networkID);
         energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsFloatingLong, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
         energyContainers = Collections.singletonList(energyContainer);
     }

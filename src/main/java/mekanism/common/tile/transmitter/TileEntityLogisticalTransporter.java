@@ -1,11 +1,12 @@
 package mekanism.common.tile.transmitter;
 
-import java.util.Collection;
-import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -150,6 +151,11 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public InventoryNetwork createNewNetwork() {
         return new InventoryNetwork();
+    }
+
+    @Override
+    public InventoryNetwork createNewNetworkWithID(UUID networkID) {
+        return new InventoryNetwork(networkID);
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -188,6 +189,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public GasNetwork createNewNetwork() {
         return new GasNetwork();
+    }
+
+    @Override
+    public GasNetwork createNewNetworkWithID(UUID networkID) {
+        return new GasNetwork(networkID);
     }
 
     @Override

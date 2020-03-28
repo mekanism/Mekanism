@@ -2,6 +2,7 @@ package mekanism.common.transmitters;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -92,6 +93,11 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     @Override
     public NETWORK createEmptyNetwork() {
         return getTileEntity().createNewNetwork();
+    }
+
+    @Override
+    public NETWORK createEmptyNetworkWithID(UUID networkID) {
+        return getTileEntity().createNewNetworkWithID(networkID);
     }
 
     @Override

@@ -2,6 +2,7 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
@@ -47,6 +48,11 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public HeatNetwork createNewNetwork() {
         return new HeatNetwork();
+    }
+
+    @Override
+    public HeatNetwork createNewNetworkWithID(UUID networkID) {
+        return new HeatNetwork(networkID);
     }
 
     @Override

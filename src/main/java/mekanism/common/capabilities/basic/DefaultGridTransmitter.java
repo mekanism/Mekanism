@@ -1,6 +1,7 @@
 package mekanism.common.capabilities.basic;
 
 import java.util.Collection;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.math.FloatingLong;
@@ -113,6 +114,11 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, B
 
     @Override
     public N createEmptyNetwork() {
+        return null;
+    }
+
+    @Override
+    public N createEmptyNetworkWithID(UUID networkID) {
         return null;
     }
 

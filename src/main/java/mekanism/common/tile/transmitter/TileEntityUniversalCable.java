@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -184,6 +185,11 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Override
     public EnergyNetwork createNewNetwork() {
         return new EnergyNetwork();
+    }
+
+    @Override
+    public EnergyNetwork createNewNetworkWithID(UUID networkID) {
+        return new EnergyNetwork(networkID);
     }
 
     @Nonnull

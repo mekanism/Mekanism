@@ -24,6 +24,7 @@ public final class NBTConstants {
     public static final String LENGTH = "length";
     public static final String LOWER_VOLUME = "lowerVolume";
     public static final String MUFFLING_COUNT = "muffling";
+    public static final String NETWORK = "network";
     public static final String OWNER_NAME = "ownerName";
     public static final String RENDERING = "rendering";
     public static final String RENDER_LOCATION = "renderLocation";

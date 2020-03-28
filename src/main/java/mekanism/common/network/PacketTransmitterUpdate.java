@@ -1,35 +1,25 @@
 package mekanism.common.network;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.PacketHandler;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.transmitters.grid.GasNetwork;
-import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-//TODO: Do we want to split this into multiple packets
 public class PacketTransmitterUpdate {
 
     private PacketType packetType;
 
-    private Coord4D coord4D;
+    private UUID networkID;
 
     private float energyScale;
 
@@ -40,16 +30,6 @@ public class PacketTransmitterUpdate {
     @Nonnull
     private FluidStack fluidStack = FluidStack.EMPTY;
     private float fluidScale;
-
-    private boolean newNetwork;
-    private Collection<IGridTransmitter<?, ?, ?>> transmittersAdded;
-    private Collection<Coord4D> transmitterCoords;
-
-    public PacketTransmitterUpdate(DynamicNetwork<?, ?, ?> network, boolean newNetwork, Collection<IGridTransmitter<?, ?, ?>> transmittersAdded) {
-        this(network, PacketType.UPDATE);
-        this.newNetwork = newNetwork;
-        this.transmittersAdded = transmittersAdded;
-    }
 
     public PacketTransmitterUpdate(EnergyNetwork network, float energyScale) {
         this(network, PacketType.ENERGY);
@@ -69,12 +49,12 @@ public class PacketTransmitterUpdate {
     }
 
     private PacketTransmitterUpdate(DynamicNetwork<?, ?, ?> network, PacketType type) {
-        this(type, network.firstTransmitter().coord());
+        this(type, network.getUUID());
     }
 
-    private PacketTransmitterUpdate(PacketType type, Coord4D coord) {
+    private PacketTransmitterUpdate(PacketType type, UUID networkID) {
         packetType = type;
-        coord4D = coord;
+        this.networkID = networkID;
     }
 
     public static void handle(PacketTransmitterUpdate message, Supplier<Context> context) {
@@ -83,46 +63,24 @@ public class PacketTransmitterUpdate {
             return;
         }
         context.get().enqueueWork(() -> {
-            if (message.coord4D == null) {
-                return;
-            }
-            TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
-            Optional<IGridTransmitter<?, ?, ?>> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null));
-            if (capability.isPresent()) {
-                //TODO: Evaluate this stuff and see if we can do it in a way that is fine for generics
-                IGridTransmitter transmitter = capability.get();
-                if (message.packetType == PacketType.UPDATE) {
-                    DynamicNetwork<?, ?, ?> network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
-                    network.register();
-                    transmitter.setTransmitterNetwork(network);
-                    for (Coord4D coord : message.transmitterCoords) {
-                        TileEntity tile = MekanismUtils.getTileEntity(player.world, coord.getPos());
-                        CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)
-                              .ifPresent(gridTransmitter -> ((IGridTransmitter) gridTransmitter).setTransmitterNetwork(network));
-                    }
-                    network.updateCapacity();
-                    return;
+            DynamicNetwork<?, ?, ?> clientNetwork = TransmitterNetworkRegistry.getInstance().getClientNetwork(message.networkID);
+            //Note: We set the information even if opaque transmitters is true in case the client turns the config setting off
+            // so that they will have the proper information to then render
+            if (message.packetType == PacketType.ENERGY) {
+                if (clientNetwork instanceof EnergyNetwork) {
+                    ((EnergyNetwork) clientNetwork).energyScale = message.energyScale;
                 }
-                if (MekanismConfig.client.opaqueTransmitters.get() || !transmitter.hasTransmitterNetwork()) {
-                    return;
+            } else if (message.packetType == PacketType.GAS) {
+                if (clientNetwork instanceof GasNetwork) {
+                    GasNetwork net = (GasNetwork) clientNetwork;
+                    net.gasTank.setStack(message.gasStack);
+                    net.gasScale = message.gasScale;
                 }
-                TransmissionType transmissionType = transmitter.getTransmissionType();
-                if (message.packetType == PacketType.ENERGY) {
-                    if (transmissionType == TransmissionType.ENERGY) {
-                        ((EnergyNetwork) transmitter.getTransmitterNetwork()).energyScale = message.energyScale;
-                    }
-                } else if (message.packetType == PacketType.GAS) {
-                    if (transmissionType == TransmissionType.GAS) {
-                        GasNetwork net = (GasNetwork) transmitter.getTransmitterNetwork();
-                        net.gasTank.setStack(message.gasStack);
-                        net.gasScale = message.gasScale;
-                    }
-                } else if (message.packetType == PacketType.FLUID) {
-                    if (transmissionType == TransmissionType.FLUID) {
-                        FluidNetwork net = (FluidNetwork) transmitter.getTransmitterNetwork();
-                        net.fluidTank.setStack(message.fluidStack);
-                        net.fluidScale = message.fluidScale;
-                    }
+            } else if (message.packetType == PacketType.FLUID) {
+                if (clientNetwork instanceof FluidNetwork) {
+                    FluidNetwork net = (FluidNetwork) clientNetwork;
+                    net.fluidTank.setStack(message.fluidStack);
+                    net.fluidScale = message.fluidScale;
                 }
             }
         });
@@ -131,16 +89,9 @@ public class PacketTransmitterUpdate {
 
     public static void encode(PacketTransmitterUpdate pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.packetType);
-        pkt.coord4D.write(buf);
-        PacketHandler.log("Sending '" + pkt.packetType + "' update message from coordinate " + pkt.coord4D);
+        buf.writeUniqueId(pkt.networkID);
+        PacketHandler.log("Sending '" + pkt.packetType + "' update message for network with id " + pkt.networkID);
         switch (pkt.packetType) {
-            case UPDATE:
-                buf.writeBoolean(pkt.newNetwork);
-                buf.writeInt(pkt.transmittersAdded.size());
-                for (IGridTransmitter<?, ?, ?> transmitter : pkt.transmittersAdded) {
-                    transmitter.coord().write(buf);
-                }
-                break;
             case ENERGY:
                 buf.writeFloat(pkt.energyScale);
                 break;
@@ -159,16 +110,8 @@ public class PacketTransmitterUpdate {
     }
 
     public static PacketTransmitterUpdate decode(PacketBuffer buf) {
-        PacketTransmitterUpdate packet = new PacketTransmitterUpdate(buf.readEnumValue(PacketType.class), Coord4D.read(buf));
-        if (packet.packetType == PacketType.UPDATE) {
-            packet.newNetwork = buf.readBoolean();
-            packet.transmitterCoords = new ObjectOpenHashSet<>();
-            int numTransmitters = buf.readInt();
-
-            for (int i = 0; i < numTransmitters; i++) {
-                packet.transmitterCoords.add(Coord4D.read(buf));
-            }
-        } else if (packet.packetType == PacketType.ENERGY) {
+        PacketTransmitterUpdate packet = new PacketTransmitterUpdate(buf.readEnumValue(PacketType.class), buf.readUniqueId());
+        if (packet.packetType == PacketType.ENERGY) {
             packet.energyScale = buf.readFloat();
         } else if (packet.packetType == PacketType.GAS) {
             packet.gasStack = GasStack.readFromPacket(buf);
@@ -181,7 +124,6 @@ public class PacketTransmitterUpdate {
     }
 
     public enum PacketType {
-        UPDATE,
         ENERGY,
         GAS,
         FLUID

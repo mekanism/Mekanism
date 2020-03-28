@@ -1,6 +1,7 @@
 package mekanism.common.capabilities.basic;
 
 import java.util.Collection;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -169,6 +170,11 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
 
     @Override
     public InventoryNetwork createEmptyNetwork() {
+        return null;
+    }
+
+    @Override
+    public InventoryNetwork createEmptyNetworkWithID(UUID networkID) {
         return null;
     }
 

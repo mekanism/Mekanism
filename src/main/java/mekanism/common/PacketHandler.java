@@ -16,7 +16,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketClearRecipeCache;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketContainerEditMode;
-import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketDropperUse;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketFlamethrowerData;
@@ -177,7 +176,6 @@ public class PacketHandler {
         registerClientToServer(PacketModeChange.class, PacketModeChange::encode, PacketModeChange::decode, PacketModeChange::handle);
         registerMessage(PacketTileEntity.class, PacketTileEntity::encode, PacketTileEntity::decode, PacketTileEntity::handle);
         registerMessage(PacketPortalFX.class, PacketPortalFX::encode, PacketPortalFX::decode, PacketPortalFX::handle);
-        registerMessage(PacketDataRequest.class, PacketDataRequest::encode, PacketDataRequest::decode, PacketDataRequest::handle);
         registerMessage(PacketSecurityMode.class, PacketSecurityMode::encode, PacketSecurityMode::decode, PacketSecurityMode::handle);
         registerMessage(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
         registerMessage(PacketRemoveUpgrade.class, PacketRemoveUpgrade::encode, PacketRemoveUpgrade::decode, PacketRemoveUpgrade::handle);
