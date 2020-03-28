@@ -94,21 +94,10 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
 
     @Override
     public void tick() {
-        if (isRemote()) {
-            if (delayTicks == 5) {
-                delayTicks = 6;
-                refreshConnections();
-                // refresh the model to fix weird model caching issues
-                requestModelDataUpdate();
-                MekanismUtils.updateBlock(getWorld(), pos);
-            } else if (delayTicks < 5) {
-                delayTicks++;
-            }
-        } else if (forceUpdate) {
+        if (!isRemote() && forceUpdate) {
             refreshConnections();
             forceUpdate = false;
         }
-
     }
 
     public boolean handlesRedstone() {
@@ -292,7 +281,6 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
             int index = i;
             NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.CONNECTION + index, ConnectionType::byIndexStatic, color -> connectionTypes[index] = color);
         }
-        //TODO: Do we need to update the model here
     }
 
     @Nonnull
@@ -306,7 +294,7 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
         return nbtTags;
     }
 
-    public void refreshConnections() {
+    private void recheckRedstone() {
         if (handlesRedstone()) {
             boolean previouslyPowered = redstonePowered;
             if (redstoneReactive) {
@@ -323,8 +311,11 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
             }
             redstoneSet = true;
         }
+    }
 
+    public void refreshConnections() {
         if (!isRemote()) {
+            recheckRedstone();
             byte possibleTransmitters = getPossibleTransmitterConnections();
             byte possibleAcceptors = getPossibleAcceptorConnections();
             byte newlyEnabledTransmitters = 0;
@@ -391,7 +382,7 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
             if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
                 TileEntitySidedPipe tile = MekanismUtils.getTileEntity(TileEntitySidedPipe.class, getWorld(), getPos().offset(side));
                 if (tile != null) {
-                    tile.refreshConnections();
+                    tile.refreshConnections(side.getOpposite());
                 }
             }
         }
@@ -458,8 +449,12 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
     }
 
     public void onNeighborBlockChange(Direction side) {
-        //TODO: Figure out why does this not check the side specific one
-        refreshConnections();
+        if (!isRemote()) {
+            //Note: The block might have changed if the redstone level changed
+            // so we need to recheck the redstone before we can recheck the connections.
+            recheckRedstone();
+        }
+        refreshConnections(side);
     }
 
     public ConnectionType getConnectionType(Direction side) {
@@ -541,7 +536,8 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
 
     @Override
     public void requestModelDataUpdate() {
-        updateModelData();
+        //We set our model data to null so that we make sure an updated variant is called when getModelData is next called
+        modelData = null;
         super.requestModelDataUpdate();
     }
 
@@ -550,12 +546,13 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
     public TransmitterModelData getModelData() {
         if (modelData == null) {
             modelData = initModelData();
+            //Update the model data with side/color specific information
+            updateModelData(modelData);
         }
         return modelData;
     }
 
-    protected void updateModelData() {
-        TransmitterModelData modelData = getModelData();
+    protected void updateModelData(TransmitterModelData modelData) {
         //Update the data, using information about if there is actually a connection on a given side
         for (Direction side : EnumUtils.DIRECTIONS) {
             modelData.setConnectionData(side, getConnectionType(side));
