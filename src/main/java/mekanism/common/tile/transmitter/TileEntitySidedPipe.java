@@ -334,7 +334,14 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
             boolean sendDesc = false;
             if ((possibleTransmitters | possibleAcceptors) != getAllCurrentConnections()) {
                 sendDesc = true;
-                newlyEnabledTransmitters = getNewlyEnabledTransmitters(possibleTransmitters, currentTransmitterConnections);
+                if (possibleTransmitters != currentTransmitterConnections) {
+                    //If they don't match get the difference
+                    newlyEnabledTransmitters = (byte) (possibleTransmitters ^ currentTransmitterConnections);
+                    //Now remove all bits that already where enabled so we only have the
+                    // ones that are newly enabled. There is no need to recheck for a
+                    // network merge on two transmitters if one is no longer accessible
+                    newlyEnabledTransmitters &= ~currentTransmitterConnections;
+                }
             }
 
             currentTransmitterConnections = possibleTransmitters;
@@ -347,19 +354,6 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
                 sendUpdatePacket();
             }
         }
-    }
-
-    protected byte getNewlyEnabledTransmitters(byte possibleTransmitters, byte oldConnections) {
-        byte newlyEnabledTransmitters = 0;
-        if (possibleTransmitters != oldConnections) {
-            //If they don't match get the difference
-            newlyEnabledTransmitters = (byte) (possibleTransmitters ^ oldConnections);
-            //Now remove all bits that already where enabled so we only have the
-            // ones that are newly enabled. There is no need to recheck for a
-            // network merge on two transmitters if one is no longer accessible
-            newlyEnabledTransmitters &= ~oldConnections;
-        }
-        return newlyEnabledTransmitters;
     }
 
     public void refreshConnections(Direction side) {

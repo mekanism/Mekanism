@@ -40,7 +40,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public TransmitterImpl<A, N, BUFFER> transmitterDelegate;
 
     public boolean unloaded = true;
-    public boolean delayedRefresh = false;
+    public boolean hasFailedConnection;
 
     private N lastClientNetwork = null;
 
@@ -70,21 +70,16 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         unloaded = false;
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-        if (delayedRefresh) {
-            //Gets run the tick after the variable has been set. This is enough
-            // time to ensure that the transmitter has been registered.
-            delayedRefresh = false;
-            byte oldConnections = currentTransmitterConnections;
+    public void requestsUpdate() {
+        if (hasFailedConnection) {
+            hasFailedConnection = false;
+            byte oldConnections = getAllCurrentConnections();
             refreshConnections();
             //Note: We check what connections changed and if there is a sided pipe there also, then we have it refresh its connections
-            //TODO: Note how this fixes connection appearing like it is still connected
-            // but first look into if we can get it so that we just directly update "failed" connections to the
-            // proper values
-            byte newlyEnabledTransmitters = getNewlyEnabledTransmitters(currentAcceptorConnections, oldConnections);
-            if (newlyEnabledTransmitters != 0) {
+            byte allCurrentConnections = getAllCurrentConnections();
+            if (allCurrentConnections != oldConnections) {
+                //If they don't match get the difference
+                byte newlyEnabledTransmitters = (byte) (allCurrentConnections ^ oldConnections);
                 //If any sides are now valid transmitters that were not before recheck the connection
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
@@ -96,6 +91,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                 }
             }
         }
+        //TODO: Only do this if we didn't send a packet via failed connections in refreshConnections
+        sendUpdatePacket();
     }
 
     @Override

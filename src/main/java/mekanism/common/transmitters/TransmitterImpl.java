@@ -73,7 +73,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
 
     @Override
     public void connectionFailed() {
-        containingTile.delayedRefresh = true;
+        containingTile.hasFailedConnection = true;
     }
 
     @Override
@@ -142,7 +142,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
 
     @Override
     public void setRequestsUpdate() {
-        containingTile.sendUpdatePacket();
+        containingTile.requestsUpdate();
     }
 
     public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> getTileEntity() {
