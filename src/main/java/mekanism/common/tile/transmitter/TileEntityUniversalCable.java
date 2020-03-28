@@ -23,6 +23,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
 import mekanism.common.integration.EnergyCompatUtils;
@@ -32,6 +33,7 @@ import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.CapabilityUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -178,8 +180,12 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     }
 
     @Override
-    public boolean isValidAcceptor(TileEntity acceptor, Direction side) {
-        return CableUtils.isValidAcceptorOnSide(acceptor, side);
+    public boolean isValidAcceptor(TileEntity tile, Direction side) {
+        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
+              TransmissionType.checkTransmissionType(transmitter, TransmissionType.ENERGY)).isPresent()) {
+            return false;
+        }
+        return EnergyCompatUtils.hasStrictEnergyHandler(tile, side.getOpposite());
     }
 
     @Override

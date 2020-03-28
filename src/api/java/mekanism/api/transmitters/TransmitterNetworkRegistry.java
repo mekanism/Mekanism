@@ -179,13 +179,6 @@ public class TransmitterNetworkRegistry {
             }
 
             network.addNewTransmitters(finder.connectedTransmitters);
-
-            if (finder.someNetworksFailed) {
-                //At least one network that connection was attempted with is not compatible
-                // So inform this transmitter that there was a failed connection attempt
-                // so that it can refresh the connections
-                startOrphan.connectionFailed();
-            }
             return network;
         }
         return null;
@@ -223,8 +216,6 @@ public class TransmitterNetworkRegistry {
         public Set<N> networksFound = new ObjectOpenHashSet<>();
 
         private Deque<Coord4D> queue = new LinkedList<>();
-
-        public boolean someNetworksFailed;
 
         public OrphanPathFinder(IGridTransmitter<A, N, BUFFER> start) {
             startPoint = start;
@@ -277,10 +268,6 @@ public class TransmitterNetworkRegistry {
             if (net != null && net.compatibleWithBuffer(startPoint.getBuffer())) {
                 if (networksFound.isEmpty() || networksFound.iterator().next().isCompatibleWith(net)) {
                     networksFound.add(net);
-                } else {
-                    //If it a network was found but it is incompatible, then mark we have a failed
-                    // network so we can inform the transmitter it should do a tick delayed refresh
-                    someNetworksFailed = true;
                 }
             }
         }

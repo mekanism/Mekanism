@@ -21,6 +21,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.proxy.ProxyFluidHandler;
 import mekanism.common.registries.MekanismBlocks;
@@ -167,8 +168,12 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public boolean isValidAcceptor(TileEntity acceptor, Direction side) {
-        return PipeUtils.isValidAcceptorOnSide(acceptor, side);
+    public boolean isValidAcceptor(TileEntity tile, Direction side) {
+        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
+              TransmissionType.checkTransmissionType(transmitter, TransmissionType.FLUID)).isPresent()) {
+            return false;
+        }
+        return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
     }
 
     @Override

@@ -170,7 +170,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return GasUtils.isValidAcceptorOnSide(tile, side);
+        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
+              TransmissionType.checkTransmissionType(transmitter, TransmissionType.GAS)).isPresent()) {
+            return false;
+        }
+        return CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
     }
 
     @Override

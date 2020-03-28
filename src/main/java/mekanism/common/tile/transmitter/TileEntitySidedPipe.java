@@ -201,9 +201,7 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
         return (byte) (currentTransmitterConnections | currentAcceptorConnections);
     }
 
-    public boolean isValidTransmitter(TileEntity tile) {
-        return true;
-    }
+    public abstract boolean isValidTransmitter(TileEntity tile);
 
     public List<AxisAlignedBB> getCollisionBoxes() {
         List<AxisAlignedBB> list = new ArrayList<>();
@@ -232,9 +230,8 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
             //If we don't already have the tile that is on the side calculated, do so
             cachedTile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         }
-        Optional<IBlockableConnection> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(cachedTile,
-              Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()));
-        return capability.map(connection -> connection.canConnect(side.getOpposite())).orElse(true);
+        return CapabilityUtils.getCapability(cachedTile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite())
+              .map(connection -> connection.canConnect(side.getOpposite())).orElse(true);
     }
 
     @Override

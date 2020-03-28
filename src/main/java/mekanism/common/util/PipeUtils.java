@@ -7,9 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.target.FluidHandlerTarget;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -20,14 +18,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public final class PipeUtils {
-
-    public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
-              TransmissionType.checkTransmissionType(transmitter, TransmissionType.FLUID)).isPresent()) {
-            return false;
-        }
-        return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
-    }
 
     /**
      * Gets all the acceptors around a tile entity.

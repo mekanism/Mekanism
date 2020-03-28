@@ -4,13 +4,11 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
 import java.util.Set;
 import mekanism.api.Action;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.base.target.EnergyAcceptorTarget;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.EnergyCompatUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -18,14 +16,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public final class CableUtils {
-
-    public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
-              TransmissionType.checkTransmissionType(transmitter, TransmissionType.ENERGY)).isPresent()) {
-            return false;
-        }
-        return EnergyCompatUtils.hasStrictEnergyHandler(tile, side.getOpposite());
-    }
 
     public static IStrictEnergyHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<Direction> sides) {
         IStrictEnergyHandler[] acceptors = new IStrictEnergyHandler[EnumUtils.DIRECTIONS.length];

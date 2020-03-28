@@ -16,7 +16,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.item.ItemStack;
@@ -37,14 +36,6 @@ public final class GasUtils {
         EmitUtils.forEachSide(world, pos, sides, (tile, side) ->
               CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> acceptors[side.ordinal()] = handler));
         return acceptors;
-    }
-
-    public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
-              TransmissionType.checkTransmissionType(transmitter, TransmissionType.GAS)).isPresent()) {
-            return false;
-        }
-        return CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, int capacity, IGasProvider gasProvider) {
