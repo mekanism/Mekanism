@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
@@ -285,7 +284,7 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
         super.handleUpdatePacket(tag);
         //Delay requesting the model data update and actually updating the packet until we have finished parsing the update tag
         requestModelDataUpdate();
-        MekanismUtils.updateBlock(getWorld(), pos);
+        MekanismUtils.updateBlock(getWorld(), getPos());
     }
 
     @Override
@@ -335,14 +334,7 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
             boolean sendDesc = false;
             if ((possibleTransmitters | possibleAcceptors) != getAllCurrentConnections()) {
                 sendDesc = true;
-                if (possibleTransmitters != currentTransmitterConnections) {
-                    //If they don't match get the difference
-                    newlyEnabledTransmitters = (byte) (possibleTransmitters ^ currentTransmitterConnections);
-                    //Now remove all bits that already where enabled so we only have the
-                    // ones that are newly enabled. There is no need to recheck for a
-                    // network merge on two transmitters if one is no longer accessible
-                    newlyEnabledTransmitters &= ~currentTransmitterConnections;
-                }
+                newlyEnabledTransmitters = getNewlyEnabledTransmitters(possibleTransmitters, currentTransmitterConnections);
             }
 
             currentTransmitterConnections = possibleTransmitters;
@@ -355,6 +347,19 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
                 sendUpdatePacket();
             }
         }
+    }
+
+    protected byte getNewlyEnabledTransmitters(byte possibleTransmitters, byte oldConnections) {
+        byte newlyEnabledTransmitters = 0;
+        if (possibleTransmitters != oldConnections) {
+            //If they don't match get the difference
+            newlyEnabledTransmitters = (byte) (possibleTransmitters ^ oldConnections);
+            //Now remove all bits that already where enabled so we only have the
+            // ones that are newly enabled. There is no need to recheck for a
+            // network merge on two transmitters if one is no longer accessible
+            newlyEnabledTransmitters &= ~oldConnections;
+        }
+        return newlyEnabledTransmitters;
     }
 
     public void refreshConnections(Direction side) {
@@ -572,7 +577,7 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
     }
 
     public void notifyTileChange() {
-        MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), new Coord4D(getPos(), getWorld()));
+        MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
     }
 
     @Override

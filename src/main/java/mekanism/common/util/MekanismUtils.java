@@ -19,8 +19,8 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
@@ -355,22 +355,21 @@ public final class MekanismUtils {
      * Notifies neighboring blocks of a TileEntity change without loading chunks.
      *
      * @param world - world to perform the operation in
-     * @param coord - Coord4D to perform the operation on
+     * @param pos   - BlockPos to perform the operation on
      */
-    public static void notifyLoadedNeighborsOfTileChange(World world, Coord4D coord) {
-        BlockPos coordPos = coord.getPos();
-        BlockState state = world.getBlockState(coordPos);
+    public static void notifyLoadedNeighborsOfTileChange(World world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
         for (Direction dir : EnumUtils.DIRECTIONS) {
-            BlockPos offset = coordPos.offset(dir);
+            BlockPos offset = pos.offset(dir);
             if (isBlockLoaded(world, offset)) {
-                notifyNeighborofChange(world, offset, coordPos);
+                notifyNeighborofChange(world, offset, pos);
                 if (world.getBlockState(offset).isNormalCube(world, offset)) {
                     offset = offset.offset(dir);
                     if (isBlockLoaded(world, offset)) {
                         Block block1 = world.getBlockState(offset).getBlock();
                         //TODO: Make sure this is passing the correct state
                         if (block1.getWeakChanges(state, world, offset)) {
-                            block1.onNeighborChange(state, world, offset, coordPos);
+                            block1.onNeighborChange(state, world, offset, pos);
                         }
                     }
                 }

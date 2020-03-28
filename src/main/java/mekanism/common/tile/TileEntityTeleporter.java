@@ -164,7 +164,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         shouldRender = status == 1 || status > 4;
         if (shouldRender != prevShouldRender) {
             //This also means the comparator output changed so notify the neighbors we have a change
-            MekanismUtils.notifyLoadedNeighborsOfTileChange(world, Coord4D.get(this));
+            MekanismUtils.notifyLoadedNeighborsOfTileChange(world, getPos());
             sendUpdatePacket();
         }
         teleDelay = Math.max(0, teleDelay - 1);

@@ -159,21 +159,21 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         if (manager != null) {
             if (frequency != null && !frequency.valid) {
                 frequency = (InventoryFrequency) manager.validateFrequency(getSecurity().getOwnerUUID(), Coord4D.get(this), frequency);
-                MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), Coord4D.get(this));
+                MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
                 markDirty();
             }
 
             if (frequency != null) {
                 frequency = (InventoryFrequency) manager.update(Coord4D.get(this), frequency);
                 if (frequency == null) {
-                    MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), Coord4D.get(this));
+                    MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
                     markDirty();
                 }
             }
         } else {
             frequency = null;
             if (lastFreq != null) {
-                MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), Coord4D.get(this));
+                MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
                 markDirty();
             }
         }
@@ -227,7 +227,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             if (freq.name.equals(name)) {
                 frequency = (InventoryFrequency) freq;
                 frequency.activeCoords.add(Coord4D.get(this));
-                MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), Coord4D.get(this));
+                MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
                 markDirty();
                 return;
             }
@@ -237,7 +237,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         freq.activeCoords.add(Coord4D.get(this));
         manager.addFrequency(freq);
         frequency = (InventoryFrequency) freq;
-        MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), Coord4D.get(this));
+        MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
         markDirty();
     }
 

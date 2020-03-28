@@ -77,7 +77,24 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
             //Gets run the tick after the variable has been set. This is enough
             // time to ensure that the transmitter has been registered.
             delayedRefresh = false;
+            byte oldConnections = currentTransmitterConnections;
             refreshConnections();
+            //Note: We check what connections changed and if there is a sided pipe there also, then we have it refresh its connections
+            //TODO: Note how this fixes connection appearing like it is still connected
+            // but first look into if we can get it so that we just directly update "failed" connections to the
+            // proper values
+            byte newlyEnabledTransmitters = getNewlyEnabledTransmitters(currentAcceptorConnections, oldConnections);
+            if (newlyEnabledTransmitters != 0) {
+                //If any sides are now valid transmitters that were not before recheck the connection
+                for (Direction side : EnumUtils.DIRECTIONS) {
+                    if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
+                        TileEntitySidedPipe tile = MekanismUtils.getTileEntity(TileEntitySidedPipe.class, getWorld(), getPos().offset(side));
+                        if (tile != null) {
+                            tile.refreshConnections();
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -366,7 +383,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        //TODO: Do we want to save the last network id
+        //TODO: Do we want to save the last network id to disk for when we load the world
         //TODO: Make the "first" transmitter sync contents/ratio?
         TransmitterImpl<A, N, BUFFER> transmitter = getTransmitter();
         if (tag.hasUniqueId(NBTConstants.NETWORK)) {
