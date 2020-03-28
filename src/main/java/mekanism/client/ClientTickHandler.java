@@ -1,14 +1,11 @@
 package mekanism.client;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
-import mekanism.api.IClientTicker;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.common.CommonPlayerTickHandler;
@@ -51,15 +48,10 @@ public class ClientTickHandler {
 
     public static Minecraft minecraft = Minecraft.getInstance();
     public static Random rand = new Random();
-    public static Set<IClientTicker> tickingSet = new ObjectOpenHashSet<>();
     public static Map<PlayerEntity, TeleportData> portableTeleports = new Object2ObjectOpenHashMap<>();
     public boolean initHoliday = false;
     public boolean shouldReset = false;
     public static boolean firstTick = true;
-
-    public static void killDeadNetworks() {
-        tickingSet.removeIf(iClientTicker -> !iClientTicker.needsTicks());
-    }
 
     public static boolean isJetpackActive(PlayerEntity player) {
         if (player != minecraft.player) {
@@ -141,18 +133,6 @@ public class ClientTickHandler {
         if (minecraft.world != null && firstTick) {
             MekanismClient.launchClient();
             firstTick = false;
-        }
-
-        if (!Mekanism.proxy.isPaused()) {
-            for (Iterator<IClientTicker> iter = tickingSet.iterator(); iter.hasNext(); ) {
-                IClientTicker ticker = iter.next();
-
-                if (ticker.needsTicks()) {
-                    ticker.clientTick();
-                } else {
-                    iter.remove();
-                }
-            }
         }
 
         if (minecraft.world != null) {

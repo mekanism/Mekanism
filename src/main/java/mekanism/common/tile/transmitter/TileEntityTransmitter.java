@@ -399,10 +399,9 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                 network.register();
                 transmitter.setTransmitterNetwork(network);
                 network.updateCapacity();
-                networkRegistry.addClientNetwork(networkID, network);
             } else {
-                //TODO: Validate network type?
                 clientNetwork.register();
+                //TODO: Validate network type?
                 transmitter.setTransmitterNetwork((N) clientNetwork);
                 clientNetwork.updateCapacity();
             }

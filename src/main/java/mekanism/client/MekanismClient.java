@@ -31,7 +31,6 @@ public class MekanismClient {
         clientSecurityMap.clear();
         clientUUIDMap.clear();
 
-        ClientTickHandler.tickingSet.clear();
         ClientTickHandler.portableTeleports.clear();
         ClientTickHandler.firstTick = true;
 

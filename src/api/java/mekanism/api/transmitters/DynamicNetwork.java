@@ -11,16 +11,13 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.IClientTicker;
 import mekanism.api.Range3D;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
-public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements IClientTicker, INetworkDataHandler, IHasTextComponent {
+public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements INetworkDataHandler, IHasTextComponent {
 
     /**
      * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
@@ -175,10 +172,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public void acceptorChanged(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
         EnumSet<Direction> directions = changedAcceptors.get(transmitter);
-        if (directions != null) {
-            directions.add(side);
-        } else {
+        if (directions == null) {
             changedAcceptors.put(transmitter, EnumSet.of(side));
+        } else {
+            directions.add(side);
         }
         TransmitterNetworkRegistry.registerChangedNetwork(this);
     }
@@ -237,7 +234,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public void register() {
         if (isRemote()) {
-            MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte) 1));
+            TransmitterNetworkRegistry.getInstance().addClientNetwork(getUUID(), this);
         } else {
             TransmitterNetworkRegistry.getInstance().registerNetwork(this);
         }
@@ -247,7 +244,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         transmitters.clear();
         transmittersToAdd.clear();
         if (isRemote()) {
-            MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte) 0));
             TransmitterNetworkRegistry.getInstance().removeClientNetwork(this);
         } else {
             TransmitterNetworkRegistry.getInstance().removeNetwork(this);
@@ -319,16 +315,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         updateSaveShares = false;
     }
 
-    @Override
-    public boolean needsTicks() {
-        return !isEmpty();
-    }
-
-    @Override
-    public void clientTick() {
-        //TODO: No implementations use this anymore, do we want to remove the dynamic network ticking on the client
-    }
-
     public boolean isCompatibleWith(NETWORK other) {
         return true;
     }
@@ -379,16 +365,5 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public UUID getUUID() {
         return uuid;
-    }
-
-    public static class ClientTickUpdate extends Event {
-
-        public DynamicNetwork<?, ?, ?> network;
-        public byte operation; /*0 remove, 1 add*/
-
-        public ClientTickUpdate(DynamicNetwork<?, ?, ?> net, byte b) {
-            network = net;
-            operation = b;
-        }
     }
 }

@@ -12,10 +12,8 @@ import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
-import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientProxy;
-import mekanism.client.ClientTickHandler;
 import mekanism.client.ModelLoaderRegisterHelper;
 import mekanism.common.base.IModule;
 import mekanism.common.capabilities.Capabilities;
@@ -170,7 +168,6 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::onEnergyTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onGasTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onLiquidTransferred);
-        MinecraftForge.EVENT_BUS.addListener(this::onClientTickUpdate);
         MinecraftForge.EVENT_BUS.addListener(this::chunkSave);
         MinecraftForge.EVENT_BUS.addListener(this::onChunkDataLoad);
         MinecraftForge.EVENT_BUS.addListener(this::onWorldLoad);
@@ -369,17 +366,6 @@ public class Mekanism {
     private void onLiquidTransferred(FluidTransferEvent event) {
         try {
             packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.fluidNetwork, event.fluidType, event.fluidScale), event.fluidNetwork);
-        } catch (Exception ignored) {
-        }
-    }
-
-    private void onClientTickUpdate(ClientTickUpdate event) {
-        try {
-            if (event.operation == 0) {
-                ClientTickHandler.tickingSet.remove(event.network);
-            } else {
-                ClientTickHandler.tickingSet.add(event.network);
-            }
         } catch (Exception ignored) {
         }
     }

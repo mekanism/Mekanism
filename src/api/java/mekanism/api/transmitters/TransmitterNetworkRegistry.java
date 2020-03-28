@@ -38,9 +38,7 @@ public class TransmitterNetworkRegistry {
     private Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
 
     public void addClientNetwork(UUID networkID, DynamicNetwork<?, ?, ?> network) {
-        if (clientNetworks.containsKey(networkID)) {
-            logger.warn("Network with id {} already exists", networkID);
-        } else {
+        if (!clientNetworks.containsKey(networkID)) {
             clientNetworks.put(networkID, network);
         }
     }
