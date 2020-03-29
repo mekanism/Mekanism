@@ -16,6 +16,7 @@ import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
+import mekanism.common.block.attribute.Attributes.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeNoMobSpawn;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
@@ -257,6 +258,7 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR))
           .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new DigitalMinerContainer(i, inv, (TileEntityDigitalMiner) tile)))
           .withCustomShape(BlockShapes.DIGITAL_MINER)
+          .with(new AttributeCustomSelectionBox())
           .build();
     // Formulaic Assemblicator
     public static final Machine<TileEntityFormulaicAssemblicator> FORMULAIC_ASSEMBLICATOR = MachineBuilder

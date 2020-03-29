@@ -629,6 +629,7 @@ public final class BlockShapes {
               makeCuboidShape(4, 13, 4, 6, 16, 5)//rim5
         ), GAS_TANK);
 
-        setShape(VoxelShapeUtils.rotate(makeCuboidShape(2, 0, 2, 14, 16, 14), Rotation.CLOCKWISE_90), FLUID_TANK);
+        //TODO: Don't bother rotating the shape, it is the same for all rotations
+        setShape(makeCuboidShape(2, 0, 2, 14, 16, 14), FLUID_TANK);
     }
 }

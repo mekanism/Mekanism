@@ -2,6 +2,7 @@ package mekanism.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -17,6 +18,9 @@ import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ProfilerConstants;
+import mekanism.common.block.BlockBounding;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.Attributes.AttributeCustomSelectionBox;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.IModeItem;
@@ -24,12 +28,18 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -42,6 +52,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawHighlightEvent;
@@ -205,23 +217,51 @@ public class RenderTickHandler {
         if (player == null) {
             return;
         }
-        ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
-        if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
-            //If we are not holding a configurator, look if we are in the offhand
-            stack = player.getHeldItem(Hand.OFF_HAND);
-            if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
-                return;
-            }
-        }
-        World world = player.getEntityWorld();
-        IProfiler profiler = world.getProfiler();
-        profiler.startSection(ProfilerConstants.CONFIGURABLE_MACHINE);
         BlockRayTraceResult rayTraceResult = event.getTarget();
         if (!rayTraceResult.getType().equals(Type.MISS)) {
+            World world = player.getEntityWorld();
+            BlockPos pos = rayTraceResult.getPos();
+            IRenderTypeBuffer renderer = event.getBuffers();
+            ActiveRenderInfo info = event.getInfo();
+            MatrixStack matrix = event.getMatrix();
+            IProfiler profiler = world.getProfiler();
+            BlockState blockState = world.getBlockState(pos);
+            if (!blockState.isAir(world, pos) && world.getWorldBorder().contains(pos)) {
+                BlockPos actualPos = pos;
+                BlockState actualState = blockState;
+                if (blockState.getBlock() instanceof BlockBounding) {
+                    TileEntityBoundingBlock tile = MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
+                    if (tile != null) {
+                        actualPos = tile.getMainPos();
+                        actualState = world.getBlockState(actualPos);
+                    }
+                }
+                if (Attribute.has(actualState.getBlock(), AttributeCustomSelectionBox.class)) {
+                    profiler.startSection(ProfilerConstants.MEKANISM_OUTLINE);
+                    matrix.push();
+                    Vec3d viewPosition = info.getProjectedView();
+                    matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
+                    drawWireFrame(matrix, renderer.getBuffer(RenderType.getLines()), actualState.getShape(world, actualPos, ISelectionContext.forEntity(player)),
+                          0, 0, 0, 0.4F);
+                    matrix.pop();
+                    event.setCanceled(true);
+                    profiler.endSection();
+                    return;
+                }
+            }
+
+            ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
+            if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
+                //If we are not holding a configurator, look if we are in the offhand
+                stack = player.getHeldItem(Hand.OFF_HAND);
+                if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
+                    return;
+                }
+            }
+            profiler.startSection(ProfilerConstants.CONFIGURABLE_MACHINE);
             ConfiguratorMode state = ((ItemConfigurator) stack.getItem()).getState(stack);
             if (state.isConfigurating()) {
                 TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
-                BlockPos pos = rayTraceResult.getPos();
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);
                 if (tile instanceof ISideConfiguration) {
                     ISideConfiguration configurable = (ISideConfiguration) tile;
@@ -230,19 +270,18 @@ public class RenderTickHandler {
                         Direction face = rayTraceResult.getFace();
                         DataType dataType = config.getDataType(type, RelativeSide.fromDirections(configurable.getOrientation(), face));
                         if (dataType != null) {
-                            Vec3d viewPosition = event.getInfo().getProjectedView();
-                            MatrixStack matrix = event.getMatrix();
+                            Vec3d viewPosition = info.getProjectedView();
                             matrix.push();
                             matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
-                            MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, event.getBuffers().getBuffer(MekanismRenderType.resizableCuboid()),
+                            MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
                                   MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), MekanismRenderer.FULL_LIGHT);
                             matrix.pop();
                         }
                     }
                 }
             }
+            profiler.endSection();
         }
-        profiler.endSection();
     }
 
     private void drawString(ITextComponent textComponent, boolean leftSide, int y, int color) {
@@ -330,5 +369,42 @@ public class RenderTickHandler {
                 break;
         }
         return toReturn;
+    }
+
+    private void drawWireFrame(MatrixStack matrix, IVertexBuilder builder, VoxelShape shape, float red, float green, float blue, float alpha) {
+        matrix.push();
+        Matrix4f matrix4f = matrix.getLast().getMatrix();
+        shape.forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> {
+            float bMinX = (float) minX;
+            float bMinY = (float) minY;
+            float bMinZ = (float) minZ;
+            float bMaxX = (float) maxX;
+            float bMaxY = (float) maxY;
+            float bMaxZ = (float) maxZ;
+            builder.pos(matrix4f, bMinX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMinX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMinX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMinX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMinX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMinX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMinX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMinX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMinX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMinX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMinX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMinX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, bMaxX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
+        });
     }
 }

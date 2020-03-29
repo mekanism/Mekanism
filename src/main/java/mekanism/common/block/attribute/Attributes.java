@@ -20,6 +20,9 @@ public class Attributes {
     /** If mobs can spawn on the block. */
     public static class AttributeNoMobSpawn implements Attribute {}
 
+    /** If we should draw a custom selection box for the block. */
+    public static class AttributeCustomSelectionBox implements Attribute {}
+
     /** If a block can emit redstone. */
     public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements Attribute {
 
