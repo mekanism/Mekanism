@@ -248,8 +248,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.FLUID_STORED, fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         updateTag.put(NBTConstants.VALVE, valveFluid.writeToNBT(new CompoundNBT()));
         updateTag.putFloat(NBTConstants.SCALE, prevScale);

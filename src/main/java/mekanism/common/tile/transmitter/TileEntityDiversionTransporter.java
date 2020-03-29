@@ -51,8 +51,8 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
             updateTag.putInt(NBTConstants.MODE + i, modes[i]);
         }

@@ -17,7 +17,7 @@ public class PacketUpdateTile {
     private final BlockPos pos;
 
     public PacketUpdateTile(TileEntityUpdateable tile) {
-        this(tile.getPos(), tile.getUpdateTag());
+        this(tile.getPos(), tile.getReducedUpdateTag());
     }
 
     private PacketUpdateTile(BlockPos pos, CompoundNBT updateTag) {

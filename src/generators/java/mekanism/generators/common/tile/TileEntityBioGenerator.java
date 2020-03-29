@@ -77,8 +77,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.FLUID_STORED, bioFuelTank.serializeNBT());
         return updateTag;
     }

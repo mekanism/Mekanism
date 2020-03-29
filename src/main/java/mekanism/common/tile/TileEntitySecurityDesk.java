@@ -239,8 +239,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         if (ownerUUID != null) {
             updateTag.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
             updateTag.putString(NBTConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));

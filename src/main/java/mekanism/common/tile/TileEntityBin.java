@@ -164,8 +164,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.ITEM, binSlot.serializeNBT());
         return updateTag;
     }

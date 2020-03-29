@@ -29,11 +29,13 @@ import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
 import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.CableTier;
+import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -304,5 +306,24 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
             return energyContainers.isEmpty() ? LazyOptional.empty() : EnergyCompatUtils.getEnergyCapability(capability, getEnergyHandler(side));
         }
         return super.getCapability(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
+        CompoundNBT updateTag = super.getUpdateTag();
+        TransmitterImpl<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter = getTransmitter();
+        if (transmitter.hasTransmitterNetwork()) {
+            updateTag.putString(NBTConstants.ENERGY_STORED, transmitter.getTransmitterNetwork().energyContainer.getEnergy().toString());
+            updateTag.putFloat(NBTConstants.SCALE, transmitter.getTransmitterNetwork().energyScale);
+        }
+        return updateTag;
+    }
+
+    @Override
+    protected void handleContentsUpdateTag(@Nonnull EnergyNetwork network, @Nonnull CompoundNBT tag) {
+        NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.ENERGY_STORED, network.energyContainer::setEnergy);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.energyScale = scale);
     }
 }

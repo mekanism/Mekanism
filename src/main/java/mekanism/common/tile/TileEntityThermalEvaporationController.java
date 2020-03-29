@@ -534,8 +534,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.FLUID_STORED, inputTank.getFluid().writeToNBT(new CompoundNBT()));
         updateTag.putInt(NBTConstants.HEIGHT, height);
         updateTag.putBoolean(NBTConstants.LEFT_ON_FACE, isLeftOnFace);

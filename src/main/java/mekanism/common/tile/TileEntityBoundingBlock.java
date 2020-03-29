@@ -98,8 +98,8 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable {
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.MAIN, NBTUtil.writeBlockPos(getMainPos()));
         updateTag.putInt(NBTConstants.REDSTONE, currentRedstoneLevel);
         updateTag.putBoolean(NBTConstants.RECEIVED_COORDS, receivedCoords);

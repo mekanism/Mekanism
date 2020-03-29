@@ -236,8 +236,8 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         if (structure != null && isRendering) {
             updateTag.putFloat(NBTConstants.SCALE, prevScale);
             updateTag.putInt(NBTConstants.VOLUME, structure.getVolume());

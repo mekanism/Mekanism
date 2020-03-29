@@ -178,8 +178,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.putFloat(NBTConstants.SOUND_SCALE, soundScale);
         return updateTag;
     }

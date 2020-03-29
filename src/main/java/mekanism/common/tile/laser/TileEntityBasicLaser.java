@@ -149,8 +149,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.putString(NBTConstants.LAST_FIRED, lastFired.toString());
         return updateTag;
     }

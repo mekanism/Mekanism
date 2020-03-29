@@ -359,8 +359,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         TransmitterImpl<A, N, BUFFER> transmitter = getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
             updateTag.putUniqueId(NBTConstants.NETWORK, transmitter.getTransmitterNetwork().getUUID());
@@ -387,6 +387,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                 network.register();
                 transmitter.setTransmitterNetwork(network);
                 network.updateCapacity();
+                handleContentsUpdateTag(network, tag);
             } else {
                 clientNetwork.register();
                 //TODO: Validate network type?
@@ -396,5 +397,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         } else {
             transmitter.setTransmitterNetwork(null);
         }
+    }
+
+    protected void handleContentsUpdateTag(@Nonnull N network, @Nonnull CompoundNBT tag) {
     }
 }

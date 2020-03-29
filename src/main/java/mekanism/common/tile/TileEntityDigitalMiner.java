@@ -974,8 +974,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.putInt(NBTConstants.RADIUS, getRadius());
         updateTag.putInt(NBTConstants.MIN, getMinY());
         updateTag.putInt(NBTConstants.MAX, getMaxY());

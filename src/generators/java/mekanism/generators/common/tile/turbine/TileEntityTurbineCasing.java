@@ -136,8 +136,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         if (structure != null && isRendering) {
             updateTag.putFloat(NBTConstants.SCALE, prevSteamScale);
             updateTag.putInt(NBTConstants.VOLUME, structure.getVolume());

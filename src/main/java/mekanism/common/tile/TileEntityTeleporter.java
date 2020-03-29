@@ -467,8 +467,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.putBoolean(NBTConstants.RENDERING, shouldRender);
         return updateTag;
     }

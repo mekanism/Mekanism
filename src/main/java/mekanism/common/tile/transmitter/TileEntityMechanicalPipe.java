@@ -26,11 +26,13 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.proxy.ProxyFluidHandler;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.PipeTier;
+import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -326,10 +328,28 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             List<IExtendedFluidTank> fluidTanks = getFluidTanks(side);
             //Don't return a fluid handler if we don't actually even have any tanks for that side
-            //TODO: Should we actually return the fluid handler regardless??? And then just everything fails?
             LazyOptional<IFluidHandler> lazyFluidHandler = fluidTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getFluidHandler(side));
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, lazyFluidHandler);
         }
         return super.getCapability(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
+        CompoundNBT updateTag = super.getUpdateTag();
+        TransmitterImpl<IFluidHandler, FluidNetwork, FluidStack> transmitter = getTransmitter();
+        if (transmitter.hasTransmitterNetwork()) {
+            updateTag.put(NBTConstants.FLUID_STORED, transmitter.getTransmitterNetwork().fluidTank.getFluid().writeToNBT(new CompoundNBT()));
+            updateTag.putFloat(NBTConstants.SCALE, transmitter.getTransmitterNetwork().fluidScale);
+        }
+        return updateTag;
+    }
+
+    @Override
+    protected void handleContentsUpdateTag(@Nonnull FluidNetwork network, @Nonnull CompoundNBT tag) {
+        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, network.fluidTank::setStack);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.fluidScale = scale);
     }
 }

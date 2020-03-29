@@ -224,8 +224,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         if (structure != null && isRendering) {
             updateTag.putFloat(NBTConstants.SCALE, prevWaterScale);
             updateTag.putFloat(NBTConstants.SCALE_ALT, prevSteamScale);

@@ -244,8 +244,8 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         updateTag.putByte(NBTConstants.CURRENT_ACCEPTORS, currentAcceptorConnections);
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {

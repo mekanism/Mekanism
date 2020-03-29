@@ -161,8 +161,8 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.putBoolean(NBTConstants.RENDERING, isRendering);
         updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, structure != null);
         if (structure != null && isRendering) {

@@ -70,6 +70,21 @@ public abstract class TileEntityUpdateable extends TileEntity {
         super.read(tag);
     }
 
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return getReducedUpdateTag();
+    }
+
+    /**
+     * Similar to {@link #getUpdateTag()} but with reduced information for when we are doing our own syncing.
+     */
+    @Nonnull
+    public CompoundNBT getReducedUpdateTag() {
+        //Add the base update tag information
+        return super.getUpdateTag();
+    }
+
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         if (isRemote() && net.getDirection() == PacketDirection.CLIENTBOUND) {

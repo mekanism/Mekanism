@@ -165,8 +165,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT updateTag = super.getUpdateTag();
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
         getTransmitter().writeToUpdateTag(updateTag);
         return updateTag;
     }
