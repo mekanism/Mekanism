@@ -26,6 +26,7 @@ import mekanism.common.capabilities.basic.DefaultLaserReceptor;
 import mekanism.common.capabilities.basic.DefaultLogisticalTransporter;
 import mekanism.common.capabilities.basic.DefaultSpecialConfigData;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyHandler;
+import mekanism.common.content.radiation.IRadiationShielding;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -45,6 +46,9 @@ public class Capabilities {
 
     @CapabilityInject(IInfusionHandler.class)
     public static Capability<IInfusionHandler> INFUSION_HANDLER_CAPABILITY = null;
+
+    @CapabilityInject(IRadiationShielding.class)
+    public static Capability<IRadiationShielding> RADIATION_SHIELDING_CAPABILITY = null;
 
     @CapabilityInject(IHeatTransfer.class)
     public static Capability<IHeatTransfer> HEAT_TRANSFER_CAPABILITY = null;

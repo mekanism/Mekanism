@@ -547,7 +547,9 @@ public enum MekanismLang implements ILangEntry {
     PURIFYING("factory", "purifying"),
     INJECTING("factory", "injecting"),
     INFUSING("factory", "infusing"),
-    SAWING("factory", "sawing");
+    SAWING("factory", "sawing"),
+    //Modules
+    MODULE_ENABLED("module", "enabled");
 
     private final String key;
 

@@ -109,6 +109,7 @@ public final class NBTConstants {
     public static final String MODE = "mode";
     public static final String MODES = "modes";
     public static final String MODID = "modID";
+    public static final String MODULES = "modules";
     public static final String NAME = "name";
     public static final String NUM_POWERING = "numPowering";
     public static final String ORIGINAL_LOCATION = "originalLocation";
