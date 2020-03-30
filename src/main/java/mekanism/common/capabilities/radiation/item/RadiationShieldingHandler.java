@@ -1,6 +1,6 @@
 package mekanism.common.capabilities.radiation.item;
 
-import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.content.radiation.IRadiationShielding;
@@ -9,9 +9,9 @@ import net.minecraftforge.common.capabilities.Capability;
 
 public class RadiationShieldingHandler extends ItemCapability implements IRadiationShielding {
 
-    private Function<ItemStack, Double> shieldingFunction;
+    private ToDoubleFunction<ItemStack> shieldingFunction;
 
-    public static RadiationShieldingHandler create(Function<ItemStack, Double> shieldingFunction) {
+    public static RadiationShieldingHandler create(ToDoubleFunction<ItemStack> shieldingFunction) {
         RadiationShieldingHandler handler = new RadiationShieldingHandler();
         handler.shieldingFunction = shieldingFunction;
         return handler;
@@ -24,6 +24,6 @@ public class RadiationShieldingHandler extends ItemCapability implements IRadiat
 
     @Override
     public double getRadiationShielding() {
-        return shieldingFunction.apply(getStack());
+        return shieldingFunction.applyAsDouble(getStack());
     }
 }

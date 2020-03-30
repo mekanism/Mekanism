@@ -1,6 +1,6 @@
 package mekanism.common.content.radiation;
 
-public interface IRadiationShielding {
+interface IRadiationShielding {
 
-    public double getRadiationShielding();
+    double getRadiationShielding();
 }
