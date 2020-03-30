@@ -28,7 +28,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.DYNAMIC_TANK, MekanismBlockTypes.DYNAMIC_VALVE);
+        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.DYNAMIC_TANK);
     }
 
     @Override

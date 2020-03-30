@@ -25,7 +25,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.INDUCTION_CASING, MekanismBlockTypes.INDUCTION_PORT);
+        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.INDUCTION_CASING);
     }
 
     @Override

@@ -1,11 +1,11 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.IInventorySlot;
@@ -88,7 +88,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                     player.closeScreen();
                 }
             }
-            isRendering = false;
             if (cachedID != null) {
                 getManager().updateCache(this);
             }
@@ -99,6 +98,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 structureChanged();
                 prevStructure = false;
             }
+            isRendering = false;
         } else {
             if (!prevStructure) {
                 structureChanged();
@@ -202,6 +202,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                     Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength, structure.volWidth, structure.volHeight,
                           tile -> MultiblockManager.areEqual(this, tile));
                 }
+            } else {
+                // this will consecutively be set on the server
+                isRendering = false;
             }
             prevStructure = clientHasStructure;
         }

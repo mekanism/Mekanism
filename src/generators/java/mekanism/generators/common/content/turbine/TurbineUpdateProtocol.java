@@ -1,8 +1,8 @@
 package mekanism.generators.common.content.turbine;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.content.blocktype.BlockTypeTile;
@@ -37,7 +37,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), GeneratorsBlockTypes.TURBINE_CASING, GeneratorsBlockTypes.TURBINE_VALVE, GeneratorsBlockTypes.TURBINE_VENT);
+        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), GeneratorsBlockTypes.TURBINE_CASING);
     }
 
     @Override

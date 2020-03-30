@@ -1,8 +1,8 @@
 package mekanism.common.content.boiler;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
@@ -33,7 +33,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.BOILER_CASING, MekanismBlockTypes.BOILER_VALVE);
+        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.BOILER_CASING);
     }
 
     @Override
