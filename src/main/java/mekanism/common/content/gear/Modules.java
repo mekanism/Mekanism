@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleElectrolyticBreathingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleRadiationShieldingUnit;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.Item;
@@ -22,6 +23,7 @@ public class Modules {
     private static final Map<Item, Set<String>> SUPPORTED_MODULES = new Object2ObjectOpenHashMap<>();
 
     public static final ModuleData<ModuleElectrolyticBreathingUnit> ELECTROLYTIC_BREATHING_UNIT = register("electrolytic_breathing_unit", () -> new ModuleElectrolyticBreathingUnit());
+    public static final ModuleData<ModuleInhalationPurificationUnit> INHALATION_PURIFICATION_UNIT = register("inhalation_purification_unit", () -> new ModuleInhalationPurificationUnit());
     public static final ModuleData<ModuleRadiationShieldingUnit> RADIATION_SHIELDING_UNIT = register("radiation_shielding_unit", () -> new ModuleRadiationShieldingUnit());
 
     public static void setSupported(Item containerItem, ModuleData<?>... types) {

@@ -38,7 +38,7 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleInhalationPurificationUnit extends ModuleMekaSuit {
 
-        private static final FloatingLong ENERGY_USAGE_PER_POTION_TICK = FloatingLong.create(1000);
+        private static final FloatingLong ENERGY_USAGE_PER_POTION_TICK = FloatingLong.createConst(1000);
 
         @Override
         public void tickServer(PlayerEntity player) {
