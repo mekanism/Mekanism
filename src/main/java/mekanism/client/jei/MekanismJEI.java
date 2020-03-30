@@ -18,12 +18,14 @@ import mekanism.client.gui.GuiChemicalOxidizer;
 import mekanism.client.gui.GuiChemicalWasher;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiElectrolyticSeparator;
+import mekanism.client.gui.GuiFormulaicAssemblicator;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.client.gui.GuiThermalEvaporationController;
+import mekanism.client.gui.robit.GuiRobitCrafting;
 import mekanism.client.jei.chemical.GasStackHelper;
 import mekanism.client.jei.chemical.GasStackRenderer;
 import mekanism.client.jei.chemical.InfusionStackHelper;
@@ -45,7 +47,7 @@ import mekanism.client.jei.machine.RotaryCondensentratorRecipeCategory;
 import mekanism.client.jei.machine.SawmillRecipeCategory;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
+import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
@@ -218,6 +220,9 @@ public class MekanismJEI implements IModPlugin {
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, GuiPRC.class, 75, 37, 36, 10);
         GuiHandlerRegistryHelper.registerCondensentrator(registry);
 
+        GuiHandlerRegistryHelper.register(registry, GuiRobitCrafting.class, VanillaRecipeCategoryUid.CRAFTING, 90, 35, 22, 15);
+        GuiHandlerRegistryHelper.register(registry, GuiFormulaicAssemblicator.class, VanillaRecipeCategoryUid.CRAFTING, 86, 43, 20, 15);
+
         registry.addGuiContainerHandler(GuiMekanism.class, new GuiElementHandler());
     }
 
@@ -268,11 +273,12 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.registerCondensentrator(registry);
         CatalystRegistryHelper.registerSmelter(registry);
         CatalystRegistryHelper.registerRecipeItem(registry, MekanismBlocks.FORMULAIC_ASSEMBLICATOR, VanillaRecipeCategoryUid.CRAFTING);
+        CatalystRegistryHelper.registerRecipeItem(registry, MekanismItems.ROBIT, VanillaRecipeCategoryUid.CRAFTING);
     }
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
-        registry.addRecipeTransferHandler(InventoryRobitContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
-        registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 20, 9, 35, 36);
+        registry.addRecipeTransferHandler(CraftingRobitContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
+        registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 19, 9, 35, 36);
     }
 }

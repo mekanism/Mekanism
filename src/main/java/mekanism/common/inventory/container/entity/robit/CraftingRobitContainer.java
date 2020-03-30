@@ -10,13 +10,14 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.WorkbenchContainer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.IWorldPosCallable;
 
 public class CraftingRobitContainer extends WorkbenchContainer implements IEntityContainer<EntityRobit> {
 
     private EntityRobit entity;
 
     public CraftingRobitContainer(int id, PlayerInventory inv, EntityRobit robit) {
-        super(id, inv);
+        super(id, inv, IWorldPosCallable.of(robit.getEntityWorld(), null));
         this.entity = robit;
     }
 

@@ -32,6 +32,11 @@ public class GuiHandlerRegistryHelper {
         registry.addRecipeClickArea(guiContainerClass, xPos, yPos, width, height, mekanismBlock.getRegistryName());
     }
 
+    public static <T extends ContainerScreen<?>> void register(IGuiHandlerRegistration registry, Class<? extends T> guiContainerClass, ResourceLocation recipeType,
+        int xPos, int yPos, int width, int height) {
+        registry.addRecipeClickArea(guiContainerClass, xPos, yPos, width, height, recipeType);
+    }
+
     public static void registerCondensentrator(IGuiHandlerRegistration registry) {
         ResourceLocation condensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_condensentrating");
         ResourceLocation decondensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_decondensentrating");

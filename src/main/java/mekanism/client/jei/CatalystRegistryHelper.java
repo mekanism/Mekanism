@@ -1,6 +1,7 @@
 package mekanism.client.jei;
 
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
@@ -39,5 +40,9 @@ public class CatalystRegistryHelper {
                 registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, attr.getFactoryType()).getItemStack(), category);
             }
         });
+    }
+
+    public static void registerRecipeItem(IRecipeCatalystRegistration registry, IItemProvider mekanismItem, ResourceLocation category) {
+        registry.addRecipeCatalyst(mekanismItem.getItemStack(), category);
     }
 }
