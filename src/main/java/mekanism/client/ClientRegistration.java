@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
@@ -400,7 +401,7 @@ public class ClientRegistration {
     }
 
     private static <T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> void addCustomArmorLayer(LivingRenderer<T, M> renderer) {
-        for (LayerRenderer<T, M> layerRenderer : renderer.layerRenderers) {
+        for (LayerRenderer<T, M> layerRenderer : new ArrayList<>(renderer.layerRenderers)) {
             //Only allow an exact match, so we don't add to modded entities that only have a modded extended armor layer
             if (layerRenderer.getClass() == BipedArmorLayer.class) {
                 BipedArmorLayer<T, M, A> bipedArmorLayer = (BipedArmorLayer<T, M, A>) layerRenderer;
