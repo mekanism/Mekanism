@@ -5,11 +5,13 @@ import net.minecraft.nbt.CompoundNBT;
 
 public class ModuleConfigItem<TYPE> {
 
+    private Module module;
     private String name;
     private ILangEntry description;
     private ConfigData<TYPE> data;
 
-    public ModuleConfigItem(String name, ILangEntry description, ConfigData<TYPE> data) {
+    public ModuleConfigItem(Module module, String name, ILangEntry description, ConfigData<TYPE> data) {
+        this.module = module;
         this.name = name;
         this.description = description;
         this.data = data;
@@ -19,8 +21,17 @@ public class ModuleConfigItem<TYPE> {
         return description;
     }
 
+    public ConfigData<TYPE> getData() {
+        return data;
+    }
+
     public TYPE get() {
         return data.get();
+    }
+
+    public void set(TYPE type) {
+        data.set(type);
+        module.save();
     }
 
     public void read(CompoundNBT tag) {

@@ -2,8 +2,11 @@ package mekanism.common.content.gear;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.NBTConstants;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
+import mekanism.common.content.gear.Modules.ModuleData;
+import mekanism.common.util.ItemDataUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -12,20 +15,20 @@ public abstract class Module {
 
     protected List<ModuleConfigItem<?>> configItems = new ArrayList<>();
 
-    private String name;
+    private ModuleData<?> data;
     private ItemStack container;
 
     private ModuleConfigItem<Boolean> enabled;
 
-    public void init(String name, ItemStack container) {
-        this.name = name;
+    public void init(ModuleData<?> data, ItemStack container) {
+        this.data = data;
         this.container = container;
 
         init();
     }
 
     public void init() {
-        enabled = addConfigItem(new ModuleConfigItem<>("enabled", MekanismLang.MODULE_ENABLED, new BooleanData()));
+        enabled = addConfigItem(new ModuleConfigItem<>(this, "enabled", MekanismLang.MODULE_ENABLED, new BooleanData()));
     }
 
     protected <T> ModuleConfigItem<T> addConfigItem(ModuleConfigItem<T> item) {
@@ -49,25 +52,38 @@ public abstract class Module {
         }
     }
 
-    public final void write(CompoundNBT nbt) {
+    /**
+     * Save this module on the container ItemStack. Will create proper NBT structure if it does not yet exist.
+     */
+    public final void save() {
+        CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
+        CompoundNBT nbt = modulesTag.getCompound(data.getName());
+
         for (ModuleConfigItem<?> item : configItems) {
             item.write(nbt);
         }
+
+        modulesTag.put(data.getName(), nbt);
+        ItemDataUtils.setCompound(container, NBTConstants.MODULES, modulesTag);
     }
 
     public String getName() {
-        return name;
+        return data.getName();
+    }
+
+    public ModuleData<?> getData() {
+        return data;
     }
 
     public boolean isEnabled() {
         return enabled.get();
     }
 
-    public void setContainer(ItemStack container) {
-        this.container = container;
-    }
-
     protected ItemStack getContainer() {
         return container;
+    }
+
+    public List<ModuleConfigItem<?>> getConfigItems() {
+        return configItems;
     }
 }

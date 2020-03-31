@@ -6,17 +6,20 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
 public class GuiSlot extends GuiTexturedElement {
 
-    private static final int DEFAULT_SLOT_COLOR = 0x80FFFFFF;
     private static final int INVALID_SLOT_COLOR = MekanismRenderer.getColorARGB(EnumColor.DARK_RED, 0.8F);
+    private static final int DEFAULT_HOVER_COLOR = 0x80FFFFFF;
     private boolean hasValidityCheck;
     private Supplier<ItemStack> validityCheck = () -> ItemStack.EMPTY;
     private Supplier<SlotOverlay> overlaySupplier;
+    private Supplier<Integer> overlayColorSupplier;
     private SlotOverlay overlay;
     private IHoverable onHover;
+    private IClickable onClick;
     private boolean renderHover;
 
     public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y) {
@@ -35,8 +38,18 @@ public class GuiSlot extends GuiTexturedElement {
         return this;
     }
 
+    public GuiSlot click(IClickable onClick) {
+        this.onClick = onClick;
+        return this;
+    }
+
     public GuiSlot with(SlotOverlay overlay) {
         this.overlay = overlay;
+        return this;
+    }
+
+    public GuiSlot overlayColor(Supplier<Integer> colorSupplier) {
+        overlayColorSupplier = colorSupplier;
         return this;
     }
 
@@ -78,7 +91,13 @@ public class GuiSlot extends GuiTexturedElement {
         if (renderHover && isHovered()) {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
-            fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_SLOT_COLOR);
+            fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
+            MekanismRenderer.resetColor();
+        }
+        if (overlayColorSupplier != null) {
+            int xPos = relativeX + 1;
+            int yPos = relativeY + 1;
+            fill(xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.get());
             MekanismRenderer.resetColor();
         }
         if (isHovered()) {
@@ -92,5 +111,18 @@ public class GuiSlot extends GuiTexturedElement {
         if (onHover != null) {
             onHover.onHover(this, mouseX, mouseY);
         }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (onClick != null && isValidClickButton(button)) {
+            if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height) {
+                onClick.onClick(this, (int)mouseX, (int)mouseY);
+                playDownSound(Minecraft.getInstance().getSoundHandler());
+                return true;
+            }
+        }
+
+        return false;
     }
 }

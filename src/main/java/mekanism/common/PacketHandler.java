@@ -26,6 +26,7 @@ import mekanism.common.network.PacketKey;
 import mekanism.common.network.PacketMekanismTags;
 import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketNewFilter;
+import mekanism.common.network.PacketOpenGui;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.network.PacketRedstoneControl;
@@ -193,6 +194,7 @@ public class PacketHandler {
         registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData::encode, PacketFreeRunnerData::decode, PacketFreeRunnerData::handle);
         registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
         registerServerToClient(PacketUpdateTile.class, PacketUpdateTile::encode, PacketUpdateTile::decode, PacketUpdateTile::handle);
+        registerClientToServer(PacketOpenGui.class, PacketOpenGui::encode, PacketOpenGui::decode, PacketOpenGui::handle);
 
         registerServerToClient(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
         registerServerToClient(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);

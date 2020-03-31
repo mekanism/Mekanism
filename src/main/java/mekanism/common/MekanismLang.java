@@ -25,6 +25,7 @@ public enum MekanismLang implements ILangEntry {
     KEY_FEET_MODE("key", "feet_mode"),
     KEY_DETAILS_MODE("key", "details"),
     KEY_DESCRIPTION_MODE("key", "description"),
+    KEY_MODULE_TWEAKER("key", "module_tweaker"),
     //Holiday
     HOLIDAY_BORDER("holiday", "border"),
     HOLIDAY_SIGNATURE("holiday", "signature"),
@@ -549,7 +550,15 @@ public enum MekanismLang implements ILangEntry {
     INFUSING("factory", "infusing"),
     SAWING("factory", "sawing"),
     //Modules
-    MODULE_ENABLED("module", "enabled");
+    MODULE_ENABLED("module", "enabled"),
+    MODULE_TWEAKER("module", "module_tweaker"),
+    MODULE_INSTALLED("module", "installed"),
+    MODULE_ELECTROLYTIC_BREATHING_UNIT("module", "electrolytic_breathing_unit"),
+    DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT("description", "electrolytic_breathing_unit"),
+    MODULE_INHALATION_PURIFICATION_UNIT("module", "inhalation_purification_unit"),
+    DESCRIPTION_INHALATION_PURIFICATION_UNIT("description", "inhalation_purification_unit"),
+    MODULE_RADIATION_SHIELDING_UNIT("module", "radiation_shielding_unit"),
+    DESCRIPTION_RADIATION_SHIELDING_UNIT("description", "radiation_shielding_unit");
 
     private final String key;
 

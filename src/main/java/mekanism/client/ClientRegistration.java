@@ -32,6 +32,7 @@ import mekanism.client.gui.GuiLaserTractorBeam;
 import mekanism.client.gui.GuiLogisticalSorter;
 import mekanism.client.gui.GuiMatrixStats;
 import mekanism.client.gui.GuiMetallurgicInfuser;
+import mekanism.client.gui.GuiModuleTweaker;
 import mekanism.client.gui.GuiOredictionificator;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPersonalChestItem;
@@ -227,6 +228,8 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.MODULE_TWEAKER, GuiModuleTweaker::new);
+
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DICTIONARY, GuiDictionary::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PORTABLE_TELEPORTER, GuiPortableTeleporter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SEISMIC_READER, GuiSeismicReader::new);

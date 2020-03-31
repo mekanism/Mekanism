@@ -1,9 +1,9 @@
 package mekanism.client.gui.element;
 
+import java.util.List;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.List;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
@@ -208,5 +208,11 @@ public abstract class GuiElement extends Widget {
     public interface IHoverable {
 
         void onHover(GuiElement element, int mouseX, int mouseY);
+    }
+
+    @FunctionalInterface
+    public interface IClickable {
+
+        void onClick(GuiElement element, int mouseX, int mouseY);
     }
 }

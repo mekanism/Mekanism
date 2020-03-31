@@ -1,6 +1,7 @@
 package mekanism.common.registries;
 
 import mekanism.common.Mekanism;
+import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
@@ -85,6 +86,9 @@ import mekanism.common.tile.laser.TileEntityLaserTractorBeam;
 public class MekanismContainerTypes {
 
     public static final ContainerTypeDeferredRegister CONTAINER_TYPES = new ContainerTypeDeferredRegister(Mekanism.MODID);
+
+    //No bound
+    public static final ContainerTypeRegistryObject<ModuleTweakerContainer> MODULE_TWEAKER = CONTAINER_TYPES.register("module_tweaker", ModuleTweakerContainer::new);
 
     //Items
     public static final ContainerTypeRegistryObject<DictionaryContainer> DICTIONARY = CONTAINER_TYPES.register(MekanismItems.DICTIONARY, DictionaryContainer::new);
