@@ -54,8 +54,9 @@ public abstract class Module {
 
     /**
      * Save this module on the container ItemStack. Will create proper NBT structure if it does not yet exist.
+     * @param callback - will run after the NBT data is saved
      */
-    public final void save() {
+    public final void save(Runnable callback) {
         CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
         CompoundNBT nbt = modulesTag.getCompound(data.getName());
 
@@ -65,6 +66,10 @@ public abstract class Module {
 
         modulesTag.put(data.getName(), nbt);
         ItemDataUtils.setCompound(container, NBTConstants.MODULES, modulesTag);
+
+        if (callback != null) {
+            callback.run();
+        }
     }
 
     public String getName() {

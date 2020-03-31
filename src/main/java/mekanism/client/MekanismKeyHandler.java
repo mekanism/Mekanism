@@ -35,7 +35,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
     public static KeyBinding moduleTweakerKey = new KeyBinding(MekanismLang.KEY_MODULE_TWEAKER.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_BACKSLASH, MekanismLang.MEKANISM.getTranslationKey());
 
-    private static Builder BINDINGS = new Builder(5)
+    private static Builder BINDINGS = new Builder(6)
           .addBinding(modeSwitchKey, false)
           .addBinding(armorModeSwitchKey, false)
           .addBinding(freeRunnerModeSwitchKey, false)

@@ -62,6 +62,15 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.FREE_RUNNERS, "Free Runners");
         add(MekanismItems.JETPACK, "Jetpack");
         add(MekanismItems.ARMORED_JETPACK, "Armored Jetpack");
+        add(MekanismItems.GEIGER_COUNTER, "Geiger Counter");
+        add(MekanismItems.HAZMAT_MASK, "Hazmat Mask");
+        add(MekanismItems.HAZMAT_GOWN, "Hazmat Gown");
+        add(MekanismItems.HAZMAT_PANTS, "Hazmat Pants");
+        add(MekanismItems.HAZMAT_BOOTS, "Hazmat Boots");
+        add(MekanismItems.MEKASUIT_HELMET, "MekaSuit Helmet");
+        add(MekanismItems.MEKASUIT_BODYARMOR, "MekaSuit Bodyarmor");
+        add(MekanismItems.MEKASUIT_PANTS, "MekaSuit Pants");
+        add(MekanismItems.MEKASUIT_BOOTS, "MekaSuit Boots");
         //HDPE
         add(MekanismItems.HDPE_PELLET, "HDPE Pellet");
         add(MekanismItems.HDPE_ROD, "HDPE Rod");

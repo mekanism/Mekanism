@@ -1,14 +1,16 @@
 package mekanism.common;
 
-import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -32,6 +34,7 @@ import mekanism.common.frequency.FrequencyType;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTransmitterUpdate;
+import mekanism.common.radiation.RadiationManager;
 import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.registries.MekanismBlocks;
@@ -76,8 +79,6 @@ import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(Mekanism.MODID)
 public class Mekanism {
@@ -126,6 +127,10 @@ public class Mekanism {
     public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<>("dynamicTank");
     public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<>("inductionMatrix");
     public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<>("thermoelectricBoiler");
+    /**
+     * RadiationManager for handling radiation across all dimensions
+     */
+    public static RadiationManager radiationManager = new RadiationManager();
     /**
      * FrequencyManagers for various networks
      */
@@ -275,6 +280,7 @@ public class Mekanism {
         SynchronizedBoilerData.hotMap.clear();
 
         //Reset consistent managers
+        radiationManager.reset();
         MultiblockManager.reset();
         FrequencyManager.reset();
         TransporterManager.reset();

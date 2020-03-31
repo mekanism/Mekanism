@@ -66,7 +66,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
             }
 
             for (ModuleConfigItem<?> configItem : currentModule.getConfigItems()) {
-
+                
             }
         }
     }

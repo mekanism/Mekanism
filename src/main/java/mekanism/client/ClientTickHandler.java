@@ -1,11 +1,11 @@
 package mekanism.client;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.common.CommonPlayerTickHandler;
@@ -147,6 +147,8 @@ public class ClientTickHandler {
                 HolidayManager.check(Minecraft.getInstance().player);
                 initHoliday = true;
             }
+
+            Mekanism.radiationManager.tickClient(minecraft.player);
 
             UUID playerUUID = minecraft.player.getUniqueID();
             boolean freeRunnerOn = isFreeRunnerOn(minecraft.player);

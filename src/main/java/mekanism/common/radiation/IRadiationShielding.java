@@ -1,4 +1,4 @@
-package mekanism.common.content.radiation;
+package mekanism.common.radiation;
 
 public interface IRadiationShielding {
 

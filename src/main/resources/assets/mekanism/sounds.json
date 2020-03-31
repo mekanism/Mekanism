@@ -243,5 +243,33 @@
         "name": "mekanism:item/jetpack"
       }
     ]
-  }
+  },
+  "item.geiger_slow": {
+    "sounds": [
+      {
+        "name": "mekanism:item/geiger_slow"
+      }
+    ]
+  },
+  "item.geiger_medium": {
+    "sounds": [
+      {
+        "name": "mekanism:item/geiger_medium"
+      }
+    ]
+  },
+  "item.geiger_elevated": {
+    "sounds": [
+      {
+        "name": "mekanism:item/geiger_elevated"
+      }
+    ]
+  },
+  "item.geiger_fast": {
+    "sounds": [
+      {
+        "name": "mekanism:item/geiger_fast"
+      }
+    ]
+  },
 }

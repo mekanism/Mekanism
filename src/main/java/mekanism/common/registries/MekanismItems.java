@@ -16,6 +16,7 @@ import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.ItemGaugeDropper;
+import mekanism.common.item.ItemGeigerCounter;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemRobit;
@@ -28,13 +29,16 @@ import mekanism.common.item.gear.ItemElectricBow;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemGasMask;
+import mekanism.common.item.gear.ItemHazmatSuitArmor;
 import mekanism.common.item.gear.ItemJetpack;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.resource.INamedResource;
 import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.ResourceType;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 
 public class MekanismItems {
@@ -58,6 +62,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemFlamethrower> FLAMETHROWER = ITEMS.register("flamethrower", ItemFlamethrower::new);
     public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.register("gauge_dropper", ItemGaugeDropper::new);
     public static final ItemRegistryObject<Item> TELEPORTATION_CORE = ITEMS.register("teleportation_core");
+    public static final ItemRegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.register("geiger_counter", ItemGeigerCounter::new);
     //TODO: Rename enriched iron?
     public static final ItemRegistryObject<Item> ENRICHED_IRON = ITEMS.register("enriched_iron");
     public static final ItemRegistryObject<Item> ELECTROLYTIC_CORE = ITEMS.register("electrolytic_core");
@@ -94,6 +99,16 @@ public class MekanismItems {
 
     public static final ItemRegistryObject<ItemJetpack> JETPACK = ITEMS.register("jetpack", ItemJetpack::new);
     public static final ItemRegistryObject<ItemArmoredJetpack> ARMORED_JETPACK = ITEMS.register("jetpack_armored", ItemArmoredJetpack::new);
+
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_HELMET = ITEMS.register("mekasuit_helmet", props -> new ItemMekaSuitArmor(EquipmentSlotType.HEAD, props));
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BODYARMOR = ITEMS.register("mekasuit_bodyarmor", props -> new ItemMekaSuitArmor(EquipmentSlotType.CHEST, props));
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_PANTS = ITEMS.register("mekasuit_pants", props -> new ItemMekaSuitArmor(EquipmentSlotType.LEGS, props));
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BOOTS = ITEMS.register("mekasuit_boots", props -> new ItemMekaSuitArmor(EquipmentSlotType.FEET, props));
+
+    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_MASK = ITEMS.register("hazmat_mask", props -> new ItemHazmatSuitArmor(EquipmentSlotType.HEAD, props));
+    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_GOWN = ITEMS.register("hazmat_gown", props -> new ItemHazmatSuitArmor(EquipmentSlotType.CHEST, props));
+    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_PANTS = ITEMS.register("hazmat_pants", props -> new ItemHazmatSuitArmor(EquipmentSlotType.LEGS, props));
+    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_BOOTS = ITEMS.register("hazmat_boots", props -> new ItemHazmatSuitArmor(EquipmentSlotType.FEET, props));
 
     public static final ItemRegistryObject<Item> HDPE_PELLET = ITEMS.register("hdpe_pellet");
     public static final ItemRegistryObject<Item> HDPE_ROD = ITEMS.register("hdpe_rod");

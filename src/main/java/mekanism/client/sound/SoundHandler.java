@@ -1,12 +1,12 @@
 package mekanism.client.sound;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Upgrade;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
@@ -117,6 +117,14 @@ public class SoundHandler {
 
     public static void playSound(ISound sound) {
         Minecraft.getInstance().getSoundHandler().play(sound);
+    }
+
+    public static void stopSound(ISound sound) {
+        Minecraft.getInstance().getSoundHandler().stop(sound);
+    }
+
+    public static boolean isPlaying(ISound sound) {
+        return Minecraft.getInstance().getSoundHandler().isPlaying(sound);
     }
 
     public static ISound startTileSound(SoundEvent soundEvent, SoundCategory category, float volume, BlockPos pos) {

@@ -15,4 +15,5 @@ public class MekanismParticleTypes {
     public static final ParticleTypeRegistryObject<BasicParticleType> JETPACK_FLAME = PARTICLE_TYPES.registerBasicParticle("jetpack_flame");
     public static final ParticleTypeRegistryObject<BasicParticleType> JETPACK_SMOKE = PARTICLE_TYPES.registerBasicParticle("jetpack_smoke");
     public static final ParticleTypeRegistryObject<BasicParticleType> SCUBA_BUBBLE = PARTICLE_TYPES.registerBasicParticle("scuba_bubble");
+    public static final ParticleTypeRegistryObject<BasicParticleType> RADIATION = PARTICLE_TYPES.registerBasicParticle("radiation");
 }

@@ -37,7 +37,12 @@ public final class MekanismSounds {
     public static final SoundEventRegistryObject<SoundEvent> JETPACK = SOUND_EVENTS.register("item.jetpack");
     public static final SoundEventRegistryObject<SoundEvent> HYDRAULIC = SOUND_EVENTS.register("item.hydraulic");
     public static final SoundEventRegistryObject<SoundEvent> CJ_EASTER_EGG = SOUND_EVENTS.register("etc.cj");
-    //TODO: Should these be removed, they are unused
+
+    public static final SoundEventRegistryObject<SoundEvent> GEIGER_SLOW = SOUND_EVENTS.register("item.geiger_slow");
+    public static final SoundEventRegistryObject<SoundEvent> GEIGER_MEDIUM = SOUND_EVENTS.register("item.geiger_medium");
+    public static final SoundEventRegistryObject<SoundEvent> GEIGER_ELEVATED = SOUND_EVENTS.register("item.geiger_elevated");
+    public static final SoundEventRegistryObject<SoundEvent> GEIGER_FAST = SOUND_EVENTS.register("item.geiger_fast");
+
     public static final SoundEventRegistryObject<SoundEvent> CHRISTMAS1 = SOUND_EVENTS.register("tile.christmas.1");
     public static final SoundEventRegistryObject<SoundEvent> CHRISTMAS2 = SOUND_EVENTS.register("tile.christmas.2");
     public static final SoundEventRegistryObject<SoundEvent> CHRISTMAS3 = SOUND_EVENTS.register("tile.christmas.3");

@@ -25,7 +25,7 @@ public class Range3D {
 
     @Override
     public String toString() {
-        return "[Range4D: " + xMin + ", " + zMin + ", " + xMax + ", " + zMax + ", dim=" + dimension + "]";
+        return "[Range3D: " + xMin + ", " + zMin + ", " + xMax + ", " + zMax + ", dim=" + dimension + "]";
     }
 
     @Override

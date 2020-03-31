@@ -84,6 +84,8 @@ public class CommonPlayerTickHandler {
             player.stepHeight = 0.6F;
         }
 
+        Mekanism.radiationManager.tickServer(player);
+
         if (isFlamethrowerOn(player)) {
             player.world.addEntity(new EntityFlame(player));
             if (!player.isCreative() && !player.isSpectator()) {

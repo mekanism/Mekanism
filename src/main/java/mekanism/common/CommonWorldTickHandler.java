@@ -1,10 +1,10 @@
 package mekanism.common;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.FrequencyManager;
@@ -53,6 +53,7 @@ public class CommonWorldTickHandler {
             if (!FrequencyManager.loaded) {
                 FrequencyManager.load();
             }
+            Mekanism.radiationManager.createOrLoad();
             if (event.getWorld() instanceof ServerWorld) {
                 ChunkManager.worldLoad((ServerWorld) event.getWorld());
             }
@@ -70,6 +71,7 @@ public class CommonWorldTickHandler {
         if (!world.isRemote) {
             MultiblockManager.tick(world);
             FrequencyManager.tick(world);
+            Mekanism.radiationManager.tickServer(world);
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;
             }
