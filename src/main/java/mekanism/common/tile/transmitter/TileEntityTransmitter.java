@@ -154,16 +154,23 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                     // valid to merge them when otherwise people may try to merge things when they shouldn't
                     // be merged causing unexpected bugs.
                     network.adoptTransmittersAndAcceptorsFrom(otherNetwork);
+                    List<IGridTransmitter<A, N, BUFFER>> otherTransmitters = new ArrayList<>(otherNetwork.getTransmitters());
+
                     //Unregister the other network
                     otherNetwork.deregister();
                     //Commit the changes of the new network
                     network.commit();
 
                     //We did not have these as part of the update because they got directly added
-                    // This means that we have to update the capacity/buffer and queue client updates
-                    // ourselves
-                    network.updateCapacity();
+                    // This means that we have to update the buffer and queue client updates ourselves
                     network.clampBuffer();
+                    //Recheck the connections
+                    other.refreshConnections(side.getOpposite());
+                    //Force all the newly merged transmitters to send a sync update to the client
+                    // to ensure that they now have the proper network id on the client
+                    for (IGridTransmitter<A, N, BUFFER> otherTransmitter : otherTransmitters) {
+                        otherTransmitter.setRequestsUpdate();
+                    }
                 }
             }
         }
@@ -371,8 +378,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        //TODO: Do we want to save the last network id to disk for when we load the world
-        //TODO: Make the "first" transmitter sync contents/ratio?
         TransmitterImpl<A, N, BUFFER> transmitter = getTransmitter();
         if (tag.hasUniqueId(NBTConstants.NETWORK)) {
             UUID networkID = tag.getUniqueId(NBTConstants.NETWORK);

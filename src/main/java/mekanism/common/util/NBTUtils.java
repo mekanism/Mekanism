@@ -12,6 +12,7 @@ import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Coord4D;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.math.FloatingLong;
@@ -126,6 +127,12 @@ public class NBTUtils {
     public static void setFluidStackIfPresent(CompoundNBT nbt, String key, Consumer<FluidStack> setter) {
         if (nbt.contains(key, NBT.TAG_COMPOUND)) {
             setter.accept(FluidStack.loadFluidStackFromNBT(nbt.getCompound(key)));
+        }
+    }
+
+    public static void setGasIfPresent(CompoundNBT nbt, String key, Consumer<Gas> setter) {
+        if (nbt.contains(key, NBT.TAG_COMPOUND)) {
+            setter.accept(Gas.readFromNBT(nbt.getCompound(key)));
         }
     }
 

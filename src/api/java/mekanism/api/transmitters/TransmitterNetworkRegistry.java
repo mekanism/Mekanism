@@ -175,6 +175,7 @@ public class TransmitterNetworkRegistry {
                     if (MekanismAPI.debug) {
                         logger.info("Merging " + finder.networksFound.size() + " networks with " + finder.connectedTransmitters.size() + " new transmitters");
                     }
+                    //TODO: Should we take one of the existing network's uuids?
                     network = startOrphan.mergeNetworks(finder.networksFound);
             }
 

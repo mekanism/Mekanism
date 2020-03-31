@@ -187,6 +187,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         if (!(tile instanceof TileEntityPressurizedTube)) {
             return true;
         }
+        //TODO: Fix visual connection when one is technically empty
+        // Maybe when they are both pressurized tubes we may want to just check the network compatibility
+        // or maybe just the network ID
         GasStack buffer = getBufferWithFallback();
         GasStack otherBuffer = ((TileEntityPressurizedTube) tile).getBufferWithFallback();
         return buffer.isEmpty() || otherBuffer.isEmpty() || buffer.isTypeEqual(otherBuffer);
@@ -342,7 +345,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         CompoundNBT updateTag = super.getUpdateTag();
         TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
-            updateTag.put(NBTConstants.GAS_STORED, transmitter.getTransmitterNetwork().gasTank.getStack().write(new CompoundNBT()));
+            updateTag.put(NBTConstants.GAS_STORED, transmitter.getTransmitterNetwork().lastGas.write(new CompoundNBT()));
             updateTag.putFloat(NBTConstants.SCALE, transmitter.getTransmitterNetwork().gasScale);
         }
         return updateTag;
@@ -350,7 +353,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     protected void handleContentsUpdateTag(@Nonnull GasNetwork network, @Nonnull CompoundNBT tag) {
-        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, network.gasTank::setStack);
+        NBTUtils.setGasIfPresent(tag, NBTConstants.GAS_STORED, network::setLastGas);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.gasScale = scale);
     }
 }

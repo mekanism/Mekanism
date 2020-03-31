@@ -3,7 +3,8 @@ package mekanism.common.network;
 import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.PacketHandler;
@@ -24,7 +25,7 @@ public class PacketTransmitterUpdate {
     private float energyScale;
 
     @Nonnull
-    private GasStack gasStack = GasStack.EMPTY;
+    private Gas gas = MekanismAPI.EMPTY_GAS;
     private float gasScale;
 
     @Nonnull
@@ -36,9 +37,9 @@ public class PacketTransmitterUpdate {
         this.energyScale = energyScale;
     }
 
-    public PacketTransmitterUpdate(GasNetwork network, @Nonnull GasStack gasStack, float gasScale) {
+    public PacketTransmitterUpdate(GasNetwork network, @Nonnull Gas gas, float gasScale) {
         this(network, PacketType.GAS);
-        this.gasStack = gasStack;
+        this.gas = gas;
         this.gasScale = gasScale;
     }
 
@@ -73,13 +74,13 @@ public class PacketTransmitterUpdate {
             } else if (message.packetType == PacketType.GAS) {
                 if (clientNetwork instanceof GasNetwork) {
                     GasNetwork net = (GasNetwork) clientNetwork;
-                    net.gasTank.setStack(message.gasStack);
+                    net.setLastGas(message.gas);
                     net.gasScale = message.gasScale;
                 }
             } else if (message.packetType == PacketType.FLUID) {
                 if (clientNetwork instanceof FluidNetwork) {
                     FluidNetwork net = (FluidNetwork) clientNetwork;
-                    net.fluidTank.setStack(message.fluidStack);
+                    net.setLastFluid(message.fluidStack);
                     net.fluidScale = message.fluidScale;
                 }
             }
@@ -96,7 +97,7 @@ public class PacketTransmitterUpdate {
                 buf.writeFloat(pkt.energyScale);
                 break;
             case GAS:
-                pkt.gasStack.writeToPacket(buf);
+                buf.writeRegistryId(pkt.gas);
                 buf.writeFloat(pkt.gasScale);
                 break;
             case FLUID:
@@ -114,7 +115,7 @@ public class PacketTransmitterUpdate {
         if (packet.packetType == PacketType.ENERGY) {
             packet.energyScale = buf.readFloat();
         } else if (packet.packetType == PacketType.GAS) {
-            packet.gasStack = GasStack.readFromPacket(buf);
+            packet.gas = buf.readRegistryId();
             packet.gasScale = buf.readFloat();
         } else if (packet.packetType == PacketType.FLUID) {
             packet.fluidStack = FluidStack.readFromPacket(buf);

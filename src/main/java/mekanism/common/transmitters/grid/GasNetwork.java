@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
@@ -49,6 +50,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     private final List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
     public final VariableCapacityGasTank gasTank;
 
+    @Nonnull
+    public Gas lastGas = MekanismAPI.EMPTY_GAS;
     public float gasScale;
     private int prevTransferAmount;
 
@@ -78,11 +81,14 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     protected void forceScaleUpdate() {
         if (!gasTank.isEmpty() && gasTank.getCapacity() > 0) {
             gasScale = Math.min(1, (float) gasTank.getStored() / gasTank.getCapacity());
+        } else {
+            gasScale = 0;
         }
     }
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
+        float oldScale = gasScale;
         int oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the gas scales
@@ -92,18 +98,26 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 gasTank.setStack(net.getBuffer());
                 net.gasTank.setEmpty();
             }
-        } else if (!net.gasTank.isEmpty()) {
-            if (gasTank.isEmpty()) {
-                gasTank.setStack(net.getBuffer());
-            } else if (gasTank.isTypeEqual(net.gasTank.getType())) {
-                int amount = net.gasTank.getStored();
-                if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
-                    //TODO: Print warning/error
+        } else {
+            if (!net.gasTank.isEmpty()) {
+                if (gasTank.isEmpty()) {
+                    gasTank.setStack(net.getBuffer());
+                } else if (gasTank.isTypeEqual(net.gasTank.getType())) {
+                    int amount = net.gasTank.getStored();
+                    if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
+                        //TODO: Print warning/error
+                    }
+                } else if (net.gasTank.getStored() > gasTank.getStored()) {
+                    //TODO: Evaluate, realistically we should never be trying to merge two networks
+                    // if they have conflicting types
+                    gasTank.setStack(net.getBuffer());
                 }
-            } else if (net.gasTank.getStored() > gasTank.getStored()) {
-                gasTank.setStack(net.getBuffer());
+                net.gasTank.setEmpty();
             }
-            net.gasTank.setEmpty();
+            if (oldScale != gasScale) {
+                //We want to make sure we update to the scale change
+                needsUpdate = true;
+            }
         }
     }
 
@@ -206,7 +220,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 needsUpdate = true;
             }
             if (needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, getBuffer(), gasScale));
+                MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, lastGas, gasScale));
                 needsUpdate = false;
             }
             if (gasTank.isEmpty()) {
@@ -267,15 +281,30 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void onContentsChanged() {
         updateSaveShares = true;
+        Gas type = gasTank.getType();
+        if (!type.isEmptyType() && lastGas != type) {
+            //If the gas type does not match update it, and mark that we need an update
+            lastGas = type;
+            needsUpdate = true;
+        }
+    }
+
+    public void setLastGas(@Nonnull Gas gas) {
+        if (gas.isEmptyType()) {
+            gasTank.setEmpty();
+        } else {
+            lastGas = gas;
+            gasTank.setStack(lastGas.getGasStack(1));
+        }
     }
 
     public static class GasTransferEvent extends Event {
 
         public final GasNetwork gasNetwork;
-        public final GasStack transferType;
+        public final Gas transferType;
         public final float gasScale;
 
-        public GasTransferEvent(GasNetwork network, GasStack type, float scale) {
+        public GasTransferEvent(GasNetwork network, Gas type, float scale) {
             gasNetwork = network;
             transferType = type;
             gasScale = scale;

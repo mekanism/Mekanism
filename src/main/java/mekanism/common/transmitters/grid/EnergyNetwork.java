@@ -71,6 +71,8 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     protected void forceScaleUpdate() {
         if (!energyContainer.isEmpty() && !energyContainer.getMaxEnergy().isZero()) {
             energyScale = Math.min(1, energyContainer.getEnergy().divide(energyContainer.getMaxEnergy()).floatValue());
+        } else {
+            energyScale = 0;
         }
     }
 
