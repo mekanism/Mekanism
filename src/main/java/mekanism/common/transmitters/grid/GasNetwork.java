@@ -92,7 +92,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         int oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the gas scales
-        gasScale = (gasScale * oldCapacity + net.gasScale * net.capacity) / getCapacity();
+        int capacity = getCapacity();
+        gasScale = capacity == 0 ? 0 : (gasScale * oldCapacity + net.gasScale * net.capacity) / capacity;
         if (isRemote()) {
             if (gasTank.isEmpty() && !net.gasTank.isEmpty()) {
                 gasTank.setStack(net.getBuffer());

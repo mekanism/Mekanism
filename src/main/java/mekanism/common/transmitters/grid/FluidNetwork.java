@@ -83,7 +83,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         int oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the fluid scales
-        fluidScale = (fluidScale * oldCapacity + net.fluidScale * net.capacity) / getCapacity();
+        int capacity = getCapacity();
+        fluidScale = capacity == 0 ? 0 : (fluidScale * oldCapacity + net.fluidScale * net.capacity) / capacity;
         if (isRemote()) {
             if (fluidTank.isEmpty() && !net.fluidTank.isEmpty()) {
                 fluidTank.setStack(net.getBuffer());

@@ -83,7 +83,8 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
         //Merge the energy scales
         FloatingLong ourScale = energyScale == 0 ? FloatingLong.ZERO : oldCapacity.multiply(energyScale);
         FloatingLong theirScale = net.energyScale == 0 ? FloatingLong.ZERO : net.getCapacityAsFloatingLong().multiply(net.energyScale);
-        energyScale = ourScale.add(theirScale).divide(getCapacityAsFloatingLong()).floatValue();
+        FloatingLong capacity = getCapacityAsFloatingLong();
+        energyScale = capacity.isZero() ? 0 : ourScale.add(theirScale).divide(getCapacityAsFloatingLong()).floatValue();
         if (!isRemote() && !net.energyContainer.isEmpty()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(net.getBuffer()));
             net.energyContainer.setEmpty();
