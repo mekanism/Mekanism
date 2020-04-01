@@ -48,7 +48,9 @@ public abstract class Module {
     protected void tickServer(PlayerEntity player) {}
 
     public final void read(CompoundNBT nbt) {
-        installed = nbt.getInt(NBTConstants.AMOUNT);
+        if (nbt.contains(NBTConstants.AMOUNT)) {
+            installed = nbt.getInt(NBTConstants.AMOUNT);
+        }
         for (ModuleConfigItem<?> item : configItems) {
             item.read(nbt);
         }
@@ -85,6 +87,10 @@ public abstract class Module {
 
     public int getInstalledCount() {
         return installed;
+    }
+
+    public void setInstalledCount(int installed) {
+        this.installed = installed;
     }
 
     public boolean isEnabled() {

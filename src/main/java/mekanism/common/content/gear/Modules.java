@@ -41,8 +41,15 @@ public class Modules {
         }
     }
 
-    public static Set<ModuleData<?>> getSupported(Item containerItem) {
-        return SUPPORTED_MODULES.getOrDefault(containerItem, new HashSet<>());
+    public static ModuleData<?> get(String name) {
+        return MODULES.get(name);
+    }
+
+    public static Set<ModuleData<?>> getSupported(ItemStack container) {
+        if (container == null) {
+            return new HashSet<>();
+        }
+        return SUPPORTED_MODULES.getOrDefault(container.getItem(), new HashSet<>());
     }
 
     public static <MODULE extends Module> MODULE load(ItemStack container, ModuleData<MODULE> type) {

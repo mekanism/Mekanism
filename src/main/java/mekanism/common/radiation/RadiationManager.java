@@ -122,6 +122,14 @@ public class RadiationManager {
         return level;
     }
 
+    public void createSource(Coord4D coord, double magnitude) {
+        radiationMap.computeIfAbsent(new Chunk3D(coord), c -> new HashSet<>()).add(new RadiationSource(coord, magnitude));
+    }
+
+    public void clearSources() {
+        radiationMap.clear();
+    }
+
     private double computeExposure(Coord4D coord, RadiationSource source) {
         return source.getMagnitude() / Math.pow(coord.distanceTo(source.getPos()), 2);
     }
@@ -200,7 +208,7 @@ public class RadiationManager {
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
         if (player.world.getRandom().nextInt(20) == 0) {
             double magnitude = getRadiationLevel(new Coord4D(player));
-            if (magnitude > BASELINE) {
+            if (magnitude > BASELINE && !player.isCreative()) {
                 applyRadiation(magnitude, player);
             }
             decayRadiation(player);
@@ -246,7 +254,7 @@ public class RadiationManager {
     }
 
     public void reset() {
-        radiationMap.clear();
+        clearSources();
         dataHandler = null;
         loaded = false;
     }

@@ -1,13 +1,16 @@
 package mekanism.common.command;
 
 
-import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -35,7 +38,8 @@ public class CommandMek {
               .then(TestRulesCommand.register())
               .then(TpCommand.register())
               .then(TppopCommand.register())
-              .then(ChunkCommand.register());
+              .then(ChunkCommand.register())
+              .then(RadiationCommand.register());
     }
 
     private static class DebugCommand {
@@ -117,6 +121,30 @@ public class CommandMek {
                       }
                       return 0;
                   });
+        }
+    }
+
+    private static class RadiationCommand {
+
+        static ArgumentBuilder<CommandSource, ?> register() {
+            return Commands.literal("radiation")
+                .requires(cs -> cs.hasPermissionLevel(4))
+                .then(Commands.argument("create", DoubleArgumentType.doubleArg(0, 10000))
+                    .executes(ctx -> {
+                        CommandSource source = ctx.getSource();
+                        Coord4D location = new Coord4D(source.getPos().x, source.getPos().y, source.getPos().z, source.getWorld().getDimension().getType());
+                        double magnitude = DoubleArgumentType.getDouble(ctx, "duration");
+                        Mekanism.radiationManager.createSource(location, magnitude);
+                        source.sendFeedback(MekanismLang.COMMAND_RADIATION_ADD.translate(location), true);
+                        return 0;
+                    }))
+                .then(Commands.literal("removeAll")
+                    .executes(ctx -> {
+                        CommandSource source = ctx.getSource();
+                        Mekanism.radiationManager.clearSources();
+                        source.sendFeedback(MekanismLang.COMMAND_RADIATION_REMOVE_ALL.translate(), true);
+                        return 0;
+                    }));
         }
     }
 

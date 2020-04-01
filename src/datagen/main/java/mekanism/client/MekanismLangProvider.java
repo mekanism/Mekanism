@@ -358,6 +358,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COMMAND_TP, "Teleported to %d, %d, %d - saved last position on stack");
         add(MekanismLang.COMMAND_TPOP, "Returned to %d, %d, %d; %d positions on stack");
         add(MekanismLang.COMMAND_TPOP_EMPTY, "No positions on stack");
+        add(MekanismLang.COMMAND_RADIATION_ADD, "Added radiation at pos %s.");
+        add(MekanismLang.COMMAND_RADIATION_REMOVE_ALL, "Removed all radiation sources.");
         //Tooltip stuff
         add(MekanismLang.MODE, "Mode: %s");
         add(MekanismLang.FIRE_MODE, "Fire Mode: %s");

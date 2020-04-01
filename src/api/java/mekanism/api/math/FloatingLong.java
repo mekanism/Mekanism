@@ -544,6 +544,17 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
+     * Helper method to check if a given {@link FloatingLong} is smaller than or equal to this {@link FloatingLong}
+     *
+     * @param toCompare The {@link FloatingLong} to compare to
+     *
+     * @return {@code true} if this {@link FloatingLong} is smaller or equal, {@code false} otherwise.
+     */
+    public boolean smallerOrEqual(FloatingLong toCompare) {
+        return compareTo(toCompare) <= 0;
+    }
+
+    /**
      * Helper method to check if a given {@link FloatingLong} is greater than this {@link FloatingLong}
      *
      * @param toCompare The {@link FloatingLong} to compare to
@@ -552,6 +563,17 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     public boolean greaterThan(FloatingLong toCompare) {
         return compareTo(toCompare) > 0;
+    }
+
+    /**
+     * Helper method to check if a given {@link FloatingLong} is greater than or equal to this {@link FloatingLong}
+     *
+     * @param toCompare The {@link FloatingLong} to compare to
+     *
+     * @return {@code true} if this {@link FloatingLong} is larger or equal, {@code false} otherwise.
+     */
+    public boolean greaterOrEqual(FloatingLong toCompare) {
+        return compareTo(toCompare) >= 0;
     }
 
     /**
