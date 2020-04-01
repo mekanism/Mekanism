@@ -46,14 +46,11 @@ public class Modules {
     }
 
     public static Set<ModuleData<?>> getSupported(ItemStack container) {
-        if (container == null) {
-            return new HashSet<>();
-        }
         return SUPPORTED_MODULES.getOrDefault(container.getItem(), new HashSet<>());
     }
 
     public static <MODULE extends Module> MODULE load(ItemStack container, ModuleData<MODULE> type) {
-        if (container == null || !(container.getItem() instanceof IModuleContainerItem)) {
+        if (!(container.getItem() instanceof IModuleContainerItem)) {
             return null;
         }
 
@@ -76,7 +73,7 @@ public class Modules {
     }
 
     public static List<Module> loadAll(ItemStack container) {
-        if (container == null || !(container.getItem() instanceof IModuleContainerItem)) {
+        if (!(container.getItem() instanceof IModuleContainerItem)) {
             return new ArrayList<>();
         }
 

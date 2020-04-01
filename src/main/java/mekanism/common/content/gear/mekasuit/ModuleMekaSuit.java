@@ -43,7 +43,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void tickServer(PlayerEntity player) {
             for (EffectInstance effect : player.getActivePotionEffects()) {
-                if (!getArmorEnergy().greaterOrEqual(ENERGY_USAGE_PER_POTION_TICK)) {
+                if (getArmorEnergy().smallerThan(ENERGY_USAGE_PER_POTION_TICK)) {
                     break;
                 }
                 useEnergy(ENERGY_USAGE_PER_POTION_TICK);

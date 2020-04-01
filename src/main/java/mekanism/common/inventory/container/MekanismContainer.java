@@ -10,6 +10,7 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.inventory.container.slot.ArmorSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.IInsertableSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
@@ -52,6 +53,7 @@ public abstract class MekanismContainer extends Container {
     @Nullable
     protected final PlayerInventory inv;
     protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
+    protected final List<ArmorSlot> armorSlots = new ArrayList<>();
     protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
     protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
     private final List<ISyncableData> trackedData = new ArrayList<>();
@@ -67,6 +69,8 @@ public abstract class MekanismContainer extends Container {
         slot = super.addSlot(slot);
         if (slot instanceof InventoryContainerSlot) {
             inventoryContainerSlots.add((InventoryContainerSlot) slot);
+        } else if (slot instanceof ArmorSlot) {
+            armorSlots.add((ArmorSlot) slot);
         } else if (slot instanceof MainInventorySlot) {
             mainInventorySlots.add((MainInventorySlot) slot);
         } else if (slot instanceof HotBarSlot) {
@@ -167,11 +171,18 @@ public abstract class MekanismContainer extends Container {
                 //Then as long as if we still have the same number of items (failed to insert), try to insert it into the tile's inventory slots allowing for empty items
                 stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, false);
                 if (slotStack.getCount() == stackToInsert.getCount()) {
-                    //Else if we failed to do that also, try transferring to the main inventory or the hot bar, depending which one we currently are in
-                    if (currentSlot instanceof MainInventorySlot) {
+                    //Else if we failed to do that also, try transferring to armor inventory, main inventory or the hot bar, depending which one we currently are in
+                    if (currentSlot instanceof ArmorSlot) {
+                        stackToInsert = insertItem(hotBarSlots, stackToInsert, true);
+                        stackToInsert = insertItem(mainInventorySlots, stackToInsert, true);
+                        stackToInsert = insertItem(mainInventorySlots, stackToInsert, false);
+                        stackToInsert = insertItem(hotBarSlots, stackToInsert, false);
+                    } else if (currentSlot instanceof MainInventorySlot) {
+                        stackToInsert = insertItem(armorSlots, stackToInsert, false);
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, true);
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, false);
                     } else if (currentSlot instanceof HotBarSlot) {
+                        stackToInsert = insertItem(armorSlots, stackToInsert, false);
                         stackToInsert = insertItem(mainInventorySlots, stackToInsert, true);
                         stackToInsert = insertItem(mainInventorySlots, stackToInsert, false);
                     } else {

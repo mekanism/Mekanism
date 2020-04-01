@@ -31,7 +31,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         super.init();
 
         addButton(moduleScreen = new GuiModuleScreen(this, 138, 20, () -> container.detectAndSendChanges()));
-        addButton(scrollList = new GuiModuleScrollList(this, 30, 20, 108, 98, selected == -1 ? null : getStack(selected), this::onModuleSelected));
+        addButton(scrollList = new GuiModuleScrollList(this, 30, 20, 108, 98, selected == -1 ? ItemStack.EMPTY : getStack(selected), this::onModuleSelected));
 
         int size = container.inventorySlots.size();
         for (int i = 0; i < size; i++) {
@@ -67,8 +67,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     private boolean isValidItem(int index) {
-        ItemStack stack = getStack(index);
-        return stack != null && stack.getItem() instanceof IModuleContainerItem;
+        return getStack(index).getItem() instanceof IModuleContainerItem;
     }
 
     private ItemStack getStack(int index) {
