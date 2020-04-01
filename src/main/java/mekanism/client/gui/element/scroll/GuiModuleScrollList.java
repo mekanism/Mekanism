@@ -28,8 +28,8 @@ public class GuiModuleScrollList extends GuiScrollList {
 
     public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, ItemStack currentItem, Consumer<Module> callback) {
         super(gui, x, y, width, height, TEXTURE_HEIGHT / 3, new GuiElementHolder(gui, x, y, width, height));
-        updateList(currentItem);
         this.callback = callback;
+        updateList(currentItem);
     }
 
     public void updateList(ItemStack currentItem) {

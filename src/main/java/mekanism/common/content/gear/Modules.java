@@ -26,7 +26,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 public class Modules {
 
     private static final Map<String, ModuleData<?>> MODULES = new Object2ObjectOpenHashMap<>();
-    private static final Map<Item, Set<String>> SUPPORTED_MODULES = new Object2ObjectOpenHashMap<>();
+    private static final Map<Item, Set<ModuleData<?>>> SUPPORTED_MODULES = new Object2ObjectOpenHashMap<>();
 
     public static final ModuleData<ModuleElectrolyticBreathingUnit> ELECTROLYTIC_BREATHING_UNIT = register("electrolytic_breathing_unit",
         MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, () -> new ModuleElectrolyticBreathingUnit());
@@ -37,8 +37,12 @@ public class Modules {
 
     public static void setSupported(Item containerItem, ModuleData<?>... types) {
         for (ModuleData<?> module : types) {
-            SUPPORTED_MODULES.computeIfAbsent(containerItem, item -> new HashSet<>()).add(module.getName());
+            SUPPORTED_MODULES.computeIfAbsent(containerItem, item -> new HashSet<>()).add(module);
         }
+    }
+
+    public static Set<ModuleData<?>> getSupported(Item containerItem) {
+        return SUPPORTED_MODULES.getOrDefault(containerItem, new HashSet<>());
     }
 
     public static <MODULE extends Module> MODULE load(ItemStack container, ModuleData<MODULE> type) {

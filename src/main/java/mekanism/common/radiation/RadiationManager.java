@@ -109,10 +109,12 @@ public class RadiationManager {
         double level = BASELINE;
 
         for (Chunk3D chunk : checkChunks) {
-            for (RadiationSource src : radiationMap.get(chunk)) {
-                // we only compute exposure when within the MAX_RANGE bounds
-                if (src.getPos().distanceTo(coord) <= MAX_RANGE) {
-                    level += computeExposure(coord, src);
+            if (radiationMap.containsKey(chunk)) {
+                for (RadiationSource src : radiationMap.get(chunk)) {
+                    // we only compute exposure when within the MAX_RANGE bounds
+                    if (src.getPos().distanceTo(coord) <= MAX_RANGE) {
+                        level += computeExposure(coord, src);
+                    }
                 }
             }
         }

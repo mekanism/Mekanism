@@ -39,6 +39,7 @@ import mekanism.common.inventory.container.tile.DigitalMinerContainer;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.container.tile.ModificationStationContainer;
 import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
@@ -84,6 +85,7 @@ import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPersonalChest;
@@ -397,6 +399,14 @@ public class MekanismBlockTypes {
           .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
           .withCustomShape(BlockShapes.SECURITY_DESK)
           .build();
+    // Modification Station
+    public static final BlockTypeTile<TileEntityModificationStation> MODIFICATION_STATION = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.MODIFICATION_STATION, MekanismLang.DESCRIPTION_MODIFICATION_STATION)
+        .withGui(() -> MekanismContainerTypes.MODIFICATION_STATION)
+        .withEnergyConfig(MekanismConfig.usage.modificationStation, MekanismConfig.storage.modificationStation)
+        .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new ModificationStationContainer(i, inv, (TileEntityModificationStation) tile)))
+        .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeRedstone(), new AttributeSecurity())
+        .build();
 
     // Dynamic Tank
     public static final BlockTypeTile<TileEntityDynamicTank> DYNAMIC_TANK = BlockTileBuilder

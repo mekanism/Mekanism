@@ -9,6 +9,8 @@ import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.Resource;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.content.gear.Modules;
+import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
@@ -17,6 +19,7 @@ import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.item.ItemGeigerCounter;
+import mekanism.common.item.ItemModule;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemRobit;
@@ -86,6 +89,10 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemUpgrade> MUFFLING_UPGRADE = registerUpgrade(Upgrade.MUFFLING);
     public static final ItemRegistryObject<ItemUpgrade> GAS_UPGRADE = registerUpgrade(Upgrade.GAS);
     public static final ItemRegistryObject<ItemUpgrade> ANCHOR_UPGRADE = registerUpgrade(Upgrade.ANCHOR);
+
+    public static final ItemRegistryObject<ItemModule> ELECTROLYTIC_BREATHING_UNIT = registerModule(Modules.ELECTROLYTIC_BREATHING_UNIT);
+    public static final ItemRegistryObject<ItemModule> INHALATION_PURIFICATION_UNIT = registerModule(Modules.INHALATION_PURIFICATION_UNIT);
+    public static final ItemRegistryObject<ItemModule> RADIATION_SHIELDING_UNIT = registerModule(Modules.RADIATION_SHIELDING_UNIT);
 
     //Alloy names are alloy_type for purposes of tab complete
     public static final ItemRegistryObject<ItemAlloy> INFUSED_ALLOY = registerAlloy(AlloyTier.INFUSED);
@@ -199,5 +206,9 @@ public class MekanismItems {
 
     private static ItemRegistryObject<ItemUpgrade> registerUpgrade(Upgrade type) {
         return ITEMS.register("upgrade_" + type.getRawName(), properties -> new ItemUpgrade(type, properties));
+    }
+
+    private static ItemRegistryObject<ItemModule> registerModule(ModuleData<?> type) {
+        return ITEMS.register("module_" + type.getName(), properties -> new ItemModule(type, properties));
     }
 }

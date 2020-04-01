@@ -29,9 +29,9 @@ public class ModuleConfigItem<TYPE> {
         return data.get();
     }
 
-    public void set(TYPE type) {
+    public void set(TYPE type, Runnable callback) {
         data.set(type);
-        module.save();
+        module.save(callback);
     }
 
     public void read(CompoundNBT tag) {
@@ -82,23 +82,27 @@ public class ModuleConfigItem<TYPE> {
         }
     }
 
-    public static class EnumData implements ConfigData<Enum<?>> {
+    public static interface IntEnum {
+        public int getValue();
+    }
 
-        private Class<Enum<?>> enumClass;
-        private Enum<?> value;
+    public static class EnumData implements ConfigData<Enum<? extends IntEnum>> {
 
-        public EnumData(Class<Enum<?>> enumClass, Enum<?> def) {
+        private Class<Enum<? extends IntEnum>> enumClass;
+        private Enum<? extends IntEnum> value;
+
+        public EnumData(Class<Enum<? extends IntEnum>> enumClass, Enum<? extends IntEnum> def) {
             this.enumClass = enumClass;
             value = def;
         }
 
         @Override
-        public Enum<?> get() {
+        public Enum<? extends IntEnum> get() {
             return value;
         }
 
         @Override
-        public void set(Enum<?> val) {
+        public void set(Enum<? extends IntEnum> val) {
             value = val;
         }
 
@@ -110,6 +114,10 @@ public class ModuleConfigItem<TYPE> {
         @Override
         public void write(String name, CompoundNBT tag) {
             tag.putInt(name, value.ordinal());
+        }
+
+        public Class<Enum<? extends IntEnum>> getEnumClass() {
+            return enumClass;
         }
     }
 }

@@ -172,6 +172,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.PURIFICATION_CHAMBER, "Purification Chamber");
         add(MekanismBlocks.QUANTUM_ENTANGLOPORTER, "Quantum Entangloporter");
         add(MekanismBlocks.RESISTIVE_HEATER, "Resistive Heater");
+        add(MekanismBlocks.MODIFICATION_STATION, "Modification Station");
         add(MekanismBlocks.ROTARY_CONDENSENTRATOR, "Rotary Condensentrator");
         add(MekanismBlocks.SALT_BLOCK, "Salt Block");
         add(MekanismBlocks.SECURITY_DESK, "Security Desk");
@@ -407,6 +408,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MOVE_UP, "Move Up");
         add(MekanismLang.MOVE_DOWN, "Move Down");
         add(MekanismLang.SET, "Set:");
+        add(MekanismLang.TRUE, "True");
+        add(MekanismLang.FALSE, "False");
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");
@@ -832,6 +835,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_RESISTIVE_HEATER, "A condensed, coiled resistor capable of converting electrical energy directly into heat energy.");
         add(MekanismLang.DESCRIPTION_FORMULAIC_ASSEMBLICATOR, "A machine that uses energy to rapidly craft items and blocks from Crafting Formulas. Doubles as an advanced crafting bench.");
         add(MekanismLang.DESCRIPTION_FUELWOOD_HEATER, "A machine that is capable of producing large quantities of heat energy by burning combustible items.");
+        add(MekanismLang.DESCRIPTION_MODIFICATION_STATION, "An advanced workbench capable of installing and removing modules from modular equipment (i.e. MekaSuit!)");
         add(MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER, "A highly-advanced block capable of transmitting any practical resource across long distances and dimensions.");
         add(MekanismLang.DESCRIPTION_ENERGY_CUBE, "An advanced device for storing and distributing energy.");
         add(MekanismLang.DESCRIPTION_GAS_TANK, "A portable tank that lets you carry gas wherever you please.");
@@ -840,6 +844,16 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_OSMIUM_ORE, "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
         add(MekanismLang.DESCRIPTION_COPPER_ORE, "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");
         add(MekanismLang.DESCRIPTION_TIN_ORE, "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
+        // Modules
+        add(MekanismLang.MODULE_ENABLED, "Enabled");
+        add(MekanismLang.MODULE_TWEAKER, "Module Tweaker");
+        add(MekanismLang.MODULE_INSTALLED, "Installed: %s");
+        add(MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit");
+        add(MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit");
+        add(MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit");
+        add(MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, "Uses electrolysis to convert surrounding liquid and atmospheric water to breathable oxygen.");
+        add(MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, "Applies a miniature electromagnetic field around the breathing apparatus, preventing negative potion effects.");
+        add(MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
     }
 
     private void addOreProcessingNames(IItemProvider crystal, IItemProvider shard, IItemProvider clump, IItemProvider dirtyDust, IItemProvider dust, String resourceName) {

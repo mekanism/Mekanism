@@ -10,10 +10,12 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.content.gear.IModuleContainerItem;
+import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
@@ -24,6 +26,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem /*, ISpecialGear*/ {
@@ -33,6 +36,10 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
     public ItemMekaSuitArmor(EquipmentSlotType slot, Properties properties) {
         super(MEKASUIT_MATERIAL, slot, properties.setNoRepair().maxStackSize(1));
+        Modules.setSupported(this, Modules.RADIATION_SHIELDING_UNIT);
+        if (slot == EquipmentSlotType.HEAD) {
+            Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT);
+        }
     }
 
     @Override
@@ -64,6 +71,14 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
         return multimap;
      }
+
+    @Override
+    public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
+        super.onArmorTick(stack, world, player);
+        for (Module module : Modules.loadAll(stack)) {
+            module.tick(player);
+        }
+    }
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {

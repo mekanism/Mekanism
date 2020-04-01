@@ -16,7 +16,7 @@ public class ItemModule extends Item implements IModuleItem {
 
     private ModuleData<?> moduleData;
 
-    public ItemModule(Properties properties, ModuleData<?> moduleData) {
+    public ItemModule(ModuleData<?> moduleData, Properties properties) {
         super(properties.maxStackSize(moduleData.getMaxStackSize()));
         moduleData.setStack(this);
         this.moduleData = moduleData;

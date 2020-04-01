@@ -115,6 +115,8 @@ public enum MekanismLang implements ILangEntry {
     MOVE_UP("gui", "move_up"),
     MOVE_DOWN("gui", "move_down"),
     SET("gui", "set"),
+    TRUE("gui", "true"),
+    FALSE("gui", "false"),
     //Laser Amplifier
     ENTITY_DETECTION("laser_amplifier", "entity_detection"),
     ENERGY_CONTENTS("laser_amplifier", "energy_contents"),
@@ -531,6 +533,7 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_RESISTIVE_HEATER("description", "resistive_heater"),
     DESCRIPTION_FORMULAIC_ASSEMBLICATOR("description", "formulaic_assemblicator"),
     DESCRIPTION_FUELWOOD_HEATER("description", "fuelwood_heater"),
+    DESCRIPTION_MODIFICATION_STATION("description", "modification_station"),
     DESCRIPTION_QUANTUM_ENTANGLOPORTER("description", "quantum_entangloporter"),
     DESCRIPTION_ENERGY_CUBE("description", "energy_cube"),
     DESCRIPTION_GAS_TANK("description", "gas_tank"),

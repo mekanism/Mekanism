@@ -19,6 +19,7 @@ public abstract class Module {
     private ItemStack container;
 
     private ModuleConfigItem<Boolean> enabled;
+    private int installed = 1;
 
     public void init(ModuleData<?> data, ItemStack container) {
         this.data = data;
@@ -47,6 +48,7 @@ public abstract class Module {
     protected void tickServer(PlayerEntity player) {}
 
     public final void read(CompoundNBT nbt) {
+        installed = nbt.getInt(NBTConstants.AMOUNT);
         for (ModuleConfigItem<?> item : configItems) {
             item.read(nbt);
         }
@@ -60,6 +62,7 @@ public abstract class Module {
         CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
         CompoundNBT nbt = modulesTag.getCompound(data.getName());
 
+        nbt.putInt(NBTConstants.AMOUNT, installed);
         for (ModuleConfigItem<?> item : configItems) {
             item.write(nbt);
         }
@@ -78,6 +81,10 @@ public abstract class Module {
 
     public ModuleData<?> getData() {
         return data;
+    }
+
+    public int getInstalledCount() {
+        return installed;
     }
 
     public boolean isEnabled() {
