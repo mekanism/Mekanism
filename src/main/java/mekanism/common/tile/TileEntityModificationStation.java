@@ -22,13 +22,14 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityModificationStation extends TileEntityMekanism {
 
     private EnergyInventorySlot energySlot;
-    public InputInventorySlot moduleSlot;
-    private InputInventorySlot containerSlot;
+    private InputInventorySlot moduleSlot;
+    public InputInventorySlot containerSlot;
     private MachineEnergyContainer<TileEntityModificationStation> energyContainer;
 
     public int BASE_TICKS_REQUIRED = 40;
@@ -55,11 +56,11 @@ public class TileEntityModificationStation extends TileEntityMekanism {
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(moduleSlot = InputInventorySlot.at(stack -> stack != null && stack.getItem() instanceof IModuleItem, this, 35, 104));
-        builder.addSlot(containerSlot = InputInventorySlot.at(stack -> stack != null && stack.getItem() instanceof IModuleContainerItem, this, 125, 104));
+        builder.addSlot(moduleSlot = InputInventorySlot.at(stack -> stack != null && stack.getItem() instanceof IModuleItem, this, 35, 118));
+        builder.addSlot(containerSlot = InputInventorySlot.at(stack -> stack != null && stack.getItem() instanceof IModuleContainerItem, this, 125, 118));
         moduleSlot.setSlotType(ContainerSlotType.NORMAL);
         containerSlot.setSlotType(ContainerSlotType.NORMAL);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 152, 6));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 149, 21));
         return builder.build();
     }
 
@@ -88,19 +89,23 @@ public class TileEntityModificationStation extends TileEntityMekanism {
             } else if (operatingTicks == ticksRequired) {
                 operatingTicks = 0;
                 // we're guaranteed this stuff is valid as we verified it in the same tick just above
+                ItemStack stack = containerSlot.getStack();
                 ModuleData<?> data = ((IModuleItem) moduleSlot.getStack().getItem()).getModuleData();
-                IModuleContainerItem item = (IModuleContainerItem) containerSlot.getStack().getItem();
-                item.addModule(containerSlot.getStack(), data);
+                IModuleContainerItem item = (IModuleContainerItem) stack.getItem();
+                item.addModule(stack, data);
+                containerSlot.setStack(stack);
                 moduleSlot.shrinkStack(1, Action.EXECUTE);
             }
         }
     }
 
     public void removeModule(PlayerEntity player, ModuleData<?> type) {
-        if (!containerSlot.getStack().isEmpty()) {
-            IModuleContainerItem container = (IModuleContainerItem) containerSlot.getStack().getItem();
-            if (container.hasModule(containerSlot.getStack(), type) && player.inventory.addItemStackToInventory(type.getStack().copy())) {
-                container.removeModule(containerSlot.getStack(), type);
+        ItemStack stack = containerSlot.getStack();
+        if (!stack.isEmpty()) {
+            IModuleContainerItem container = (IModuleContainerItem) stack.getItem();
+            if (container.hasModule(stack, type) && player.inventory.addItemStackToInventory(type.getStack().copy())) {
+                container.removeModule(stack, type);
+                containerSlot.setStack(stack);
             }
         }
     }

@@ -2,6 +2,7 @@ package mekanism.common.content.gear;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.NBTConstants;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
@@ -29,7 +30,7 @@ public abstract class Module {
     }
 
     public void init() {
-        enabled = addConfigItem(new ModuleConfigItem<>(this, "enabled", MekanismLang.MODULE_ENABLED, new BooleanData()));
+        enabled = addConfigItem(new ModuleConfigItem<>(this, "enabled", MekanismLang.MODULE_ENABLED, new BooleanData(), true));
     }
 
     protected <T> ModuleConfigItem<T> addConfigItem(ModuleConfigItem<T> item) {
@@ -60,7 +61,7 @@ public abstract class Module {
      * Save this module on the container ItemStack. Will create proper NBT structure if it does not yet exist.
      * @param callback - will run after the NBT data is saved
      */
-    public final void save(Runnable callback) {
+    public final void save(Consumer<ItemStack> callback) {
         CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
         CompoundNBT nbt = modulesTag.getCompound(data.getName());
 
@@ -73,7 +74,7 @@ public abstract class Module {
         ItemDataUtils.setCompound(container, NBTConstants.MODULES, modulesTag);
 
         if (callback != null) {
-            callback.run();
+            callback.accept(container);
         }
     }
 

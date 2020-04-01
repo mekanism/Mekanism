@@ -1,6 +1,8 @@
 package mekanism.common.content.gear;
 
+import java.util.function.Consumer;
 import mekanism.common.base.ILangEntry;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 public class ModuleConfigItem<TYPE> {
@@ -10,11 +12,12 @@ public class ModuleConfigItem<TYPE> {
     private ILangEntry description;
     private ConfigData<TYPE> data;
 
-    public ModuleConfigItem(Module module, String name, ILangEntry description, ConfigData<TYPE> data) {
+    public ModuleConfigItem(Module module, String name, ILangEntry description, ConfigData<TYPE> data, TYPE def) {
         this.module = module;
         this.name = name;
         this.description = description;
         this.data = data;
+        data.set(def);
     }
 
     public ILangEntry getDescription() {
@@ -29,13 +32,15 @@ public class ModuleConfigItem<TYPE> {
         return data.get();
     }
 
-    public void set(TYPE type, Runnable callback) {
+    public void set(TYPE type, Consumer<ItemStack> callback) {
         data.set(type);
         module.save(callback);
     }
 
     public void read(CompoundNBT tag) {
-        data.read(name, tag);
+        if (tag.contains(name)) {
+            data.read(name, tag);
+        }
     }
 
     public void write(CompoundNBT tag) {

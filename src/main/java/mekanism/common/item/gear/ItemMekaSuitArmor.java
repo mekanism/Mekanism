@@ -1,10 +1,15 @@
 package mekanism.common.item.gear;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import com.google.common.collect.Multimap;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.text.EnumColor;
+import mekanism.client.MekKeyHandler;
+import mekanism.client.MekanismKeyHandler;
+import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
@@ -13,6 +18,7 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +32,11 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem /*, ISpecialGear*/ {
@@ -40,6 +50,28 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         if (slot == EquipmentSlotType.HEAD) {
             Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT);
         }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
+            for (Module module : Modules.loadAll(stack)) {
+                ITextComponent component = module.getData().getLangEntry().translateColored(EnumColor.GRAY);
+                if (module.getInstalledCount() > 1) {
+                    component.appendText(" (" + module.getInstalledCount() + ")");
+                }
+                tooltip.add(module.getData().getLangEntry().translateColored(EnumColor.GRAY));
+            }
+        } else {
+            StorageUtils.addStoredEnergy(stack, tooltip, true);
+            tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
+        }
+    }
+
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return new TranslationTextComponent(getTranslationKey(stack)).applyTextStyle(EnumColor.PURPLE.textFormatting);
     }
 
     @Override

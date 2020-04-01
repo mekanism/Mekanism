@@ -133,6 +133,10 @@ public class Modules {
             return new TranslationTextComponent(description.getTranslationKey());
         }
 
+        public ILangEntry getLangEntry() {
+            return langEntry;
+        }
+
         @Override
         public String getTranslationKey() {
             return langEntry.getTranslationKey();

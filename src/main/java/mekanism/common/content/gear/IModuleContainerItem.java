@@ -6,6 +6,7 @@ import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public interface IModuleContainerItem {
 
@@ -43,6 +44,9 @@ public interface IModuleContainerItem {
             module.setInstalledCount(module.getInstalledCount() + 1);
             module.save(null);
         } else {
+            if (!ItemDataUtils.hasData(stack, NBTConstants.MODULES, NBT.TAG_COMPOUND)) {
+                ItemDataUtils.setCompound(stack, NBTConstants.MODULES, new CompoundNBT());
+            }
             ItemDataUtils.getCompound(stack, NBTConstants.MODULES).put(type.getName(), new CompoundNBT());
         }
     }

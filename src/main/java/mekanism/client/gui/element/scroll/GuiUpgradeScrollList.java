@@ -75,7 +75,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
             drawString(TextComponentUtil.build(upgrade), relativeX + 13, relativeY + 3 + multipliedElement, 0x404040);
             renderUpgrade(upgrade, relativeX + 3, relativeY + 3 + multipliedElement, 0.5F);
             //Only render the tooltip describing the upgrade when hovering over it though
-            if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 + multipliedElement && mouseY <= y + 1 + multipliedElement + elementHeight) {
+            if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
                 guiObj.displayTooltip(upgrade.getDescription(), xAxis, yAxis, guiObj.getWidth());
             }
         }
@@ -99,7 +99,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
             int j = 1;
             if (upgrade == getSelection()) {
                 j = 2;
-            } else if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY <= shiftedY + elementHeight) {
+            } else if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
                 j = 0;
             }
             MekanismRenderer.color(upgrade.getColor(), 1.0F, 2.5F);

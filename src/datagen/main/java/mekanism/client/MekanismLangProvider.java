@@ -345,6 +345,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Hold for
         add(MekanismLang.HOLD_FOR_DETAILS, "Hold %s for details.");
         add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %s for a description.");
+        add(MekanismLang.HOLD_FOR_MODULES, "Hold %s for installed modules.");
         //Commands
         add(MekanismLang.COMMAND_CHUNK, "%s chunk %d, %d");
         add(MekanismLang.COMMAND_CHUNK_WATCH, "Chunk %d, %d added to watch list");

@@ -39,6 +39,7 @@ import mekanism.common.network.PacketSecurityMode;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTransmitterUpdate;
+import mekanism.common.network.PacketUpdateInventorySlot;
 import mekanism.common.network.PacketUpdateTile;
 import mekanism.common.network.container.PacketUpdateContainer;
 import mekanism.common.network.container.PacketUpdateContainerBatch;
@@ -199,6 +200,7 @@ public class PacketHandler {
         registerClientToServer(PacketOpenGui.class, PacketOpenGui::encode, PacketOpenGui::decode, PacketOpenGui::handle);
         registerServerToClient(PacketRadiationData.class, PacketRadiationData::encode, PacketRadiationData::decode, PacketRadiationData::handle);
         registerClientToServer(PacketRemoveModule.class, PacketRemoveModule::encode, PacketRemoveModule::decode, PacketRemoveModule::handle);
+        registerClientToServer(PacketUpdateInventorySlot.class, PacketUpdateInventorySlot::encode, PacketUpdateInventorySlot::decode, PacketUpdateInventorySlot::handle);
 
         registerServerToClient(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
         registerServerToClient(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);

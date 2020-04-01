@@ -161,13 +161,17 @@ public abstract class MekanismContainer extends Container {
             //If we still have any left then input into the empty stacks in the order of main inventory -> hot bar
             // Note: Even though we are doing the main inventory, we still need to do both, ignoring empty then not instead of
             // just directly inserting into the main inventory, in case there are empty slots before the one we can stack with
-            stackToInsert = insertItem(mainInventorySlots, stackToInsert, false);
             stackToInsert = insertItem(hotBarSlots, stackToInsert, false);
+            stackToInsert = insertItem(mainInventorySlots, stackToInsert, false);
         } else {
             //We are in the main inventory or the hot bar
             //Start by trying to insert it into the tile's inventory slots, first attempting to stack with other items
             stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, true);
             if (slotStack.getCount() == stackToInsert.getCount()) {
+                //First, see if this fits in the armor inventory
+                if (!(currentSlot instanceof ArmorSlot)) {
+                    stackToInsert = insertItem(armorSlots, stackToInsert, false);
+                }
                 //Then as long as if we still have the same number of items (failed to insert), try to insert it into the tile's inventory slots allowing for empty items
                 stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, false);
                 if (slotStack.getCount() == stackToInsert.getCount()) {
@@ -175,14 +179,12 @@ public abstract class MekanismContainer extends Container {
                     if (currentSlot instanceof ArmorSlot) {
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, true);
                         stackToInsert = insertItem(mainInventorySlots, stackToInsert, true);
-                        stackToInsert = insertItem(mainInventorySlots, stackToInsert, false);
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, false);
+                        stackToInsert = insertItem(mainInventorySlots, stackToInsert, false);
                     } else if (currentSlot instanceof MainInventorySlot) {
-                        stackToInsert = insertItem(armorSlots, stackToInsert, false);
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, true);
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, false);
                     } else if (currentSlot instanceof HotBarSlot) {
-                        stackToInsert = insertItem(armorSlots, stackToInsert, false);
                         stackToInsert = insertItem(mainInventorySlots, stackToInsert, true);
                         stackToInsert = insertItem(mainInventorySlots, stackToInsert, false);
                     } else {
