@@ -1,21 +1,20 @@
 package mekanism.generators.common.tile.reactor;
 
 import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
@@ -39,58 +38,42 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
         super(GeneratorsBlocks.REACTOR_PORT);
     }
 
+    @Nonnull
     @Override
-    public boolean canHandleGas() {
-        //Mark that we can handle gas
-        return true;
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        //Note: We don't use a ProxiedGasTankHolder, as we need to check tank index as well for our limiting insert/output
+        return side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getGasTanks(side);
+    }
+
+    @Nonnull
+    @Override
+    protected IFluidTankHolder getInitialFluidTanks() {
+        return side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getFluidTanks(side);
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        return ProxiedEnergyContainerHolder.create(side -> true, side -> getActive(),
+              side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getEnergyContainers(side));
     }
 
     @Override
     public boolean persistGas() {
-        //But that we do not handle gas when it comes to syncing it/saving this tile to disk
+        //Do not handle gas when it comes to syncing it/saving this tile to disk
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
-        return canHandleGas() && getReactor() != null ? getReactor().controller.getGasTanks(side) : Collections.emptyList();
-    }
-
-    @Override
-    public boolean canHandleFluid() {
-        //Mark that we can handle fluid
-        return true;
     }
 
     @Override
     public boolean persistFluid() {
-        //But that we do not handle fluid when it comes to syncing it/saving this tile to disk
+        //Do not handle fluid when it comes to syncing it/saving this tile to disk
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return canHandleFluid() && getReactor() != null ? getReactor().controller.getFluidTanks(side) : Collections.emptyList();
-    }
-
-    @Override
-    public boolean canHandleEnergy() {
-        //Mark that we can handle energy
-        return true;
     }
 
     @Override
     public boolean persistEnergy() {
         //But that we do not handle energy when it comes to syncing it/saving this tile to disk
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return canHandleEnergy() && getReactor() != null ? getReactor().controller.getEnergyContainers(side) : Collections.emptyList();
     }
 
     @Override
@@ -215,12 +198,5 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
             return GasStack.EMPTY;
         }
         return super.extractGas(tank, amount, side, action);
-    }
-
-    @Nonnull
-    @Override
-    public FloatingLong extractEnergy(int container, @Nonnull FloatingLong amount, @Nullable Direction side, @Nonnull Action action) {
-        //Don't allow extracting if we are on input mode
-        return getActive() ? super.extractEnergy(container, amount, side, action) : FloatingLong.ZERO;
     }
 }

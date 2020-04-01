@@ -1,23 +1,32 @@
 package mekanism.generators.common.tile.turbine;
 
 import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.energy.IEnergyContainer;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.util.Direction;
 
 public class TileEntityTurbineValve extends TileEntityTurbineCasing {
 
     public TileEntityTurbineValve() {
         super(GeneratorsBlocks.TURBINE_VALVE);
+    }
+
+    @Nonnull
+    @Override
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        return side -> structure == null ? Collections.emptyList() : structure.getGasTanks(side);
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        return side -> structure == null ? Collections.emptyList() : structure.getEnergyContainers(side);
     }
 
     @Override
@@ -29,39 +38,15 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     }
 
     @Override
-    public boolean canHandleGas() {
-        //Mark that we can handle gas
-        return true;
-    }
-
-    @Override
     public boolean persistGas() {
-        //But that we do not handle gas when it comes to syncing it/saving this tile to disk
+        //Do not handle gas when it comes to syncing it/saving this tile to disk
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
-        return canHandleGas() && structure != null ? structure.getGasTanks(side) : Collections.emptyList();
-    }
-
-    @Override
-    public boolean canHandleEnergy() {
-        //Mark that we can handle energy
-        return true;
     }
 
     @Override
     public boolean persistEnergy() {
-        //But that we do not handle energy when it comes to syncing it/saving this tile to disk
+        //Do not handle energy when it comes to syncing it/saving this tile to disk
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return canHandleEnergy() && structure != null ? structure.getEnergyContainers(side) : Collections.emptyList();
     }
 
     @Override

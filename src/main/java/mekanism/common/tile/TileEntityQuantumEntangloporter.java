@@ -29,6 +29,14 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.chemical.QuantumEntangloporterGasTankHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.energy.QuantumEntangloporterEnergyContainerHolder;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
+import mekanism.common.capabilities.holder.fluid.QuantumEntangloporterFluidTankHolder;
+import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.capabilities.holder.slot.QuantumEntangloporterInventorySlotHolder;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
@@ -138,6 +146,30 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
     }
 
+    @Nonnull
+    @Override
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        return new QuantumEntangloporterGasTankHolder(this);
+    }
+
+    @Nonnull
+    @Override
+    protected IFluidTankHolder getInitialFluidTanks() {
+        return new QuantumEntangloporterFluidTankHolder(this);
+    }
+
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        return new QuantumEntangloporterEnergyContainerHolder(this);
+    }
+
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        return new QuantumEntangloporterInventorySlotHolder(this);
+    }
+
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
@@ -178,7 +210,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         }
     }
 
-    private boolean hasFrequency() {
+    public boolean hasFrequency() {
         return frequency != null && frequency.valid;
     }
 
@@ -286,28 +318,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canHandleGas() {
-        return true;
-    }
-
-    @Override
     public boolean persistGas() {
         return false;
     }
 
     @Override
-    public boolean canHandleFluid() {
-        return true;
-    }
-
-    @Override
     public boolean persistFluid() {
         return false;
-    }
-
-    @Override
-    public boolean canHandleEnergy() {
-        return true;
     }
 
     @Override
@@ -414,30 +431,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public Set<ChunkPos> getChunkSet() {
         return Collections.singleton(new ChunkPos(getPos()));
-    }
-
-    @Nonnull
-    @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        return hasFrequency() && hasInventory() ? frequency.getInventorySlots(side) : Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
-        return hasFrequency() && canHandleGas() ? frequency.getGasTanks(side) : Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return hasFrequency() && canHandleFluid() ? frequency.getFluidTanks(side) : Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return hasFrequency() && canHandleEnergy() ? frequency.getEnergyContainers(side) : Collections.emptyList();
     }
 
     @Override
