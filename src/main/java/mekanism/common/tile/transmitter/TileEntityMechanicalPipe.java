@@ -187,7 +187,14 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
             return true;
         }
         FluidStack buffer = getBufferWithFallback();
-        FluidStack otherBuffer = ((TileEntityMechanicalPipe) tile).getBufferWithFallback();
+        if (buffer.isEmpty() && getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().getPrevTransferAmount() > 0) {
+            buffer = getTransmitter().getTransmitterNetwork().lastFluid;
+        }
+        TileEntityMechanicalPipe other = (TileEntityMechanicalPipe) tile;
+        FluidStack otherBuffer = other.getBufferWithFallback();
+        if (otherBuffer.isEmpty() && other.getTransmitter().hasTransmitterNetwork() && other.getTransmitter().getTransmitterNetwork().getPrevTransferAmount() > 0) {
+            otherBuffer = other.getTransmitter().getTransmitterNetwork().lastFluid;
+        }
         return buffer.isEmpty() || otherBuffer.isEmpty() || buffer.isFluidEqual(otherBuffer);
     }
 

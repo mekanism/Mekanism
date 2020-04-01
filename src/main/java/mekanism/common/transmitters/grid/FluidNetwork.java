@@ -100,6 +100,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                         //TODO: Print warning/error
                     }
                 } else if (net.fluidTank.getFluidAmount() > fluidTank.getFluidAmount()) {
+                    //TODO: Evaluate, realistically we should never be trying to merge two networks
+                    // if they have conflicting types
                     fluidTank.setStack(net.getBuffer());
                 }
                 net.fluidTank.setEmpty();
@@ -221,6 +223,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 }
             }
         }
+    }
+
+    public int getPrevTransferAmount() {
+        return prevTransferAmount;
     }
 
     @Override

@@ -235,6 +235,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         }
     }
 
+    public int getPrevTransferAmount() {
+        return prevTransferAmount;
+    }
+
     @Override
     public String toString() {
         return "[GasNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";

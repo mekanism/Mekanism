@@ -187,12 +187,16 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         if (!(tile instanceof TileEntityPressurizedTube)) {
             return true;
         }
-        //TODO: Fix visual connection when one is technically empty
-        // Maybe when they are both pressurized tubes we may want to just check the network compatibility
-        // or maybe just the network ID
-        GasStack buffer = getBufferWithFallback();
-        GasStack otherBuffer = ((TileEntityPressurizedTube) tile).getBufferWithFallback();
-        return buffer.isEmpty() || otherBuffer.isEmpty() || buffer.isTypeEqual(otherBuffer);
+        Gas buffer = getBufferWithFallback().getType();
+        if (buffer.isEmptyType() && getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().getPrevTransferAmount() > 0) {
+            buffer = getTransmitter().getTransmitterNetwork().lastGas;
+        }
+        TileEntityPressurizedTube other = (TileEntityPressurizedTube) tile;
+        Gas otherBuffer = other.getBufferWithFallback().getType();
+        if (otherBuffer.isEmptyType() && other.getTransmitter().hasTransmitterNetwork() && other.getTransmitter().getTransmitterNetwork().getPrevTransferAmount() > 0) {
+            otherBuffer = other.getTransmitter().getTransmitterNetwork().lastGas;
+        }
+        return buffer.isEmptyType() || otherBuffer.isEmptyType() || buffer == otherBuffer;
     }
 
     @Override
