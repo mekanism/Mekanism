@@ -285,8 +285,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     @Override
-    public void markDirty() {
-        super.markDirty();
+    public void markDirty(boolean recheckBlockState) {
+        super.markDirty(recheckBlockState);
         recalculateRecipe();
     }
 
@@ -356,7 +356,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             if (formula != null) {
                 moveItemsToGrid();
             }
-            markDirty();
+            markDirty(false);
             return true;
         }
         return false;
@@ -396,7 +396,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                             if (stockSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                                 //TODO: Print error that something went wrong
                             }
-                            markDirty();
+                            markDirty(false);
                             found = true;
                             break;
                         }
@@ -408,7 +408,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             } else {
                 //Update recipeStack as well so we can check if it is empty without having to get it again
                 recipeSlot.setStack(recipeStack = tryMoveToInput(recipeStack));
-                markDirty();
+                markDirty(false);
                 if (!recipeStack.isEmpty()) {
                     ret = false;
                 }
@@ -430,7 +430,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 recipeSlot.setStack(tryMoveToInput(recipeStack));
             }
         }
-        markDirty();
+        markDirty(false);
     }
 
     private void toggleAutoMode() {
@@ -441,7 +441,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             moveItemsToInput(false);
             autoMode = true;
         }
-        markDirty();
+        markDirty(false);
     }
 
     private void toggleStockControl() {
@@ -466,7 +466,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                     if (compareStack.isEmpty()) {
                         compareSlot.setStack(stockStack);
                         stockSlot.setStack(ItemStack.EMPTY);
-                        markDirty();
+                        markDirty(false);
                         return;
                     }
                     int maxCompareSize = compareSlot.getLimit(compareStack);
@@ -481,7 +481,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                             if (stockSlot.setStackSize(newStockSize, Action.EXECUTE) != newStockSize) {
                                 //TODO: Print error
                             }
-                            markDirty();
+                            markDirty(false);
                             return;
                         }
                     }
@@ -524,7 +524,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                     RecipeFormula formula = new RecipeFormula(world, craftingGridSlots);
                     if (formula.isValidFormula()) {
                         item.setInventory(formulaStack, formula.input);
-                        markDirty();
+                        markDirty(false);
                     }
                 }
             }

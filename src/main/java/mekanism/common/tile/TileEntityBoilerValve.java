@@ -1,14 +1,12 @@
 package mekanism.common.tile;
 
 import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
@@ -22,6 +20,18 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         super(MekanismBlocks.BOILER_VALVE);
     }
 
+    @Nonnull
+    @Override
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        return side -> structure == null ? Collections.emptyList() : structure.getGasTanks(side);
+    }
+
+    @Nonnull
+    @Override
+    protected IFluidTankHolder getInitialFluidTanks() {
+        return side -> structure == null ? Collections.emptyList() : structure.getFluidTanks(side);
+    }
+
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
@@ -31,39 +41,15 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }
 
     @Override
-    public boolean canHandleFluid() {
-        //Mark that we can handle fluid
-        return true;
-    }
-
-    @Override
     public boolean persistFluid() {
-        //But that we do not handle fluid when it comes to syncing it/saving this tile to disk
+        //Do not handle fluid when it comes to syncing it/saving this tile to disk
         return false;
-    }
-
-    @Override
-    public boolean canHandleGas() {
-        //Mark that we can handle gas
-        return true;
     }
 
     @Override
     public boolean persistGas() {
-        //But that we do not handle gas when it comes to syncing it/saving this tile to disk
+        //Do not handle gas when it comes to syncing it/saving this tile to disk
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return canHandleFluid() && structure != null ? structure.getFluidTanks(side) : Collections.emptyList();
-    }
-
-    @Nonnull
-    @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
-        return canHandleFluid() && structure != null ? structure.getGasTanks(side) : Collections.emptyList();
     }
 
     @Override

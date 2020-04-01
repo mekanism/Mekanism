@@ -24,9 +24,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
      */
     private static final Direction[] DIRECTIONS = Direction.values();
 
-    //TODO: Can this stop being linked hash sets now that we sync with uuid?
     protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectLinkedOpenHashSet<>();
-    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectLinkedOpenHashSet<>();
+    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectOpenHashSet<>();
 
     protected Set<Coord4D> possibleAcceptors = new ObjectOpenHashSet<>();
     protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
@@ -59,8 +58,12 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public void commit() {
         if (!transmittersToAdd.isEmpty()) {
+            boolean addedValidTransmitters = false;
             for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmittersToAdd) {
-                if (transmitter.isValid()) {
+                //Note: Transmitter should not be able to be null here, but I ran into a null pointer
+                // pointing to it being null that I could not reproduce, so just added this as a safety check
+                if (transmitter != null && transmitter.isValid()) {
+                    addedValidTransmitters = true;
                     if (world == null) {
                         world = transmitter.world();
                     }
@@ -76,15 +79,16 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                     transmitters.add(transmitter);
                 }
             }
-
-            clampBuffer();
             transmittersToAdd.clear();
-            updateSaveShares = true;
-            if (forceScaleUpdate) {
-                forceScaleUpdate = false;
-                forceScaleUpdate();
+            if (addedValidTransmitters) {
+                clampBuffer();
+                updateSaveShares = true;
+                if (forceScaleUpdate) {
+                    forceScaleUpdate = false;
+                    forceScaleUpdate();
+                }
+                needsUpdate = true;
             }
-            needsUpdate = true;
         }
 
         if (!changedAcceptors.isEmpty()) {

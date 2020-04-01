@@ -389,7 +389,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     protected void markDirtyComparator() {
         //Only update the comparator state if we support comparators
-        if (supportsComparator() && !cachedBlockState.isAir(world, pos)) {
+        if (supportsComparator() && !getBlockState().isAir(world, pos)) {
             int newRedstoneLevel = getRedstoneLevel();
             if (newRedstoneLevel != currentRedstoneLevel) {
                 world.updateComparatorOutputLevel(pos, getBlockType());
@@ -765,7 +765,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     public void setControlType(@Nonnull RedstoneControl type) {
         if (supportsRedstone()) {
             controlType = Objects.requireNonNull(type);
-            markDirty();
+            markDirty(false);
         }
     }
 
@@ -864,7 +864,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Override
     public void onContentsChanged() {
-        markDirty();
+        markDirty(false);
     }
 
     @Override

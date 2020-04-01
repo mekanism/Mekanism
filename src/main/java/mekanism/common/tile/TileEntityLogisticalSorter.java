@@ -108,7 +108,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                             TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
                             if (!response.isEmpty()) {
                                 invStack.use(response);
-                                back.markDirty();
+                                MekanismUtils.saveChunk(back);
                                 setActive(true);
                                 sentItems = true;
                                 break;
@@ -122,7 +122,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
                     if (!response.isEmpty()) {
                         response.use(back, getDirection());
-                        back.markDirty();
+                        MekanismUtils.saveChunk(back);
                         setActive(true);
                     }
                 }

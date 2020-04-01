@@ -187,9 +187,16 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         if (!(tile instanceof TileEntityPressurizedTube)) {
             return true;
         }
-        GasStack buffer = getBufferWithFallback();
-        GasStack otherBuffer = ((TileEntityPressurizedTube) tile).getBufferWithFallback();
-        return buffer.isEmpty() || otherBuffer.isEmpty() || buffer.isTypeEqual(otherBuffer);
+        Gas buffer = getBufferWithFallback().getType();
+        if (buffer.isEmptyType() && getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().getPrevTransferAmount() > 0) {
+            buffer = getTransmitter().getTransmitterNetwork().lastGas;
+        }
+        TileEntityPressurizedTube other = (TileEntityPressurizedTube) tile;
+        Gas otherBuffer = other.getBufferWithFallback().getType();
+        if (otherBuffer.isEmptyType() && other.getTransmitter().hasTransmitterNetwork() && other.getTransmitter().getTransmitterNetwork().getPrevTransferAmount() > 0) {
+            otherBuffer = other.getTransmitter().getTransmitterNetwork().lastGas;
+        }
+        return buffer.isEmptyType() || otherBuffer.isEmptyType() || buffer == otherBuffer;
     }
 
     @Override
@@ -276,7 +283,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public void onContentsChanged() {
-        markDirty();
+        markDirty(false);
     }
 
     @Override
@@ -342,7 +349,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         CompoundNBT updateTag = super.getUpdateTag();
         TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
-            updateTag.put(NBTConstants.GAS_STORED, transmitter.getTransmitterNetwork().gasTank.getStack().write(new CompoundNBT()));
+            updateTag.put(NBTConstants.GAS_STORED, transmitter.getTransmitterNetwork().lastGas.write(new CompoundNBT()));
             updateTag.putFloat(NBTConstants.SCALE, transmitter.getTransmitterNetwork().gasScale);
         }
         return updateTag;
@@ -350,7 +357,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     protected void handleContentsUpdateTag(@Nonnull GasNetwork network, @Nonnull CompoundNBT tag) {
-        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, network.gasTank::setStack);
+        NBTUtils.setGasIfPresent(tag, NBTConstants.GAS_STORED, network::setLastGas);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.gasScale = scale);
     }
 }

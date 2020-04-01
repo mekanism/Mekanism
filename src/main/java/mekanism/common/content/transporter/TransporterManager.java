@@ -1,13 +1,13 @@
 package mekanism.common.content.transporter;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -95,7 +95,13 @@ public class TransporterManager {
                         //Note: Because we check the size of the stack against the max stack size
                         // even if there are multiple slots that need this, we only end up copying
                         // our stack a single time to resize it
-                        stack = StackUtils.size(stack, maxStackSize + 1);
+                        if (count > maxStackSize) {
+                            //Note: If we have more we are trying to insert than the max stack size, just take the number we are trying to insert
+                            // so that we have an accurate amount for checking the real slot stack size
+                            stack = StackUtils.size(stack, count);
+                        } else {
+                            stack = StackUtils.size(stack, maxStackSize + 1);
+                        }
                     }
                 }
             } else {

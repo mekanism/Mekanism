@@ -123,7 +123,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(this::markDirty)
+              .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 

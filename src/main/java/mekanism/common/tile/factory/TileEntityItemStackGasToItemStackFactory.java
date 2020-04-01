@@ -186,7 +186,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(this::markDirty)
+              .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
 

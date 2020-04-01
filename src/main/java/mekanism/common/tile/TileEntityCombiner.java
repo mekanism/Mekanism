@@ -143,7 +143,7 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(this::markDirty)
+              .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 

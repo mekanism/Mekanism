@@ -92,7 +92,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
                         outputSlot.growStack(1, Action.EXECUTE);
                         didProcess = true;
                     }
-                    markDirty();
+                    markDirty(false);
                 }
             }
         }

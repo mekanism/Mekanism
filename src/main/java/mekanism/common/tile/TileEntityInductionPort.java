@@ -4,15 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
@@ -29,6 +28,14 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         super(MekanismBlocks.INDUCTION_PORT);
     }
 
+    @Nonnull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers() {
+        //Don't allow inserting if we are on output mode, or extracting if we are on input mode
+        return ProxiedEnergyContainerHolder.create(side -> !getActive(), side -> getActive(),
+              side -> structure == null ? Collections.emptyList() : structure.getEnergyContainers(side));
+    }
+
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
@@ -38,29 +45,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    public boolean canHandleEnergy() {
-        //Mark that we can handle energy
-        return true;
-    }
-
-    @Override
     public boolean persistEnergy() {
-        //But that we do not handle energy when it comes to syncing it/saving this tile to disk
+        //Do not handle energy when it comes to syncing it/saving this tile to disk
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public FloatingLong insertEnergy(int container, @Nonnull FloatingLong amount, @Nullable Direction side, @Nonnull Action action) {
-        //Don't allow inserting if we are on output mode
-        return getActive() ? amount : super.insertEnergy(container, amount, side, action);
-    }
-
-    @Nonnull
-    @Override
-    public FloatingLong extractEnergy(int container, @Nonnull FloatingLong amount, @Nullable Direction side, @Nonnull Action action) {
-        //Don't allow extracting if we are on input mode
-        return getActive() ? super.extractEnergy(container, amount, side, action) : FloatingLong.ZERO;
     }
 
     @Override
@@ -91,12 +78,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapabilityIfEnabled(capability, side);
-    }
-
-    @Nonnull
-    @Override
-    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return canHandleEnergy() && structure != null ? structure.getEnergyContainers(side) : Collections.emptyList();
     }
 
     @Nonnull

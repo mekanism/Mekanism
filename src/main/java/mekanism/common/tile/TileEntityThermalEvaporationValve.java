@@ -1,12 +1,11 @@
 package mekanism.common.tile;
 
 import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -21,6 +20,12 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 
     public TileEntityThermalEvaporationValve() {
         super(MekanismBlocks.THERMAL_EVAPORATION_VALVE);
+    }
+
+    @Nonnull
+    @Override
+    protected IFluidTankHolder getInitialFluidTanks() {
+        return side -> getController() == null ? Collections.emptyList() : getController().getFluidTanks(side);
     }
 
     @Override
@@ -38,21 +43,9 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public boolean canHandleFluid() {
-        //Mark that we can handle fluid
-        return true;
-    }
-
-    @Override
     public boolean persistFluid() {
         //But that we do not handle fluid when it comes to syncing it/saving this tile to disk
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return canHandleFluid() && getController() != null ? getController().getFluidTanks(side) : Collections.emptyList();
     }
 
     @Override

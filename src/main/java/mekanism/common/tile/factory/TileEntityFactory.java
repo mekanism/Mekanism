@@ -230,7 +230,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                     ItemStack newStack = stack.isEmpty() ? checkStack : stack;
                     primaryInputSlot.setStack(StackUtils.size(newStack, (total + 1) / 2));
                     checkInputSlot.setStack(StackUtils.size(newStack, total / 2));
-                    markDirty();
+                    markDirty(false);
                     return;
                 }
             }

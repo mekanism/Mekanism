@@ -1,11 +1,11 @@
 package mekanism.common.content.transporter;
 
-import java.util.Map;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.util.InventoryUtils;
@@ -162,10 +162,11 @@ public class TransitRequest {
 
     /**
      * SlotData reflects slot count information for a unique item type within an inventory.
-     * @author aidancbrady
      *
+     * @author aidancbrady
      */
     public static class SlotData {
+
         private HashedItem itemType;
         private int totalCount = 0;
         private Int2IntMap slotCountMap = new Int2IntOpenHashMap();
@@ -188,7 +189,6 @@ public class TransitRequest {
                 Mekanism.logger.error("Item: " + stack.getDisplayName());
                 return;
             }
-
             slotCountMap.put(slot, stack.getCount());
             totalCount += stack.getCount();
         }
@@ -196,9 +196,10 @@ public class TransitRequest {
         public void use(int slot, int amount) {
             int stored = getSlotCount(slot);
             totalCount -= amount;
-            slotCountMap.put(slot, stored - amount);
             if (stored == amount) {
                 slotCountMap.remove(slot);
+            } else {
+                slotCountMap.put(slot, stored - amount);
             }
         }
     }

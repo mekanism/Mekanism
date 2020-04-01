@@ -167,7 +167,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(this::markDirty)
+              .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 

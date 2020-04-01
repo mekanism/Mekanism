@@ -151,7 +151,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
 
         int newGasAmount = gasTank.getStored();
         if (newGasAmount != currentGasAmount) {
-            markDirty();
+            markDirty(false);
         }
         currentGasAmount = newGasAmount;
     }

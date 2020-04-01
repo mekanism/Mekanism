@@ -119,7 +119,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
 
     @Override
     public void onContentsChanged() {
-        markDirty();
+        markDirty(false);
     }
 
     @Nonnull

@@ -45,11 +45,16 @@ public abstract class TileEntityUpdateable extends TileEntity {
 
     @Override
     public void markDirty() {
+        markDirty(true);
+    }
+
+    public void markDirty(boolean recheckBlockState) {
         //Copy of the base impl of markDirty in TileEntity, except only updates comparator state when something changed
         // and if our block supports having a comparator signal, instead of always doing it
         if (world != null) {
-            //TODO: Do we even really need to be updating the cachedBlockState?
-            cachedBlockState = world.getBlockState(pos);
+            if (recheckBlockState) {
+                cachedBlockState = world.getBlockState(pos);
+            }
             world.markChunkDirty(pos, this);
             if (!isRemote()) {
                 markDirtyComparator();

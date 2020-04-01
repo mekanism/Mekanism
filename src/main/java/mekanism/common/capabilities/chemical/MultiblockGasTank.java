@@ -10,7 +10,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.tile.TileEntityMultiblock;
-import mekanism.common.util.MekanismUtils;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -36,7 +35,7 @@ public class MultiblockGasTank<MULTIBLOCK extends TileEntityMultiblock<?>> exten
     public void onContentsChanged() {
         super.onContentsChanged();
         if (multiblock.hasWorld() && !multiblock.isRemote() && multiblock.isRendering) {
-            MekanismUtils.saveChunk(multiblock);
+            multiblock.markDirty(false);
         }
     }
 }

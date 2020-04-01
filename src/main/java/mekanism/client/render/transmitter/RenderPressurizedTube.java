@@ -2,7 +2,6 @@ package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.client.render.MekanismRenderType;
@@ -29,12 +28,11 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
         TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = tube.getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
             GasNetwork network = transmitter.getTransmitterNetwork();
-            if (!network.gasTank.isEmpty() && network.gasScale > 0) {
+            if (!network.lastGas.isEmptyType() && !network.gasTank.isEmpty() && network.gasScale > 0) {
                 matrix.push();
                 matrix.translate(0.5, 0.5, 0.5);
-                Gas gas = network.gasTank.getType();
-                renderModel(tube, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), gas.getTint(),
-                      network.gasScale, MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.getChemicalTexture(gas));
+                renderModel(tube, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), network.lastGas.getTint(),
+                      network.gasScale, MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.getChemicalTexture(network.lastGas));
                 matrix.pop();
             }
         }

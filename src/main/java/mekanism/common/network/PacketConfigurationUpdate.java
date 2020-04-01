@@ -74,12 +74,12 @@ public class PacketConfigurationUpdate {
                             info.setDataType(relativeSide, DataType.NONE);
                         }
                     }
-                    tile.markDirty();
                     //Notify the neighbor on that side our state changed
                     MekanismUtils.notifyNeighborOfChange(tile.getWorld(), relativeSide.getDirection(config.getOrientation()), tile.getPos());
                     if (tile instanceof TileEntityUpdateable) {
                         ((TileEntityUpdateable) tile).sendUpdatePacket();
                     }
+                    MekanismUtils.saveChunk(tile);
                 } else if (message.packetType == ConfigurationPacket.EJECT_COLOR) {
                     TileComponentEjector ejector = config.getEjector();
                     if (message.clickType == 0) {

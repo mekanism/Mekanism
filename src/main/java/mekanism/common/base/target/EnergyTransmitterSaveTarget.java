@@ -34,7 +34,7 @@ public class EnergyTransmitterSaveTarget extends Target<IGridTransmitter<IStrict
                 TileEntityUniversalCable cable = (TileEntityUniversalCable) tile;
                 if (!currentStored.isZero() || !cable.lastWrite.isZero()) {
                     cable.lastWrite = currentStored;
-                    cable.markDirty();
+                    cable.markDirty(false);
                 }
             }
         }

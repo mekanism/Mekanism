@@ -41,6 +41,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     private final List<IExtendedFluidTank> fluidTanks;
     public final VariableCapacityFluidTank fluidTank;
 
+    @Nonnull
+    public FluidStack lastFluid = FluidStack.EMPTY;
     public float fluidScale;
     private int prevTransferAmount;
 
@@ -70,32 +72,44 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     protected void forceScaleUpdate() {
         if (!fluidTank.isEmpty() && fluidTank.getCapacity() > 0) {
             fluidScale = Math.min(1, (float) fluidTank.getFluidAmount() / fluidTank.getCapacity());
+        } else {
+            fluidScale = 0;
         }
     }
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(FluidNetwork net) {
+        float oldScale = fluidScale;
         int oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the fluid scales
-        fluidScale = (fluidScale * oldCapacity + net.fluidScale * net.capacity) / getCapacity();
+        int capacity = getCapacity();
+        fluidScale = capacity == 0 ? 0 : (fluidScale * oldCapacity + net.fluidScale * net.capacity) / capacity;
         if (isRemote()) {
             if (fluidTank.isEmpty() && !net.fluidTank.isEmpty()) {
                 fluidTank.setStack(net.getBuffer());
                 net.fluidTank.setEmpty();
             }
-        } else if (!net.fluidTank.isEmpty()) {
-            if (fluidTank.isEmpty()) {
-                fluidTank.setStack(net.getBuffer());
-            } else if (fluidTank.isFluidEqual(net.fluidTank.getFluid())) {
-                int amount = net.fluidTank.getFluidAmount();
-                if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
-                    //TODO: Print warning/error
+        } else {
+            if (!net.fluidTank.isEmpty()) {
+                if (fluidTank.isEmpty()) {
+                    fluidTank.setStack(net.getBuffer());
+                } else if (fluidTank.isFluidEqual(net.fluidTank.getFluid())) {
+                    int amount = net.fluidTank.getFluidAmount();
+                    if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
+                        //TODO: Print warning/error
+                    }
+                } else if (net.fluidTank.getFluidAmount() > fluidTank.getFluidAmount()) {
+                    //TODO: Evaluate, realistically we should never be trying to merge two networks
+                    // if they have conflicting types
+                    fluidTank.setStack(net.getBuffer());
                 }
-            } else if (net.fluidTank.getFluidAmount() > fluidTank.getFluidAmount()) {
-                fluidTank.setStack(net.getBuffer());
+                net.fluidTank.setEmpty();
             }
-            net.fluidTank.setEmpty();
+            if (oldScale != fluidScale) {
+                //We want to make sure we update to the scale change
+                needsUpdate = true;
+            }
         }
     }
 
@@ -197,7 +211,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 needsUpdate = true;
             }
             if (needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, getBuffer(), fluidScale));
+                MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, lastFluid, fluidScale));
                 needsUpdate = false;
             }
             if (fluidTank.isEmpty()) {
@@ -209,6 +223,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 }
             }
         }
+    }
+
+    public int getPrevTransferAmount() {
+        return prevTransferAmount;
     }
 
     @Override
@@ -258,6 +276,21 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void onContentsChanged() {
         updateSaveShares = true;
+        FluidStack type = fluidTank.getFluid();
+        if (!lastFluid.isFluidEqual(type)) {
+            //If the fluid type does not match update it, and mark that we need an update
+            lastFluid = type.isEmpty() ? FluidStack.EMPTY : new FluidStack(type, 1);
+            needsUpdate = true;
+        }
+    }
+
+    public void setLastFluid(@Nonnull FluidStack fluid) {
+        if (fluid.isEmpty()) {
+            fluidTank.setEmpty();
+        } else {
+            lastFluid = fluid;
+            fluidTank.setStack(new FluidStack(fluid, 1));
+        }
     }
 
     public static class FluidTransferEvent extends Event {

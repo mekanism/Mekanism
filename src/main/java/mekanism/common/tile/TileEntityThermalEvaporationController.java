@@ -166,7 +166,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        refresh();
+        //When unloading a thermal evaporation plant, just clear the structure instead of re-looking it back up
+        if (!isRemote()) {
+            clearStructure();
+        }
     }
 
     @Override
@@ -218,7 +221,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
         return new FluidToFluidCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> getActive() && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this))
-              .setOnFinish(this::markDirty)
+              .setOnFinish(() -> markDirty(false))
               .setActive(active -> {
                   //TODO: Make the numbers for lastGain be based on how much the recipe provides as an output rather than "assuming" it is 1 mB
                   // Also fix that the numbers don't quite accurately reflect the values as we modify number of operations, and not have a fractional
@@ -273,7 +276,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         }
         heatToAbsorb = 0;
         tempMultiplier = Math.max(0, temperature) * MekanismConfig.general.evaporationTempMultiplier.get() * height / MAX_HEIGHT;
-        markDirty();
+        markDirty(false);
     }
 
     public float getTemperature() {
@@ -320,7 +323,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             height = 0;
             return false;
         }
-        markDirty();
+        markDirty(false);
         return true;
     }
 
