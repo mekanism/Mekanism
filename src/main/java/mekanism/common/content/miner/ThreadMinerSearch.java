@@ -103,7 +103,7 @@ public class ThreadMinerSearch extends Thread {
         tile.oresToMine = oresToMine;
         tile.replaceMap = replaceMap;
         chunkCache = null;
-        MekanismUtils.saveChunk(tile);
+        tile.markDirty(false);
         tile.cachedToMine = found;
     }
 

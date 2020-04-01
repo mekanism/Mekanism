@@ -191,7 +191,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             if (freq.name.equals(name)) {
                 frequency = freq;
                 frequency.activeCoords.add(Coord4D.get(this));
-                markDirty();
+                markDirty(false);
                 return;
             }
         }
@@ -199,7 +199,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         freq.activeCoords.add(Coord4D.get(this));
         manager.addFrequency(freq);
         frequency = freq;
-        markDirty();
+        markDirty(false);
     }
 
     public FrequencyManager getManager(Frequency freq) {

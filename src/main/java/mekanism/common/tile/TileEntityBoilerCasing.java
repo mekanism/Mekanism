@@ -127,7 +127,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             if (needsPacket) {
                 sendUpdatePacket();
             }
-            markDirty();
+            markDirty(false);
         }
     }
 

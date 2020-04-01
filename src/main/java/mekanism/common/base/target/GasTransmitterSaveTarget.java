@@ -47,7 +47,7 @@ public class GasTransmitterSaveTarget extends Target<IGridTransmitter<IGasHandle
                 TileEntityPressurizedTube tube = (TileEntityPressurizedTube) tile;
                 if (currentStored.isEmpty() != tube.lastWrite.isEmpty() || (!currentStored.isEmpty() && !currentStored.isStackIdentical(tube.lastWrite))) {
                     tube.lastWrite = currentStored;
-                    tube.markDirty();
+                    tube.markDirty(false);
                 }
             }
         }

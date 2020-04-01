@@ -46,7 +46,7 @@ public class PacketSecurityMode {
                     UUID owner = ((ISecurityTile) tile).getSecurity().getOwnerUUID();
                     if (owner != null && player.getUniqueID().equals(owner)) {
                         ((ISecurityTile) tile).getSecurity().setMode(message.value);
-                        tile.markDirty();
+                        MekanismUtils.saveChunk(tile);
                     }
                 }
             } else {

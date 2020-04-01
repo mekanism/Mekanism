@@ -163,7 +163,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITan
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setOnFinish(this::markDirty)
+              .setOnFinish(() -> markDirty(false))
               .setPostProcessOperations(currentMax -> {
                   if (currentMax <= 0) {
                       //Short circuit that if we already can't perform any outputs, just return

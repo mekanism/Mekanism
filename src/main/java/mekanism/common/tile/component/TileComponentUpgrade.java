@@ -70,7 +70,7 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
                             //Send an update packet to the client to update the number of muffling upgrades installed
                             tile.sendUpdatePacket();
                         }
-                        tile.markDirty();
+                        tile.markDirty(false);
                     }
                 } else {
                     upgradeTicks = 0;

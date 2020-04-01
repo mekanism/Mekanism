@@ -401,7 +401,7 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
         if (getPossibleTransmitterConnections() != currentTransmitterConnections) {
             markDirtyTransmitters();
         }
-        markDirty();
+        markDirty(false);
     }
 
     protected void markDirtyTransmitters() {

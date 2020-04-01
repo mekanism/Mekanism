@@ -271,7 +271,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public void onContentsChanged() {
-        markDirty();
+        markDirty(false);
     }
 
     @Override

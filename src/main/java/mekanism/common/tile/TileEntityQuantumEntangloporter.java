@@ -160,21 +160,20 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             if (frequency != null && !frequency.valid) {
                 frequency = (InventoryFrequency) manager.validateFrequency(getSecurity().getOwnerUUID(), Coord4D.get(this), frequency);
                 MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
-                markDirty();
+                markDirty(false);
             }
-
             if (frequency != null) {
                 frequency = (InventoryFrequency) manager.update(Coord4D.get(this), frequency);
                 if (frequency == null) {
                     MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
-                    markDirty();
+                    markDirty(false);
                 }
             }
         } else {
             frequency = null;
             if (lastFreq != null) {
                 MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
-                markDirty();
+                markDirty(false);
             }
         }
     }
@@ -228,7 +227,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
                 frequency = (InventoryFrequency) freq;
                 frequency.activeCoords.add(Coord4D.get(this));
                 MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
-                markDirty();
+                markDirty(false);
                 return;
             }
         }
@@ -238,7 +237,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         manager.addFrequency(freq);
         frequency = (InventoryFrequency) freq;
         MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
-        markDirty();
+        markDirty(false);
     }
 
     @Override

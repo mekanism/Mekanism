@@ -283,7 +283,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public void onContentsChanged() {
-        markDirty();
+        markDirty(false);
     }
 
     @Override

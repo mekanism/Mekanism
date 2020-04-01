@@ -148,7 +148,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         return new GasToGasCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> canFunction(positionAbove))
               .setActive(this::setActive)
-              .setOnFinish(this::markDirty)
+              .setOnFinish(() -> markDirty(false))
               .setPostProcessOperations(currentMax -> {
                   if (currentMax <= 0) {
                       //Short circuit that if we already can't perform any outputs, just return

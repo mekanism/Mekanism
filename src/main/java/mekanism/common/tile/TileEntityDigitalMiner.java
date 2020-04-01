@@ -525,7 +525,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             searcher.start();
         }
         running = true;
-        markDirty();
+        markDirty(false);
     }
 
     private void stop() {
@@ -536,7 +536,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         } else if (searcher.state == State.FINISHED) {
             running = false;
         }
-        markDirty();
+        markDirty(false);
     }
 
     private void reset() {
@@ -547,7 +547,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         replaceMap.clear();
         missingStack = ItemStack.EMPTY;
         setActive(false);
-        markDirty();
+        markDirty(false);
     }
 
     public boolean isReplaceStack(ItemStack stack) {
@@ -644,7 +644,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     break;
                 }
             }
-            markDirty();
+            markDirty(false);
         }
     }
 

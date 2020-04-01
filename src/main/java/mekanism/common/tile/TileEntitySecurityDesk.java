@@ -137,7 +137,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         freq.activeCoords.add(Coord4D.get(this));
         manager.addFrequency(freq);
         frequency = (SecurityFrequency) freq;
-        markDirty();
+        markDirty(false);
         sendUpdatePacket();
     }
 
@@ -157,7 +157,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             } else if (type == 3) {
                 frequency.securityMode = dataStream.readEnumValue(SecurityMode.class);
             }
-            markDirty();
+            markDirty(false);
         }
     }
 

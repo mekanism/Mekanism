@@ -107,27 +107,32 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
             //We need it to be inventory slot info
             return;
         }
-        TransitRequest ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo);
         Set<Direction> outputs = info.getSidesForData(DataType.OUTPUT);
-        for (Direction side : outputs) {
-            TileEntity tile = MekanismUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
-            if (tile == null) {
-                //If the spot is not loaded just skip trying to eject to it
-                continue;
-            }
-            if (ejectMap.isEmpty()) {
-                break;
-            }
-            TransitResponse response;
-            Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()));
-            if (capability.isPresent()) {
-                response = capability.get().insert(this.tile, ejectMap, outputColor, true, 0);
-            } else {
-                response = InventoryUtils.putStackInInventory(tile, ejectMap, side, false);
-            }
-            if (!response.isEmpty()) {
-                // use the items returned by the TransitResponse; will be visible next loop
-                response.use(this.tile, side);
+        if (!outputs.isEmpty()) {
+            TransitRequest ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo);
+            if (!ejectMap.isEmpty()) {
+                for (Direction side : outputs) {
+                    TileEntity tile = MekanismUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
+                    if (tile == null) {
+                        //If the spot is not loaded just skip trying to eject to it
+                        continue;
+                    }
+                    TransitResponse response;
+                    Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()));
+                    if (capability.isPresent()) {
+                        response = capability.get().insert(this.tile, ejectMap, outputColor, true, 0);
+                    } else {
+                        response = InventoryUtils.putStackInInventory(tile, ejectMap, side, false);
+                    }
+                    if (!response.isEmpty()) {
+                        // use the items returned by the TransitResponse; will be visible next loop
+                        response.use(this.tile, side);
+                        if (ejectMap.isEmpty()) {
+                            //If we are out of items to eject, break
+                            break;
+                        }
+                    }
+                }
             }
         }
         tickDelay = 10;

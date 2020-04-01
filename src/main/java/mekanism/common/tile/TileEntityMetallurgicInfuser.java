@@ -173,7 +173,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(this::markDirty)
+              .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 

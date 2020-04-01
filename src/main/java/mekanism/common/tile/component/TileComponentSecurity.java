@@ -57,9 +57,7 @@ public class TileComponentSecurity implements ITileComponent {
         freq.activeCoords.add(Coord4D.get(tile));
         manager.addFrequency(freq);
         frequency = (SecurityFrequency) freq;
-
-        MekanismUtils.saveChunk(tile);
-        tile.markDirty();
+        tile.markDirty(false);
     }
 
     public UUID getOwnerUUID() {
