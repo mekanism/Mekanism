@@ -34,9 +34,10 @@ public class MekanismTags {
 
         public static final Tag<Item> SALT = forgeTag("salt");
         public static final Tag<Item> SAWDUST = forgeTag("sawdust");
-        public static final Tag<Item> YELLOW_CAKE_URANIUM = forgeTag("yellowCakeUranium");
-        public static final Tag<Item> PELLETS_FISSILE_FUEL = forgeTag("pelletFissileFuel");
-        public static final Tag<Item> PELLETS_ANTIMATTER = forgeTag("pelletAntimatter");
+        public static final Tag<Item> YELLOW_CAKE_URANIUM = forgeTag("yellow_cake_uranium");
+
+        public static final Tag<Item> PELLETS_FISSILE_FUEL = forgeTag("pellets/fissile_fuel");
+        public static final Tag<Item> PELLETS_ANTIMATTER = forgeTag("pellets/antimatter");
 
         public static final Tag<Item> CRYSTALS_FLUORITE = forgeTag("crystals/fluorite");
 

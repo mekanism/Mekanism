@@ -24,6 +24,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
+import mekanism.common.content.gear.Modules;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.transporter.PathfinderCache;
@@ -266,7 +267,7 @@ public class Mekanism {
 
     private void serverStarting(FMLServerStartingEvent event) {
         event.getCommandDispatcher().register(CommandMek.register());
-        //TODO: Do we care about the alternates of mtp, and mtpop
+        Modules.processSupportedContainers();
     }
 
     private void serverStopped(FMLServerStoppedEvent event) {
@@ -286,6 +287,7 @@ public class Mekanism {
         TransporterManager.reset();
         PathfinderCache.reset();
         TransmitterNetworkRegistry.reset();
+        Modules.resetSupportedContainers();
     }
 
     private void imcQueue(InterModEnqueueEvent event) {

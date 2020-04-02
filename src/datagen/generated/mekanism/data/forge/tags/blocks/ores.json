@@ -3,6 +3,8 @@
   "values": [
     "#forge:ores/copper",
     "#forge:ores/osmium",
-    "#forge:ores/tin"
+    "#forge:ores/tin",
+    "#forge:ores/fluorite",
+    "#forge:ores/uranium"
   ]
 }

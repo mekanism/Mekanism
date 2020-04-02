@@ -2,7 +2,12 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.text.EnumColor;
+import mekanism.client.MekKeyHandler;
+import mekanism.client.MekanismKeyHandler;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.IModuleItem;
+import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.Modules.ModuleData;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -30,7 +35,14 @@ public class ItemModule extends Item implements IModuleItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(moduleData.getDescription());
+        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
+            for (Item item : Modules.getSupported(getModuleData())) {
+                tooltip.add(item.getDisplayName(new ItemStack(item)));
+            }
+        } else {
+            tooltip.add(moduleData.getDescription());
+            tooltip.add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
+        }
     }
 
     @Override

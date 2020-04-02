@@ -53,6 +53,7 @@ public enum MekanismLang implements ILangEntry {
     HOLD_FOR_DETAILS("tooltip", "hold_for_details"),
     HOLD_FOR_DESCRIPTION("tooltip", "hold_for_description"),
     HOLD_FOR_MODULES("tooltip", "hold_for_modules"),
+    HOLD_FOR_SUPPORTED_ITEMS("tooltip", "hold_for_supported_items"),
     //Commands
     COMMAND_CHUNK("command", "chunk"),
     COMMAND_CHUNK_WATCH("command", "chunk.watch"),

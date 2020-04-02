@@ -27,6 +27,7 @@ public class Modules {
 
     private static final Map<String, ModuleData<?>> MODULES = new Object2ObjectOpenHashMap<>();
     private static final Map<Item, Set<ModuleData<?>>> SUPPORTED_MODULES = new Object2ObjectOpenHashMap<>();
+    private static final Map<ModuleData<?>, Set<Item>> SUPPORTED_CONTAINERS = new Object2ObjectOpenHashMap<>();
 
     public static final ModuleData<ModuleElectrolyticBreathingUnit> ELECTROLYTIC_BREATHING_UNIT = register("electrolytic_breathing_unit",
         MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, () -> new ModuleElectrolyticBreathingUnit());
@@ -47,6 +48,10 @@ public class Modules {
 
     public static Set<ModuleData<?>> getSupported(ItemStack container) {
         return SUPPORTED_MODULES.getOrDefault(container.getItem(), new HashSet<>());
+    }
+
+    public static Set<Item> getSupported(ModuleData<?> type) {
+        return SUPPORTED_CONTAINERS.getOrDefault(type, new HashSet<>());
     }
 
     public static <MODULE extends Module> MODULE load(ItemStack container, ModuleData<MODULE> type) {
@@ -89,6 +94,18 @@ public class Modules {
         ModuleData<M> data = new ModuleData<M>(name, langEntry, description, moduleSupplier, maxStackSize);
         MODULES.put(name, data);
         return data;
+    }
+
+    public static void processSupportedContainers() {
+        for (Map.Entry<Item, Set<ModuleData<?>>> entry : SUPPORTED_MODULES.entrySet()) {
+            for (ModuleData<?> data : entry.getValue()) {
+                SUPPORTED_CONTAINERS.computeIfAbsent(data, d -> new HashSet<>()).add(entry.getKey());
+            }
+        }
+    }
+
+    public static void resetSupportedContainers() {
+        SUPPORTED_CONTAINERS.clear();
     }
 
     public static class ModuleData<MODULE extends Module> implements IHasTranslationKey {
