@@ -56,6 +56,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaToolEnergyUsage;
     public final CachedFloatingLongValue mekaToolEnergyUsageSilk;
     public final CachedIntValue mekaToolMaxTeleportReach;
+    public final CachedIntValue mekaToolBaseDamage;
     public final CachedIntValue maxUpgradeMultiplier;
     public final CachedIntValue minerSilkMultiplier;
     public final CachedBooleanValue prefilledGasTanks;
@@ -175,6 +176,8 @@ public class GeneralConfig extends BaseMekanismConfig {
             "energyUsageTeleport", FloatingLong.createConst(1_000));
         mekaToolMaxTeleportReach = CachedIntValue.wrap(this, builder.comment("Maximum distance a player can teleport with the MekaTool.")
               .define("maxTeleportReach", 100));
+        mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Damage applied by MekaTool without using any energy.")
+            .define("baseDamage", 4));
         builder.pop();
 
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.

@@ -52,7 +52,6 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
 
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
-        System.out.println("LIT");
         return MekanismUtils.performActions(
             //First try to use the disassembler as an axe
             stripLogsAOE(context),
@@ -95,7 +94,6 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         Hand hand = context.getHand();
         ItemStack stack = player.getHeldItem(hand);
         int diameter = farmingRadius.get().getValue();
-        System.out.println(diameter);
         if (diameter == 0) {
             //If we don't have any blocks we are going to want to do, then skip it
             return ActionResultType.PASS;

@@ -142,11 +142,11 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
         FloatingLong energyCost = FloatingLong.ZERO;
-        int minDamage = 4, maxDamage = 4; // make configurable in the future?
+        int minDamage = MekanismConfig.general.mekaToolBaseDamage.get(), maxDamage = minDamage;
         if (isModuleEnabled(stack, Modules.ATTACK_AMPLIFICATION_UNIT)) {
             maxDamage = Modules.load(stack, Modules.ATTACK_AMPLIFICATION_UNIT).getDamage();
-            if (maxDamage > 4) {
-                energyCost = MekanismConfig.general.mekaToolEnergyUsageWeapon.get().multiply((maxDamage - 4F) / 4F);
+            if (maxDamage > minDamage) {
+                energyCost = MekanismConfig.general.mekaToolEnergyUsageWeapon.get().multiply((maxDamage - minDamage) / 4F);
             }
             minDamage = Math.min(minDamage, maxDamage);
         }
@@ -172,6 +172,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
         World world = player.world;
         if (!world.isRemote && !player.isCreative()) {
+            BlockState state = world.getBlockState(pos);
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
             if (energyContainer == null) {
                 //If something went wrong and we don't have an energy container, just go to super
@@ -179,16 +180,13 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             }
             boolean silk = isModuleEnabled(stack, Modules.SILK_TOUCH_UNIT);
             if (silk) {
-                stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
                 // if we can't break the initial block, terminate
                 if (!breakBlock(stack, world, pos, (ServerPlayerEntity) player, energyContainer, true)) {
-                    stack.getTag().remove("Enchantments");
                     return super.onBlockStartBreak(stack, pos, player);
                 }
             }
             if (isModuleEnabled(stack, Modules.VEIN_MINING_UNIT)) {
                 boolean extended = Modules.load(stack, Modules.VEIN_MINING_UNIT).isExtended();
-                BlockState state = world.getBlockState(pos);
                 if (state.getBlock() instanceof BlockBounding) {
                     //Even though we now handle breaking bounding blocks properly, don't allow vein mining
                     // them as an added safety measure
@@ -205,12 +203,6 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                         breakBlock(stack, world, foundPos, serverPlayerEntity, energyContainer, silk);
                     }
                 }
-            }
-
-            if (silk) {
-                // remove our silk touch enchantment
-                stack.getTag().remove("Enchantments");
-                return true;
             }
         }
         return super.onBlockStartBreak(stack, pos, player);
@@ -236,7 +228,11 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         if (removed) {
             block.onPlayerDestroy(world, pos, state);
             //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
-            block.harvestBlock(world, player, pos, state, tileEntity, stack);
+            ItemStack harvestTool = stack.copy();
+            if (silk) {
+                harvestTool.addEnchantment(Enchantments.SILK_TOUCH, 1);
+            }
+            block.harvestBlock(world, player, pos, state, tileEntity, harvestTool);
             player.addStat(Stats.ITEM_USED.get(this));
             if (exp > 0) {
                 //If we have xp drop it
