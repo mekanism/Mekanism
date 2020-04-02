@@ -33,7 +33,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -59,7 +58,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
             for (Module module : Modules.loadAll(stack)) {
                 ITextComponent component = module.getData().getLangEntry().translateColored(EnumColor.GRAY);
                 if (module.getInstalledCount() > 1) {
-                    component.appendText(" (" + module.getInstalledCount() + ")");
+                    component.appendSibling(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, "", Integer.toString(module.getInstalledCount())));
                 }
                 tooltip.add(module.getData().getLangEntry().translateColored(EnumColor.GRAY));
             }
@@ -71,7 +70,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
     @Override
     public ITextComponent getDisplayName(ItemStack stack) {
-        return new TranslationTextComponent(getTranslationKey(stack)).applyTextStyle(EnumColor.PURPLE.textFormatting);
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.PURPLE.textFormatting);
     }
 
     @Override

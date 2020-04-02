@@ -244,6 +244,8 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> OSMIUM_ORE = registerOre(Resource.OSMIUM);
     public static final BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> COPPER_ORE = registerOre(Resource.COPPER);
     public static final BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> TIN_ORE = registerOre(Resource.TIN);
+    public static final BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> FLUORITE_ORE = registerOre(Resource.FLUORITE);
+    public static final BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> URANIUM_ORE = registerOre(Resource.URANIUM);
 
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> BASIC_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.BASIC_ENERGY_CUBE);
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> ADVANCED_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.ADVANCED_ENERGY_CUBE);

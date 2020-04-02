@@ -140,8 +140,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTags(MekanismTags.Items.ORES_COPPER, MekanismTags.Blocks.ORES_COPPER, MekanismBlocks.COPPER_ORE);
         addToTags(MekanismTags.Items.ORES_OSMIUM, MekanismTags.Blocks.ORES_OSMIUM, MekanismBlocks.OSMIUM_ORE);
         addToTags(MekanismTags.Items.ORES_TIN, MekanismTags.Blocks.ORES_TIN, MekanismBlocks.TIN_ORE);
-        getItemBuilder(Tags.Items.ORES).add(MekanismTags.Items.ORES_COPPER, MekanismTags.Items.ORES_OSMIUM, MekanismTags.Items.ORES_TIN);
-        getBlockBuilder(Tags.Blocks.ORES).add(MekanismTags.Blocks.ORES_COPPER, MekanismTags.Blocks.ORES_OSMIUM, MekanismTags.Blocks.ORES_TIN);
+        addToTags(MekanismTags.Items.ORES_FLUORITE, MekanismTags.Blocks.ORES_FLUORITE, MekanismBlocks.FLUORITE_ORE);
+        addToTags(MekanismTags.Items.ORES_URANIUM, MekanismTags.Blocks.ORES_URANIUM, MekanismBlocks.URANIUM_ORE);
+        getItemBuilder(Tags.Items.ORES).add(MekanismTags.Items.ORES_COPPER, MekanismTags.Items.ORES_OSMIUM, MekanismTags.Items.ORES_TIN, MekanismTags.Items.ORES_FLUORITE, MekanismTags.Items.ORES_URANIUM);
+        getBlockBuilder(Tags.Blocks.ORES).add(MekanismTags.Blocks.ORES_COPPER, MekanismTags.Blocks.ORES_OSMIUM, MekanismTags.Blocks.ORES_TIN, MekanismTags.Blocks.ORES_FLUORITE, MekanismTags.Blocks.ORES_URANIUM);
     }
 
     private void addStorageBlocks() {

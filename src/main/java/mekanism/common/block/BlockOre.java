@@ -33,6 +33,10 @@ public class BlockOre extends Block implements IHasDescription {
                 return MekanismLang.DESCRIPTION_COPPER_ORE;
             case TIN:
                 return MekanismLang.DESCRIPTION_TIN_ORE;
+            case FLUORITE:
+                return MekanismLang.DESCRIPTION_FLUORITE_ORE;
+            case URANIUM:
+                return MekanismLang.DESCRIPTION_URANIUM_ORE;
             default:
                 return MekanismLang.INVALID;
         }

@@ -56,8 +56,8 @@ public class TileEntityModificationStation extends TileEntityMekanism {
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(moduleSlot = InputInventorySlot.at(stack -> stack != null && stack.getItem() instanceof IModuleItem, this, 35, 118));
-        builder.addSlot(containerSlot = InputInventorySlot.at(stack -> stack != null && stack.getItem() instanceof IModuleContainerItem, this, 125, 118));
+        builder.addSlot(moduleSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleItem, this, 35, 118));
+        builder.addSlot(containerSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleContainerItem, this, 125, 118));
         moduleSlot.setSlotType(ContainerSlotType.NORMAL);
         containerSlot.setSlotType(ContainerSlotType.NORMAL);
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 149, 21));

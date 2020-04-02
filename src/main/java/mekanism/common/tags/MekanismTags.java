@@ -34,6 +34,11 @@ public class MekanismTags {
 
         public static final Tag<Item> SALT = forgeTag("salt");
         public static final Tag<Item> SAWDUST = forgeTag("sawdust");
+        public static final Tag<Item> YELLOW_CAKE_URANIUM = forgeTag("yellowCakeUranium");
+        public static final Tag<Item> PELLETS_FISSILE_FUEL = forgeTag("pelletFissileFuel");
+        public static final Tag<Item> PELLETS_ANTIMATTER = forgeTag("pelletAntimatter");
+
+        public static final Tag<Item> CRYSTALS_FLUORITE = forgeTag("crystals/fluorite");
 
         public static final Tag<Item> DUSTS_BRONZE = forgeTag("dusts/bronze");
         public static final Tag<Item> DUSTS_CHARCOAL = forgeTag("dusts/charcoal");
@@ -74,6 +79,8 @@ public class MekanismTags {
         public static final Tag<Item> ORES_COPPER = forgeTag("ores/copper");
         public static final Tag<Item> ORES_OSMIUM = forgeTag("ores/osmium");
         public static final Tag<Item> ORES_TIN = forgeTag("ores/tin");
+        public static final Tag<Item> ORES_FLUORITE = forgeTag("ores/fluorite");
+        public static final Tag<Item> ORES_URANIUM = forgeTag("ores/uranium");
 
         public static final Tag<Item> STORAGE_BLOCKS_BRONZE = forgeTag("storage_blocks/bronze");
         public static final Tag<Item> STORAGE_BLOCKS_CHARCOAL = forgeTag("storage_blocks/charcoal");
@@ -156,6 +163,8 @@ public class MekanismTags {
         public static final Tag<Block> ORES_COPPER = forgeTag("ores/copper");
         public static final Tag<Block> ORES_OSMIUM = forgeTag("ores/osmium");
         public static final Tag<Block> ORES_TIN = forgeTag("ores/tin");
+        public static final Tag<Block> ORES_URANIUM = forgeTag("ores/uranium");
+        public static final Tag<Block> ORES_FLUORITE = forgeTag("ores/fluorite");
 
         public static final Tag<Block> STORAGE_BLOCKS_BRONZE = forgeTag("storage_blocks/bronze");
         public static final Tag<Block> STORAGE_BLOCKS_CHARCOAL = forgeTag("storage_blocks/charcoal");

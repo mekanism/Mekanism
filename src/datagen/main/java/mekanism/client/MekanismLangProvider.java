@@ -47,6 +47,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.SALT, "Salt");
         add(MekanismItems.SUBSTRATE, "Substrate");
         add(MekanismItems.BIO_FUEL, "Bio Fuel");
+        add(MekanismItems.FLUORITE_CRYSTAL, "Fluorite Crystal");
+        add(MekanismItems.YELLOW_CAKE_URANIUM, "Yellow Cake Uranium");
+        add(MekanismItems.FISSILE_FUEL_PELLET, "Fissile Fuel Pellet");
+        add(MekanismItems.ANTIMATTER_PELLET, "Antimatter Pellet");
         //Tools/Armor
         add(MekanismItems.GAUGE_DROPPER, "Gauge Dropper");
         add(MekanismItems.DICTIONARY, "Dictionary");
@@ -63,6 +67,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.JETPACK, "Jetpack");
         add(MekanismItems.ARMORED_JETPACK, "Armored Jetpack");
         add(MekanismItems.GEIGER_COUNTER, "Geiger Counter");
+        add(MekanismItems.MEKA_TOOL, "Meka-Tool");
         add(MekanismItems.HAZMAT_MASK, "Hazmat Mask");
         add(MekanismItems.HAZMAT_GOWN, "Hazmat Gown");
         add(MekanismItems.HAZMAT_PANTS, "Hazmat Pants");
@@ -193,6 +198,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.OSMIUM_ORE, "Osmium Ore");
         add(MekanismBlocks.COPPER_ORE, "Copper Ore");
         add(MekanismBlocks.TIN_ORE, "Tin Ore");
+        add(MekanismBlocks.FLUORITE_ORE, "Fluorite Ore");
+        add(MekanismBlocks.URANIUM_ORE, "Uranium Ore");
         //Storage blocks
         add(MekanismBlocks.OSMIUM_BLOCK, "Osmium Block");
         add(MekanismBlocks.BRONZE_BLOCK, "Bronze Block");
@@ -847,6 +854,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_OSMIUM_ORE, "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
         add(MekanismLang.DESCRIPTION_COPPER_ORE, "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");
         add(MekanismLang.DESCRIPTION_TIN_ORE, "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
+        add(MekanismLang.DESCRIPTION_FLUORITE_ORE, "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
+        add(MekanismLang.DESCRIPTION_URANIUM_ORE, "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occuring form, it is not radioactive enough to cause harm.");
         // Modules
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_TWEAKER, "Module Tweaker");
