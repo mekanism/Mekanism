@@ -37,6 +37,10 @@ public class ItemHazmatSuitArmor extends ArmorItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+        if (stack.getTag() == null) {
+            stack.setTag(new CompoundNBT());
+        }
+        stack.getTag().putInt("HideFlags", 2);
         return new ItemCapabilityWrapper(stack, RadiationShieldingHandler.create(item -> getShieldingByArmor(slot)));
     }
 

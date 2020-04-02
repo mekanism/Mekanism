@@ -1,7 +1,5 @@
 package mekanism.common.item.gear;
 
-import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +8,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.NBTConstants;
@@ -48,6 +48,7 @@ import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.ShovelItem;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -67,6 +68,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -496,6 +498,15 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
         DisassemblerMode mode = getMode(stack);
         return MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.INDIGO, mode, EnumColor.AQUA, mode.getEfficiency());
+    }
+
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+        if (stack.getTag() == null) {
+            stack.setTag(new CompoundNBT());
+        }
+        stack.getTag().putInt("HideFlags", 2);
+        return super.initCapabilities(stack, nbt);
     }
 
     public enum DisassemblerMode implements IDisableableEnum<DisassemblerMode>, IHasTranslationKey {

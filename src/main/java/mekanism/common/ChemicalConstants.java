@@ -23,7 +23,8 @@ public enum ChemicalConstants {
     //TODO: Move this reference into MekanismGenerators at some point
     DEUTERIUM("deuterium", 0xFFFF3232, 23.7F, 162.4F),
     //Note: it is a solid at room temperature
-    LITHIUM("lithium", 0xFFEBA400, 453.65F, 512);
+    LITHIUM("lithium", 0xFFEBA400, 453.65F, 512),
+    HYDROFLUORIC_ACID("hydrofluoric_acid", 0xFFC6C7BD, 189.6F, 1150F);
 
     private final String name;
     private final int color;

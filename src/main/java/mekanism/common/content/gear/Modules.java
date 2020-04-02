@@ -16,6 +16,11 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleElectrolyticBreathingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleRadiationShieldingUnit;
+import mekanism.common.content.gear.mekatool.ModuleFarmingUnit;
+import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleAttackAmplificationUnit;
+import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleSilkTouchUnit;
+import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleTeleportationUnit;
+import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleVeinMiningUnit;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,6 +34,19 @@ public class Modules {
     private static final Map<Item, Set<ModuleData<?>>> SUPPORTED_MODULES = new Object2ObjectOpenHashMap<>();
     private static final Map<ModuleData<?>, Set<Item>> SUPPORTED_CONTAINERS = new Object2ObjectOpenHashMap<>();
 
+    // Meka-Tool
+    public static final ModuleData<ModuleAttackAmplificationUnit> ATTACK_AMPLIFICATION_UNIT = register("attack_amplification_unit",
+        MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, () -> new ModuleAttackAmplificationUnit(), 3);
+    public static final ModuleData<ModuleSilkTouchUnit> SILK_TOUCH_UNIT = register("silk_touch_unit",
+        MekanismLang.MODULE_SILK_TOUCH_UNIT, MekanismLang.DESCRIPTION_SILK_TOUCH_UNIT, () -> new ModuleSilkTouchUnit());
+    public static final ModuleData<ModuleVeinMiningUnit> VEIN_MINING_UNIT = register("vein_mining_unit",
+        MekanismLang.MODULE_VEIN_MINING_UNIT, MekanismLang.DESCRIPTION_VEIN_MINING_UNIT, () -> new ModuleVeinMiningUnit());
+    public static final ModuleData<ModuleFarmingUnit> FARMING_UNIT = register("farming_unit",
+        MekanismLang.MODULE_FARMING_UNIT, MekanismLang.DESCRIPTION_FARMING_UNIT, () -> new ModuleFarmingUnit(), 3).setExclusive();
+    public static final ModuleData<ModuleTeleportationUnit> TELEPORTATION_UNIT = register("teleportation_unit",
+        MekanismLang.MODULE_TELEPORTATION_UNIT, MekanismLang.DESCRIPTION_TELEPORTATION_UNIT, () -> new ModuleTeleportationUnit()).setExclusive();
+
+    // Helmet
     public static final ModuleData<ModuleElectrolyticBreathingUnit> ELECTROLYTIC_BREATHING_UNIT = register("electrolytic_breathing_unit",
         MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, () -> new ModuleElectrolyticBreathingUnit());
     public static final ModuleData<ModuleInhalationPurificationUnit> INHALATION_PURIFICATION_UNIT = register("inhalation_purification_unit",
@@ -115,6 +133,8 @@ public class Modules {
         private Supplier<MODULE> supplier;
         private int maxStackSize;
         private ItemStack stack;
+        /** Exclusive modules only work one-at-a-time; when one is enabled, others will be automatically disabled. */
+        private boolean exclusive;
 
         private ModuleData(String name, ILangEntry langEntry, ILangEntry description, Supplier<MODULE> supplier, int maxStackSize) {
             this.name = name;
@@ -152,6 +172,15 @@ public class Modules {
 
         public ILangEntry getLangEntry() {
             return langEntry;
+        }
+
+        public ModuleData<MODULE> setExclusive() {
+            exclusive = true;
+            return this;
+        }
+
+        public boolean isExclusive() {
+            return exclusive;
         }
 
         @Override

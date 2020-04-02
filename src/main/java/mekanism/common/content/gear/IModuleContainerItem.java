@@ -48,6 +48,14 @@ public interface IModuleContainerItem {
                 ItemDataUtils.setCompound(stack, NBTConstants.MODULES, new CompoundNBT());
             }
             ItemDataUtils.getCompound(stack, NBTConstants.MODULES).put(type.getName(), new CompoundNBT());
+            // disable other exclusive modules if this is an exclusive module, as this one will now be active
+            if (type.isExclusive()) {
+                for (Module module : Modules.loadAll(stack)) {
+                    if (module.getData() != type && module.getData().isExclusive()) {
+                        module.setEnabledNoCheck(false);
+                    }
+                }
+            }
         }
     }
 }

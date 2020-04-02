@@ -113,6 +113,10 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+        if (stack.getTag() == null) {
+            stack.setTag(new CompoundNBT());
+        }
+        stack.getTag().putInt("HideFlags", 2);
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
         return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> MAX_ENERGY, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue),

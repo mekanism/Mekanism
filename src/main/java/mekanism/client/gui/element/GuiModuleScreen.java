@@ -20,6 +20,8 @@ public class GuiModuleScreen extends GuiTexturedElement {
     private static final ResourceLocation RADIO = MekanismUtils.getResource(ResourceType.GUI, "radio_button.png");
     private static final ResourceLocation SLIDER = MekanismUtils.getResource(ResourceType.GUI, "slider.png");
 
+    private static final int TEXT_COLOR = 0x202020;
+
     private GuiElementHolder background;
     private Consumer<ItemStack> callback;
 
@@ -27,27 +29,36 @@ public class GuiModuleScreen extends GuiTexturedElement {
     private List<MiniElement> miniElements = new ArrayList<>();
 
     public GuiModuleScreen(IGuiWrapper gui, int x, int y, Consumer<ItemStack> callback) {
-        super(null, gui, x, y, 102, 98);
+        super(null, gui, x, y, 102, 134);
         this.callback = callback;
-        background = new GuiElementHolder(gui, x, y, 102, 98);
+        background = new GuiElementHolder(gui, x, y, 102, 134);
     }
 
+    @SuppressWarnings("unchecked")
     public void setModule(Module module) {
-        currentModule = module;
-        miniElements.clear();
+        List<MiniElement> newElements = new ArrayList<>();
 
         if (module != null) {
-            int startY = module.getData().getMaxStackSize() > 1 ? 14 : 3;
-            for (ModuleConfigItem<?> configItem : currentModule.getConfigItems()) {
+            int startY = module.getData().getMaxStackSize() > 1 ? 16 : 3;
+            for (int i = 0; i < module.getConfigItems().size(); i++) {
+                ModuleConfigItem<?> configItem = module.getConfigItems().get(i);
                 if (configItem.getData() instanceof BooleanData) {
-                    miniElements.add(new BooleanToggle((ModuleConfigItem<Boolean>) configItem, 2, startY));
-                    startY += 22;
+                    newElements.add(new BooleanToggle((ModuleConfigItem<Boolean>) configItem, 2, startY));
+                    startY += 24;
                 } else if (configItem.getData() instanceof EnumData) {
-                    miniElements.add(new EnumToggle((ModuleConfigItem<Enum<? extends IntEnum>>) configItem, 2, startY));
-                    startY += 31;
+                    EnumToggle toggle = new EnumToggle((ModuleConfigItem<Enum<? extends IntEnum>>) configItem, 2, startY);
+                    newElements.add(toggle);
+                    startY += 34;
+                    // allow the dragger to continue sliding, even when we reset the config element
+                    if (currentModule != null && module != null && currentModule.getData() == module.getData() && miniElements.get(i) instanceof EnumToggle) {
+                        toggle.dragging = ((EnumToggle) miniElements.get(i)).dragging;
+                    }
                 }
             }
         }
+
+        currentModule = module;
+        miniElements = newElements;
     }
 
     @Override
@@ -77,7 +88,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
         super.renderForeground(mouseX, mouseY, xAxis, yAxis);
 
         if (currentModule != null && currentModule.getData().getMaxStackSize() > 1) {
-            drawString(MekanismLang.MODULE_INSTALLED.translate(currentModule.getInstalledCount()), relativeX + 2, relativeY + 2, 0x303030);
+            drawString(MekanismLang.MODULE_INSTALLED.translate(currentModule.getInstalledCount()), relativeX + 4, relativeY + 4, TEXT_COLOR);
         }
 
         for (MiniElement element : miniElements) {
@@ -126,9 +137,9 @@ public class GuiModuleScreen extends GuiTexturedElement {
         }
         @Override
         public void renderForeground(int mouseX, int mouseY) {
-            drawString(data.getDescription().translate(), getRelativeX() + 2, getRelativeY(), 0x303030);
-            drawString(MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, 0x303030);
-            drawString(MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, 0x303030);
+            drawString(data.getDescription().translate(), getRelativeX() + 2, getRelativeY(), TEXT_COLOR);
+            drawString(MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, TEXT_COLOR);
+            drawString(MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, TEXT_COLOR);
         }
         @Override
         public void click(double mouseX, double mouseY) {
@@ -144,6 +155,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
 
     class EnumToggle extends MiniElement {
         final int BAR_LENGTH = getWidth() - 24;
+        final int BAR_START = 10;
         ModuleConfigItem<Enum<? extends IntEnum>> data;
         boolean dragging = false;
 
@@ -154,23 +166,24 @@ public class GuiModuleScreen extends GuiTexturedElement {
         @Override
         public void renderBackground(int mouseX, int mouseY) {
             minecraft.textureManager.bindTexture(SLIDER);
-            int count = ((EnumData) data.getData()).getEnumClass().getEnumConstants().length;
-            int center = (BAR_LENGTH / count) * data.get().ordinal();
-            blit(getX() + 10 + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
-            blit(getX() + 10, getY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
+            int count = ((EnumData<?>) data.getData()).getSelectableCount();
+            int center = (BAR_LENGTH / (count-1)) * data.get().ordinal();
+            blit(getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
+            blit(getX() + BAR_START, getY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
         }
         @Override
         public void renderForeground(int mouseX, int mouseY) {
-            drawString(data.getDescription().translate(), getRelativeX() + 2, getY(), 0x303030);
-            Enum<? extends IntEnum>[] arr = ((EnumData) data.getData()).getEnumClass().getEnumConstants();
-            for (int i = 0; i < arr.length; i++) {
-                int center = (BAR_LENGTH / arr.length) * i;
-                drawCenteredText(Integer.toString(((IntEnum) arr[i]).getValue()), getRelativeX() + 10 + center, getRelativeY() + 20, 0x303030);
+            drawString(data.getDescription().translate(), getRelativeX() + 2, getRelativeY(), TEXT_COLOR);
+            Enum<? extends IntEnum>[] arr = ((EnumData<?>) data.getData()).getEnums();
+            int count = ((EnumData<?>) data.getData()).getSelectableCount();
+            for (int i = 0; i < count; i++) {
+                int center = (BAR_LENGTH / (count-1)) * i;
+                drawCenteredText(Integer.toString(((IntEnum) arr[i]).getValue()), getRelativeX() + BAR_START + center, getRelativeY() + 20, TEXT_COLOR);
             }
 
             if (dragging) {
-                int cur = (int)(((double)(mouseX - getX() - 10) / (double)BAR_LENGTH) * arr.length);
-                cur = Math.max(arr.length-1, Math.min(0, cur));
+                int cur = (int)Math.round(((double)(mouseX - getX() - BAR_START) / (double)BAR_LENGTH) * (count-1));
+                cur = Math.min(count-1, Math.max(0, cur));
                 if (cur != data.get().ordinal()) {
                     data.set(arr[cur], callback);
                 }
@@ -178,11 +191,21 @@ public class GuiModuleScreen extends GuiTexturedElement {
         }
         @Override
         public void click(double mouseX, double mouseY) {
+            int count = ((EnumData<?>) data.getData()).getSelectableCount();
             if (!dragging) {
-                int count = ((EnumData) data.getData()).getEnumClass().getEnumConstants().length;
-                int center = (BAR_LENGTH / count) * data.get().ordinal();
-                if (mouseX >= getX() + 10 + center - 2 && mouseX < getX() + 10 + center + 3 && mouseY >= getY() + 11 && mouseY < getY() + 17) {
+                int center = (BAR_LENGTH / (count-1)) * data.get().ordinal();
+                if (mouseX >= getX() + BAR_START + center - 2 && mouseX < getX() + BAR_START + center + 3 && mouseY >= getY() + 11 && mouseY < getY() + 17) {
                     dragging = true;
+                }
+            }
+            if (!dragging) {
+                Enum<? extends IntEnum>[] arr = ((EnumData<?>) data.getData()).getEnums();
+                if (mouseX >= getX() + BAR_START && mouseX < getX() + BAR_START + BAR_LENGTH && mouseY >= getY() + 10 && mouseY < getY() + 22) {
+                    int cur = (int)Math.round(((mouseX - getX() - BAR_START) / BAR_LENGTH) * (count-1));
+                    cur = Math.min(count-1, Math.max(0, cur));
+                    if (cur != data.get().ordinal()) {
+                        data.set(arr[cur], callback);
+                    }
                 }
             }
         }

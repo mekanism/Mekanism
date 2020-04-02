@@ -37,4 +37,5 @@ public class MekanismGases {
     public static final SlurryRegistryObject<Slurry, Slurry> OSMIUM_SLURRY = GASES.registerSlurry(Resource.OSMIUM);
     public static final SlurryRegistryObject<Slurry, Slurry> COPPER_SLURRY = GASES.registerSlurry(Resource.COPPER);
     public static final SlurryRegistryObject<Slurry, Slurry> TIN_SLURRY = GASES.registerSlurry(Resource.TIN);
+    public static final SlurryRegistryObject<Slurry, Slurry> URANIUM_SLURRY = GASES.registerSlurry(Resource.URANIUM);
 }

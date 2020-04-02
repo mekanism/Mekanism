@@ -861,9 +861,26 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_TWEAKER, "Module Tweaker");
         add(MekanismLang.MODULE_INSTALLED, "Installed: %s");
+        add(MekanismLang.MODULE_ATTACK_DAMAGE, "Attack Damage");
+        add(MekanismLang.MODULE_FARMING_RADIUS, "Farming Radius");
+        add(MekanismLang.MODULE_EXTENDED_MODE, "Extended Mode");
+
+        add(MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, "Attack Amplification Unit");
+        add(MekanismLang.MODULE_SILK_TOUCH_UNIT, "Silk Touch Unit");
+        add(MekanismLang.MODULE_VEIN_MINING_UNIT, "Vein Mining Unit");
+        add(MekanismLang.MODULE_FARMING_UNIT, "Farming Unit");
+        add(MekanismLang.MODULE_TELEPORTATION_UNIT, "Teleportation Unit");
+
         add(MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit");
         add(MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit");
         add(MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit");
+
+        add(MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, "Amplifies melee attacks on players or mobs.");
+        add(MekanismLang.DESCRIPTION_SILK_TOUCH_UNIT, "Allows all mined blocks to drop as themselves.");
+        add(MekanismLang.DESCRIPTION_VEIN_MINING_UNIT, "Allows for quick mining of ore deposits and rapid felling of trees.");
+        add(MekanismLang.DESCRIPTION_FARMING_UNIT, "Allows for soil tilling, log stripping, and soil flattening.");
+        add(MekanismLang.DESCRIPTION_TELEPORTATION_UNIT, "Provides for quick travel to nearby blocks.");
+
         add(MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, "Uses electrolysis to convert surrounding liquid and atmospheric water to breathable oxygen.");
         add(MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, "Applies a miniature electromagnetic field around the breathing apparatus, preventing negative potion effects.");
         add(MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");

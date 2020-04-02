@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
+import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
@@ -23,13 +25,12 @@ public class GuiModuleScrollList extends GuiScrollList {
     private static int TEXTURE_HEIGHT = 36;
 
     @Nullable
-    private int selectIndex;
+    private int selectIndex = -1;
 
     private Consumer<Module> callback;
-    private List<Module> currentList = new ArrayList<>();
+    private List<ModuleData<?>> currentList = new ArrayList<>();
     private Supplier<ItemStack> itemSupplier;
     private ItemStack currentItem;
-    private boolean resetOnChanged = false;
 
     public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<Module> callback) {
         super(gui, x, y, width, height, TEXTURE_HEIGHT / 3, new GuiElementHolder(gui, x, y, width, height));
@@ -38,17 +39,22 @@ public class GuiModuleScrollList extends GuiScrollList {
         updateList(itemSupplier.get(), true);
     }
 
-    public void setResetOnChanged() {
-        resetOnChanged = true;
-    }
-
-    public void updateList(ItemStack currentItem, boolean resetSelect) {
+    public void updateList(ItemStack currentItem, boolean forceReset) {
+        ModuleData<?> prevSelect = getSelection();
         this.currentItem = currentItem;
         currentList.clear();
-        currentList.addAll(Modules.loadAll(currentItem));
-        if (!currentList.isEmpty() && !resetSelect && selectIndex >= 0 && selectIndex < currentList.size()) {
-            setSelected(selectIndex);
-        } else {
+        currentList.addAll(Modules.loadAll(currentItem).stream().map(m -> m.getData()).collect(Collectors.toList()));
+        boolean selected = false;
+        if (!forceReset && prevSelect != null) {
+            for (int i = 0; i < currentList.size(); i++) {
+                if (currentList.get(i) == prevSelect) {
+                    setSelected(i);
+                    selected = true;
+                    break;
+                }
+            }
+        }
+        if (!selected) {
             clearSelection();
         }
     }
@@ -67,12 +73,12 @@ public class GuiModuleScrollList extends GuiScrollList {
     protected void setSelected(int index) {
         if (index >= 0 && index < currentList.size()) {
             selectIndex = index;
-            callback.accept(currentList.get(index));
+            callback.accept(Modules.load(currentItem, currentList.get(index)));
         }
     }
 
     @Nullable
-    public Module getSelection() {
+    public ModuleData<?> getSelection() {
         return selectIndex == -1 ? null : currentList.get(selectIndex);
     }
 
@@ -87,21 +93,30 @@ public class GuiModuleScrollList extends GuiScrollList {
         super.renderForeground(mouseX, mouseY, xAxis, yAxis);
         ItemStack stack = itemSupplier.get();
         if (!ItemStack.areItemStacksEqual(currentItem, stack)) {
-            updateList(stack, resetOnChanged);
+            updateList(stack, false);
         }
+        // first render text
         for (int i = 0; i < getFocusedElements(); i++) {
             int index = getCurrentSelection() + i;
             if (index > currentList.size() - 1) {
                 break;
             }
-            Module module = currentList.get(index);
+            ModuleData<?> module = currentList.get(index);
             int multipliedElement = elementHeight * i;
             //Always render the name and module
-            renderScaledText(TextComponentUtil.build(module.getData()), relativeX + 13, relativeY + 3 + multipliedElement, 0x404040, 86);
+            renderScaledText(TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, 0x404040, 86);
             renderModule(module, relativeX + 3, relativeY + 3 + multipliedElement, 0.5F);
-            //Only render the tooltip describing the module when hovering over it though
+        }
+        // next render tooltips
+        for (int i = 0; i < getFocusedElements(); i++) {
+            int index = getCurrentSelection() + i;
+            if (index > currentList.size() - 1) {
+                break;
+            }
+            ModuleData<?> module = currentList.get(index);
+            int multipliedElement = elementHeight * i;
             if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
-                guiObj.displayTooltip(module.getData().getDescription(), xAxis, yAxis, guiObj.getWidth());
+                guiObj.displayTooltip(module.getDescription(), xAxis, yAxis, guiObj.getWidth());
             }
         }
     }
@@ -115,7 +130,7 @@ public class GuiModuleScrollList extends GuiScrollList {
             if (index > currentList.size() - 1) {
                 break;
             }
-            Module module = currentList.get(index);
+            ModuleData<?> module = currentList.get(index);
             int shiftedY = y + 1 + elementHeight * i;
             int j = 1;
             if (module == getSelection()) {
@@ -128,7 +143,7 @@ public class GuiModuleScrollList extends GuiScrollList {
         }
     }
 
-    private void renderModule(Module type, int x, int y, float size) {
-        guiObj.renderItem(type.getData().getStack(), (int) (x / size), (int) (y / size), size);
+    private void renderModule(ModuleData<?> type, int x, int y, float size) {
+        guiObj.renderItem(type.getStack(), (int) (x / size), (int) (y / size), size);
     }
 }

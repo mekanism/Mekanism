@@ -12,8 +12,8 @@ public enum Resource implements INamedResource {
     OSMIUM("osmium", 0x1E79C3, MekanismTags.Items.ORES_OSMIUM),
     COPPER("copper", 0xAA4B19, MekanismTags.Items.ORES_COPPER),
     TIN("tin", 0xCCCCD9, MekanismTags.Items.ORES_TIN),
-    FLUORITE("fluorite", 0xFFFFFF, MekanismTags.Items.ORES_FLUORITE),
-    URANIUM("uranium", 0xFFFFFF, MekanismTags.Items.ORES_URANIUM);
+    FLUORITE("fluorite", 0xC6C7BD, MekanismTags.Items.ORES_FLUORITE),
+    URANIUM("uranium", 0x46664F, MekanismTags.Items.ORES_URANIUM);
 
     private final int tint;
     private final String name;

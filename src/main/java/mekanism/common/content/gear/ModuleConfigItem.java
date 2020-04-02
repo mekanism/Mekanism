@@ -34,6 +34,15 @@ public class ModuleConfigItem<TYPE> {
 
     public void set(TYPE type, Consumer<ItemStack> callback) {
         data.set(type);
+        // disable other exclusive modules
+        if (name.equals(Module.ENABLED_KEY) && type == Boolean.TRUE && module.getData().isExclusive()) {
+            for (Module m : Modules.loadAll(module.getContainer())) {
+                if (m.getData().isExclusive() && m.getData() != module.getData()) {
+                    m.setEnabledNoCheck(false);
+                }
+            }
+        }
+        // finally, save this specific module with the callback (to send a packet)
         module.save(callback);
     }
 
@@ -47,7 +56,7 @@ public class ModuleConfigItem<TYPE> {
         data.write(name, tag);
     }
 
-    private interface ConfigData<TYPE> {
+    public interface ConfigData<TYPE> {
         TYPE get();
         void set(TYPE val);
         void read(String name, CompoundNBT tag);
@@ -91,29 +100,35 @@ public class ModuleConfigItem<TYPE> {
         public int getValue();
     }
 
-    public static class EnumData implements ConfigData<Enum<? extends IntEnum>> {
+    public static class EnumData<TYPE extends Enum<TYPE> & IntEnum> implements ConfigData<TYPE> {
 
-        private Class<Enum<? extends IntEnum>> enumClass;
-        private Enum<? extends IntEnum> value;
+        private Class<TYPE> enumClass;
+        private TYPE value;
+        private int selectableCount;
 
-        public EnumData(Class<Enum<? extends IntEnum>> enumClass, Enum<? extends IntEnum> def) {
+        public EnumData(Class<TYPE> enumClass) {
+            this(enumClass, enumClass.getEnumConstants().length);
+        }
+
+        public EnumData(Class<TYPE> enumClass, int selectableCount) {
             this.enumClass = enumClass;
-            value = def;
+            this.selectableCount = selectableCount;
         }
 
         @Override
-        public Enum<? extends IntEnum> get() {
+        public TYPE get() {
             return value;
         }
 
         @Override
-        public void set(Enum<? extends IntEnum> val) {
+        public void set(TYPE val) {
             value = val;
         }
 
         @Override
         public void read(String name, CompoundNBT tag) {
-            value = enumClass.getEnumConstants()[tag.getInt(name)];
+            int index = Math.min(tag.getInt(name), selectableCount-1);
+            value = enumClass.getEnumConstants()[index];
         }
 
         @Override
@@ -121,8 +136,12 @@ public class ModuleConfigItem<TYPE> {
             tag.putInt(name, value.ordinal());
         }
 
-        public Class<Enum<? extends IntEnum>> getEnumClass() {
-            return enumClass;
+        public Enum<? extends IntEnum>[] getEnums() {
+            return enumClass.getEnumConstants();
+        }
+
+        public int getSelectableCount() {
+            return selectableCount;
         }
     }
 }

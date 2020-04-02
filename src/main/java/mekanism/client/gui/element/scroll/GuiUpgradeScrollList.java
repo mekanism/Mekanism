@@ -64,6 +64,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
         super.renderForeground(mouseX, mouseY, xAxis, yAxis);
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
+        // first render text
         for (int i = 0; i < getFocusedElements(); i++) {
             int index = getCurrentSelection() + i;
             if (index > upgrades.length - 1) {
@@ -74,7 +75,15 @@ public class GuiUpgradeScrollList extends GuiScrollList {
             //Always render the name and upgrade
             drawString(TextComponentUtil.build(upgrade), relativeX + 13, relativeY + 3 + multipliedElement, 0x404040);
             renderUpgrade(upgrade, relativeX + 3, relativeY + 3 + multipliedElement, 0.5F);
-            //Only render the tooltip describing the upgrade when hovering over it though
+        }
+        // next render tooltips
+        for (int i = 0; i < getFocusedElements(); i++) {
+            int index = getCurrentSelection() + i;
+            if (index > upgrades.length - 1) {
+                break;
+            }
+            Upgrade upgrade = upgrades[index];
+            int multipliedElement = elementHeight * i;
             if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
                 guiObj.displayTooltip(upgrade.getDescription(), xAxis, yAxis, guiObj.getWidth());
             }

@@ -21,6 +21,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
     private static final String CONVERSION_CATEGORY = "energy_conversion";
     private static final String DISASSEMBLER_CATEGORY = "atomic_disassembler";
+    private static final String MEKATOOL_CATEGORY = "mekatool";
     private static final String EVAPORATION_CATEGORY = "thermal_evaporation";
     private static final String ENTANGLOPORTER_CATEGORY = "quantum_entangloporter";
 
@@ -50,6 +51,11 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue disassemblerDamageMin;
     public final CachedIntValue disassemblerDamageMax;
     public final CachedFloatingLongValue disassemblerBatteryCapacity;
+    public final CachedFloatingLongValue mekaToolEnergyUsageWeapon;
+    public final CachedFloatingLongValue mekaToolEnergyUsageTeleport;
+    public final CachedFloatingLongValue mekaToolEnergyUsage;
+    public final CachedFloatingLongValue mekaToolEnergyUsageSilk;
+    public final CachedIntValue mekaToolMaxTeleportReach;
     public final CachedIntValue maxUpgradeMultiplier;
     public final CachedIntValue minerSilkMultiplier;
     public final CachedBooleanValue prefilledGasTanks;
@@ -156,6 +162,19 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("damageMax", 20));
         disassemblerBatteryCapacity = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Atomic Disassembler can contain",
               "batteryCapacity", FloatingLong.createConst(1_000_000), true);
+        builder.pop();
+
+        builder.comment("Meka-Tool Settings").push(MEKATOOL_CATEGORY);
+        mekaToolEnergyUsage = CachedFloatingLongValue.define(this, builder, "Base energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)",
+            "energyUsageTeleport", FloatingLong.createConst(10));
+        mekaToolEnergyUsageSilk = CachedFloatingLongValue.define(this, builder, "Silk touch energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)",
+            "energyUsageTeleport", FloatingLong.createConst(100));
+        mekaToolEnergyUsageWeapon = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to deal 4 units of damage.",
+            "energyUsageWeapon", FloatingLong.createConst(2_000));
+        mekaToolEnergyUsageTeleport = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to teleport 10 blocks.",
+            "energyUsageTeleport", FloatingLong.createConst(1_000));
+        mekaToolMaxTeleportReach = CachedIntValue.wrap(this, builder.comment("Maximum distance a player can teleport with the MekaTool.")
+              .define("maxTeleportReach", 100));
         builder.pop();
 
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.

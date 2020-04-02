@@ -20,7 +20,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiModificationStation extends GuiMekanismTile<TileEntityModificationStation, MekanismTileContainer<TileEntityModificationStation>> {
 
-    private GuiModuleScrollList scrollList;
     private Module selectedModule;
     private TranslationButton removeButton;
 
@@ -41,12 +40,10 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 34, getGuiTop() + 96, 108, 17, MekanismLang.BUTTON_REMOVE, () -> {
             Mekanism.packetHandler.sendToServer(new PacketRemoveModule(Coord4D.get(getTileEntity()), selectedModule.getData()));
-            scrollList.clearSelection();
         }));
         removeButton.active = false;
 
-        addButton(scrollList = new GuiModuleScrollList(this, 34, 20, 108, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));
-        scrollList.setResetOnChanged();
+        addButton(new GuiModuleScrollList(this, 34, 20, 108, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));
     }
 
     public void onModuleSelected(Module module) {

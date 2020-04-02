@@ -96,6 +96,12 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemUpgrade> GAS_UPGRADE = registerUpgrade(Upgrade.GAS);
     public static final ItemRegistryObject<ItemUpgrade> ANCHOR_UPGRADE = registerUpgrade(Upgrade.ANCHOR);
 
+    public static final ItemRegistryObject<ItemModule> ATTACK_AMPLIFICATION_UNIT = registerModule(Modules.ATTACK_AMPLIFICATION_UNIT);
+    public static final ItemRegistryObject<ItemModule> SILK_TOUCH_UNIT = registerModule(Modules.SILK_TOUCH_UNIT);
+    public static final ItemRegistryObject<ItemModule> VEIN_MINING_UNIT = registerModule(Modules.VEIN_MINING_UNIT);
+    public static final ItemRegistryObject<ItemModule> FARMING_UNIT = registerModule(Modules.FARMING_UNIT);
+    public static final ItemRegistryObject<ItemModule> TELEPORTATION_UNIT = registerModule(Modules.TELEPORTATION_UNIT);
+
     public static final ItemRegistryObject<ItemModule> ELECTROLYTIC_BREATHING_UNIT = registerModule(Modules.ELECTROLYTIC_BREATHING_UNIT);
     public static final ItemRegistryObject<ItemModule> INHALATION_PURIFICATION_UNIT = registerModule(Modules.INHALATION_PURIFICATION_UNIT);
     public static final ItemRegistryObject<ItemModule> RADIATION_SHIELDING_UNIT = registerModule(Modules.RADIATION_SHIELDING_UNIT);

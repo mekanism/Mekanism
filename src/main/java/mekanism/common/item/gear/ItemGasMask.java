@@ -1,6 +1,7 @@
 package mekanism.common.item.gear;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.client.render.armor.CustomArmor;
@@ -12,10 +13,12 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemGasMask extends ArmorItem implements ISpecialGear {
 
@@ -28,6 +31,15 @@ public class ItemGasMask extends ArmorItem implements ISpecialGear {
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
         return "mekanism:render/null_armor.png";
+    }
+
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+        if (stack.getTag() == null) {
+            stack.setTag(new CompoundNBT());
+        }
+        stack.getTag().putInt("HideFlags", 2);
+        return super.initCapabilities(stack, nbt);
     }
 
     @Nonnull

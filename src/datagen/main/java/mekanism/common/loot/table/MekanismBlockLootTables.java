@@ -3,12 +3,14 @@ package mekanism.common.loot.table;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.world.storage.loot.ConstantRange;
+import net.minecraft.world.storage.loot.RandomValueRange;
 
 public class MekanismBlockLootTables extends BaseBlockLootTables {
 
     @Override
     protected void addTables() {
         registerLootTable((block) -> droppingWithSilkTouchOrRandomly(block, MekanismItems.SALT, ConstantRange.of(4)), MekanismBlocks.SALT_BLOCK);
+        registerLootTable((block) -> droppingWithSilkTouchOrRandomly(block, MekanismItems.FLUORITE_CRYSTAL, RandomValueRange.of(2, 4)), MekanismBlocks.FLUORITE_ORE);
         registerDropSelfLootTable(
               //Ores
               MekanismBlocks.OSMIUM_ORE,
@@ -23,6 +25,7 @@ public class MekanismBlockLootTables extends BaseBlockLootTables {
               MekanismBlocks.STEEL_BLOCK,
               MekanismBlocks.COPPER_BLOCK,
               MekanismBlocks.TIN_BLOCK,
+              MekanismBlocks.URANIUM_ORE,
               //Other things
               MekanismBlocks.BOILER_CASING,
               MekanismBlocks.BOILER_VALVE,
@@ -85,6 +88,7 @@ public class MekanismBlockLootTables extends BaseBlockLootTables {
               MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR,
               MekanismBlocks.TELEPORTER,
               MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
+              MekanismBlocks.MODIFICATION_STATION,
               //Tiered things
               MekanismBlocks.BASIC_INDUCTION_CELL, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_INDUCTION_CELL,
               MekanismBlocks.BASIC_BIN, MekanismBlocks.ADVANCED_BIN, MekanismBlocks.ELITE_BIN, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.CREATIVE_BIN,

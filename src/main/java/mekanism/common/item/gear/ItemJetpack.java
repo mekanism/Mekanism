@@ -34,12 +34,14 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IModeItem {
 
@@ -130,6 +132,17 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     @Override
     public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
         return null;
+    }
+
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+        if (!(this instanceof ItemArmoredJetpack)) {
+            if (stack.getTag() == null) {
+                stack.setTag(new CompoundNBT());
+            }
+            stack.getTag().putInt("HideFlags", 2);
+        }
+        return super.initCapabilities(stack, nbt);
     }
 
     public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
