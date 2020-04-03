@@ -51,8 +51,13 @@ public interface IModuleContainerItem {
             // disable other exclusive modules if this is an exclusive module, as this one will now be active
             if (type.isExclusive()) {
                 for (Module module : Modules.loadAll(stack)) {
-                    if (module.getData() != type && module.getData().isExclusive()) {
-                        module.setEnabledNoCheck(false);
+                    if (module.getData() != type) {
+                        if (module.getData().isExclusive()) {
+                            module.setDisabledForce();
+                        }
+                        if (module.handlesModeChange()) {
+                            module.setModeHandlingDisabledForce();
+                        }
                     }
                 }
             }

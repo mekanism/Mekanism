@@ -3,13 +3,13 @@ package mekanism.client.gui.element;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
-import mekanism.common.content.gear.ModuleConfigItem.IntEnum;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
@@ -53,7 +53,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
                     newElements.add(new BooleanToggle((ModuleConfigItem<Boolean>) configItem, 2, startY));
                     startY += 24;
                 } else if (configItem.getData() instanceof EnumData) {
-                    EnumToggle toggle = new EnumToggle((ModuleConfigItem<Enum<? extends IntEnum>>) configItem, 2, startY);
+                    EnumToggle toggle = new EnumToggle((ModuleConfigItem<Enum<? extends IHasTextComponent>>) configItem, 2, startY);
                     newElements.add(toggle);
                     startY += 34;
                     // allow the dragger to continue sliding, even when we reset the config element
@@ -172,10 +172,10 @@ public class GuiModuleScreen extends GuiTexturedElement {
     class EnumToggle extends MiniElement {
         final int BAR_LENGTH = getWidth() - 24;
         final int BAR_START = 10;
-        ModuleConfigItem<Enum<? extends IntEnum>> data;
+        ModuleConfigItem<Enum<? extends IHasTextComponent>> data;
         boolean dragging = false;
 
-        EnumToggle(ModuleConfigItem<Enum<? extends IntEnum>> data, int xPos, int yPos) {
+        EnumToggle(ModuleConfigItem<Enum<? extends IHasTextComponent>> data, int xPos, int yPos) {
             super(xPos, yPos);
             this.data = data;
         }
@@ -190,11 +190,11 @@ public class GuiModuleScreen extends GuiTexturedElement {
         @Override
         public void renderForeground(int mouseX, int mouseY) {
             drawString(data.getDescription().translate(), getRelativeX() + 2, getRelativeY(), TEXT_COLOR);
-            Enum<? extends IntEnum>[] arr = ((EnumData<?>) data.getData()).getEnums();
+            Enum<? extends IHasTextComponent>[] arr = ((EnumData<?>) data.getData()).getEnums();
             int count = ((EnumData<?>) data.getData()).getSelectableCount();
             for (int i = 0; i < count; i++) {
                 int center = (BAR_LENGTH / (count-1)) * i;
-                drawCenteredText(Integer.toString(((IntEnum) arr[i]).getValue()), getRelativeX() + BAR_START + center, getRelativeY() + 20, TEXT_COLOR);
+                drawCenteredText(((IHasTextComponent) arr[i]).getTextComponent(), getRelativeX() + BAR_START + center, getRelativeY() + 20, TEXT_COLOR);
             }
 
             if (dragging) {
@@ -215,7 +215,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
                 }
             }
             if (!dragging) {
-                Enum<? extends IntEnum>[] arr = ((EnumData<?>) data.getData()).getEnums();
+                Enum<? extends IHasTextComponent>[] arr = ((EnumData<?>) data.getData()).getEnums();
                 if (mouseX >= getX() + BAR_START && mouseX < getX() + BAR_START + BAR_LENGTH && mouseY >= getY() + 10 && mouseY < getY() + 22) {
                     int cur = (int)Math.round(((mouseX - getX() - BAR_START) / BAR_LENGTH) * (count-1));
                     cur = Math.min(count-1, Math.max(0, cur));

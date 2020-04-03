@@ -1,11 +1,12 @@
 package mekanism.common.util;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
@@ -48,17 +49,26 @@ public final class GasUtils {
         return toFill;
     }
 
-    public static boolean hasGas(ItemStack stack) {
+    public static boolean hasGas(ItemStack stack, Predicate<GasStack> validityCheck) {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             for (int tank = 0; tank < gasHandlerItem.getGasTankCount(); tank++) {
-                if (!gasHandlerItem.getGasInTank(tank).isEmpty()) {
+                GasStack gasStack = gasHandlerItem.getGasInTank(tank);
+                if (!gasStack.isEmpty() && validityCheck.test(gasStack)) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    public static boolean hasGas(ItemStack stack, Gas type) {
+        return hasGas(stack, (s) -> s.getType() == type);
+    }
+
+    public static boolean hasGas(ItemStack stack) {
+        return hasGas(stack, (s) -> true);
     }
 
     public static void emit(IChemicalTank<Gas, GasStack> tank, TileEntity from) {

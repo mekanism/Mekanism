@@ -13,17 +13,22 @@ import mekanism.common.HolidayManager;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.IModuleContainerItem;
+import mekanism.common.content.gear.Modules;
+import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.item.IModeItem;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
@@ -59,15 +64,13 @@ public class ClientTickHandler {
         }
         if (!player.isCreative() && !player.isSpectator()) {
             ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-            if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack && GasUtils.hasGas(chest)) {
-                JetpackMode mode = ((ItemJetpack) chest.getItem()).getMode(chest);
+            if (!chest.isEmpty()) {
+                JetpackMode mode = getJetpackMode(chest);
                 if (mode == JetpackMode.NORMAL) {
                     return minecraft.currentScreen == null && minecraft.gameSettings.keyBindJump.isKeyDown();
                 } else if (mode == JetpackMode.HOVER) {
                     boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
                     boolean descending = minecraft.gameSettings.keyBindSneak.isKeyDown();
-                    //if ((!ascending && !descending) || (ascending && descending) || minecraft.currentScreen != null || (descending && minecraft.currentScreen == null))
-                    //Simplifies to
                     if (!ascending || descending || minecraft.currentScreen != null) {
                         return !CommonPlayerTickHandler.isOnGround(player);
                     }
@@ -76,6 +79,18 @@ public class ClientTickHandler {
             }
         }
         return false;
+    }
+
+    private static JetpackMode getJetpackMode(ItemStack stack) {
+        if (stack.getItem() instanceof ItemJetpack && GasUtils.hasGas(stack)) {
+            return ((ItemJetpack) stack.getItem()).getMode(stack);
+        } else if (stack.getItem() instanceof IModuleContainerItem && GasUtils.hasGas(stack, MekanismGases.HYDROGEN.get())) {
+            ModuleJetpackUnit module = Modules.load(stack, Modules.JETPACK_UNIT);
+            if (module != null) {
+                return module.getMode();
+            }
+        }
+        return null;
     }
 
     public static boolean isGasMaskOn(PlayerEntity player) {
@@ -191,8 +206,9 @@ public class ClientTickHandler {
             }
 
             ItemStack chestStack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+            ModuleJetpackUnit jetpackModule = Modules.load(chestStack, Modules.JETPACK_UNIT);
 
-            if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemJetpack) {
+            if (!chestStack.isEmpty() && (chestStack.getItem() instanceof ItemJetpack || jetpackModule != null)) {
                 MekanismClient.updateKey(minecraft.gameSettings.keyBindJump, KeySync.ASCEND);
                 MekanismClient.updateKey(minecraft.gameSettings.keyBindSneak, KeySync.DESCEND);
             }
@@ -205,8 +221,7 @@ public class ClientTickHandler {
             }
 
             if (isJetpackActive(minecraft.player)) {
-                ItemJetpack jetpack = (ItemJetpack) chestStack.getItem();
-                JetpackMode mode = jetpack.getMode(chestStack);
+                JetpackMode mode = getJetpackMode(chestStack);
                 Vec3d motion = minecraft.player.getMotion();
                 if (mode == JetpackMode.NORMAL) {
                     minecraft.player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.5D), motion.getZ());
@@ -229,7 +244,11 @@ public class ClientTickHandler {
                     }
                     minecraft.player.fallDistance = 0.0F;
                 }
-                jetpack.useGas(chestStack, 1);
+                if (chestStack.getItem() instanceof ItemJetpack) {
+                    ((ItemJetpack) chestStack.getItem()).useGas(chestStack, 1);
+                } else {
+                    ((ItemMekaSuitArmor) chestStack.getItem()).useGas(chestStack, MekanismGases.HYDROGEN.get(), 1);
+                }
             }
 
             if (isGasMaskOn(minecraft.player)) {

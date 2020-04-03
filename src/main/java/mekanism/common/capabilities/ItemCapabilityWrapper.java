@@ -17,6 +17,10 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
 
     public ItemCapabilityWrapper(ItemStack stack, ItemCapability... caps) {
         itemStack = stack;
+        add(caps);
+    }
+
+    public void add(ItemCapability... caps) {
         for (ItemCapability c : caps) {
             c.wrapper = this;
             c.init();

@@ -20,8 +20,8 @@ public enum MekanismLang implements ILangEntry {
     //JEI
     JEI_AMOUNT_WITH_CAPACITY("tooltip", "jei.amount.with.capacity"),
     //Key
-    KEY_MODE("key", "mode"),
-    KEY_ARMOR_MODE("key", "armor_mode"),
+    KEY_HAND_MODE("key", "mode"),
+    KEY_CHEST_MODE("key", "armor_mode"),
     KEY_FEET_MODE("key", "feet_mode"),
     KEY_DETAILS_MODE("key", "details"),
     KEY_DESCRIPTION_MODE("key", "description"),
@@ -566,9 +566,13 @@ public enum MekanismLang implements ILangEntry {
     MODULE_INSTALLED("module", "installed"),
     MODULE_STACKABLE("module", "stackable"),
     MODULE_EXCLUSIVE("module", "exclusive"),
+    MODULE_HANDLE_MODE_CHANGE("module", "handle_mode_change"),
+    MODULE_RENDER_HUD("module", "render_hud"),
+    MODULE_MODE("module", "mode"),
     MODULE_ATTACK_DAMAGE("module", "attack_damage"),
     MODULE_FARMING_RADIUS("module", "farming_radius"),
     MODULE_EXTENDED_MODE("module", "extended_mode"),
+    MODULE_EXCAVATION_ESCALATION_UNIT("module", "excavation_escalation"),
     MODULE_ATTACK_AMPLIFICATION_UNIT("module", "attack_amplification_unit"),
     MODULE_SILK_TOUCH_UNIT("module", "silk_touch_unit"),
     MODULE_VEIN_MINING_UNIT("module", "vein_mining_unit"),
@@ -577,6 +581,8 @@ public enum MekanismLang implements ILangEntry {
     MODULE_ELECTROLYTIC_BREATHING_UNIT("module", "electrolytic_breathing_unit"),
     MODULE_INHALATION_PURIFICATION_UNIT("module", "inhalation_purification_unit"),
     MODULE_RADIATION_SHIELDING_UNIT("module", "radiation_shielding_unit"),
+    MODULE_JETPACK_UNIT("module", "jetpack_unit"),
+    DESCRIPTION_EXCAVATION_ESCALATION_UNIT("description", "excavation_escalation_unit"),
     DESCRIPTION_ATTACK_AMPLIFICATION_UNIT("description", "attack_amplification_unit"),
     DESCRIPTION_SILK_TOUCH_UNIT("description", "silk_touch_unit"),
     DESCRIPTION_VEIN_MINING_UNIT("description", "vein_mining_unit"),
@@ -584,7 +590,8 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_TELEPORTATION_UNIT("description", "teleportation_unit"),
     DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT("description", "electrolytic_breathing_unit"),
     DESCRIPTION_INHALATION_PURIFICATION_UNIT("description", "inhalation_purification_unit"),
-    DESCRIPTION_RADIATION_SHIELDING_UNIT("description", "radiation_shielding_unit");
+    DESCRIPTION_RADIATION_SHIELDING_UNIT("description", "radiation_shielding_unit"),
+    DESCRIPTION_JETPACK_UNIT("description", "jetpack_unit");
 
     private final String key;
 

@@ -1,22 +1,37 @@
 package mekanism.common.item.gear;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import com.google.common.collect.Multimap;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.Action;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler;
+import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler.GasTankSpec;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
+import mekanism.common.item.IItemHUDProvider;
+import mekanism.common.item.IModeItem;
+import mekanism.common.registries.MekanismGases;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -38,16 +53,22 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem /*, ISpecialGear*/ {
+public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem, IModeItem, IItemHUDProvider/*, ISpecialGear*/ {
 
     private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000_000);
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
+    private static final int GAS_TRANSFER_RATE = 256;
+
+    private Set<GasTankSpec> gasTankSpecs = new HashSet<>();
 
     public ItemMekaSuitArmor(EquipmentSlotType slot, Properties properties) {
         super(MEKASUIT_MATERIAL, slot, properties.setNoRepair().maxStackSize(1));
         Modules.setSupported(this, Modules.RADIATION_SHIELDING_UNIT);
         if (slot == EquipmentSlotType.HEAD) {
             Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT);
+        } else if (slot == EquipmentSlotType.CHEST) {
+            Modules.setSupported(this, Modules.JETPACK_UNIT);
+            gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 24_000, gas -> gas == MekanismGases.HYDROGEN.get()));
         }
     }
 
@@ -64,6 +85,9 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
             }
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
+            if (!gasTankSpecs.isEmpty()) {
+                StorageUtils.addStoredGas(stack, tooltip, true);
+            }
             tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
         }
     }
@@ -119,8 +143,67 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         stack.getTag().putInt("HideFlags", 2);
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> MAX_ENERGY, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue),
+        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> MAX_ENERGY, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue),
             RadiationShieldingHandler.create(item -> isModuleEnabled(item, Modules.RADIATION_SHIELDING_UNIT) ? ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
+        if (!gasTankSpecs.isEmpty()) {
+            wrapper.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
+        }
+        return wrapper;
+    }
+
+    @Nonnull
+    public GasStack useGas(ItemStack stack, Gas type, int amount) {
+        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        if (capability.isPresent()) {
+            IGasHandler gasHandlerItem = capability.get();
+            return gasHandlerItem.extractGas(new GasStack(type, amount), Action.EXECUTE);
+        }
+        return GasStack.EMPTY;
+    }
+
+    public GasStack getContainedGas(ItemStack stack, Gas type) {
+        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        if (capability.isPresent()) {
+            IGasHandler gasHandlerItem = capability.get();
+            for (int i = 0; i < gasHandlerItem.getGasTankCount(); i++) {
+                if (gasHandlerItem.getGasInTank(i).getType() == type) {
+                    return gasHandlerItem.getGasInTank(i);
+                }
+            }
+        }
+        return GasStack.EMPTY;
+    }
+
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+        if (slotType == getEquipmentSlot()) {
+            for (Module module : Modules.loadAll(stack)) {
+                if (module.isEnabled() && module.renderHUD()) {
+                    module.addHUDStrings(list);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        for (Module module : Modules.loadAll(stack)) {
+            if (module.isEnabled() && module.handlesModeChange()) {
+                module.changeMode(player, stack, shift, displayChangeMessage);
+                return;
+            }
+        }
+    }
+
+    @Override
+    public boolean supportsSlotType(@Nonnull EquipmentSlotType slotType) {
+        return slotType == getEquipmentSlot();
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+        return null;
     }
 
     @ParametersAreNonnullByDefault

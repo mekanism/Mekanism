@@ -13,9 +13,11 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleElectrolyticBreathingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleRadiationShieldingUnit;
+import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleFarmingUnit;
 import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleAttackAmplificationUnit;
 import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleSilkTouchUnit;
@@ -35,6 +37,9 @@ public class Modules {
     private static final Map<ModuleData<?>, Set<Item>> SUPPORTED_CONTAINERS = new Object2ObjectOpenHashMap<>();
 
     // Meka-Tool
+    public static final ModuleData<ModuleExcavationEscalationUnit> EXCAVATION_ESCALATION_UNIT = register("excavation_escalation_unit",
+        MekanismLang.MODULE_EXCAVATION_ESCALATION_UNIT, MekanismLang.DESCRIPTION_EXCAVATION_ESCALATION_UNIT, () -> new ModuleExcavationEscalationUnit(), 3)
+        .setHandlesModeChange().setRendersHUD();
     public static final ModuleData<ModuleAttackAmplificationUnit> ATTACK_AMPLIFICATION_UNIT = register("attack_amplification_unit",
         MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, () -> new ModuleAttackAmplificationUnit(), 3);
     public static final ModuleData<ModuleSilkTouchUnit> SILK_TOUCH_UNIT = register("silk_touch_unit",
@@ -42,9 +47,11 @@ public class Modules {
     public static final ModuleData<ModuleVeinMiningUnit> VEIN_MINING_UNIT = register("vein_mining_unit",
         MekanismLang.MODULE_VEIN_MINING_UNIT, MekanismLang.DESCRIPTION_VEIN_MINING_UNIT, () -> new ModuleVeinMiningUnit());
     public static final ModuleData<ModuleFarmingUnit> FARMING_UNIT = register("farming_unit",
-        MekanismLang.MODULE_FARMING_UNIT, MekanismLang.DESCRIPTION_FARMING_UNIT, () -> new ModuleFarmingUnit(), 4).setExclusive();
+        MekanismLang.MODULE_FARMING_UNIT, MekanismLang.DESCRIPTION_FARMING_UNIT, () -> new ModuleFarmingUnit(), 4)
+        .setExclusive();
     public static final ModuleData<ModuleTeleportationUnit> TELEPORTATION_UNIT = register("teleportation_unit",
-        MekanismLang.MODULE_TELEPORTATION_UNIT, MekanismLang.DESCRIPTION_TELEPORTATION_UNIT, () -> new ModuleTeleportationUnit()).setExclusive();
+        MekanismLang.MODULE_TELEPORTATION_UNIT, MekanismLang.DESCRIPTION_TELEPORTATION_UNIT, () -> new ModuleTeleportationUnit())
+        .setExclusive();
 
     // Helmet
     public static final ModuleData<ModuleElectrolyticBreathingUnit> ELECTROLYTIC_BREATHING_UNIT = register("electrolytic_breathing_unit",
@@ -53,6 +60,11 @@ public class Modules {
         MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, () -> new ModuleInhalationPurificationUnit());
     public static final ModuleData<ModuleRadiationShieldingUnit> RADIATION_SHIELDING_UNIT = register("radiation_shielding_unit",
         MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, () -> new ModuleRadiationShieldingUnit());
+
+    // Chestplate
+    public static final ModuleData<ModuleJetpackUnit> JETPACK_UNIT = register("jetpack_unit",
+        MekanismLang.MODULE_JETPACK_UNIT, MekanismLang.DESCRIPTION_JETPACK_UNIT, () -> new ModuleJetpackUnit())
+        .setHandlesModeChange().setRendersHUD();
 
     public static void setSupported(Item containerItem, ModuleData<?>... types) {
         for (ModuleData<?> module : types) {
@@ -135,6 +147,8 @@ public class Modules {
         private ItemStack stack;
         /** Exclusive modules only work one-at-a-time; when one is enabled, others will be automatically disabled. */
         private boolean exclusive;
+        private boolean handlesModeChange;
+        private boolean rendersHUD;
 
         private ModuleData(String name, ILangEntry langEntry, ILangEntry description, Supplier<MODULE> supplier, int maxStackSize) {
             this.name = name;
@@ -181,6 +195,24 @@ public class Modules {
 
         public boolean isExclusive() {
             return exclusive;
+        }
+
+        public ModuleData<MODULE> setHandlesModeChange() {
+            handlesModeChange = true;
+            return this;
+        }
+
+        public boolean handlesModeChange() {
+            return handlesModeChange;
+        }
+
+        public ModuleData<MODULE> setRendersHUD() {
+            rendersHUD = true;
+            return this;
+        }
+
+        public boolean rendersHUD() {
+            return rendersHUD;
         }
 
         @Override

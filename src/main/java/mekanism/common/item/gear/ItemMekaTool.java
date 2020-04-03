@@ -3,37 +3,33 @@ package mekanism.common.item.gear;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
-import mekanism.api.IDisableableEnum;
-import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
+import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleMekaTool;
+import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.IModeItem;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.block.Block;
@@ -69,13 +65,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem {
+public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem, IItemHUDProvider {
 
     private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000_000);
 
     public ItemMekaTool(Properties properties) {
         super(MAX_ENERGY, properties.setNoRepair().setISTER(ISTERProvider::disassembler));
-        Modules.setSupported(this, Modules.ATTACK_AMPLIFICATION_UNIT, Modules.SILK_TOUCH_UNIT, Modules.VEIN_MINING_UNIT, Modules.FARMING_UNIT, Modules.TELEPORTATION_UNIT);
+        Modules.setSupported(this, Modules.ATTACK_AMPLIFICATION_UNIT, Modules.SILK_TOUCH_UNIT, Modules.VEIN_MINING_UNIT, Modules.FARMING_UNIT, Modules.TELEPORTATION_UNIT,
+              Modules.EXCAVATION_ESCALATION_UNIT);
     }
 
     @Override
@@ -101,9 +98,6 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             }
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
-            MekaToolMode mode = getMode(stack);
-            tooltip.add(MekanismLang.MODE.translate(EnumColor.INDIGO, mode));
-            tooltip.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.INDIGO, mode.getEfficiency()));
             tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
         }
     }
@@ -125,7 +119,9 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-        return energyContainer == null || energyContainer.isEmpty() ? 1 : getMode(stack).getEfficiency();
+        ModuleExcavationEscalationUnit module = Modules.load(stack, Modules.EXCAVATION_ESCALATION_UNIT);
+        double efficiency = module == null || !module.isEnabled() ? MekanismConfig.general.mekaToolBaseEfficiency.get() : module.getEfficiency();
+        return energyContainer == null || energyContainer.isEmpty() ? 1 : (float) efficiency;
     }
 
     @Override
@@ -274,36 +270,16 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     private FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
         FloatingLong destroyEnergy = silk ? MekanismConfig.general.mekaToolEnergyUsageSilk.get() : MekanismConfig.general.mekaToolEnergyUsage.get();
-        destroyEnergy = destroyEnergy.multiply(getMode(itemStack).getEfficiency());
+        ModuleExcavationEscalationUnit module = Modules.load(itemStack, Modules.EXCAVATION_ESCALATION_UNIT);
+        double efficiency = module == null || !module.isEnabled() ? MekanismConfig.general.mekaToolBaseEfficiency.get() : module.getEfficiency();
+        destroyEnergy = destroyEnergy.multiply(efficiency);
         return hardness == 0 ? destroyEnergy.divide(2) : destroyEnergy;
-    }
-
-    public MekaToolMode getMode(ItemStack itemStack) {
-        return MekaToolMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.MODE));
-    }
-
-    public void setMode(ItemStack itemStack, MekaToolMode mode) {
-        ItemDataUtils.setInt(itemStack, NBTConstants.MODE, mode.ordinal());
-    }
-
-    @Override
-    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
-        MekaToolMode mode = getMode(stack);
-        MekaToolMode newMode = mode.adjust(shift);
-        if (mode != newMode) {
-            setMode(stack, newMode);
-            if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.DISASSEMBLER_MODE_CHANGE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, mode, EnumColor.AQUA, mode.getEfficiency())));
-            }
-        }
     }
 
     @Nonnull
     @Override
     public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
-        MekaToolMode mode = getMode(stack);
-        return MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.INDIGO, mode, EnumColor.AQUA, mode.getEfficiency());
+        return null;
     }
 
 
@@ -357,50 +333,22 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         return super.initCapabilities(stack, nbt);
     }
 
-    public enum MekaToolMode implements IDisableableEnum<MekaToolMode>, IHasTranslationKey {
-        NORMAL(MekanismLang.DISASSEMBLER_NORMAL, 20, () -> true),
-        FAST(MekanismLang.DISASSEMBLER_FAST, 128, MekanismConfig.general.disassemblerFastMode),
-        OFF(MekanismLang.DISASSEMBLER_OFF, 0, () -> true),
-        SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, MekanismConfig.general.disassemblerSlowMode);
-
-        private static MekaToolMode[] MODES = values();
-
-        private final BooleanSupplier checkEnabled;
-        private final ILangEntry langEntry;
-        private final int efficiency;
-
-        MekaToolMode(ILangEntry langEntry, int efficiency, BooleanSupplier checkEnabled) {
-            this.langEntry = langEntry;
-            this.efficiency = efficiency;
-            this.checkEnabled = checkEnabled;
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+        for (Module module : Modules.loadAll(stack)) {
+            if (module.isEnabled() && module.renderHUD()) {
+                module.addHUDStrings(list);
+            }
         }
+    }
 
-        /**
-         * Gets a Mode from its ordinal. NOTE: if this mode is not enabled then it will reset to NORMAL
-         */
-        public static MekaToolMode byIndexStatic(int index) {
-            MekaToolMode mode = MODES[Math.floorMod(index, MODES.length)];
-            return mode.isEnabled() ? mode : NORMAL;
-        }
-
-        @Nonnull
-        @Override
-        public MekaToolMode byIndex(int index) {
-            return MODES[Math.floorMod(index, MODES.length)];
-        }
-
-        @Override
-        public String getTranslationKey() {
-            return langEntry.getTranslationKey();
-        }
-
-        public int getEfficiency() {
-            return efficiency;
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return checkEnabled.getAsBoolean();
+    @Override
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        for (Module module : Modules.loadAll(stack)) {
+            if (module.isEnabled() && module.handlesModeChange()) {
+                module.changeMode(player, stack, shift, displayChangeMessage);
+                return;
+            }
         }
     }
 }

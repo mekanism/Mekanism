@@ -3,6 +3,7 @@ package mekanism.common.content.gear;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
@@ -16,10 +17,12 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 
 public abstract class Module {
 
     public static final String ENABLED_KEY = "enabled";
+    public static final String HANDLE_MODE_CHANGE_KEY = "handleModeChange";
 
     protected List<ModuleConfigItem<?>> configItems = new ArrayList<>();
 
@@ -27,6 +30,9 @@ public abstract class Module {
     private ItemStack container;
 
     private ModuleConfigItem<Boolean> enabled;
+    private ModuleConfigItem<Boolean> handleModeChange;
+    private ModuleConfigItem<Boolean> renderHUD;
+
     private int installed = 1;
 
     public void init(ModuleData<?> data, ItemStack container) {
@@ -36,6 +42,12 @@ public abstract class Module {
 
     public void init() {
         enabled = addConfigItem(new ModuleConfigItem<>(this, ENABLED_KEY, MekanismLang.MODULE_ENABLED, new BooleanData(), true));
+        if (data.handlesModeChange()) {
+            handleModeChange = addConfigItem(new ModuleConfigItem<>(this, HANDLE_MODE_CHANGE_KEY, MekanismLang.MODULE_HANDLE_MODE_CHANGE, new BooleanData(), true));
+        }
+        if (data.rendersHUD()) {
+            renderHUD = addConfigItem(new ModuleConfigItem<>(this, "renderHUD", MekanismLang.MODULE_RENDER_HUD, new BooleanData(), true));
+        }
     }
 
     protected <T> ModuleConfigItem<T> addConfigItem(ModuleConfigItem<T> item) {
@@ -116,8 +128,8 @@ public abstract class Module {
         return enabled.get();
     }
 
-    public void setEnabledNoCheck(boolean val) {
-        enabled.getData().set(val);
+    public void setDisabledForce() {
+        enabled.getData().set(false);
         save(null);
     }
 
@@ -127,5 +139,24 @@ public abstract class Module {
 
     public List<ModuleConfigItem<?>> getConfigItems() {
         return configItems;
+    }
+
+    public void addHUDStrings(List<ITextComponent> list) {}
+
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {}
+
+    public boolean handlesModeChange() {
+        return data.handlesModeChange() && handleModeChange.get();
+    }
+
+    public void setModeHandlingDisabledForce() {
+        if (data.handlesModeChange()) {
+            handleModeChange.getData().set(false);
+            save(null);
+        }
+    }
+
+    public boolean renderHUD() {
+        return data.rendersHUD() && renderHUD.get();
     }
 }

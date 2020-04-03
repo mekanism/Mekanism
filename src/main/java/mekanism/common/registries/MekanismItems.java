@@ -98,6 +98,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemUpgrade> GAS_UPGRADE = registerUpgrade(Upgrade.GAS);
     public static final ItemRegistryObject<ItemUpgrade> ANCHOR_UPGRADE = registerUpgrade(Upgrade.ANCHOR);
 
+    public static final ItemRegistryObject<ItemModule> EXCAVATION_ESCALATION_UNIT = registerModule(Modules.EXCAVATION_ESCALATION_UNIT);
     public static final ItemRegistryObject<ItemModule> ATTACK_AMPLIFICATION_UNIT = registerModule(Modules.ATTACK_AMPLIFICATION_UNIT);
     public static final ItemRegistryObject<ItemModule> SILK_TOUCH_UNIT = registerModule(Modules.SILK_TOUCH_UNIT);
     public static final ItemRegistryObject<ItemModule> VEIN_MINING_UNIT = registerModule(Modules.VEIN_MINING_UNIT);
@@ -107,6 +108,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemModule> ELECTROLYTIC_BREATHING_UNIT = registerModule(Modules.ELECTROLYTIC_BREATHING_UNIT);
     public static final ItemRegistryObject<ItemModule> INHALATION_PURIFICATION_UNIT = registerModule(Modules.INHALATION_PURIFICATION_UNIT);
     public static final ItemRegistryObject<ItemModule> RADIATION_SHIELDING_UNIT = registerModule(Modules.RADIATION_SHIELDING_UNIT);
+    public static final ItemRegistryObject<ItemModule> JETPACK_UNIT = registerModule(Modules.JETPACK_UNIT);
 
     //Alloy names are alloy_type for purposes of tab complete
     public static final ItemRegistryObject<ItemAlloy> INFUSED_ALLOY = registerAlloy(AlloyTier.INFUSED);

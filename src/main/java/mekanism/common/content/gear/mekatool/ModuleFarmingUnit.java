@@ -6,11 +6,11 @@ import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
-import mekanism.common.content.gear.ModuleConfigItem.IntEnum;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.block.Block;
@@ -34,6 +34,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants.BlockFlags;
@@ -65,18 +67,23 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
       );
     }
 
-    public static enum FarmingRadius implements IntEnum {
+    public static enum FarmingRadius implements IHasTextComponent {
         OFF(0),
         LOW(1),
         MED(3),
         HIGH(5),
         ULTRA(7);
         private int radius;
+        private ITextComponent label;
         private FarmingRadius(int radius) {
             this.radius = radius;
+            this.label = new StringTextComponent(Integer.toString(radius));
         }
         @Override
-        public int getValue() {
+        public ITextComponent getTextComponent() {
+            return label;
+        }
+        public int getRadius() {
             return radius;
         }
     }
@@ -94,7 +101,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         }
         Hand hand = context.getHand();
         ItemStack stack = player.getHeldItem(hand);
-        int diameter = farmingRadius.get().getValue();
+        int diameter = farmingRadius.get().getRadius();
         if (diameter == 0) {
             //If we don't have any blocks we are going to want to do, then skip it
             return ActionResultType.PASS;
@@ -187,7 +194,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         }
         Hand hand = context.getHand();
         ItemStack stack = player.getHeldItem(hand);
-        int diameter = farmingRadius.get().getValue();
+        int diameter = farmingRadius.get().getRadius();
         if (diameter == 0) {
             //If we don't have any blocks we are going to want to do, then skip it
             return ActionResultType.PASS;

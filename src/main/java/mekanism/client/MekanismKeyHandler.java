@@ -22,11 +22,11 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public class MekanismKeyHandler extends MekKeyHandler {
 
-    public static KeyBinding modeSwitchKey = new KeyBinding(MekanismLang.KEY_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+    public static KeyBinding handModeSwitchKey = new KeyBinding(MekanismLang.KEY_HAND_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_N, MekanismLang.MEKANISM.getTranslationKey());
-    public static KeyBinding armorModeSwitchKey = new KeyBinding(MekanismLang.KEY_ARMOR_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+    public static KeyBinding chestModeSwitchKey = new KeyBinding(MekanismLang.KEY_CHEST_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_G, MekanismLang.MEKANISM.getTranslationKey());
-    public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding(MekanismLang.KEY_FEET_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+    public static KeyBinding feetModeSwitchKey = new KeyBinding(MekanismLang.KEY_FEET_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_H, MekanismLang.MEKANISM.getTranslationKey());
     public static KeyBinding detailsKey = new KeyBinding(MekanismLang.KEY_DETAILS_MODE.getTranslationKey(), KeyConflictContext.GUI, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_LEFT_SHIFT, MekanismLang.MEKANISM.getTranslationKey());
@@ -36,18 +36,18 @@ public class MekanismKeyHandler extends MekKeyHandler {
           GLFW.GLFW_KEY_BACKSLASH, MekanismLang.MEKANISM.getTranslationKey());
 
     private static Builder BINDINGS = new Builder(6)
-          .addBinding(modeSwitchKey, false)
-          .addBinding(armorModeSwitchKey, false)
-          .addBinding(freeRunnerModeSwitchKey, false)
+          .addBinding(handModeSwitchKey, false)
+          .addBinding(chestModeSwitchKey, false)
+          .addBinding(feetModeSwitchKey, false)
           .addBinding(detailsKey, false)
           .addBinding(descriptionKey, false)
           .addBinding(moduleTweakerKey, false);
 
     public MekanismKeyHandler() {
         super(BINDINGS);
-        ClientRegistry.registerKeyBinding(modeSwitchKey);
-        ClientRegistry.registerKeyBinding(armorModeSwitchKey);
-        ClientRegistry.registerKeyBinding(freeRunnerModeSwitchKey);
+        ClientRegistry.registerKeyBinding(handModeSwitchKey);
+        ClientRegistry.registerKeyBinding(chestModeSwitchKey);
+        ClientRegistry.registerKeyBinding(feetModeSwitchKey);
         ClientRegistry.registerKeyBinding(detailsKey);
         ClientRegistry.registerKeyBinding(descriptionKey);
         ClientRegistry.registerKeyBinding(moduleTweakerKey);
@@ -64,20 +64,20 @@ public class MekanismKeyHandler extends MekKeyHandler {
         if (player == null) {
             return;
         }
-        if (kb == modeSwitchKey) {
+        if (kb == handModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, player.isShiftKeyDown()));
             } else if (IModeItem.isModeItem(player, EquipmentSlotType.OFFHAND)) {
                 //Otherwise try their offhand
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.OFFHAND, player.isShiftKeyDown()));
             }
-        } else if (kb == armorModeSwitchKey) {
+        } else if (kb == chestModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.CHEST)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.CHEST, player.isShiftKeyDown()));
                 //TODO: Decide if we want to do the sound on the server side (it wouldn't obey the client base volume then)
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
-        } else if (kb == freeRunnerModeSwitchKey) {
+        } else if (kb == feetModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.FEET)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.FEET, player.isShiftKeyDown()));
                 //TODO: Decide if we want to do the sound on the server side (it wouldn't obey the client base volume then)

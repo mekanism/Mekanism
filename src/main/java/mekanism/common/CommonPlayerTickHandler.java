@@ -7,6 +7,9 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.IModuleContainerItem;
+import mekanism.common.content.gear.Modules;
+import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
@@ -14,7 +17,9 @@ import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.gear.ItemGasMask;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaTank;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -96,8 +101,7 @@ public class CommonPlayerTickHandler {
 
         if (isJetpackOn(player)) {
             ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-            ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-            JetpackMode mode = jetpack.getMode(stack);
+            JetpackMode mode = getJetpackMode(stack);
             Vec3d motion = player.getMotion();
             if (mode == JetpackMode.NORMAL) {
                 player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.5D), motion.getZ());
@@ -122,7 +126,11 @@ public class CommonPlayerTickHandler {
             if (player instanceof ServerPlayerEntity) {
                 ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
             }
-            jetpack.useGas(stack, 1);
+            if (stack.getItem() instanceof ItemJetpack) {
+                ((ItemJetpack) stack.getItem()).useGas(stack, 1);
+            } else {
+                ((ItemMekaSuitArmor) stack.getItem()).useGas(stack, MekanismGases.HYDROGEN.get(), 1);
+            }
         }
 
         if (isGasMaskOn(player)) {
@@ -147,15 +155,13 @@ public class CommonPlayerTickHandler {
     public static boolean isJetpackOn(PlayerEntity player) {
         if (!player.isCreative() && !player.isSpectator()) {
             ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-            if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack && GasUtils.hasGas(chest)) {
-                JetpackMode mode = ((ItemJetpack) chest.getItem()).getMode(chest);
+            if (!chest.isEmpty()) {
+                JetpackMode mode = getJetpackMode(chest);
                 if (mode == JetpackMode.NORMAL) {
                     return Mekanism.keyMap.has(player, KeySync.ASCEND);
                 } else if (mode == JetpackMode.HOVER) {
                     boolean ascending = Mekanism.keyMap.has(player, KeySync.ASCEND);
                     boolean descending = Mekanism.keyMap.has(player, KeySync.DESCEND);
-                    //if ((!ascending && !descending) || (ascending && descending) || descending)
-                    //Simplifies to
                     if (!ascending || descending) {
                         return !isOnGround(player);
                     }
@@ -164,6 +170,18 @@ public class CommonPlayerTickHandler {
             }
         }
         return false;
+    }
+
+    private static JetpackMode getJetpackMode(ItemStack stack) {
+        if (stack.getItem() instanceof ItemJetpack && GasUtils.hasGas(stack)) {
+            return ((ItemJetpack) stack.getItem()).getMode(stack);
+        } else if (stack.getItem() instanceof IModuleContainerItem && GasUtils.hasGas(stack, MekanismGases.HYDROGEN.get())) {
+            ModuleJetpackUnit module = Modules.load(stack, Modules.JETPACK_UNIT);
+            if (module != null) {
+                return module.getMode();
+            }
+        }
+        return null;
     }
 
     @SubscribeEvent

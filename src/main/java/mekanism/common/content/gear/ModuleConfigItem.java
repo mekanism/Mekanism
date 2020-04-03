@@ -1,6 +1,7 @@
 package mekanism.common.content.gear;
 
 import java.util.function.Consumer;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.common.base.ILangEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -34,11 +35,18 @@ public class ModuleConfigItem<TYPE> {
 
     public void set(TYPE type, Consumer<ItemStack> callback) {
         data.set(type);
-        // disable other exclusive modules
-        if (name.equals(Module.ENABLED_KEY) && type == Boolean.TRUE && module.getData().isExclusive()) {
-            for (Module m : Modules.loadAll(module.getContainer())) {
+        // validity checks
+        for (Module m : Modules.loadAll(module.getContainer())) {
+            // disable other exclusive modules
+            if (name.equals(Module.ENABLED_KEY) && type == Boolean.TRUE && module.getData().isExclusive()) {
                 if (m.getData().isExclusive() && m.getData() != module.getData()) {
-                    m.setEnabledNoCheck(false);
+                    m.setDisabledForce();
+                }
+            }
+            // turn off mode change handling for other modules
+            if (name.equals(Module.HANDLE_MODE_CHANGE_KEY) && type == Boolean.TRUE && module.handlesModeChange()) {
+                if (m.handlesModeChange() && m.getData() != module.getData()) {
+                    m.setModeHandlingDisabledForce();
                 }
             }
         }
@@ -96,11 +104,7 @@ public class ModuleConfigItem<TYPE> {
         }
     }
 
-    public static interface IntEnum {
-        public int getValue();
-    }
-
-    public static class EnumData<TYPE extends Enum<TYPE> & IntEnum> implements ConfigData<TYPE> {
+    public static class EnumData<TYPE extends Enum<TYPE> & IHasTextComponent> implements ConfigData<TYPE> {
 
         private Class<TYPE> enumClass;
         private TYPE value;
@@ -136,7 +140,7 @@ public class ModuleConfigItem<TYPE> {
             tag.putInt(name, value.ordinal());
         }
 
-        public Enum<? extends IntEnum>[] getEnums() {
+        public TYPE[] getEnums() {
             return enumClass.getEnumConstants();
         }
 

@@ -70,7 +70,7 @@ public abstract class GuiElement extends Widget {
         return length <= maxX ? 1 : (float) maxX / length;
     }
 
-    protected void drawCenteredText(String text, int left, int y, int color) {
+    protected void drawCenteredText(ITextComponent text, int left, int y, int color) {
         int textWidth = getStringWidth(text);
         int centerX = left - (textWidth / 2);
         drawString(text, centerX, y, color);

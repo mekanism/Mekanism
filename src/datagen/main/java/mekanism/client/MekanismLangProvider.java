@@ -336,8 +336,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //JEI
         add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%s / %s mB");
         //Key
-        add(MekanismLang.KEY_MODE, "Item Mode Switch");
-        add(MekanismLang.KEY_ARMOR_MODE, "Armor Mode Switch");
+        add(MekanismLang.KEY_HAND_MODE, "Item Mode Switch");
+        add(MekanismLang.KEY_CHEST_MODE, "Chest Mode Switch");
         add(MekanismLang.KEY_FEET_MODE, "Feet Mode Switch");
         add(MekanismLang.KEY_DETAILS_MODE, "Show details");
         add(MekanismLang.KEY_DESCRIPTION_MODE, "Show description");
@@ -880,10 +880,14 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_INSTALLED, "Installed: %s");
         add(MekanismLang.MODULE_STACKABLE, "Stackable: %s");
         add(MekanismLang.MODULE_EXCLUSIVE, "(Exclusive Module)");
+        add(MekanismLang.MODULE_HANDLE_MODE_CHANGE, "Handle Mode Key");
+        add(MekanismLang.MODULE_RENDER_HUD, "Show in HUD");
+        add(MekanismLang.MODULE_MODE, "Mode");
         add(MekanismLang.MODULE_ATTACK_DAMAGE, "Attack Damage");
         add(MekanismLang.MODULE_FARMING_RADIUS, "Farming Radius");
         add(MekanismLang.MODULE_EXTENDED_MODE, "Extended Mode");
 
+        add(MekanismLang.MODULE_EXCAVATION_ESCALATION_UNIT, "Excavation Escalation Unit");
         add(MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, "Attack Amplification Unit");
         add(MekanismLang.MODULE_SILK_TOUCH_UNIT, "Silk Touch Unit");
         add(MekanismLang.MODULE_VEIN_MINING_UNIT, "Vein Mining Unit");
@@ -894,6 +898,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit");
         add(MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit");
 
+        add(MekanismLang.DESCRIPTION_EXCAVATION_ESCALATION_UNIT, "Increases digging speed on any block.");
         add(MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, "Amplifies melee attacks on players or mobs.");
         add(MekanismLang.DESCRIPTION_SILK_TOUCH_UNIT, "Allows all mined blocks to drop as themselves.");
         add(MekanismLang.DESCRIPTION_VEIN_MINING_UNIT, "Allows for quick mining of ore deposits and rapid felling of trees.");
@@ -903,6 +908,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, "Uses electrolysis to convert surrounding liquid and atmospheric water to breathable oxygen.");
         add(MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, "Applies a miniature electromagnetic field around the breathing apparatus, preventing negative potion effects.");
         add(MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
+        add(MekanismLang.DESCRIPTION_JETPACK_UNIT, "Applies a hydrogen-fueled jetpack to the MekaSuit.");
     }
 
     private void addOreProcessingNames(IItemProvider crystal, IItemProvider shard, IItemProvider clump, IItemProvider dirtyDust, IItemProvider dust, String resourceName) {
