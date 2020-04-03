@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -45,45 +44,47 @@ public abstract class BaseTagProvider implements IDataProvider {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private final Map<Tag<Item>, Tag.Builder<Item>> itemTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
-    private final Map<Tag<Block>, Tag.Builder<Block>> blockTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
-    private final Map<Tag<EntityType<?>>, Tag.Builder<EntityType<?>>> entityTypeTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
-    private final Map<Tag<Fluid>, Tag.Builder<Fluid>> fluidTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
-    private final Map<Tag<Gas>, Tag.Builder<Gas>> gasTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
-    private final Map<Tag<InfuseType>, Tag.Builder<InfuseType>> infuseTypeTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
-    protected final DataGenerator gen;
+    private final Map<TagType<?>, TagTypeMap<?>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
+    private final DataGenerator gen;
     private final String modid;
 
     protected BaseTagProvider(DataGenerator gen, String modid) {
         this.gen = gen;
         this.modid = modid;
+        addTagType(TagType.ITEM);
+        addTagType(TagType.BLOCK);
+        addTagType(TagType.ENTITY_TYPE);
+        addTagType(TagType.FLUID);
+        addTagType(TagType.GAS);
+        addTagType(TagType.INFUSE_TYPE);
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tags: " + modid;
+    }
+
+    //Protected to allow for extensions to add their own supported types if they have one
+    protected <TYPE extends IForgeRegistryEntry<TYPE>> void addTagType(TagType<TYPE> tagType) {
+        supportedTagTypes.putIfAbsent(tagType, new TagTypeMap<>(tagType));
     }
 
     protected abstract void registerTags();
 
     @Override
     public void act(@Nonnull DirectoryCache cache) {
-        //TODO: Make this not have to create a map for each type of tag, so that this can be more dynamic?
-        itemTagToBuilder.clear();
-        blockTagToBuilder.clear();
-        entityTypeTagToBuilder.clear();
-        fluidTagToBuilder.clear();
-        gasTagToBuilder.clear();
-        infuseTypeTagToBuilder.clear();
+        supportedTagTypes.values().forEach(TagTypeMap::clear);
         registerTags();
-        act(cache, TagType.ITEM, itemTagToBuilder);
-        act(cache, TagType.BLOCK, blockTagToBuilder);
-        act(cache, TagType.ENTITY_TYPE, entityTypeTagToBuilder);
-        act(cache, TagType.FLUID, fluidTagToBuilder);
-        act(cache, TagType.GAS, gasTagToBuilder);
-        act(cache, TagType.INFUSE_TYPE, infuseTypeTagToBuilder);
+        supportedTagTypes.values().forEach(tagTypeMap -> act(cache, tagTypeMap));
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull DirectoryCache cache, TagType<TYPE> tagType, Map<Tag<TYPE>, Tag.Builder<TYPE>> tagToBuilder) {
-        if (!tagToBuilder.isEmpty()) {
+    private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull DirectoryCache cache, TagTypeMap<TYPE> tagTypeMap) {
+        if (!tagTypeMap.isEmpty()) {
             TagCollection<TYPE> tagCollection = new TagCollection<>(id -> Optional.empty(), "", false, "generated");
-            tagCollection.registerAll(tagToBuilder.entrySet().stream().collect(Collectors.toMap(tag -> tag.getKey().getId(), Entry::getValue)));
+            tagCollection.registerAll(tagTypeMap.getBuilders());
+            TagType<TYPE> tagType = tagTypeMap.getTagType();
             IForgeRegistry<TYPE> registry = tagType.getRegistry();
             for (Entry<ResourceLocation, Tag<TYPE>> entry : tagCollection.getTagMap().entrySet()) {
                 ResourceLocation id = entry.getKey();
@@ -124,34 +125,37 @@ public abstract class BaseTagProvider implements IDataProvider {
         return tagAsJson;
     }
 
+    //Protected to allow for extensions to add retrieve their own supported types if they have any
+    protected <TYPE extends IForgeRegistryEntry<TYPE>> TagTypeMap<TYPE> getTagTypeMap(TagType<TYPE> tagType) {
+        return (TagTypeMap<TYPE>) supportedTagTypes.get(tagType);
+    }
+
+    protected <TYPE extends IForgeRegistryEntry<TYPE>> Tag.Builder<TYPE> getBuilder(TagType<TYPE> tagType, Tag<TYPE> tag) {
+        return getTagTypeMap(tagType).getBuilder(tag);
+    }
+
     protected Tag.Builder<Item> getItemBuilder(Tag<Item> tag) {
-        return itemTagToBuilder.computeIfAbsent(tag, ignored -> Tag.Builder.create());
+        return getBuilder(TagType.ITEM, tag);
     }
 
     protected Tag.Builder<Block> getBlockBuilder(Tag<Block> tag) {
-        return blockTagToBuilder.computeIfAbsent(tag, ignored -> Tag.Builder.create());
+        return getBuilder(TagType.BLOCK, tag);
     }
 
     protected Tag.Builder<EntityType<?>> getEntityTypeBuilder(Tag<EntityType<?>> tag) {
-        return entityTypeTagToBuilder.computeIfAbsent(tag, ignored -> Tag.Builder.create());
+        return getBuilder(TagType.ENTITY_TYPE, tag);
     }
 
     protected Tag.Builder<Fluid> getFluidBuilder(Tag<Fluid> tag) {
-        return fluidTagToBuilder.computeIfAbsent(tag, ignored -> Tag.Builder.create());
+        return getBuilder(TagType.FLUID, tag);
     }
 
     protected Tag.Builder<Gas> getGasBuilder(Tag<Gas> tag) {
-        return gasTagToBuilder.computeIfAbsent(tag, ignored -> Tag.Builder.create());
+        return getBuilder(TagType.GAS, tag);
     }
 
     protected Tag.Builder<InfuseType> getInfuseTypeBuilder(Tag<InfuseType> tag) {
-        return infuseTypeTagToBuilder.computeIfAbsent(tag, ignored -> Tag.Builder.create());
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return "Tags: " + modid;
+        return getBuilder(TagType.INFUSE_TYPE, tag);
     }
 
     protected void addToTag(Tag<Item> tag, IItemProvider... itemProviders) {
