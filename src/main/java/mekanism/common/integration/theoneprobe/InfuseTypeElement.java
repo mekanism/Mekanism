@@ -1,6 +1,5 @@
 package mekanism.common.integration.theoneprobe;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -17,8 +16,8 @@ public class InfuseTypeElement extends ChemicalElement<InfuseType, InfusionStack
         super(stored, capacity);
     }
 
-    public InfuseTypeElement(ByteBuf buf) {
-        this(ChemicalUtils.readInfusionStack(new PacketBuffer(buf)), buf.readInt());
+    public InfuseTypeElement(PacketBuffer buf) {
+        this(ChemicalUtils.readInfusionStack(buf), buf.readVarInt());
     }
 
     @Override

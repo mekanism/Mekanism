@@ -21,3 +21,9 @@ issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
     mandatory=true
     versionRange="[${forge_version},)"
     side="BOTH"
+[[dependencies.mekanism]]
+    modId="theoneprobe"
+    mandatory=false
+    versionRange="[${top_version},)"
+    ordering="NONE"
+    side="BOTH"

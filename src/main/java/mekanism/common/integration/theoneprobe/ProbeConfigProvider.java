@@ -20,7 +20,6 @@ public class ProbeConfigProvider implements IProbeConfigProvider {
 
     @Override
     public void getProbeConfig(IProbeConfig config, PlayerEntity player, World world, Entity entity, IProbeHitEntityData data) {
-
     }
 
     @Override

@@ -293,7 +293,8 @@ dependencies {
     datagenmainCompile fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
 }
 
-def version_properties = ["version": mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version, "loader_version": loader_version]
+def version_properties = ["version": mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version,
+                          "loader_version": loader_version, "top_version": min_top_version]
 def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
 //TODO: Figure out if there is a way to just define one replaceResources task

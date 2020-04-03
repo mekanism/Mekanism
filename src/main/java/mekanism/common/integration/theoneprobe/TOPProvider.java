@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mcjty.theoneprobe.api.IElement;
+import mcjty.theoneprobe.api.IElementNew;
 import mcjty.theoneprobe.api.IProbeConfig;
 import mcjty.theoneprobe.api.IProbeConfig.ConfigMode;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -55,7 +55,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     public Void apply(ITheOneProbe probe) {
         probe.registerProvider(this);
         probe.registerProbeConfigProvider(ProbeConfigProvider.INSTANCE);
-        EnergyElement.ID = probe.registerElementFactory(EnergyElement::fromBuffer);
+        EnergyElement.ID = probe.registerElementFactory(EnergyElement::new);
         FluidElement.ID = probe.registerElementFactory(FluidElement::new);
         GasElement.ID = probe.registerElementFactory(GasElement::new);
         InfuseTypeElement.ID = probe.registerElementFactory(InfuseTypeElement::new);
@@ -169,6 +169,6 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     @FunctionalInterface
     private interface ElementCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
 
-        IElement create(STACK stored, int capacity);
+        IElementNew create(STACK stored, int capacity);
     }
 }

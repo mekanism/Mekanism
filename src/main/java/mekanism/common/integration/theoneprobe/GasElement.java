@@ -1,6 +1,5 @@
 package mekanism.common.integration.theoneprobe;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.Gas;
@@ -17,8 +16,8 @@ public class GasElement extends ChemicalElement<Gas, GasStack> {
         super(stored, capacity);
     }
 
-    public GasElement(ByteBuf buf) {
-        this(ChemicalUtils.readGasStack(new PacketBuffer(buf)), buf.readInt());
+    public GasElement(PacketBuffer buf) {
+        this(ChemicalUtils.readGasStack(buf), buf.readVarInt());
     }
 
     @Override

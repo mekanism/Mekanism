@@ -1,6 +1,5 @@
 package mekanism.common.integration.theoneprobe;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.text.EnergyDisplay;
@@ -21,16 +20,14 @@ public class EnergyElement extends TOPElement {
         this.maxEnergy = maxEnergy;
     }
 
-    public static EnergyElement fromBuffer(ByteBuf buf) {
-        PacketBuffer buffer = new PacketBuffer(buf);
-        return new EnergyElement(FloatingLong.readFromBuffer(buffer), FloatingLong.readFromBuffer(buffer));
+    public EnergyElement(PacketBuffer buf) {
+        this(FloatingLong.readFromBuffer(buf), FloatingLong.readFromBuffer(buf));
     }
 
     @Override
-    public void toBytes(ByteBuf buf) {
-        PacketBuffer buffer = new PacketBuffer(buf);
-        energy.writeToBuffer(buffer);
-        maxEnergy.writeToBuffer(buffer);
+    public void toBytes(PacketBuffer buf) {
+        energy.writeToBuffer(buf);
+        maxEnergy.writeToBuffer(buf);
     }
 
     @Override

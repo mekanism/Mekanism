@@ -2,7 +2,7 @@ package mekanism.common.integration.theoneprobe;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nullable;
-import mcjty.theoneprobe.api.IElement;
+import mcjty.theoneprobe.api.IElementNew;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
@@ -10,7 +10,7 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class TOPElement implements IElement {
+public abstract class TOPElement implements IElementNew {
 
     private final int borderColor;
     private final int textColor;
