@@ -40,7 +40,7 @@ public class Coord4D {//TODO: Replace this with GlobalPos
         BlockPos entityPosition = entity.getPosition();
         this.x = entityPosition.getX();
         this.y = entityPosition.getY();
-        this.z = entityPosition.getX();
+        this.z = entityPosition.getZ();
         this.dimension = entity.world.getDimension().getType();
     }
 
