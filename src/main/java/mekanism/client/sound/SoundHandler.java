@@ -119,14 +119,6 @@ public class SoundHandler {
         Minecraft.getInstance().getSoundHandler().play(sound);
     }
 
-    public static void stopSound(ISound sound) {
-        Minecraft.getInstance().getSoundHandler().stop(sound);
-    }
-
-    public static boolean isPlaying(ISound sound) {
-        return Minecraft.getInstance().getSoundHandler().isPlaying(sound);
-    }
-
     public static ISound startTileSound(SoundEvent soundEvent, SoundCategory category, float volume, BlockPos pos) {
         // First, check to see if there's already a sound playing at the desired location
         ISound s = soundMap.get(pos.toLong());

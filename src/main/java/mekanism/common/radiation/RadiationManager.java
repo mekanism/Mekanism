@@ -1,5 +1,6 @@
 package mekanism.common.radiation;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,17 +12,15 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.client.sound.GeigerSound;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketRadiationData;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.CapabilityUtils;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -37,8 +36,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -73,7 +70,8 @@ public class RadiationManager {
     private static final String DATA_HANDLER_NAME = "radiation_manager";
     private static final int CHUNK_CHECK_RADIUS = 5;
     private static final int MAX_RANGE = CHUNK_CHECK_RADIUS * 16;
-    private static final int PARTICLE_RADIUS = 20;
+    private static final int PARTICLE_RADIUS = 30;
+    private static final int PARTICLE_COUNT = 100;
 
     public static final IAttribute ATTRIBUTE_RADIATION = (new RangedAttribute((IAttribute)null, "generic.radiation", 0.0D, 0.0D, 1000.0D)).setShouldWatch(true);
 
@@ -89,7 +87,7 @@ public class RadiationManager {
 
     // client fields
     private RadiationScale clientRadiationScale = RadiationScale.NONE;
-    private ISound playingGeigerSound;
+    private Map<RadiationScale, GeigerSound> soundMap = new HashMap<>();
 
     /**
      * Note: This can and will be null on the client side
@@ -108,7 +106,6 @@ public class RadiationManager {
      * @return radiation level (in sV)
      */
     public double getRadiationLevel(Coord4D coord) {
-        System.out.println(coord);
         Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(CHUNK_CHECK_RADIUS);
         double level = BASELINE;
 
@@ -118,7 +115,6 @@ public class RadiationManager {
                     // we only compute exposure when within the MAX_RANGE bounds
                     if (src.getPos().distanceTo(coord) <= MAX_RANGE) {
                         double add = computeExposure(coord, src);
-                        System.out.println("Added: " + add);
                         level += add;
                     }
                 }
@@ -191,36 +187,23 @@ public class RadiationManager {
 
     public void tickClient(PlayerEntity player) {
         // perhaps also play geiger counter sound effect, even when not using item (similar to fallout)
-        if (clientRadiationScale != RadiationScale.NONE && player.world.getRandom().nextInt(10) == 0) {
-            int count = clientRadiationScale.ordinal() * 10;
+        if (clientRadiationScale != RadiationScale.NONE && player.world.getRandom().nextInt(2) == 0) {
+            int count = player.world.getRandom().nextInt(clientRadiationScale.ordinal() * PARTICLE_COUNT);
             for (int i = 0; i < count; i++) {
                 double x = player.getPosX() + player.world.getRandom().nextDouble() * PARTICLE_RADIUS * 2 - PARTICLE_RADIUS;
-                double y = player.getPosX() + player.world.getRandom().nextDouble() * PARTICLE_RADIUS * 2 - PARTICLE_RADIUS;
+                double y = player.getPosY() + player.world.getRandom().nextDouble() * PARTICLE_RADIUS * 2 - PARTICLE_RADIUS;
                 double z = player.getPosZ() + player.world.getRandom().nextDouble() * PARTICLE_RADIUS * 2 - PARTICLE_RADIUS;
                 player.world.addParticle((BasicParticleType) MekanismParticleTypes.RADIATION.getParticleType(), x, y, z, 0, 0, 0);
             }
-            System.out.println("particles");
         }
 
-        // handle sounds
-        ISound sound = clientRadiationScale.getSound();
-        if (playingGeigerSound != null && sound == null) {
-            SoundHandler.stopSound(sound);
-            playingGeigerSound = null;
-            System.out.println("Stop sound");
-        } else if (playingGeigerSound == null && sound != null) {
-            SoundHandler.playSound(sound);
-            System.out.println("Play new sound " + clientRadiationScale);
-            playingGeigerSound = sound;
-        } else if (playingGeigerSound != sound) {
-            SoundHandler.stopSound(playingGeigerSound);
-            SoundHandler.playSound(sound);
-            playingGeigerSound = sound;
-            System.out.println("Play different sound " + clientRadiationScale);
-        } else if (playingGeigerSound != null && sound != null) {
-            if (!SoundHandler.isPlaying(playingGeigerSound)) {
-                SoundHandler.playSound(playingGeigerSound);
-                System.out.println("Play new sound " + clientRadiationScale);
+        if (soundMap.isEmpty()) {
+            for (RadiationScale scale : RadiationScale.values()) {
+                if (scale != RadiationScale.NONE) {
+                    GeigerSound sound = new GeigerSound(player, scale);
+                    soundMap.put(scale, sound);
+                    SoundHandler.playSound(sound);
+                }
             }
         }
     }
@@ -235,11 +218,9 @@ public class RadiationManager {
             }
             decayRadiation(player);
             RadiationScale scale = RadiationScale.get(magnitude);
-            System.out.println("Player " + player.getDisplayName().getString() + " has radiation " + magnitude + ", " + scale);
             if (playerExposureMap.get(player.getUniqueID()) != scale) {
                 playerExposureMap.put(player.getUniqueID(), scale);
                 Mekanism.packetHandler.sendTo(new PacketRadiationData(scale), (ServerPlayerEntity) player);
-                System.out.println("Update radiation for " + player.getDisplayName().getString() + " " + scale);
             }
         }
     }
@@ -254,13 +235,12 @@ public class RadiationManager {
             for (Map<Coord4D, RadiationSource> set : radiationMap.values()) {
                 for (Iterator<Map.Entry<Coord4D, RadiationSource>> iter = set.entrySet().iterator(); iter.hasNext();) {
                     Map.Entry<Coord4D, RadiationSource> entry = iter.next();
-                    System.out.println("Update radiation " + entry.getValue().getMagnitude());
                     if (entry.getValue().decay()) {
                         // remove if source gets too low
                         iter.remove();
-                        System.out.println("Remove");
                     }
-                    world.markChunkDirty(entry.getKey().getPos(), null);
+
+                    dataHandler.markDirty();
                 }
             }
         }
@@ -270,7 +250,6 @@ public class RadiationManager {
      * Note: This should only be called from the server side
      */
     public void createOrLoad() {
-        System.out.println("CALLED");
         if (dataHandler == null) {
             //Always associate the world with the over world as the frequencies are global
             DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD).getSavedData();
@@ -284,13 +263,14 @@ public class RadiationManager {
 
     public void reset() {
         clearSources();
+        playerExposureMap.clear();
         dataHandler = null;
         loaded = false;
     }
 
     public void resetClient() {
         clientRadiationScale = RadiationScale.NONE;
-        playingGeigerSound = null;
+        soundMap.clear();
     }
 
     public static enum RadiationScale {
@@ -299,9 +279,6 @@ public class RadiationManager {
         MEDIUM,
         ELEVATED,
         HIGH;
-
-        @OnlyIn(Dist.CLIENT)
-        private ISound soundObj;
 
         /**
          * Get the corresponding RadiationScale from an equivalent dose rate (Sv/h)
@@ -320,17 +297,7 @@ public class RadiationManager {
             }
         }
 
-        public ISound getSound() {
-            if (this == NONE) {
-                return null;
-            }
-            if (soundObj == null) {
-                soundObj = SimpleSound.master(getSoundEvent(), 1, MekanismConfig.client.baseSoundVolume.get());
-            }
-            return soundObj;
-        }
-
-        private SoundEvent getSoundEvent() {
+        public SoundEvent getSoundEvent() {
             switch(this) {
                 case LOW:
                     return MekanismSounds.GEIGER_SLOW.get();
@@ -365,19 +332,16 @@ public class RadiationManager {
                     Chunk3D chunk = new Chunk3D(source.getPos());
                     manager.radiationMap.computeIfAbsent(chunk, c -> new Object2ObjectOpenHashMap<>()).put(source.getPos(), source);
                 }
-                System.out.println("Added sources " + loadedSources.size());
             }
         }
 
         @Override
         public void read(@Nonnull CompoundNBT nbtTags) {
-            System.out.println("LOAD");
             if (nbtTags.contains(NBTConstants.RADIATION_LIST)) {
                 ListNBT list = nbtTags.getList(NBTConstants.RADIATION_LIST, NBT.TAG_COMPOUND);
                 loadedSources = new HashList<>();
                 for (int i = 0; i < list.size(); i++) {
                     loadedSources.add(RadiationSource.load(list.getCompound(0)));
-                    System.out.println("Add source");
                 }
             }
         }
@@ -393,7 +357,6 @@ public class RadiationManager {
                     list.add(compound);
                 }
             }
-            System.out.println("WRITE");
             nbtTags.put(NBTConstants.RADIATION_LIST, list);
             return nbtTags;
         }

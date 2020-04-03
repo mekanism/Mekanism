@@ -42,6 +42,11 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
         return playerReference.get();
     }
 
+    protected void setFade(float fadeUpStep, float fadeDownStep) {
+        this.fadeUpStep = fadeUpStep;
+        this.fadeDownStep = fadeDownStep;
+    }
+
     @Override
     public float getX() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
