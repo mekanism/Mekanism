@@ -410,7 +410,9 @@ public class MekanismBlockTypes {
         .build();
     public static final Machine<TileEntityIsotopicCentrifuge> ISOTOPIC_CENTRIFUGE = MachineBuilder
         .createMachine(() -> MekanismTileEntityTypes.ISOTOPIC_CENTRIFUGE, MekanismLang.DESCRIPTION_ISOTOPIC_CENTRIFUGE)
+        .withGui(() -> MekanismContainerTypes.ISOTOPIC_CENTRIFUGE)
         .withEnergyConfig(MekanismConfig.usage.isotopicCentrifuge, MekanismConfig.storage.isotopicCentrifuge)
+        .withSound(MekanismSounds.ISOTOPIC_CENTRIFUGE)
         .build();
 
     // Dynamic Tank

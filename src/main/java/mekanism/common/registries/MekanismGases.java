@@ -35,6 +35,11 @@ public class MekanismGases {
     public static final GasRegistryObject<Gas> LITHIUM = GASES.register(ChemicalConstants.LITHIUM);
     public static final GasRegistryObject<Gas> LIQUID_OSMIUM = GASES.register("liquid_osmium", 0x52BDCA);
     public static final GasRegistryObject<Gas> FISSILE_FUEL = GASES.register("fissile_fuel", 0x2E332F);
+    public static final GasRegistryObject<Gas> NUCLEAR_WASTE = GASES.register("nuclear_waste", 0x4F412A);
+    public static final GasRegistryObject<Gas> SPENT_NUCLEAR_WASTE = GASES.register("spent_nuclear_waste", 0x262015);
+    public static final GasRegistryObject<Gas> PLUTONIUM = GASES.register("plutonium", 0x1F919C);
+    public static final GasRegistryObject<Gas> POLONIUM = GASES.register("polonium", 0x1B9E7B);
+    public static final GasRegistryObject<Gas> ANTIMATTER = GASES.register("antimatter", 0x7A91A1);
 
     public static final SlurryRegistryObject<Slurry, Slurry> IRON_SLURRY = GASES.registerSlurry(Resource.IRON);
     public static final SlurryRegistryObject<Slurry, Slurry> GOLD_SLURRY = GASES.registerSlurry(Resource.GOLD);

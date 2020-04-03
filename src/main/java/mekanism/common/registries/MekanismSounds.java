@@ -30,6 +30,7 @@ public final class MekanismSounds {
     public static final SoundEventRegistryObject<SoundEvent> RESISTIVE_HEATER = SOUND_EVENTS.register("tile.machine.resistive_heater");
     public static final SoundEventRegistryObject<SoundEvent> ROTARY_CONDENSENTRATOR = SOUND_EVENTS.register("tile.machine.rotary_condensentrator");
     public static final SoundEventRegistryObject<SoundEvent> ENERGIZED_SMELTER = SOUND_EVENTS.register("tile.machine.energized_smelter");
+    public static final SoundEventRegistryObject<SoundEvent> ISOTOPIC_CENTRIFUGE = SOUND_EVENTS.register("tile.machine.isotopic_centrifuge");
 
     public static final SoundEventRegistryObject<SoundEvent> FLAMETHROWER_IDLE = SOUND_EVENTS.register("item.flamethrower.idle");
     public static final SoundEventRegistryObject<SoundEvent> FLAMETHROWER_ACTIVE = SOUND_EVENTS.register("item.flamethrower.active");

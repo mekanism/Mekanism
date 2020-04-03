@@ -27,6 +27,7 @@ import mekanism.client.gui.GuiFormulaicAssemblicator;
 import mekanism.client.gui.GuiFuelwoodHeater;
 import mekanism.client.gui.GuiGasTank;
 import mekanism.client.gui.GuiInductionMatrix;
+import mekanism.client.gui.GuiIsotopicCentrifuge;
 import mekanism.client.gui.GuiLaserAmplifier;
 import mekanism.client.gui.GuiLaserTractorBeam;
 import mekanism.client.gui.GuiLogisticalSorter;
@@ -272,6 +273,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.ROTARY_CONDENSENTRATOR, GuiRotaryCondensentrator::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SECURITY_DESK, GuiSecurityDesk::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.MODIFICATION_STATION, GuiModificationStation::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.ISOTOPIC_CENTRIFUGE, GuiIsotopicCentrifuge::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SEISMIC_VIBRATOR, GuiSeismicVibrator::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SOLAR_NEUTRON_ACTIVATOR, GuiSolarNeutronActivator::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.TELEPORTER, GuiTeleporter::new);

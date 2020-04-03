@@ -5,6 +5,6 @@
     "gas": "mekanism:fissile_fuel"
   },
   "output": {
-    "item": "mekanism:fissile_fuel_pellet"
+    "item": "mekanism:pellet_fissile_fuel"
   }
 }

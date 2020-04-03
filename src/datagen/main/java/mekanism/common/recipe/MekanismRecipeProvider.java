@@ -184,6 +184,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addUpgradeRecipes(consumer);
         addMiscRecipes(consumer);
         addUraniumRecipes(consumer);
+        addLateGameRecipes(consumer);
     }
 
     private void addBinRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -3131,5 +3132,83 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               MekanismItems.FISSILE_FUEL_PELLET.getItemStack()
         ).addCriterion(Criterion.HAS_CHEMICAL_CRYSTALLIZER)
               .build(consumer, Mekanism.rl(basePath + "fissile_fuel_pellet/from_uranium_hexafluoride"));
+        //back to fissile fuel
+        ItemStackToGasRecipeBuilder.oxidizing(
+            ItemStackIngredient.from(MekanismTags.Items.PELLETS_FISSILE_FUEL),
+            MekanismGases.FISSILE_FUEL.getGasStack(100)
+        ).addCriterion(Criterion.HAS_CHEMICAL_OXIDIZER)
+              .build(consumer, Mekanism.rl(basePath + "fissile_fuel/from_pellet"));
+    }
+
+    private void addLateGameRecipes(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "processing/lategame/";
+
+        //plutonium
+        GasToGasRecipeBuilder.centrifuging(
+            GasStackIngredient.from(MekanismGases.NUCLEAR_WASTE, 10),
+            MekanismGases.PLUTONIUM.getGasStack(1)
+        ).addCriterion(Criterion.HAS_ISOTOPIC_CENTRIFUGE)
+            .build(consumer, Mekanism.rl(basePath + "plutonium"));
+        //polonium
+        GasToGasRecipeBuilder.activating(
+            GasStackIngredient.from(MekanismGases.NUCLEAR_WASTE, 10),
+            MekanismGases.POLONIUM.getGasStack(1)
+        ).addCriterion(Criterion.HAS_ISOTOPIC_CENTRIFUGE)
+            .build(consumer, Mekanism.rl(basePath + "polonium"));
+
+        //plutonium pellet
+        PressurizedReactionRecipeBuilder.reaction(
+            ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
+            FluidStackIngredient.from(FluidTags.WATER, 10),
+            GasStackIngredient.from(MekanismGases.PLUTONIUM, 100),
+            100,
+            MekanismItems.PLUTONIUM_PELLET.getItemStack(),
+            MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(100)
+        ).addCriterion(Criterion.HAS_PRESSURIZED_REACTION_CHAMBER)
+            .build(consumer, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
+        //polonium pellet
+        PressurizedReactionRecipeBuilder.reaction(
+            ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
+            FluidStackIngredient.from(FluidTags.WATER, 10),
+            GasStackIngredient.from(MekanismGases.POLONIUM, 100),
+            100,
+            MekanismItems.POLONIUM_PELLET.getItemStack(),
+            MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(100)
+        ).addCriterion(Criterion.HAS_PRESSURIZED_REACTION_CHAMBER)
+            .build(consumer, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
+
+        //fissile fuel
+        ItemStackGasToGasRecipeBuilder.dissolution(
+            ItemStackIngredient.from(MekanismTags.Items.PELLETS_PLUTONIUM),
+            GasStackIngredient.from(MekanismGases.HYDROFLUORIC_ACID, 1),
+            MekanismGases.FISSILE_FUEL.getGasStack(100)
+        ).addCriterion(Criterion.HAS_CHEMICAL_DISSOLUTION_CHAMBER)
+            .build(consumer, Mekanism.rl(basePath + "fissile_fuel/from_plutonium"));
+
+        //antimatter pellet
+        GasToItemStackRecipeBuilder.crystallizing(
+              GasStackIngredient.from(MekanismGases.ANTIMATTER, 100),
+              MekanismItems.ANTIMATTER_PELLET.getItemStack()
+        ).addCriterion(Criterion.HAS_CHEMICAL_CRYSTALLIZER)
+              .build(consumer, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
+
+        //back to plutonium
+        ItemStackToGasRecipeBuilder.oxidizing(
+            ItemStackIngredient.from(MekanismTags.Items.PELLETS_PLUTONIUM),
+            MekanismGases.PLUTONIUM.getGasStack(100)
+        ).addCriterion(Criterion.HAS_CHEMICAL_OXIDIZER)
+              .build(consumer, Mekanism.rl(basePath + "plutonium/from_pellet"));
+        //back to polonium
+        ItemStackToGasRecipeBuilder.oxidizing(
+            ItemStackIngredient.from(MekanismTags.Items.PELLETS_POLONIUM),
+            MekanismGases.POLONIUM.getGasStack(100)
+        ).addCriterion(Criterion.HAS_CHEMICAL_OXIDIZER)
+              .build(consumer, Mekanism.rl(basePath + "polonium/from_pellet"));
+        //back to antimatter
+        ItemStackToGasRecipeBuilder.oxidizing(
+            ItemStackIngredient.from(MekanismTags.Items.PELLETS_ANTIMATTER),
+            MekanismGases.ANTIMATTER.getGasStack(100)
+        ).addCriterion(Criterion.HAS_CHEMICAL_OXIDIZER)
+              .build(consumer, Mekanism.rl(basePath + "antimatter/from_pellet"));
     }
 }

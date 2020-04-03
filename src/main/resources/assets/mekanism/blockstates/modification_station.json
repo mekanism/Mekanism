@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mekanism:block/modification_station"
+    },
+    "facing=south": {
+      "model": "mekanism:block/modification_station",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanism:block/modification_station",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanism:block/modification_station",
+      "y": -90
+    }
+  }
+}

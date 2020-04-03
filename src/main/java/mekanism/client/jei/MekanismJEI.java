@@ -19,6 +19,7 @@ import mekanism.client.gui.GuiChemicalWasher;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiElectrolyticSeparator;
 import mekanism.client.gui.GuiFormulaicAssemblicator;
+import mekanism.client.gui.GuiIsotopicCentrifuge;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiPRC;
@@ -219,6 +220,7 @@ public class MekanismJEI implements IModPlugin {
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ELECTROLYTIC_SEPARATOR, GuiElectrolyticSeparator.class, 80, 30, 16, 6);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, GuiThermalEvaporationController.class, 49, 20, 78, 38);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, GuiPRC.class, 75, 37, 36, 10);
+        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE, GuiIsotopicCentrifuge.class, 64, 39, 48, 8);
         GuiHandlerRegistryHelper.registerCondensentrator(registry);
 
         GuiHandlerRegistryHelper.register(registry, GuiRobitCrafting.class, VanillaRecipeCategoryUid.CRAFTING, 90, 35, 22, 15);
@@ -265,7 +267,6 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INFUSER);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_OXIDIZER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_WASHER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);

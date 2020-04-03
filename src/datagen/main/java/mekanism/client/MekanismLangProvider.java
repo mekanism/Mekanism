@@ -51,6 +51,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.YELLOW_CAKE_URANIUM, "Yellow Cake Uranium");
         add(MekanismItems.FISSILE_FUEL_PELLET, "Fissile Fuel Pellet");
         add(MekanismItems.ANTIMATTER_PELLET, "Antimatter Pellet");
+        add(MekanismItems.PLUTONIUM_PELLET, "Plutonium Pellet");
+        add(MekanismItems.POLONIUM_PELLET, "Polonium Pellet");
         //Tools/Armor
         add(MekanismItems.GAUGE_DROPPER, "Gauge Dropper");
         add(MekanismItems.DICTIONARY, "Dictionary");
@@ -275,6 +277,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismGases.LITHIUM, "Lithium");
         add(MekanismGases.LIQUID_OSMIUM, "Liquid Osmium");
         add(MekanismGases.FISSILE_FUEL, "Fissile Fuel");
+        add(MekanismGases.NUCLEAR_WASTE, "Nuclear Waste");
+        add(MekanismGases.SPENT_NUCLEAR_WASTE, "Spent Nuclear Waste");
+        add(MekanismGases.ANTIMATTER, "Antimatter");
+        add(MekanismGases.PLUTONIUM, "Plutonium");
+        add(MekanismGases.POLONIUM, "Polonium");
         //Slurry
         addSlurry(MekanismGases.IRON_SLURRY, "Iron");
         addSlurry(MekanismGases.GOLD_SLURRY, "Gold");

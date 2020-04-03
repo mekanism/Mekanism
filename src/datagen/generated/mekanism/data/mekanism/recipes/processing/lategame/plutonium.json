@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:centrifuging",
+  "input": {
+    "amount": 10,
+    "gas": "mekanism:nuclear_waste"
+  },
+  "output": {
+    "gas": "mekanism:plutonium",
+    "amount": 1
+  }
+}

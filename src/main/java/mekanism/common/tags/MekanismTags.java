@@ -38,6 +38,8 @@ public class MekanismTags {
 
         public static final Tag<Item> PELLETS_FISSILE_FUEL = forgeTag("pellets/fissile_fuel");
         public static final Tag<Item> PELLETS_ANTIMATTER = forgeTag("pellets/antimatter");
+        public static final Tag<Item> PELLETS_PLUTONIUM = forgeTag("pellets/plutonium");
+        public static final Tag<Item> PELLETS_POLONIUM = forgeTag("pellets/polonium");
 
         public static final Tag<Item> DUSTS_BRONZE = forgeTag("dusts/bronze");
         public static final Tag<Item> DUSTS_CHARCOAL = forgeTag("dusts/charcoal");

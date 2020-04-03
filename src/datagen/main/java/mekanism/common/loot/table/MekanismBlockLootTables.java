@@ -16,6 +16,7 @@ public class MekanismBlockLootTables extends BaseBlockLootTables {
               MekanismBlocks.OSMIUM_ORE,
               MekanismBlocks.COPPER_ORE,
               MekanismBlocks.TIN_ORE,
+              MekanismBlocks.URANIUM_ORE,
               //Storage blocks
               MekanismBlocks.OSMIUM_BLOCK,
               MekanismBlocks.BRONZE_BLOCK,
@@ -25,7 +26,6 @@ public class MekanismBlockLootTables extends BaseBlockLootTables {
               MekanismBlocks.STEEL_BLOCK,
               MekanismBlocks.COPPER_BLOCK,
               MekanismBlocks.TIN_BLOCK,
-              MekanismBlocks.URANIUM_ORE,
               //Other things
               MekanismBlocks.BOILER_CASING,
               MekanismBlocks.BOILER_VALVE,
@@ -89,6 +89,7 @@ public class MekanismBlockLootTables extends BaseBlockLootTables {
               MekanismBlocks.TELEPORTER,
               MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
               MekanismBlocks.MODIFICATION_STATION,
+              MekanismBlocks.ISOTOPIC_CENTRIFUGE,
               //Tiered things
               MekanismBlocks.BASIC_INDUCTION_CELL, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_INDUCTION_CELL,
               MekanismBlocks.BASIC_BIN, MekanismBlocks.ADVANCED_BIN, MekanismBlocks.ELITE_BIN, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.CREATIVE_BIN,

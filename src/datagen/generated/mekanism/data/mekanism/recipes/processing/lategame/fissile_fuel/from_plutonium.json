@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:dissolution",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:pellets/plutonium"
+    }
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:hydrofluoric_acid"
+  },
+  "output": {
+    "gas": "mekanism:fissile_fuel",
+    "amount": 100
+  }
+}
