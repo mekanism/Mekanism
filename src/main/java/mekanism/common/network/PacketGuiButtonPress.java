@@ -46,6 +46,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -61,6 +62,14 @@ public class PacketGuiButtonPress {
     private int entityID;
     private int extra;
     private BlockPos tilePosition;
+
+    public PacketGuiButtonPress(ClickedTileButton buttonClicked, TileEntity tile) {
+        this(buttonClicked, tile.getPos());
+    }
+
+    public PacketGuiButtonPress(ClickedTileButton buttonClicked, TileEntity tile, int extra) {
+        this(buttonClicked, tile.getPos(), extra);
+    }
 
     public PacketGuiButtonPress(ClickedTileButton buttonClicked, BlockPos tilePosition) {
         this(buttonClicked, tilePosition, 0);

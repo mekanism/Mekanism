@@ -10,8 +10,8 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.RotaryCachedRecipe;
@@ -20,7 +20,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -43,14 +42,14 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<RotaryRecipe>, ITileNetwork {
+public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<RotaryRecipe>, IHasMode {
 
     private static final int CAPACITY = 10_000;
 
@@ -165,13 +164,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                mode = !mode;
-            }
-        }
+    public void toggleMode() {
+        mode = !mode;
+        markDirty(false);
     }
 
     @Override

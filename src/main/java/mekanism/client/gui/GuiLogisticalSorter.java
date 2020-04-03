@@ -44,7 +44,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         addButton(new GuiSecurityTab<>(this, tile));
 
         addButton(new TranslationButton(this, getGuiLeft() + 56, getGuiTop() + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tile.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 58, 14, getButtonLocation("single"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(5))),
               getOnHover(MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION)));
@@ -78,13 +78,13 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
     @Override
     protected void onClick(IFilter<?> filter, int index) {
         if (filter instanceof IItemStackFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_ITEMSTACK, tile.getPos(), index));
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_ITEMSTACK, tile, index));
         } else if (filter instanceof ITagFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_TAG, tile.getPos(), index));
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_TAG, tile, index));
         } else if (filter instanceof IMaterialFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MATERIAL, tile.getPos(), index));
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MATERIAL, tile, index));
         } else if (filter instanceof IModIDFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MOD_ID, tile.getPos(), index));
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MOD_ID, tile, index));
         }
     }
 

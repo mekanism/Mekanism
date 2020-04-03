@@ -4,14 +4,17 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import mekanism.common.PacketHandler;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.interfaces.IHasGasMode;
+import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -20,16 +23,24 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
  */
 public class PacketGuiInteract {
 
-    private GuiInteraction tileButton;
-    private int extra;
+    private GuiInteraction interaction;
     private BlockPos tilePosition;
+    private int extra;
 
-    public PacketGuiInteract(GuiInteraction buttonClicked, BlockPos tilePosition) {
-        this(buttonClicked, tilePosition, 0);
+    public PacketGuiInteract(GuiInteraction interaction, TileEntity tile) {
+        this(interaction, tile.getPos());
     }
 
-    public PacketGuiInteract(GuiInteraction buttonClicked, BlockPos tilePosition, int extra) {
-        this.tileButton = buttonClicked;
+    public PacketGuiInteract(GuiInteraction interaction, TileEntity tile, int extra) {
+        this(interaction, tile.getPos(), extra);
+    }
+
+    public PacketGuiInteract(GuiInteraction interaction, BlockPos tilePosition) {
+        this(interaction, tilePosition, 0);
+    }
+
+    public PacketGuiInteract(GuiInteraction interaction, BlockPos tilePosition, int extra) {
+        this.interaction = interaction;
         this.tilePosition = tilePosition;
         this.extra = extra;
     }
@@ -42,14 +53,14 @@ public class PacketGuiInteract {
         context.get().enqueueWork(() -> {
             TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
             if (tile != null) {
-                message.tileButton.consume(tile, message.extra);
+                message.interaction.consume(tile, message.extra);
             }
         });
         context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketGuiInteract pkt, PacketBuffer buf) {
-        buf.writeEnumValue(pkt.tileButton);
+        buf.writeEnumValue(pkt.interaction);
         buf.writeBlockPos(pkt.tilePosition);
         buf.writeInt(pkt.extra);
     }
@@ -134,6 +145,37 @@ public class PacketGuiInteract {
         MOVE_FILTER_DOWN((tile, extra) -> {
             if (tile instanceof IHasSortableFilters) {
                 ((IHasSortableFilters) tile).moveDown(extra);
+            }
+        }),
+
+        TOGGLE_MODE_BUTTON((tile, extra) -> {
+            if (tile instanceof IHasMode) {
+                ((IHasMode) tile).toggleMode();
+            }
+        }),
+        ENCODE_FORMULA((tile, extra) -> {
+            if (tile instanceof TileEntityFormulaicAssemblicator) {
+                ((TileEntityFormulaicAssemblicator) tile).encodeFormula();
+            }
+        }),
+        STOCK_CONTROL_BUTTON((tile, extra) -> {
+            if (tile instanceof TileEntityFormulaicAssemblicator) {
+                ((TileEntityFormulaicAssemblicator) tile).toggleStockControl();
+            }
+        }),
+        CRAFT_SINGLE((tile, extra) -> {
+            if (tile instanceof TileEntityFormulaicAssemblicator) {
+                ((TileEntityFormulaicAssemblicator) tile).craftSingle();
+            }
+        }),
+        CRAFT_ALL((tile, extra) -> {
+            if (tile instanceof TileEntityFormulaicAssemblicator) {
+                ((TileEntityFormulaicAssemblicator) tile).craftAll();
+            }
+        }),
+        MOVE_ITEMS((tile, extra) -> {
+            if (tile instanceof TileEntityFormulaicAssemblicator) {
+                ((TileEntityFormulaicAssemblicator) tile).moveItems();
             }
         }),
 

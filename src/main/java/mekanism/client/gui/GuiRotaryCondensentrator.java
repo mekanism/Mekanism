@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
-import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -18,7 +17,8 @@ import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketGuiInteract;
+import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
@@ -66,7 +66,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
             }
         }, ProgressType.LARGE_LEFT, this, 64, 39));
         addButton(new MekanismImageButton(this, getGuiLeft() + 4, getGuiTop() + 4, 18, getButtonLocation("toggle"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))), getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_MODE_BUTTON, tile)), getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }
 
     @Override

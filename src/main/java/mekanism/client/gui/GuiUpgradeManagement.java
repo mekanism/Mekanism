@@ -43,7 +43,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
         addButton(new GuiInnerScreen(this, 90, 6, 59, 50));
         addButton(new GuiProgress(() -> tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, this, 154, 26));
         addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
         addButton(removeButton = new MekanismImageButton(this, getGuiLeft() + 136, getGuiTop() + 57, 12, getButtonLocation("remove_upgrade"), () -> {
             if (scrollList.hasSelection()) {
                 Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tile), scrollList.getSelection()));

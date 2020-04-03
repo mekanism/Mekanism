@@ -40,7 +40,7 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
 
         @Override
         public void onClick(TileEntityBoilerCasing tile) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tile.getPos()));
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tile));
         }
 
         @Override

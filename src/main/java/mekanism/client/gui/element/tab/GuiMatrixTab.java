@@ -40,7 +40,7 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
 
         @Override
         public void onClick(TileEntityInductionCasing tile) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tile.getPos()));
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tile));
         }
 
         @Override

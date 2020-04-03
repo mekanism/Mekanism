@@ -57,11 +57,11 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         for (int i = 0; i < FILTER_COUNT; i++) {
             addButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, index -> {
                       if (index > 0) {
-                          Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile.getPos(), index));
+                          Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
                       }
                   }, index -> {
                       if (index < getFilters().size() - 1) {
-                          Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile.getPos(), index));
+                          Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
                       }
                   }, this::onClick));
         }

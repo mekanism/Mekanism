@@ -76,7 +76,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Em
         updateTabs();
 
         addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 156, getGuiTop() + 6, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType)),
               getOnHover(MekanismLang.AUTO_EJECT)));

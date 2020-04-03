@@ -28,6 +28,6 @@ public class GuiDumpButton<TILE extends TileEntity & IHasDumpButton> extends Gui
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.DUMP_BUTTON, tile.getPos()));
+        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.DUMP_BUTTON, tile));
     }
 }

@@ -16,7 +16,6 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -42,6 +41,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
@@ -50,13 +50,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess, ITileNetwork {
+public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess, IHasMode {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
 
@@ -214,7 +213,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         }
         checkFormula();
         if (autoMode && formula == null) {
-            toggleAutoMode();
+            toggleMode();
         }
 
         if (autoMode && formula != null && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this))) {
@@ -362,7 +361,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         return false;
     }
 
-    private boolean craftSingle() {
+    public boolean craftSingle() {
         if (formula == null) {
             return doSingleCraft();
         }
@@ -417,8 +416,16 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         return ret;
     }
 
-    private void craftAll() {
+    public void craftAll() {
         while (craftSingle()) {
+        }
+    }
+
+    public void moveItems() {
+        if (formula == null) {
+            moveItemsToInput(true);
+        } else {
+            moveItemsToGrid();
         }
     }
 
@@ -433,7 +440,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         markDirty(false);
     }
 
-    private void toggleAutoMode() {
+    @Override
+    public void toggleMode() {
         if (autoMode) {
             operatingTicks = 0;
             autoMode = false;
@@ -444,7 +452,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         markDirty(false);
     }
 
-    private void toggleStockControl() {
+    public void toggleStockControl() {
         if (!isRemote() && formula != null) {
             stockControl = !stockControl;
             if (stockControl) {
@@ -515,7 +523,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         return stack.isEmpty();
     }
 
-    private void encodeFormula() {
+    public void encodeFormula() {
         if (!formulaSlot.isEmpty()) {
             ItemStack formulaStack = formulaSlot.getStack();
             if (formulaStack.getItem() instanceof ItemCraftingFormula) {
@@ -549,30 +557,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         nbtTags.putInt(NBTConstants.PULSE, pulseOperations);
         nbtTags.putBoolean(NBTConstants.STOCK_CONTROL, stockControl);
         return nbtTags;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                toggleAutoMode();
-            } else if (type == 1) {
-                encodeFormula();
-            } else if (type == 2) {
-                craftSingle();
-            } else if (type == 3) {
-                craftAll();
-            } else if (type == 4) {
-                if (formula != null) {
-                    moveItemsToGrid();
-                } else {
-                    moveItemsToInput(true);
-                }
-            } else if (type == 5) {
-                toggleStockControl();
-            }
-        }
     }
 
     @Override

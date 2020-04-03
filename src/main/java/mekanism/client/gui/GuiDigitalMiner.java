@@ -70,19 +70,19 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             return ret;
         }, this));
         addButton(startButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 17, 60, 20, MekanismLang.BUTTON_START,
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.START_BUTTON, tile.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.START_BUTTON, tile))));
         addButton(stopButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 37, 60, 20, MekanismLang.BUTTON_STOP,
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.STOP_BUTTON, tile.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.STOP_BUTTON, tile))));
         addButton(configButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 57, 60, 20, MekanismLang.BUTTON_CONFIG,
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tile.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 131, getGuiTop() + 47, 14, getButtonLocation("reset"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, tile.getPos())), getOnHover(MekanismLang.MINER_RESET)));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, tile)), getOnHover(MekanismLang.MINER_RESET)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 131, getGuiTop() + 63, 14, getButtonLocation("silk_touch"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SILK_TOUCH_BUTTON, tile.getPos())), getOnHover(MekanismLang.MINER_SILK)));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SILK_TOUCH_BUTTON, tile)), getOnHover(MekanismLang.MINER_SILK)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 147, getGuiTop() + 47, 14, getButtonLocation("auto_eject"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile.getPos())), getOnHover(MekanismLang.AUTO_EJECT)));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile)), getOnHover(MekanismLang.AUTO_EJECT)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 147, getGuiTop() + 63, 14, getButtonLocation("auto_pull"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_PULL_BUTTON, tile.getPos())), getOnHover(MekanismLang.AUTO_PULL)));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_PULL_BUTTON, tile)), getOnHover(MekanismLang.AUTO_PULL)));
         updateEnabledButtons();
     }
 
