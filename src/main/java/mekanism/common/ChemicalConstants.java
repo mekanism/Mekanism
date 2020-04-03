@@ -24,7 +24,9 @@ public enum ChemicalConstants {
     DEUTERIUM("deuterium", 0xFFFF3232, 23.7F, 162.4F),
     //Note: it is a solid at room temperature
     LITHIUM("lithium", 0xFFEBA400, 453.65F, 512),
-    HYDROFLUORIC_ACID("hydrofluoric_acid", 0xFFC6C7BD, 189.6F, 1150F);
+    HYDROFLUORIC_ACID("hydrofluoric_acid", 0xFFC6C7BD, 189.6F, 1150F),
+    URANIUM_OXIDE("uranium_oxide", 0xFFE1F573, 3138.15F, 10970F),
+    URANIUM_HEXAFLUORIDE("uranium_hexafluoride", 0xFF809960, 337.2F, 5090F);
 
     private final String name;
     private final int color;

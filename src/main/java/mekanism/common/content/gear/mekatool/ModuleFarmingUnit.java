@@ -68,8 +68,9 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
     public static enum FarmingRadius implements IntEnum {
         OFF(0),
         LOW(1),
-        MED(2),
-        HIGH(3);
+        MED(3),
+        HIGH(5),
+        ULTRA(7);
         private int radius;
         private FarmingRadius(int radius) {
             this.radius = radius;

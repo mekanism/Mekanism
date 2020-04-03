@@ -53,6 +53,7 @@ public class Criterion {
     public static final RecipeCriterion HAS_PURIFICATION_CHAMBER = has(MekanismBlocks.PURIFICATION_CHAMBER);
     public static final RecipeCriterion HAS_ROTARY_CONDENSENTRATOR = has(MekanismBlocks.ROTARY_CONDENSENTRATOR);
     public static final RecipeCriterion HAS_THERMAL_EVAPORATION_CONTROLLER = has(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
+    public static final RecipeCriterion HAS_ISOTOPIC_CENTRIFUGE = has(MekanismBlocks.ISOTOPIC_CENTRIFUGE);
 
     private static InventoryChangeTrigger.Instance hasItem(net.minecraft.util.IItemProvider itemIn) {
         return hasItem(ItemPredicate.Builder.create().item(itemIn).build());

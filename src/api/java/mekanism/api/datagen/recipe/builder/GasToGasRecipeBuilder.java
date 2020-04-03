@@ -1,8 +1,8 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import com.google.gson.JsonObject;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
@@ -21,8 +21,8 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
     private final GasStackIngredient input;
     private final GasStack output;
 
-    protected GasToGasRecipeBuilder(GasStackIngredient input, GasStack output) {
-        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "activating"));
+    protected GasToGasRecipeBuilder(GasStackIngredient input, GasStack output, ResourceLocation serializerName) {
+        super(serializerName);
         this.input = input;
         this.output = output;
     }
@@ -31,7 +31,14 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This solar neutron activator recipe requires a non empty gas output.");
         }
-        return new GasToGasRecipeBuilder(input, output);
+        return new GasToGasRecipeBuilder(input, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "activating"));
+    }
+
+    public static GasToGasRecipeBuilder centrifuging(GasStackIngredient input, GasStack output) {
+        if (output.isEmpty()) {
+            throw new IllegalArgumentException("This Isotopic Centrifuge recipe requires a non empty gas output.");
+        }
+        return new GasToGasRecipeBuilder(input, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "centrifuging"));
     }
 
     @Override

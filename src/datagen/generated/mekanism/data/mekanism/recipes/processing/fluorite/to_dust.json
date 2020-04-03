@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "tag": "forge:gems/fluorite"
+    }
+  },
+  "output": {
+    "item": "mekanism:dust_fluorite"
+  }
+}

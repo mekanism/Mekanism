@@ -104,7 +104,9 @@ public class GuiModuleScrollList extends GuiScrollList {
             ModuleData<?> module = currentList.get(index);
             int multipliedElement = elementHeight * i;
             //Always render the name and module
-            renderScaledText(TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, 0x404040, 86);
+            Module instance = Modules.load(currentItem, module);
+            int color = module.isExclusive() ? (instance.isEnabled() ? 0x635BD4 : 0x2E2A69) : (instance.isEnabled() ? 0x404040 : 0x5E1D1D);
+            renderScaledText(TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86);
             renderModule(module, relativeX + 3, relativeY + 3 + multipliedElement, 0.5F);
         }
         // next render tooltips

@@ -27,6 +27,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addBoxBlacklist();
         addToTag(MekanismTags.Items.WRENCHES, MekanismItems.CONFIGURATOR);
         addToTag(MekanismTags.Items.BATTERIES, MekanismItems.ENERGY_TABLET);
+        addToTag(MekanismTags.Items.YELLOW_CAKE_URANIUM, MekanismItems.YELLOW_CAKE_URANIUM);
         addRods();
         addFuels();
         addAlloys();
@@ -42,9 +43,11 @@ public class MekanismTagProvider extends BaseTagProvider {
         addClumps();
         addShards();
         addCrystals();
+        addGems();
         addFluids();
         addSlurryTags(MekanismGases.IRON_SLURRY, MekanismGases.GOLD_SLURRY, MekanismGases.OSMIUM_SLURRY, MekanismGases.COPPER_SLURRY, MekanismGases.TIN_SLURRY);
         addInfuseTags();
+        addPellets();
         getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
     }
 
@@ -207,11 +210,13 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Items.DUSTS_SULFUR, MekanismItems.SULFUR_DUST);
         addToTag(MekanismTags.Items.DUSTS_TIN, MekanismItems.TIN_DUST);
         addToTag(MekanismTags.Items.DUSTS_WOOD, MekanismItems.SAWDUST);
+        addToTag(MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_DUST);
         getItemBuilder(Tags.Items.DUSTS).add(MekanismTags.Items.DUSTS_BRONZE, MekanismTags.Items.DUSTS_CHARCOAL, MekanismTags.Items.DUSTS_COAL,
               MekanismTags.Items.DUSTS_COPPER, MekanismTags.Items.DUSTS_DIAMOND, MekanismTags.Items.DUSTS_EMERALD, MekanismTags.Items.DUSTS_GOLD,
               MekanismTags.Items.DUSTS_IRON, MekanismTags.Items.DUSTS_LAPIS_LAZULI, MekanismTags.Items.DUSTS_LITHIUM, MekanismTags.Items.DUSTS_OBSIDIAN,
               MekanismTags.Items.DUSTS_OSMIUM, MekanismTags.Items.DUSTS_QUARTZ, MekanismTags.Items.DUSTS_REFINED_OBSIDIAN, MekanismTags.Items.DUSTS_SALT,
-              MekanismTags.Items.DUSTS_STEEL, MekanismTags.Items.DUSTS_SULFUR, MekanismTags.Items.DUSTS_TIN, MekanismTags.Items.DUSTS_WOOD);
+              MekanismTags.Items.DUSTS_STEEL, MekanismTags.Items.DUSTS_SULFUR, MekanismTags.Items.DUSTS_TIN, MekanismTags.Items.DUSTS_WOOD,
+              MekanismTags.Items.DUSTS_FLUORITE);
 
         getItemBuilder(MekanismTags.Items.SALT).add(MekanismTags.Items.DUSTS_SALT);
         getItemBuilder(MekanismTags.Items.SAWDUST).add(MekanismTags.Items.DUSTS_WOOD);
@@ -257,6 +262,15 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.CRYSTALS_OSMIUM, MekanismTags.Items.CRYSTALS_TIN);
     }
 
+    private void addGems() {
+        addToTag(MekanismTags.Items.GEMS_FLUORITE, MekanismItems.FLUORITE_GEM);
+    }
+
+    private void addPellets() {
+        addToTag(MekanismTags.Items.PELLETS_FISSILE_FUEL, MekanismItems.FISSILE_FUEL_PELLET);
+        addToTag(MekanismTags.Items.PELLETS_ANTIMATTER, MekanismItems.ANTIMATTER_PELLET);
+    }
+
     private void addFluids() {
         addToTag(MekanismTags.Fluids.BRINE, MekanismFluids.BRINE);
         addToTag(MekanismTags.Fluids.CHLORINE, MekanismFluids.CHLORINE);
@@ -271,6 +285,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Fluids.SULFUR_DIOXIDE, MekanismFluids.SULFUR_DIOXIDE);
         addToTag(MekanismTags.Fluids.SULFUR_TRIOXIDE, MekanismFluids.SULFUR_TRIOXIDE);
         addToTag(MekanismTags.Fluids.SULFURIC_ACID, MekanismFluids.SULFURIC_ACID);
+        addToTag(MekanismTags.Fluids.HYDROFLUORIC_ACID, MekanismFluids.HYDROFLUORIC_ACID);
     }
 
     private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {

@@ -22,6 +22,7 @@ public class MekanismFluids {
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SULFUR_TRIOXIDE = registerLiquidChemical(ChemicalConstants.SULFUR_TRIOXIDE);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SULFURIC_ACID = registerLiquidChemical(ChemicalConstants.SULFURIC_ACID);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> HYDROGEN_CHLORIDE = registerLiquidChemical(ChemicalConstants.HYDROGEN_CHLORIDE);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> HYDROFLUORIC_ACID = registerLiquidChemical(ChemicalConstants.HYDROFLUORIC_ACID);
     //Internal gases
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> ETHENE = registerLiquidChemical(ChemicalConstants.ETHENE);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SODIUM = registerLiquidChemical(ChemicalConstants.SODIUM);

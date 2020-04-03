@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:centrifuging",
+  "input": {
+    "amount": 1,
+    "gas": "mekanism:uranium_hexafluoride"
+  },
+  "output": {
+    "gas": "mekanism:fissile_fuel",
+    "amount": 1
+  }
+}

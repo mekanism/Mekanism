@@ -1,17 +1,18 @@
 package mekanism.common.recipe;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.FluidGasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.FluidToFluidRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackGasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackGasToItemStackRecipeBuilder;
@@ -182,6 +183,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addTransmitterRecipes(consumer);
         addUpgradeRecipes(consumer);
         addMiscRecipes(consumer);
+        addUraniumRecipes(consumer);
     }
 
     private void addBinRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -1347,6 +1349,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               MekanismTags.Items.DUSTS_LAPIS_LAZULI, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 16, Tags.Items.COBBLESTONE);
         addOreProcessingGemRecipes(consumer, basePath + "quartz/", Items.NETHER_QUARTZ_ORE, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
               MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 6, 8, Tags.Items.NETHERRACK);
+        addOreProcessingGemRecipes(consumer, basePath + "fluorite/", MekanismBlocks.FLUORITE_ORE, MekanismTags.Items.ORES_FLUORITE, MekanismItems.FLUORITE_DUST,
+              MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 8, Tags.Items.COBBLESTONE);
         addRedstoneProcessingRecipes(consumer, basePath + "redstone/");
         addRefinedGlowstoneProcessingRecipes(consumer, basePath + "refined_glowstone/");
         addRefinedObsidianProcessingRecipes(consumer, basePath + "refined_obsidian/");
@@ -1855,6 +1859,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SULFUR_DIOXIDE, MekanismFluids.SULFUR_DIOXIDE, MekanismTags.Fluids.SULFUR_DIOXIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SULFUR_TRIOXIDE, MekanismFluids.SULFUR_TRIOXIDE, MekanismTags.Fluids.SULFUR_TRIOXIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SULFURIC_ACID, MekanismFluids.SULFURIC_ACID, MekanismTags.Fluids.SULFURIC_ACID);
+        addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.HYDROFLUORIC_ACID, MekanismFluids.HYDROFLUORIC_ACID, MekanismTags.Fluids.HYDROFLUORIC_ACID);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.WATER_VAPOR, new IFluidProvider() {
             @Nonnull
             @Override
@@ -3067,5 +3072,64 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_REFINED_GLOWSTONE)
               .addCriterion(Criterion.HAS_REFINED_OBSIDIAN)
               .build(consumer);
+    }
+
+    private void addUraniumRecipes(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "processing/uranium/";
+
+        //dirty uranium slurry
+        ItemStackGasToGasRecipeBuilder.dissolution(
+            ItemStackIngredient.from(MekanismTags.Items.ORES_URANIUM),
+            GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
+            MekanismGases.URANIUM_SLURRY.getDirtySlurry().getGasStack(1_000)
+        ).addCriterion(Criterion.HAS_CHEMICAL_DISSOLUTION_CHAMBER)
+            .build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
+        //clean uranium slurry
+        RecipeCriterion hasOre = Criterion.has(MekanismBlocks.URANIUM_ORE.asItem().getRegistryName().getPath(), MekanismTags.Items.ORES_URANIUM);
+        FluidGasToGasRecipeBuilder.washing(
+              FluidStackIngredient.from(FluidTags.WATER, 5),
+              GasStackIngredient.from(MekanismGases.URANIUM_SLURRY.getDirtySlurry(), 1),
+              MekanismGases.URANIUM_SLURRY.getCleanSlurry().getGasStack(1)
+        ).addCriterion(Criterion.HAS_CHEMICAL_WASHER)
+              .addCriterion(hasOre)
+              .build(consumer, Mekanism.rl(basePath + "slurry/clean"));
+        //yellow cake
+        GasToItemStackRecipeBuilder.crystallizing(
+              GasStackIngredient.from(MekanismGases.URANIUM_SLURRY.getCleanSlurry(), 250),
+              MekanismItems.YELLOW_CAKE_URANIUM.getItemStack()
+        ).addCriterion(Criterion.HAS_CHEMICAL_CRYSTALLIZER)
+              .build(consumer, Mekanism.rl(basePath + "yellow_cake_uranium/from_slurry"));
+        //hydrofluoric acid
+        ItemStackGasToGasRecipeBuilder.dissolution(
+              ItemStackIngredient.from(MekanismTags.Items.GEMS_FLUORITE),
+              GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
+              MekanismGases.HYDROFLUORIC_ACID.getGasStack(100)
+        ).addCriterion(Criterion.HAS_CHEMICAL_DISSOLUTION_CHAMBER)
+              .build(consumer, Mekanism.rl(basePath + "hydrofluoric_acid"));
+        //uranium oxide
+        ItemStackToGasRecipeBuilder.oxidizing(
+            ItemStackIngredient.from(MekanismTags.Items.YELLOW_CAKE_URANIUM),
+            MekanismGases.URANIUM_OXIDE.getGasStack(100)
+        ).addCriterion(Criterion.HAS_CHEMICAL_OXIDIZER)
+              .build(consumer, Mekanism.rl(basePath + "uranium_oxide"));
+        //uranium hexafluoride
+        ChemicalInfuserRecipeBuilder.chemicalInfusing(
+              GasStackIngredient.from(MekanismGases.HYDROFLUORIC_ACID, 1),
+              GasStackIngredient.from(MekanismGases.URANIUM_OXIDE, 1),
+              MekanismGases.URANIUM_HEXAFLUORIDE.getGasStack(1)
+        ).addCriterion(Criterion.HAS_CHEMICAL_INFUSER)
+              .build(consumer, Mekanism.rl(basePath + "sulfuric_acid"));
+        //fissile fuel
+        GasToGasRecipeBuilder.centrifuging(
+              GasStackIngredient.from(MekanismGases.URANIUM_HEXAFLUORIDE, 1),
+              MekanismGases.FISSILE_FUEL.getGasStack(1)
+        ).addCriterion(Criterion.HAS_ISOTOPIC_CENTRIFUGE)
+              .build(consumer, Mekanism.rl(basePath + "fissile_fuel"));
+        //fissile fuel pellet
+        GasToItemStackRecipeBuilder.crystallizing(
+              GasStackIngredient.from(MekanismGases.FISSILE_FUEL, 100),
+              MekanismItems.FISSILE_FUEL_PELLET.getItemStack()
+        ).addCriterion(Criterion.HAS_CHEMICAL_CRYSTALLIZER)
+              .build(consumer, Mekanism.rl(basePath + "fissile_fuel_pellet/from_uranium_hexafluoride"));
     }
 }

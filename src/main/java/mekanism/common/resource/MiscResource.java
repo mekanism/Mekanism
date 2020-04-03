@@ -15,7 +15,8 @@ public enum MiscResource implements INamedResource {
     REFINED_GLOWSTONE("refined_glowstone"),
     REFINED_OBSIDIAN("refined_obsidian"),
     STEEL("steel"),
-    SULFUR("sulfur");
+    SULFUR("sulfur"),
+    FLUORITE("fluorite");
 
     private final String registrySuffix;
 

@@ -19,6 +19,7 @@
     "#forge:dusts/steel",
     "#forge:dusts/sulfur",
     "#forge:dusts/tin",
-    "#forge:dusts/wood"
+    "#forge:dusts/wood",
+    "#forge:dusts/fluorite"
   ]
 }

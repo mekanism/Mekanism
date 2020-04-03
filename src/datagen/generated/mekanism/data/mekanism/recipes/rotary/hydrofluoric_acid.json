@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "amount": 1,
+    "tag": "forge:hydrofluoric_acid"
+  },
+  "gasOutput": {
+    "gas": "mekanism:hydrofluoric_acid",
+    "amount": 1
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:hydrofluoric_acid"
+  },
+  "fluidOutput": {
+    "fluid": "mekanism:hydrofluoric_acid",
+    "amount": 1
+  }
+}

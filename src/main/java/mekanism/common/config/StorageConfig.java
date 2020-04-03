@@ -35,6 +35,7 @@ public class StorageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue formulaicAssemblicator;
     public final CachedFloatingLongValue teleporter;
     public final CachedFloatingLongValue modificationStation;
+    public final CachedFloatingLongValue isotopicCentrifuge;
 
     StorageConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -90,7 +91,9 @@ public class StorageConfig extends BaseMekanismConfig {
         teleporter = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "teleporter",
               FloatingLong.createConst(5_000_000));
         modificationStation = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "modificationStation",
-            FloatingLong.createConst(40_000));
+              FloatingLong.createConst(40_000));
+        isotopicCentrifuge = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "isotopicCentrifuge",
+              FloatingLong.createConst(80_000));
 
         builder.pop();
         configSpec = builder.build();

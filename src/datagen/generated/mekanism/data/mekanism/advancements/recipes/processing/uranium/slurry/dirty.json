@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/uranium/slurry/dirty"
+    ]
+  },
+  "criteria": {
+    "has_chemical_dissolution_chamber": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:chemical_dissolution_chamber"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:processing/uranium/slurry/dirty"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chemical_dissolution_chamber",
+      "has_the_recipe"
+    ]
+  ]
+}

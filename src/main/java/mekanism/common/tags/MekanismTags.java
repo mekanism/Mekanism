@@ -39,8 +39,6 @@ public class MekanismTags {
         public static final Tag<Item> PELLETS_FISSILE_FUEL = forgeTag("pellets/fissile_fuel");
         public static final Tag<Item> PELLETS_ANTIMATTER = forgeTag("pellets/antimatter");
 
-        public static final Tag<Item> CRYSTALS_FLUORITE = forgeTag("crystals/fluorite");
-
         public static final Tag<Item> DUSTS_BRONZE = forgeTag("dusts/bronze");
         public static final Tag<Item> DUSTS_CHARCOAL = forgeTag("dusts/charcoal");
         public static final Tag<Item> DUSTS_COAL = forgeTag("dusts/coal");
@@ -60,6 +58,7 @@ public class MekanismTags {
         public static final Tag<Item> DUSTS_SULFUR = forgeTag("dusts/sulfur");
         public static final Tag<Item> DUSTS_TIN = forgeTag("dusts/tin");
         public static final Tag<Item> DUSTS_WOOD = forgeTag("dusts/wood");
+        public static final Tag<Item> DUSTS_FLUORITE = forgeTag("dusts/fluorite");
 
         public static final Tag<Item> NUGGETS_BRONZE = forgeTag("nuggets/bronze");
         public static final Tag<Item> NUGGETS_COPPER = forgeTag("nuggets/copper");
@@ -144,6 +143,8 @@ public class MekanismTags {
         public static final Tag<Item> CRYSTALS_OSMIUM = tag("crystals/osmium");
         public static final Tag<Item> CRYSTALS_TIN = tag("crystals/tin");
 
+        public static final Tag<Item> GEMS_FLUORITE = forgeTag("gems/fluorite");
+
         private static Tag<Item> forgeTag(String name) {
             return new ItemTags.Wrapper(new ResourceLocation("forge", name));
         }
@@ -200,6 +201,7 @@ public class MekanismTags {
         public static final Tag<Fluid> SULFUR_DIOXIDE = forgeTag("sulfur_dioxide");
         public static final Tag<Fluid> SULFUR_TRIOXIDE = forgeTag("sulfur_trioxide");
         public static final Tag<Fluid> SULFURIC_ACID = forgeTag("sulfuric_acid");
+        public static final Tag<Fluid> HYDROFLUORIC_ACID = forgeTag("hydrofluoric_acid");
 
         private static Tag<Fluid> forgeTag(String name) {
             return new FluidTags.Wrapper(new ResourceLocation("forge", name));

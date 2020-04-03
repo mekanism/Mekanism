@@ -14,15 +14,16 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiModuleScreen extends GuiTexturedElement {
 
     private static final ResourceLocation RADIO = MekanismUtils.getResource(ResourceType.GUI, "radio_button.png");
     private static final ResourceLocation SLIDER = MekanismUtils.getResource(ResourceType.GUI, "slider.png");
 
-    private static final int TEXT_COLOR = 0x202020;
+    private static final int TEXT_COLOR = 0x00CD00;
 
-    private GuiElementHolder background;
+    private GuiInnerScreen background;
     private Consumer<ItemStack> callback;
 
     private Module currentModule;
@@ -31,7 +32,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
     public GuiModuleScreen(IGuiWrapper gui, int x, int y, Consumer<ItemStack> callback) {
         super(null, gui, x, y, 102, 134);
         this.callback = callback;
-        background = new GuiElementHolder(gui, x, y, 102, 134);
+        background = new GuiInnerScreen(gui, x, y, 102, 134);
     }
 
     @SuppressWarnings("unchecked")
@@ -39,7 +40,13 @@ public class GuiModuleScreen extends GuiTexturedElement {
         List<MiniElement> newElements = new ArrayList<>();
 
         if (module != null) {
-            int startY = module.getData().getMaxStackSize() > 1 ? 16 : 3;
+            int startY = 3;
+            if (module.getData().isExclusive()) {
+                startY += 13;
+            }
+            if (module.getData().getMaxStackSize() > 1) {
+                startY += 13;
+            }
             for (int i = 0; i < module.getConfigItems().size(); i++) {
                 ModuleConfigItem<?> configItem = module.getConfigItems().get(i);
                 if (configItem.getData() instanceof BooleanData) {
@@ -87,8 +94,17 @@ public class GuiModuleScreen extends GuiTexturedElement {
     public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
         super.renderForeground(mouseX, mouseY, xAxis, yAxis);
 
-        if (currentModule != null && currentModule.getData().getMaxStackSize() > 1) {
-            drawString(MekanismLang.MODULE_INSTALLED.translate(currentModule.getInstalledCount()), relativeX + 4, relativeY + 4, TEXT_COLOR);
+        if (currentModule != null) {
+            int startY = relativeY + 4;
+            if (currentModule.getData().isExclusive()) {
+                ITextComponent comp = MekanismLang.MODULE_EXCLUSIVE.translate();
+                drawString(comp, relativeX + 4, startY, 0x635BD4);
+                startY += 13;
+            }
+            if (currentModule.getData().getMaxStackSize() > 1) {
+                drawString(MekanismLang.MODULE_INSTALLED.translate(currentModule.getInstalledCount()), relativeX + 4, startY, TEXT_COLOR);
+                startY += 13;
+            }
         }
 
         for (MiniElement element : miniElements) {

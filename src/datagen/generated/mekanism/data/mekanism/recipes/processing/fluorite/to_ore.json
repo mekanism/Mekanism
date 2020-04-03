@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "amount": 8,
+    "ingredient": {
+      "tag": "forge:dusts/fluorite"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:ores/fluorite"
+    }
+  },
+  "output": {
+    "item": "mekanism:fluorite_ore"
+  }
+}

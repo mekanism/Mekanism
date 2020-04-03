@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:dissolution",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:gems/fluorite"
+    }
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:sulfuric_acid"
+  },
+  "output": {
+    "gas": "mekanism:hydrofluoric_acid",
+    "amount": 100
+  }
+}

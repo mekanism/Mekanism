@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crystallizing",
+  "input": {
+    "amount": 250,
+    "gas": "mekanism:clean_uranium_slurry"
+  },
+  "output": {
+    "item": "mekanism:yellow_cake_uranium"
+  }
+}

@@ -47,7 +47,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.SALT, "Salt");
         add(MekanismItems.SUBSTRATE, "Substrate");
         add(MekanismItems.BIO_FUEL, "Bio Fuel");
-        add(MekanismItems.FLUORITE_CRYSTAL, "Fluorite Crystal");
+        add(MekanismItems.FLUORITE_GEM, "Fluorite");
         add(MekanismItems.YELLOW_CAKE_URANIUM, "Yellow Cake Uranium");
         add(MekanismItems.FISSILE_FUEL_PELLET, "Fissile Fuel Pellet");
         add(MekanismItems.ANTIMATTER_PELLET, "Antimatter Pellet");
@@ -127,6 +127,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.LITHIUM_DUST, "Lithium Dust");
         add(MekanismItems.REFINED_OBSIDIAN_DUST, "Refined Obsidian Dust");
         add(MekanismItems.OBSIDIAN_DUST, "Obsidian Dust");
+        add(MekanismItems.FLUORITE_DUST, "Fluorite Dust");
         //Tiered stuff
         addTiered(MekanismItems.BASIC_CONTROL_CIRCUIT, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismItems.ELITE_CONTROL_CIRCUIT, MekanismItems.ULTIMATE_CONTROL_CIRCUIT, "Control Circuit");
         addTiered(MekanismItems.BASIC_TIER_INSTALLER, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismItems.ELITE_TIER_INSTALLER, MekanismItems.ULTIMATE_TIER_INSTALLER, "Tier Installer");
@@ -178,6 +179,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.QUANTUM_ENTANGLOPORTER, "Quantum Entangloporter");
         add(MekanismBlocks.RESISTIVE_HEATER, "Resistive Heater");
         add(MekanismBlocks.MODIFICATION_STATION, "Modification Station");
+        add(MekanismBlocks.ISOTOPIC_CENTRIFUGE, "Isotopic Centrifuge");
         add(MekanismBlocks.ROTARY_CONDENSENTRATOR, "Rotary Condensentrator");
         add(MekanismBlocks.SALT_BLOCK, "Salt Block");
         add(MekanismBlocks.SECURITY_DESK, "Security Desk");
@@ -240,6 +242,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addFluid(MekanismFluids.SULFUR_TRIOXIDE, "Liquid Sulfur Trioxide");
         addFluid(MekanismFluids.SULFURIC_ACID, "Sulfuric Acid");
         addFluid(MekanismFluids.HYDROGEN_CHLORIDE, "Liquid Hydrogen Chloride");
+        addFluid(MekanismFluids.HYDROFLUORIC_ACID, "Liquid Hydrofluoric Acid");
         addFluid(MekanismFluids.ETHENE, "Liquid Ethylene");
         addFluid(MekanismFluids.SODIUM, "Liquid Sodium");
         addFluid(MekanismFluids.BRINE, "Brine");
@@ -263,17 +266,22 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismGases.SULFUR_TRIOXIDE, "Sulfur Trioxide");
         add(MekanismGases.SULFURIC_ACID, "Sulfuric Acid");
         add(MekanismGases.HYDROGEN_CHLORIDE, "Hydrogen Chloride");
+        add(MekanismGases.HYDROFLUORIC_ACID, "Hydrofluoric Acid");
+        add(MekanismGases.URANIUM_OXIDE, "Uranium Oxide");
+        add(MekanismGases.URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride");
         add(MekanismGases.ETHENE, "Ethylene");
         add(MekanismGases.SODIUM, "Sodium");
         add(MekanismGases.BRINE, "Gaseous Brine");
         add(MekanismGases.LITHIUM, "Lithium");
         add(MekanismGases.LIQUID_OSMIUM, "Liquid Osmium");
+        add(MekanismGases.FISSILE_FUEL, "Fissile Fuel");
         //Slurry
         addSlurry(MekanismGases.IRON_SLURRY, "Iron");
         addSlurry(MekanismGases.GOLD_SLURRY, "Gold");
         addSlurry(MekanismGases.OSMIUM_SLURRY, "Osmium");
         addSlurry(MekanismGases.COPPER_SLURRY, "Copper");
         addSlurry(MekanismGases.TIN_SLURRY, "Tin");
+        addSlurry(MekanismGases.URANIUM_SLURRY, "Uranium");
     }
 
     private void addInfusionTypes() {
@@ -847,6 +855,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_FORMULAIC_ASSEMBLICATOR, "A machine that uses energy to rapidly craft items and blocks from Crafting Formulas. Doubles as an advanced crafting bench.");
         add(MekanismLang.DESCRIPTION_FUELWOOD_HEATER, "A machine that is capable of producing large quantities of heat energy by burning combustible items.");
         add(MekanismLang.DESCRIPTION_MODIFICATION_STATION, "An advanced workbench capable of installing and removing modules from modular equipment (i.e. MekaSuit!)");
+        add(MekanismLang.DESCRIPTION_ISOTOPIC_CENTRIFUGE, "A machine with one single purpose: to spin its contents really, REALLY fast.");
         add(MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER, "A highly-advanced block capable of transmitting any practical resource across long distances and dimensions.");
         add(MekanismLang.DESCRIPTION_ENERGY_CUBE, "An advanced device for storing and distributing energy.");
         add(MekanismLang.DESCRIPTION_GAS_TANK, "A portable tank that lets you carry gas wherever you please.");
@@ -861,6 +870,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_TWEAKER, "Module Tweaker");
         add(MekanismLang.MODULE_INSTALLED, "Installed: %s");
+        add(MekanismLang.MODULE_STACKABLE, "Stackable: %s");
+        add(MekanismLang.MODULE_EXCLUSIVE, "(Exclusive Module)");
         add(MekanismLang.MODULE_ATTACK_DAMAGE, "Attack Damage");
         add(MekanismLang.MODULE_FARMING_RADIUS, "Farming Radius");
         add(MekanismLang.MODULE_EXTENDED_MODE, "Extended Mode");

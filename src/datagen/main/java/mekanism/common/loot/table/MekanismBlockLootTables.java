@@ -10,7 +10,7 @@ public class MekanismBlockLootTables extends BaseBlockLootTables {
     @Override
     protected void addTables() {
         registerLootTable((block) -> droppingWithSilkTouchOrRandomly(block, MekanismItems.SALT, ConstantRange.of(4)), MekanismBlocks.SALT_BLOCK);
-        registerLootTable((block) -> droppingWithSilkTouchOrRandomly(block, MekanismItems.FLUORITE_CRYSTAL, RandomValueRange.of(2, 4)), MekanismBlocks.FLUORITE_ORE);
+        registerLootTable((block) -> droppingWithSilkTouchOrRandomly(block, MekanismItems.FLUORITE_GEM, RandomValueRange.of(2, 4)), MekanismBlocks.FLUORITE_ORE);
         registerDropSelfLootTable(
               //Ores
               MekanismBlocks.OSMIUM_ORE,

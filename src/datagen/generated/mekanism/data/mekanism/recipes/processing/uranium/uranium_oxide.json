@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:oxidizing",
+  "input": {
+    "ingredient": {
+      "tag": "forge:yellow_cake_uranium"
+    }
+  },
+  "output": {
+    "gas": "mekanism:uranium_oxide",
+    "amount": 100
+  }
+}

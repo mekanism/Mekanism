@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/uranium/sulfuric_acid"
+    ]
+  },
+  "criteria": {
+    "has_chemical_infuser": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:chemical_infuser"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:processing/uranium/sulfuric_acid"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chemical_infuser",
+      "has_the_recipe"
+    ]
+  ]
+}

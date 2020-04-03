@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crystallizing",
+  "input": {
+    "amount": 100,
+    "gas": "mekanism:fissile_fuel"
+  },
+  "output": {
+    "item": "mekanism:fissile_fuel_pellet"
+  }
+}
