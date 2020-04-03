@@ -1,6 +1,5 @@
 package mekanism.common.radiation;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,10 @@ import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.network.PacketRadiationData;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.CapabilityUtils;
@@ -26,6 +27,7 @@ import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -68,7 +70,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
  */
 public class RadiationManager {
 
-    private static final String NAME = "radiation_manager";
+    private static final String DATA_HANDLER_NAME = "radiation_manager";
     private static final int CHUNK_CHECK_RADIUS = 5;
     private static final int MAX_RANGE = CHUNK_CHECK_RADIUS * 16;
     private static final int PARTICLE_RADIUS = 20;
@@ -81,7 +83,8 @@ public class RadiationManager {
 
     private boolean loaded;
 
-    private Map<Chunk3D, Set<RadiationSource>> radiationMap = new Object2ObjectOpenHashMap<>();
+    private Map<Chunk3D, Map<Coord4D, RadiationSource>> radiationMap = new Object2ObjectOpenHashMap<>();
+
     private Map<UUID, RadiationScale> playerExposureMap = new Object2ObjectOpenHashMap<>();
 
     // client fields
@@ -105,15 +108,18 @@ public class RadiationManager {
      * @return radiation level (in sV)
      */
     public double getRadiationLevel(Coord4D coord) {
+        System.out.println(coord);
         Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(CHUNK_CHECK_RADIUS);
         double level = BASELINE;
 
         for (Chunk3D chunk : checkChunks) {
             if (radiationMap.containsKey(chunk)) {
-                for (RadiationSource src : radiationMap.get(chunk)) {
+                for (RadiationSource src : radiationMap.get(chunk).values()) {
                     // we only compute exposure when within the MAX_RANGE bounds
                     if (src.getPos().distanceTo(coord) <= MAX_RANGE) {
-                        level += computeExposure(coord, src);
+                        double add = computeExposure(coord, src);
+                        System.out.println("Added: " + add);
+                        level += add;
                     }
                 }
             }
@@ -122,8 +128,19 @@ public class RadiationManager {
         return level;
     }
 
-    public void createSource(Coord4D coord, double magnitude) {
-        radiationMap.computeIfAbsent(new Chunk3D(coord), c -> new HashSet<>()).add(new RadiationSource(coord, magnitude));
+    public void radiate(Coord4D coord, double magnitude) {
+        Chunk3D chunk = new Chunk3D(coord);
+        boolean found = false;
+        if (radiationMap.containsKey(chunk)) {
+            RadiationSource src = radiationMap.get(chunk).get(coord);
+            if (src != null) {
+                src.radiate(magnitude);
+                found = true;
+            }
+        }
+        if (!found) {
+            radiationMap.computeIfAbsent(new Chunk3D(coord), c -> new Object2ObjectOpenHashMap<>()).put(coord, new RadiationSource(coord, magnitude));
+        }
     }
 
     public void clearSources() {
@@ -131,7 +148,7 @@ public class RadiationManager {
     }
 
     private double computeExposure(Coord4D coord, RadiationSource source) {
-        return source.getMagnitude() / Math.pow(coord.distanceTo(source.getPos()), 2);
+        return source.getMagnitude() / Math.max(1, Math.pow(coord.distanceTo(source.getPos()), 2));
     }
 
     private double getRadiationResistance(PlayerEntity player) {
@@ -182,6 +199,7 @@ public class RadiationManager {
                 double z = player.getPosZ() + player.world.getRandom().nextDouble() * PARTICLE_RADIUS * 2 - PARTICLE_RADIUS;
                 player.world.addParticle((BasicParticleType) MekanismParticleTypes.RADIATION.getParticleType(), x, y, z, 0, 0, 0);
             }
+            System.out.println("particles");
         }
 
         // handle sounds
@@ -189,16 +207,20 @@ public class RadiationManager {
         if (playingGeigerSound != null && sound == null) {
             SoundHandler.stopSound(sound);
             playingGeigerSound = null;
+            System.out.println("Stop sound");
         } else if (playingGeigerSound == null && sound != null) {
             SoundHandler.playSound(sound);
+            System.out.println("Play new sound " + clientRadiationScale);
             playingGeigerSound = sound;
         } else if (playingGeigerSound != sound) {
             SoundHandler.stopSound(playingGeigerSound);
             SoundHandler.playSound(sound);
             playingGeigerSound = sound;
+            System.out.println("Play different sound " + clientRadiationScale);
         } else if (playingGeigerSound != null && sound != null) {
             if (!SoundHandler.isPlaying(playingGeigerSound)) {
                 SoundHandler.playSound(playingGeigerSound);
+                System.out.println("Play new sound " + clientRadiationScale);
             }
         }
     }
@@ -213,8 +235,11 @@ public class RadiationManager {
             }
             decayRadiation(player);
             RadiationScale scale = RadiationScale.get(magnitude);
+            System.out.println("Player " + player.getDisplayName().getString() + " has radiation " + magnitude + ", " + scale);
             if (playerExposureMap.get(player.getUniqueID()) != scale) {
                 playerExposureMap.put(player.getUniqueID(), scale);
+                Mekanism.packetHandler.sendTo(new PacketRadiationData(scale), (ServerPlayerEntity) player);
+                System.out.println("Update radiation for " + player.getDisplayName().getString() + " " + scale);
             }
         }
     }
@@ -226,13 +251,16 @@ public class RadiationManager {
 
         // each tick, there's a 1/20 chance we'll decay radiation sources (averages to 1 decay operation per second)
         if (world.getRandom().nextInt(20) == 0) {
-            for (Set<RadiationSource> set : radiationMap.values()) {
-                for (Iterator<RadiationSource> iter = set.iterator(); iter.hasNext();) {
-                    RadiationSource src = iter.next();
-                    if (src.decay()) {
+            for (Map<Coord4D, RadiationSource> set : radiationMap.values()) {
+                for (Iterator<Map.Entry<Coord4D, RadiationSource>> iter = set.entrySet().iterator(); iter.hasNext();) {
+                    Map.Entry<Coord4D, RadiationSource> entry = iter.next();
+                    System.out.println("Update radiation " + entry.getValue().getMagnitude());
+                    if (entry.getValue().decay()) {
                         // remove if source gets too low
                         iter.remove();
+                        System.out.println("Remove");
                     }
+                    world.markChunkDirty(entry.getKey().getPos(), null);
                 }
             }
         }
@@ -242,10 +270,11 @@ public class RadiationManager {
      * Note: This should only be called from the server side
      */
     public void createOrLoad() {
+        System.out.println("CALLED");
         if (dataHandler == null) {
             //Always associate the world with the over world as the frequencies are global
             DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD).getSavedData();
-            dataHandler = savedData.getOrCreate(() -> new RadiationDataHandler(), NAME);
+            dataHandler = savedData.getOrCreate(() -> new RadiationDataHandler(), DATA_HANDLER_NAME);
             dataHandler.setManager(this);
             dataHandler.syncManager();
         }
@@ -257,6 +286,11 @@ public class RadiationManager {
         clearSources();
         dataHandler = null;
         loaded = false;
+    }
+
+    public void resetClient() {
+        clientRadiationScale = RadiationScale.NONE;
+        playingGeigerSound = null;
     }
 
     public static enum RadiationScale {
@@ -318,7 +352,7 @@ public class RadiationManager {
         public List<RadiationSource> loadedSources;
 
         public RadiationDataHandler() {
-            super(NAME);
+            super(DATA_HANDLER_NAME);
         }
 
         public void setManager(RadiationManager m) {
@@ -329,18 +363,21 @@ public class RadiationManager {
             if (loadedSources != null) {
                 for (RadiationSource source : loadedSources) {
                     Chunk3D chunk = new Chunk3D(source.getPos());
-                    manager.radiationMap.computeIfAbsent(chunk, c -> new HashSet<>()).add(source);
+                    manager.radiationMap.computeIfAbsent(chunk, c -> new Object2ObjectOpenHashMap<>()).put(source.getPos(), source);
                 }
+                System.out.println("Added sources " + loadedSources.size());
             }
         }
 
         @Override
         public void read(@Nonnull CompoundNBT nbtTags) {
+            System.out.println("LOAD");
             if (nbtTags.contains(NBTConstants.RADIATION_LIST)) {
                 ListNBT list = nbtTags.getList(NBTConstants.RADIATION_LIST, NBT.TAG_COMPOUND);
                 loadedSources = new HashList<>();
                 for (int i = 0; i < list.size(); i++) {
                     loadedSources.add(RadiationSource.load(list.getCompound(0)));
+                    System.out.println("Add source");
                 }
             }
         }
@@ -349,13 +386,14 @@ public class RadiationManager {
         @Override
         public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
             ListNBT list = new ListNBT();
-            for (Set<RadiationSource> set : manager.radiationMap.values()) {
-                for (RadiationSource source : set) {
+            for (Map<Coord4D, RadiationSource> map : manager.radiationMap.values()) {
+                for (RadiationSource source : map.values()) {
                     CompoundNBT compound = new CompoundNBT();
                     source.write(compound);
                     list.add(compound);
                 }
             }
+            System.out.println("WRITE");
             nbtTags.put(NBTConstants.RADIATION_LIST, list);
             return nbtTags;
         }

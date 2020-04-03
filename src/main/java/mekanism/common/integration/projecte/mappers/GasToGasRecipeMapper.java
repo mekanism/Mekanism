@@ -23,12 +23,12 @@ public class GasToGasRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public String getDescription() {
-        return "Maps Mekanism activating recipes.";
+        return "Maps Mekanism activating and centrifuging recipes.";
     }
 
     @Override
     public boolean canHandle(IRecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.ACTIVATING;
+        return recipeType == MekanismRecipeType.ACTIVATING || recipeType == MekanismRecipeType.CENTRIFUGING;
     }
 
     @Override

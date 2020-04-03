@@ -18,9 +18,10 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
 import mekanism.common.recipe.bin.BinExtractRecipe;
 import mekanism.common.recipe.bin.BinInsertRecipe;
+import mekanism.common.recipe.impl.ActivatingIRecipe;
+import mekanism.common.recipe.impl.CentrifugingIRecipe;
 import mekanism.common.recipe.impl.ChemicalCrystallizerIRecipe;
 import mekanism.common.recipe.impl.ChemicalInfuserIRecipe;
 import mekanism.common.recipe.impl.ChemicalOxidizerIRecipe;
@@ -33,7 +34,6 @@ import mekanism.common.recipe.impl.EnrichingIRecipe;
 import mekanism.common.recipe.impl.FluidGasToGasIRecipe;
 import mekanism.common.recipe.impl.FluidToFluidIRecipe;
 import mekanism.common.recipe.impl.GasConversionIRecipe;
-import mekanism.common.recipe.impl.GasToGasIRecipe;
 import mekanism.common.recipe.impl.InfusionConversionIRecipe;
 import mekanism.common.recipe.impl.InjectingIRecipe;
 import mekanism.common.recipe.impl.ItemStackGasToGasIRecipe;
@@ -61,6 +61,7 @@ import mekanism.common.recipe.serializer.MetallurgicInfuserRecipeSerializer;
 import mekanism.common.recipe.serializer.PressurizedReactionRecipeSerializer;
 import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
 import mekanism.common.recipe.serializer.SawmillRecipeSerializer;
+import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
 import mekanism.common.registration.impl.IRecipeSerializerDeferredRegister;
 import mekanism.common.registration.impl.IRecipeSerializerRegistryObject;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
@@ -87,7 +88,8 @@ public class MekanismRecipeSerializers {
 
     public static final IRecipeSerializerRegistryObject<FluidToFluidRecipe> EVAPORATING = RECIPE_SERIALIZERS.register("evaporating", () -> new FluidToFluidRecipeSerializer<>(FluidToFluidIRecipe::new));
 
-    public static final IRecipeSerializerRegistryObject<GasToGasRecipe> ACTIVATING = RECIPE_SERIALIZERS.register("activating", () -> new GasToGasRecipeSerializer<>(GasToGasIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<GasToGasRecipe> ACTIVATING = RECIPE_SERIALIZERS.register("activating", () -> new GasToGasRecipeSerializer<>(ActivatingIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<GasToGasRecipe> CENTRIFUGING = RECIPE_SERIALIZERS.register("centrifuging", () -> new GasToGasRecipeSerializer<>(CentrifugingIRecipe::new));
 
     public static final IRecipeSerializerRegistryObject<GasToItemStackRecipe> CRYSTALLIZING = RECIPE_SERIALIZERS.register("crystallizing", () -> new GasToItemStackRecipeSerializer<>(ChemicalCrystallizerIRecipe::new));
 

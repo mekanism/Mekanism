@@ -376,6 +376,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COMMAND_TPOP, "Returned to %d, %d, %d; %d positions on stack");
         add(MekanismLang.COMMAND_TPOP_EMPTY, "No positions on stack");
         add(MekanismLang.COMMAND_RADIATION_ADD, "Added radiation at pos %s.");
+        add(MekanismLang.COMMAND_RADIATION_GET, "Current radiation (sV/h): %s");
         add(MekanismLang.COMMAND_RADIATION_REMOVE_ALL, "Removed all radiation sources.");
         //Tooltip stuff
         add(MekanismLang.MODE, "Mode: %s");

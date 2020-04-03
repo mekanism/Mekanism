@@ -8,7 +8,7 @@
   },
   "extraInput": {
     "ingredient": {
-      "tag": "forge:ores/fluorite"
+      "tag": "forge:cobblestone"
     }
   },
   "output": {

@@ -12,6 +12,7 @@ public class RadiationSource {
 
     public RadiationSource(Coord4D pos, double magnitude) {
         this.pos = pos;
+        this.magnitude = magnitude;
     }
 
     public Coord4D getPos() {
@@ -20,6 +21,10 @@ public class RadiationSource {
 
     public double getMagnitude() {
         return magnitude;
+    }
+
+    public void radiate(double addedMagnitude) {
+        magnitude += addedMagnitude;
     }
 
     public boolean decay() {

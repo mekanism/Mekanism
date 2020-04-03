@@ -129,13 +129,25 @@ public class CommandMek {
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("radiation")
                 .requires(cs -> cs.hasPermissionLevel(4))
-                .then(Commands.argument("create", DoubleArgumentType.doubleArg(0, 10000))
+                .then(Commands.literal("add").then(Commands.argument("magnitude", DoubleArgumentType.doubleArg(0, 10000))
+                    .executes(ctx -> {
+                        try {
+                            CommandSource source = ctx.getSource();
+                            Coord4D location = new Coord4D(source.getPos().x, source.getPos().y, source.getPos().z, source.getWorld().getDimension().getType());
+                            double magnitude = DoubleArgumentType.getDouble(ctx, "magnitude");
+                            Mekanism.radiationManager.radiate(location, magnitude);
+                            source.sendFeedback(MekanismLang.COMMAND_RADIATION_ADD.translate(location), true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return 0;
+                    })))
+                .then(Commands.literal("get")
                     .executes(ctx -> {
                         CommandSource source = ctx.getSource();
                         Coord4D location = new Coord4D(source.getPos().x, source.getPos().y, source.getPos().z, source.getWorld().getDimension().getType());
-                        double magnitude = DoubleArgumentType.getDouble(ctx, "duration");
-                        Mekanism.radiationManager.createSource(location, magnitude);
-                        source.sendFeedback(MekanismLang.COMMAND_RADIATION_ADD.translate(location), true);
+                        double radiation = Mekanism.radiationManager.getRadiationLevel(location);
+                        source.sendFeedback(MekanismLang.COMMAND_RADIATION_GET.translate(radiation), true);
                         return 0;
                     }))
                 .then(Commands.literal("removeAll")

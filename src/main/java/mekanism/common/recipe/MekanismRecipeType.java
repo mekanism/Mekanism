@@ -65,6 +65,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
     public static final MekanismRecipeType<FluidToFluidRecipe> EVAPORATING = create("evaporating");
 
     public static final MekanismRecipeType<GasToGasRecipe> ACTIVATING = create("activating");
+    public static final MekanismRecipeType<GasToGasRecipe> CENTRIFUGING = create("centrifuging");
 
     public static final MekanismRecipeType<GasToItemStackRecipe> CRYSTALLIZING = create("crystallizing");
 

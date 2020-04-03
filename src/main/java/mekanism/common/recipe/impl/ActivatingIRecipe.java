@@ -12,9 +12,9 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 
-public class GasToGasIRecipe extends GasToGasRecipe {
+public class ActivatingIRecipe extends GasToGasRecipe {
 
-    public GasToGasIRecipe(ResourceLocation id, GasStackIngredient input, GasStack output) {
+    public ActivatingIRecipe(ResourceLocation id, GasStackIngredient input, GasStack output) {
         super(id, input, output);
     }
 

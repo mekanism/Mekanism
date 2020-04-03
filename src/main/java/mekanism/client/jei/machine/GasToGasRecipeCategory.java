@@ -2,6 +2,7 @@ package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
@@ -12,7 +13,6 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -20,8 +20,8 @@ import mezz.jei.api.ingredients.IIngredients;
 
 public class GasToGasRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
 
-    public GasToGasRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, 3, 12, 170, 70);
+    public GasToGasRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
+        super(helper, mekanismBlock, 3, 12, 170, 70);
     }
 
     @Override

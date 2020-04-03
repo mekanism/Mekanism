@@ -68,6 +68,7 @@ public enum MekanismLang implements ILangEntry {
     COMMAND_TPOP("command", "tpop"),
     COMMAND_TPOP_EMPTY("command", "tpop.empty"),
     COMMAND_RADIATION_ADD("command", "radiation.add"),
+    COMMAND_RADIATION_GET("commmand", "radiation.get"),
     COMMAND_RADIATION_REMOVE_ALL("command", "radiation.remove_all"),
     //Tooltip stuff
     MODE("tooltip", "mode"),
