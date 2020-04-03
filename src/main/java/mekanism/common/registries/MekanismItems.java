@@ -98,6 +98,8 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemUpgrade> GAS_UPGRADE = registerUpgrade(Upgrade.GAS);
     public static final ItemRegistryObject<ItemUpgrade> ANCHOR_UPGRADE = registerUpgrade(Upgrade.ANCHOR);
 
+    public static final ItemRegistryObject<ItemModule> ENERGY_UNIT = registerModule(Modules.ENERGY_UNIT);
+
     public static final ItemRegistryObject<ItemModule> EXCAVATION_ESCALATION_UNIT = registerModule(Modules.EXCAVATION_ESCALATION_UNIT);
     public static final ItemRegistryObject<ItemModule> ATTACK_AMPLIFICATION_UNIT = registerModule(Modules.ATTACK_AMPLIFICATION_UNIT);
     public static final ItemRegistryObject<ItemModule> SILK_TOUCH_UNIT = registerModule(Modules.SILK_TOUCH_UNIT);

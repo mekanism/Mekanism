@@ -62,14 +62,19 @@ public class ItemEnergized extends Item {
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MAX_ENERGY));
+            ItemStack stack = new ItemStack(this);
+            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), getMaxEnergy(stack)));
         }
+    }
+
+    protected FloatingLong getMaxEnergy(ItemStack stack) {
+        return MAX_ENERGY;
     }
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> MAX_ENERGY, canExtract, canInsert));
+        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getMaxEnergy(stack), canExtract, canInsert));
     }
 }

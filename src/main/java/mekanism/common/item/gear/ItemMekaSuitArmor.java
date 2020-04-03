@@ -25,8 +25,10 @@ import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler.G
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
+import mekanism.common.content.gear.ModuleEnergyUnit;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.IModeItem;
@@ -55,7 +57,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem, IModeItem, IItemHUDProvider/*, ISpecialGear*/ {
 
-    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000_000);
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
     private static final int GAS_TRANSFER_RATE = 256;
 
@@ -63,7 +64,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
     public ItemMekaSuitArmor(EquipmentSlotType slot, Properties properties) {
         super(MEKASUIT_MATERIAL, slot, properties.setNoRepair().maxStackSize(1));
-        Modules.setSupported(this, Modules.RADIATION_SHIELDING_UNIT);
+        Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.RADIATION_SHIELDING_UNIT);
         if (slot == EquipmentSlotType.HEAD) {
             Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT);
         } else if (slot == EquipmentSlotType.CHEST) {
@@ -111,7 +112,8 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MAX_ENERGY));
+            ItemStack stack = new ItemStack(this);
+            items.add(StorageUtils.getFilledEnergyVariant(stack, getMaxEnergy(stack)));
         }
     }
 
@@ -143,7 +145,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         stack.getTag().putInt("HideFlags", 2);
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
-        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> MAX_ENERGY, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue),
+        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getMaxEnergy(stack), BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue),
             RadiationShieldingHandler.create(item -> isModuleEnabled(item, Modules.RADIATION_SHIELDING_UNIT) ? ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
         if (!gasTankSpecs.isEmpty()) {
             wrapper.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
@@ -204,6 +206,11 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     @Override
     public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
         return null;
+    }
+
+    private FloatingLong getMaxEnergy(ItemStack stack) {
+        ModuleEnergyUnit module = Modules.load(stack, Modules.ENERGY_UNIT);
+        return module != null ? module.getEnergyCapacity() : MekanismConfig.general.mekaToolBaseEnergyCapacity.get();
     }
 
     @ParametersAreNonnullByDefault

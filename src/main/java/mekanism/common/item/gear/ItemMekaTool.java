@@ -22,6 +22,7 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
+import mekanism.common.content.gear.ModuleEnergyUnit;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleMekaTool;
@@ -71,8 +72,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     public ItemMekaTool(Properties properties) {
         super(MAX_ENERGY, properties.setNoRepair().setISTER(ISTERProvider::disassembler));
-        Modules.setSupported(this, Modules.ATTACK_AMPLIFICATION_UNIT, Modules.SILK_TOUCH_UNIT, Modules.VEIN_MINING_UNIT, Modules.FARMING_UNIT, Modules.TELEPORTATION_UNIT,
-              Modules.EXCAVATION_ESCALATION_UNIT);
+        Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.ATTACK_AMPLIFICATION_UNIT, Modules.SILK_TOUCH_UNIT, Modules.VEIN_MINING_UNIT, Modules.FARMING_UNIT,
+            Modules.TELEPORTATION_UNIT, Modules.EXCAVATION_ESCALATION_UNIT);
     }
 
     @Override
@@ -350,5 +351,11 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                 return;
             }
         }
+    }
+
+    @Override
+    protected FloatingLong getMaxEnergy(ItemStack stack) {
+        ModuleEnergyUnit module = Modules.load(stack, Modules.ENERGY_UNIT);
+        return module != null ? module.getEnergyCapacity() : MekanismConfig.general.mekaToolBaseEnergyCapacity.get();
     }
 }

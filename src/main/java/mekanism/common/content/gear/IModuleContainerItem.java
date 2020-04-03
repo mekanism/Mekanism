@@ -32,8 +32,10 @@ public interface IModuleContainerItem {
             if (module.getInstalledCount() > 1) {
                 module.setInstalledCount(module.getInstalledCount() - 1);
                 module.save(null);
+                module.onRemoved(false);
             } else {
                 ItemDataUtils.getCompound(stack, NBTConstants.MODULES).remove(type.getName());
+                module.onRemoved(true);
             }
         }
     }
@@ -43,24 +45,13 @@ public interface IModuleContainerItem {
             Module module = getModule(stack, type);
             module.setInstalledCount(module.getInstalledCount() + 1);
             module.save(null);
+            module.onAdded(false);
         } else {
             if (!ItemDataUtils.hasData(stack, NBTConstants.MODULES, NBT.TAG_COMPOUND)) {
                 ItemDataUtils.setCompound(stack, NBTConstants.MODULES, new CompoundNBT());
             }
             ItemDataUtils.getCompound(stack, NBTConstants.MODULES).put(type.getName(), new CompoundNBT());
-            // disable other exclusive modules if this is an exclusive module, as this one will now be active
-            if (type.isExclusive()) {
-                for (Module module : Modules.loadAll(stack)) {
-                    if (module.getData() != type) {
-                        if (module.getData().isExclusive()) {
-                            module.setDisabledForce();
-                        }
-                        if (module.handlesModeChange()) {
-                            module.setModeHandlingDisabledForce();
-                        }
-                    }
-                }
-            }
+            Modules.load(stack, type).onAdded(true);
         }
     }
 }

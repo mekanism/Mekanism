@@ -887,6 +887,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_FARMING_RADIUS, "Farming Radius");
         add(MekanismLang.MODULE_EXTENDED_MODE, "Extended Mode");
 
+        add(MekanismLang.MODULE_ENERGY_UNIT, "Energy Unit");
+
         add(MekanismLang.MODULE_EXCAVATION_ESCALATION_UNIT, "Excavation Escalation Unit");
         add(MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, "Attack Amplification Unit");
         add(MekanismLang.MODULE_SILK_TOUCH_UNIT, "Silk Touch Unit");
@@ -897,6 +899,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit");
         add(MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit");
         add(MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit");
+        add(MekanismLang.MODULE_JETPACK_UNIT, "Jetpack Unit");
+
+        add(MekanismLang.DESCRIPTION_ENERGY_UNIT, "Increases maximum energy capacity.");
 
         add(MekanismLang.DESCRIPTION_EXCAVATION_ESCALATION_UNIT, "Increases digging speed on any block.");
         add(MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, "Amplifies melee attacks on players or mobs.");

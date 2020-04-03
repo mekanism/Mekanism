@@ -64,6 +64,10 @@ public class ModuleConfigItem<TYPE> {
         data.write(name, tag);
     }
 
+    public String getName() {
+        return name;
+    }
+
     public interface ConfigData<TYPE> {
         TYPE get();
         void set(TYPE val);

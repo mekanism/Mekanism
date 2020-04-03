@@ -572,6 +572,8 @@ public enum MekanismLang implements ILangEntry {
     MODULE_ATTACK_DAMAGE("module", "attack_damage"),
     MODULE_FARMING_RADIUS("module", "farming_radius"),
     MODULE_EXTENDED_MODE("module", "extended_mode"),
+
+    MODULE_ENERGY_UNIT("module", "energy_unit"),
     MODULE_EXCAVATION_ESCALATION_UNIT("module", "excavation_escalation"),
     MODULE_ATTACK_AMPLIFICATION_UNIT("module", "attack_amplification_unit"),
     MODULE_SILK_TOUCH_UNIT("module", "silk_touch_unit"),
@@ -582,6 +584,8 @@ public enum MekanismLang implements ILangEntry {
     MODULE_INHALATION_PURIFICATION_UNIT("module", "inhalation_purification_unit"),
     MODULE_RADIATION_SHIELDING_UNIT("module", "radiation_shielding_unit"),
     MODULE_JETPACK_UNIT("module", "jetpack_unit"),
+
+    DESCRIPTION_ENERGY_UNIT("description", "energy_unit"),
     DESCRIPTION_EXCAVATION_ESCALATION_UNIT("description", "excavation_escalation_unit"),
     DESCRIPTION_ATTACK_AMPLIFICATION_UNIT("description", "attack_amplification_unit"),
     DESCRIPTION_SILK_TOUCH_UNIT("description", "silk_touch_unit"),

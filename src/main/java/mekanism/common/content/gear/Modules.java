@@ -36,6 +36,11 @@ public class Modules {
     private static final Map<Item, Set<ModuleData<?>>> SUPPORTED_MODULES = new Object2ObjectOpenHashMap<>();
     private static final Map<ModuleData<?>, Set<Item>> SUPPORTED_CONTAINERS = new Object2ObjectOpenHashMap<>();
 
+    // Shared
+    public static final ModuleData<ModuleEnergyUnit> ENERGY_UNIT = register("energy_unit",
+        MekanismLang.MODULE_ENERGY_UNIT, MekanismLang.DESCRIPTION_ENERGY_UNIT, () -> new ModuleEnergyUnit(), 8)
+        .setEnabledByDefault();
+
     // Meka-Tool
     public static final ModuleData<ModuleExcavationEscalationUnit> EXCAVATION_ESCALATION_UNIT = register("excavation_escalation_unit",
         MekanismLang.MODULE_EXCAVATION_ESCALATION_UNIT, MekanismLang.DESCRIPTION_EXCAVATION_ESCALATION_UNIT, () -> new ModuleExcavationEscalationUnit(), 3)
@@ -145,10 +150,12 @@ public class Modules {
         private Supplier<MODULE> supplier;
         private int maxStackSize;
         private ItemStack stack;
+
         /** Exclusive modules only work one-at-a-time; when one is enabled, others will be automatically disabled. */
         private boolean exclusive;
         private boolean handlesModeChange;
         private boolean rendersHUD;
+        private boolean enabledByDefault;
 
         private ModuleData(String name, ILangEntry langEntry, ILangEntry description, Supplier<MODULE> supplier, int maxStackSize) {
             this.name = name;
@@ -213,6 +220,15 @@ public class Modules {
 
         public boolean rendersHUD() {
             return rendersHUD;
+        }
+
+        public ModuleData<MODULE> setEnabledByDefault() {
+            enabledByDefault = true;
+            return this;
+        }
+
+        public boolean isEnabledByDefault() {
+            return enabledByDefault;
         }
 
         @Override

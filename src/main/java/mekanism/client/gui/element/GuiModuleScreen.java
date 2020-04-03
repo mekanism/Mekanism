@@ -49,7 +49,8 @@ public class GuiModuleScreen extends GuiTexturedElement {
             }
             for (int i = 0; i < module.getConfigItems().size(); i++) {
                 ModuleConfigItem<?> configItem = module.getConfigItems().get(i);
-                if (configItem.getData() instanceof BooleanData) {
+                // Don't show the enabled option if this is enabled by default
+                if (configItem.getData() instanceof BooleanData && (!configItem.getName().equals(Module.ENABLED_KEY) || !module.getData().isEnabledByDefault())) {
                     newElements.add(new BooleanToggle((ModuleConfigItem<Boolean>) configItem, 2, startY));
                     startY += 24;
                 } else if (configItem.getData() instanceof EnumData) {
