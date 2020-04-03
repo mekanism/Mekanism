@@ -25,6 +25,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
+import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
@@ -34,7 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //Compressing, injecting, purifying
-public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IMekanismGasHandler {
+public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IMekanismGasHandler, IHasDumpButton {
 
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
@@ -238,11 +239,11 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     public AdvancedMachineUpgradeData getUpgradeData() {
         return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, gasTank.getStack(), extraSlot, energySlot, inputSlots, outputSlots,
-              sorting, getComponents());
+              isSorting(), getComponents());
     }
 
     @Override
-    protected void clearSecondaryTank() {
+    public void dump() {
         gasTank.setEmpty();
     }
 }

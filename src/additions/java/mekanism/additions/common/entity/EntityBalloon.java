@@ -108,7 +108,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         prevPosY = getPosY();
         prevPosZ = getPosZ();
 
-        if (getPosY() > 255) {
+        if (getPosY() >= world.getHeight()) {
             pop();
             return;
         }
@@ -198,7 +198,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     private int getFloor(LivingEntity entity) {
         BlockPos pos = new BlockPos(entity);
         for (BlockPos posi = pos; posi.getY() > 0; posi = posi.down()) {
-            if (posi.getY() < 256 && !world.isAirBlock(posi)) {
+            if (posi.getY() < world.getHeight() && !world.isAirBlock(posi)) {
                 return posi.getY() + 1 + (entity instanceof PlayerEntity ? 1 : 0);
             }
         }

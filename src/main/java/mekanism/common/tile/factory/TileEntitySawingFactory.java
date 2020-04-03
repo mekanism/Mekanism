@@ -165,6 +165,6 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
     @Nonnull
     @Override
     public SawmillUpgradeData getUpgradeData() {
-        return new SawmillUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, inputSlots, outputSlots, sorting, getComponents());
+        return new SawmillUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents());
     }
 }

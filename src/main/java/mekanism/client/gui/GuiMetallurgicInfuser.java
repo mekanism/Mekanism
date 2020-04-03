@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -12,10 +11,8 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -39,8 +36,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
         addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.RIGHT, this, 72, 47));
         addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.infusionTank), 7, 15, 4, 52, false));
-        addButton(new GuiDumpButton<>(this, tile, 140, 65,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));
+        addButton(new GuiDumpButton<>(this, tile, 140, 65));
     }
 
     @Override

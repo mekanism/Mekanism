@@ -1,5 +1,9 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
@@ -11,10 +15,6 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -29,7 +29,6 @@ import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MinerEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -74,7 +73,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -92,8 +90,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IAdvancedBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
-      ITileNetwork {
+public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IAdvancedBoundingBlock, ITileFilterHolder<MinerFilter<?>> {
 
     public Map<ChunkPos, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
     public Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
@@ -325,6 +322,34 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
+    public void toggleSilkTouch() {
+        setSilkTouch(!getSilkTouch());
+        markDirty(false);
+    }
+
+    public void toggleInverse() {
+        inverse = !inverse;
+        markDirty(false);
+    }
+
+    public void toggleAutoEject() {
+        doEject = !doEject;
+        markDirty(false);
+    }
+
+    public void toggleAutoPull() {
+        doPull = !doPull;
+        markDirty(false);
+    }
+
+    public void setRadiusFromPacket(int newRadius) {
+        setRadius(Math.min(Math.max(0, newRadius), MekanismConfig.general.digitalMinerMaxRadius.get()));
+        //Send a packet to update the visual renderer
+        //TODO: Only do this if the renderer is actually active
+        sendUpdatePacket();
+        markDirty(false);
+    }
+
     private void setRadius(int newRadius) {
         boolean changed = radius != newRadius;
         radius = newRadius;
@@ -337,7 +362,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    public void setMinY(int newMinY) {
+    public void setMinYFromPacket(int newMinY) {
+        setMinY(Math.min(Math.max(0, newMinY), getMaxY()));
+        //Send a packet to update the visual renderer
+        //TODO: Only do this if the renderer is actually active
+        sendUpdatePacket();
+        markDirty(false);
+    }
+
+    private void setMinY(int newMinY) {
         boolean changed = minY != newMinY;
         minY = newMinY;
         if (changed) {
@@ -345,12 +378,34 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    public void setMaxY(int newMaxY) {
+    public void setMaxYFromPacket(int newMaxY) {
+        if (world != null) {
+            setMaxY(Math.max(Math.min(newMaxY, world.getHeight() - 1), getMinY()));
+            //Send a packet to update the visual renderer
+            //TODO: Only do this if the renderer is actually active
+            sendUpdatePacket();
+            markDirty(false);
+        }
+    }
+
+    private void setMaxY(int newMaxY) {
         boolean changed = maxY != newMaxY;
         maxY = newMaxY;
         if (changed) {
             energyContainer.updateMinerEnergyPerTick();
         }
+    }
+
+    @Override
+    public void moveUp(int filterIndex) {
+        filters.swap(filterIndex, filterIndex - 1);
+        markDirty(false);
+    }
+
+    @Override
+    public void moveDown(int filterIndex) {
+        filters.swap(filterIndex, filterIndex + 1);
+        markDirty(false);
     }
 
     /**
@@ -515,7 +570,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    private void start() {
+    public void start() {
         if (getWorld() == null) {
             return;
         }
@@ -528,7 +583,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         markDirty(false);
     }
 
-    private void stop() {
+    public void stop() {
         if (searcher.state == State.SEARCHING) {
             searcher.interrupt();
             reset();
@@ -539,7 +594,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         markDirty(false);
     }
 
-    private void reset() {
+    public void reset() {
         searcher = new ThreadMinerSearch(this);
         running = false;
         cachedToMine = 0;
@@ -585,67 +640,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         nbtTags.putInt(NBTConstants.NUM_POWERING, numPowering);
         nbtTags.putInt(NBTConstants.STATE, searcher.state.ordinal());
         return getConfigurationData(nbtTags);
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            int type = dataStream.readInt();
-            switch (type) {
-                case 0:
-                    doEject = !doEject;
-                    break;
-                case 1:
-                    doPull = !doPull;
-                    break;
-                case 3:
-                    start();
-                    break;
-                case 4:
-                    stop();
-                    break;
-                case 5:
-                    reset();
-                    break;
-                case 6:
-                    setRadius(Math.min(dataStream.readInt(), MekanismConfig.general.digitalMinerMaxRadius.get()));
-                    //Send a packet to update the visual renderer
-                    //TODO: Only do this if the renderer is actually active
-                    sendUpdatePacket();
-                    break;
-                case 7:
-                    setMinY(dataStream.readInt());
-                    //Send a packet to update the visual renderer
-                    //TODO: Only do this if the renderer is actually active
-                    sendUpdatePacket();
-                    break;
-                case 8:
-                    setMaxY(dataStream.readInt());
-                    //Send a packet to update the visual renderer
-                    //TODO: Only do this if the renderer is actually active
-                    sendUpdatePacket();
-                    break;
-                case 9:
-                    setSilkTouch(!getSilkTouch());
-                    break;
-                case 10:
-                    inverse = !inverse;
-                    break;
-                case 11: {
-                    // Move filter up
-                    int filterIndex = dataStream.readInt();
-                    filters.swap(filterIndex, filterIndex - 1);
-                    break;
-                }
-                case 12: {
-                    // Move filter down
-                    int filterIndex = dataStream.readInt();
-                    filters.swap(filterIndex, filterIndex + 1);
-                    break;
-                }
-            }
-            markDirty(false);
-        }
     }
 
     public int getTotalSize() {

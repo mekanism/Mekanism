@@ -8,14 +8,13 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
@@ -46,12 +45,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ISideConfiguration, ISpecialConfigData, ITileNetwork,
+public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ISideConfiguration, ISpecialConfigData,
       ITileCachedRecipeHolder<RECIPE> {
 
     private final CachedRecipe<RECIPE>[] cachedRecipes;
@@ -73,7 +71,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
      * How many ticks it takes, with upgrades, to run an operation
      */
     public int ticksRequired = 200;
-    public boolean sorting;
+    protected boolean sorting;
     //TODO: FloatingLong seems unused
     public FloatingLong lastUsage = FloatingLong.ZERO;
 
@@ -205,7 +203,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     private void sortInventory() {
-        if (sorting) {
+        if (isSorting()) {
             for (int i = 0; i < processInfoSlots.length; i++) {
                 ProcessInfo primaryInfo = processInfoSlots[i];
                 IInventorySlot primaryInputSlot = primaryInfo.getInputSlot();
@@ -293,19 +291,13 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return (double) getProgress(process) * i / ticksRequired;
     }
 
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                sorting = !sorting;
-            } else if (type == 1) {
-                clearSecondaryTank();
-            }
-        }
+    public void toggleSorting() {
+        sorting = !isSorting();
+        markDirty(false);
     }
 
-    protected void clearSecondaryTank() {
+    public boolean isSorting() {
+        return sorting;
     }
 
     @Override
@@ -322,7 +314,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putBoolean(NBTConstants.SORTING, sorting);
+        nbtTags.putBoolean(NBTConstants.SORTING, isSorting());
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
             nbtTags.putInt(NBTConstants.PROGRESS + i, getProgress(i));
@@ -371,7 +363,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        nbtTags.putBoolean(NBTConstants.SORTING, sorting);
+        nbtTags.putBoolean(NBTConstants.SORTING, isSorting());
         return nbtTags;
     }
 
@@ -408,7 +400,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         super.addContainerTrackers(container);
         container.trackArray(progress);
         container.track(SyncableFloatingLong.create(() -> lastUsage, value -> lastUsage = value));
-        container.track(SyncableBoolean.create(() -> sorting, value -> sorting = value));
+        container.track(SyncableBoolean.create(this::isSorting, value -> sorting = value));
         container.track(SyncableInt.create(() -> ticksRequired, value -> ticksRequired = value));
     }
 }

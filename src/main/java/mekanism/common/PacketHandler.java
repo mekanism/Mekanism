@@ -21,6 +21,7 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketKey;
 import mekanism.common.network.PacketMekanismTags;
@@ -103,6 +104,7 @@ public class PacketHandler {
      * @param dataValues - an Object[] of data to encode
      * @param output     - the output stream to write to
      */
+    @Deprecated
     public static void encode(Object[] dataValues, PacketBuffer output) {
         for (Object data : dataValues) {
             if (data instanceof Byte) {
@@ -192,6 +194,7 @@ public class PacketHandler {
         registerMessage(PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
         registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData::encode, PacketFreeRunnerData::decode, PacketFreeRunnerData::handle);
         registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
+        registerClientToServer(PacketGuiInteract.class, PacketGuiInteract::encode, PacketGuiInteract::decode, PacketGuiInteract::handle);
         registerServerToClient(PacketUpdateTile.class, PacketUpdateTile::encode, PacketUpdateTile::decode, PacketUpdateTile::handle);
 
         registerServerToClient(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
@@ -219,7 +222,7 @@ public class PacketHandler {
         registerServerToClient(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
     }
 
-    //TODO: Go through and limit specific packets to the proper network direction
+    @Deprecated//TODO: Instead of using this, make sure each packet only is for one direction, and we register it going in that direction
     private <MSG> void registerMessage(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
         registerMessage(index++, type, encoder, decoder, consumer);
     }

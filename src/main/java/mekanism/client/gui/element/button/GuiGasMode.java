@@ -2,10 +2,14 @@ package mekanism.client.gui.element.button;
 
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.Mekanism;
+import mekanism.common.network.PacketGuiInteract;
+import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiGasMode extends MekanismImageButton {
@@ -17,8 +21,8 @@ public class GuiGasMode extends MekanismImageButton {
     private final boolean left;
     private final Supplier<GasMode> gasModeSupplier;
 
-    public GuiGasMode(IGuiWrapper gui, int x, int y, boolean left, Supplier<GasMode> gasModeSupplier, Runnable onPress) {
-        super(gui, x, y, 10, IDLE, onPress);
+    public GuiGasMode(IGuiWrapper gui, int x, int y, boolean left, Supplier<GasMode> gasModeSupplier, BlockPos pos, int tank) {
+        super(gui, x, y, 10, IDLE, () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.GAS_MODE_BUTTON, pos, tank)));
         this.left = left;
         this.gasModeSupplier = gasModeSupplier;
     }

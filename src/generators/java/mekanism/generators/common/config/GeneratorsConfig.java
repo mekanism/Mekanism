@@ -80,6 +80,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         windGenerationMinY = CachedIntValue.wrap(this, builder.comment("The minimum Y value that affects the Wind Generators Power generation.")
               .define("windGenerationMinY", 24));
         //TODO: Test this, maybe make default supplier be 255 OR 1 higher than minY
+        //TODO: Also see if we can somehow check world.getHeight()
         windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation.")
               .define("windGenerationMaxY", 255,
                     value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));

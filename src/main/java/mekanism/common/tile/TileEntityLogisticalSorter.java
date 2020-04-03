@@ -157,6 +157,18 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
+    public void moveUp(int filterIndex) {
+        filters.swap(filterIndex, filterIndex - 1);
+        markDirty(false);
+    }
+
+    @Override
+    public void moveDown(int filterIndex) {
+        filters.swap(filterIndex, filterIndex + 1);
+        markDirty(false);
+    }
+
+    @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
             int type = dataStream.readInt();
@@ -174,14 +186,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             } else if (type == 2) {
                 roundRobin = !roundRobin;
                 rrIndex = 0;
-            } else if (type == 3) {
-                // Move filter up
-                int filterIndex = dataStream.readInt();
-                filters.swap(filterIndex, filterIndex - 1);
-            } else if (type == 4) {
-                // Move filter down
-                int filterIndex = dataStream.readInt();
-                filters.swap(filterIndex, filterIndex + 1);
             } else if (type == 5) {
                 singleItem = !singleItem;
             }

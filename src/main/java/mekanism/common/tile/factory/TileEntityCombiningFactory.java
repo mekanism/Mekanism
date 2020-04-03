@@ -155,6 +155,6 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @Nonnull
     @Override
     public CombinerUpgradeData getUpgradeData() {
-        return new CombinerUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, extraSlot, inputSlots, outputSlots, sorting, getComponents());
+        return new CombinerUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, extraSlot, inputSlots, outputSlots, isSorting(), getComponents());
     }
 }

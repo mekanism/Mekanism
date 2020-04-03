@@ -21,7 +21,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.energy.ElectrolyticSeparatorEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -43,17 +42,17 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<ElectrolysisRecipe>, ITileNetwork {
+public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<ElectrolysisRecipe>, IHasGasMode {
 
     /**
      * This separator's water slot.
@@ -227,14 +226,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            byte type = dataStream.readByte();
-            if (type == 0) {
-                dumpLeft = dumpLeft.getNext();
-            } else if (type == 1) {
-                dumpRight = dumpRight.getNext();
-            }
+    public void nextMode(int tank) {
+        if (tank == 0) {
+            dumpLeft = dumpLeft.getNext();
+            markDirty(false);
+        } else if (tank == 1) {
+            dumpRight = dumpRight.getNext();
+            markDirty(false);
         }
     }
 

@@ -1,12 +1,10 @@
 package mekanism.client.gui;
 
 import mekanism.api.TileNetworkList;
-import mekanism.api.chemical.Chemical;
 import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiChemicalBar;
-import mekanism.client.gui.element.bar.GuiChemicalBar.ChemicalInfoProvider;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -58,16 +56,16 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), getXSize() - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
         addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
         if (tile.hasSecondaryResourceBar()) {
-            ChemicalInfoProvider<? extends Chemical<?>> provider = null;
             if (tile instanceof TileEntityMetallurgicInfuserFactory) {
-                provider = GuiChemicalBar.getProvider(((TileEntityMetallurgicInfuserFactory) tile).getInfusionTank());
+                TileEntityMetallurgicInfuserFactory factory = (TileEntityMetallurgicInfuserFactory) this.tile;
+                addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getInfusionTank()), 7, 76,
+                      tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
+                addButton(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             } else if (tile instanceof TileEntityItemStackGasToItemStackFactory) {
-                provider = GuiChemicalBar.getProvider(((TileEntityItemStackGasToItemStackFactory) tile).getGasTank());
-            }
-            if (provider != null) {
-                addButton(new GuiChemicalBar<>(this, provider, 7, 76, tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
-                addButton(new GuiDumpButton<>(this, tile, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76,
-                      () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1)))));
+                TileEntityItemStackGasToItemStackFactory factory = (TileEntityItemStackGasToItemStackFactory) this.tile;
+                addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getGasTank()), 7, 76,
+                      tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
+                addButton(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             }
         }
 

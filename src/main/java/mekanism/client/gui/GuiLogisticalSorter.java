@@ -60,20 +60,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
     }
 
     @Override
-    protected void upButtonPress(int index) {
-        if (index > 0) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(3, index)));
-        }
-    }
-
-    @Override
-    protected void downButtonPress(int index) {
-        if (index < getFilters().size() - 1) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(4, index)));
-        }
-    }
-
-    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         // Write to info display
         drawString(tile.getName(), 43, 6, 0x404040);
