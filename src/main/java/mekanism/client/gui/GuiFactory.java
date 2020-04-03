@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -18,7 +17,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemGaugeDropper;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketGuiInteract;
+import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
@@ -95,7 +95,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
                 if (xAxis > 8 && xAxis < 168 && yAxis > 78 && yAxis < 83) {
                     ItemStack stack = minecraft.player.inventory.getItemStack();
                     if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
-                        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1)));
+                        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.DUMP_BUTTON, tile));
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         return true;
                     }

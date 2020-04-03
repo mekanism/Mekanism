@@ -8,7 +8,7 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.tile.interfaces.IHasMode;
+import mekanism.common.tile.interfaces.IHasToggleableMode;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -19,7 +19,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IHasMode, ITileNetwork {
+public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IHasToggleableMode, ITileNetwork {
 
     public ReactorLogic logicType = ReactorLogic.DISABLED;
     public boolean activeCooled;
@@ -93,10 +93,8 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 1) {
-                logicType = dataStream.readEnumValue(ReactorLogic.class);
-            }
+            logicType = dataStream.readEnumValue(ReactorLogic.class);
+            markDirty(false);
         }
     }
 

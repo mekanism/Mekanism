@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.util.List;
-import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -22,8 +21,10 @@ import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketGuiInteract;
+import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -46,17 +47,19 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         addButton(new TranslationButton(this, getGuiLeft() + 56, getGuiTop() + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 58, 14, getButtonLocation("single"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(5))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SINGLE_ITEM_BUTTON, tile)),
               getOnHover(MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 84, 14, getButtonLocation("round_robin"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(2))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.ROUND_ROBIN_BUTTON, tile)),
               getOnHover(MekanismLang.SORTER_ROUND_ROBIN_DESCRIPTION)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 110, 14, getButtonLocation("auto_eject"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile)),
               getOnHover(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION)));
         addButton(new ColorButton(this, getGuiLeft() + 13, getGuiTop() + 137, 16, 16, () -> tile.color,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, hasShiftDown() ? 2 : 0))),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, 1)))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CHANGE_COLOR, tile,
+                    hasShiftDown() ? -1 : TransporterUtils.getColorIndex(TransporterUtils.increment(tile.color)))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CHANGE_COLOR, tile,
+                    TransporterUtils.getColorIndex(TransporterUtils.decrement(tile.color))))));
     }
 
     @Override

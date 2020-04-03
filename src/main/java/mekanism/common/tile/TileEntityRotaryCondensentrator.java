@@ -42,14 +42,14 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.IHasMode;
+import mekanism.common.tile.interfaces.IHasToggleableMode;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<RotaryRecipe>, IHasMode {
+public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<RotaryRecipe>, IHasToggleableMode {
 
     private static final int CAPACITY = 10_000;
 

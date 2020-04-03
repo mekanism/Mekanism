@@ -12,7 +12,6 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -43,14 +42,13 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<TransporterFilter<?>>, ITileNetwork,
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<TransporterFilter<?>>,
       IHasSortableFilters {
 
     private HashList<TransporterFilter<?>> filters = new HashList<>();
@@ -170,28 +168,25 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         markDirty(false);
     }
 
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                int clickType = dataStream.readInt();
-                if (clickType == 0) {
-                    color = TransporterUtils.increment(color);
-                } else if (clickType == 1) {
-                    color = TransporterUtils.decrement(color);
-                } else if (clickType == 2) {
-                    color = null;
-                }
-            } else if (type == 1) {
-                autoEject = !autoEject;
-            } else if (type == 2) {
-                roundRobin = !roundRobin;
-                rrIndex = 0;
-            } else if (type == 5) {
-                singleItem = !singleItem;
-            }
-        }
+    public void toggleAutoEject() {
+        autoEject = !autoEject;
+        markDirty(false);
+    }
+
+    public void toggleRoundRobin() {
+        roundRobin = !roundRobin;
+        rrIndex = 0;
+        markDirty(false);
+    }
+
+    public void toggleSingleItem() {
+        singleItem = !singleItem;
+        markDirty(false);
+    }
+
+    public void changeColor(@Nullable EnumColor color) {
+        this.color = color;
+        markDirty(false);
     }
 
     public boolean canSendHome(ItemStack stack) {

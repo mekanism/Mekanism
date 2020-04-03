@@ -81,23 +81,26 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         return emittingRedstone ? 15 : 0;
     }
 
+    public void setTime(int time) {
+        this.time = Math.max(0, time);
+        markDirty(false);
+    }
+
+    public void nextMode() {
+        outputMode = outputMode.getNext();
+        markDirty(false);
+    }
+
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
-            switch (dataStream.readInt()) {
-                case 0:
-                    minThreshold = energyContainer.getMaxEnergy().copy().min(FloatingLong.readFromBuffer(dataStream));
-                    break;
-                case 1:
-                    maxThreshold = energyContainer.getMaxEnergy().copy().min(FloatingLong.readFromBuffer(dataStream));
-                    break;
-                case 2:
-                    time = dataStream.readInt();
-                    break;
-                case 3:
-                    outputMode = outputMode.getNext();
-                    break;
+            int type = dataStream.readInt();
+            if (type == 0) {
+                minThreshold = energyContainer.getMaxEnergy().copy().min(FloatingLong.readFromBuffer(dataStream));
+            } else if (type == 1) {
+                maxThreshold = energyContainer.getMaxEnergy().copy().min(FloatingLong.readFromBuffer(dataStream));
             }
+            markDirty(false);
         }
     }
 

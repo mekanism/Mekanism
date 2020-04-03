@@ -1,6 +1,6 @@
 package mekanism.common.tile.interfaces;
 
-public interface IHasMode {
+public interface IHasToggleableMode {
 
     void toggleMode();
 }

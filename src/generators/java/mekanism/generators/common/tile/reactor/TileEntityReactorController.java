@@ -200,15 +200,17 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         localMaxSteam = MAX_STEAM * capRate;
     }
 
+    public void setInjectionRateFromPacket(int rate) {
+        if (getReactor() != null) {
+            getReactor().setInjectionRate(Math.max(0, rate - (rate % 2)));
+            markDirty(false);
+        }
+    }
+
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                if (getReactor() != null) {
-                    getReactor().setInjectionRate(dataStream.readInt());
-                }
-            }
+            setInjectionRateFromPacket(dataStream.readInt());
         }
     }
 

@@ -5,13 +5,17 @@ import java.util.function.Supplier;
 import mekanism.common.PacketHandler;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
+import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.interfaces.IHasGasMode;
-import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
+import mekanism.common.tile.interfaces.IHasToggleableMode;
+import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -89,6 +93,8 @@ public class PacketGuiInteract {
         AUTO_EJECT_BUTTON((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
                 ((TileEntityDigitalMiner) tile).toggleAutoEject();
+            } else if (tile instanceof TileEntityLogisticalSorter) {
+                ((TileEntityLogisticalSorter) tile).toggleAutoEject();
             }
         }),
         AUTO_PULL_BUTTON((tile, extra) -> {
@@ -149,8 +155,8 @@ public class PacketGuiInteract {
         }),
 
         TOGGLE_MODE_BUTTON((tile, extra) -> {
-            if (tile instanceof IHasMode) {
-                ((IHasMode) tile).toggleMode();
+            if (tile instanceof IHasToggleableMode) {
+                ((IHasToggleableMode) tile).toggleMode();
             }
         }),
         ENCODE_FORMULA((tile, extra) -> {
@@ -176,6 +182,45 @@ public class PacketGuiInteract {
         MOVE_ITEMS((tile, extra) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator) {
                 ((TileEntityFormulaicAssemblicator) tile).moveItems();
+            }
+        }),
+
+        ROUND_ROBIN_BUTTON((tile, extra) -> {
+            if (tile instanceof TileEntityLogisticalSorter) {
+                ((TileEntityLogisticalSorter) tile).toggleRoundRobin();
+            }
+        }),
+        SINGLE_ITEM_BUTTON((tile, extra) -> {
+            if (tile instanceof TileEntityLogisticalSorter) {
+                ((TileEntityLogisticalSorter) tile).toggleSingleItem();
+            }
+        }),
+        CHANGE_COLOR((tile, extra) -> {
+            if (tile instanceof TileEntityLogisticalSorter) {
+                ((TileEntityLogisticalSorter) tile).changeColor(TransporterUtils.readColor(extra));
+            }
+        }),
+
+        OVERRIDE_BUTTON((tile, extra) -> {
+            if (tile instanceof TileEntitySecurityDesk) {
+                ((TileEntitySecurityDesk) tile).toggleOverride();
+            }
+        }),
+        REMOVE_TRUSTED((tile, extra) -> {
+            if (tile instanceof TileEntitySecurityDesk) {
+                ((TileEntitySecurityDesk) tile).removeTrusted(extra);
+            }
+        }),
+
+        SET_TIME((tile, extra) -> {
+            if (tile instanceof TileEntityLaserAmplifier) {
+                ((TileEntityLaserAmplifier) tile).setTime(extra);
+            }
+        }),
+
+        NEXT_MODE((tile, extra) -> {
+            if (tile instanceof TileEntityLaserAmplifier) {
+                ((TileEntityLaserAmplifier) tile).nextMode();
             }
         }),
 

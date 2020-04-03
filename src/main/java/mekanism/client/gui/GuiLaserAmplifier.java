@@ -12,6 +12,8 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.network.PacketGuiInteract;
+import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.util.MekanismUtils;
@@ -153,8 +155,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
     private void setTime() {
         if (!timerField.getText().isEmpty()) {
-            int toUse = Math.max(0, Integer.parseInt(timerField.getText()));
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(2, toUse)));
+            Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SET_TIME, tile, Integer.parseInt(timerField.getText())));
             timerField.setText("");
         }
     }
