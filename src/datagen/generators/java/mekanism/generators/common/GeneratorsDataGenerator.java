@@ -1,8 +1,10 @@
 package mekanism.generators.common;
 
 import mekanism.generators.client.GeneratorsLangProvider;
+import mekanism.generators.client.GeneratorsSoundProvider;
 import mekanism.generators.common.loot.GeneratorsLootProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -14,9 +16,11 @@ public class GeneratorsDataGenerator {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
+        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         if (event.includeClient()) {
             //Client side data generators
             gen.addProvider(new GeneratorsLangProvider(gen));
+            gen.addProvider(new GeneratorsSoundProvider(gen, existingFileHelper));
         }
         if (event.includeServer()) {
             //Server side data generators

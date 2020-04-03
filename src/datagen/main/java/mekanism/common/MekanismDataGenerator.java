@@ -1,10 +1,12 @@
 package mekanism.common;
 
-import mekanism.client.MekanismLangProvider;
+import mekanism.client.lang.MekanismLangProvider;
+import mekanism.client.sound.MekanismSoundProvider;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.MekanismRecipeProvider;
 import mekanism.common.tag.MekanismTagProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -16,9 +18,11 @@ public class MekanismDataGenerator {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
+        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         if (event.includeClient()) {
             //Client side data generators
             gen.addProvider(new MekanismLangProvider(gen));
+            gen.addProvider(new MekanismSoundProvider(gen, existingFileHelper));
         }
         if (event.includeServer()) {
             //Server side data generators

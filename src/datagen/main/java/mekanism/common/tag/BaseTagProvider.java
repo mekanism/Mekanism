@@ -2,6 +2,9 @@ package mekanism.common.tag;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -20,6 +23,7 @@ import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.providers.IItemProvider;
+import mekanism.common.DataGenJsonConstants;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
@@ -36,8 +40,6 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-//TODO: Do we want to store recipe only tags in the DataGenerator module, or actually have code references to them in the various modules
-// Having references in the modules probably is cleaner/simpler
 public abstract class BaseTagProvider implements IDataProvider {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -87,7 +89,7 @@ public abstract class BaseTagProvider implements IDataProvider {
                 ResourceLocation id = entry.getKey();
                 Path path = gen.getOutputFolder().resolve("data/" + id.getNamespace() + "/tags/" + tagType.getPath() + "/" + id.getPath() + ".json");
                 try {
-                    String json = GSON.toJson(entry.getValue().serialize(registry::getKey));
+                    String json = GSON.toJson(cleanJsonTag(entry.getValue().serialize(registry::getKey)));
                     String hash = HASH_FUNCTION.hashUnencodedChars(json).toString();
                     if (!Objects.equals(cache.getPreviousHash(path), hash) || !Files.exists(path)) {
                         Files.createDirectories(path.getParent());
@@ -102,6 +104,24 @@ public abstract class BaseTagProvider implements IDataProvider {
             }
             tagType.setCollection(tagCollection);
         }
+    }
+
+    private JsonObject cleanJsonTag(JsonObject tagAsJson) {
+        if (tagAsJson.has(DataGenJsonConstants.REPLACE)) {
+            //Strip out the optional "replace" entry from the tag if it is the default value
+            JsonPrimitive replace = tagAsJson.getAsJsonPrimitive(DataGenJsonConstants.REPLACE);
+            if (replace.isBoolean() && !replace.getAsBoolean()) {
+                tagAsJson.remove(DataGenJsonConstants.REPLACE);
+            }
+        }
+        if (tagAsJson.has(DataGenJsonConstants.OPTIONAL)) {
+            //Strip out the forge added "optional" list from the tag json if it is empty, as the param itself is optional
+            JsonArray optionalTags = tagAsJson.getAsJsonArray(DataGenJsonConstants.OPTIONAL);
+            if (optionalTags.size() == 0) {
+                tagAsJson.remove(DataGenJsonConstants.OPTIONAL);
+            }
+        }
+        return tagAsJson;
     }
 
     protected Tag.Builder<Item> getItemBuilder(Tag<Item> tag) {

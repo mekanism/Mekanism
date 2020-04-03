@@ -1,10 +1,9 @@
-package mekanism.client;
+package mekanism.client.lang;
 
 import mekanism.api.chemical.gas.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
-import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.FactoryType;
