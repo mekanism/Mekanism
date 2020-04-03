@@ -59,6 +59,7 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
+import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
@@ -90,7 +91,8 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IAdvancedBoundingBlock, ITileFilterHolder<MinerFilter<?>> {
+public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IAdvancedBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
+      IHasSortableFilters {
 
     public Map<ChunkPos, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
     public Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();

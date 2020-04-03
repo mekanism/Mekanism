@@ -38,6 +38,7 @@ public enum MekanismLang implements ILangEntry {
     MAY_4_LINE_ONE("holiday", "may_4.1"),
     //Generic
     GENERIC("generic", "format"),
+    GENERIC_WITH_COMMA("generic", "with_comma"),
     GENERIC_STORED("generic", "stored"),
     GENERIC_STORED_MB("generic", "stored.mb"),
     GENERIC_MB("generic", "mb"),
@@ -48,6 +49,13 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_FRACTION("generic", "fraction"),
     GENERIC_TRANSFER("generic", "transfer"),
     GENERIC_PER_TICK("generic", "per_tick"),
+    //Directions
+    DOWN("direction", "down"),
+    UP("direction", "up"),
+    NORTH("direction", "north"),
+    SOUTH("direction", "south"),
+    WEST("direction", "west"),
+    EAST("direction", "east"),
     //Hold for
     HOLD_FOR_DETAILS("tooltip", "hold_for_details"),
     HOLD_FOR_DESCRIPTION("tooltip", "hold_for_description"),

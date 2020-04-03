@@ -322,6 +322,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MAY_4_LINE_ONE, "May the 4th be with you, %s!");
         //Generic
         add(MekanismLang.GENERIC, "%s");
+        add(MekanismLang.GENERIC_WITH_COMMA, "%s, %s");
         add(MekanismLang.GENERIC_STORED, "%s: %s");
         add(MekanismLang.GENERIC_STORED_MB, "%s: %s mB");
         add(MekanismLang.GENERIC_MB, "%s mB");
@@ -332,6 +333,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_FRACTION, "%s/%s");
         add(MekanismLang.GENERIC_TRANSFER, "- %s (%s)");
         add(MekanismLang.GENERIC_PER_TICK, "%s/t");
+        //Directions
+        add(MekanismLang.DOWN, "Down");
+        add(MekanismLang.UP, "Up");
+        add(MekanismLang.NORTH, "North");
+        add(MekanismLang.SOUTH, "South");
+        add(MekanismLang.WEST, "West");
+        add(MekanismLang.EAST, "East");
         //Hold for
         add(MekanismLang.HOLD_FOR_DETAILS, "Hold %s for details.");
         add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %s for a description.");

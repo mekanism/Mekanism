@@ -10,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -52,6 +53,8 @@ public class TextComponentUtil {
                 current = translate(((FluidStack) component).getTranslationKey());
             } else if (component instanceof Fluid) {
                 current = translate(((Fluid) component).getAttributes().getTranslationKey());
+            } else if (component instanceof Direction) {
+                current = getTranslatedDirection((Direction) component);
             } else if (component instanceof String || component instanceof Boolean || component instanceof Number) {
                 //Put actual boolean or integer/double, etc value
                 current = getString(component.toString());
@@ -77,6 +80,24 @@ public class TextComponentUtil {
         //TODO: Make this more like smartTranslate? Including back to back color codes treat the second as name?
         //Ignores any trailing formatting
         return result;
+    }
+
+    private static ITextComponent getTranslatedDirection(Direction direction) {
+        switch (direction) {
+            case DOWN:
+                return MekanismLang.DOWN.translate();
+            case UP:
+                return MekanismLang.UP.translate();
+            case NORTH:
+                return MekanismLang.NORTH.translate();
+            case SOUTH:
+                return MekanismLang.SOUTH.translate();
+            case WEST:
+                return MekanismLang.WEST.translate();
+            case EAST:
+                return MekanismLang.EAST.translate();
+        }
+        return getString(direction.toString());
     }
 
     public static StringTextComponent getString(String component) {
@@ -117,6 +138,8 @@ public class TextComponentUtil {
                 current = translate(((FluidStack) component).getTranslationKey());
             } else if (component instanceof Fluid) {
                 current = translate(((Fluid) component).getAttributes().getTranslationKey());
+            } else if (component instanceof Direction) {
+                current = getTranslatedDirection((Direction) component);
             } else if (cachedFormat != null) {
                 //Only bother attempting these checks if we have a cached format, because
                 // otherwise we are just going to want to use the raw text

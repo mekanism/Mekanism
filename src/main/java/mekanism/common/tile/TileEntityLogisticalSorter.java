@@ -1,10 +1,10 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -32,6 +32,7 @@ import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
@@ -49,7 +50,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<TransporterFilter<?>>, ITileNetwork {
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<TransporterFilter<?>>, ITileNetwork,
+      IHasSortableFilters {
 
     private HashList<TransporterFilter<?>> filters = new HashList<>();
     public EnumColor color;

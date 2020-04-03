@@ -29,6 +29,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
@@ -48,7 +49,8 @@ public class ItemNetworkReader extends ItemEnergized {
         World world = context.getWorld();
         if (!world.isRemote && player != null) {
             ItemStack stack = player.getHeldItem(context.getHand());
-            TileEntity tileEntity = MekanismUtils.getTileEntity(world, context.getPos());
+            BlockPos pos = context.getPos();
+            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (tileEntity != null) {
                 if (!player.isCreative()) {
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
@@ -88,19 +90,17 @@ public class ItemNetworkReader extends ItemEnergized {
                     } else {
                         Coord4D tileCoord = Coord4D.get(tileEntity);
                         Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new ObjectOpenHashSet<>();
-                        for (Direction iterSide : EnumUtils.DIRECTIONS) {
-                            Coord4D coord = tileCoord.offset(iterSide);
-                            TileEntity tile = MekanismUtils.getTileEntity(world, coord.getPos());
-                            Direction iterSideOpposite = iterSide.getOpposite();
-                            CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSideOpposite).ifPresent(transmitter -> {
-                                if (transmitter.getTransmitterNetwork().getPossibleAcceptors().contains(coord.offset(iterSideOpposite)) &&
-                                    !iteratedNetworks.contains(transmitter.getTransmitterNetwork())) {
+                        for (Direction side : EnumUtils.DIRECTIONS) {
+                            TileEntity tile = MekanismUtils.getTileEntity(world, pos.offset(side));
+                            CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).ifPresent(transmitter -> {
+                                DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
+                                if (transmitterNetwork.getPossibleAcceptors().contains(tileCoord) && !iteratedNetworks.contains(transmitterNetwork)) {
                                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
                                           MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, transmitter.getTransmissionType())));
                                     player.sendMessage(MekanismLang.NETWORK_READER_CONNECTED_SIDES.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
-                                          transmitter.getTransmitterNetwork().getAcceptorDirections().get(coord.offset(iterSideOpposite)).toString()));
+                                          getDirections(transmitterNetwork.getAcceptorDirections().get(tileCoord))));
                                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
-                                    iteratedNetworks.add(transmitter.getTransmitterNetwork());
+                                    iteratedNetworks.add(transmitterNetwork);
                                 }
                             });
                         }
@@ -118,5 +118,20 @@ public class ItemNetworkReader extends ItemEnergized {
             }
         }
         return ActionResultType.PASS;
+    }
+
+    private ITextComponent getDirections(Set<Direction> directions) {
+        if (directions.isEmpty()) {
+            return MekanismLang.GENERIC_SQUARE_BRACKET.translate("");
+        }
+        ITextComponent component = null;
+        for (Direction direction : directions) {
+            if (component == null) {
+                component = TextComponentUtil.build(direction);
+            } else {
+                component = MekanismLang.GENERIC_WITH_COMMA.translate(component, direction);
+            }
+        }
+        return MekanismLang.GENERIC_SQUARE_BRACKET.translate(component);
     }
 }

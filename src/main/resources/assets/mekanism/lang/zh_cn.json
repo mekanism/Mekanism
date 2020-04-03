@@ -723,7 +723,7 @@
   "network.mekanism.gas": "气体网络",
   "network.mekanism.heat": "热力网络",
   "network.mekanism.heat_flow": "%s 已传送到接收器, %s 散失到环境中.",
-  "network.mekanism.heat_flow.efficiency": "%s 已传送到接收器, %s 散失到环境中, %s% 效率.",
+  "network.mekanism.heat_flow.efficiency": "%s 已传送到接收器, %s 散失到环境中, %s 效率.",
   "network.mekanism.heat_stored": "高于环境温度 %s",
   "network.mekanism.inventory": "物品网路",
   "network.mekanism.mb_per_tick": "%s mB/t",
