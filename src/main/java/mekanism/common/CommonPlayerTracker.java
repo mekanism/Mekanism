@@ -4,7 +4,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.network.PacketClearRecipeCache;
 import mekanism.common.network.PacketFlamethrowerData;
-import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketMekanismTags;
 import mekanism.common.network.PacketScubaTankData;
@@ -55,13 +54,11 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerLogoutEvent(PlayerLoggedOutEvent event) {
         Mekanism.playerState.clearPlayer(event.getPlayer().getUniqueID());
-        Mekanism.freeRunnerOn.remove(event.getPlayer().getUniqueID());
     }
 
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
         Mekanism.playerState.clearPlayer(event.getPlayer().getUniqueID());
-        Mekanism.freeRunnerOn.remove(event.getPlayer().getUniqueID());
         if (!event.getPlayer().world.isRemote) {
             syncChangedData((ServerPlayerEntity) event.getPlayer());
         }
@@ -94,6 +91,5 @@ public class CommonPlayerTracker {
         Mekanism.packetHandler.sendTo(PacketJetpackData.FULL(Mekanism.playerState.getActiveJetpacks()), player);
         Mekanism.packetHandler.sendTo(PacketScubaTankData.FULL(Mekanism.playerState.getActiveGasmasks()), player);
         Mekanism.packetHandler.sendTo(PacketFlamethrowerData.FULL(Mekanism.playerState.getActiveFlamethrowers()), player);
-        Mekanism.packetHandler.sendTo(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), player);
     }
 }

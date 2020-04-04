@@ -63,12 +63,12 @@ public abstract class Module {
         }
     }
 
-    protected FloatingLong getContainerEnergy() {
+    public FloatingLong getContainerEnergy() {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
         return energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
     }
 
-    protected void useEnergy(FloatingLong energy) {
+    public void useEnergy(FloatingLong energy) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
         if (energyContainer != null) {
             energyContainer.extract(energy, Action.EXECUTE, AutomationType.MANUAL);

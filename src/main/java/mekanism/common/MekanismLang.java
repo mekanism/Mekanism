@@ -592,8 +592,14 @@ public enum MekanismLang implements ILangEntry {
     MODULE_TELEPORTATION_UNIT("module", "teleportation_unit"),
     MODULE_ELECTROLYTIC_BREATHING_UNIT("module", "electrolytic_breathing_unit"),
     MODULE_INHALATION_PURIFICATION_UNIT("module", "inhalation_purification_unit"),
+    MODULE_VISION_ENHANCEMENT_UNIT("module", "vision_enhancement_unit"),
     MODULE_RADIATION_SHIELDING_UNIT("module", "radiation_shielding_unit"),
     MODULE_JETPACK_UNIT("module", "jetpack_unit"),
+    MODULE_GRAVITATIONAL_MODULATING_UNIT("module", "gravitational_modulating_unit"),
+    MODULE_CHARGE_DISTRIBUTION_UNIT("module", "charge_distribution_unit"),
+    MODULE_LOCOMOTIVE_BOOSTING_UNIT("module", "locomotive_boosting_unit"),
+    MODULE_HYDRAULIC_ABSORPTION_UNIT("module", "hydraulic_absorption_unit"),
+    MODULE_HYDRAULIC_PROPULSION_UNIT("module", "hydraulic_propulsion_unit"),
 
     DESCRIPTION_ENERGY_UNIT("description", "energy_unit"),
     DESCRIPTION_EXCAVATION_ESCALATION_UNIT("description", "excavation_escalation_unit"),
@@ -604,8 +610,14 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_TELEPORTATION_UNIT("description", "teleportation_unit"),
     DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT("description", "electrolytic_breathing_unit"),
     DESCRIPTION_INHALATION_PURIFICATION_UNIT("description", "inhalation_purification_unit"),
+    DESCRIPTION_VISION_ENHANCEMENT_UNIT("description", "vision_enhancement_unit"),
     DESCRIPTION_RADIATION_SHIELDING_UNIT("description", "radiation_shielding_unit"),
-    DESCRIPTION_JETPACK_UNIT("description", "jetpack_unit");
+    DESCRIPTION_JETPACK_UNIT("description", "jetpack_unit"),
+    DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT("description", "gravitational_modulating_unit"),
+    DESCRIPTION_CHARGE_DISTRIBUTION_UNIT("description", "charge_distribution_unit"),
+    DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT("description", "locomotive_boosting_unit"),
+    DESCRIPTION_HYDRAULIC_ABSORPTION_UNIT("description", "hydraulic_absorption_unit"),
+    DESCRIPTION_HYDRAULIC_PROPULSION_UNIT("description", "hydraulic_propulsion_unit");
 
     private final String key;
 

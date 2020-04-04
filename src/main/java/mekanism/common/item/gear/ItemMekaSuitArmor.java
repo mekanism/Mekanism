@@ -65,11 +65,16 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     public ItemMekaSuitArmor(EquipmentSlotType slot, Properties properties) {
         super(MEKASUIT_MATERIAL, slot, properties.setNoRepair().maxStackSize(1));
         Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.RADIATION_SHIELDING_UNIT);
+
         if (slot == EquipmentSlotType.HEAD) {
-            Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT);
+            Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT, Modules.VISION_ENHANCEMENT_UNIT);
         } else if (slot == EquipmentSlotType.CHEST) {
-            Modules.setSupported(this, Modules.JETPACK_UNIT);
+            Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT);
             gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 24_000, gas -> gas == MekanismGases.HYDROGEN.get()));
+        } else if (slot == EquipmentSlotType.LEGS) {
+            Modules.setSupported(this, Modules.LOCOMOTIVE_BOOSTING_UNIT);
+        } else if (slot == EquipmentSlotType.FEET) {
+            Modules.setSupported(this, Modules.HYDRAULIC_ABSORPTION_UNIT, Modules.HYDRAULIC_PROPULSION_UNIT);
         }
     }
 

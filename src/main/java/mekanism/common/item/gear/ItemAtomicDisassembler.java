@@ -91,8 +91,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
         DisassemblerMode mode = getMode(stack);
-        tooltip.add(MekanismLang.MODE.translate(EnumColor.INDIGO, mode));
-        tooltip.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.INDIGO, mode.getEfficiency()));
+        tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, mode));
+        tooltip.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translateColored(EnumColor.INDIGO, mode.getEfficiency()));
     }
 
     @Override

@@ -10,6 +10,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicAbsorptionUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
@@ -39,6 +41,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -193,10 +196,18 @@ public class CommonPlayerTickHandler {
             ItemStack headStack = base.getItemStackFromSlot(EquipmentSlotType.HEAD);
             if (!headStack.isEmpty() && headStack.getItem() instanceof ItemGasMask) {
                 ItemStack chestStack = base.getItemStackFromSlot(EquipmentSlotType.CHEST);
-                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
-                    GasUtils.hasGas(chestStack)) {
-                    event.setCanceled(true);
-                    return;
+                if (!chestStack.isEmpty()) {
+                    if (chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
+                          GasUtils.hasGas(chestStack)) {
+                        event.setCanceled(true);
+                        return;
+                    }
+                    ModuleInhalationPurificationUnit module = Modules.load(chestStack, Modules.INHALATION_PURIFICATION_UNIT);
+                    if (module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(ModuleInhalationPurificationUnit.ENERGY_USAGE_PER_MAGIC_PREVENT)) {
+                        module.useEnergy(ModuleInhalationPurificationUnit.ENERGY_USAGE_PER_MAGIC_PREVENT);
+                        event.setCanceled(true);
+                        return;
+                    }
                 }
             }
         }
@@ -246,15 +257,26 @@ public class CommonPlayerTickHandler {
         }
     }
 
+    @SubscribeEvent
+    public void onLivingJump(LivingJumpEvent event) {
+        // hydraulic propulsion
+    }
+
     /**
      * @return null if free runners are not being worn or they don't have an energy container for some reason
      */
     @Nullable
     private IEnergyContainer getFreeRunnerEnergyContainer(LivingEntity base) {
         ItemStack feetStack = base.getItemStackFromSlot(EquipmentSlotType.FEET);
-        if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners) {
-            ItemFreeRunners boots = (ItemFreeRunners) feetStack.getItem();
-            if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL) {
+        if (!feetStack.isEmpty()) {
+            if (feetStack.getItem() instanceof ItemFreeRunners) {
+                ItemFreeRunners boots = (ItemFreeRunners) feetStack.getItem();
+                if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL) {
+                    return StorageUtils.getEnergyContainer(feetStack, 0);
+                }
+            }
+            ModuleHydraulicAbsorptionUnit module = Modules.load(feetStack, Modules.HYDRAULIC_ABSORPTION_UNIT);
+            if (module != null && module.isEnabled()) {
                 return StorageUtils.getEnergyContainer(feetStack, 0);
             }
         }

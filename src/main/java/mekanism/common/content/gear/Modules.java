@@ -14,9 +14,15 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleChargeDistributionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleElectrolyticBreathingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicAbsorptionUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleRadiationShieldingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleVisionEnhancementUnit;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleFarmingUnit;
 import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleAttackAmplificationUnit;
@@ -66,11 +72,28 @@ public class Modules {
         MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, () -> new ModuleInhalationPurificationUnit());
     public static final ModuleData<ModuleRadiationShieldingUnit> RADIATION_SHIELDING_UNIT = register("radiation_shielding_unit",
         MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, () -> new ModuleRadiationShieldingUnit());
+    public static final ModuleData<ModuleVisionEnhancementUnit> VISION_ENHANCEMENT_UNIT = register("vision_enhancement_unit",
+        MekanismLang.MODULE_VISION_ENHANCEMENT_UNIT, MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, () -> new ModuleVisionEnhancementUnit());
 
     // Chestplate
     public static final ModuleData<ModuleJetpackUnit> JETPACK_UNIT = register("jetpack_unit",
         MekanismLang.MODULE_JETPACK_UNIT, MekanismLang.DESCRIPTION_JETPACK_UNIT, () -> new ModuleJetpackUnit())
         .setHandlesModeChange().setRendersHUD().setExclusive();
+    public static final ModuleData<ModuleGravitationalModulatingUnit> GRAVITATIONAL_MODULATING_UNIT = register("gravitational_modulating_unit",
+        MekanismLang.MODULE_GRAVITATIONAL_MODULATING_UNIT, MekanismLang.DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT, () -> new ModuleGravitationalModulatingUnit())
+        .setHandlesModeChange().setRendersHUD().setExclusive();
+    public static final ModuleData<ModuleChargeDistributionUnit> CHARGE_DISTRIBUTION_UNIT = register("charge_distribution_unit",
+        MekanismLang.MODULE_CHARGE_DISTRIBUTION_UNIT, MekanismLang.DESCRIPTION_CHARGE_DISTRIBUTION_UNIT, () -> new ModuleChargeDistributionUnit());
+
+    // Pants
+    public static final ModuleData<ModuleLocomotiveBoostingUnit> LOCOMOTIVE_BOOSTING_UNIT = register("locomotive_boosting_unit",
+        MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, () -> new ModuleLocomotiveBoostingUnit());
+
+    // Boots
+    public static final ModuleData<ModuleHydraulicAbsorptionUnit> HYDRAULIC_ABSORPTION_UNIT = register("hydraulic_absorption_unit",
+        MekanismLang.MODULE_HYDRAULIC_ABSORPTION_UNIT, MekanismLang.DESCRIPTION_HYDRAULIC_ABSORPTION_UNIT, () -> new ModuleHydraulicAbsorptionUnit());
+    public static final ModuleData<ModuleHydraulicPropulsionUnit> HYDRAULIC_PROPULSION_UNIT = register("hydraulic_propulsion_unit",
+        MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, () -> new ModuleHydraulicPropulsionUnit());
 
     public static void setSupported(Item containerItem, ModuleData<?>... types) {
         for (ModuleData<?> module : types) {

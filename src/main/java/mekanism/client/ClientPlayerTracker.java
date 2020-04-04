@@ -9,6 +9,5 @@ public class ClientPlayerTracker {
     @SubscribeEvent
     public void onPlayerChangedDimension(PlayerChangedDimensionEvent event) {
         Mekanism.playerState.clearPlayer(event.getPlayer().getUniqueID());
-        Mekanism.freeRunnerOn.remove(event.getPlayer().getUniqueID());
     }
 }

@@ -14,6 +14,7 @@ import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
+import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.frequency.Frequency;
@@ -23,7 +24,6 @@ import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
-import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
@@ -100,16 +100,17 @@ public class ClientTickHandler {
         return CommonPlayerTickHandler.isGasMaskOn(player);
     }
 
-    public static boolean isFreeRunnerOn(PlayerEntity player) {
-        if (player != minecraft.player) {
-            return Mekanism.freeRunnerOn.contains(player.getUniqueID());
-        }
-
+    public static boolean isStepBoostOn(PlayerEntity player) {
         ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
         if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
-            ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
-            /*freeRunners.getEnergy(stack) > 0 && */
-            return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
+            if (stack.getItem() instanceof ItemFreeRunners) {
+                ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
+                return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
+            }
+            Module module = Modules.load(stack, Modules.HYDRAULIC_PROPULSION_UNIT);
+            if (module != null && module.isEnabled()) {
+                return true;
+            }
         }
         return false;
     }
@@ -166,18 +167,9 @@ public class ClientTickHandler {
             Mekanism.radiationManager.tickClient(minecraft.player);
 
             UUID playerUUID = minecraft.player.getUniqueID();
-            boolean freeRunnerOn = isFreeRunnerOn(minecraft.player);
-            if (Mekanism.freeRunnerOn.contains(playerUUID) != freeRunnerOn) {
-                if (freeRunnerOn && minecraft.currentScreen == null) {
-                    Mekanism.freeRunnerOn.add(playerUUID);
-                } else {
-                    Mekanism.freeRunnerOn.remove(playerUUID);
-                }
-                Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.UPDATE, playerUUID, freeRunnerOn));
-            }
+            boolean stepBoostOn = isStepBoostOn(minecraft.player);
 
-            ItemStack bootStack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.FEET);
-            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && freeRunnerOn && !minecraft.player.isShiftKeyDown()) {
+            if (stepBoostOn && !minecraft.player.isShiftKeyDown()) {
                 minecraft.player.stepHeight = 1.002F;
             } else if (minecraft.player.stepHeight == 1.002F) {
                 minecraft.player.stepHeight = 0.6F;
@@ -244,6 +236,7 @@ public class ClientTickHandler {
                     }
                     minecraft.player.fallDistance = 0.0F;
                 }
+                // I don't actually know if we need to do this
                 if (chestStack.getItem() instanceof ItemJetpack) {
                     ((ItemJetpack) chestStack.getItem()).useGas(chestStack, 1);
                 }

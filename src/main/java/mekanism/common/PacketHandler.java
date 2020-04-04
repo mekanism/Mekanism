@@ -19,7 +19,6 @@ import mekanism.common.network.PacketContainerEditMode;
 import mekanism.common.network.PacketDropperUse;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketFlamethrowerData;
-import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketJetpackData;
@@ -196,7 +195,6 @@ public class PacketHandler {
         registerMessage(PacketFlamethrowerData.class, PacketFlamethrowerData::encode, PacketFlamethrowerData::decode, PacketFlamethrowerData::handle);
         registerMessage(PacketDropperUse.class, PacketDropperUse::encode, PacketDropperUse::decode, PacketDropperUse::handle);
         registerMessage(PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
-        registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData::encode, PacketFreeRunnerData::decode, PacketFreeRunnerData::handle);
         registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
         registerClientToServer(PacketGuiInteract.class, PacketGuiInteract::encode, PacketGuiInteract::decode, PacketGuiInteract::handle);
         registerServerToClient(PacketUpdateTile.class, PacketUpdateTile::encode, PacketUpdateTile::decode, PacketUpdateTile::handle);

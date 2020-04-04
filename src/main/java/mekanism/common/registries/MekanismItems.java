@@ -111,6 +111,12 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemModule> INHALATION_PURIFICATION_UNIT = registerModule(Modules.INHALATION_PURIFICATION_UNIT);
     public static final ItemRegistryObject<ItemModule> RADIATION_SHIELDING_UNIT = registerModule(Modules.RADIATION_SHIELDING_UNIT);
     public static final ItemRegistryObject<ItemModule> JETPACK_UNIT = registerModule(Modules.JETPACK_UNIT);
+    public static final ItemRegistryObject<ItemModule> GRAVITATIONAL_MODULATING_UNIT = registerModule(Modules.GRAVITATIONAL_MODULATING_UNIT);
+
+    public static final ItemRegistryObject<ItemModule> LOCOMOTIVE_BOOSTING_UNIT = registerModule(Modules.LOCOMOTIVE_BOOSTING_UNIT);
+
+    public static final ItemRegistryObject<ItemModule> HYDRAULIC_ABSORPTION_UNIT = registerModule(Modules.HYDRAULIC_ABSORPTION_UNIT);
+    public static final ItemRegistryObject<ItemModule> HYDRAULIC_PROPULSION_UNIT = registerModule(Modules.HYDRAULIC_PROPULSION_UNIT);
 
     //Alloy names are alloy_type for purposes of tab complete
     public static final ItemRegistryObject<ItemAlloy> INFUSED_ALLOY = registerAlloy(AlloyTier.INFUSED);
