@@ -61,6 +61,8 @@ public abstract class Module {
         if (isEnabled()) {
             if (!player.world.isRemote()) {
                 tickServer(player);
+            } else {
+                tickClient(player);
             }
         }
     }
@@ -78,6 +80,8 @@ public abstract class Module {
     }
 
     protected void tickServer(PlayerEntity player) {}
+
+    protected void tickClient(PlayerEntity player) {}
 
     public final void read(CompoundNBT nbt) {
         if (nbt.contains(NBTConstants.AMOUNT)) {

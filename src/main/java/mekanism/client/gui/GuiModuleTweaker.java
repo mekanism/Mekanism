@@ -1,5 +1,8 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.lwjgl.glfw.GLFW;
 import mekanism.client.gui.element.GuiModuleScreen;
 import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -55,6 +58,36 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     private void onModuleSelected(Module module) {
         moduleScreen.setModule(module);
+    }
+
+    @Override
+    public boolean keyPressed(int key, int i, int j) {
+        if (super.keyPressed(key, i, j)) {
+            return true;
+        }
+
+        if (selected != -1) {
+            int curIndex = -1;
+            List<Integer> selectable = new ArrayList<>();
+            for (int index = 0; index < container.inventorySlots.size(); index++) {
+                if (isValidItem(index)) {
+                    selectable.add(index);
+                    if (index == selected) {
+                        curIndex = selectable.size()-1;
+                    }
+                }
+            }
+
+            if (key == GLFW.GLFW_KEY_UP) {
+                curIndex = curIndex == 0 ? curIndex + selectable.size() - 1 : curIndex - 1;
+                select(selectable.get(curIndex % selectable.size()));
+                return true;
+            } else if (key == GLFW.GLFW_KEY_DOWN) {
+                select(selectable.get((curIndex + 1) % selectable.size()));
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -66,6 +66,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitBaseJumpEnergyUsage;
     public final CachedFloatingLongValue mekaSuitEnergyUsagePotionTick;
     public final CachedFloatingLongValue mekaSuitEnergyUsageMagicPrevent;
+    public final CachedFloatingLongValue mekaSuitEnergyUsageSprintBoost;
 
     public final CachedIntValue maxUpgradeMultiplier;
     public final CachedIntValue minerSilkMultiplier;
@@ -203,6 +204,8 @@ public class GeneralConfig extends BaseMekanismConfig {
             "energyUsagePotionTick", FloatingLong.createConst(1_000));
         mekaSuitEnergyUsageMagicPrevent = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when preventing a negative potion effect.",
             "energyUsageMagicPrevent", FloatingLong.createConst(10_000));
+        mekaSuitEnergyUsageSprintBoost = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to sprint motion.",
+            "energyUsageSprintBoost", FloatingLong.createConst(1_000));
         builder.pop();
 
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.

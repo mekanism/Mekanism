@@ -23,6 +23,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -94,7 +95,65 @@ public abstract class ModuleMekaSuit extends Module {
         }
     }
 
-    public static class ModuleLocomotiveBoostingUnit extends ModuleMekaSuit {}
+    public static class ModuleLocomotiveBoostingUnit extends ModuleMekaSuit {
+        private ModuleConfigItem<SprintBoost> sprintBoost;
+
+        @Override
+        public void init() {
+            super.init();
+            addConfigItem(sprintBoost = new ModuleConfigItem<SprintBoost>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class), SprintBoost.LOW));
+        }
+
+        @Override
+        public void tickServer(PlayerEntity player) {
+            super.tickServer(player);
+
+            if (canFunction(player)) {
+                player.moveRelative(!player.onGround ? getBoost() / 5F : getBoost(), new Vec3d(0, 0, 1));
+                useEnergy(MekanismConfig.general.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
+            }
+        }
+
+        @Override
+        public void tickClient(PlayerEntity player) {
+            super.tickClient(player);
+
+            if (canFunction(player)) {
+                player.moveRelative(!player.onGround ? getBoost() / 5F : getBoost(), new Vec3d(0, 0, 1));
+                // leave energy usage up to server
+            }
+        }
+
+        public boolean canFunction(PlayerEntity player) {
+            FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F);
+            return player.isSprinting() && getContainerEnergy().greaterOrEqual(usage);
+        }
+
+        public float getBoost() {
+            return sprintBoost.get().getBoost();
+        }
+
+        public static enum SprintBoost implements IHasTextComponent {
+            OFF(0),
+            LOW(0.05F),
+            MED(0.1F),
+            HIGH(0.25F),
+            ULTRA(0.5F);
+            private float boost;
+            private ITextComponent label;
+            private SprintBoost(float boost) {
+                this.boost = boost;
+                this.label = new StringTextComponent(Float.toString(boost));
+            }
+            @Override
+            public ITextComponent getTextComponent() {
+                return label;
+            }
+            public float getBoost() {
+                return boost;
+            }
+        }
+    }
 
     public static class ModuleHydraulicAbsorptionUnit extends ModuleMekaSuit {}
 

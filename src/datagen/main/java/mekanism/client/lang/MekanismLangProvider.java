@@ -894,6 +894,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_ATTACK_DAMAGE, "Attack Damage");
         add(MekanismLang.MODULE_FARMING_RADIUS, "Farming Radius");
         add(MekanismLang.MODULE_JUMP_BOOST, "Jump Boost");
+        add(MekanismLang.MODULE_SPRINT_BOOST, "Sprint Boost");
         add(MekanismLang.MODULE_EXTENDED_MODE, "Extended Mode");
         add(MekanismLang.MODULE_EFFICIENCY, "Efficiency");
         add(MekanismLang.MODULE_MODE_CHANGE, "%s bumped to: %s");

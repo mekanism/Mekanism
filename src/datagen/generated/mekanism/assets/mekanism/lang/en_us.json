@@ -804,6 +804,7 @@
   "module.mekanism.radiation_shielding_unit": "Radiation Shielding Unit",
   "module.mekanism.render_hud": "Show in HUD",
   "module.mekanism.silk_touch_unit": "Silk Touch Unit",
+  "module.mekanism.sprint_boost": "Sprint Boost",
   "module.mekanism.stackable": "Stackable: %s",
   "module.mekanism.teleportation_unit": "Teleportation Unit",
   "module.mekanism.vein_mining_unit": "Vein Mining Unit",

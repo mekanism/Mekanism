@@ -13,6 +13,7 @@ import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicAbsorptionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
@@ -266,7 +267,13 @@ public class CommonPlayerTickHandler {
             if (module != null && module.isEnabled() && Mekanism.keyMap.has(player, KeySync.BOOST)) {
                 FloatingLong usage = MekanismConfig.general.mekaSuitBaseJumpEnergyUsage.get().multiply(module.getBoost() / 0.1F);
                 if (module.getContainerEnergy().greaterOrEqual(usage)) {
-                    player.setMotion(player.getMotion().add(0, module.getBoost(), 0));
+                    float boost = module.getBoost();
+                    // if we're sprinting with the boost module, limit the height
+                    ModuleLocomotiveBoostingUnit boostModule = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.LEGS), Modules.LOCOMOTIVE_BOOSTING_UNIT);
+                    if (boostModule != null && boostModule.isEnabled() && boostModule.canFunction(player)) {
+                        boost = (float) Math.sqrt(boost);
+                    }
+                    player.setMotion(player.getMotion().add(0, boost, 0));
                     module.useEnergy(usage);
                 }
             }
