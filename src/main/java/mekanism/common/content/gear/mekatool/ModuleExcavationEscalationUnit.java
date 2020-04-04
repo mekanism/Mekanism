@@ -6,15 +6,14 @@ import javax.annotation.Nonnull;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
 
@@ -23,7 +22,7 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
     @Override
     public void init() {
         super.init();
-        addConfigItem(excavationMode = new ModuleConfigItem<ExcavationMode>(this, "excavation_mode", MekanismLang.MODULE_MODE, new EnumData<>(ExcavationMode.class), ExcavationMode.NORMAL));
+        addConfigItem(excavationMode = new ModuleConfigItem<ExcavationMode>(this, "excavation_mode", MekanismLang.MODULE_EFFICIENCY, new EnumData<>(ExcavationMode.class, getInstalledCount()+2), ExcavationMode.NORMAL));
     }
 
     @Override
@@ -33,14 +32,13 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
             excavationMode.set(newMode, null);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.DISASSEMBLER_MODE_CHANGE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, newMode, EnumColor.AQUA, newMode.getEfficiency())));
+                      MekanismLang.MODULE_EFFICIENCY_CHANGE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, newMode.getEfficiency())));
             }
         }
     }
 
     @Override
     public void addHUDStrings(List<ITextComponent> list) {
-        list.add(MekanismLang.MODE.translate(EnumColor.INDIGO, excavationMode.get()));
         list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.INDIGO, excavationMode.get().getEfficiency()));
     }
 
@@ -48,22 +46,23 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
         return excavationMode.get().getEfficiency();
     }
 
-    public enum ExcavationMode implements IDisableableEnum<ExcavationMode>, IHasTranslationKey, IHasTextComponent {
-        NORMAL(MekanismLang.DISASSEMBLER_NORMAL, 20, () -> true),
-        FAST(MekanismLang.DISASSEMBLER_FAST, 128, MekanismConfig.general.disassemblerFastMode),
-        OFF(MekanismLang.DISASSEMBLER_OFF, 0, () -> true),
-        SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, MekanismConfig.general.disassemblerSlowMode);
+    public enum ExcavationMode implements IDisableableEnum<ExcavationMode>, IHasTextComponent {
+        OFF(0, () -> true),
+        SLOW(4, MekanismConfig.general.disassemblerSlowMode),
+        NORMAL(16, () -> true),
+        FAST(32, () -> true),
+        EXTREME(128, MekanismConfig.general.disassemblerFastMode);
 
         private static ExcavationMode[] MODES = values();
 
         private final BooleanSupplier checkEnabled;
-        private final ILangEntry langEntry;
+        private final ITextComponent label;
         private final int efficiency;
 
-        ExcavationMode(ILangEntry langEntry, int efficiency, BooleanSupplier checkEnabled) {
-            this.langEntry = langEntry;
+        ExcavationMode(int efficiency, BooleanSupplier checkEnabled) {
             this.efficiency = efficiency;
             this.checkEnabled = checkEnabled;
+            this.label = new StringTextComponent(Integer.toString(efficiency));
         }
 
         /**
@@ -81,13 +80,8 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
         }
 
         @Override
-        public String getTranslationKey() {
-            return langEntry.getTranslationKey();
-        }
-
-        @Override
         public ITextComponent getTextComponent() {
-            return langEntry.translate();
+            return label;
         }
 
         public int getEfficiency() {

@@ -1,8 +1,9 @@
-package mekanism.common.content.gear;
+package mekanism.common.content.gear.shared;
 
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.Module;
 import mekanism.common.util.StorageUtils;
 
 public class ModuleEnergyUnit extends Module {

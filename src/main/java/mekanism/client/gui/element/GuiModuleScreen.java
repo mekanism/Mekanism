@@ -190,12 +190,15 @@ public class GuiModuleScreen extends GuiTexturedElement {
         }
         @Override
         public void renderForeground(int mouseX, int mouseY) {
+            EnumData<?> enumData = (EnumData<?>) data.getData();
             drawString(data.getDescription().translate(), getRelativeX() + 2, getRelativeY(), TEXT_COLOR);
-            Enum<? extends IHasTextComponent>[] arr = ((EnumData<?>) data.getData()).getEnums();
-            int count = ((EnumData<?>) data.getData()).getSelectableCount();
+            Enum<? extends IHasTextComponent>[] arr = enumData.getEnums();
+            int count = enumData.getSelectableCount();
             for (int i = 0; i < count; i++) {
-                int center = (BAR_LENGTH / (count-1)) * i;
-                drawCenteredText(((IHasTextComponent) arr[i]).getTextComponent(), getRelativeX() + BAR_START + center, getRelativeY() + 20, TEXT_COLOR);
+                int diffFromCenter = ((BAR_LENGTH / (count-1)) * i) - (BAR_LENGTH / 2);
+                float diffScale = 1 - (1 - enumData.getTextScale())/2F;
+                int textCenter = getRelativeX() + BAR_START + (BAR_LENGTH / 2) + (int)(diffFromCenter * diffScale);
+                renderScaledCenteredText(((IHasTextComponent) arr[i]).getTextComponent(), textCenter, getRelativeY() + 20, TEXT_COLOR, enumData.getTextScale());
             }
 
             if (dragging) {

@@ -70,10 +70,16 @@ public abstract class GuiElement extends Widget {
         return length <= maxX ? 1 : (float) maxX / length;
     }
 
-    protected void drawCenteredText(ITextComponent text, int left, int y, int color) {
+    protected void renderCenteredText(ITextComponent text, int left, int y, int color) {
         int textWidth = getStringWidth(text);
         int centerX = left - (textWidth / 2);
-        drawString(text, centerX, y, color);
+        drawString(text.getString(), centerX, y, color);
+    }
+
+    protected void renderScaledCenteredText(ITextComponent text, int left, int y, int color, float scale) {
+        int textWidth = getStringWidth(text);
+        int centerX = left - (int)((textWidth / 2) * scale);
+        renderTextWithScale(text.getString(), centerX, y, color, scale);
     }
 
     public void renderScaledText(String text, int x, int y, int color, int maxX) {
@@ -82,16 +88,20 @@ public abstract class GuiElement extends Widget {
         if (length <= maxX) {
             drawString(text, x, y, color);
         } else {
-            float scale = (float) maxX / length;
-            float reverse = 1 / scale;
-            float yAdd = 4 - (scale * 8) / 2F;
-
-            RenderSystem.pushMatrix();
-            RenderSystem.scalef(scale, scale, scale);
-            drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
-            RenderSystem.popMatrix();
+            renderTextWithScale(text, x, y, color, (float) maxX / length);
         }
         //Make sure the color does not leak from having drawn the string
+        MekanismRenderer.resetColor();
+    }
+
+    public void renderTextWithScale(String text, int x, int y, int color, float scale) {
+        float reverse = 1 / scale;
+        float yAdd = 4 - (scale * 8) / 2F;
+
+        RenderSystem.pushMatrix();
+        RenderSystem.scalef(scale, scale, scale);
+        drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
+        RenderSystem.popMatrix();
         MekanismRenderer.resetColor();
     }
 

@@ -164,10 +164,10 @@ public abstract class Module {
         for (Module module : Modules.loadAll(getContainer())) {
             if (module.getData() != getData()) {
                 // disable other exclusive modules if this is an exclusive module, as this one will now be active
-                if (module.getData().isExclusive()) {
+                if (getData().isExclusive() && module.getData().isExclusive()) {
                     module.setDisabledForce();
                 }
-                if (module.handlesModeChange()) {
+                if (handlesModeChange() && module.handlesModeChange()) {
                     module.setModeHandlingDisabledForce();
                 }
             }

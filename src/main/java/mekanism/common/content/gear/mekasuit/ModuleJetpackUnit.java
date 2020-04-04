@@ -11,6 +11,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -23,18 +25,18 @@ public class ModuleJetpackUnit extends ModuleMekaSuit {
     @Override
     public void init() {
         super.init();
-        addConfigItem(jetpackMode = new ModuleConfigItem<JetpackMode>(this, "jetpack_mode", MekanismLang.MODULE_MODE, new EnumData<>(JetpackMode.class), JetpackMode.NORMAL));
+        addConfigItem(jetpackMode = new ModuleConfigItem<JetpackMode>(this, "jetpack_mode", MekanismLang.MODULE_MODE, new EnumData<>(JetpackMode.class).withScale(0.6F), JetpackMode.NORMAL));
     }
 
     @Override
     public void addHUDStrings(List<ITextComponent> list) {
-        list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpackMode));
+        list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpackMode.get()));
         GasStack stored = GasStack.EMPTY;
         Optional<IGasHandler> capability = MekanismUtils.toOptional(getContainer().getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem.getGasTankCount() > 0) {
-                stored = gasHandlerItem.getGasInTank(0);
+                stored = ((ItemMekaSuitArmor) getContainer().getItem()).getContainedGas(getContainer(), MekanismGases.HYDROGEN.get());
             }
         }
         list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, stored.getAmount()));

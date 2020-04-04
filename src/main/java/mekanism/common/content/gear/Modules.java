@@ -23,6 +23,7 @@ import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleAttackAmplific
 import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleSilkTouchUnit;
 import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleVeinMiningUnit;
+import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -60,7 +61,7 @@ public class Modules {
 
     // Helmet
     public static final ModuleData<ModuleElectrolyticBreathingUnit> ELECTROLYTIC_BREATHING_UNIT = register("electrolytic_breathing_unit",
-        MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, () -> new ModuleElectrolyticBreathingUnit());
+        MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, () -> new ModuleElectrolyticBreathingUnit(), 8);
     public static final ModuleData<ModuleInhalationPurificationUnit> INHALATION_PURIFICATION_UNIT = register("inhalation_purification_unit",
         MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, () -> new ModuleInhalationPurificationUnit());
     public static final ModuleData<ModuleRadiationShieldingUnit> RADIATION_SHIELDING_UNIT = register("radiation_shielding_unit",
@@ -69,7 +70,7 @@ public class Modules {
     // Chestplate
     public static final ModuleData<ModuleJetpackUnit> JETPACK_UNIT = register("jetpack_unit",
         MekanismLang.MODULE_JETPACK_UNIT, MekanismLang.DESCRIPTION_JETPACK_UNIT, () -> new ModuleJetpackUnit())
-        .setHandlesModeChange().setRendersHUD();
+        .setHandlesModeChange().setRendersHUD().setExclusive();
 
     public static void setSupported(Item containerItem, ModuleData<?>... types) {
         for (ModuleData<?> module : types) {

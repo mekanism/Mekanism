@@ -1,24 +1,42 @@
 package mekanism.common.content.gear.mekasuit;
 
+import java.util.Optional;
+import mekanism.api.Action;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.Module;
+import mekanism.common.content.gear.Modules;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 
 public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleElectrolyticBreathingUnit extends ModuleMekaSuit {
-
-        private static final int MAX_RATE = 10;
-
         @Override
         public void tickServer(PlayerEntity player) {
-            int toUse = Math.min(MAX_RATE, player.getMaxAir() - player.getAir());
-            toUse = Math.min(toUse, getContainerEnergy().divide(MekanismConfig.general.FROM_H2.get()).intValue());
-            useEnergy(MekanismConfig.general.FROM_H2.get().multiply(toUse));
-            player.setAir(player.getAir() + toUse);
+            int maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(MekanismConfig.general.FROM_H2.get()).intValue());
+            int hydrogenUsed = 0;
+            GasStack hydrogenStack = new GasStack(MekanismGases.HYDROGEN.get(), maxRate * 2);
+            ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+            Optional<IGasHandler> capability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+            if (Modules.load(chestStack, Modules.JETPACK_UNIT) != null && capability.isPresent()) {
+                hydrogenUsed = capability.get().insertGas(hydrogenStack, Action.EXECUTE).getAmount();
+            }
+            int oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
+            int used = Math.max((int)Math.ceil(hydrogenUsed / 2D), oxygenUsed);
+            useEnergy(MekanismConfig.general.FROM_H2.get().multiply(used));
+            player.setAir(player.getAir() + oxygenUsed);
+        }
+
+        private int getMaxRate() {
+            return (int)Math.pow(2, getInstalledCount());
         }
     }
 
