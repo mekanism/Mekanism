@@ -1,100 +1,103 @@
 package mekanism.common.network;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.frequency.Frequency;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-//TODO: Re-evaluate/rewrite
 public class PacketSecurityUpdate {
 
-    private SecurityPacket packetType;
+    private final boolean isUpdate;
+    //Sync
     private SecurityData securityData;
     private String playerUsername;
     private UUID playerUUID;
+    //Batch
+    private Map<UUID, SecurityData> securityMap = new Object2ObjectOpenHashMap<>();
+    private Map<UUID, String> uuidMap = new Object2ObjectOpenHashMap<>();
 
-    public PacketSecurityUpdate(SecurityPacket type, UUID uuid, SecurityData data) {
-        packetType = type;
-        if (packetType == SecurityPacket.UPDATE) {
-            playerUUID = uuid;
-            playerUsername = MekanismUtils.getLastKnownUsername(uuid);
-            securityData = data;
-        }
+    public PacketSecurityUpdate(UUID uuid, SecurityData data) {
+        this(true);
+        playerUUID = uuid;
+        playerUsername = MekanismUtils.getLastKnownUsername(uuid);
+        securityData = data;
     }
 
-    private PacketSecurityUpdate(SecurityPacket type) {
-        packetType = type;
+    public PacketSecurityUpdate() {
+        this(false);
+    }
+
+    private PacketSecurityUpdate(boolean isUpdate) {
+        this.isUpdate = isUpdate;
     }
 
     public static void handle(PacketSecurityUpdate message, Supplier<Context> context) {
-        if (message.packetType == SecurityPacket.UPDATE) {
-            if (message.securityData != null) {
-                MekanismClient.clientSecurityMap.put(message.playerUUID, message.securityData);
+        context.get().enqueueWork(() -> {
+            if (message.isUpdate) {
+                MekanismClient.clientUUIDMap.put(message.playerUUID, message.playerUsername);
+                if (message.securityData != null) {
+                    MekanismClient.clientSecurityMap.put(message.playerUUID, message.securityData);
+                }
+            } else {
+                MekanismClient.clientSecurityMap.clear();
+                message.securityMap.forEach((key, value) -> MekanismClient.clientSecurityMap.put(key, value));
+                message.uuidMap.forEach((key, value) -> MekanismClient.clientUUIDMap.put(key, value));
             }
-        }
+        });
         context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketSecurityUpdate pkt, PacketBuffer buf) {
-        buf.writeEnumValue(pkt.packetType);
-        if (pkt.packetType == SecurityPacket.UPDATE) {
+        buf.writeBoolean(pkt.isUpdate);
+        if (pkt.isUpdate) {
             buf.writeUniqueId(pkt.playerUUID);
             buf.writeString(pkt.playerUsername);
-            if (pkt.securityData != null) {
+            if (pkt.securityData == null) {
+                buf.writeBoolean(false);
+            } else {
                 buf.writeBoolean(true);
                 pkt.securityData.write(buf);
-            } else {
-                buf.writeBoolean(false);
             }
-        } else if (pkt.packetType == SecurityPacket.FULL) {
-            List<SecurityFrequency> frequencies = new ArrayList<>();
-            for (Frequency frequency : Mekanism.securityFrequencies.getFrequencies()) {
-                if (frequency instanceof SecurityFrequency) {
-                    frequencies.add((SecurityFrequency) frequency);
-                }
-            }
+        } else {
+            List<SecurityFrequency> frequencies = Mekanism.securityFrequencies.getFrequencies().stream().filter(frequency -> frequency instanceof SecurityFrequency)
+                  .map(frequency -> (SecurityFrequency) frequency).collect(Collectors.toList());
             buf.writeVarInt(frequencies.size());
             for (SecurityFrequency frequency : frequencies) {
                 buf.writeUniqueId(frequency.ownerUUID);
-                buf.writeString(MekanismUtils.getLastKnownUsername(frequency.ownerUUID));
                 new SecurityData(frequency).write(buf);
+                buf.writeString(MekanismUtils.getLastKnownUsername(frequency.ownerUUID));
             }
         }
     }
 
     public static PacketSecurityUpdate decode(PacketBuffer buf) {
-        PacketSecurityUpdate packet = new PacketSecurityUpdate(buf.readEnumValue(SecurityPacket.class));
-        if (packet.packetType == SecurityPacket.UPDATE) {
+        PacketSecurityUpdate packet = new PacketSecurityUpdate(buf.readBoolean());
+        if (packet.isUpdate) {
             packet.playerUUID = buf.readUniqueId();
             packet.playerUsername = PacketHandler.readString(buf);
             if (buf.readBoolean()) {
                 packet.securityData = SecurityData.read(buf);
             }
-            MekanismClient.clientUUIDMap.put(packet.playerUUID, packet.playerUsername);
-        } else if (packet.packetType == SecurityPacket.FULL) {
-            MekanismClient.clientSecurityMap.clear();
-            int amount = buf.readVarInt();
-            for (int i = 0; i < amount; i++) {
+        } else {
+            int frequencySize = buf.readVarInt();
+            packet.securityMap = new Object2ObjectOpenHashMap<>(frequencySize);
+            packet.uuidMap = new Object2ObjectOpenHashMap<>(frequencySize);
+            for (int i = 0; i < frequencySize; i++) {
                 UUID uuid = buf.readUniqueId();
-                String username = PacketHandler.readString(buf);
-                MekanismClient.clientSecurityMap.put(uuid, SecurityData.read(buf));
-                MekanismClient.clientUUIDMap.put(uuid, username);
+                packet.securityMap.put(uuid, SecurityData.read(buf));
+                packet.uuidMap.put(uuid, PacketHandler.readString(buf));
             }
         }
         return packet;
-    }
-
-    public enum SecurityPacket {
-        UPDATE,
-        FULL
     }
 }

@@ -13,7 +13,6 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.network.PacketSecurityUpdate;
-import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
@@ -59,7 +58,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
         if (!world.isRemote) {
             if (getOwnerUUID(stack) == null) {
                 setOwnerUUID(stack, player.getUniqueID());
-                Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(SecurityPacket.UPDATE, player.getUniqueID(), null));
+                Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NOW_OWN.translateColored(EnumColor.GRAY)));
             } else if (SecurityUtils.canAccess(player, stack)) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PortableTeleporterContainer(i, inv, hand, stack)), buf -> {

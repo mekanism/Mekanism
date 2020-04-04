@@ -6,7 +6,6 @@ import mekanism.common.network.PacketClearRecipeCache;
 import mekanism.common.network.PacketMekanismTags;
 import mekanism.common.network.PacketPlayerData;
 import mekanism.common.network.PacketSecurityUpdate;
-import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -43,7 +42,7 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         if (!event.getPlayer().world.isRemote) {
-            Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(SecurityPacket.FULL, null, null), (ServerPlayerEntity) event.getPlayer());
+            Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketMekanismTags(Mekanism.instance.getTagManager()), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketClearRecipeCache(), (ServerPlayerEntity) event.getPlayer());
             event.getPlayer().sendMessage(ALPHA_WARNING);

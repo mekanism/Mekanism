@@ -11,7 +11,6 @@ import mekanism.common.security.SecurityData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
-//TODO: Figure out why this extends Mekanism, given it only adds static methods
 public class MekanismClient {
 
     public static Map<UUID, SecurityData> clientSecurityMap = new Object2ObjectOpenHashMap<>();
