@@ -16,7 +16,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.item.IModeItem;
 import mekanism.common.item.gear.ItemFlamethrower;
-import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
@@ -84,14 +83,6 @@ public class ClientTickHandler {
         return CommonPlayerTickHandler.isGasMaskOn(player);
     }
 
-    public static boolean isFreeRunnerOn(PlayerEntity player) {
-        ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
-        if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
-            return ((ItemFreeRunners) stack.getItem()).getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
-        }
-        return false;
-    }
-
     public static boolean isFlamethrowerOn(PlayerEntity player) {
         if (player != minecraft.player) {
             return Mekanism.playerState.isFlamethrowerOn(player);
@@ -142,7 +133,7 @@ public class ClientTickHandler {
             }
 
             UUID playerUUID = minecraft.player.getUniqueID();
-            if (isFreeRunnerOn(minecraft.player) && !minecraft.player.isShiftKeyDown()) {
+            if (CommonPlayerTickHandler.isFreeRunnerOn(minecraft.player)) {
                 minecraft.player.stepHeight = 1.002F;
             } else if (minecraft.player.stepHeight == 1.002F) {
                 minecraft.player.stepHeight = 0.6F;

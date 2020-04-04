@@ -86,7 +86,6 @@ public class Mekanism {
     public static final String MOD_NAME = "Mekanism";
     public static final String LOG_TAG = '[' + MOD_NAME + ']';
     public static final PlayerState playerState = new PlayerState();
-    public static final Set<UUID> freeRunnerOn = new ObjectOpenHashSet<>();
     /**
      * Mekanism Packet Pipeline
      */
