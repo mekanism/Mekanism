@@ -36,7 +36,6 @@ public class MekanismClient {
 
         Mekanism.playerState.clear();
         Mekanism.activeVibrators.clear();
-        Mekanism.freeRunnerOn.clear();
         TransmitterNetworkRegistry.getInstance().clearClientNetworks();
 
         for (IModule module : Mekanism.modulesLoaded) {

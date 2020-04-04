@@ -22,11 +22,13 @@ public class PacketKey {
         if (player == null) {
             return;
         }
-        if (message.add) {
-            Mekanism.keyMap.add(player, message.key);
-        } else {
-            Mekanism.keyMap.remove(player, message.key);
-        }
+        context.get().enqueueWork(() -> {
+            if (message.add) {
+                Mekanism.keyMap.add(player, message.key);
+            } else {
+                Mekanism.keyMap.remove(player, message.key);
+            }
+        });
         context.get().setPacketHandled(true);
     }
 

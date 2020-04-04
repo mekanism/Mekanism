@@ -16,12 +16,13 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements ITileNetwork {
+public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements ITileNetwork, IHasMode {
 
     private static final FloatingLong MAX = FloatingLong.createConst(5_000_000_000L);
     public FloatingLong minThreshold = FloatingLong.ZERO;
@@ -86,6 +87,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         markDirty(false);
     }
 
+    @Override
     public void nextMode() {
         outputMode = outputMode.getNext();
         markDirty(false);

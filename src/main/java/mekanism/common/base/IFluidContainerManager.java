@@ -1,8 +1,8 @@
 package mekanism.common.base;
 
-public interface IFluidContainerManager {
+import mekanism.common.tile.interfaces.IHasMode;
+
+public interface IFluidContainerManager extends IHasMode {
 
     ContainerEditMode getContainerEditMode();
-
-    void setContainerEditMode(ContainerEditMode mode);
 }

@@ -11,6 +11,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
+//TODO: Re-evaluate/rewrite
 public class PacketRedstoneControl {
 
     private RedstoneControl value;

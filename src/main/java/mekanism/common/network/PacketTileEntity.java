@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-@Deprecated
+@Deprecated//TODO: Remove
 public class PacketTileEntity {
 
     private TileNetworkList parameters;

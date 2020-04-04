@@ -20,7 +20,6 @@ import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
-import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
@@ -86,15 +85,9 @@ public class ClientTickHandler {
     }
 
     public static boolean isFreeRunnerOn(PlayerEntity player) {
-        if (player != minecraft.player) {
-            return Mekanism.freeRunnerOn.contains(player.getUniqueID());
-        }
-
         ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
         if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
-            ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
-            /*freeRunners.getEnergy(stack) > 0 && */
-            return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
+            return ((ItemFreeRunners) stack.getItem()).getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
         }
         return false;
     }
@@ -149,18 +142,7 @@ public class ClientTickHandler {
             }
 
             UUID playerUUID = minecraft.player.getUniqueID();
-            boolean freeRunnerOn = isFreeRunnerOn(minecraft.player);
-            if (Mekanism.freeRunnerOn.contains(playerUUID) != freeRunnerOn) {
-                if (freeRunnerOn && minecraft.currentScreen == null) {
-                    Mekanism.freeRunnerOn.add(playerUUID);
-                } else {
-                    Mekanism.freeRunnerOn.remove(playerUUID);
-                }
-                Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.UPDATE, playerUUID, freeRunnerOn));
-            }
-
-            ItemStack bootStack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.FEET);
-            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && freeRunnerOn && !minecraft.player.isShiftKeyDown()) {
+            if (isFreeRunnerOn(minecraft.player) && !minecraft.player.isShiftKeyDown()) {
                 minecraft.player.stepHeight = 1.002F;
             } else if (minecraft.player.stepHeight == 1.002F) {
                 minecraft.player.stepHeight = 0.6F;

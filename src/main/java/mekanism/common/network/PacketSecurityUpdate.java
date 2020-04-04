@@ -14,6 +14,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
+//TODO: Re-evaluate/rewrite
 public class PacketSecurityUpdate {
 
     private SecurityPacket packetType;

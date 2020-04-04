@@ -208,8 +208,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void setContainerEditMode(ContainerEditMode mode) {
-        editMode = mode;
+    public void nextMode() {
+        editMode = editMode.getNext();
+        markDirty(false);
     }
 
     @Override
@@ -224,7 +225,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             redstone = data.redstone;
             inputSlot.setStack(data.inputSlot.getStack());
             outputSlot.setStack(data.outputSlot.getStack());
-            setContainerEditMode(data.editMode);
+            editMode = data.editMode;
             fluidTank.setStack(data.stored);
             for (ITileComponent component : getComponents()) {
                 component.read(data.components);

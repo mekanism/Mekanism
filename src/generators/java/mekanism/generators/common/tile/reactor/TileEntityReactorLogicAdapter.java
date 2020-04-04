@@ -8,7 +8,7 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.tile.interfaces.IHasToggleableMode;
+import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -19,7 +19,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IHasToggleableMode, ITileNetwork {
+public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IHasMode, ITileNetwork {
 
     public ReactorLogic logicType = ReactorLogic.DISABLED;
     public boolean activeCooled;
@@ -85,7 +85,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     }
 
     @Override
-    public void toggleMode() {
+    public void nextMode() {
         activeCooled = !activeCooled;
         markDirty(false);
     }

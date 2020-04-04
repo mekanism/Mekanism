@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
+//TODO: Re-evaluate/rewrite
 public class PacketJetpackData {
 
     private JetpackPacket packetType;
@@ -21,6 +22,7 @@ public class PacketJetpackData {
         packetType = type;
     }
 
+    //Client to server AND sort of server to client, as the server then reroutes it to the client
     public static PacketJetpackData UPDATE(UUID uuid, boolean state) {
         PacketJetpackData m = new PacketJetpackData(JetpackPacket.UPDATE);
         m.uuid = uuid;
@@ -28,6 +30,7 @@ public class PacketJetpackData {
         return m;
     }
 
+    //Server to client
     public static PacketJetpackData FULL(Set<UUID> activeNames) {
         PacketJetpackData m = new PacketJetpackData(JetpackPacket.FULL);
         m.activeJetpacks = activeNames;

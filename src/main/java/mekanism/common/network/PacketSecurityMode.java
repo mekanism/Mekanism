@@ -15,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
+//TODO: Re-evaluate/rewrite
 public class PacketSecurityMode {
 
     private SecurityPacketType packetType;

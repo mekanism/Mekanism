@@ -26,7 +26,7 @@ public class PacketTransporterUpdate {
     private final BlockPos pos;
 
     private ILogisticalTransporter transporter;
-    private int modes[];
+    private int[] modes;
 
     //Sync
     private int stackId;

@@ -18,16 +18,12 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketTransmitterUpdate {
 
-    private PacketType packetType;
-
-    private UUID networkID;
-
+    private final PacketType packetType;
+    private final UUID networkID;
     private float energyScale;
-
     @Nonnull
     private Gas gas = MekanismAPI.EMPTY_GAS;
     private float gasScale;
-
     @Nonnull
     private FluidStack fluidStack = FluidStack.EMPTY;
     private float fluidScale;
@@ -101,7 +97,6 @@ public class PacketTransmitterUpdate {
                 buf.writeFloat(pkt.gasScale);
                 break;
             case FLUID:
-                //TODO: Use FluidStack#writeToPacket in more places
                 pkt.fluidStack.writeToPacket(buf);
                 buf.writeFloat(pkt.fluidScale);
                 break;

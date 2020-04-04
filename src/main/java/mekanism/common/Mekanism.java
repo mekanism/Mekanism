@@ -271,7 +271,6 @@ public class Mekanism {
         worldTickHandler.resetRegenChunks();
         privateTeleporters.clear();
         privateEntangloporters.clear();
-        freeRunnerOn.clear();
         SynchronizedBoilerData.hotMap.clear();
 
         //Reset consistent managers

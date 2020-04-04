@@ -2,7 +2,6 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.PacketHandler;
@@ -16,34 +15,48 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketConfigurationUpdate {
 
-    private ConfigurationPacket packetType;
+    private final ConfigurationPacket packetType;
+    private final BlockPos pos;
     private TransmissionType transmission;
-    private Coord4D coord4D;
-    private int inputSide;
+    private RelativeSide inputSide;
     private int clickType;
 
-    public PacketConfigurationUpdate(@Nonnull ConfigurationPacket type, Coord4D coord, int click, int extra, TransmissionType trans) {
-        packetType = type;
-        coord4D = coord;
+    public PacketConfigurationUpdate(BlockPos pos, TransmissionType trans) {
+        packetType = ConfigurationPacket.EJECT;
+        this.pos = pos;
+        transmission = trans;
+    }
 
+    public PacketConfigurationUpdate(BlockPos pos, int click) {
+        packetType = ConfigurationPacket.EJECT_COLOR;
+        this.pos = pos;
+        clickType = click;
+    }
+
+    public PacketConfigurationUpdate(BlockPos pos) {
+        packetType = ConfigurationPacket.STRICT_INPUT;
+        this.pos = pos;
+    }
+
+    public PacketConfigurationUpdate(@Nonnull ConfigurationPacket type, BlockPos pos, int click, RelativeSide inputSide, TransmissionType trans) {
+        packetType = type;
+        this.pos = pos;
         if (packetType == ConfigurationPacket.EJECT) {
             transmission = trans;
-        }
-        if (packetType == ConfigurationPacket.EJECT_COLOR) {
+        } else if (packetType == ConfigurationPacket.EJECT_COLOR) {
             clickType = click;
-        }
-        if (packetType == ConfigurationPacket.SIDE_DATA) {
+        } else if (packetType == ConfigurationPacket.SIDE_DATA) {
             clickType = click;
-            inputSide = extra;
+            this.inputSide = inputSide;
             transmission = trans;
-        }
-        if (packetType == ConfigurationPacket.INPUT_COLOR) {
+        } else if (packetType == ConfigurationPacket.INPUT_COLOR) {
             clickType = click;
-            inputSide = extra;
+            this.inputSide = inputSide;
         }
     }
 
@@ -53,7 +66,7 @@ public class PacketConfigurationUpdate {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
+            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.pos);
             if (tile instanceof ISideConfiguration) {
                 ISideConfiguration config = (ISideConfiguration) tile;
                 if (message.packetType == ConfigurationPacket.EJECT) {
@@ -62,20 +75,18 @@ public class PacketConfigurationUpdate {
                         info.setEjecting(!info.isEjecting());
                     }
                 } else if (message.packetType == ConfigurationPacket.SIDE_DATA) {
-                    //TODO: Re-evaluate
-                    RelativeSide relativeSide = RelativeSide.byIndex(message.inputSide);
                     ConfigInfo info = config.getConfig().getConfig(message.transmission);
                     if (info != null) {
                         if (message.clickType == 0) {
-                            info.incrementDataType(relativeSide);
+                            info.incrementDataType(message.inputSide);
                         } else if (message.clickType == 1) {
-                            info.decrementDataType(relativeSide);
+                            info.decrementDataType(message.inputSide);
                         } else if (message.clickType == 2) {
-                            info.setDataType(relativeSide, DataType.NONE);
+                            info.setDataType(message.inputSide, DataType.NONE);
                         }
                     }
                     //Notify the neighbor on that side our state changed
-                    MekanismUtils.notifyNeighborOfChange(tile.getWorld(), relativeSide.getDirection(config.getOrientation()), tile.getPos());
+                    MekanismUtils.notifyNeighborOfChange(tile.getWorld(), message.inputSide.getDirection(config.getOrientation()), tile.getPos());
                     if (tile instanceof TileEntityUpdateable) {
                         ((TileEntityUpdateable) tile).sendUpdatePacket();
                     }
@@ -90,18 +101,17 @@ public class PacketConfigurationUpdate {
                         ejector.setOutputColor(null);
                     }
                 } else if (message.packetType == ConfigurationPacket.INPUT_COLOR) {
-                    //TODO: Re-evaluate
-                    RelativeSide relativeSide = RelativeSide.byIndex(message.inputSide);
                     TileComponentEjector ejector = config.getEjector();
                     if (message.clickType == 0) {
-                        ejector.setInputColor(relativeSide, TransporterUtils.increment(ejector.getInputColor(relativeSide)));
+                        ejector.setInputColor(message.inputSide, TransporterUtils.increment(ejector.getInputColor(message.inputSide)));
                     } else if (message.clickType == 1) {
-                        ejector.setInputColor(relativeSide, TransporterUtils.decrement(ejector.getInputColor(relativeSide)));
+                        ejector.setInputColor(message.inputSide, TransporterUtils.decrement(ejector.getInputColor(message.inputSide)));
                     } else if (message.clickType == 2) {
-                        ejector.setInputColor(relativeSide, null);
+                        ejector.setInputColor(message.inputSide, null);
                     }
                 } else if (message.packetType == ConfigurationPacket.STRICT_INPUT) {
-                    config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
+                    TileComponentEjector ejector = config.getEjector();
+                    ejector.setStrictInput(!ejector.hasStrictInput());
                 }
             }
         });
@@ -110,41 +120,40 @@ public class PacketConfigurationUpdate {
 
     public static void encode(PacketConfigurationUpdate pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.packetType);
-        pkt.coord4D.write(buf);
+        buf.writeBlockPos(pkt.pos);
         if (pkt.packetType == ConfigurationPacket.EJECT) {
             buf.writeEnumValue(pkt.transmission);
         } else if (pkt.packetType == ConfigurationPacket.SIDE_DATA) {
-            buf.writeInt(pkt.clickType);
-            buf.writeInt(pkt.inputSide);
+            buf.writeVarInt(pkt.clickType);
+            buf.writeEnumValue(pkt.inputSide);
             buf.writeEnumValue(pkt.transmission);
         } else if (pkt.packetType == ConfigurationPacket.EJECT_COLOR) {
-            buf.writeInt(pkt.clickType);
+            buf.writeVarInt(pkt.clickType);
         } else if (pkt.packetType == ConfigurationPacket.INPUT_COLOR) {
-            buf.writeInt(pkt.clickType);
-            buf.writeInt(pkt.inputSide);
+            buf.writeVarInt(pkt.clickType);
+            buf.writeEnumValue(pkt.inputSide);
         }
     }
 
     public static PacketConfigurationUpdate decode(PacketBuffer buf) {
         ConfigurationPacket packetType = buf.readEnumValue(ConfigurationPacket.class);
-        Coord4D coord4D = Coord4D.read(buf);
+        BlockPos pos = buf.readBlockPos();
         int clickType = 0;
-        int extra = 0;
+        RelativeSide inputSide = null;
         TransmissionType transmission = null;
-
         if (packetType == ConfigurationPacket.EJECT) {
             transmission = buf.readEnumValue(TransmissionType.class);
         } else if (packetType == ConfigurationPacket.SIDE_DATA) {
-            clickType = buf.readInt();
-            extra = buf.readInt();//inputSide
+            clickType = buf.readVarInt();
+            inputSide = buf.readEnumValue(RelativeSide.class);
             transmission = buf.readEnumValue(TransmissionType.class);
         } else if (packetType == ConfigurationPacket.EJECT_COLOR) {
-            clickType = buf.readInt();
+            clickType = buf.readVarInt();
         } else if (packetType == ConfigurationPacket.INPUT_COLOR) {
-            clickType = buf.readInt();
-            extra = buf.readInt();//inputSide
+            clickType = buf.readVarInt();
+            inputSide = buf.readEnumValue(RelativeSide.class);
         }
-        return new PacketConfigurationUpdate(packetType, coord4D, clickType, extra, transmission);
+        return new PacketConfigurationUpdate(packetType, pos, clickType, inputSide, transmission);
     }
 
     public enum ConfigurationPacket {

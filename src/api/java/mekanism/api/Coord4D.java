@@ -102,7 +102,7 @@ public class Coord4D {//TODO: Replace this with GlobalPos
      * @return the Coord4D from the data input
      */
     public static Coord4D read(PacketBuffer dataStream) {
-        return new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), DimensionType.byName(dataStream.readResourceLocation()));
+        return new Coord4D(dataStream.readBlockPos(), DimensionType.byName(dataStream.readResourceLocation()));
     }
 
     public BlockPos getPos() {
@@ -130,9 +130,7 @@ public class Coord4D {//TODO: Replace this with GlobalPos
      * @param dataStream - the PacketBuffer to add the data to
      */
     public void write(PacketBuffer dataStream) {
-        dataStream.writeInt(x);
-        dataStream.writeInt(y);
-        dataStream.writeInt(z);
+        dataStream.writeBlockPos(getPos());
         dataStream.writeResourceLocation(dimension.getRegistryName());
     }
 

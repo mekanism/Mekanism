@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+//TODO: Re-evaluate/rewrite
 public class PacketPortableTeleporter {
 
     private PortableTeleporterPacketType packetType;
@@ -144,7 +145,7 @@ public class PacketPortableTeleporter {
                                         ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
                                     }
                                     player.closeScreen();
-                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(new Coord4D(player)), world, coords.getPos());
+                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.getPosition()), world, coords.getPos());
                                     TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
                                     if (player instanceof ServerPlayerEntity) {
                                         TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coords);

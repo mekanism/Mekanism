@@ -12,7 +12,7 @@ import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
-import mekanism.common.tile.interfaces.IHasToggleableMode;
+import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -154,9 +154,9 @@ public class PacketGuiInteract {
             }
         }),
 
-        TOGGLE_MODE_BUTTON((tile, extra) -> {
-            if (tile instanceof IHasToggleableMode) {
-                ((IHasToggleableMode) tile).toggleMode();
+        NEXT_MODE((tile, extra) -> {
+            if (tile instanceof IHasMode) {
+                ((IHasMode) tile).nextMode();
             }
         }),
         ENCODE_FORMULA((tile, extra) -> {
@@ -215,12 +215,6 @@ public class PacketGuiInteract {
         SET_TIME((tile, extra) -> {
             if (tile instanceof TileEntityLaserAmplifier) {
                 ((TileEntityLaserAmplifier) tile).setTime(extra);
-            }
-        }),
-
-        NEXT_MODE((tile, extra) -> {
-            if (tile instanceof TileEntityLaserAmplifier) {
-                ((TileEntityLaserAmplifier) tile).nextMode();
             }
         }),
 

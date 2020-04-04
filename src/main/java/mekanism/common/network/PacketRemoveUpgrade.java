@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
+//TODO: Re-evaluate/rewrite
 public class PacketRemoveUpgrade {
 
     private Coord4D coord4D;
