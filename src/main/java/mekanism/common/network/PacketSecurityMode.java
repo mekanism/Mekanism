@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
-import mekanism.common.PacketHandler;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,7 +20,7 @@ public class PacketSecurityMode {
     }
 
     public static void handle(PacketSecurityMode message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }

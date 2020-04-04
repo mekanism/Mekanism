@@ -2,9 +2,9 @@ package mekanism.common.content.miner;
 
 import java.util.Set;
 import mekanism.api.NBTConstants;
-import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
+import mekanism.common.network.BasePacketHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -63,7 +63,7 @@ public class MTagFilter extends MinerFilter<MTagFilter> implements ITagFilter<MT
     @Override
     public void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        tagName = PacketHandler.readString(dataStream);
+        tagName = BasePacketHandler.readString(dataStream);
     }
 
     @Override

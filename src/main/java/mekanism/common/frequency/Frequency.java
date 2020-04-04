@@ -6,8 +6,8 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
-import mekanism.common.PacketHandler;
 import mekanism.common.content.entangloporter.InventoryFrequency;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -127,9 +127,9 @@ public class Frequency {
     }
 
     protected void read(PacketBuffer dataStream) {
-        name = PacketHandler.readString(dataStream);
+        name = BasePacketHandler.readString(dataStream);
         ownerUUID = dataStream.readUniqueId();
-        clientOwner = PacketHandler.readString(dataStream);
+        clientOwner = BasePacketHandler.readString(dataStream);
         publicFreq = dataStream.readBoolean();
     }
 

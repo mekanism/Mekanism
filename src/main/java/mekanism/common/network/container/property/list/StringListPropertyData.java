@@ -3,7 +3,7 @@ package mekanism.common.network.container.property.list;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.common.PacketHandler;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.container.list.ListType;
 import mekanism.common.network.container.list.PacketUpdateContainerStringList;
 import net.minecraft.network.PacketBuffer;
@@ -17,7 +17,7 @@ public class StringListPropertyData extends ListPropertyData<String> {
     public static StringListPropertyData read(short property, int elements, PacketBuffer buffer) {
         List<String> values = new ArrayList<>(elements);
         for (int i = 0; i < elements; i++) {
-            values.add(PacketHandler.readString(buffer));
+            values.add(BasePacketHandler.readString(buffer));
         }
         return new StringListPropertyData(property, values);
     }

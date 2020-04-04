@@ -3,7 +3,6 @@ package mekanism.common.network;
 import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -22,7 +21,7 @@ public class PacketGearStateUpdate {
     }
 
     public static void handle(PacketGearStateUpdate message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }

@@ -3,7 +3,6 @@ package mekanism.common.network;
 import java.util.Random;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
-import mekanism.common.PacketHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
@@ -23,7 +22,7 @@ public class PacketPortalFX {
     }
 
     public static void handle(PacketPortalFX message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }

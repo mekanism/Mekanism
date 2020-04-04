@@ -10,7 +10,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.FrequencyType;
@@ -76,7 +75,7 @@ public class PacketPortableTeleporter {
     }
 
     public static void handle(PacketPortableTeleporter message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }
@@ -205,11 +204,11 @@ public class PacketPortableTeleporter {
         if (packetType == PortableTeleporterPacketType.DATA_REQUEST || packetType == PortableTeleporterPacketType.SET_FREQ ||
             packetType == PortableTeleporterPacketType.DEL_FREQ || packetType == PortableTeleporterPacketType.TELEPORT) {
             if (buf.readBoolean()) {
-                frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
+                frequency = new Frequency(BasePacketHandler.readString(buf), null).setPublic(buf.readBoolean());
             }
         } else if (packetType == PortableTeleporterPacketType.DATA_RESPONSE) {
             if (buf.readBoolean()) {
-                frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
+                frequency = new Frequency(BasePacketHandler.readString(buf), null).setPublic(buf.readBoolean());
             }
             status = buf.readByte();
             int amount = buf.readVarInt();

@@ -4,7 +4,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.common.MekanismLang;
-import mekanism.common.PacketHandler;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.entity.EntityRobit;
@@ -88,7 +87,7 @@ public class PacketGuiButtonPress {
     }
 
     public static void handle(PacketGuiButtonPress message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }

@@ -4,7 +4,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.TriConsumer;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
@@ -56,7 +55,7 @@ public class PacketGuiInteract {
     }
 
     public static void handle(PacketGuiInteract message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }

@@ -1,10 +1,10 @@
 package mekanism.common.content.transporter;
 
 import mekanism.api.NBTConstants;
-import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.transporter.Finder.TagFinder;
+import mekanism.common.network.BasePacketHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -45,7 +45,7 @@ public class TTagFilter extends TransporterFilter<TTagFilter> implements ITagFil
     @Override
     public void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        tagName = PacketHandler.readString(dataStream);
+        tagName = BasePacketHandler.readString(dataStream);
     }
 
     @Override

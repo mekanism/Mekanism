@@ -2,10 +2,10 @@ package mekanism.generators.common.network;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
@@ -27,9 +27,9 @@ import net.minecraftforge.fml.network.NetworkHooks;
  */
 public class PacketGeneratorsGuiButtonPress {
 
-    private ClickedGeneratorsTileButton tileButton;
-    private int extra;
-    private BlockPos tilePosition;
+    private final ClickedGeneratorsTileButton tileButton;
+    private final int extra;
+    private final BlockPos tilePosition;
 
     public PacketGeneratorsGuiButtonPress(ClickedGeneratorsTileButton buttonClicked, BlockPos tilePosition) {
         this(buttonClicked, tilePosition, 0);
@@ -42,7 +42,7 @@ public class PacketGeneratorsGuiButtonPress {
     }
 
     public static void handle(PacketGeneratorsGuiButtonPress message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }

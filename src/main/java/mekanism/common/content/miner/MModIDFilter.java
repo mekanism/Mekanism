@@ -1,9 +1,9 @@
 package mekanism.common.content.miner;
 
 import mekanism.api.NBTConstants;
-import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
+import mekanism.common.network.BasePacketHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -49,7 +49,7 @@ public class MModIDFilter extends MinerFilter<MModIDFilter> implements IModIDFil
     @Override
     public void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        modID = PacketHandler.readString(dataStream);
+        modID = BasePacketHandler.readString(dataStream);
     }
 
     @Override

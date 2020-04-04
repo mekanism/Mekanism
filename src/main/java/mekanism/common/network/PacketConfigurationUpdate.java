@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -61,7 +60,7 @@ public class PacketConfigurationUpdate {
     }
 
     public static void handle(PacketConfigurationUpdate message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }

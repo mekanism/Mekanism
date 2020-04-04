@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
-import mekanism.common.PacketHandler;
 import mekanism.common.item.IModeItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -30,7 +29,7 @@ public class PacketModeChange {
     }
 
     public static void handle(PacketModeChange message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }
