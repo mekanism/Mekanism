@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.Modules.ModuleData;
@@ -116,9 +117,10 @@ public class GuiModuleScrollList extends GuiScrollList {
                 break;
             }
             ModuleData<?> module = currentList.get(index);
+            Module instance = Modules.load(currentItem, module);
             int multipliedElement = elementHeight * i;
             if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
-                guiObj.displayTooltip(module.getDescription(), xAxis, yAxis, guiObj.getWidth());
+                guiObj.displayTooltip(MekanismLang.MODULE_INSTALLED.translate(instance.getInstalledCount()), xAxis, yAxis, guiObj.getWidth());
             }
         }
     }

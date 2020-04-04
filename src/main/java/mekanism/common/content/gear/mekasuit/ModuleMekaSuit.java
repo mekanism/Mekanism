@@ -21,17 +21,18 @@ public abstract class ModuleMekaSuit extends Module {
     public static class ModuleElectrolyticBreathingUnit extends ModuleMekaSuit {
         @Override
         public void tickServer(PlayerEntity player) {
-            int maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(MekanismConfig.general.FROM_H2.get()).intValue());
+            FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
+            int maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(usage).intValue());
             int hydrogenUsed = 0;
             GasStack hydrogenStack = new GasStack(MekanismGases.HYDROGEN.get(), maxRate * 2);
             ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             Optional<IGasHandler> capability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
             if (Modules.load(chestStack, Modules.JETPACK_UNIT) != null && capability.isPresent()) {
-                hydrogenUsed = capability.get().insertGas(hydrogenStack, Action.EXECUTE).getAmount();
+                hydrogenUsed = maxRate * 2 - capability.get().insertGas(hydrogenStack, Action.EXECUTE).getAmount();
             }
             int oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
             int used = Math.max((int)Math.ceil(hydrogenUsed / 2D), oxygenUsed);
-            useEnergy(MekanismConfig.general.FROM_H2.get().multiply(used));
+            useEnergy(usage.multiply(used));
             player.setAir(player.getAir() + oxygenUsed);
         }
 

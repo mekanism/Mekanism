@@ -44,6 +44,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.eventbus.api.Event.Result;
 
 public class ModuleFarmingUnit extends ModuleMekaTool {
+
     private ModuleConfigItem<FarmingRadius> farmingRadius;
 
     @Override

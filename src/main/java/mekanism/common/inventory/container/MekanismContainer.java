@@ -168,10 +168,6 @@ public abstract class MekanismContainer extends Container {
             //Start by trying to insert it into the tile's inventory slots, first attempting to stack with other items
             stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, true);
             if (slotStack.getCount() == stackToInsert.getCount()) {
-                //First, see if this fits in the armor inventory
-                if (!(currentSlot instanceof ArmorSlot)) {
-                    stackToInsert = insertItem(armorSlots, stackToInsert, false);
-                }
                 //Then as long as if we still have the same number of items (failed to insert), try to insert it into the tile's inventory slots allowing for empty items
                 stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, false);
                 if (slotStack.getCount() == stackToInsert.getCount()) {
@@ -182,9 +178,11 @@ public abstract class MekanismContainer extends Container {
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, false);
                         stackToInsert = insertItem(mainInventorySlots, stackToInsert, false);
                     } else if (currentSlot instanceof MainInventorySlot) {
+                        stackToInsert = insertItem(armorSlots, stackToInsert, false);
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, true);
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, false);
                     } else if (currentSlot instanceof HotBarSlot) {
+                        stackToInsert = insertItem(armorSlots, stackToInsert, false);
                         stackToInsert = insertItem(mainInventorySlots, stackToInsert, true);
                         stackToInsert = insertItem(mainInventorySlots, stackToInsert, false);
                     } else {

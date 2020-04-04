@@ -59,9 +59,9 @@ public class StorageUtils {
     public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap) {
         addStoredGas(stack, tooltip, showMissingCap, MekanismLang.NO_GAS, stored -> {
             if (stored.isEmpty()) {
-                return MekanismLang.NO_GAS.translate();
+                return MekanismLang.NO_GAS.translateColored(EnumColor.GRAY);
             }
-            return MekanismLang.STORED.translate(stored, stored.getAmount());
+            return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY, stored.getAmount());
         });
     }
 

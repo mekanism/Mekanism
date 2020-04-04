@@ -22,7 +22,6 @@ import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketModeChange;
@@ -247,8 +246,6 @@ public class ClientTickHandler {
                 }
                 if (chestStack.getItem() instanceof ItemJetpack) {
                     ((ItemJetpack) chestStack.getItem()).useGas(chestStack, 1);
-                } else {
-                    ((ItemMekaSuitArmor) chestStack.getItem()).useGas(chestStack, MekanismGases.HYDROGEN.get(), 1);
                 }
             }
 

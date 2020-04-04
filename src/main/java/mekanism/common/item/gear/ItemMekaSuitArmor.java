@@ -82,7 +82,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
                 if (module.getInstalledCount() > 1) {
                     component.appendSibling(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, "", Integer.toString(module.getInstalledCount())));
                 }
-                tooltip.add(module.getData().getLangEntry().translateColored(EnumColor.GRAY));
+                tooltip.add(component);
             }
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
