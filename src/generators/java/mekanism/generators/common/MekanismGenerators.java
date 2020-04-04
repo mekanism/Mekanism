@@ -10,7 +10,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
-import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
+import mekanism.generators.common.network.GeneratorsPacketHandler;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.registries.GeneratorsFluids;
@@ -38,6 +38,10 @@ public class MekanismGenerators implements IModule {
      * MekanismGenerators version number
      */
     public final Version versionNumber;
+    /**
+     * Mekanism Generators Packet Pipeline
+     */
+    public static GeneratorsPacketHandler packetHandler = new GeneratorsPacketHandler();
 
     public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>("industrialTurbine");
 
@@ -71,15 +75,10 @@ public class MekanismGenerators implements IModule {
 
         MinecraftForge.EVENT_BUS.register(this);
 
-        registerPackets();
+        packetHandler.initialize();
 
         //Finalization
         Mekanism.logger.info("Loaded 'Mekanism Generators' module.");
-    }
-
-    private void registerPackets() {
-        Mekanism.packetHandler.registerMessage(100, PacketGeneratorsGuiButtonPress.class, PacketGeneratorsGuiButtonPress::encode, PacketGeneratorsGuiButtonPress::decode,
-              PacketGeneratorsGuiButtonPress::handle);
     }
 
     @Override

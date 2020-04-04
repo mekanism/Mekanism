@@ -1,17 +1,16 @@
 package mekanism.common.transmitters;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.IntConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILogisticalTransporter;
@@ -21,7 +20,7 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTransporterUpdate;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
@@ -34,7 +33,6 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -65,24 +63,6 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         transit.put(id, s);
     }
 
-    public void writeToPacket(TileNetworkList data) {
-        data.add(transit.size());
-        for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
-            data.add(entry.getIntKey());
-            entry.getValue().write(this, data);
-        }
-    }
-
-    public void readFromPacket(PacketBuffer dataStream) {
-        transit.clear();
-        int count = dataStream.readInt();
-        for (int i = 0; i < count; i++) {
-            int id = dataStream.readInt();
-            TransporterStack s = TransporterStack.readFromPacket(dataStream);
-            transit.put(id, s);
-        }
-    }
-
     public void writeToUpdateTag(CompoundNBT updateTag) {
         updateTag.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(getColor()));
         ListNBT stacks = new ListNBT();
@@ -105,7 +85,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             for (int i = 0; i < tagList.size(); i++) {
                 CompoundNBT compound = tagList.getCompound(i);
                 TransporterStack stack = TransporterStack.readFromUpdate(compound);
-                transit.put(compound.getInt(NBTConstants.INDEX), stack);
+                addStack(compound.getInt(NBTConstants.INDEX), stack);
             }
         }
     }
@@ -129,7 +109,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             ListNBT tagList = nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompound(i));
-                transit.put(nextId++, stack);
+                addStack(nextId++, stack);
             }
         }
     }
@@ -221,16 +201,15 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             }
 
             if (!deletes.isEmpty() || !needsSync.isEmpty()) {
-                PacketTileEntity msg = new PacketTileEntity(coord, getTileEntity().makeBatchPacket(needsSync, deletes));
+                //Notify clients, so that we send the information before we start clearing our lists
+                Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(getTileEntity(), needsSync, deletes), world(), coord.getPos());
                 // Now remove any entries from transit that have been deleted
-                deletes.forEach((IntConsumer) (id -> transit.remove(id)));
+                deletes.forEach((IntConsumer) (this::deleteStack));
 
                 // Clear the pending sync packets
                 needsSync.clear();
 
-                // Finally, notify clients and mark chunk for save
-                //TODO: Check
-                Mekanism.packetHandler.sendToAllTracking(msg, world(), coord.getPos());
+                // Finally, mark chunk for save
                 MekanismUtils.saveChunk(getTileEntity());
             }
         }
@@ -285,9 +264,9 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             stack.itemStack = response.getStack();
             if (doEmit) {
                 int stackId = nextId++;
-                transit.put(stackId, stack);
+                addStack(stackId, stack);
                 TileEntityLogisticalTransporter tile = getTileEntity();
-                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(tile, tile.makeSyncPacket(stackId, stack)), tile);
+                Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(tile, stackId, stack), tile);
                 MekanismUtils.saveChunk(tile);
             }
         }
@@ -318,7 +297,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         // in a batch on a per-tick basis.
         int stackId = nextId++;
         stack.progress = progress;
-        transit.put(stackId, stack);
+        addStack(stackId, stack);
         needsSync.put(stackId, stack);
 
         // N.B. We are not marking the chunk as dirty here! I don't believe it's needed, since

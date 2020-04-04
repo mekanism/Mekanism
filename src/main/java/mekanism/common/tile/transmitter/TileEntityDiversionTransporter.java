@@ -1,24 +1,19 @@
 package mekanism.common.tile.transmitter;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.states.TransmitterType;
-import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 
@@ -66,35 +61,6 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
             int index = i;
             NBTUtils.setIntIfPresent(tag, NBTConstants.MODE + index, mode -> modes[index] = mode);
         }
-    }
-
-    //TODO: Remove
-    @Override
-    @Deprecated
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-                modes[i] = dataStream.readInt();
-            }
-        }
-    }
-
-    @Override
-    public TileNetworkList makeSyncPacket(int stackId, TransporterStack stack) {
-        return addModes(super.makeSyncPacket(stackId, stack));
-    }
-
-    @Override
-    public TileNetworkList makeBatchPacket(Int2ObjectMap<TransporterStack> updates, IntSet deletes) {
-        return addModes(super.makeBatchPacket(updates, deletes));
-    }
-
-    private TileNetworkList addModes(TileNetworkList data) {
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            data.add(modes[i]);
-        }
-        return data;
     }
 
     @Override

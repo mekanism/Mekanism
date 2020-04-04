@@ -2,7 +2,6 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +25,7 @@ public class PacketUpdateTile {
     }
 
     public static void handle(PacketUpdateTile message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }

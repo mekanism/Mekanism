@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.button;
 
 import java.util.function.Supplier;
-import mekanism.api.Coord4D;
+import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
@@ -18,12 +18,11 @@ public class SideDataButton extends MekanismButton {
     private final Supplier<DataType> dataTypeSupplier;
     private final Supplier<EnumColor> colorSupplier;
 
-    public SideDataButton(IGuiWrapper gui, int x, int y, int slotPosMapIndex, Supplier<DataType> dataTypeSupplier, Supplier<EnumColor> colorSupplier,
+    public SideDataButton(IGuiWrapper gui, int x, int y, RelativeSide slotPos, Supplier<DataType> dataTypeSupplier, Supplier<EnumColor> colorSupplier,
           TileEntity tile, Supplier<TransmissionType> transmissionType, ConfigurationPacket packetType, IHoverable onHover) {
         super(gui, x, y, 14, 14, "",
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile), Screen.hasShiftDown() ? 2 : 0, slotPosMapIndex, transmissionType.get())),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile), 1, slotPosMapIndex, transmissionType.get())),
-              onHover);
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, tile.getPos(), Screen.hasShiftDown() ? 2 : 0, slotPos, transmissionType.get())),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, tile.getPos(), 1, slotPos, transmissionType.get())), onHover);
         this.dataTypeSupplier = dataTypeSupplier;
         this.colorSupplier = colorSupplier;
     }

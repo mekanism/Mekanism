@@ -610,7 +610,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             }
         }
         if (canHandleEnergy() && handlesEnergy()) {
-            //TODO: Transition this over?
             container.track(SyncableFloatingLong.create(this::getInputRate, this::setInputRate));
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {

@@ -15,7 +15,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -34,6 +33,7 @@ import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -383,11 +383,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
-                String name = PacketHandler.readString(dataStream);
+                String name = BasePacketHandler.readString(dataStream);
                 boolean isPublic = dataStream.readBoolean();
                 setFrequency(name, isPublic);
             } else if (type == 1) {
-                String freq = PacketHandler.readString(dataStream);
+                String freq = BasePacketHandler.readString(dataStream);
                 boolean isPublic = dataStream.readBoolean();
                 FrequencyManager manager = getManager(new Frequency(freq, null).setPublic(isPublic));
                 if (manager != null) {

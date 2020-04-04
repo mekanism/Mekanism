@@ -8,12 +8,7 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 public class PacketClearRecipeCache {
 
     public static void handle(PacketClearRecipeCache message, Supplier<Context> context) {
-        context.get().enqueueWork(() -> {
-            //TODO: 1.14, Only do it if not local
-            //if (!netManager.isLocalChannel()) {
-            MekanismRecipeType.clearCache();
-            //}
-        });
+        context.get().enqueueWork(MekanismRecipeType::clearCache);
         context.get().setPacketHandled(true);
     }
 

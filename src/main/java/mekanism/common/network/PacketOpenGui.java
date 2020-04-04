@@ -2,7 +2,6 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import mekanism.common.MekanismLang;
-import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import net.minecraft.entity.player.PlayerEntity;

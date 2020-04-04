@@ -4,7 +4,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.common.MekanismLang;
-import mekanism.common.PacketHandler;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.entity.EntityRobit;
@@ -88,7 +87,7 @@ public class PacketGuiButtonPress {
     }
 
     public static void handle(PacketGuiButtonPress message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }
@@ -123,7 +122,7 @@ public class PacketGuiButtonPress {
         buf.writeBoolean(pkt.hasEntity);
         if (pkt.hasEntity) {
             buf.writeEnumValue(pkt.entityButton);
-            buf.writeInt(pkt.entityID);
+            buf.writeVarInt(pkt.entityID);
         } else {
             buf.writeEnumValue(pkt.tileButton);
             buf.writeBlockPos(pkt.tilePosition);
@@ -134,7 +133,7 @@ public class PacketGuiButtonPress {
     public static PacketGuiButtonPress decode(PacketBuffer buf) {
         boolean hasEntity = buf.readBoolean();
         if (hasEntity) {
-            return new PacketGuiButtonPress(buf.readEnumValue(ClickedEntityButton.class), buf.readInt());
+            return new PacketGuiButtonPress(buf.readEnumValue(ClickedEntityButton.class), buf.readVarInt());
         }
         return new PacketGuiButtonPress(buf.readEnumValue(ClickedTileButton.class), buf.readBlockPos(), buf.readVarInt());
     }

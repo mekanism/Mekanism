@@ -30,7 +30,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         super.init();
         addButton(new GuiInnerScreen(this, 50, 23, 80, 42));
         addButton(new GuiDownArrow(this, 150, 38));
-        addButton(new GuiContainerEditMode(this, tile));
+        addButton(new GuiContainerEditMode<>(this, tile));
         addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.fluidTank, GaugeType.MEDIUM, this, 6, 13));
     }
 

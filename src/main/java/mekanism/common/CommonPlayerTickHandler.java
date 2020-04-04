@@ -79,6 +79,14 @@ public class CommonPlayerTickHandler {
         return false;
     }
 
+    public static boolean isFreeRunnerOn(PlayerEntity player) {
+        ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
+        if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
+            return ((ItemFreeRunners) stack.getItem()).getMode(stack) == FreeRunnerMode.NORMAL && !player.isShiftKeyDown();
+        }
+        return false;
+    }
+
     @SubscribeEvent
     public void onTick(PlayerTickEvent event) {
         if (event.phase == Phase.END && event.side.isServer()) {
@@ -87,8 +95,7 @@ public class CommonPlayerTickHandler {
     }
 
     public void tickEnd(PlayerEntity player) {
-        ItemStack feetStack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
-        if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners && !player.isShiftKeyDown()) {
+        if (CommonPlayerTickHandler.isFreeRunnerOn(player)) {
             player.stepHeight = 1.002F;
         } else if (player.stepHeight == 1.002F) {
             player.stepHeight = 0.6F;

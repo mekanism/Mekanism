@@ -30,7 +30,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         super.init();
         addButton(new GuiElementHolder(this, 23, 31, 130, 90));
         addButton(new MekanismImageButton(this, getGuiLeft() + 23, getGuiTop() + 19, 11, 18, getButtonLocation("toggle"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_MODE_BUTTON, tile)), getOnHover(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING)));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING)));
         for (ReactorLogic type : ReactorLogic.values()) {
             int typeShift = 22 * type.ordinal();
             addButton(new ReactorLogicButton(this, getGuiLeft() + 24, getGuiTop() + 32 + typeShift, type, tile,

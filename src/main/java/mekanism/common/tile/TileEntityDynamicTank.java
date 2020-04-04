@@ -144,9 +144,9 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     }
 
     @Override
-    public void setContainerEditMode(ContainerEditMode mode) {
+    public void nextMode() {
         if (structure != null) {
-            structure.editMode = mode;
+            structure.editMode = structure.editMode.getNext();
         }
     }
 
@@ -283,7 +283,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableEnum.create(ContainerEditMode::byIndexStatic, ContainerEditMode.BOTH, this::getContainerEditMode, this::setContainerEditMode));
+        container.track(SyncableEnum.create(ContainerEditMode::byIndexStatic, ContainerEditMode.BOTH, this::getContainerEditMode, mode -> {
+            if (structure != null) {
+                structure.editMode = mode;
+            }
+        }));
         container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getVolume(), value -> {
             if (structure != null) {
                 structure.setVolume(value);

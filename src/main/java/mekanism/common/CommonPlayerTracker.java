@@ -3,13 +3,11 @@ package mekanism.common;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.network.PacketClearRecipeCache;
-import mekanism.common.network.PacketFlamethrowerData;
-import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketMekanismTags;
-import mekanism.common.network.PacketScubaTankData;
+import mekanism.common.network.PacketPlayerData;
 import mekanism.common.network.PacketSecurityUpdate;
-import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -18,6 +16,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
@@ -43,8 +42,7 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         if (!event.getPlayer().world.isRemote) {
-            syncChangedData((ServerPlayerEntity) event.getPlayer());
-            Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(SecurityPacket.FULL, null, null), (ServerPlayerEntity) event.getPlayer());
+            Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketMekanismTags(Mekanism.instance.getTagManager()), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketClearRecipeCache(), (ServerPlayerEntity) event.getPlayer());
             event.getPlayer().sendMessage(ALPHA_WARNING);
@@ -59,8 +57,12 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
         Mekanism.playerState.clearPlayer(event.getPlayer().getUniqueID());
-        if (!event.getPlayer().world.isRemote) {
-            syncChangedData((ServerPlayerEntity) event.getPlayer());
+    }
+
+    @SubscribeEvent
+    public void onPlayerStartTrackingEvent(PlayerEvent.StartTracking event) {
+        if (event.getTarget() instanceof PlayerEntity && event.getPlayer() instanceof ServerPlayerEntity) {
+            Mekanism.packetHandler.sendTo(new PacketPlayerData(event.getTarget().getUniqueID()), (ServerPlayerEntity) event.getPlayer());
         }
     }
 
@@ -84,12 +86,5 @@ public class CommonPlayerTracker {
         if (event.getEntity() instanceof ItemEntity && monitoringCardboardBox) {
             event.setCanceled(true);
         }
-    }
-
-    private void syncChangedData(ServerPlayerEntity player) {
-        // TODO: Coalesce all these sync events into a single message
-        Mekanism.packetHandler.sendTo(PacketJetpackData.FULL(Mekanism.playerState.getActiveJetpacks()), player);
-        Mekanism.packetHandler.sendTo(PacketScubaTankData.FULL(Mekanism.playerState.getActiveGasmasks()), player);
-        Mekanism.packetHandler.sendTo(PacketFlamethrowerData.FULL(Mekanism.playerState.getActiveFlamethrowers()), player);
     }
 }

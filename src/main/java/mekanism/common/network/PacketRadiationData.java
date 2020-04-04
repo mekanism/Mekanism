@@ -2,7 +2,6 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.radiation.RadiationManager.RadiationScale;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;

@@ -6,9 +6,8 @@ import java.util.UUID;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketFlamethrowerData;
-import mekanism.common.network.PacketJetpackData;
-import mekanism.common.network.PacketScubaTankData;
+import mekanism.common.network.PacketGearStateUpdate;
+import mekanism.common.network.PacketGearStateUpdate.GearType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -64,7 +63,7 @@ public class PlayerState {
         if (changed && world.isRemote()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler.sendToServer(PacketJetpackData.UPDATE(uuid, isActive));
+                Mekanism.packetHandler.sendToServer(new PacketGearStateUpdate(GearType.JETPACK, uuid, isActive));
             }
 
             // Start a sound playing if the person is now flying
@@ -80,12 +79,6 @@ public class PlayerState {
 
     public Set<UUID> getActiveJetpacks() {
         return activeJetpacks;
-    }
-
-    public void setActiveJetpacks(Set<UUID> newActiveJetpacks) {
-        for (UUID activeUser : newActiveJetpacks) {
-            setJetpackState(activeUser, true, false);
-        }
     }
 
     // ----------------------
@@ -107,7 +100,7 @@ public class PlayerState {
         if (changed && world.isRemote()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler.sendToServer(PacketScubaTankData.UPDATE(uuid, isActive));
+                Mekanism.packetHandler.sendToServer(new PacketGearStateUpdate(GearType.GAS_MASK, uuid, isActive));
             }
 
             // Start a sound playing if the person is now using a gasmask
@@ -123,12 +116,6 @@ public class PlayerState {
 
     public Set<UUID> getActiveGasmasks() {
         return activeGasmasks;
-    }
-
-    public void setActiveGasmasks(Set<UUID> newActiveGasmasks) {
-        for (UUID activeUser : newActiveGasmasks) {
-            setGasmaskState(activeUser, true, false);
-        }
     }
 
     // ----------------------
@@ -156,7 +143,7 @@ public class PlayerState {
             if (changed) {
                 // If the player is the "local" player, we need to tell the server the state has changed
                 if (isLocal) {
-                    Mekanism.packetHandler.sendToServer(PacketFlamethrowerData.UPDATE(uuid, isActive));
+                    Mekanism.packetHandler.sendToServer(new PacketGearStateUpdate(GearType.FLAMETHROWER, uuid, isActive));
                 }
 
                 // Start a sound playing if the person is now using a flamethrower
@@ -185,11 +172,4 @@ public class PlayerState {
     public Set<UUID> getActiveFlamethrowers() {
         return activeFlamethrowers;
     }
-
-    public void setActiveFlamethrowers(Set<UUID> newActiveFlamethrowers) {
-        for (UUID activeUser : newActiveFlamethrowers) {
-            setFlamethrowerState(activeUser, true, false);
-        }
-    }
-
 }

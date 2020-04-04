@@ -42,9 +42,9 @@ public class GuiTTagFilter extends GuiTagFilter<TTagFilter, TileEntityLogistical
             }
             if (filter.getTagName() != null && !filter.getTagName().isEmpty()) {
                 if (isNew) {
-                    Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tile), filter));
+                    Mekanism.packetHandler.sendToServer(new PacketNewFilter(tile.getPos(), filter));
                 } else {
-                    Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tile), false, origFilter, filter));
+                    Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), false, origFilter, filter));
                 }
                 sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             } else {
@@ -53,7 +53,7 @@ public class GuiTTagFilter extends GuiTagFilter<TTagFilter, TileEntityLogistical
             }
         }));
         addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 109, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
-            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tile), true, origFilter, null));
+            Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
         addButton(new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"),

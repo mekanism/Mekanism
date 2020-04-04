@@ -7,7 +7,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-import mekanism.common.PacketHandler;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.transmitters.grid.GasNetwork;
@@ -18,16 +17,12 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketTransmitterUpdate {
 
-    private PacketType packetType;
-
-    private UUID networkID;
-
+    private final PacketType packetType;
+    private final UUID networkID;
     private float energyScale;
-
     @Nonnull
     private Gas gas = MekanismAPI.EMPTY_GAS;
     private float gasScale;
-
     @Nonnull
     private FluidStack fluidStack = FluidStack.EMPTY;
     private float fluidScale;
@@ -59,7 +54,7 @@ public class PacketTransmitterUpdate {
     }
 
     public static void handle(PacketTransmitterUpdate message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }
@@ -91,7 +86,7 @@ public class PacketTransmitterUpdate {
     public static void encode(PacketTransmitterUpdate pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.packetType);
         buf.writeUniqueId(pkt.networkID);
-        PacketHandler.log("Sending '" + pkt.packetType + "' update message for network with id " + pkt.networkID);
+        BasePacketHandler.log("Sending '" + pkt.packetType + "' update message for network with id " + pkt.networkID);
         switch (pkt.packetType) {
             case ENERGY:
                 buf.writeFloat(pkt.energyScale);
@@ -101,7 +96,6 @@ public class PacketTransmitterUpdate {
                 buf.writeFloat(pkt.gasScale);
                 break;
             case FLUID:
-                //TODO: Use FluidStack#writeToPacket in more places
                 pkt.fluidStack.writeToPacket(buf);
                 buf.writeFloat(pkt.fluidScale);
                 break;

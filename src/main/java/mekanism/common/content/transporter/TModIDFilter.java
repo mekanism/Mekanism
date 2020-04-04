@@ -1,10 +1,10 @@
 package mekanism.common.content.transporter;
 
 import mekanism.api.NBTConstants;
-import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
+import mekanism.common.network.BasePacketHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -45,7 +45,7 @@ public class TModIDFilter extends TransporterFilter<TModIDFilter> implements IMo
     @Override
     public void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        modID = PacketHandler.readString(dataStream);
+        modID = BasePacketHandler.readString(dataStream);
     }
 
     @Override

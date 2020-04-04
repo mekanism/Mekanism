@@ -1,26 +1,25 @@
 package mekanism.client.gui.element;
 
-import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.base.IRedstoneControl.RedstoneControl;
-import mekanism.common.network.PacketRedstoneControl;
+import mekanism.common.network.PacketGuiInteract;
+import mekanism.common.network.PacketGuiInteract.GuiInteraction;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
+public class GuiRedstoneControl extends GuiInsetElement<TileEntityMekanism> {
 
     private static final ResourceLocation DISABLED = MekanismUtils.getResource(ResourceType.GUI, "gun_powder.png");
     private static final ResourceLocation HIGH = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_high.png");
     private static final ResourceLocation LOW = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_low.png");
     private static final ResourceLocation PULSE = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_pulse.png");
 
-    public GuiRedstoneControl(IGuiWrapper gui, TileEntity tile) {
+    public GuiRedstoneControl(IGuiWrapper gui, TileEntityMekanism tile) {
         super(DISABLED, gui, tile, gui.getWidth(), 138, 26, 18);
     }
 
@@ -31,9 +30,7 @@ public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        IRedstoneControl control = (IRedstoneControl) tile;
-        RedstoneControl next = control.getControlType().getNext(mode -> mode != RedstoneControl.PULSE || control.canPulse());
-        Mekanism.packetHandler.sendToServer(new PacketRedstoneControl(Coord4D.get(tile), next));
+        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_REDSTONE_CONTROL, tile));
     }
 
     @Override

@@ -24,7 +24,6 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileNetwork;
@@ -47,6 +46,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -298,11 +298,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         if (!isRemote()) {
             int type = dataStream.readInt();
             if (type == 0) {
-                String name = PacketHandler.readString(dataStream);
+                String name = BasePacketHandler.readString(dataStream);
                 boolean isPublic = dataStream.readBoolean();
                 setFrequency(name, isPublic);
             } else if (type == 1) {
-                String freq = PacketHandler.readString(dataStream);
+                String freq = BasePacketHandler.readString(dataStream);
                 boolean isPublic = dataStream.readBoolean();
                 FrequencyManager manager = getManager(new InventoryFrequency(freq, null).setPublic(isPublic));
                 if (manager != null) {

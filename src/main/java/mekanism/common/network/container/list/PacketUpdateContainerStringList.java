@@ -3,7 +3,7 @@ package mekanism.common.network.container.list;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.common.PacketHandler;
+import mekanism.common.network.BasePacketHandler;
 import net.minecraft.network.PacketBuffer;
 
 public class PacketUpdateContainerStringList extends PacketUpdateContainerList<String> {
@@ -18,7 +18,7 @@ public class PacketUpdateContainerStringList extends PacketUpdateContainerList<S
         int elements = buffer.readVarInt();
         List<String> values = new ArrayList<>(elements);
         for (int i = 0; i < elements; i++) {
-            values.add(PacketHandler.readString(buffer));
+            values.add(BasePacketHandler.readString(buffer));
         }
         return new PacketUpdateContainerStringList(windowId, property, values);
     }

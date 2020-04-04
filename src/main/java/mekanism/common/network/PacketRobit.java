@@ -2,7 +2,6 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -27,7 +26,7 @@ public class PacketRobit {
     }
 
     public static void handle(PacketRobit message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }

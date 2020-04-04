@@ -10,7 +10,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.FrequencyType;
@@ -29,6 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+//TODO: Re-evaluate/rewrite
 public class PacketPortableTeleporter {
 
     private PortableTeleporterPacketType packetType;
@@ -75,7 +75,7 @@ public class PacketPortableTeleporter {
     }
 
     public static void handle(PacketPortableTeleporter message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }
@@ -144,7 +144,7 @@ public class PacketPortableTeleporter {
                                         ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
                                     }
                                     player.closeScreen();
-                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(new Coord4D(player)), world, coords.getPos());
+                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.getPosition()), world, coords.getPos());
                                     TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
                                     if (player instanceof ServerPlayerEntity) {
                                         TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coords);
@@ -183,11 +183,11 @@ public class PacketPortableTeleporter {
                 buf.writeBoolean(false);
             }
             buf.writeByte(pkt.status);
-            buf.writeInt(pkt.publicCache.size());
+            buf.writeVarInt(pkt.publicCache.size());
             for (Frequency freq : pkt.publicCache) {
                 freq.write(buf);
             }
-            buf.writeInt(pkt.privateCache.size());
+            buf.writeVarInt(pkt.privateCache.size());
             for (Frequency freq : pkt.privateCache) {
                 freq.write(buf);
             }
@@ -204,18 +204,18 @@ public class PacketPortableTeleporter {
         if (packetType == PortableTeleporterPacketType.DATA_REQUEST || packetType == PortableTeleporterPacketType.SET_FREQ ||
             packetType == PortableTeleporterPacketType.DEL_FREQ || packetType == PortableTeleporterPacketType.TELEPORT) {
             if (buf.readBoolean()) {
-                frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
+                frequency = new Frequency(BasePacketHandler.readString(buf), null).setPublic(buf.readBoolean());
             }
         } else if (packetType == PortableTeleporterPacketType.DATA_RESPONSE) {
             if (buf.readBoolean()) {
-                frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
+                frequency = new Frequency(BasePacketHandler.readString(buf), null).setPublic(buf.readBoolean());
             }
             status = buf.readByte();
-            int amount = buf.readInt();
+            int amount = buf.readVarInt();
             for (int i = 0; i < amount; i++) {
                 publicCache.add(Frequency.readFromPacket(buf));
             }
-            amount = buf.readInt();
+            amount = buf.readVarInt();
             for (int i = 0; i < amount; i++) {
                 privateCache.add(Frequency.readFromPacket(buf));
             }

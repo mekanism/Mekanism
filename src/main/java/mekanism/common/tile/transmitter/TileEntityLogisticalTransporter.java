@@ -1,13 +1,10 @@
 package mekanism.common.tile.transmitter;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
@@ -16,7 +13,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -39,17 +35,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> implements ITileNetwork {
-
-    private final byte SYNC_PACKET = 0;
-    private final byte BATCH_PACKET = 1;
+public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
 
     public final TransporterTier tier;
 
@@ -175,56 +167,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
         getTransmitter().readFromUpdateTag(tag);
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        //TODO: Make a proper way for the client to retrieve sync and batch packets
-        if (isRemote()) {
-            byte type = dataStream.readByte();
-            if (type == SYNC_PACKET) {
-                readStack(dataStream);
-            } else if (type == BATCH_PACKET) {
-                int updates = dataStream.readInt();
-                for (int i = 0; i < updates; i++) {
-                    readStack(dataStream);
-                }
-                int deletes = dataStream.readInt();
-                for (int i = 0; i < deletes; i++) {
-                    getTransmitter().deleteStack(dataStream.readInt());
-                }
-            }
-        }
-    }
-
-    public TileNetworkList makeSyncPacket(int stackId, TransporterStack stack) {
-        TileNetworkList data = new TileNetworkList();
-        data.add(SYNC_PACKET);
-        data.add(stackId);
-        stack.write(getTransmitter(), data);
-        return data;
-    }
-
-    public TileNetworkList makeBatchPacket(Int2ObjectMap<TransporterStack> updates, IntSet deletes) {
-        TileNetworkList data = new TileNetworkList();
-        data.add(BATCH_PACKET);
-        data.add(updates.size());
-        for (Int2ObjectMap.Entry<TransporterStack> entry : updates.int2ObjectEntrySet()) {
-            data.add(entry.getIntKey());
-            entry.getValue().write(getTransmitter(), data);
-        }
-        data.add(deletes.size());
-        data.addAll(deletes);
-        return data;
-    }
-
-    private void readStack(PacketBuffer dataStream) {
-        int id = dataStream.readInt();
-        TransporterStack stack = TransporterStack.readFromPacket(dataStream);
-        if (stack.progress == 0) {
-            stack.progress = 5;
-        }
-        getTransmitter().addStack(id, stack);
     }
 
     @Override

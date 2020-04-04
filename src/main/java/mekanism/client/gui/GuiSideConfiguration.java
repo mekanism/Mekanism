@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
@@ -78,10 +77,9 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Em
         addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 156, getGuiTop() + 6, 14, getButtonLocation("auto_eject"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType)),
-              getOnHover(MekanismLang.AUTO_EJECT)));
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos(), currentType)), getOnHover(MekanismLang.AUTO_EJECT)));
         for (GuiPos guiPos : slotPosList) {
-            addButton(new SideDataButton(this, getGuiLeft() + guiPos.xPos, getGuiTop() + guiPos.yPos, guiPos.relativeSide.ordinal(),
+            addButton(new SideDataButton(this, getGuiLeft() + guiPos.xPos, getGuiTop() + guiPos.yPos, guiPos.relativeSide,
                   () -> getTile().getConfig().getDataType(currentType, guiPos.relativeSide), () -> {
                 DataType dataType = getTile().getConfig().getDataType(currentType, guiPos.relativeSide);
                 return dataType == null ? EnumColor.GRAY : dataType.getColor();

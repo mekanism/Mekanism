@@ -17,11 +17,8 @@ public class PacketMekanismTags {
 
     public static void handle(PacketMekanismTags message, Supplier<Context> context) {
         context.get().enqueueWork(() -> {
-            //TODO: 1.14, Only do it if not local
-            //if (!netManager.isLocalChannel()) {
             GasTags.setCollection(message.tags.getGases());
             InfuseTypeTags.setCollection(message.tags.getInfuseTypes());
-            //}
         });
         context.get().setPacketHandled(true);
     }

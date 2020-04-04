@@ -41,7 +41,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.interfaces.IHasToggleableMode;
+import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
@@ -55,7 +55,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess, IHasToggleableMode {
+public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess, IHasMode {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
 
@@ -213,7 +213,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         }
         checkFormula();
         if (autoMode && formula == null) {
-            toggleMode();
+            nextMode();
         }
 
         if (autoMode && formula != null && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this))) {
@@ -441,7 +441,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     @Override
-    public void toggleMode() {
+    public void nextMode() {
         if (autoMode) {
             operatingTicks = 0;
             autoMode = false;

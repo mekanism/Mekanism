@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -19,6 +18,7 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.list.SyncableStringList;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
@@ -160,7 +160,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (!isRemote() && frequency != null) {
             int type = dataStream.readInt();
             if (type == 0) {
-                GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(PacketHandler.readString(dataStream));
+                GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(BasePacketHandler.readString(dataStream));
                 if (profile != null) {
                     frequency.addTrusted(profile.getId(), profile.getName());
                 }
