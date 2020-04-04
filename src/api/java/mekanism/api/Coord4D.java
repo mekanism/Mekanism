@@ -125,18 +125,6 @@ public class Coord4D {//TODO: Replace this with GlobalPos
     }
 
     /**
-     * Writes this Coord4D's data to an TileNetworkList for packet transfer.
-     *
-     * @param data - the TileNetworkList to add the data to
-     */
-    public void write(TileNetworkList data) {
-        data.add(x);
-        data.add(y);
-        data.add(z);
-        data.add(dimension.getRegistryName());
-    }
-
-    /**
      * Writes this Coord4D's data to a PacketBuffer for packet transfer.
      *
      * @param dataStream - the PacketBuffer to add the data to

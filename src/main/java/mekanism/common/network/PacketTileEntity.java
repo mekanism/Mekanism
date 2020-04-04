@@ -23,11 +23,7 @@ public class PacketTileEntity {
     private Coord4D coord4D;
 
     public PacketTileEntity(TileEntity tile, TileNetworkList params) {
-        this(Coord4D.get(tile), params);
-    }
-
-    public PacketTileEntity(Coord4D coord, TileNetworkList params) {
-        this(coord);
+        this(Coord4D.get(tile));
         parameters = params;
     }
 

@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.common.base.ILogisticalTransporter;
@@ -24,6 +22,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TransporterStack {
 
@@ -58,30 +57,30 @@ public class TransporterStack {
     public static TransporterStack readFromPacket(PacketBuffer dataStream) {
         TransporterStack stack = new TransporterStack();
         stack.read(dataStream);
+        if (stack.progress == 0) {
+            stack.progress = 5;
+        }
         return stack;
     }
 
-    public void write(ILogisticalTransporter transporter, TileNetworkList data) {
-        data.add(TransporterUtils.getColorIndex(color));
-
-        data.add(progress);
-        originalLocation.write(data);
-        data.add(pathType);
-
+    public void write(ILogisticalTransporter transporter, PacketBuffer buf) {
+        buf.writeVarInt(TransporterUtils.getColorIndex(color));
+        buf.writeVarInt(progress);
+        originalLocation.write(buf);
+        buf.writeEnumValue(pathType);
         if (pathToTarget.indexOf(transporter.coord()) > 0) {
-            data.add(true);
-            getNext(transporter).write(data);
+            buf.writeBoolean(true);
+            getNext(transporter).write(buf);
         } else {
-            data.add(false);
+            buf.writeBoolean(false);
         }
-
-        getPrev(transporter).write(data);
-        data.add(itemStack);
+        getPrev(transporter).write(buf);
+        buf.writeItemStack(itemStack);
     }
 
     public void read(PacketBuffer dataStream) {
-        color = TransporterUtils.readColor(dataStream.readInt());
-        progress = dataStream.readInt();
+        color = TransporterUtils.readColor(dataStream.readVarInt());
+        progress = dataStream.readVarInt();
         originalLocation = Coord4D.read(dataStream);
         pathType = dataStream.readEnumValue(Path.class);
 

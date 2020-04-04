@@ -66,14 +66,14 @@ public class PacketGuiInteract {
     public static void encode(PacketGuiInteract pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.interaction);
         buf.writeBlockPos(pkt.tilePosition);
-        buf.writeInt(pkt.extra);
+        buf.writeVarInt(pkt.extra);
     }
 
     public static PacketGuiInteract decode(PacketBuffer buf) {
-        return new PacketGuiInteract(buf.readEnumValue(GuiInteraction.class), buf.readBlockPos(), buf.readInt());
+        return new PacketGuiInteract(buf.readEnumValue(GuiInteraction.class), buf.readBlockPos(), buf.readVarInt());
     }
 
-    public enum GuiInteraction {
+    public enum GuiInteraction {//TODO: Cleanup this enum/the elements in it as it is rather disorganized order wise currently
         AUTO_SORT_BUTTON((tile, extra) -> {
             if (tile instanceof TileEntityFactory<?>) {
                 ((TileEntityFactory<?>) tile).toggleSorting();

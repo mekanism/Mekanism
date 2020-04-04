@@ -37,6 +37,7 @@ import mekanism.common.network.PacketSecurityMode;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTransmitterUpdate;
+import mekanism.common.network.PacketTransporterUpdate;
 import mekanism.common.network.PacketUpdateTile;
 import mekanism.common.network.container.PacketUpdateContainer;
 import mekanism.common.network.container.PacketUpdateContainerBatch;
@@ -163,6 +164,7 @@ public class PacketHandler {
     }
 
     public static void log(String log) {
+        //TODO: Add more logging for packets using this
         if (MekanismConfig.general.logPackets.get()) {
             Mekanism.logger.info(log);
         }
@@ -175,8 +177,9 @@ public class PacketHandler {
     public void initialize() {
         registerMessage(PacketRobit.class, PacketRobit::encode, PacketRobit::decode, PacketRobit::handle);
         registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
+        registerServerToClient(PacketTransporterUpdate.class, PacketTransporterUpdate::encode, PacketTransporterUpdate::decode, PacketTransporterUpdate::handle);
         registerClientToServer(PacketModeChange.class, PacketModeChange::encode, PacketModeChange::decode, PacketModeChange::handle);
-        registerMessage(PacketTileEntity.class, PacketTileEntity::encode, PacketTileEntity::decode, PacketTileEntity::handle);
+        registerClientToServer(PacketTileEntity.class, PacketTileEntity::encode, PacketTileEntity::decode, PacketTileEntity::handle);
         registerMessage(PacketPortalFX.class, PacketPortalFX::encode, PacketPortalFX::decode, PacketPortalFX::handle);
         registerMessage(PacketSecurityMode.class, PacketSecurityMode::encode, PacketSecurityMode::decode, PacketSecurityMode::handle);
         registerMessage(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
