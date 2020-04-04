@@ -4,12 +4,14 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.Module;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.util.StorageUtils;
 
 public class ModuleEnergyUnit extends Module {
 
     public FloatingLong getEnergyCapacity() {
-        return MekanismConfig.general.mekaToolBaseEnergyCapacity.get().multiply(Math.pow(2, getInstalledCount()));
+        FloatingLong base = getContainer().getItem() instanceof ItemMekaSuitArmor ? MekanismConfig.general.mekaSuitBaseEnergyCapacity.get() : MekanismConfig.general.mekaToolBaseEnergyCapacity.get();
+        return base.multiply(Math.pow(2, getInstalledCount()));
     }
 
     @Override

@@ -8,9 +8,13 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.text.IHasTextComponent;
+import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.Module;
+import mekanism.common.content.gear.ModuleConfigItem;
+import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
@@ -19,6 +23,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public abstract class ModuleMekaSuit extends Module {
 
@@ -46,18 +52,13 @@ public abstract class ModuleMekaSuit extends Module {
     }
 
     public static class ModuleInhalationPurificationUnit extends ModuleMekaSuit {
-
-        // make configurable maybe
-        private static final FloatingLong ENERGY_USAGE_PER_POTION_TICK = FloatingLong.createConst(1_000);
-        public static final FloatingLong ENERGY_USAGE_PER_MAGIC_PREVENT = FloatingLong.createConst(10_000);
-
         @Override
         public void tickServer(PlayerEntity player) {
             for (EffectInstance effect : player.getActivePotionEffects()) {
-                if (getContainerEnergy().smallerThan(ENERGY_USAGE_PER_POTION_TICK)) {
+                if (getContainerEnergy().smallerThan(MekanismConfig.general.mekaSuitEnergyUsagePotionTick.get())) {
                     break;
                 }
-                useEnergy(ENERGY_USAGE_PER_POTION_TICK);
+                useEnergy(MekanismConfig.general.mekaSuitEnergyUsagePotionTick.get());
                 for (int i = 0; i < 9; i++) {
                     effect.tick(player, () -> MekanismUtils.onChangedPotionEffect(player, effect, true));
                 }
@@ -97,5 +98,38 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleHydraulicAbsorptionUnit extends ModuleMekaSuit {}
 
-    public static class ModuleHydraulicPropulsionUnit extends ModuleMekaSuit {}
+    public static class ModuleHydraulicPropulsionUnit extends ModuleMekaSuit {
+        private ModuleConfigItem<JumpBoost> jumpBoost;
+
+        @Override
+        public void init() {
+            super.init();
+            addConfigItem(jumpBoost = new ModuleConfigItem<JumpBoost>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class), JumpBoost.LOW));
+        }
+
+        public float getBoost() {
+            return jumpBoost.get().getBoost();
+        }
+
+        public static enum JumpBoost implements IHasTextComponent {
+            OFF(0),
+            LOW(0.5F),
+            MED(1F),
+            HIGH(3),
+            ULTRA(5);
+            private float boost;
+            private ITextComponent label;
+            private JumpBoost(float boost) {
+                this.boost = boost;
+                this.label = new StringTextComponent(Float.toString(boost));
+            }
+            @Override
+            public ITextComponent getTextComponent() {
+                return label;
+            }
+            public float getBoost() {
+                return boost;
+            }
+        }
+    }
 }

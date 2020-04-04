@@ -26,6 +26,7 @@ public enum MekanismLang implements ILangEntry {
     KEY_DETAILS_MODE("key", "details"),
     KEY_DESCRIPTION_MODE("key", "description"),
     KEY_MODULE_TWEAKER("key", "module_tweaker"),
+    KEY_BOOST("key", "key_boost"),
     //Holiday
     HOLIDAY_BORDER("holiday", "border"),
     HOLIDAY_SIGNATURE("holiday", "signature"),
@@ -579,9 +580,11 @@ public enum MekanismLang implements ILangEntry {
     MODULE_MODE("module", "mode"),
     MODULE_ATTACK_DAMAGE("module", "attack_damage"),
     MODULE_FARMING_RADIUS("module", "farming_radius"),
+    MODULE_JUMP_BOOST("module", "jump_boost"),
     MODULE_EXTENDED_MODE("module", "extended_mode"),
     MODULE_EFFICIENCY("module", "efficiency"),
-    MODULE_EFFICIENCY_CHANGE("module", "efficiency_change"),
+    MODULE_JETPACK_MODE("module", "jetpack_mode"),
+    MODULE_MODE_CHANGE("module", "mode_change"),
 
     MODULE_ENERGY_UNIT("module", "energy_unit"),
     MODULE_EXCAVATION_ESCALATION_UNIT("module", "excavation_escalation"),

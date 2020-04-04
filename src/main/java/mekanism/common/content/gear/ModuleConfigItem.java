@@ -113,7 +113,7 @@ public class ModuleConfigItem<TYPE> {
         private Class<TYPE> enumClass;
         private TYPE value;
         private int selectableCount;
-        private float textScale;
+        private float textScale = 1.0F;
 
         public EnumData(Class<TYPE> enumClass) {
             this(enumClass, enumClass.getEnumConstants().length);

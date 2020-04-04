@@ -31,8 +31,7 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
         if (excavationMode.get() != newMode) {
             excavationMode.set(newMode, null);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.MODULE_EFFICIENCY_CHANGE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, newMode.getEfficiency())));
+                displayModeChange(player, MekanismLang.MODULE_EFFICIENCY.translate(), newMode);
             }
         }
     }

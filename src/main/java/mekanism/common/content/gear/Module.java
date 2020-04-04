@@ -9,6 +9,8 @@ import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.Modules.ModuleData;
@@ -175,4 +177,9 @@ public abstract class Module {
     }
 
     public void onRemoved(boolean last) {}
+
+    protected void displayModeChange(PlayerEntity player, ITextComponent modeName, IHasTextComponent mode) {
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+            MekanismLang.MODULE_MODE_CHANGE.translateColored(EnumColor.GRAY, modeName, EnumColor.INDIGO, mode.getTextComponent())));
+    }
 }

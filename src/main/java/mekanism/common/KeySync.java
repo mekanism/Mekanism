@@ -1,15 +1,16 @@
 package mekanism.common;
 
+import java.util.Map;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class KeySync {
 
     public static int ASCEND = 0;
     public static int DESCEND = 1;
+    public static int BOOST = 2;
 
     public Map<PlayerEntity, KeySet> keys = new Object2ObjectOpenHashMap<>();
 

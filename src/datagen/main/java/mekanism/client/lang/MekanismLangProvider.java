@@ -338,8 +338,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.KEY_HAND_MODE, "Item Mode Switch");
         add(MekanismLang.KEY_CHEST_MODE, "Chest Mode Switch");
         add(MekanismLang.KEY_FEET_MODE, "Feet Mode Switch");
-        add(MekanismLang.KEY_DETAILS_MODE, "Show details");
-        add(MekanismLang.KEY_DESCRIPTION_MODE, "Show description");
+        add(MekanismLang.KEY_DETAILS_MODE, "Show Details");
+        add(MekanismLang.KEY_DESCRIPTION_MODE, "Show Description");
+        add(MekanismLang.KEY_BOOST, "Boost Key");
         //Holiday
         add(MekanismLang.HOLIDAY_BORDER, "%s%s%1$s");
         add(MekanismLang.HOLIDAY_SIGNATURE, "-aidancbrady");
@@ -892,9 +893,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_MODE, "Mode");
         add(MekanismLang.MODULE_ATTACK_DAMAGE, "Attack Damage");
         add(MekanismLang.MODULE_FARMING_RADIUS, "Farming Radius");
+        add(MekanismLang.MODULE_JUMP_BOOST, "Jump Boost");
         add(MekanismLang.MODULE_EXTENDED_MODE, "Extended Mode");
         add(MekanismLang.MODULE_EFFICIENCY, "Efficiency");
-        add(MekanismLang.MODULE_EFFICIENCY_CHANGE, "Efficiency bumped to: %s");
+        add(MekanismLang.MODULE_MODE_CHANGE, "%s bumped to: %s");
+        add(MekanismLang.MODULE_JETPACK_MODE, "Jetpack Mode");
 
         add(MekanismLang.MODULE_ENERGY_UNIT, "Energy Unit");
 

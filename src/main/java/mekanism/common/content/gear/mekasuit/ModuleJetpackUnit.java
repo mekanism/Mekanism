@@ -25,7 +25,7 @@ public class ModuleJetpackUnit extends ModuleMekaSuit {
     @Override
     public void init() {
         super.init();
-        addConfigItem(jetpackMode = new ModuleConfigItem<JetpackMode>(this, "jetpack_mode", MekanismLang.MODULE_MODE, new EnumData<>(JetpackMode.class).withScale(0.6F), JetpackMode.NORMAL));
+        addConfigItem(jetpackMode = new ModuleConfigItem<JetpackMode>(this, "jetpack_mode", MekanismLang.MODULE_JETPACK_MODE, new EnumData<>(JetpackMode.class).withScale(0.6F), JetpackMode.NORMAL));
     }
 
     @Override
@@ -48,8 +48,7 @@ public class ModuleJetpackUnit extends ModuleMekaSuit {
         if (jetpackMode.get() != newMode) {
             jetpackMode.set(newMode, null);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.JETPACK_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)));
+                displayModeChange(player, MekanismLang.MODULE_JETPACK_MODE.translate(), newMode);
             }
         }
     }

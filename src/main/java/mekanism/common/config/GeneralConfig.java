@@ -22,6 +22,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     private static final String CONVERSION_CATEGORY = "energy_conversion";
     private static final String DISASSEMBLER_CATEGORY = "atomic_disassembler";
     private static final String MEKATOOL_CATEGORY = "mekatool";
+    private static final String MEKASUIT_CATEGORY = "mekasuit";
     private static final String EVAPORATION_CATEGORY = "thermal_evaporation";
     private static final String ENTANGLOPORTER_CATEGORY = "quantum_entangloporter";
 
@@ -51,6 +52,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue disassemblerDamageMin;
     public final CachedIntValue disassemblerDamageMax;
     public final CachedFloatingLongValue disassemblerBatteryCapacity;
+
     public final CachedFloatingLongValue mekaToolEnergyUsageWeapon;
     public final CachedFloatingLongValue mekaToolEnergyUsageTeleport;
     public final CachedFloatingLongValue mekaToolEnergyUsage;
@@ -59,6 +61,12 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue mekaToolBaseDamage;
     public final CachedFloatValue mekaToolBaseEfficiency;
     public final CachedFloatingLongValue mekaToolBaseEnergyCapacity;
+
+    public final CachedFloatingLongValue mekaSuitBaseEnergyCapacity;
+    public final CachedFloatingLongValue mekaSuitBaseJumpEnergyUsage;
+    public final CachedFloatingLongValue mekaSuitEnergyUsagePotionTick;
+    public final CachedFloatingLongValue mekaSuitEnergyUsageMagicPrevent;
+
     public final CachedIntValue maxUpgradeMultiplier;
     public final CachedIntValue minerSilkMultiplier;
     public final CachedBooleanValue prefilledGasTanks;
@@ -182,8 +190,19 @@ public class GeneralConfig extends BaseMekanismConfig {
             .define("baseDamage", 4));
         mekaToolBaseEfficiency = CachedFloatValue.wrap(this, builder.comment("Efficiency of the MekaTool with energy but without any upgrades.")
             .define("baseEfficiency", 4D));
-        mekaToolBaseEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Energy capacity of the MekaTool (Joules) without any installed upgrades. Quadratically scaled by upgrades.",
+        mekaToolBaseEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Energy capacity (Joules) of the MekaTool without any installed upgrades. Quadratically scaled by upgrades.",
             "baseEnergyCapacity", FloatingLong.createConst(16_000_000));
+        builder.pop();
+
+        builder.comment("MekaSuit Settings").push(MEKASUIT_CATEGORY);
+        mekaSuitBaseEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Energy capacity (Joules) of MekaSuit items without any installed upgrades. Quadratically scaled by upgrades.",
+            "baseEnergyCapacity", FloatingLong.createConst(16_000_000));
+        mekaSuitBaseJumpEnergyUsage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to jump motion.",
+            "baseJumpEnergyUsage", FloatingLong.createConst(1_000));
+        mekaSuitEnergyUsagePotionTick = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when lessening a potion effect.",
+            "energyUsagePotionTick", FloatingLong.createConst(1_000));
+        mekaSuitEnergyUsageMagicPrevent = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when preventing a negative potion effect.",
+            "energyUsageMagicPrevent", FloatingLong.createConst(10_000));
         builder.pop();
 
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.

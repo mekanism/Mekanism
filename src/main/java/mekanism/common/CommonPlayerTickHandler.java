@@ -11,6 +11,7 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicAbsorptionUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -203,8 +204,8 @@ public class CommonPlayerTickHandler {
                         return;
                     }
                     ModuleInhalationPurificationUnit module = Modules.load(chestStack, Modules.INHALATION_PURIFICATION_UNIT);
-                    if (module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(ModuleInhalationPurificationUnit.ENERGY_USAGE_PER_MAGIC_PREVENT)) {
-                        module.useEnergy(ModuleInhalationPurificationUnit.ENERGY_USAGE_PER_MAGIC_PREVENT);
+                    if (module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(MekanismConfig.general.mekaSuitEnergyUsageMagicPrevent.get())) {
+                        module.useEnergy(MekanismConfig.general.mekaSuitEnergyUsageMagicPrevent.get());
                         event.setCanceled(true);
                         return;
                     }
@@ -259,7 +260,17 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onLivingJump(LivingJumpEvent event) {
-        // hydraulic propulsion
+        if (event.getEntityLiving() instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+            ModuleHydraulicPropulsionUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.FEET), Modules.HYDRAULIC_PROPULSION_UNIT);
+            if (module != null && module.isEnabled() && Mekanism.keyMap.has(player, KeySync.BOOST)) {
+                FloatingLong usage = MekanismConfig.general.mekaSuitBaseJumpEnergyUsage.get().multiply(module.getBoost() / 0.1F);
+                if (module.getContainerEnergy().greaterOrEqual(usage)) {
+                    player.setMotion(player.getMotion().add(0, module.getBoost(), 0));
+                    module.useEnergy(usage);
+                }
+            }
+        }
     }
 
     /**

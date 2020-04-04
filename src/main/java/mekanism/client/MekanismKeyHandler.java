@@ -2,6 +2,7 @@ package mekanism.client;
 
 import org.lwjgl.glfw.GLFW;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.IModeItem;
@@ -34,14 +35,17 @@ public class MekanismKeyHandler extends MekKeyHandler {
           KeyModifier.SHIFT, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_N, MekanismLang.MEKANISM.getTranslationKey());
     public static KeyBinding moduleTweakerKey = new KeyBinding(MekanismLang.KEY_MODULE_TWEAKER.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_BACKSLASH, MekanismLang.MEKANISM.getTranslationKey());
+    public static KeyBinding boostKey = new KeyBinding(MekanismLang.KEY_BOOST.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+          GLFW.GLFW_KEY_LEFT_CONTROL, MekanismLang.MEKANISM.getTranslationKey());
 
-    private static Builder BINDINGS = new Builder(6)
+    private static Builder BINDINGS = new Builder(7)
           .addBinding(handModeSwitchKey, false)
           .addBinding(chestModeSwitchKey, false)
           .addBinding(feetModeSwitchKey, false)
           .addBinding(detailsKey, false)
           .addBinding(descriptionKey, false)
-          .addBinding(moduleTweakerKey, false);
+          .addBinding(moduleTweakerKey, false)
+          .addBinding(boostKey, false);
 
     public MekanismKeyHandler() {
         super(BINDINGS);
@@ -51,6 +55,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
         ClientRegistry.registerKeyBinding(detailsKey);
         ClientRegistry.registerKeyBinding(descriptionKey);
         ClientRegistry.registerKeyBinding(moduleTweakerKey);
+        ClientRegistry.registerKeyBinding(boostKey);
         MinecraftForge.EVENT_BUS.addListener(this::onTick);
     }
 
@@ -85,10 +90,15 @@ public class MekanismKeyHandler extends MekKeyHandler {
             }
         } else if (kb == moduleTweakerKey) {
             Mekanism.packetHandler.sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
+        } else if (kb == boostKey) {
+            MekanismClient.updateKey(kb, KeySync.BOOST);
         }
     }
 
     @Override
     public void keyUp(KeyBinding kb) {
+        if (kb == boostKey) {
+            MekanismClient.updateKey(kb, KeySync.BOOST);
+        }
     }
 }
