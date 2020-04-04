@@ -46,6 +46,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -61,6 +62,14 @@ public class PacketGuiButtonPress {
     private int entityID;
     private int extra;
     private BlockPos tilePosition;
+
+    public PacketGuiButtonPress(ClickedTileButton buttonClicked, TileEntity tile) {
+        this(buttonClicked, tile.getPos());
+    }
+
+    public PacketGuiButtonPress(ClickedTileButton buttonClicked, TileEntity tile, int extra) {
+        this(buttonClicked, tile.getPos(), extra);
+    }
 
     public PacketGuiButtonPress(ClickedTileButton buttonClicked, BlockPos tilePosition) {
         this(buttonClicked, tilePosition, 0);
@@ -84,28 +93,25 @@ public class PacketGuiButtonPress {
             return;
         }
         context.get().enqueueWork(() -> {
-            if (!player.world.isRemote) {
-                //If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
-                if (message.hasEntity) {
-                    Entity entity = player.world.getEntityByID(message.entityID);
-                    if (entity != null) {
-                        INamedContainerProvider provider = message.entityButton.getProvider(entity);
-                        if (provider != null) {
-                            //Ensure valid data
-                            NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> buf.writeInt(message.entityID));
-                        }
+            if (message.hasEntity) {
+                Entity entity = player.world.getEntityByID(message.entityID);
+                if (entity != null) {
+                    INamedContainerProvider provider = message.entityButton.getProvider(entity);
+                    if (provider != null) {
+                        //Ensure valid data
+                        NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> buf.writeInt(message.entityID));
                     }
-                } else {
-                    TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
-                    if (tile != null) {
-                        INamedContainerProvider provider = message.tileButton.getProvider(tile, message.extra);
-                        if (provider != null) {
-                            //Ensure valid data
-                            NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> {
-                                buf.writeBlockPos(message.tilePosition);
-                                buf.writeInt(message.extra);
-                            });
-                        }
+                }
+            } else {
+                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
+                if (tile != null) {
+                    INamedContainerProvider provider = message.tileButton.getProvider(tile, message.extra);
+                    if (provider != null) {
+                        //Ensure valid data
+                        NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> {
+                            buf.writeBlockPos(message.tilePosition);
+                            buf.writeInt(message.extra);
+                        });
                     }
                 }
             }
@@ -121,7 +127,7 @@ public class PacketGuiButtonPress {
         } else {
             buf.writeEnumValue(pkt.tileButton);
             buf.writeBlockPos(pkt.tilePosition);
-            buf.writeInt(pkt.extra);
+            buf.writeVarInt(pkt.extra);
         }
     }
 
@@ -130,7 +136,7 @@ public class PacketGuiButtonPress {
         if (hasEntity) {
             return new PacketGuiButtonPress(buf.readEnumValue(ClickedEntityButton.class), buf.readInt());
         }
-        return new PacketGuiButtonPress(buf.readEnumValue(ClickedTileButton.class), buf.readBlockPos(), buf.readInt());
+        return new PacketGuiButtonPress(buf.readEnumValue(ClickedTileButton.class), buf.readBlockPos(), buf.readVarInt());
     }
 
     public enum ClickedTileButton {

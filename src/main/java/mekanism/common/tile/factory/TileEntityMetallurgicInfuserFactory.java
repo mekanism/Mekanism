@@ -20,13 +20,14 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.InfusionInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> {
+public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> implements IHasDumpButton {
 
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
 
@@ -185,11 +186,11 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     public MetallurgicInfuserUpgradeData getUpgradeData() {
         return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, infusionTank.getStack(), extraSlot, energySlot,
-              inputSlots, outputSlots, sorting, getComponents());
+              inputSlots, outputSlots, isSorting(), getComponents());
     }
 
     @Override
-    protected void clearSecondaryTank() {
+    public void dump() {
         infusionTank.setEmpty();
     }
 }

@@ -12,8 +12,11 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.network.PacketGuiInteract;
+import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -130,37 +133,29 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
     private void setMinThreshold() {
         if (!minField.getText().isEmpty()) {
-            FloatingLong toUse;
             try {
-                toUse = FloatingLong.ZERO.max(FloatingLong.parseFloatingLong(minField.getText()));
-            } catch (Exception e) {
-                minField.setText("");
-                return;
+                FloatingLong toUse = MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(minField.getText()));
+                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, toUse)));
+            } catch (Exception ignored) {
             }
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, toUse)));
             minField.setText("");
         }
     }
 
     private void setMaxThreshold() {
         if (!maxField.getText().isEmpty()) {
-            FloatingLong toUse;
             try {
-                toUse = FloatingLong.ZERO.max(FloatingLong.parseFloatingLong(maxField.getText()));
-            } catch (Exception e) {
-                maxField.setText("");
-                return;
+                FloatingLong toUse = MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(maxField.getText()));
+                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, toUse)));
+            } catch (Exception ignored) {
             }
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, toUse)));
             maxField.setText("");
         }
     }
 
     private void setTime() {
         if (!timerField.getText().isEmpty()) {
-            int toUse = Math.max(0, Integer.parseInt(timerField.getText()));
-            TileNetworkList data = TileNetworkList.withContents(2, toUse);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
+            Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SET_TIME, tile, Integer.parseInt(timerField.getText())));
             timerField.setText("");
         }
     }

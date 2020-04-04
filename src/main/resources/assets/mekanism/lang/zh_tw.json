@@ -724,7 +724,7 @@
   "network.mekanism.gas": "氣體網絡",
   "network.mekanism.heat": "熱量網絡",
   "network.mekanism.heat_flow": "%s 已傳送到接收器, %s 流失到環境中.",
-  "network.mekanism.heat_flow.efficiency": "%s 已傳送到接收器, %s 流失到環境中, %s% 效率.",
+  "network.mekanism.heat_flow.efficiency": "%s 已傳送到接收器, %s 流失到環境中, %s 效率.",
   "network.mekanism.heat_stored": "高於環境溫度 %s",
   "network.mekanism.inventory": "物品網絡",
   "network.mekanism.mb_per_tick": "%s mB/t",

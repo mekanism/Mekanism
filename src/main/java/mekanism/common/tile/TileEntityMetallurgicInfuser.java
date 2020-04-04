@@ -15,7 +15,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -35,13 +34,13 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 
-public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<MetallurgicInfuserRecipe> implements ITileNetwork {
+public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<MetallurgicInfuserRecipe> implements IHasDumpButton {
 
     public static final int MAX_INFUSE = 1_000;
     public BasicInfusionTank infusionTank;
@@ -177,17 +176,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            int amount = dataStream.readInt();
-            //TODO: Make this use a specialized "dump" method
-            if (amount == 0) {
-                infusionTank.setEmpty();
-            }
-        }
-    }
-
     @Nonnull
     @Override
     public MetallurgicInfuserUpgradeData getUpgradeData() {
@@ -197,5 +185,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<Metallu
 
     public MachineEnergyContainer<TileEntityMetallurgicInfuser> getEnergyContainer() {
         return energyContainer;
+    }
+
+    @Override
+    public void dump() {
+        infusionTank.setEmpty();
     }
 }

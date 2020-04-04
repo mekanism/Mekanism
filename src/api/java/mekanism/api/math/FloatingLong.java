@@ -504,10 +504,12 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      *
      * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}, or {@code 1} if the given {@link
      * FloatingLong} is {@code 0}.
+     *
+     * @implNote This caps the returned value at {@code 1}
      */
     public double divideToLevel(FloatingLong toDivide) {
         //TODO: Optimize out creating another object
-        return toDivide.isZero() ? 1 : divide(toDivide).doubleValue();
+        return toDivide.isZero() || greaterThan(toDivide) ? 1 : divide(toDivide).doubleValue();
     }
 
     /**

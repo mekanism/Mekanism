@@ -17,7 +17,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.chemical.GasTankGasTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -37,6 +36,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.upgrade.GasTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.GasUtils;
@@ -45,12 +45,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class TileEntityGasTank extends TileEntityMekanism implements ISideConfiguration, ISustainedData, ITileNetwork {
+public class TileEntityGasTank extends TileEntityMekanism implements ISideConfiguration, ISustainedData, IHasGasMode {
 
     /**
      * The type of gas stored in this tank.
@@ -162,12 +161,10 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                dumping = dumping.getNext();
-            }
+    public void nextMode(int tank) {
+        if (tank == 0) {
+            dumping = dumping.getNext();
+            markDirty(false);
         }
     }
 

@@ -7,6 +7,7 @@ import net.minecraft.network.PacketBuffer;
  *
  * @author AidanBrady
  */
+@Deprecated
 public interface ITileNetwork {
 
     /**

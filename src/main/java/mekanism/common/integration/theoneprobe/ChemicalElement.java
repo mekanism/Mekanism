@@ -1,6 +1,5 @@
 package mekanism.common.integration.theoneprobe;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -25,9 +24,9 @@ public abstract class ChemicalElement<CHEMICAL extends Chemical<CHEMICAL>, STACK
     }
 
     @Override
-    public void toBytes(ByteBuf buf) {
-        ChemicalUtils.writeChemicalStack(new PacketBuffer(buf), stored);
-        buf.writeInt(capacity);
+    public void toBytes(PacketBuffer buf) {
+        ChemicalUtils.writeChemicalStack(buf, stored);
+        buf.writeVarInt(capacity);
     }
 
     @Override

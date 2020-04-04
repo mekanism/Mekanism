@@ -1,6 +1,5 @@
 package mekanism.common.integration.theoneprobe;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -24,14 +23,14 @@ public class FluidElement extends TOPElement {
         this.capacity = capacity;
     }
 
-    public FluidElement(ByteBuf buf) {
-        this(new PacketBuffer(buf).readFluidStack(), buf.readInt());
+    public FluidElement(PacketBuffer buf) {
+        this(buf.readFluidStack(), buf.readVarInt());
     }
 
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         new PacketBuffer(buf).writeFluidStack(stored);
-        buf.writeInt(capacity);
+        buf.writeVarInt(capacity);
     }
 
     @Override

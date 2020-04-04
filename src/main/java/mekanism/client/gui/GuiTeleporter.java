@@ -81,8 +81,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.privateCache.get(selection) : tile.publicCache.get(selection);
-                TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
-                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
+                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, freq.name, freq.publicFreq)));
                 scrollList.clearSelection();
             }
             updateButtons();
@@ -214,8 +213,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
 
     public void setFrequency(String freq) {
         if (!freq.isEmpty()) {
-            TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, freq, !privateMode)));
         }
     }
 }

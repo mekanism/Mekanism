@@ -11,6 +11,7 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.HashList;
+import mekanism.common.Mekanism;
 import mekanism.common.TagCache;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -18,6 +19,8 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.network.PacketGuiInteract;
+import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.entity.player.PlayerInventory;
@@ -52,8 +55,15 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         addButton(scrollBar = new GuiScrollBar(this, 153, 17, 140, () -> getFilters().size(), () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, this::upButtonPress,
-                  this::downButtonPress, this::onClick));
+            addButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, index -> {
+                      if (index > 0) {
+                          Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
+                      }
+                  }, index -> {
+                      if (index < getFilters().size() - 1) {
+                          Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
+                      }
+                  }, this::onClick));
         }
     }
 
@@ -62,10 +72,6 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     }
 
     protected abstract void onClick(IFilter<?> filter, int index);
-
-    protected abstract void upButtonPress(int index);
-
-    protected abstract void downButtonPress(int index);
 
     @Override
     public void tick() {

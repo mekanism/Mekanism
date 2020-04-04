@@ -7,7 +7,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -19,6 +18,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -29,10 +29,9 @@ import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements ITileNetwork {
+public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IHasGasMode {
 
     public float prevSteamScale;
 
@@ -102,14 +101,9 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            if (structure != null) {
-                byte type = dataStream.readByte();
-                if (type == 0) {
-                    structure.dumpMode = structure.dumpMode.getNext();
-                }
-            }
+    public void nextMode(int tank) {
+        if (tank == 0 && structure != null) {
+            structure.dumpMode = structure.dumpMode.getNext();
         }
     }
 

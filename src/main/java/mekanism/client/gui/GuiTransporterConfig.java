@@ -61,7 +61,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Em
         addButton(new GuiInnerScreen(this, 38, 63, 16, 16));
         addButton(new GuiSlot(SlotType.NORMAL, this, 121, 48));
         addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 156, getGuiTop() + 6, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null)),
               getOnHover(MekanismLang.STRICT_INPUT)));

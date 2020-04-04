@@ -1,10 +1,10 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -12,7 +12,6 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -32,6 +31,7 @@ import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
@@ -42,14 +42,14 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<TransporterFilter<?>>, ITileNetwork {
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<TransporterFilter<?>>,
+      IHasSortableFilters {
 
     private HashList<TransporterFilter<?>> filters = new HashList<>();
     public EnumColor color;
@@ -157,35 +157,36 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                int clickType = dataStream.readInt();
-                if (clickType == 0) {
-                    color = TransporterUtils.increment(color);
-                } else if (clickType == 1) {
-                    color = TransporterUtils.decrement(color);
-                } else if (clickType == 2) {
-                    color = null;
-                }
-            } else if (type == 1) {
-                autoEject = !autoEject;
-            } else if (type == 2) {
-                roundRobin = !roundRobin;
-                rrIndex = 0;
-            } else if (type == 3) {
-                // Move filter up
-                int filterIndex = dataStream.readInt();
-                filters.swap(filterIndex, filterIndex - 1);
-            } else if (type == 4) {
-                // Move filter down
-                int filterIndex = dataStream.readInt();
-                filters.swap(filterIndex, filterIndex + 1);
-            } else if (type == 5) {
-                singleItem = !singleItem;
-            }
-        }
+    public void moveUp(int filterIndex) {
+        filters.swap(filterIndex, filterIndex - 1);
+        markDirty(false);
+    }
+
+    @Override
+    public void moveDown(int filterIndex) {
+        filters.swap(filterIndex, filterIndex + 1);
+        markDirty(false);
+    }
+
+    public void toggleAutoEject() {
+        autoEject = !autoEject;
+        markDirty(false);
+    }
+
+    public void toggleRoundRobin() {
+        roundRobin = !roundRobin;
+        rrIndex = 0;
+        markDirty(false);
+    }
+
+    public void toggleSingleItem() {
+        singleItem = !singleItem;
+        markDirty(false);
+    }
+
+    public void changeColor(@Nullable EnumColor color) {
+        this.color = color;
+        markDirty(false);
     }
 
     public boolean canSendHome(ItemStack stack) {

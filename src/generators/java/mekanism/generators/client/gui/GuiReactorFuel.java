@@ -102,10 +102,7 @@ public class GuiReactorFuel extends GuiReactorInfo {
 
     private void setInjection() {
         if (!injectionRateField.getText().isEmpty()) {
-            int toUse = Math.max(0, Integer.parseInt(injectionRateField.getText()));
-            toUse -= toUse % 2;
-            TileNetworkList data = TileNetworkList.withContents(0, toUse);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(Integer.parseInt(injectionRateField.getText()))));
             injectionRateField.setText("");
         }
     }

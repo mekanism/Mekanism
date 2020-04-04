@@ -141,6 +141,20 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         sendUpdatePacket();
     }
 
+    public void toggleOverride() {
+        if (frequency != null) {
+            frequency.override = !frequency.override;
+            markDirty(false);
+        }
+    }
+
+    public void removeTrusted(int index) {
+        if (frequency != null) {
+            frequency.removeTrusted(index);
+            markDirty(false);
+        }
+    }
+
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote() && frequency != null) {
@@ -151,10 +165,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                     frequency.addTrusted(profile.getId(), profile.getName());
                 }
             } else if (type == 1) {
-                frequency.removeTrusted(dataStream.readInt());
-            } else if (type == 2) {
-                frequency.override = !frequency.override;
-            } else if (type == 3) {
                 frequency.securityMode = dataStream.readEnumValue(SecurityMode.class);
             }
             markDirty(false);

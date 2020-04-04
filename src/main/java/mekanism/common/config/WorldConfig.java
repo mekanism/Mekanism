@@ -71,6 +71,7 @@ public class WorldConfig extends BaseMekanismConfig {
                   .defineInRange("perChunk", perChunk, 1, 65536));
             this.maxVeinSize = CachedIntValue.wrap(config, builder.comment("Maximum number of blocks in a vein of " + ore + ".")
                   .defineInRange("maxVeinSize", maxVeinSize, 1, 65536));
+            //TODO: See if we can use world.getHeight() somehow
             this.maxHeight = CachedIntValue.wrap(config, builder.comment("Base maximum height (exclusive) that veins of " + ore + " can spawn. Height is calculated by: random.nextInt(maxHeight - topOffset) + bottomOffset")
                   .defineInRange("maxHeight", maxHeight, 1, 256));
             this.topOffset = CachedIntValue.wrap(config, builder.comment("Top offset for calculating height that veins of " + ore + " can spawn. Height is calculated by: random.nextInt(maxHeight - topOffset) + bottomOffset")

@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -9,10 +8,8 @@ import mekanism.client.gui.element.button.GuiGasMode;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.entity.player.PlayerInventory;
@@ -34,8 +31,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
-        addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumping,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));
+        addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumping, tile.getPos(), 0));
     }
 
     @Override

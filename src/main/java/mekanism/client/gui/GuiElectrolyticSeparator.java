@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
-import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -13,10 +12,8 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
@@ -42,10 +39,8 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressType.BI, this, 80, 30));
-        addButton(new GuiGasMode(this, getGuiLeft() + 7, getGuiTop() + 72, false, () -> tile.dumpLeft,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents((byte) 0)))));
-        addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumpRight,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents((byte) 1)))));
+        addButton(new GuiGasMode(this, getGuiLeft() + 7, getGuiTop() + 72, false, () -> tile.dumpLeft, tile.getPos(), 0));
+        addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumpRight, tile.getPos(), 1));
     }
 
     @Override
