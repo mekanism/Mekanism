@@ -37,6 +37,7 @@ public final class MekanismSounds {
     public static final SoundEventRegistryObject<SoundEvent> GAS_MASK = SOUND_EVENTS.register("item.gas_mask");
     public static final SoundEventRegistryObject<SoundEvent> JETPACK = SOUND_EVENTS.register("item.jetpack");
     public static final SoundEventRegistryObject<SoundEvent> HYDRAULIC = SOUND_EVENTS.register("item.hydraulic");
+    public static final SoundEventRegistryObject<SoundEvent> GRAVITATIONAL_MODULATION_UNIT = SOUND_EVENTS.register("item.gravitational_modulation_unit");
     public static final SoundEventRegistryObject<SoundEvent> CJ_EASTER_EGG = SOUND_EVENTS.register("etc.cj");
 
     public static final SoundEventRegistryObject<SoundEvent> GEIGER_SLOW = SOUND_EVENTS.register("item.geiger_slow");

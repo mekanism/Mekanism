@@ -884,6 +884,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_URANIUM_ORE, "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occuring form, it is not radioactive enough to cause harm.");
         // Modules
         add(MekanismLang.MODULE_ENABLED, "Enabled");
+        add(MekanismLang.MODULE_TOGGLE_ENABLED, "%s: enabled");
+        add(MekanismLang.MODULE_TOGGLE_DISABLED, "%s: disabled");
         add(MekanismLang.MODULE_TWEAKER, "Module Tweaker");
         add(MekanismLang.MODULE_INSTALLED, "Installed: %s");
         add(MekanismLang.MODULE_STACKABLE, "Stackable: %s");
@@ -899,6 +901,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_EFFICIENCY, "Efficiency");
         add(MekanismLang.MODULE_MODE_CHANGE, "%s bumped to: %s");
         add(MekanismLang.MODULE_JETPACK_MODE, "Jetpack Mode");
+        add(MekanismLang.MODULE_GRAVITATIONAL_MODULATION, "Gravitational Modulation");
 
         add(MekanismLang.MODULE_ENERGY_UNIT, "Energy Unit");
 

@@ -12,6 +12,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.util.ItemDataUtils;
@@ -185,5 +186,12 @@ public abstract class Module {
     protected void displayModeChange(PlayerEntity player, ITextComponent modeName, IHasTextComponent mode) {
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
             MekanismLang.MODULE_MODE_CHANGE.translateColored(EnumColor.GRAY, modeName, EnumColor.INDIGO, mode.getTextComponent())));
+    }
+
+    protected void toggleEnabled(PlayerEntity player, ITextComponent modeName) {
+        enabled.set(!isEnabled(), null);
+        ILangEntry lang = isEnabled() ? MekanismLang.MODULE_TOGGLE_ENABLED : MekanismLang.MODULE_TOGGLE_DISABLED;
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+            lang.translateColored(isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, EnumColor.GRAY, modeName)));
     }
 }

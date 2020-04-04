@@ -3,13 +3,16 @@ package mekanism.common.content.gear.mekasuit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.Module;
@@ -71,7 +74,22 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleRadiationShieldingUnit extends ModuleMekaSuit {}
 
-    public static class ModuleGravitationalModulatingUnit extends ModuleMekaSuit {}
+    public static class ModuleGravitationalModulatingUnit extends ModuleMekaSuit {
+        @Override
+        public void addHUDStrings(List<ITextComponent> list) {
+            ILangEntry lang = isEnabled() ? MekanismLang.MODULE_TOGGLE_ENABLED : MekanismLang.MODULE_TOGGLE_DISABLED;
+            list.add(lang.translateColored(isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, EnumColor.DARK_GRAY, MekanismLang.MODULE_GRAVITATIONAL_MODULATION));
+        }
+
+        @Override
+        public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+            toggleEnabled(player, MekanismLang.MODULE_GRAVITATIONAL_MODULATION.translate());
+        }
+
+        public float getBoost() {
+            return 0.5F; // TODO add scale
+        }
+    }
 
     public static class ModuleChargeDistributionUnit extends ModuleMekaSuit {
         @Override
@@ -82,7 +100,7 @@ public abstract class ModuleMekaSuit extends Module {
             for (ItemStack stack : player.inventory.armorInventory) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 if (energyContainer != null) {
-                    total.add(energyContainer.getEnergy());
+                    total = total.add(energyContainer.getEnergy());
                     tracking.add(energyContainer);
                 }
             }

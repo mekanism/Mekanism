@@ -1,8 +1,8 @@
 package mekanism.common;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.config.MekanismConfig;
@@ -16,6 +16,7 @@ public class PlayerState {
 
     private Set<UUID> activeJetpacks = new ObjectOpenHashSet<>();
     private Set<UUID> activeGasmasks = new ObjectOpenHashSet<>();
+    private Set<UUID> activeGravitationalModulators = new ObjectOpenHashSet<>();
     private Set<UUID> activeFlamethrowers = new ObjectOpenHashSet<>();
 
     private IWorld world;
@@ -23,6 +24,7 @@ public class PlayerState {
     public void clear() {
         activeJetpacks.clear();
         activeGasmasks.clear();
+        activeGravitationalModulators.clear();
         activeFlamethrowers.clear();
         if (FMLEnvironment.dist.isClient()) {
             SoundHandler.clearPlayerSounds();
@@ -32,6 +34,7 @@ public class PlayerState {
     public void clearPlayer(UUID uuid) {
         activeJetpacks.remove(uuid);
         activeGasmasks.remove(uuid);
+        activeGravitationalModulators.remove(uuid);
         activeFlamethrowers.remove(uuid);
         if (FMLEnvironment.dist.isClient()) {
             SoundHandler.clearPlayerSounds(uuid);
@@ -116,6 +119,43 @@ public class PlayerState {
 
     public Set<UUID> getActiveGasmasks() {
         return activeGasmasks;
+    }
+
+    // ----------------------
+    //
+    // Gravitational Modulator state tracking
+    //
+    // ----------------------
+
+    public void setGravitationalModulationState(UUID uuid, boolean isActive, boolean isLocal) {
+        boolean alreadyActive = activeGravitationalModulators.contains(uuid);
+        boolean changed = alreadyActive != isActive;
+        if (alreadyActive && !isActive) {
+            activeGravitationalModulators.remove(uuid); // On -> off
+        } else if (!alreadyActive && isActive) {
+            activeGravitationalModulators.add(uuid); // Off -> on
+        }
+
+        // If something changed and we're in a remote world, take appropriate action
+        if (changed && world.isRemote()) {
+            // If the player is the "local" player, we need to tell the server the state has changed
+            if (isLocal) {
+                Mekanism.packetHandler.sendToServer(new PacketGearStateUpdate(GearType.GRAVITATIONAL_MODULATOR, uuid, isActive));
+            }
+
+            // Start a sound playing if the person is now using a gasmask
+            if (isActive && MekanismConfig.client.enablePlayerSounds.get()) {
+                SoundHandler.startSound(world, uuid, SoundType.GRAVITATIONAL_MODULATOR);
+            }
+        }
+    }
+
+    public boolean isGravitationalModulationOn(PlayerEntity p) {
+        return activeGravitationalModulators.contains(p.getUniqueID());
+    }
+
+    public Set<UUID> getActiveGravitationalModulators() {
+        return activeGravitationalModulators;
     }
 
     // ----------------------

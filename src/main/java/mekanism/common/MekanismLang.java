@@ -571,6 +571,8 @@ public enum MekanismLang implements ILangEntry {
     SAWING("factory", "sawing"),
     //Modules
     MODULE_ENABLED("module", "enabled"),
+    MODULE_TOGGLE_ENABLED("module", "toggle_enabled"),
+    MODULE_TOGGLE_DISABLED("module", "toggle_disabled"),
     MODULE_TWEAKER("module", "module_tweaker"),
     MODULE_INSTALLED("module", "installed"),
     MODULE_STACKABLE("module", "stackable"),
@@ -585,6 +587,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_EXTENDED_MODE("module", "extended_mode"),
     MODULE_EFFICIENCY("module", "efficiency"),
     MODULE_JETPACK_MODE("module", "jetpack_mode"),
+    MODULE_GRAVITATIONAL_MODULATION("module", "gravitational_modulation"),
     MODULE_MODE_CHANGE("module", "mode_change"),
 
     MODULE_ENERGY_UNIT("module", "energy_unit"),

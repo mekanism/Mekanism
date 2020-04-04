@@ -30,6 +30,7 @@ public class ModuleJetpackUnit extends ModuleMekaSuit {
 
     @Override
     public void addHUDStrings(List<ITextComponent> list) {
+        if (!isEnabled()) return;
         list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpackMode.get()));
         GasStack stored = GasStack.EMPTY;
         Optional<IGasHandler> capability = MekanismUtils.toOptional(getContainer().getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
@@ -44,6 +45,7 @@ public class ModuleJetpackUnit extends ModuleMekaSuit {
 
     @Override
     public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        if (!isEnabled()) return;
         JetpackMode newMode = jetpackMode.get().adjust(shift);
         if (jetpackMode.get() != newMode) {
             jetpackMode.set(newMode, null);

@@ -61,6 +61,7 @@ public class MekanismSoundProvider extends BaseSoundProvider {
         addSoundEvent(MekanismSounds.FLAMETHROWER_ACTIVE, Mekanism.rl(basePath + "flamethrower_active"));
         addSoundEvent(MekanismSounds.GAS_MASK, Mekanism.rl(basePath + "gas_mask"));
         addSoundEvent(MekanismSounds.JETPACK, Mekanism.rl(basePath + "jetpack"));
+        addSoundEvent(MekanismSounds.GRAVITATIONAL_MODULATION_UNIT, Mekanism.rl(basePath + "gravitational_modulation_unit"));
 
         addSoundEvent(MekanismSounds.GEIGER_SLOW, Mekanism.rl(basePath + "geiger_slow"));
         addSoundEvent(MekanismSounds.GEIGER_MEDIUM, Mekanism.rl(basePath + "geiger_medium"));

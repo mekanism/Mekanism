@@ -17,6 +17,7 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.item.IModeItem;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -115,6 +116,13 @@ public class ClientTickHandler {
         return false;
     }
 
+    public static boolean isGravitationalModulationOn(PlayerEntity player) {
+        if (player != minecraft.player) {
+            return Mekanism.playerState.isGravitationalModulationOn(player);
+        }
+        return CommonPlayerTickHandler.isGravitationalModulationOn(player);
+    }
+
     public static boolean isFlamethrowerOn(PlayerEntity player) {
         if (player != minecraft.player) {
             return Mekanism.playerState.isFlamethrowerOn(player);
@@ -179,6 +187,7 @@ public class ClientTickHandler {
             // kicks off sounds as necessary
             Mekanism.playerState.setJetpackState(playerUUID, isJetpackActive(minecraft.player), true);
             Mekanism.playerState.setGasmaskState(playerUUID, isGasMaskOn(minecraft.player), true);
+            Mekanism.playerState.setGravitationalModulationState(playerUUID, isGravitationalModulationOn(minecraft.player), true);
             Mekanism.playerState.setFlamethrowerState(playerUUID, hasFlamethrower(minecraft.player), isFlamethrowerOn(minecraft.player), true);
 
             for (Iterator<Entry<PlayerEntity, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext(); ) {
@@ -240,6 +249,15 @@ public class ClientTickHandler {
                 if (chestStack.getItem() instanceof ItemJetpack) {
                     ((ItemJetpack) chestStack.getItem()).useGas(chestStack, 1);
                 }
+            }
+
+            if (CommonPlayerTickHandler.isGravitationalModulationReady(minecraft.player)) {
+                minecraft.player.abilities.allowFlying = true;
+                ModuleGravitationalModulatingUnit module = Modules.load(minecraft.player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
+                minecraft.player.moveRelative(module.getBoost(), new Vec3d(0.2, 0.2, 1));
+
+            } else if (!minecraft.player.isCreative()) {
+                minecraft.player.abilities.allowFlying = false;
             }
 
             if (isGasMaskOn(minecraft.player)) {

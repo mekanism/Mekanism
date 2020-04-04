@@ -32,6 +32,8 @@ public class PacketGearStateUpdate {
                 Mekanism.playerState.setJetpackState(message.uuid, message.state, false);
             } else if (message.gearType == GearType.GAS_MASK) {
                 Mekanism.playerState.setGasmaskState(message.uuid, message.state, false);
+            } else if (message.gearType == GearType.GRAVITATIONAL_MODULATOR) {
+                Mekanism.playerState.setGravitationalModulationState(message.uuid, message.state, false);
             }
             //If we got this packet on the server, inform all clients tracking the changed player
             if (!player.world.isRemote) {
@@ -56,6 +58,7 @@ public class PacketGearStateUpdate {
     public enum GearType {
         FLAMETHROWER,
         JETPACK,
-        GAS_MASK
+        GAS_MASK,
+        GRAVITATIONAL_MODULATOR
     }
 }

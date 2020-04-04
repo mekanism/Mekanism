@@ -24,6 +24,11 @@
       "mekanism:tile/compressor"
     ]
   },
+  "item.gravitational_modulation_unit": {
+    "sounds": [
+      "mekanism:item/gravitational_modulation_unit"
+    ]
+  },
   "tile.machine.precision_sawmill": {
     "sounds": [
       "mekanism:tile/precision_sawmill"

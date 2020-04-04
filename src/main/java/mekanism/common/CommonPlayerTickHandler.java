@@ -10,6 +10,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicAbsorptionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
@@ -162,6 +163,19 @@ public class CommonPlayerTickHandler {
                 }
             }
         }
+
+        if (isGravitationalModulationReady(player)) {
+            player.abilities.allowFlying = true;
+            FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageGravitationalModulation.get();
+            if (Mekanism.keyMap.has(player, KeySync.BOOST)) {
+                usage = usage.multiply(4);
+            }
+            ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
+            player.moveRelative(module.getBoost(), new Vec3d(0.2, 0.2, 1));
+            module.useEnergy(usage);
+        } else if (!player.isCreative()) {
+            player.abilities.allowFlying = false;
+        }
     }
 
     public static boolean isJetpackOn(PlayerEntity player) {
@@ -182,6 +196,16 @@ public class CommonPlayerTickHandler {
             }
         }
         return false;
+    }
+
+    public static boolean isGravitationalModulationReady(PlayerEntity player) {
+        ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
+        FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageGravitationalModulation.get();
+        return !player.isCreative() && module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(usage);
+    }
+
+    public static boolean isGravitationalModulationOn(PlayerEntity player) {
+        return isGravitationalModulationReady(player) && player.abilities.isFlying;
     }
 
     /** Will return null if jetpack mode is not active */

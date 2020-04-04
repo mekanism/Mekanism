@@ -27,6 +27,7 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
 
     @Override
     public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        if (!isEnabled()) return;
         ExcavationMode newMode = excavationMode.get().adjust(shift);
         if (excavationMode.get() != newMode) {
             excavationMode.set(newMode, null);
@@ -38,6 +39,7 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
 
     @Override
     public void addHUDStrings(List<ITextComponent> list) {
+        if (!isEnabled()) return;
         list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.INDIGO, excavationMode.get().getEfficiency()));
     }
 

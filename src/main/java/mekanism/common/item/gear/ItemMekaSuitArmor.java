@@ -185,7 +185,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         if (slotType == getEquipmentSlot()) {
             for (Module module : Modules.loadAll(stack)) {
-                if (module.isEnabled() && module.renderHUD()) {
+                if (module.renderHUD()) {
                     module.addHUDStrings(list);
                 }
             }
@@ -195,7 +195,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     @Override
     public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
         for (Module module : Modules.loadAll(stack)) {
-            if (module.isEnabled() && module.handlesModeChange()) {
+            if (module.handlesModeChange()) {
                 module.changeMode(player, stack, shift, displayChangeMessage);
                 return;
             }
