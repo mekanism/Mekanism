@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
-import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITankManager;
@@ -10,17 +9,18 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 //TODO: Re-evaluate/rewrite
 public class PacketDropperUse {
 
-    private Coord4D coord4D;
-    private int mouseButton;
-    private int tankId;
+    private final BlockPos pos;
+    private final int mouseButton;
+    private final int tankId;
 
-    public PacketDropperUse(Coord4D coord, int button, int id) {
-        coord4D = coord;
+    public PacketDropperUse(BlockPos pos, int button, int id) {
+        this.pos = pos;
         mouseButton = button;
         tankId = id;
     }
@@ -31,7 +31,7 @@ public class PacketDropperUse {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
+            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.pos);
             if (tile instanceof ITankManager) {
                 try {
                     Object tank = ((ITankManager) tile).getManagedTanks()[message.tankId];
@@ -47,13 +47,12 @@ public class PacketDropperUse {
     }
 
     public static void encode(PacketDropperUse pkt, PacketBuffer buf) {
-        pkt.coord4D.write(buf);
-        buf.writeInt(pkt.mouseButton);
-        buf.writeInt(pkt.tankId);
+        buf.writeBlockPos(pkt.pos);
+        buf.writeVarInt(pkt.mouseButton);
+        buf.writeVarInt(pkt.tankId);
     }
 
     public static PacketDropperUse decode(PacketBuffer buf) {
-        Coord4D coord4D = Coord4D.read(buf);
-        return new PacketDropperUse(coord4D, buf.readInt(), buf.readInt());
+        return new PacketDropperUse(buf.readBlockPos(), buf.readVarInt(), buf.readVarInt());
     }
 }

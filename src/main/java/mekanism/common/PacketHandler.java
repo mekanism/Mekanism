@@ -27,8 +27,6 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketPlayerData;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortalFX;
-import mekanism.common.network.PacketRedstoneControl;
-import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketSecurityMode;
 import mekanism.common.network.PacketSecurityUpdate;
@@ -185,6 +183,8 @@ public class PacketHandler {
         registerClientToServer(PacketGearStateUpdate.class, PacketGearStateUpdate::encode, PacketGearStateUpdate::decode, PacketGearStateUpdate::handle);
         registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
         registerClientToServer(PacketGuiInteract.class, PacketGuiInteract::encode, PacketGuiInteract::decode, PacketGuiInteract::handle);
+        registerClientToServer(PacketSecurityMode.class, PacketSecurityMode::encode, PacketSecurityMode::decode, PacketSecurityMode::handle);
+        registerClientToServer(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
 
         //Server to client messages
         registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
@@ -194,13 +194,7 @@ public class PacketHandler {
         registerServerToClient(PacketPlayerData.class, PacketPlayerData::encode, PacketPlayerData::decode, PacketPlayerData::handle);
         registerServerToClient(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
         registerServerToClient(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
-
-        //TODO: Figure out the directions for these messages
-        registerMessage(PacketSecurityMode.class, PacketSecurityMode::encode, PacketSecurityMode::decode, PacketSecurityMode::handle);
-        registerMessage(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
-        registerMessage(PacketRemoveUpgrade.class, PacketRemoveUpgrade::encode, PacketRemoveUpgrade::decode, PacketRemoveUpgrade::handle);
-        registerMessage(PacketRedstoneControl.class, PacketRedstoneControl::encode, PacketRedstoneControl::decode, PacketRedstoneControl::handle);
-        registerMessage(PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
+        registerServerToClient(PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
 
         //Register the different sync packets for containers
         registerUpdateContainer(PacketUpdateContainerBoolean.class, PacketUpdateContainerBoolean::decode);
@@ -222,11 +216,6 @@ public class PacketHandler {
         registerUpdateContainer(PacketUpdateContainerFrequencyList.class, PacketUpdateContainerFrequencyList::decode);
         //Container sync packet that batches multiple changes into one packet
         registerServerToClient(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
-    }
-
-    @Deprecated//TODO: Instead of using this, make sure each packet only is for one direction, and we register it going in that direction
-    private <MSG> void registerMessage(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
-        registerMessage(index++, type, encoder, decoder, consumer);
     }
 
     private <MSG> void registerClientToServer(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
@@ -251,6 +240,7 @@ public class PacketHandler {
     //TODO: Figure out a better way to do this, for now with generators we are just starting it at id 100 to make sure they don't clash
     // Given we will rewrite our packet system at some point, I am not bothering to do more than just a patch for now
     // One better solution may be to register the information to Mekanism, from the module and let it add it when it is adding the other ones
+    @Deprecated
     public <MSG> void registerMessage(int id, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
           BiConsumer<MSG, Supplier<Context>> consumer) {
         netHandler.registerMessage(id, type, encoder, decoder, consumer);

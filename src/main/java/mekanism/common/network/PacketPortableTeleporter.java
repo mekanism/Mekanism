@@ -184,11 +184,11 @@ public class PacketPortableTeleporter {
                 buf.writeBoolean(false);
             }
             buf.writeByte(pkt.status);
-            buf.writeInt(pkt.publicCache.size());
+            buf.writeVarInt(pkt.publicCache.size());
             for (Frequency freq : pkt.publicCache) {
                 freq.write(buf);
             }
-            buf.writeInt(pkt.privateCache.size());
+            buf.writeVarInt(pkt.privateCache.size());
             for (Frequency freq : pkt.privateCache) {
                 freq.write(buf);
             }
@@ -212,11 +212,11 @@ public class PacketPortableTeleporter {
                 frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
             }
             status = buf.readByte();
-            int amount = buf.readInt();
+            int amount = buf.readVarInt();
             for (int i = 0; i < amount; i++) {
                 publicCache.add(Frequency.readFromPacket(buf));
             }
-            amount = buf.readInt();
+            amount = buf.readVarInt();
             for (int i = 0; i < amount; i++) {
                 privateCache.add(Frequency.readFromPacket(buf));
             }

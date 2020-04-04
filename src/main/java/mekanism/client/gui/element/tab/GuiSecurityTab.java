@@ -2,7 +2,6 @@ package mekanism.client.gui.element.tab;
 
 import java.util.Arrays;
 import java.util.UUID;
-import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
@@ -11,6 +10,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.network.PacketGuiInteract;
+import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.PacketSecurityMode;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -129,11 +130,10 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
         if (MekanismConfig.general.allowProtection.get()) {
             UUID owner = getOwner();
             if (owner != null && minecraft.player.getUniqueID().equals(owner)) {
-                SecurityMode mode = getSecurity().getNext();
                 if (isItem) {
-                    Mekanism.packetHandler.sendToServer(new PacketSecurityMode(currentHand, mode));
+                    Mekanism.packetHandler.sendToServer(new PacketSecurityMode(currentHand, getSecurity().getNext()));
                 } else {
-                    Mekanism.packetHandler.sendToServer(new PacketSecurityMode(Coord4D.get(tile), mode));
+                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_SECURITY_MODE, tile));
                 }
             }
         }

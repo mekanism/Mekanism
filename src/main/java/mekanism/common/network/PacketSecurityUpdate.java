@@ -62,7 +62,7 @@ public class PacketSecurityUpdate {
                     frequencies.add((SecurityFrequency) frequency);
                 }
             }
-            buf.writeInt(frequencies.size());
+            buf.writeVarInt(frequencies.size());
             for (SecurityFrequency frequency : frequencies) {
                 buf.writeUniqueId(frequency.ownerUUID);
                 buf.writeString(MekanismUtils.getLastKnownUsername(frequency.ownerUUID));
@@ -82,7 +82,7 @@ public class PacketSecurityUpdate {
             MekanismClient.clientUUIDMap.put(packet.playerUUID, packet.playerUsername);
         } else if (packet.packetType == SecurityPacket.FULL) {
             MekanismClient.clientSecurityMap.clear();
-            int amount = buf.readInt();
+            int amount = buf.readVarInt();
             for (int i = 0; i < amount; i++) {
                 UUID uuid = buf.readUniqueId();
                 String username = PacketHandler.readString(buf);

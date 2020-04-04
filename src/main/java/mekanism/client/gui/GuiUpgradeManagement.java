@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Set;
-import mekanism.api.Coord4D;
 import mekanism.api.Upgrade;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -16,7 +15,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
-import mekanism.common.network.PacketRemoveUpgrade;
+import mekanism.common.network.PacketGuiInteract;
+import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -46,7 +46,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
         addButton(removeButton = new MekanismImageButton(this, getGuiLeft() + 136, getGuiTop() + 57, 12, getButtonLocation("remove_upgrade"), () -> {
             if (scrollList.hasSelection()) {
-                Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tile), scrollList.getSelection()));
+                Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.REMOVE_UPGRADE, tile, scrollList.getSelection().ordinal()));
             }
         }));
         updateEnabledButtons();

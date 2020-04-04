@@ -2,7 +2,6 @@ package mekanism.client.gui.element.gauge;
 
 import java.util.Arrays;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -37,7 +36,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
                             if (button == 0 && Screen.hasShiftDown()) {
                                 button = 2;
                             }
-                            Mekanism.packetHandler.sendToServer(new PacketDropperUse(Coord4D.get(tile), button, index));
+                            Mekanism.packetHandler.sendToServer(new PacketDropperUse(tile.getPos(), button, index));
                         }
                     }
                 }

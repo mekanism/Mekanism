@@ -82,6 +82,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     public void setMode(SecurityMode mode) {
         securityMode = mode;
+        tile.markDirty(false);
     }
 
     public FrequencyManager getManager(Frequency freq) {
