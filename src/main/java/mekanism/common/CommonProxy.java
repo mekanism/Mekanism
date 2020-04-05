@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.client.SparkleAnimation.INodeChecker;
-import mekanism.common.network.PacketPortableTeleporter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -28,9 +27,6 @@ public class CommonProxy {
 
     protected final String[] API_PRESENT_MESSAGE = {"Mekanism API jar detected (Mekanism-<version>-api.jar),",
                                                     "please delete it from your mods folder and restart the game."};
-
-    public void handleTeleporterUpdate(PacketPortableTeleporter message) {
-    }
 
     /**
      * Set up and load the utilities this mod uses.

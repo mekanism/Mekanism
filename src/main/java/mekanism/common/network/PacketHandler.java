@@ -49,7 +49,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketGuiSetFrequency.class, PacketGuiSetFrequency::encode, PacketGuiSetFrequency::decode, PacketGuiSetFrequency::handle);
         registerClientToServer(PacketAddTrusted.class, PacketAddTrusted::encode, PacketAddTrusted::decode, PacketAddTrusted::handle);
         registerClientToServer(PacketSecurityMode.class, PacketSecurityMode::encode, PacketSecurityMode::decode, PacketSecurityMode::handle);
-        registerClientToServer(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
+        registerClientToServer(PacketPortableTeleporterGui.class, PacketPortableTeleporterGui::encode, PacketPortableTeleporterGui::decode, PacketPortableTeleporterGui::handle);
 
         //Server to client messages
         registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
@@ -60,6 +60,7 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
         registerServerToClient(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
         registerServerToClient(PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
+        registerServerToClient(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
 
         //Register the different sync packets for containers
         registerUpdateContainer(PacketUpdateContainerBoolean.class, PacketUpdateContainerBoolean::decode);
