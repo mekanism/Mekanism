@@ -44,7 +44,7 @@ public abstract class Module {
     }
 
     public void init() {
-        enabled = addConfigItem(new ModuleConfigItem<>(this, ENABLED_KEY, MekanismLang.MODULE_ENABLED, new BooleanData(), true));
+        enabled = addConfigItem(new ModuleConfigItem<>(this, ENABLED_KEY, MekanismLang.MODULE_ENABLED, new BooleanData(), !data.isDisabledByDefault()));
         if (data.handlesModeChange()) {
             handleModeChange = addConfigItem(new ModuleConfigItem<>(this, HANDLE_MODE_CHANGE_KEY, MekanismLang.MODULE_HANDLE_MODE_CHANGE, new BooleanData(), true));
         }
@@ -73,11 +73,12 @@ public abstract class Module {
         return energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
     }
 
-    public void useEnergy(FloatingLong energy) {
+    public FloatingLong useEnergy(FloatingLong energy) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
         if (energyContainer != null) {
-            energyContainer.extract(energy, Action.EXECUTE, AutomationType.MANUAL);
+            return energyContainer.extract(energy, Action.EXECUTE, AutomationType.MANUAL);
         }
+        return FloatingLong.ZERO;
     }
 
     protected void tickServer(PlayerEntity player) {}

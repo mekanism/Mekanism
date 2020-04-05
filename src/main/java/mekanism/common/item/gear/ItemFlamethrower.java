@@ -124,7 +124,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
             }
         }
         if (!hasGas) {
-            list.add(MekanismLang.FLAMETHROWER_STORED.translate(EnumColor.GRAY, EnumColor.ORANGE, MekanismLang.NO_GAS.translate()));
+            list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, MekanismLang.NO_GAS.translate()));
         }
         list.add(MekanismLang.MODE.translate(getMode(stack)));
     }

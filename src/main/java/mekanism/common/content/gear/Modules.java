@@ -47,7 +47,7 @@ public class Modules {
     // Shared
     public static final ModuleData<ModuleEnergyUnit> ENERGY_UNIT = register("energy_unit",
         MekanismLang.MODULE_ENERGY_UNIT, MekanismLang.DESCRIPTION_ENERGY_UNIT, () -> new ModuleEnergyUnit(), 8)
-        .setEnabledByDefault();
+        .setNoDisable();
 
     // Meka-Tool
     public static final ModuleData<ModuleExcavationEscalationUnit> EXCAVATION_ESCALATION_UNIT = register("excavation_escalation_unit",
@@ -74,10 +74,10 @@ public class Modules {
     public static final ModuleData<ModuleRadiationShieldingUnit> RADIATION_SHIELDING_UNIT = register("radiation_shielding_unit",
         MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, () -> new ModuleRadiationShieldingUnit());
     public static final ModuleData<ModuleVisionEnhancementUnit> VISION_ENHANCEMENT_UNIT = register("vision_enhancement_unit",
-        MekanismLang.MODULE_VISION_ENHANCEMENT_UNIT, MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, () -> new ModuleVisionEnhancementUnit())
-        .setHandlesModeChange().setRendersHUD();
+        MekanismLang.MODULE_VISION_ENHANCEMENT_UNIT, MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, () -> new ModuleVisionEnhancementUnit(), 4)
+        .setHandlesModeChange().setRendersHUD().setDisabledByDefault();
     public static final ModuleData<ModuleSolarRechargingUnit> SOLAR_RECHARGING_UNIT = register("solar_recharging_unit",
-        MekanismLang.MODULE_SOLAR_RECHARGING_UNIT, MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, () -> new ModuleSolarRechargingUnit());
+        MekanismLang.MODULE_SOLAR_RECHARGING_UNIT, MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, () -> new ModuleSolarRechargingUnit(), 8);
 
     // Chestplate
     public static final ModuleData<ModuleJetpackUnit> JETPACK_UNIT = register("jetpack_unit",
@@ -183,7 +183,8 @@ public class Modules {
         private boolean exclusive;
         private boolean handlesModeChange;
         private boolean rendersHUD;
-        private boolean enabledByDefault;
+        private boolean noDisable;
+        private boolean disabledByDefault;
 
         private ModuleData(String name, ILangEntry langEntry, ILangEntry description, Supplier<MODULE> supplier, int maxStackSize) {
             this.name = name;
@@ -250,13 +251,22 @@ public class Modules {
             return rendersHUD;
         }
 
-        public ModuleData<MODULE> setEnabledByDefault() {
-            enabledByDefault = true;
+        public ModuleData<MODULE> setNoDisable() {
+            noDisable = true;
             return this;
         }
 
-        public boolean isEnabledByDefault() {
-            return enabledByDefault;
+        public boolean isNoDisable() {
+            return noDisable;
+        }
+
+        public ModuleData<MODULE> setDisabledByDefault() {
+            disabledByDefault = true;
+            return this;
+        }
+
+        public boolean isDisabledByDefault() {
+            return disabledByDefault;
         }
 
         @Override

@@ -8,6 +8,7 @@ import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
@@ -22,6 +23,7 @@ import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit.SprintBoost;
+import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -29,6 +31,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -75,12 +78,17 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleVisionEnhancementUnit extends ModuleMekaSuit {
         @Override
+        public void tickServer(PlayerEntity player) {
+            super.tickServer(player);
+            useEnergy(MekanismConfig.general.mekaSuitEnergyUsageVisionEnhancement.get());
+
+        }
+        @Override
         public void addHUDStrings(List<ITextComponent> list) {
             ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
             list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.DARK_GRAY, MekanismLang.MODULE_VISION_ENHANCEMENT,
                 isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate()));
         }
-
         @Override
         public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
             toggleEnabled(player, MekanismLang.MODULE_VISION_ENHANCEMENT.translate());
@@ -98,20 +106,16 @@ public abstract class ModuleMekaSuit extends Module {
             super.init();
             addConfigItem(speedBoost = new ModuleConfigItem<>(this, "speed_boost", MekanismLang.MODULE_SPEED_BOOST, new EnumData<>(SprintBoost.class), SprintBoost.LOW));
         }
-
-
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
             ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
             list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.DARK_GRAY, MekanismLang.MODULE_GRAVITATIONAL_MODULATION,
                 isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate()));
         }
-
         @Override
         public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
             toggleEnabled(player, MekanismLang.MODULE_GRAVITATIONAL_MODULATION.translate());
         }
-
         public float getBoost() {
             return speedBoost.get().getBoost();
         }
@@ -178,9 +182,9 @@ public abstract class ModuleMekaSuit extends Module {
 
         /** return rejects */
         private FloatingLong charge(ItemStack stack, FloatingLong amount) {
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-            if (energyContainer != null) {
-                return energyContainer.insert(amount, Action.EXECUTE, AutomationType.MANUAL);
+            IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
+            if (handler != null) {
+                return handler.insertEnergy(useEnergy(amount), Action.EXECUTE);
             }
             return amount;
         }
@@ -288,7 +292,12 @@ public abstract class ModuleMekaSuit extends Module {
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
             if (isEnabled()) {
-
+                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
+                if (energyContainer != null && !energyContainer.getNeeded().isZero() && player.world.isDaytime() &&
+                    player.world.canSeeSky(new BlockPos(player)) && !player.world.isRaining() && !player.world.getDimension().isNether()) {
+                    FloatingLong rate = MekanismConfig.general.mekaSuitSolarRechargingRate.get().multiply(getInstalledCount());
+                    energyContainer.insert(rate, Action.EXECUTE, AutomationType.MANUAL);
+                }
             }
         }
     }

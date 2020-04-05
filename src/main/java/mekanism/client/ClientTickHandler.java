@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.render.RenderTickHandler;
@@ -17,6 +19,7 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleVisionEnhancementUnit;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.item.IModeItem;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -35,8 +38,10 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -55,6 +60,7 @@ public class ClientTickHandler {
     public boolean initHoliday = false;
     public boolean shouldReset = false;
     public static boolean firstTick = true;
+    public static boolean visionEnhancement = false;
 
     public static boolean isJetpackActive(PlayerEntity player) {
         if (player != minecraft.player) {
@@ -104,6 +110,14 @@ public class ClientTickHandler {
             return Mekanism.playerState.isGravitationalModulationOn(player);
         }
         return CommonPlayerTickHandler.isGravitationalModulationOn(player);
+    }
+
+    public static boolean isVisionEnhancementOn(PlayerEntity player) {
+        ModuleVisionEnhancementUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.HEAD), Modules.VISION_ENHANCEMENT_UNIT);
+        if (module != null && module.isEnabled() && module.getContainerEnergy().greaterThan(MekanismConfig.general.mekaSuitEnergyUsageVisionEnhancement.get())) {
+            return true;
+        }
+        return false;
     }
 
     public static boolean isFlamethrowerOn(PlayerEntity player) {
@@ -266,6 +280,15 @@ public class ClientTickHandler {
                     }
                 }
             }
+
+            if (isVisionEnhancementOn(minecraft.player)) {
+                visionEnhancement = true;
+                // adds if it doesn't exist, otherwise tops off duration to 200
+                minecraft.player.addPotionEffect(new EffectInstance(Effects.NIGHT_VISION, 200, 0, false, true, false));
+            } else if (visionEnhancement) {
+                visionEnhancement = false;
+                minecraft.player.removePotionEffect(Effects.NIGHT_VISION);
+            }
         }
     }
 
@@ -278,6 +301,28 @@ public class ClientTickHandler {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, shift));
                 event.setCanceled(true);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onFogLighting(EntityViewRenderEvent.FogColors event) {
+        if (visionEnhancement) {
+            event.setBlue(0.4F);
+            event.setRed(0.4F);
+            event.setGreen(0.8F);
+        }
+    }
+
+    @SubscribeEvent
+    public void onFog(EntityViewRenderEvent.RenderFogEvent event) {
+        if (visionEnhancement) {
+            float fog = 0.1F;
+            ModuleVisionEnhancementUnit module = Modules.load(minecraft.player.getItemStackFromSlot(EquipmentSlotType.HEAD), Modules.VISION_ENHANCEMENT_UNIT);
+            if (module != null) {
+                fog -= module.getInstalledCount() * 0.018F;
+            }
+            RenderSystem.fogDensity(fog);
+            RenderSystem.fogMode(GlStateManager.FogMode.EXP2);
         }
     }
 

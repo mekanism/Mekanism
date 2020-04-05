@@ -33,6 +33,7 @@ public class MekanismClient {
 
         ClientTickHandler.portableTeleports.clear();
         ClientTickHandler.firstTick = true;
+        ClientTickHandler.visionEnhancement = false;
 
         Mekanism.playerState.clear();
         Mekanism.activeVibrators.clear();
