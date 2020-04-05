@@ -1,24 +1,23 @@
 package mekanism.client;
 
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation.INodeChecker;
-import mekanism.client.gui.GuiPortableTeleporter;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
 import mekanism.common.HolidayManager;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketPortableTeleporter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -28,20 +27,6 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
  * @author AidanBrady
  */
 public class ClientProxy extends CommonProxy {
-
-    @Override
-    public void handleTeleporterUpdate(PacketPortableTeleporter message) {
-        Screen screen = Minecraft.getInstance().currentScreen;
-
-        if (screen instanceof GuiPortableTeleporter) {
-            GuiPortableTeleporter teleporter = (GuiPortableTeleporter) screen;
-            teleporter.setStatus(message.getStatus());
-            teleporter.setFrequency(message.getFrequency());
-            teleporter.setPublicCache(message.getPublicCache());
-            teleporter.setPrivateCache(message.getPrivateCache());
-            teleporter.updateButtons();
-        }
-    }
 
     @Override
     public void addHitEffects(Coord4D coord, BlockRayTraceResult mop) {
@@ -75,15 +60,11 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init() {
         super.init();
-
-        //MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
         MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
         MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
         MinecraftForge.EVENT_BUS.register(SoundHandler.class);
-
         new MekanismKeyHandler();
-
         HolidayManager.init();
     }
 
@@ -107,6 +88,12 @@ public class ClientProxy extends CommonProxy {
             return super.getPlayer(context);
         }
         return Minecraft.getInstance().player;
+    }
+
+    @Nullable
+    @Override
+    public World tryGetMainWorld() {
+        return Minecraft.getInstance().world;
     }
 
     //TODO

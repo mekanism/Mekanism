@@ -17,6 +17,7 @@ public class GeneratorsPacketHandler extends BasePacketHandler {
     public void initialize() {
         //Client to server messages
         registerClientToServer(PacketGeneratorsGuiButtonPress.class, PacketGeneratorsGuiButtonPress::encode, PacketGeneratorsGuiButtonPress::decode, PacketGeneratorsGuiButtonPress::handle);
+        registerClientToServer(PacketGeneratorsGuiInteract.class, PacketGeneratorsGuiInteract::encode, PacketGeneratorsGuiInteract::decode, PacketGeneratorsGuiInteract::handle);
         //Server to client messages
     }
 }

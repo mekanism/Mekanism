@@ -81,4 +81,15 @@ public class DataHandlerUtils {
         }
         return storedContents;
     }
+
+    public static int getMaxId(ListNBT storedContents, String key) {
+        int maxId = -1;
+        for (int tagCount = 0; tagCount < storedContents.size(); tagCount++) {
+            byte id = storedContents.getCompound(tagCount).getByte(key);
+            if (id > maxId) {
+                maxId = id;
+            }
+        }
+        return maxId + 1;
+    }
 }

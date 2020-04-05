@@ -9,7 +9,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -37,7 +36,6 @@ import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -48,7 +46,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityReactorController extends TileEntityReactorBlock implements ITileNetwork {
+public class TileEntityReactorController extends TileEntityReactorBlock {
 
     public static final int MAX_WATER = 100 * FluidAttributes.BUCKET_VOLUME;
     public static final int MAX_STEAM = MAX_WATER * 100;
@@ -204,13 +202,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         if (getReactor() != null) {
             getReactor().setInjectionRate(Math.max(0, rate - (rate % 2)));
             markDirty(false);
-        }
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            setInjectionRateFromPacket(dataStream.readInt());
         }
     }
 

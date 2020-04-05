@@ -35,7 +35,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
     private final List<IEnergyContainer> energyContainers;
 
     EnergyRecipeData(ListNBT containers) {
-        int count = containers.size();
+        int count = DataHandlerUtils.getMaxId(containers, NBTConstants.CONTAINER);
         energyContainers = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, null));

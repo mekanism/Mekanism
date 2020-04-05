@@ -2,17 +2,20 @@ package mekanism.common;
 
 import java.lang.ref.WeakReference;
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.client.SparkleAnimation.INodeChecker;
-import mekanism.common.network.PacketPortableTeleporter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * Common proxy for the Mekanism mod.
@@ -24,9 +27,6 @@ public class CommonProxy {
 
     protected final String[] API_PRESENT_MESSAGE = {"Mekanism API jar detected (Mekanism-<version>-api.jar),",
                                                     "please delete it from your mods folder and restart the game."};
-
-    public void handleTeleporterUpdate(PacketPortableTeleporter message) {
-    }
 
     /**
      * Set up and load the utilities this mod uses.
@@ -82,6 +82,11 @@ public class CommonProxy {
     //TODO: Evaluate if there is even a reason to have this
     public PlayerEntity getPlayer(Supplier<Context> context) {
         return context.get().getSender();
+    }
+
+    @Nullable
+    public World tryGetMainWorld() {
+        return ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD);
     }
 
     public void throwApiPresentException() {

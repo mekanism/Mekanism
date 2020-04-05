@@ -122,7 +122,12 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
     @Nonnull
     public List<RECIPE_TYPE> getRecipes(@Nullable World world) {
         if (world == null) {
-            return Collections.emptyList();
+            //Try to get a fallback world if we are in a context that may not have one
+            world = Mekanism.proxy.tryGetMainWorld();
+            if (world == null) {
+                //If we failed, then return no recipes
+                return Collections.emptyList();
+            }
         }
         if (cachedRecipes.isEmpty()) {
             RecipeManager recipeManager = world.getRecipeManager();

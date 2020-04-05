@@ -1,6 +1,5 @@
 package mekanism.generators.client.gui;
 
-import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -10,10 +9,12 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.generators.client.gui.element.button.ReactorLogicButton;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.network.PacketGeneratorsGuiInteract;
+import mekanism.generators.common.network.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
 import net.minecraft.entity.player.PlayerInventory;
@@ -34,7 +35,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         for (ReactorLogic type : ReactorLogic.values()) {
             int typeShift = 22 * type.ordinal();
             addButton(new ReactorLogicButton(this, getGuiLeft() + 24, getGuiTop() + 32 + typeShift, type, tile,
-                  () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(type)))));
+                  () -> MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.LOGIC_TYPE, tile, type.ordinal()))));
         }
     }
 

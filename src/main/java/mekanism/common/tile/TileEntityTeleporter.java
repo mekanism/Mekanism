@@ -15,7 +15,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -33,17 +32,16 @@ import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
+import mekanism.common.tile.interfaces.IHasFrequency;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvents;
@@ -56,7 +54,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader, IFrequencyHandler, ITileNetwork {
+public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader, IFrequencyHandler, IHasFrequency {
 
     private AxisAlignedBB teleportBounds = null;
 
@@ -184,6 +182,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frequency == null ? null : frequency.getClosestCoords(Coord4D.get(this));
     }
 
+    @Override
     public void setFrequency(String name, boolean publicFreq) {
         FrequencyManager manager = getManager(new Frequency(name, null).setPublic(publicFreq));
         manager.deactivate(Coord4D.get(this));
@@ -200,6 +199,14 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         manager.addFrequency(freq);
         frequency = freq;
         markDirty(false);
+    }
+
+    @Override
+    public void removeFrequency(String name, boolean publicFreq) {
+        FrequencyManager manager = getManager(new Frequency(name, null).setPublic(publicFreq));
+        if (manager != null) {
+            manager.remove(name, getSecurity().getOwnerUUID());
+        }
     }
 
     public FrequencyManager getManager(Frequency freq) {
@@ -376,25 +383,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             nbtTags.put(NBTConstants.FREQUENCY, frequencyTag);
         }
         return nbtTags;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                String name = BasePacketHandler.readString(dataStream);
-                boolean isPublic = dataStream.readBoolean();
-                setFrequency(name, isPublic);
-            } else if (type == 1) {
-                String freq = BasePacketHandler.readString(dataStream);
-                boolean isPublic = dataStream.readBoolean();
-                FrequencyManager manager = getManager(new Frequency(freq, null).setPublic(isPublic));
-                if (manager != null) {
-                    manager.remove(freq, getSecurity().getOwnerUUID());
-                }
-            }
-        }
     }
 
     @Nonnull

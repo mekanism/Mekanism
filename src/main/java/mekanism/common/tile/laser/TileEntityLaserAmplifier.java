@@ -7,7 +7,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -20,9 +19,8 @@ import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 
-public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements ITileNetwork, IHasMode {
+public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
     private static final FloatingLong MAX = FloatingLong.createConst(5_000_000_000L);
     public FloatingLong minThreshold = FloatingLong.ZERO;
@@ -93,17 +91,16 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         markDirty(false);
     }
 
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                minThreshold = energyContainer.getMaxEnergy().copy().min(FloatingLong.readFromBuffer(dataStream));
-            } else if (type == 1) {
-                maxThreshold = energyContainer.getMaxEnergy().copy().min(FloatingLong.readFromBuffer(dataStream));
-            }
-            markDirty(false);
-        }
+    public void setMinThresholdFromPacket(FloatingLong floatingLong) {
+        FloatingLong maxEnergy = energyContainer.getMaxEnergy();
+        minThreshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copy();
+        markDirty(false);
+    }
+
+    public void setMaxThresholdFromPacket(FloatingLong floatingLong) {
+        FloatingLong maxEnergy = energyContainer.getMaxEnergy();
+        maxThreshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copy();
+        markDirty(false);
     }
 
     @Override
@@ -111,7 +108,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         super.read(nbtTags);
         NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.MIN, value -> minThreshold = value);
         NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.MAX, value -> maxThreshold = value);
-        time = nbtTags.getInt(NBTConstants.TIME);
+        NBTUtils.setIntIfPresent(nbtTags, NBTConstants.TIME, value -> time = value);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.OUTPUT_MODE, RedstoneOutput::byIndexStatic, mode -> outputMode = mode);
     }
 

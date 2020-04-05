@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -17,9 +16,9 @@ import mekanism.client.gui.element.scroll.GuiTextScrollList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.network.PacketAddTrusted;
 import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.MekanismUtils;
@@ -38,7 +37,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
     private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
     private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
-    private static final int MAX_LENGTH = 24;
     private MekanismButton removeButton;
     private MekanismButton publicButton;
     private MekanismButton privateButton;
@@ -80,21 +78,21 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
             }
         }));
         addButton(trustedField = new TextFieldWidget(font, getGuiLeft() + 35, getGuiTop() + 69, 86, 11, ""));
-        trustedField.setMaxStringLength(MAX_LENGTH);
+        trustedField.setMaxStringLength(PacketAddTrusted.MAX_NAME_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
         addButton(publicButton = new MekanismImageButton(this, getGuiLeft() + 13, getGuiTop() + 113, 40, 16, 40, 16, getButtonLocation("public"),
               () -> {
-                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, SecurityMode.PUBLIC)));
+                  Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PUBLIC.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.PUBLIC_MODE)));
         addButton(privateButton = new MekanismImageButton(this, getGuiLeft() + 54, getGuiTop() + 113, 40, 16, 40, 16, getButtonLocation("private"),
               () -> {
-                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, SecurityMode.PRIVATE)));
+                  Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PRIVATE.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.PRIVATE_MODE)));
         addButton(trustedButton = new MekanismImageButton(this, getGuiLeft() + 95, getGuiTop() + 113, 40, 16, 40, 16, getButtonLocation("trusted"),
               () -> {
-                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, SecurityMode.TRUSTED)));
+                  Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.TRUSTED.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.TRUSTED_MODE)));
         addButton(checkboxButton = new MekanismImageButton(this, getGuiLeft() + 123, getGuiTop() + 68, 11, 12, getButtonLocation("checkmark"),
@@ -123,8 +121,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     private void addTrusted(String trusted) {
-        if (!trusted.isEmpty()) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, trusted)));
+        if (PacketAddTrusted.validateNameLength(trusted.length())) {
+            Mekanism.packetHandler.sendToServer(new PacketAddTrusted(tile.getPos(), trusted));
         }
     }
 

@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ILangEntry;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -15,11 +14,10 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IHasMode, ITileNetwork {
+public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IHasMode {
 
     public ReactorLogic logicType = ReactorLogic.DISABLED;
     public boolean activeCooled;
@@ -90,12 +88,9 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         markDirty(false);
     }
 
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            logicType = dataStream.readEnumValue(ReactorLogic.class);
-            markDirty(false);
-        }
+    public void setLogicTypeFromPacket(ReactorLogic logicType) {
+        this.logicType = logicType;
+        markDirty(false);
     }
 
     @Override

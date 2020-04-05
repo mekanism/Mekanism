@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
-import mekanism.api.TileNetworkList;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
@@ -15,7 +14,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketGuiSetEnergy;
+import mekanism.common.network.PacketGuiSetEnergy.GuiEnergyValue;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -79,9 +79,9 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     private void setEnergyUsage() {
         if (!energyUsageField.getText().isEmpty()) {
             try {
-                FloatingLong toUse = MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(energyUsageField.getText()));
-                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(toUse)));
-            } catch (Exception ignored) {
+                Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.ENERGY_USAGE, tile.getPos(),
+                      MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(energyUsageField.getText()))));
+            } catch (NumberFormatException ignored) {
             }
             energyUsageField.setText("");
         }

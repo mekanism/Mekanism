@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.TriConsumer;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
+import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -176,6 +177,12 @@ public class PacketGuiInteract {
                 if (owner != null && player.getUniqueID().equals(owner)) {
                     securityComponent.setMode(securityComponent.getMode().getNext());
                 }
+            }
+        }),
+
+        SECURITY_DESK_MODE((tile, player, extra) -> {
+            if (tile instanceof TileEntitySecurityDesk) {
+                ((TileEntitySecurityDesk) tile).setSecurityMode(SecurityMode.byIndexStatic(extra));
             }
         }),
 
