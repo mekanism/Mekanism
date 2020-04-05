@@ -13,6 +13,8 @@ public class WorldConfig extends BaseMekanismConfig {
     public final OreConfig copper;
     public final OreConfig osmium;
     public final OreConfig tin;
+    public final OreConfig uranium;
+    public final OreConfig fluorite;
     public final SaltConfig salt;
 
     WorldConfig() {
@@ -26,6 +28,8 @@ public class WorldConfig extends BaseMekanismConfig {
         copper = new OreConfig(this, builder, "copper", true, 16, 8, 0, 0, 60);
         osmium = new OreConfig(this, builder, "osmium", true, 12, 8, 0, 0, 60);
         tin = new OreConfig(this, builder, "tin", true, 14, 8, 0, 0, 60);
+        uranium = new OreConfig(this, builder, "uranium", true, 8, 8, 0, 0, 60);
+        fluorite = new OreConfig(this, builder, "fluorite", true, 6, 12, 0, 0, 32);
         salt = new SaltConfig(this, builder, true, 2, 6, 1);
         builder.pop();
         configSpec = builder.build();

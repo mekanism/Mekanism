@@ -1,8 +1,8 @@
 package mekanism.common.world;
 
-import com.google.common.collect.Lists;
 import java.util.Random;
 import javax.annotation.Nullable;
+import com.google.common.collect.Lists;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreConfig;
@@ -37,17 +37,25 @@ public class GenHandler {
     private static ConfiguredFeature<?, ?> OSMIUM_RETROGEN_FEATURE;
     private static ConfiguredFeature<?, ?> SALT_FEATURE;
     private static ConfiguredFeature<?, ?> SALT_RETROGEN_FEATURE;
+    private static ConfiguredFeature<?, ?> URANIUM_FEATURE;
+    private static ConfiguredFeature<?, ?> URANIUM_RETROGEN_FEATURE;
+    private static ConfiguredFeature<?, ?> FLUORITE_FEATURE;
+    private static ConfiguredFeature<?, ?> FLUORITE_RETROGEN_FEATURE;
 
     public static void setupWorldGeneration() {
         COPPER_FEATURE = getOreFeature(MekanismBlocks.COPPER_ORE, MekanismConfig.world.copper, Feature.ORE);
         TIN_FEATURE = getOreFeature(MekanismBlocks.TIN_ORE, MekanismConfig.world.tin, Feature.ORE);
         OSMIUM_FEATURE = getOreFeature(MekanismBlocks.OSMIUM_ORE, MekanismConfig.world.osmium, Feature.ORE);
         SALT_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt, Placement.COUNT_TOP_SOLID);
+        URANIUM_FEATURE = getOreFeature(MekanismBlocks.URANIUM_ORE, MekanismConfig.world.uranium, Feature.ORE);
+        FLUORITE_FEATURE = getOreFeature(MekanismBlocks.FLUORITE_ORE, MekanismConfig.world.fluorite, Feature.ORE);
         //Retrogen features
         if (MekanismConfig.world.enableRegeneration.get()) {
             COPPER_RETROGEN_FEATURE = getOreFeature(MekanismBlocks.COPPER_ORE, MekanismConfig.world.copper, MekanismFeatures.ORE_RETROGEN.getFeature());
             TIN_RETROGEN_FEATURE = getOreFeature(MekanismBlocks.TIN_ORE, MekanismConfig.world.tin, MekanismFeatures.ORE_RETROGEN.getFeature());
             OSMIUM_RETROGEN_FEATURE = getOreFeature(MekanismBlocks.OSMIUM_ORE, MekanismConfig.world.osmium, MekanismFeatures.ORE_RETROGEN.getFeature());
+            URANIUM_RETROGEN_FEATURE = getOreFeature(MekanismBlocks.URANIUM_ORE, MekanismConfig.world.uranium, MekanismFeatures.ORE_RETROGEN.getFeature());
+            FLUORITE_RETROGEN_FEATURE = getOreFeature(MekanismBlocks.FLUORITE_ORE, MekanismConfig.world.fluorite, MekanismFeatures.ORE_RETROGEN.getFeature());
             SALT_RETROGEN_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt, MekanismPlacements.TOP_SOLID_RETROGEN.getPlacement());
         }
         ForgeRegistries.BIOMES.forEach(biome -> {
@@ -56,6 +64,8 @@ public class GenHandler {
                 addFeature(biome, COPPER_FEATURE);
                 addFeature(biome, TIN_FEATURE);
                 addFeature(biome, OSMIUM_FEATURE);
+                addFeature(biome, URANIUM_FEATURE);
+                addFeature(biome, FLUORITE_FEATURE);
                 //Add salt
                 addFeature(biome, SALT_FEATURE);
             }
@@ -106,6 +116,8 @@ public class GenHandler {
             generated = placeFeature(COPPER_RETROGEN_FEATURE, world, random, blockPos);
             generated |= placeFeature(TIN_RETROGEN_FEATURE, world, random, blockPos);
             generated |= placeFeature(OSMIUM_RETROGEN_FEATURE, world, random, blockPos);
+            generated |= placeFeature(URANIUM_RETROGEN_FEATURE, world, random, blockPos);
+            generated |= placeFeature(FLUORITE_RETROGEN_FEATURE, world, random, blockPos);
             generated |= placeFeature(SALT_RETROGEN_FEATURE, world, random, blockPos);
         }
         return generated;
