@@ -181,6 +181,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.RESISTIVE_HEATER, "Resistive Heater");
         add(MekanismBlocks.MODIFICATION_STATION, "Modification Station");
         add(MekanismBlocks.ISOTOPIC_CENTRIFUGE, "Isotopic Centrifuge");
+        add(MekanismBlocks.NUTRITIONAL_LIQUIFIER, "Nutritional Liquifier");
         add(MekanismBlocks.ROTARY_CONDENSENTRATOR, "Rotary Condensentrator");
         add(MekanismBlocks.SALT_BLOCK, "Salt Block");
         add(MekanismBlocks.SECURITY_DESK, "Security Desk");
@@ -281,6 +282,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismGases.ANTIMATTER, "Antimatter");
         add(MekanismGases.PLUTONIUM, "Plutonium");
         add(MekanismGases.POLONIUM, "Polonium");
+        add(MekanismGases.NUTRITIONAL_PASTE, "Nutritional Paste");
         //Slurry
         addSlurry(MekanismGases.IRON_SLURRY, "Iron");
         addSlurry(MekanismGases.GOLD_SLURRY, "Gold");
@@ -884,6 +886,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_MODIFICATION_STATION, "An advanced workbench capable of installing and removing modules from modular equipment (i.e. MekaSuit!)");
         add(MekanismLang.DESCRIPTION_ISOTOPIC_CENTRIFUGE, "A machine with one single purpose: to spin its contents really, REALLY fast.");
         add(MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER, "A highly-advanced block capable of transmitting any practical resource across long distances and dimensions.");
+        add(MekanismLang.DESCRIPTION_NUTRITIONAL_LIQUIFIER, "A machine that is capable of processing any foods into non-dangerous, easily-digestible Nutritional Paste.");
         add(MekanismLang.DESCRIPTION_ENERGY_CUBE, "An advanced device for storing and distributing energy.");
         add(MekanismLang.DESCRIPTION_GAS_TANK, "A portable tank that lets you carry gas wherever you please.");
         add(MekanismLang.DESCRIPTION_DIVERSION, "- Controllable by redstone");
@@ -929,8 +932,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         add(MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit");
         add(MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit");
-        add(MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit");
         add(MekanismLang.MODULE_VISION_ENHANCEMENT_UNIT, "Vision Enhancement Unit");
+        add(MekanismLang.MODULE_NUTRITIONAL_INJECTION_UNIT, "Nutritional Injection Unit");
+        add(MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit");
         add(MekanismLang.MODULE_JETPACK_UNIT, "Jetpack Unit");
         add(MekanismLang.MODULE_GRAVITATIONAL_MODULATING_UNIT, "Gravitational Modulating Unit");
         add(MekanismLang.MODULE_CHARGE_DISTRIBUTION_UNIT, "Charge Distribution Unit");
@@ -951,6 +955,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, "Applies a miniature electromagnetic field around the breathing apparatus, preventing negative potion effects.");
         add(MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
         add(MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, "Brightens the surrounding environment, allowing the user to see through darkness. Install multiple for more effective nightvision.");
+        add(MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging.");
         add(MekanismLang.DESCRIPTION_JETPACK_UNIT, "Applies a hydrogen-fueled jetpack to the MekaSuit.");
         add(MekanismLang.DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT, "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");
         add(MekanismLang.DESCRIPTION_CHARGE_DISTRIBUTION_UNIT, "Evenly distributes charge throughout all worn MekaSuit armor.");

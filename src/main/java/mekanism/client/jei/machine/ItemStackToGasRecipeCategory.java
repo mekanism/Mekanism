@@ -2,6 +2,7 @@ package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
@@ -11,7 +12,6 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -21,8 +21,8 @@ import mezz.jei.api.ingredients.IIngredients;
 
 public class ItemStackToGasRecipeCategory extends BaseRecipeCategory<ItemStackToGasRecipe> {
 
-    public ItemStackToGasRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.CHEMICAL_OXIDIZER, 20, 12, 132, 62);
+    public ItemStackToGasRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
+        super(helper, mekanismBlock, 20, 12, 132, 62);
     }
 
     @Override

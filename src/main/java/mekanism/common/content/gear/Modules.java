@@ -21,6 +21,7 @@ import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicAbsor
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleNutritionalInjectionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleRadiationShieldingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleSolarRechargingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleVisionEnhancementUnit;
@@ -78,6 +79,9 @@ public class Modules {
         .setHandlesModeChange().setRendersHUD().setDisabledByDefault();
     public static final ModuleData<ModuleSolarRechargingUnit> SOLAR_RECHARGING_UNIT = register("solar_recharging_unit",
         MekanismLang.MODULE_SOLAR_RECHARGING_UNIT, MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, () -> new ModuleSolarRechargingUnit(), 8);
+    public static final ModuleData<ModuleNutritionalInjectionUnit> NUTRITIONAL_INJECTION_UNIT = register("nutritional_injection_unit",
+        MekanismLang.MODULE_NUTRITIONAL_INJECTION_UNIT, MekanismLang.DESCRIPTION_NUTRITIONAL_INJECTION_UNIT, () -> new ModuleNutritionalInjectionUnit())
+        .setRendersHUD();
 
     // Chestplate
     public static final ModuleData<ModuleJetpackUnit> JETPACK_UNIT = register("jetpack_unit",

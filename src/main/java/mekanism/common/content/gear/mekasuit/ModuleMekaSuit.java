@@ -24,6 +24,7 @@ import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.integration.EnergyCompatUtils;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -81,7 +82,6 @@ public abstract class ModuleMekaSuit extends Module {
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
             useEnergy(MekanismConfig.general.mekaSuitEnergyUsageVisionEnhancement.get());
-
         }
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
@@ -291,14 +291,36 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
-            if (isEnabled()) {
-                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
-                if (energyContainer != null && !energyContainer.getNeeded().isZero() && player.world.isDaytime() &&
-                    player.world.canSeeSky(new BlockPos(player)) && !player.world.isRaining() && !player.world.getDimension().isNether()) {
-                    FloatingLong rate = MekanismConfig.general.mekaSuitSolarRechargingRate.get().multiply(getInstalledCount());
-                    energyContainer.insert(rate, Action.EXECUTE, AutomationType.MANUAL);
+            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
+            if (energyContainer != null && !energyContainer.getNeeded().isZero() && player.world.isDaytime() &&
+                player.world.canSeeSky(new BlockPos(player)) && !player.world.isRaining() && !player.world.getDimension().isNether()) {
+                FloatingLong rate = MekanismConfig.general.mekaSuitSolarRechargingRate.get().multiply(getInstalledCount());
+                energyContainer.insert(rate, Action.EXECUTE, AutomationType.MANUAL);
+            }
+        }
+    }
+
+    public static class ModuleNutritionalInjectionUnit extends ModuleMekaSuit {
+        private static final float SATURATION = 0.8F;
+        @Override
+        public void tickServer(PlayerEntity player) {
+            super.tickServer(player);
+            FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageNutritionalInjection.get();
+            if (!player.isCreative() && player.canEat(false) && getContainerEnergy().greaterOrEqual(usage)) {
+                ItemMekaSuitArmor item = (ItemMekaSuitArmor) getContainer().getItem();
+                int toFeed = Math.min(1, item.getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / 50);
+                if (toFeed > 0) {
+                    useEnergy(usage.multiply(toFeed));
+                    item.useGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get(), toFeed * 50);
+                    player.getFoodStats().addStats(1, SATURATION);
                 }
             }
+        }
+        @Override
+        public void addHUDStrings(List<ITextComponent> list) {
+            if (!isEnabled()) return;
+            GasStack stored = ((ItemMekaSuitArmor) getContainer().getItem()).getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get());
+            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.NUTRITIONAL_PASTE, EnumColor.PINK, stored.getAmount()));
         }
     }
 }

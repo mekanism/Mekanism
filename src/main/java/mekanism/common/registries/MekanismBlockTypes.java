@@ -87,6 +87,7 @@ import mekanism.common.tile.TileEntityIsotopicCentrifuge;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityModificationStation;
+import mekanism.common.tile.TileEntityNutritionalLiquifier;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPersonalChest;
@@ -408,11 +409,19 @@ public class MekanismBlockTypes {
         .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new ModificationStationContainer(i, inv, (TileEntityModificationStation) tile)))
         .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeRedstone(), new AttributeSecurity())
         .build();
+    // Isotopic Centrifuge
     public static final Machine<TileEntityIsotopicCentrifuge> ISOTOPIC_CENTRIFUGE = MachineBuilder
         .createMachine(() -> MekanismTileEntityTypes.ISOTOPIC_CENTRIFUGE, MekanismLang.DESCRIPTION_ISOTOPIC_CENTRIFUGE)
         .withGui(() -> MekanismContainerTypes.ISOTOPIC_CENTRIFUGE)
         .withEnergyConfig(MekanismConfig.usage.isotopicCentrifuge, MekanismConfig.storage.isotopicCentrifuge)
         .withSound(MekanismSounds.ISOTOPIC_CENTRIFUGE)
+        .build();
+    // Nutritional Liquifier
+    public static final Machine<TileEntityNutritionalLiquifier> NUTRITIONAL_LIQUIFIER = MachineBuilder
+        .createMachine(() -> MekanismTileEntityTypes.NUTRITIONAL_LIQUIFIER, MekanismLang.DESCRIPTION_NUTRITIONAL_LIQUIFIER)
+        .withGui(() -> MekanismContainerTypes.NUTRITIONAL_LIQUIFIER)
+        .withEnergyConfig(MekanismConfig.usage.nutritionalLiquifier, MekanismConfig.storage.nutritionalLiquifier)
+        .withSound(MekanismSounds.NUTRITIONAL_LIQUIFIER)
         .build();
 
     // Dynamic Tank

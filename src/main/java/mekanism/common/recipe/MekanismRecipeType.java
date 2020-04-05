@@ -79,6 +79,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
 
     public static final MekanismRecipeType<ItemStackToGasRecipe> GAS_CONVERSION = create("gas_conversion");
     public static final MekanismRecipeType<ItemStackToGasRecipe> OXIDIZING = create("oxidizing");
+    public static final MekanismRecipeType<ItemStackToGasRecipe> NUTRITIONAL_LIQUIFYING = create("nutritional_liquifying");
 
     public static final MekanismRecipeType<ItemStackToInfuseTypeRecipe> INFUSION_CONVERSION = create("infusion_conversion");
 

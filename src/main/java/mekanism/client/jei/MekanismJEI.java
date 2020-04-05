@@ -22,6 +22,7 @@ import mekanism.client.gui.GuiFormulaicAssemblicator;
 import mekanism.client.gui.GuiIsotopicCentrifuge;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiMetallurgicInfuser;
+import mekanism.client.gui.GuiNutritionalLiquifier;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiSolarNeutronActivator;
@@ -175,7 +176,6 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new ChemicalCrystallizerRecipeCategory(guiHelper));
         registry.addRecipeCategories(new ItemStackGasToGasRecipeCategory(guiHelper));
         registry.addRecipeCategories(new ChemicalInfuserRecipeCategory(guiHelper));
-        registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper));
         registry.addRecipeCategories(new FluidGasToGasRecipeCategory(guiHelper));
         registry.addRecipeCategories(new ElectrolysisRecipeCategory(guiHelper));
         registry.addRecipeCategories(new MetallurgicInfuserRecipeCategory(guiHelper));
@@ -184,6 +184,9 @@ public class MekanismJEI implements IModPlugin {
         //Register both methods of rotary condensentrator recipes
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, true));
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, false));
+
+        registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper, MekanismBlocks.CHEMICAL_OXIDIZER));
+        registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper, MekanismBlocks.NUTRITIONAL_LIQUIFIER));
 
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR));
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper, MekanismBlocks.ISOTOPIC_CENTRIFUGE));
@@ -221,6 +224,7 @@ public class MekanismJEI implements IModPlugin {
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, GuiThermalEvaporationController.class, 49, 20, 78, 38);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, GuiPRC.class, 75, 37, 36, 10);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE, GuiIsotopicCentrifuge.class, 64, 39, 48, 8);
+        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER, GuiNutritionalLiquifier.class, 64, 40, 48, 8);
         GuiHandlerRegistryHelper.registerCondensentrator(registry);
 
         GuiHandlerRegistryHelper.register(registry, GuiRobitCrafting.class, VanillaRecipeCategoryUid.CRAFTING, 90, 35, 22, 15);
@@ -252,6 +256,7 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, MekanismRecipeType.REACTION);
         RecipeRegistryHelper.registerCondensentrator(registry);
         RecipeRegistryHelper.registerSmelter(registry);
+        RecipeRegistryHelper.registerNutritionalLiquifier(registry);
     }
 
     @Override
@@ -274,6 +279,7 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER);
         CatalystRegistryHelper.registerCondensentrator(registry);
         CatalystRegistryHelper.registerSmelter(registry);
         CatalystRegistryHelper.registerRecipeItem(registry, MekanismBlocks.FORMULAIC_ASSEMBLICATOR, VanillaRecipeCategoryUid.CRAFTING);

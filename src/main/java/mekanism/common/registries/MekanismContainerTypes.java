@@ -66,6 +66,7 @@ import mekanism.common.tile.TileEntityIsotopicCentrifuge;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityModificationStation;
+import mekanism.common.tile.TileEntityNutritionalLiquifier;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPersonalChest;
@@ -138,6 +139,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySecurityDesk>> SECURITY_DESK = CONTAINER_TYPES.register(MekanismBlocks.SECURITY_DESK, SecurityDeskContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityModificationStation>> MODIFICATION_STATION = CONTAINER_TYPES.register(MekanismBlocks.MODIFICATION_STATION, ModificationStationContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityIsotopicCentrifuge>> ISOTOPIC_CENTRIFUGE = CONTAINER_TYPES.register(MekanismBlocks.ISOTOPIC_CENTRIFUGE, TileEntityIsotopicCentrifuge.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityNutritionalLiquifier>> NUTRITIONAL_LIQUIFIER = CONTAINER_TYPES.register(MekanismBlocks.NUTRITIONAL_LIQUIFIER, TileEntityNutritionalLiquifier.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySeismicVibrator>> SEISMIC_VIBRATOR = CONTAINER_TYPES.register(MekanismBlocks.SEISMIC_VIBRATOR, TileEntitySeismicVibrator.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySolarNeutronActivator>> SOLAR_NEUTRON_ACTIVATOR = CONTAINER_TYPES.register(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, TileEntitySolarNeutronActivator.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityTeleporter>> TELEPORTER = CONTAINER_TYPES.register(MekanismBlocks.TELEPORTER, TeleporterContainer::new);

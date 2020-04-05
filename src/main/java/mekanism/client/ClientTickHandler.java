@@ -319,7 +319,7 @@ public class ClientTickHandler {
             float fog = 0.1F;
             ModuleVisionEnhancementUnit module = Modules.load(minecraft.player.getItemStackFromSlot(EquipmentSlotType.HEAD), Modules.VISION_ENHANCEMENT_UNIT);
             if (module != null) {
-                fog -= module.getInstalledCount() * 0.018F;
+                fog -= module.getInstalledCount() * 0.022F;
             }
             RenderSystem.fogDensity(fog);
             RenderSystem.fogMode(GlStateManager.FogMode.EXP2);

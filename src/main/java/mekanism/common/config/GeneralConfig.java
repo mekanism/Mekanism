@@ -71,6 +71,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitInventoryChargeRate;
     public final CachedFloatingLongValue mekaSuitSolarRechargingRate;
     public final CachedFloatingLongValue mekaSuitEnergyUsageVisionEnhancement;
+    public final CachedFloatingLongValue mekaSuitEnergyUsageNutritionalInjection;
 
     public final CachedIntValue maxUpgradeMultiplier;
     public final CachedIntValue minerSilkMultiplier;
@@ -218,6 +219,8 @@ public class GeneralConfig extends BaseMekanismConfig {
             "solarRechargingRate", FloatingLong.createConst(500));
         mekaSuitEnergyUsageVisionEnhancement = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of using vision enhancement.",
             "energyUsageVisionEnhancement", FloatingLong.createConst(50));
+        mekaSuitEnergyUsageNutritionalInjection = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per half-food of nutritional injection.",
+            "energyUsageNutritionalInjection", FloatingLong.createConst(500));
         builder.pop();
 
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.

@@ -68,7 +68,9 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.RADIATION_SHIELDING_UNIT);
 
         if (slot == EquipmentSlotType.HEAD) {
-            Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT, Modules.VISION_ENHANCEMENT_UNIT);
+            Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT, Modules.VISION_ENHANCEMENT_UNIT,
+                Modules.SOLAR_RECHARGING_UNIT, Modules.NUTRITIONAL_INJECTION_UNIT);
+            gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 10_000, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
         } else if (slot == EquipmentSlotType.CHEST) {
             Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT);
             gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 24_000, gas -> gas == MekanismGases.HYDROGEN.get()));

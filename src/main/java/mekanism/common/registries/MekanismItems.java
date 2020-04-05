@@ -111,6 +111,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemModule> INHALATION_PURIFICATION_UNIT = registerModule(Modules.INHALATION_PURIFICATION_UNIT);
     public static final ItemRegistryObject<ItemModule> VISION_ENHANCEMENT_UNIT = registerModule(Modules.VISION_ENHANCEMENT_UNIT);
     public static final ItemRegistryObject<ItemModule> SOLAR_RECHARGING_UNIT = registerModule(Modules.SOLAR_RECHARGING_UNIT);
+    public static final ItemRegistryObject<ItemModule> NUTRITIONAL_INJECTION_UNIT = registerModule(Modules.NUTRITIONAL_INJECTION_UNIT);
     public static final ItemRegistryObject<ItemModule> RADIATION_SHIELDING_UNIT = registerModule(Modules.RADIATION_SHIELDING_UNIT);
     public static final ItemRegistryObject<ItemModule> JETPACK_UNIT = registerModule(Modules.JETPACK_UNIT);
     public static final ItemRegistryObject<ItemModule> GRAVITATIONAL_MODULATING_UNIT = registerModule(Modules.GRAVITATIONAL_MODULATING_UNIT);

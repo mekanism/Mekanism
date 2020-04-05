@@ -40,6 +40,7 @@ public class MekanismGases {
     public static final GasRegistryObject<Gas> PLUTONIUM = GASES.register("plutonium", 0x1F919C);
     public static final GasRegistryObject<Gas> POLONIUM = GASES.register("polonium", 0x1B9E7B);
     public static final GasRegistryObject<Gas> ANTIMATTER = GASES.register("antimatter", 0x7A91A1);
+    public static final GasRegistryObject<Gas> NUTRITIONAL_PASTE = GASES.register("nutritional_paste", 0XEB6CA3);
 
     public static final SlurryRegistryObject<Slurry, Slurry> IRON_SLURRY = GASES.registerSlurry(Resource.IRON);
     public static final SlurryRegistryObject<Slurry, Slurry> GOLD_SLURRY = GASES.registerSlurry(Resource.GOLD);

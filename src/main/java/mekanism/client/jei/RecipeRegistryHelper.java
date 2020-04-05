@@ -2,17 +2,22 @@ package mekanism.client.jei;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismGases;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class RecipeRegistryHelper {
 
@@ -56,6 +61,12 @@ public class RecipeRegistryHelper {
 
     public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, IBlockProvider mekanismBlock, MekanismRecipeType<RECIPE> type) {
         registry.addRecipes(type.getRecipes(getWorld()), mekanismBlock.getRegistryName());
+    }
+
+    public static void registerNutritionalLiquifier(IRecipeRegistration registry) {
+        registry.addRecipes(ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.isFood())
+            .map(item -> new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getGasStack(item.getFood().getHealing() * 50)))
+            .collect(Collectors.toList()), MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
     }
 
     private static ClientWorld getWorld() {

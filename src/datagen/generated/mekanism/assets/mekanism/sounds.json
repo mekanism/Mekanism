@@ -64,6 +64,11 @@
       "mekanism:tile/pressurized_reaction_chamber"
     ]
   },
+  "tile.machine.nutritional_liquifier": {
+    "sounds": [
+      "mekanism:tile/nutritional_liquifier"
+    ]
+  },
   "tile.machine.resistive_heater": {
     "sounds": [
       "mekanism:tile/resistive_heater"
