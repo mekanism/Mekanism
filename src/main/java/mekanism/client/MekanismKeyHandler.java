@@ -25,10 +25,12 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
     public static KeyBinding handModeSwitchKey = new KeyBinding(MekanismLang.KEY_HAND_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_N, MekanismLang.MEKANISM.getTranslationKey());
+    public static KeyBinding headModeSwitchKey = new KeyBinding(MekanismLang.KEY_HEAD_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+          GLFW.GLFW_KEY_V, MekanismLang.MEKANISM.getTranslationKey());
     public static KeyBinding chestModeSwitchKey = new KeyBinding(MekanismLang.KEY_CHEST_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_G, MekanismLang.MEKANISM.getTranslationKey());
     public static KeyBinding feetModeSwitchKey = new KeyBinding(MekanismLang.KEY_FEET_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
-          GLFW.GLFW_KEY_H, MekanismLang.MEKANISM.getTranslationKey());
+          GLFW.GLFW_KEY_B, MekanismLang.MEKANISM.getTranslationKey());
     public static KeyBinding detailsKey = new KeyBinding(MekanismLang.KEY_DETAILS_MODE.getTranslationKey(), KeyConflictContext.GUI, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_LEFT_SHIFT, MekanismLang.MEKANISM.getTranslationKey());
     public static KeyBinding descriptionKey = new KeyBinding(MekanismLang.KEY_DESCRIPTION_MODE.getTranslationKey(), KeyConflictContext.GUI,
@@ -37,25 +39,31 @@ public class MekanismKeyHandler extends MekKeyHandler {
           GLFW.GLFW_KEY_BACKSLASH, MekanismLang.MEKANISM.getTranslationKey());
     public static KeyBinding boostKey = new KeyBinding(MekanismLang.KEY_BOOST.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_LEFT_CONTROL, MekanismLang.MEKANISM.getTranslationKey());
+    public static KeyBinding hudKey = new KeyBinding(MekanismLang.KEY_HUD.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+        GLFW.GLFW_KEY_H, MekanismLang.MEKANISM.getTranslationKey());
 
-    private static Builder BINDINGS = new Builder(7)
+    private static Builder BINDINGS = new Builder(9)
           .addBinding(handModeSwitchKey, false)
+          .addBinding(headModeSwitchKey, false)
           .addBinding(chestModeSwitchKey, false)
           .addBinding(feetModeSwitchKey, false)
           .addBinding(detailsKey, false)
           .addBinding(descriptionKey, false)
           .addBinding(moduleTweakerKey, false)
-          .addBinding(boostKey, false);
+          .addBinding(boostKey, false)
+          .addBinding(hudKey, false);
 
     public MekanismKeyHandler() {
         super(BINDINGS);
         ClientRegistry.registerKeyBinding(handModeSwitchKey);
+        ClientRegistry.registerKeyBinding(headModeSwitchKey);
         ClientRegistry.registerKeyBinding(chestModeSwitchKey);
         ClientRegistry.registerKeyBinding(feetModeSwitchKey);
         ClientRegistry.registerKeyBinding(detailsKey);
         ClientRegistry.registerKeyBinding(descriptionKey);
         ClientRegistry.registerKeyBinding(moduleTweakerKey);
         ClientRegistry.registerKeyBinding(boostKey);
+        ClientRegistry.registerKeyBinding(hudKey);
         MinecraftForge.EVENT_BUS.addListener(this::onTick);
     }
 
@@ -76,22 +84,27 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 //Otherwise try their offhand
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.OFFHAND, player.isShiftKeyDown()));
             }
+        } else if (kb == headModeSwitchKey) {
+            if (IModeItem.isModeItem(player, EquipmentSlotType.HEAD)) {
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.HEAD, player.isShiftKeyDown()));
+                SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
+            }
         } else if (kb == chestModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.CHEST)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.CHEST, player.isShiftKeyDown()));
-                //TODO: Decide if we want to do the sound on the server side (it wouldn't obey the client base volume then)
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         } else if (kb == feetModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.FEET)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.FEET, player.isShiftKeyDown()));
-                //TODO: Decide if we want to do the sound on the server side (it wouldn't obey the client base volume then)
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         } else if (kb == moduleTweakerKey) {
             Mekanism.packetHandler.sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
         } else if (kb == boostKey) {
             MekanismClient.updateKey(kb, KeySync.BOOST);
+        } else if (kb == hudKey) {
+            MekanismClient.renderHUD = !MekanismClient.renderHUD;
         }
     }
 

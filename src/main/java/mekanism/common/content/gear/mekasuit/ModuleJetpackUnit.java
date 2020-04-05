@@ -40,7 +40,7 @@ public class ModuleJetpackUnit extends ModuleMekaSuit {
                 stored = ((ItemMekaSuitArmor) getContainer().getItem()).getContainedGas(getContainer(), MekanismGases.HYDROGEN.get());
             }
         }
-        list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, stored.getAmount()));
+        list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount()));
     }
 
     @Override

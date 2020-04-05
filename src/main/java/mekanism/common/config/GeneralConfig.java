@@ -68,6 +68,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitEnergyUsageMagicPrevent;
     public final CachedFloatingLongValue mekaSuitEnergyUsageSprintBoost;
     public final CachedFloatingLongValue mekaSuitEnergyUsageGravitationalModulation;
+    public final CachedFloatingLongValue mekaSuitInventoryChargeRate;
+    public final CachedFloatingLongValue mekaSuitSolarRechargingRate;
 
     public final CachedIntValue maxUpgradeMultiplier;
     public final CachedIntValue minerSilkMultiplier;
@@ -209,6 +211,10 @@ public class GeneralConfig extends BaseMekanismConfig {
             "energyUsageSprintBoost", FloatingLong.createConst(100));
         mekaSuitEnergyUsageGravitationalModulation = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick when flying via Gravitational Modulation.",
             "energyUsageSprintBoost", FloatingLong.createConst(500));
+        mekaSuitInventoryChargeRate = CachedFloatingLongValue.define(this, builder, "Charge rate of inventory items (Joules) per tick.",
+            "inventoryChargeRate", FloatingLong.createConst(10_000));
+        mekaSuitSolarRechargingRate = CachedFloatingLongValue.define(this, builder, "Solar recharging rate (Joules) of helmet per tick.",
+            "solarRechargingRate", FloatingLong.createConst(10_000));
         builder.pop();
 
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.

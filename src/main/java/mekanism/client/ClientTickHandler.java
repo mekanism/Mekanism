@@ -253,11 +253,17 @@ public class ClientTickHandler {
 
             if (CommonPlayerTickHandler.isGravitationalModulationReady(minecraft.player)) {
                 minecraft.player.abilities.allowFlying = true;
-                ModuleGravitationalModulatingUnit module = Modules.load(minecraft.player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
-                minecraft.player.moveRelative(module.getBoost(), new Vec3d(0.2, 0.2, 1));
+                if (minecraft.player.abilities.isFlying) {
+                    ModuleGravitationalModulatingUnit module = Modules.load(minecraft.player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
+                    minecraft.player.setSprinting(false);
+                    if (Mekanism.keyMap.has(minecraft.player, KeySync.BOOST)) {
+                        minecraft.player.moveRelative(module.getBoost(), new Vec3d(0, 0, 1));
+                    }
+                }
 
             } else if (!minecraft.player.isCreative()) {
                 minecraft.player.abilities.allowFlying = false;
+                minecraft.player.abilities.isFlying = false;
             }
 
             if (isGasMaskOn(minecraft.player)) {

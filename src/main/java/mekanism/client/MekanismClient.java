@@ -15,6 +15,7 @@ public class MekanismClient {
 
     public static Map<UUID, SecurityData> clientSecurityMap = new Object2ObjectOpenHashMap<>();
     public static Map<UUID, String> clientUUIDMap = new Object2ObjectOpenHashMap<>();
+    public static boolean renderHUD = true;
 
     public static long ticksPassed = 0;
 

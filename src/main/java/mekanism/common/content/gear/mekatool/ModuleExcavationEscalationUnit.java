@@ -40,7 +40,7 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
     @Override
     public void addHUDStrings(List<ITextComponent> list) {
         if (!isEnabled()) return;
-        list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.INDIGO, excavationMode.get().getEfficiency()));
+        list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.DARK_GRAY, EnumColor.INDIGO, excavationMode.get().getEfficiency()));
     }
 
     public double getEfficiency() {

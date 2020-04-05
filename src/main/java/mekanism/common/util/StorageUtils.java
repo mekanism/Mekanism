@@ -29,6 +29,7 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -122,6 +123,27 @@ public class StorageUtils {
             }
         }
         return null;
+    }
+
+    public static ITextComponent getEnergyPercent(ItemStack stack) {
+        IEnergyContainer container = getEnergyContainer(stack, 0);
+        double ratio = 0.0D;
+        EnumColor color = EnumColor.DARK_RED;
+        if (container != null) {
+            ratio = container.getEnergy().divideToLevel(container.getMaxEnergy());
+        }
+        if (ratio < 0.01F) {
+            color = EnumColor.DARK_RED;
+        } else if (ratio < 0.1F) {
+            color = EnumColor.RED;
+        } else if (ratio < 0.25F) {
+            color = EnumColor.ORANGE;
+        } else if (ratio < 0.5F) {
+            color = EnumColor.YELLOW;
+        } else {
+            color = EnumColor.BRIGHT_GREEN;
+        }
+        return new StringTextComponent(Long.toString(Math.round(ratio * 100)) + "%").applyTextStyle(color.textFormatting);
     }
 
     public static double getDurabilityForDisplay(ItemStack stack) {

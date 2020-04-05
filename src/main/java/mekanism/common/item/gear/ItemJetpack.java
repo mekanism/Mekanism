@@ -106,7 +106,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
                     stored = gasHandlerItem.getGasInTank(0);
                 }
             }
-            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, stored.getAmount()));
+            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount()));
         }
     }
 

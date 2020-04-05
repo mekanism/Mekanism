@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import mekanism.common.base.ILangEntry;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.Util;
 
 public enum MekanismLang implements ILangEntry {
@@ -17,16 +18,25 @@ public enum MekanismLang implements ILangEntry {
     ERROR("constants", "error"),
     ALPHA_WARNING("constants", "alpha_warning"),
     ALPHA_WARNING_HERE("constants", "alpha_warning.here"),
+    //Equipment
+    HEAD("equipment", "head"),
+    BODY("equipment", "body"),
+    LEGS("equipment", "legs"),
+    FEET("equipment", "feet"),
+    MAINHAND("equipment", "mainhand"),
+    OFFHAND("equipment", "offhand"),
     //JEI
     JEI_AMOUNT_WITH_CAPACITY("tooltip", "jei.amount.with.capacity"),
     //Key
     KEY_HAND_MODE("key", "mode"),
-    KEY_CHEST_MODE("key", "armor_mode"),
+    KEY_HEAD_MODE("key", "head_mode"),
+    KEY_CHEST_MODE("key", "chest_mode"),
     KEY_FEET_MODE("key", "feet_mode"),
     KEY_DETAILS_MODE("key", "details"),
     KEY_DESCRIPTION_MODE("key", "description"),
     KEY_MODULE_TWEAKER("key", "module_tweaker"),
     KEY_BOOST("key", "key_boost"),
+    KEY_HUD("key", "key_hud"),
     //Holiday
     HOLIDAY_BORDER("holiday", "border"),
     HOLIDAY_SIGNATURE("holiday", "signature"),
@@ -51,6 +61,7 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_FRACTION("generic", "fraction"),
     GENERIC_TRANSFER("generic", "transfer"),
     GENERIC_PER_TICK("generic", "per_tick"),
+    GENERIC_PRE_STORED("generic", "pre_pre_colon"),
     //Directions
     DOWN("direction", "down"),
     UP("direction", "up"),
@@ -571,8 +582,8 @@ public enum MekanismLang implements ILangEntry {
     SAWING("factory", "sawing"),
     //Modules
     MODULE_ENABLED("module", "enabled"),
-    MODULE_TOGGLE_ENABLED("module", "toggle_enabled"),
-    MODULE_TOGGLE_DISABLED("module", "toggle_disabled"),
+    MODULE_ENABLED_LOWER("module", "enabled_lower"),
+    MODULE_DISABLED_LOWER("module", "disabled_lower"),
     MODULE_TWEAKER("module", "module_tweaker"),
     MODULE_INSTALLED("module", "installed"),
     MODULE_STACKABLE("module", "stackable"),
@@ -589,6 +600,10 @@ public enum MekanismLang implements ILangEntry {
     MODULE_JETPACK_MODE("module", "jetpack_mode"),
     MODULE_GRAVITATIONAL_MODULATION("module", "gravitational_modulation"),
     MODULE_MODE_CHANGE("module", "mode_change"),
+    MODULE_CHARGE_SUIT("module", "charge_suit"),
+    MODULE_CHARGE_INVENTORY("module", "charge_inventory"),
+    MODULE_SPEED_BOOST("module", "speed_boost"),
+    MODULE_VISION_ENHANCEMENT("module", "vision_enhancement"),
 
     MODULE_ENERGY_UNIT("module", "energy_unit"),
     MODULE_EXCAVATION_ESCALATION_UNIT("module", "excavation_escalation"),
@@ -600,6 +615,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_ELECTROLYTIC_BREATHING_UNIT("module", "electrolytic_breathing_unit"),
     MODULE_INHALATION_PURIFICATION_UNIT("module", "inhalation_purification_unit"),
     MODULE_VISION_ENHANCEMENT_UNIT("module", "vision_enhancement_unit"),
+    MODULE_SOLAR_RECHARGING_UNIT("module", "solar_recharging_unit"),
     MODULE_RADIATION_SHIELDING_UNIT("module", "radiation_shielding_unit"),
     MODULE_JETPACK_UNIT("module", "jetpack_unit"),
     MODULE_GRAVITATIONAL_MODULATING_UNIT("module", "gravitational_modulating_unit"),
@@ -618,6 +634,7 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT("description", "electrolytic_breathing_unit"),
     DESCRIPTION_INHALATION_PURIFICATION_UNIT("description", "inhalation_purification_unit"),
     DESCRIPTION_VISION_ENHANCEMENT_UNIT("description", "vision_enhancement_unit"),
+    DESCRIPTION_SOLAR_RECHARGING_UNIT("description", "solar_recharging_unit"),
     DESCRIPTION_RADIATION_SHIELDING_UNIT("description", "radiation_shielding_unit"),
     DESCRIPTION_JETPACK_UNIT("description", "jetpack_unit"),
     DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT("description", "gravitational_modulating_unit"),
@@ -639,5 +656,17 @@ public enum MekanismLang implements ILangEntry {
     @Override
     public String getTranslationKey() {
         return key;
+    }
+
+    public static MekanismLang get(EquipmentSlotType type) {
+        switch (type) {
+            case HEAD: return HEAD;
+            case CHEST: return BODY;
+            case LEGS: return LEGS;
+            case FEET: return FEET;
+            case MAINHAND: return MAINHAND;
+            case OFFHAND: return OFFHAND;
+        }
+        return null;
     }
 }

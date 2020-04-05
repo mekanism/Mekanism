@@ -166,15 +166,19 @@ public class CommonPlayerTickHandler {
 
         if (isGravitationalModulationReady(player)) {
             player.abilities.allowFlying = true;
-            FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageGravitationalModulation.get();
-            if (Mekanism.keyMap.has(player, KeySync.BOOST)) {
-                usage = usage.multiply(4);
+            if (player.abilities.isFlying) {
+                FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageGravitationalModulation.get();
+                boolean boostKey = Mekanism.keyMap.has(player, KeySync.BOOST);
+                ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
+                player.setSprinting(false);
+                if (boostKey) {
+                    player.moveRelative(module.getBoost(), new Vec3d(0, 0, 1));
+                }
+                module.useEnergy(Mekanism.keyMap.has(player, KeySync.BOOST) ? usage.multiply(4) : usage);
             }
-            ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
-            player.moveRelative(module.getBoost(), new Vec3d(0.2, 0.2, 1));
-            module.useEnergy(usage);
         } else if (!player.isCreative()) {
             player.abilities.allowFlying = false;
+            player.abilities.isFlying = false;
         }
     }
 

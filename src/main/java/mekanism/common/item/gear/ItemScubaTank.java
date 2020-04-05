@@ -93,7 +93,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
                     stored = gasHandlerItem.getGasInTank(0);
                 }
             }
-            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.OXYGEN, stored.getAmount()));
+            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.OXYGEN, EnumColor.ORANGE, stored.getAmount()));
         }
     }
 

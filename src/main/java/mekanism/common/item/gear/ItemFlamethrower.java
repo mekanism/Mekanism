@@ -118,13 +118,13 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
                 //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
                 GasStack storedGas = gasHandlerItem.getGasInTank(0);
                 if (!storedGas.isEmpty()) {
-                    list.add(MekanismLang.FLAMETHROWER_STORED.translate(storedGas.getAmount()));
+                    list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, storedGas.getAmount()));
                     hasGas = true;
                 }
             }
         }
         if (!hasGas) {
-            list.add(MekanismLang.FLAMETHROWER_STORED.translate(MekanismLang.NO_GAS.translate()));
+            list.add(MekanismLang.FLAMETHROWER_STORED.translate(EnumColor.GRAY, EnumColor.ORANGE, MekanismLang.NO_GAS.translate()));
         }
         list.add(MekanismLang.MODE.translate(getMode(stack)));
     }

@@ -22,6 +22,7 @@ import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropu
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleRadiationShieldingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleSolarRechargingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleVisionEnhancementUnit;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleFarmingUnit;
@@ -73,7 +74,10 @@ public class Modules {
     public static final ModuleData<ModuleRadiationShieldingUnit> RADIATION_SHIELDING_UNIT = register("radiation_shielding_unit",
         MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, () -> new ModuleRadiationShieldingUnit());
     public static final ModuleData<ModuleVisionEnhancementUnit> VISION_ENHANCEMENT_UNIT = register("vision_enhancement_unit",
-        MekanismLang.MODULE_VISION_ENHANCEMENT_UNIT, MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, () -> new ModuleVisionEnhancementUnit());
+        MekanismLang.MODULE_VISION_ENHANCEMENT_UNIT, MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, () -> new ModuleVisionEnhancementUnit())
+        .setHandlesModeChange().setRendersHUD();
+    public static final ModuleData<ModuleSolarRechargingUnit> SOLAR_RECHARGING_UNIT = register("solar_recharging_unit",
+        MekanismLang.MODULE_SOLAR_RECHARGING_UNIT, MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, () -> new ModuleSolarRechargingUnit());
 
     // Chestplate
     public static final ModuleData<ModuleJetpackUnit> JETPACK_UNIT = register("jetpack_unit",

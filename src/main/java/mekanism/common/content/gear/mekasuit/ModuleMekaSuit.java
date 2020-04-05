@@ -8,6 +8,7 @@ import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
@@ -17,8 +18,10 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
+import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.content.gear.Modules;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -70,15 +73,43 @@ public abstract class ModuleMekaSuit extends Module {
         }
     }
 
-    public static class ModuleVisionEnhancementUnit extends ModuleMekaSuit {}
+    public static class ModuleVisionEnhancementUnit extends ModuleMekaSuit {
+        @Override
+        public void tickServer(PlayerEntity player) {
+            super.tickServer(player);
+        }
+
+        @Override
+        public void addHUDStrings(List<ITextComponent> list) {
+            ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
+            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.DARK_GRAY, MekanismLang.MODULE_VISION_ENHANCEMENT,
+                isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate()));
+        }
+
+        @Override
+        public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+            toggleEnabled(player, MekanismLang.MODULE_VISION_ENHANCEMENT.translate());
+        }
+    }
 
     public static class ModuleRadiationShieldingUnit extends ModuleMekaSuit {}
 
     public static class ModuleGravitationalModulatingUnit extends ModuleMekaSuit {
+        // we share with locomotive boosting unit
+        private ModuleConfigItem<SprintBoost> speedBoost;
+
+        @Override
+        public void init() {
+            super.init();
+            addConfigItem(speedBoost = new ModuleConfigItem<>(this, "speed_boost", MekanismLang.MODULE_SPEED_BOOST, new EnumData<>(SprintBoost.class), SprintBoost.LOW));
+        }
+
+
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
-            ILangEntry lang = isEnabled() ? MekanismLang.MODULE_TOGGLE_ENABLED : MekanismLang.MODULE_TOGGLE_DISABLED;
-            list.add(lang.translateColored(isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, EnumColor.DARK_GRAY, MekanismLang.MODULE_GRAVITATIONAL_MODULATION));
+            ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
+            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.DARK_GRAY, MekanismLang.MODULE_GRAVITATIONAL_MODULATION,
+                isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate()));
         }
 
         @Override
@@ -87,20 +118,40 @@ public abstract class ModuleMekaSuit extends Module {
         }
 
         public float getBoost() {
-            return 0.5F; // TODO add scale
+            return speedBoost.get().getBoost();
         }
     }
 
     public static class ModuleChargeDistributionUnit extends ModuleMekaSuit {
+        private ModuleConfigItem<Boolean> chargeSuit;
+        private ModuleConfigItem<Boolean> chargeInventory;
+
+        @Override
+        public void init() {
+            chargeSuit = addConfigItem(new ModuleConfigItem<>(this, "charge_suit", MekanismLang.MODULE_CHARGE_SUIT, new BooleanData(), true));
+            chargeInventory = addConfigItem(new ModuleConfigItem<>(this, "charge_inventory", MekanismLang.MODULE_CHARGE_INVENTORY, new BooleanData(), false));
+        }
+
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
+            // charge inventory first
+            if (chargeInventory.get()) {
+                chargeInventory(player);
+            }
+            // distribute suit charge next
+            if (chargeSuit.get()) {
+                chargeSuit(player);
+            }
+        }
+
+        private void chargeSuit(PlayerEntity player) {
             FloatingLong total = FloatingLong.ZERO;
             List<IEnergyContainer> tracking = new ArrayList<>();
             for (ItemStack stack : player.inventory.armorInventory) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 if (energyContainer != null) {
-                    total = total.add(energyContainer.getEnergy());
+                    total = total.plusEqual(energyContainer.getEnergy());
                     tracking.add(energyContainer);
                 }
             }
@@ -111,6 +162,29 @@ public abstract class ModuleMekaSuit extends Module {
                 }
             }
         }
+
+        private void chargeInventory(PlayerEntity player) {
+            FloatingLong toCharge = MekanismConfig.general.mekaSuitInventoryChargeRate.get();
+            // first try to charge mainhand/offhand item
+            toCharge = charge(player.getHeldItemMainhand(), toCharge);
+            toCharge = charge(player.getHeldItemOffhand(), toCharge);
+
+            for (ItemStack stack : player.inventory.mainInventory) {
+                if (toCharge.isZero()) {
+                    break;
+                }
+                toCharge = charge(stack, toCharge);
+            }
+        }
+
+        /** return rejects */
+        private FloatingLong charge(ItemStack stack, FloatingLong amount) {
+            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+            if (energyContainer != null) {
+                return energyContainer.insert(amount, Action.EXECUTE, AutomationType.MANUAL);
+            }
+            return amount;
+        }
     }
 
     public static class ModuleLocomotiveBoostingUnit extends ModuleMekaSuit {
@@ -119,7 +193,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void init() {
             super.init();
-            addConfigItem(sprintBoost = new ModuleConfigItem<SprintBoost>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class), SprintBoost.LOW));
+            addConfigItem(sprintBoost = new ModuleConfigItem<>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class), SprintBoost.LOW));
         }
 
         @Override
@@ -181,7 +255,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void init() {
             super.init();
-            addConfigItem(jumpBoost = new ModuleConfigItem<JumpBoost>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class), JumpBoost.LOW));
+            addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class), JumpBoost.LOW));
         }
 
         public float getBoost() {
@@ -209,4 +283,6 @@ public abstract class ModuleMekaSuit extends Module {
             }
         }
     }
+
+    public static class ModuleSolarRechargingUnit extends ModuleMekaSuit {}
 }

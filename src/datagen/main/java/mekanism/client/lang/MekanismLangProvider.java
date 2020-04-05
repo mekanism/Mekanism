@@ -332,15 +332,25 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ERROR, "Error");
         add(MekanismLang.ALPHA_WARNING, "Warning: Mekanism is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, and various other issues that you can read more about %s.");
         add(MekanismLang.ALPHA_WARNING_HERE, "here");
+        //Equipment
+        add(MekanismLang.HEAD, "Head");
+        add(MekanismLang.BODY, "Body");
+        add(MekanismLang.LEGS, "Legs");
+        add(MekanismLang.FEET, "Feet");
+        add(MekanismLang.MAINHAND, "Hand 1");
+        add(MekanismLang.OFFHAND, "Hand 2");
         //JEI
         add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%s / %s mB");
         //Key
         add(MekanismLang.KEY_HAND_MODE, "Item Mode Switch");
+        add(MekanismLang.KEY_HEAD_MODE, "Head Mode Switch");
         add(MekanismLang.KEY_CHEST_MODE, "Chest Mode Switch");
         add(MekanismLang.KEY_FEET_MODE, "Feet Mode Switch");
         add(MekanismLang.KEY_DETAILS_MODE, "Show Details");
         add(MekanismLang.KEY_DESCRIPTION_MODE, "Show Description");
-        add(MekanismLang.KEY_BOOST, "Boost Key");
+        add(MekanismLang.KEY_BOOST, "Boost");
+        add(MekanismLang.KEY_MODULE_TWEAKER, "Module Tweaker");
+        add(MekanismLang.KEY_HUD, "Show HUD");
         //Holiday
         add(MekanismLang.HOLIDAY_BORDER, "%s%s%1$s");
         add(MekanismLang.HOLIDAY_SIGNATURE, "-aidancbrady");
@@ -365,6 +375,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_FRACTION, "%s/%s");
         add(MekanismLang.GENERIC_TRANSFER, "- %s (%s)");
         add(MekanismLang.GENERIC_PER_TICK, "%s/t");
+        add(MekanismLang.GENERIC_PRE_STORED, "%s %s: %s");
         //Directions
         add(MekanismLang.DOWN, "Down");
         add(MekanismLang.UP, "Up");
@@ -884,8 +895,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_URANIUM_ORE, "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occuring form, it is not radioactive enough to cause harm.");
         // Modules
         add(MekanismLang.MODULE_ENABLED, "Enabled");
-        add(MekanismLang.MODULE_TOGGLE_ENABLED, "%s: enabled");
-        add(MekanismLang.MODULE_TOGGLE_DISABLED, "%s: disabled");
+        add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");
+        add(MekanismLang.MODULE_DISABLED_LOWER, "disabled");
         add(MekanismLang.MODULE_TWEAKER, "Module Tweaker");
         add(MekanismLang.MODULE_INSTALLED, "Installed: %s");
         add(MekanismLang.MODULE_STACKABLE, "Stackable: %s");
@@ -902,6 +913,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_MODE_CHANGE, "%s bumped to: %s");
         add(MekanismLang.MODULE_JETPACK_MODE, "Jetpack Mode");
         add(MekanismLang.MODULE_GRAVITATIONAL_MODULATION, "Gravitational Modulation");
+        add(MekanismLang.MODULE_CHARGE_SUIT, "Charge Suit");
+        add(MekanismLang.MODULE_CHARGE_INVENTORY, "Charge Inventory");
+        add(MekanismLang.MODULE_SPEED_BOOST, "Speed Boost");
+        add(MekanismLang.MODULE_VISION_ENHANCEMENT, "Vision Enhancement");
 
         add(MekanismLang.MODULE_ENERGY_UNIT, "Energy Unit");
 

@@ -1,18 +1,20 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.api.Pos3D;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.MekanismClient;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
@@ -64,6 +66,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class RenderTickHandler {
 
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
+    private static final EquipmentSlotType[] EQUIPMENT_ORDER = new EquipmentSlotType[] {EquipmentSlotType.OFFHAND, EquipmentSlotType.MAINHAND,
+        EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET};
 
     private static double HUD_SCALE = 0.6;
 
@@ -92,30 +96,39 @@ public class RenderTickHandler {
                         int x = minecraft.getMainWindow().getScaledWidth();
                         int y = minecraft.getMainWindow().getScaledHeight();
                         String text = scrollTextComponent.getFormattedText();
-                        int color = new ColorRGBA(1, 1, 1, (float) modeSwitchTimer / 100F).argb();
+                        int color = new ColorRGBA(1, 1, 1, modeSwitchTimer / 100F).argb();
                         font.drawString(text, x / 2 - font.getStringWidth(text) / 2, y - 60, color);
                     }
                 }
 
                 modeSwitchTimer = Math.max(modeSwitchTimer - 1, 0);
 
-                if (minecraft.currentScreen == null && !minecraft.gameSettings.hideGUI && !player.isSpectator() && MekanismConfig.client.enableHUD.get()) {
+                if (minecraft.currentScreen == null && !minecraft.gameSettings.hideGUI && !player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
                     int y = minecraft.getMainWindow().getScaledHeight();
                     boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
-                    List<ITextComponent> renderStrings = new ArrayList<>();
-                    for (EquipmentSlotType slotType : EquipmentSlotType.values()) {
+                    int count = 0;
+                    Map<EquipmentSlotType, List<ITextComponent>> renderStrings = new LinkedHashMap<>();
+                    for (EquipmentSlotType slotType : EQUIPMENT_ORDER) {
                         ItemStack stack = player.getItemStackFromSlot(slotType);
                         if (stack.getItem() instanceof IItemHUDProvider) {
-                            ((IItemHUDProvider) stack.getItem()).addHUDStrings(renderStrings, stack, slotType);
+                            List<ITextComponent> list = new ArrayList<>();
+                            ((IItemHUDProvider) stack.getItem()).addHUDStrings(list, stack, slotType);
+                            if (!list.isEmpty()) {
+                                renderStrings.put(slotType, list);
+                            }
+                            count += list.size();
                         }
                     }
 
                     RenderSystem.pushMatrix();
                     RenderSystem.scaled(HUD_SCALE, HUD_SCALE, HUD_SCALE);
-                    int start = 2 + renderStrings.size() * 9;
-                    for (ITextComponent text : renderStrings) {
-                        drawString(text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
-                        start -= 9;
+                    int start = (renderStrings.size() * 2) + (count * 9);
+                    for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
+                        for (ITextComponent text : entry.getValue()) {
+                            drawString(text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
+                            start -= 9;
+                        }
+                        start -= 2;
                     }
                     RenderSystem.popMatrix();
                 }

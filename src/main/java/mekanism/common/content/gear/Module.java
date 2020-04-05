@@ -190,8 +190,8 @@ public abstract class Module {
 
     protected void toggleEnabled(PlayerEntity player, ITextComponent modeName) {
         enabled.set(!isEnabled(), null);
-        ILangEntry lang = isEnabled() ? MekanismLang.MODULE_TOGGLE_ENABLED : MekanismLang.MODULE_TOGGLE_DISABLED;
+        ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-            lang.translateColored(isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, EnumColor.GRAY, modeName)));
+            MekanismLang.GENERIC_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, modeName, isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate())));
     }
 }
