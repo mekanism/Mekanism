@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
+import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -79,6 +80,7 @@ import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.BlockFlags;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -292,8 +294,13 @@ public final class MekanismUtils {
      * @return max energy
      */
     public static FloatingLong getMaxEnergy(ItemStack itemStack, FloatingLong def) {
-        Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemStack));
-        float numUpgrades = upgrades.get(Upgrade.ENERGY) == null ? 0 : (float) upgrades.get(Upgrade.ENERGY);
+        float numUpgrades = 0;
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.UPGRADES, NBT.TAG_LIST)) {
+            Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemStack));
+            if (upgrades.containsKey(Upgrade.ENERGY)) {
+                numUpgrades = upgrades.get(Upgrade.ENERGY);
+            }
+        }
         return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), numUpgrades / Upgrade.ENERGY.getMax()));
     }
 

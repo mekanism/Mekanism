@@ -72,7 +72,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
      */
     public int ticksRequired = 200;
     protected boolean sorting;
-    //TODO: FloatingLong seems unused
     public FloatingLong lastUsage = FloatingLong.ZERO;
 
     public TileComponentEjector ejectorComponent;

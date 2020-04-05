@@ -10,6 +10,7 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
@@ -66,7 +67,6 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -77,46 +77,79 @@ public class MekanismJEI implements IModPlugin {
     public static final IIngredientType<GasStack> TYPE_GAS = () -> GasStack.class;
     public static final IIngredientType<InfusionStack> TYPE_INFUSION = () -> InfusionStack.class;
 
-    private static final ISubtypeInterpreter GAS_TANK_NBT_INTERPRETER = itemStack -> {
-        Optional<IGasHandler> capability = MekanismUtils.toOptional(itemStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-        if (!itemStack.hasTag() || !capability.isPresent()) {
+    private static final ISubtypeInterpreter MEKANISM_NBT_INTERPRETER = stack -> {
+        if (!stack.hasTag()) {
             return ISubtypeInterpreter.NONE;
         }
-        IGasHandler gasHandlerItem = capability.get();
-        if (gasHandlerItem.getGasTankCount() == 1) {
-            //TODO: Eventually figure out a good way to do this with multiple gas tanks
-            return gasHandlerItem.getGasInTank(0).getType().getRegistryName().toString();
-        }
-        return ISubtypeInterpreter.NONE;
+        String nbtRepresentation = addInterpretation("", getGasComponent(stack));
+        nbtRepresentation = addInterpretation(nbtRepresentation, getInfusionComponent(stack));
+        nbtRepresentation = addInterpretation(nbtRepresentation, getEnergyComponent(stack));
+        return nbtRepresentation;
     };
-    private static final ISubtypeInterpreter INFUSION_TANK_NBT_INTERPRETER = itemStack -> {
-        Optional<IInfusionHandler> capability = MekanismUtils.toOptional(itemStack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
-        if (!itemStack.hasTag() || !capability.isPresent()) {
-            return ISubtypeInterpreter.NONE;
+
+    private static String addInterpretation(String nbtRepresentation, String component) {
+        if (nbtRepresentation.isEmpty()) {
+            return component;
         }
-        IInfusionHandler infusionHandlerItem = capability.get();
-        if (infusionHandlerItem.getInfusionTankCount() == 1) {
-            //TODO: Eventually figure out a good way to do this with multiple infusion tanks
-            return infusionHandlerItem.getInfusionInTank(0).getType().getRegistryName().toString();
-        }
-        return ISubtypeInterpreter.NONE;
-    };
-    private static final ISubtypeInterpreter ENERGY_INTERPRETER = itemStack -> {
-        Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(itemStack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
-        if (!itemStack.hasTag() || !capability.isPresent()) {
-            return ISubtypeInterpreter.NONE;
-        }
-        IStrictEnergyHandler energyHandlerItem = capability.get();
-        if (energyHandlerItem.getEnergyContainerCount() == 1) {
-            //TODO: Eventually figure out a good way to do this with multiple energy containers
-            if (energyHandlerItem.getEnergy(0).isZero()) {
-                return "empty";
-            } else if (energyHandlerItem.getNeededEnergy(0).isZero()) {
-                return "filled";
+        return nbtRepresentation + ":" + component;
+    }
+
+    private static String getGasComponent(ItemStack stack) {
+        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        if (capability.isPresent()) {
+            IGasHandler gasHandlerItem = capability.get();
+            String component = "";
+            int tanks = gasHandlerItem.getGasTankCount();
+            for (int tank = 0; tank < tanks; tank++) {
+                GasStack gas = gasHandlerItem.getGasInTank(tank);
+                if (!gas.isEmpty()) {
+                    component = addInterpretation(component, gas.getType().getRegistryName().toString());
+                } else if (tanks > 1) {
+                    component = addInterpretation(component, "empty");
+                }
             }
+            return component;
         }
         return ISubtypeInterpreter.NONE;
-    };
+    }
+
+    private static String getInfusionComponent(ItemStack stack) {
+        Optional<IInfusionHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
+        if (capability.isPresent()) {
+            IInfusionHandler infusionHandlerItem = capability.get();
+            String component = "";
+            int tanks = infusionHandlerItem.getInfusionTankCount();
+            for (int tank = 0; tank < tanks; tank++) {
+                InfusionStack infusionStack = infusionHandlerItem.getInfusionInTank(tank);
+                if (!infusionStack.isEmpty()) {
+                    component = addInterpretation(component, infusionStack.getType().getRegistryName().toString());
+                } else if (tanks > 1) {
+                    component = addInterpretation(component, "empty");
+                }
+            }
+            return component;
+        }
+        return ISubtypeInterpreter.NONE;
+    }
+
+    private static String getEnergyComponent(ItemStack stack) {
+        Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
+        if (capability.isPresent()) {
+            IStrictEnergyHandler energyHandlerItem = capability.get();
+            String component = "";
+            int containers = energyHandlerItem.getEnergyContainerCount();
+            for (int container = 0; container < containers; container++) {
+                FloatingLong neededEnergy = energyHandlerItem.getNeededEnergy(container);
+                if (neededEnergy.isZero()) {
+                    component = addInterpretation(component, "filled");
+                } else if (containers > 1) {
+                    component = addInterpretation(component, "empty");
+                }
+            }
+            return component;
+        }
+        return ISubtypeInterpreter.NONE;
+    }
 
     @Nonnull
     @Override
@@ -126,19 +159,11 @@ public class MekanismJEI implements IModPlugin {
 
     public static void registerItemSubtypes(ISubtypeRegistration registry, List<IItemProvider> itemProviders) {
         for (IItemProvider itemProvider : itemProviders) {
-            Item item = itemProvider.getItem();
-            //TODO: Is there some issue with the fact that maybe these override the other ones so need to be done differently, if there is one
-            // that supports say both energy and gas
             //Handle items
             ItemStack itemStack = itemProvider.getItemStack();
-            if (itemStack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).isPresent()) {
-                registry.registerSubtypeInterpreter(item, ENERGY_INTERPRETER);
-            }
-            if (itemStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent()) {
-                registry.registerSubtypeInterpreter(item, GAS_TANK_NBT_INTERPRETER);
-            }
-            if (itemStack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent()) {
-                registry.registerSubtypeInterpreter(item, INFUSION_TANK_NBT_INTERPRETER);
+            if (itemStack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).isPresent() || itemStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent() ||
+                itemStack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent()) {
+                registry.registerSubtypeInterpreter(itemProvider.getItem(), MEKANISM_NBT_INTERPRETER);
             }
         }
     }
@@ -147,16 +172,16 @@ public class MekanismJEI implements IModPlugin {
     public void registerItemSubtypes(ISubtypeRegistration registry) {
         registerItemSubtypes(registry, MekanismItems.ITEMS.getAllItems());
         //We don't have a get all blocks so just manually add them
-        registry.registerSubtypeInterpreter(MekanismBlocks.BASIC_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ADVANCED_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ELITE_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ULTIMATE_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.CREATIVE_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.BASIC_ENERGY_CUBE.getItem(), ENERGY_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ADVANCED_ENERGY_CUBE.getItem(), ENERGY_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ELITE_ENERGY_CUBE.getItem(), ENERGY_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ULTIMATE_ENERGY_CUBE.getItem(), ENERGY_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.CREATIVE_ENERGY_CUBE.getItem(), ENERGY_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.BASIC_GAS_TANK.getItem(), MEKANISM_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ADVANCED_GAS_TANK.getItem(), MEKANISM_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ELITE_GAS_TANK.getItem(), MEKANISM_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ULTIMATE_GAS_TANK.getItem(), MEKANISM_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.CREATIVE_GAS_TANK.getItem(), MEKANISM_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.BASIC_ENERGY_CUBE.getItem(), MEKANISM_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ADVANCED_ENERGY_CUBE.getItem(), MEKANISM_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ELITE_ENERGY_CUBE.getItem(), MEKANISM_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ULTIMATE_ENERGY_CUBE.getItem(), MEKANISM_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.CREATIVE_ENERGY_CUBE.getItem(), MEKANISM_NBT_INTERPRETER);
     }
 
     @Override

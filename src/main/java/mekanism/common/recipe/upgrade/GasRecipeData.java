@@ -36,12 +36,11 @@ public class GasRecipeData implements RecipeUpgradeData<GasRecipeData> {
     private final List<IChemicalTank<Gas, GasStack>> gasTanks;
 
     GasRecipeData(ListNBT tanks) {
-        int count = tanks.size();
+        int count = DataHandlerUtils.getMaxId(tanks, NBTConstants.TANK);
         gasTanks = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             gasTanks.add(BasicGasTank.create(Integer.MAX_VALUE, null));
         }
-        ;
         DataHandlerUtils.readTanks(gasTanks, tanks);
     }
 

@@ -36,7 +36,7 @@ public class InfusionRecipeData implements RecipeUpgradeData<InfusionRecipeData>
     private final List<IChemicalTank<InfuseType, InfusionStack>> infusionTanks;
 
     InfusionRecipeData(ListNBT tanks) {
-        int count = tanks.size();
+        int count = DataHandlerUtils.getMaxId(tanks, NBTConstants.TANK);
         infusionTanks = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             infusionTanks.add(BasicInfusionTank.create(Integer.MAX_VALUE, null));

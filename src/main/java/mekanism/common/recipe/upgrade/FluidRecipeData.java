@@ -34,7 +34,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
     private final List<IExtendedFluidTank> fluidTanks;
 
     FluidRecipeData(ListNBT tanks) {
-        int count = tanks.size();
+        int count = DataHandlerUtils.getMaxId(tanks, NBTConstants.TANK);
         fluidTanks = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             fluidTanks.add(BasicFluidTank.create(Integer.MAX_VALUE, null));

@@ -52,23 +52,32 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
             return ItemStack.EMPTY;
         }
         ItemStack toReturn = getRecipeOutput().copy();
+        List<ItemStack> nbtInputs = new ArrayList<>();
+        for (int i = 0; i < inv.getSizeInventory(); i++) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (!stack.isEmpty() && stack.hasTag()) {
+                nbtInputs.add(stack);
+            }
+        }
+        if (nbtInputs.isEmpty()) {
+            //If none of our items have NBT we can skip checking what data can be transferred
+            return toReturn;
+        }
         Set<RecipeUpgradeType> supportedTypes = RecipeUpgradeData.getSupportedTypes(toReturn);
         if (supportedTypes.isEmpty()) {
             //If we have no supported types "fail" gracefully by just not transferring any data
             return toReturn;
         }
         Map<RecipeUpgradeType, List<RecipeUpgradeData<?>>> upgradeInfo = new EnumMap<>(RecipeUpgradeType.class);
-        for (int i = 0; i < inv.getSizeInventory(); i++) {
-            ItemStack stack = inv.getStackInSlot(i);
-            if (!stack.isEmpty()) {
-                Set<RecipeUpgradeType> stackSupportedTypes = RecipeUpgradeData.getSupportedTypes(stack);
-                for (RecipeUpgradeType supportedType : stackSupportedTypes) {
-                    if (supportedTypes.contains(supportedType)) {
-                        RecipeUpgradeData<?> data = RecipeUpgradeData.getUpgradeData(supportedType, stack);
-                        if (data != null) {
-                            //If something went wrong and we didn't actually get any data don't add it
-                            upgradeInfo.computeIfAbsent(supportedType, type -> new ArrayList<>()).add(data);
-                        }
+        //Only bother checking input items that have NBT as ones that do not, don't have any data they may need to transfer
+        for (ItemStack stack : nbtInputs) {
+            Set<RecipeUpgradeType> stackSupportedTypes = RecipeUpgradeData.getSupportedTypes(stack);
+            for (RecipeUpgradeType supportedType : stackSupportedTypes) {
+                if (supportedTypes.contains(supportedType)) {
+                    RecipeUpgradeData<?> data = RecipeUpgradeData.getUpgradeData(supportedType, stack);
+                    if (data != null) {
+                        //If something went wrong and we didn't actually get any data don't add it
+                        upgradeInfo.computeIfAbsent(supportedType, type -> new ArrayList<>()).add(data);
                     }
                 }
             }

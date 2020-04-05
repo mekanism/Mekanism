@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.DataHandlerUtils;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.block.IHasTileEntity;
@@ -36,7 +37,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
     private final List<IInventorySlot> slots;
 
     ItemRecipeData(ListNBT slots) {
-        int count = slots.size();
+        int count = DataHandlerUtils.getMaxId(slots, NBTConstants.SLOT);
         this.slots = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             this.slots.add(new DummyInventorySlot());

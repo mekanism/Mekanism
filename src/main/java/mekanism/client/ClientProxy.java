@@ -1,6 +1,7 @@
 package mekanism.client;
 
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation.INodeChecker;
@@ -19,6 +20,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -107,6 +109,12 @@ public class ClientProxy extends CommonProxy {
             return super.getPlayer(context);
         }
         return Minecraft.getInstance().player;
+    }
+
+    @Nullable
+    @Override
+    public World tryGetMainWorld() {
+        return Minecraft.getInstance().world;
     }
 
     //TODO
