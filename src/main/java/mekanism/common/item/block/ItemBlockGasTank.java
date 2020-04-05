@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -94,6 +95,12 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockTileModel<TileEntity
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
         return StorageUtils.getDurabilityForDisplay(stack);
+    }
+
+    @Override
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
+        GasStack stored = StorageUtils.getStoredGasFromNBT(stack);
+        return stored.isEmpty() ? 0 : stored.getType().getTint();
     }
 
     @Override

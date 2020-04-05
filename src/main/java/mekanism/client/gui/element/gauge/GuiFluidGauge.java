@@ -1,11 +1,15 @@
 package mekanism.client.gui.element.gauge;
 
+import java.util.List;
+import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.MekanismLang;
+import mekanism.common.network.PacketDropperUse.TankType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
@@ -14,9 +18,25 @@ import net.minecraftforge.fluids.FluidStack;
 public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> {
 
     public GuiFluidGauge(IFluidInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
-        super(type, gui, x, y, handler);
+        super(type, gui, x, y, handler, TankType.FLUID_TANK);
         //Ensure it isn't null
         setDummyType(FluidStack.EMPTY);
+    }
+
+    public GuiFluidGauge(Supplier<IExtendedFluidTank> tankSupplier, Supplier<List<IExtendedFluidTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
+        this(new IFluidInfoHandler() {
+            @Nullable
+            @Override
+            public IExtendedFluidTank getTank() {
+                return tankSupplier.get();
+            }
+
+            @Override
+            public int getTankIndex() {
+                IExtendedFluidTank tank = getTank();
+                return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
+            }
+        }, type, gui, x, y);
     }
 
     public static GuiFluidGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
@@ -77,6 +97,5 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     }
 
     public interface IFluidInfoHandler extends ITankInfoHandler<IExtendedFluidTank> {
-
     }
 }

@@ -19,7 +19,6 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -40,7 +39,7 @@ import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 
-public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
+public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
 
     public static final int MAX_GAS = 10_000;
     public BasicGasTank leftTank;
@@ -180,11 +179,6 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITa
                   }
                   return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
               });
-    }
-
-    @Override
-    public Object[] getManagedTanks() {
-        return new Object[]{leftTank, rightTank, centerTank};
     }
 
     @Override

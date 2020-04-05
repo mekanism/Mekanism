@@ -13,12 +13,11 @@ import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -61,7 +60,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 
-public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable, ITankManager {
+public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable {
 
     /**
      * This pump's tank
@@ -330,11 +329,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public boolean canPulse() {
         return true;
-    }
-
-    @Override
-    public Object[] getManagedTanks() {
-        return new Object[]{fluidTank};
     }
 
     @Override

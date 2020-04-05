@@ -44,8 +44,8 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
                 return Math.min(1, tile.getTemperature() / MekanismConfig.general.evaporationMaxTemp.get());
             }
         }, 48, 63));
-        addButton(new GuiFluidGauge(() -> tile.inputTank, GaugeType.STANDARD, this, 6, 13));
-        addButton(new GuiFluidGauge(() -> tile.outputTank, GaugeType.STANDARD, this, 152, 13));
+        addButton(new GuiFluidGauge(() -> tile.inputTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
+        addButton(new GuiFluidGauge(() -> tile.outputTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 152, 13));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.totalLoss * unit.intervalSize, unit, false);

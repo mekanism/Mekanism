@@ -30,8 +30,8 @@ public class GuiChemicalDissolutionChamber extends GuiMekanismTile<TileEntityChe
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
         addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
-        addButton(new GuiGasGauge(() -> tile.injectTank, GaugeType.STANDARD, this, 5, 4));
-        addButton(new GuiGasGauge(() -> tile.outputTank, GaugeType.STANDARD, this, 133, 13));
+        addButton(new GuiGasGauge(() -> tile.injectTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 5, 4));
+        addButton(new GuiGasGauge(() -> tile.outputTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 133, 13));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 64, 40));
     }
 

@@ -34,9 +34,9 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber
         addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
-        addButton(new GuiFluidGauge(() -> tile.inputFluidTank, GaugeType.STANDARD_YELLOW, this, 5, 10));
-        addButton(new GuiGasGauge(() -> tile.inputGasTank, GaugeType.STANDARD_RED, this, 28, 10));
-        addButton(new GuiGasGauge(() -> tile.outputGasTank, GaugeType.SMALL_BLUE, this, 140, 40));
+        addButton(new GuiFluidGauge(() -> tile.inputFluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD_YELLOW, this, 5, 10));
+        addButton(new GuiGasGauge(() -> tile.inputGasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD_RED, this, 28, 10));
+        addButton(new GuiGasGauge(() -> tile.outputGasTank, () -> tile.getGasTanks(null), GaugeType.SMALL_BLUE, this, 140, 40));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.RIGHT, this, 77, 38));
     }

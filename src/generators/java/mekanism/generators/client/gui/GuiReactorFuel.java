@@ -38,9 +38,9 @@ public class GuiReactorFuel extends GuiReactorInfo {
         addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.energyContainer.getEnergy(), tile.energyContainer.getMaxEnergy())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
               this));
-        addButton(new GuiGasGauge(() -> tile.deuteriumTank, GaugeType.SMALL, this, 25, 64));
-        addButton(new GuiGasGauge(() -> tile.fuelTank, GaugeType.STANDARD, this, 79, 50));
-        addButton(new GuiGasGauge(() -> tile.tritiumTank, GaugeType.SMALL, this, 133, 64));
+        addButton(new GuiGasGauge(() -> tile.deuteriumTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 25, 64));
+        addButton(new GuiGasGauge(() -> tile.fuelTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 79, 50));
+        addButton(new GuiGasGauge(() -> tile.tritiumTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 133, 64));
         addButton(new GuiProgress(() -> tile.isBurning() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 47, 76));
         addButton(new GuiProgress(() -> tile.isBurning() ? 1 : 0, ProgressType.SMALL_LEFT, this, 101, 76));
         addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT));

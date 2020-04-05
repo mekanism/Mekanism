@@ -49,11 +49,11 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
         return Collections.singletonList(tank);
     }
 
-    private static class RateLimitFluidTank extends VariableCapacityFluidTank {
+    public static class RateLimitFluidTank extends VariableCapacityFluidTank {
 
         private final int rate;
 
-        private RateLimitFluidTank(int rate, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
+        public RateLimitFluidTank(int rate, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> isValid, IMekanismFluidHandler fluidHandler) {
             super(capacity, canExtract, canInsert, isValid, fluidHandler);
             this.rate = rate;

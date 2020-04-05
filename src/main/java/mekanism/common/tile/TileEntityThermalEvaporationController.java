@@ -18,7 +18,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -52,7 +51,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements ITankManager, ITileCachedRecipeHolder<FluidToFluidRecipe> {
+public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements ITileCachedRecipeHolder<FluidToFluidRecipe> {
 
     private static final int MAX_OUTPUT = 10_000;
     private static final int MAX_HEIGHT = 18;
@@ -506,11 +505,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public boolean renderUpdate() {
         return true;
-    }
-
-    @Override
-    public Object[] getManagedTanks() {
-        return new Object[]{inputTank, outputTank};
     }
 
     @Override

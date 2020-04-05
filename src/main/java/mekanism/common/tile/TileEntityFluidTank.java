@@ -10,7 +10,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.base.ContainerEditMode;
 import mekanism.common.base.IFluidContainerManager;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
@@ -42,7 +41,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager, ITankManager {
+public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager {
 
     public FluidTankFluidTank fluidTank;
 
@@ -211,11 +210,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public void nextMode() {
         editMode = editMode.getNext();
         markDirty(false);
-    }
-
-    @Override
-    public Object[] getManagedTanks() {
-        return new Object[]{fluidTank};
     }
 
     @Override

@@ -12,9 +12,12 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -92,6 +95,28 @@ public class StorageUtils {
         BasicFluidTank tank = BasicFluidTank.create(Integer.MAX_VALUE, null);
         DataHandlerUtils.readTanks(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
         return tank.getFluid();
+    }
+
+    /**
+     * Gets the gas if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a gas handler
+     * attached to our item but it may have stored data in its tank from when it was a block
+     */
+    @Nonnull
+    public static GasStack getStoredGasFromNBT(ItemStack stack) {
+        BasicGasTank tank = BasicGasTank.create(Integer.MAX_VALUE, null);
+        DataHandlerUtils.readTanks(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
+        return tank.getStack();
+    }
+
+    /**
+     * Gets the infuse type if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a infusion
+     * handler attached to our item but it may have stored data in its tank from when it was a block
+     */
+    @Nonnull
+    public static InfusionStack getStoredInfusionFromNBT(ItemStack stack) {
+        BasicInfusionTank tank = BasicInfusionTank.create(Integer.MAX_VALUE, null);
+        DataHandlerUtils.readTanks(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
+        return tank.getStack();
     }
 
     /**

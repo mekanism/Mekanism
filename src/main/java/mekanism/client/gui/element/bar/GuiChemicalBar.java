@@ -1,15 +1,27 @@
 package mekanism.client.gui.element.bar;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiChemicalBar.ChemicalInfoProvider;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.item.ItemGaugeDropper;
+import mekanism.common.network.PacketDropperUse;
+import mekanism.common.network.PacketDropperUse.DropperAction;
+import mekanism.common.network.PacketDropperUse.TankType;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar<ChemicalInfoProvider<CHEMICAL>> {
@@ -39,19 +51,57 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar<
         }
     }
 
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (isMouseOver(mouseX, mouseY)) {
+            ItemStack stack = GuiTexturedElement.minecraft.player.inventory.getItemStack();
+            if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
+                TankType tankType = null;
+                CHEMICAL type = getHandler().getType();
+                if (type instanceof Gas) {
+                    tankType = TankType.GAS_TANK;
+                } else if (type instanceof InfuseType) {
+                    tankType = TankType.INFUSION_TANK;
+                }
+                if (tankType != null) {
+                    int index = getHandler().getTankIndex();
+                    if (index != -1) {
+                        DropperAction action;
+                        if (button == 0) {
+                            action = Screen.hasShiftDown() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
+                        } else {
+                            action = DropperAction.DRAIN_DROPPER;
+                        }
+                        Mekanism.packetHandler.sendToServer(new PacketDropperUse(((GuiMekanismTile<?, ?>) guiObj).getTileEntity().getPos(), action, tankType, index));
+                    }
+                    return true;
+                }
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
     //Note the GuiBar.IBarInfoHandler is needed, as it cannot compile and resolve just IBarInfoHandler
     public interface ChemicalInfoProvider<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar.IBarInfoHandler {
 
         @Nonnull
         CHEMICAL getType();
+
+        int getTankIndex();
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ChemicalInfoProvider<CHEMICAL> getProvider(IChemicalTank<CHEMICAL, STACK> tank) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ChemicalInfoProvider<CHEMICAL> getProvider(IChemicalTank<CHEMICAL, STACK> tank,
+          List<? extends IChemicalTank<CHEMICAL, STACK>> tanks) {
         return new ChemicalInfoProvider<CHEMICAL>() {
             @Nonnull
             @Override
             public CHEMICAL getType() {
                 return tank.getType();
+            }
+
+            @Override
+            public int getTankIndex() {
+                return tanks.indexOf(tank);
             }
 
             @Override

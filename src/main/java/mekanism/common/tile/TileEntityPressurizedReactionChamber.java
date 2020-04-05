@@ -16,7 +16,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.energy.PRCEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -48,7 +47,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine<PressurizedReactionRecipe> implements ITankManager {
+public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine<PressurizedReactionRecipe> {
 
     private static final int BASE_DURATION = 100;
     private static final int MAX_GAS = 10_000;
@@ -218,11 +217,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
-    public Object[] getManagedTanks() {
-        return new Object[]{inputFluidTank, inputGasTank, outputGasTank};
     }
 
     public PRCEnergyContainer getEnergyContainer() {

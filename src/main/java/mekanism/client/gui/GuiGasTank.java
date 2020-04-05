@@ -25,7 +25,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
     @Override
     public void init() {
         super.init();
-        addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.gasTank), 42, 16, 116, 10, true));
+        addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.gasTank, tile.getGasTanks(null)), 42, 16, 116, 10, true));
         addButton(new GuiInnerScreen(this, 42, 37, 118, 28));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));

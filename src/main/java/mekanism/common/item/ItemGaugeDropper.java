@@ -5,11 +5,13 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.GaugeDropperContentsHandler;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
-import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -26,16 +28,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class ItemGaugeDropper extends Item {
-
-    private static final int TRANSFER_RATE = 16;
-    public static int CAPACITY = FluidAttributes.BUCKET_VOLUME;
 
     public ItemGaugeDropper(Properties properties) {
         super(properties.maxStackSize(1));
@@ -51,19 +48,53 @@ public class ItemGaugeDropper extends Item {
         return StorageUtils.getDurabilityForDisplay(stack);
     }
 
+    @Override
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
+        //TODO: Technically doesn't support things where the color is part of the texture such as lava
+        GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
+        if (!gasStack.isEmpty()) {
+            return gasStack.getType().getTint();
+        }
+        InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
+        if (!infusionStack.isEmpty()) {
+            return infusionStack.getType().getTint();
+        }
+        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
+        if (!fluidStack.isEmpty()) {
+            return fluidStack.getFluid().getAttributes().getColor(fluidStack);
+        }
+        return 0;
+    }
+
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isShiftKeyDown() && !world.isRemote) {
-            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
+            Optional<IGasHandler> gasCapability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+            if (gasCapability.isPresent()) {
+                IGasHandler gasHandlerItem = gasCapability.get();
                 for (int tank = 0; tank < gasHandlerItem.getGasTankCount(); tank++) {
                     gasHandlerItem.setGasInTank(tank, GasStack.EMPTY);
                 }
             }
-            FluidUtil.getFluidHandler(stack).ifPresent(handler -> handler.drain(CAPACITY, FluidAction.EXECUTE));
+            Optional<IInfusionHandler> infusionCapability = MekanismUtils.toOptional(stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
+            if (infusionCapability.isPresent()) {
+                IInfusionHandler infusionHandlerItem = infusionCapability.get();
+                for (int tank = 0; tank < infusionHandlerItem.getInfusionTankCount(); tank++) {
+                    infusionHandlerItem.setInfusionInTank(tank, InfusionStack.EMPTY);
+                }
+            }
+            Optional<IFluidHandlerItem> fluidCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
+            if (fluidCapability.isPresent()) {
+                IFluidHandlerItem fluidHandler = fluidCapability.get();
+                if (fluidHandler instanceof IExtendedFluidHandler) {
+                    IExtendedFluidHandler fluidHandlerItem = (IExtendedFluidHandler) fluidHandler;
+                    for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
+                        fluidHandlerItem.setFluidInTank(tank, FluidStack.EMPTY);
+                    }
+                }
+            }
             ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
@@ -73,25 +104,15 @@ public class ItemGaugeDropper extends Item {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        if (CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null || Capabilities.GAS_HANDLER_CAPABILITY == null) {
-            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
-            tooltip.add(MekanismLang.EMPTY.translate());
-            return;
-        }
-        GasStack gasStack = GasStack.EMPTY;
-        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-        if (capability.isPresent()) {
-            IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem.getGasTankCount() > 0) {
-                //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                gasStack = gasHandlerItem.getGasInTank(0);
-            }
-        }
+        GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
+        InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
-        if (gasStack.isEmpty() && fluidStack.isEmpty()) {
+        if (gasStack.isEmpty() && infusionStack.isEmpty() && fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translate());
         } else if (!gasStack.isEmpty()) {
             tooltip.add(MekanismLang.STORED.translate(gasStack, gasStack.getAmount()));
+        } else if (!infusionStack.isEmpty()) {
+            tooltip.add(MekanismLang.STORED.translate(infusionStack, infusionStack.getAmount()));
         } else if (!fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.STORED.translate(fluidStack, fluidStack.getAmount()));
         }
@@ -99,6 +120,6 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitFluidHandler.create(TRANSFER_RATE, () -> CAPACITY), RateLimitGasHandler.create(TRANSFER_RATE, () -> CAPACITY));
+        return new ItemCapabilityWrapper(stack, GaugeDropperContentsHandler.create());
     }
 }

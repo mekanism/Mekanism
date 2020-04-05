@@ -1,5 +1,8 @@
 package mekanism.client.gui.element.gauge;
 
+import java.util.List;
+import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -7,6 +10,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.network.PacketDropperUse.TankType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
@@ -14,7 +18,24 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>> {
 
     public GuiGasGauge(IGasInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
-        super(type, gui, x, y, handler);
+        super(type, gui, x, y, handler, TankType.GAS_TANK);
+    }
+
+    public GuiGasGauge(Supplier<IChemicalTank<Gas, GasStack>> tankSupplier, Supplier<List<? extends IChemicalTank<Gas, GasStack>>> tanksSupplier, GaugeType type,
+          IGuiWrapper gui, int x, int y) {
+        this(new IGasInfoHandler() {
+            @Nullable
+            @Override
+            public IChemicalTank<Gas, GasStack> getTank() {
+                return tankSupplier.get();
+            }
+
+            @Override
+            public int getTankIndex() {
+                IChemicalTank<Gas, GasStack> tank = getTank();
+                return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
+            }
+        }, type, gui, x, y);
     }
 
     public static GuiGasGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
