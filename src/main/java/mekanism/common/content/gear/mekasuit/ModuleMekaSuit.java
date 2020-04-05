@@ -75,11 +75,6 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleVisionEnhancementUnit extends ModuleMekaSuit {
         @Override
-        public void tickServer(PlayerEntity player) {
-            super.tickServer(player);
-        }
-
-        @Override
         public void addHUDStrings(List<ITextComponent> list) {
             ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
             list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.DARK_GRAY, MekanismLang.MODULE_VISION_ENHANCEMENT,
@@ -128,6 +123,7 @@ public abstract class ModuleMekaSuit extends Module {
 
         @Override
         public void init() {
+            super.init();
             chargeSuit = addConfigItem(new ModuleConfigItem<>(this, "charge_suit", MekanismLang.MODULE_CHARGE_SUIT, new BooleanData(), true));
             chargeInventory = addConfigItem(new ModuleConfigItem<>(this, "charge_inventory", MekanismLang.MODULE_CHARGE_INVENTORY, new BooleanData(), false));
         }
@@ -170,6 +166,9 @@ public abstract class ModuleMekaSuit extends Module {
             toCharge = charge(player.getHeldItemOffhand(), toCharge);
 
             for (ItemStack stack : player.inventory.mainInventory) {
+                if (stack == player.getHeldItemMainhand() || stack == player.getHeldItemOffhand()) {
+                    continue;
+                }
                 if (toCharge.isZero()) {
                     break;
                 }
@@ -193,7 +192,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void init() {
             super.init();
-            addConfigItem(sprintBoost = new ModuleConfigItem<>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class), SprintBoost.LOW));
+            addConfigItem(sprintBoost = new ModuleConfigItem<>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class).withScale(0.65F), SprintBoost.LOW));
         }
 
         @Override
@@ -255,7 +254,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void init() {
             super.init();
-            addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class), JumpBoost.LOW));
+            addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class).withScale(0.65F), JumpBoost.LOW));
         }
 
         public float getBoost() {
@@ -284,5 +283,13 @@ public abstract class ModuleMekaSuit extends Module {
         }
     }
 
-    public static class ModuleSolarRechargingUnit extends ModuleMekaSuit {}
+    public static class ModuleSolarRechargingUnit extends ModuleMekaSuit {
+        @Override
+        public void tickServer(PlayerEntity player) {
+            super.tickServer(player);
+            if (isEnabled()) {
+
+            }
+        }
+    }
 }
