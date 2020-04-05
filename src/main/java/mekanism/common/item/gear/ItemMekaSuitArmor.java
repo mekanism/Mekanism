@@ -4,15 +4,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import com.google.common.collect.Multimap;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -37,8 +37,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
@@ -47,6 +46,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
@@ -62,6 +62,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     private static final int GAS_TRANSFER_RATE = 256;
 
     private Set<GasTankSpec> gasTankSpecs = new HashSet<>();
+    private float absorption;
 
     public ItemMekaSuitArmor(EquipmentSlotType slot, Properties properties) {
         super(MEKASUIT_MATERIAL, slot, properties.setNoRepair().maxStackSize(1));
@@ -71,14 +72,24 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
             Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT, Modules.VISION_ENHANCEMENT_UNIT,
                 Modules.SOLAR_RECHARGING_UNIT, Modules.NUTRITIONAL_INJECTION_UNIT);
             gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 10_000, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
+            absorption = 0.15F;
         } else if (slot == EquipmentSlotType.CHEST) {
             Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT);
             gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 24_000, gas -> gas == MekanismGases.HYDROGEN.get()));
+            absorption = 0.4F;
         } else if (slot == EquipmentSlotType.LEGS) {
             Modules.setSupported(this, Modules.LOCOMOTIVE_BOOSTING_UNIT);
+            absorption = 0.3F;
         } else if (slot == EquipmentSlotType.FEET) {
-            Modules.setSupported(this, Modules.HYDRAULIC_ABSORPTION_UNIT, Modules.HYDRAULIC_PROPULSION_UNIT);
+            Modules.setSupported(this, Modules.HYDRAULIC_PROPULSION_UNIT);
+            absorption = 0.15F;
         }
+    }
+
+    @Override
+    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
+        // safety check
+        return 0;
     }
 
     @Override
@@ -124,18 +135,6 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
             items.add(StorageUtils.getFilledEnergyVariant(stack, getMaxEnergy(stack)));
         }
     }
-
-    @Override
-    // TODO adjust values based on energy
-    public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot, ItemStack stack) {
-        Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot);
-        if (equipmentSlot == slot) {
-            multimap.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(ARMOR_MODIFIERS[equipmentSlot.getIndex()], "Armor modifier", this.damageReduceAmount, AttributeModifier.Operation.ADDITION));
-            multimap.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(ARMOR_MODIFIERS[equipmentSlot.getIndex()], "Armor toughness", this.toughness, AttributeModifier.Operation.ADDITION));
-        }
-
-        return multimap;
-     }
 
     @Override
     public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
@@ -223,24 +222,26 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         return module != null ? module.getEnergyCapacity() : MekanismConfig.general.mekaToolBaseEnergyCapacity.get();
     }
 
-    @ParametersAreNonnullByDefault
-    @MethodsReturnNonnullByDefault
+    public float getDamageAbsorbed(ItemStack stack, DamageSource source, float amount) {
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        if (energyContainer != null && amount > 0) {
+            float toAbsorb = amount * absorption;
+            FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageDamage.get().multiply(toAbsorb);
+            return absorption * energyContainer.extract(usage, Action.EXECUTE, AutomationType.MANUAL).divide(usage).floatValue();
+        }
+        return 0;
+    }
+
+    // This is unused for the most part; toughness / damage reduction is handled manually
     protected static class MekaSuitMaterial implements IArmorMaterial {
-
         @Override
-        public int getDurability(EquipmentSlotType slotType) {
-            return 0;
-        }
-
+        public int getDurability(EquipmentSlotType slotType) { return 0; }
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType slotType) {
-            return 0;
-        }
-
+        public int getDamageReductionAmount(EquipmentSlotType slotType) { return 0; }
         @Override
-        public int getEnchantability() {
-            return 0;
-        }
+        public int getEnchantability() { return 0; }
+        @Override
+        public float getToughness() { return 0; }
 
         @Override
         public SoundEvent getSoundEvent() {
@@ -255,11 +256,6 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         @Override
         public String getName() {
             return "mekasuit";
-        }
-
-        @Override
-        public float getToughness() {
-            return 0;
         }
     }
 }

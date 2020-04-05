@@ -17,7 +17,6 @@ import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleChargeDistributionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleElectrolyticBreathingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
-import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicAbsorptionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit;
@@ -98,8 +97,6 @@ public class Modules {
         MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, () -> new ModuleLocomotiveBoostingUnit());
 
     // Boots
-    public static final ModuleData<ModuleHydraulicAbsorptionUnit> HYDRAULIC_ABSORPTION_UNIT = register("hydraulic_absorption_unit",
-        MekanismLang.MODULE_HYDRAULIC_ABSORPTION_UNIT, MekanismLang.DESCRIPTION_HYDRAULIC_ABSORPTION_UNIT, () -> new ModuleHydraulicAbsorptionUnit());
     public static final ModuleData<ModuleHydraulicPropulsionUnit> HYDRAULIC_PROPULSION_UNIT = register("hydraulic_propulsion_unit",
         MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, () -> new ModuleHydraulicPropulsionUnit());
 

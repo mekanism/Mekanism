@@ -72,7 +72,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityOperationalMachine
     @Nonnull
     @Override
     public MekanismRecipeType<ItemStackToGasRecipe> getRecipeType() {
-        return MekanismRecipeType.NUTRITIONAL_LIQUIFYING;
+        return null;
     }
 
     @Nullable

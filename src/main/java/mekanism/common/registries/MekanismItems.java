@@ -119,7 +119,6 @@ public class MekanismItems {
 
     public static final ItemRegistryObject<ItemModule> LOCOMOTIVE_BOOSTING_UNIT = registerModule(Modules.LOCOMOTIVE_BOOSTING_UNIT);
 
-    public static final ItemRegistryObject<ItemModule> HYDRAULIC_ABSORPTION_UNIT = registerModule(Modules.HYDRAULIC_ABSORPTION_UNIT);
     public static final ItemRegistryObject<ItemModule> HYDRAULIC_PROPULSION_UNIT = registerModule(Modules.HYDRAULIC_PROPULSION_UNIT);
 
     //Alloy names are alloy_type for purposes of tab complete

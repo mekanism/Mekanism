@@ -12,7 +12,6 @@ import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
-import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicAbsorptionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit;
@@ -260,7 +259,7 @@ public class CommonPlayerTickHandler {
         //Note: We have this here in addition to listening to LivingHurt, so as if we can fully block the damage
         // then we don't play the hurt effect/sound, as cancelling LivingHurtEvent still causes that to happen
         if (event.getSource() == DamageSource.FALL) {
-            IEnergyContainer energyContainer = getFreeRunnerEnergyContainer(base);
+            IEnergyContainer energyContainer = getFallAbsorptionEnergyContainer(base);
             if (energyContainer != null) {
                 FloatingLong energyRequirement = MekanismConfig.general.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
                 FloatingLong simulatedExtract = energyContainer.extract(energyRequirement, Action.SIMULATE, AutomationType.MANUAL);
@@ -276,8 +275,7 @@ public class CommonPlayerTickHandler {
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
         if (event.getSource() == DamageSource.FALL) {
-            //Free runner checks
-            IEnergyContainer energyContainer = getFreeRunnerEnergyContainer(event.getEntityLiving());
+            IEnergyContainer energyContainer = getFallAbsorptionEnergyContainer(event.getEntityLiving());
             if (energyContainer != null) {
                 FloatingLong energyRequirement = MekanismConfig.general.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
                 FloatingLong extracted = energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
@@ -297,6 +295,24 @@ public class CommonPlayerTickHandler {
                             event.setAmount(newDamage);
                         }
                     }
+                }
+            }
+        } else {
+            if (event.getEntityLiving() instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+                float ratioAbsorbed = 0;
+
+                for (ItemStack stack : player.inventory.armorInventory) {
+                    if (stack.getItem() instanceof ItemMekaSuitArmor) {
+                        ratioAbsorbed += ((ItemMekaSuitArmor) stack.getItem()).getDamageAbsorbed(stack, event.getSource(), event.getAmount());
+                    }
+                }
+
+                float damageRemaining = event.getAmount() * Math.max(0, 1 - ratioAbsorbed);
+                if (damageRemaining <= 0) {
+                    event.setCanceled(true);
+                } else {
+                    event.setAmount(damageRemaining);
                 }
             }
         }
@@ -327,7 +343,7 @@ public class CommonPlayerTickHandler {
      * @return null if free runners are not being worn or they don't have an energy container for some reason
      */
     @Nullable
-    private IEnergyContainer getFreeRunnerEnergyContainer(LivingEntity base) {
+    private IEnergyContainer getFallAbsorptionEnergyContainer(LivingEntity base) {
         ItemStack feetStack = base.getItemStackFromSlot(EquipmentSlotType.FEET);
         if (!feetStack.isEmpty()) {
             if (feetStack.getItem() instanceof ItemFreeRunners) {
@@ -335,9 +351,7 @@ public class CommonPlayerTickHandler {
                 if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL) {
                     return StorageUtils.getEnergyContainer(feetStack, 0);
                 }
-            }
-            ModuleHydraulicAbsorptionUnit module = Modules.load(feetStack, Modules.HYDRAULIC_ABSORPTION_UNIT);
-            if (module != null && module.isEnabled()) {
+            } else if (feetStack.getItem() instanceof ItemMekaSuitArmor) {
                 return StorageUtils.getEnergyContainer(feetStack, 0);
             }
         }

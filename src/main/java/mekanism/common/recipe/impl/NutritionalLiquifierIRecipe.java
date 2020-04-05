@@ -4,9 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -21,13 +19,13 @@ public class NutritionalLiquifierIRecipe extends ItemStackToGasRecipe {
     @Nonnull
     @Override
     public IRecipeType<ItemStackToGasRecipe> getType() {
-        return MekanismRecipeType.NUTRITIONAL_LIQUIFYING;
+        return null;
     }
 
     @Nonnull
     @Override
     public IRecipeSerializer<ItemStackToGasRecipe> getSerializer() {
-        return MekanismRecipeSerializers.NUTRITIONAL_LIQUIFYING.getRecipeSerializer();
+        return null;
     }
 
     @Nonnull

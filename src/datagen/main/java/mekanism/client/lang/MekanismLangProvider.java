@@ -939,7 +939,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_GRAVITATIONAL_MODULATING_UNIT, "Gravitational Modulating Unit");
         add(MekanismLang.MODULE_CHARGE_DISTRIBUTION_UNIT, "Charge Distribution Unit");
         add(MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, "Locomotive Boosting Unit");
-        add(MekanismLang.MODULE_HYDRAULIC_ABSORPTION_UNIT, "Hydraulic Absorption Unit");
         add(MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit");
 
         add(MekanismLang.DESCRIPTION_ENERGY_UNIT, "Increases maximum energy capacity.");
@@ -961,7 +960,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT, "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");
         add(MekanismLang.DESCRIPTION_CHARGE_DISTRIBUTION_UNIT, "Evenly distributes charge throughout all worn MekaSuit armor.");
         add(MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, "Increases the user's sprinting speed (and jumping distance).");
-        add(MekanismLang.DESCRIPTION_HYDRAULIC_ABSORPTION_UNIT, "Absorbs fall damage using an intricate assortment of hydraulic shocks.");
         add(MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, "Allows the user to both step and jump higher.");
     }
 
