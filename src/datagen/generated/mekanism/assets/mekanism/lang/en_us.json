@@ -341,6 +341,7 @@
   "description.mekanism.logistical_sorter": "A filter-based, advanced sorting machine that can auto-eject specified items out of and into adjacent inventories and Logistical Transporters.",
   "description.mekanism.metallurgic_infuser": "A machine used to infuse various materials into (generally) metals to create metal alloys and other compounds.",
   "description.mekanism.modification_station": "An advanced workbench capable of installing and removing modules from modular equipment (i.e. MekaSuit!)",
+  "description.mekanism.nutritional_injection_unit": "Automatically feeds the player Nutritional Paste when hungry.",
   "description.mekanism.nutritional_liquifier": "A machine that is capable of processing any foods into non-dangerous, easily-digestible Nutritional Paste.",
   "description.mekanism.oredictionificator": "A machine used to unify and translate between various items and blocks using the Ore Dictionary.",
   "description.mekanism.osmium_compressor": "A fairly advanced machine used to compress osmium into various dusts in order to create their ingot counterparts.",
