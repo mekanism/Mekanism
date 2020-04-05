@@ -14,14 +14,12 @@ import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
-import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.item.IModeItem;
 import mekanism.common.item.gear.ItemFlamethrower;
-import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
@@ -101,21 +99,6 @@ public class ClientTickHandler {
         return CommonPlayerTickHandler.isGasMaskOn(player);
     }
 
-    public static boolean isStepBoostOn(PlayerEntity player) {
-        ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
-        if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
-            if (stack.getItem() instanceof ItemFreeRunners) {
-                ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
-                return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
-            }
-            Module module = Modules.load(stack, Modules.HYDRAULIC_PROPULSION_UNIT);
-            if (module != null && module.isEnabled()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static boolean isGravitationalModulationOn(PlayerEntity player) {
         if (player != minecraft.player) {
             return Mekanism.playerState.isGravitationalModulationOn(player);
@@ -175,7 +158,7 @@ public class ClientTickHandler {
             Mekanism.radiationManager.tickClient(minecraft.player);
 
             UUID playerUUID = minecraft.player.getUniqueID();
-            boolean stepBoostOn = isStepBoostOn(minecraft.player);
+            boolean stepBoostOn = CommonPlayerTickHandler.isStepBoostOn(minecraft.player);
 
             if (stepBoostOn && !minecraft.player.isShiftKeyDown()) {
                 minecraft.player.stepHeight = 1.002F;

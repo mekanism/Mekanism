@@ -8,6 +8,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
+import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
@@ -80,10 +81,17 @@ public class CommonPlayerTickHandler {
         return false;
     }
 
-    public static boolean isFreeRunnerOn(PlayerEntity player) {
+    public static boolean isStepBoostOn(PlayerEntity player) {
         ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
-        if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
-            return ((ItemFreeRunners) stack.getItem()).getMode(stack) == FreeRunnerMode.NORMAL && !player.isShiftKeyDown();
+        if (!stack.isEmpty() && !player.isShiftKeyDown()) {
+            if (stack.getItem() instanceof ItemFreeRunners) {
+                ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
+                return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
+            }
+            Module module = Modules.load(stack, Modules.HYDRAULIC_PROPULSION_UNIT);
+            if (module != null && module.isEnabled()) {
+                return true;
+            }
         }
         return false;
     }
@@ -96,7 +104,7 @@ public class CommonPlayerTickHandler {
     }
 
     public void tickEnd(PlayerEntity player) {
-        if (CommonPlayerTickHandler.isFreeRunnerOn(player)) {
+        if (isStepBoostOn(player)) {
             player.stepHeight = 1.002F;
         } else if (player.stepHeight == 1.002F) {
             player.stepHeight = 0.6F;
