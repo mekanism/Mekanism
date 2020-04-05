@@ -20,7 +20,6 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.energy.ElectrolyticSeparatorEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -52,7 +51,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<ElectrolysisRecipe>, IHasGasMode {
+public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements ITileCachedRecipeHolder<ElectrolysisRecipe>, IHasGasMode {
 
     /**
      * This separator's water slot.
@@ -250,11 +249,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         nbtTags.putInt(NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
         nbtTags.putInt(NBTConstants.DUMP_RIGHT, dumpRight.ordinal());
         return nbtTags;
-    }
-
-    @Override
-    public Object[] getManagedTanks() {
-        return new Object[]{fluidTank, leftTank, rightTank};
     }
 
     @Override

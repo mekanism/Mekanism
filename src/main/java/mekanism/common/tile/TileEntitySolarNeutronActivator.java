@@ -17,7 +17,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -37,7 +36,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 
-public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, ITankManager, ITileCachedRecipeHolder<GasToGasRecipe> {
+public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, ITileCachedRecipeHolder<GasToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
 
@@ -170,11 +169,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
             world.removeBlock(getPos().up(), false);
             world.removeBlock(getPos(), false);
         }
-    }
-
-    @Override
-    public Object[] getManagedTanks() {
-        return new Object[]{inputTank, outputTank};
     }
 
     @Nonnull

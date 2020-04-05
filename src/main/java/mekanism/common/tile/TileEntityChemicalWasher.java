@@ -17,7 +17,6 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -44,7 +43,7 @@ import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityChemicalWasher extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<FluidGasToGasRecipe> {
+public class TileEntityChemicalWasher extends TileEntityMekanism implements ITileCachedRecipeHolder<FluidGasToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
     public static final int MAX_FLUID = 10_000;
@@ -171,11 +170,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITan
                   }
                   return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
               });
-    }
-
-    @Override
-    public Object[] getManagedTanks() {
-        return new Object[]{fluidTank, inputTank, outputTank};
     }
 
     @Override

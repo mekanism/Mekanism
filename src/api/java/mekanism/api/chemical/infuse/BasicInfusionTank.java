@@ -20,6 +20,7 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
 
     public static final Predicate<@NonNull InfuseType> alwaysTrue = stack -> true;
     public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
+    public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
     public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
 
     @Nullable

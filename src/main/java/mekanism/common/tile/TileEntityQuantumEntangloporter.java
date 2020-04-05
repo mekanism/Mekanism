@@ -25,7 +25,6 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.chemical.QuantumEntangloporterGasTankHolder;
@@ -69,8 +68,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFrequencyHandler, IHeatTransfer, ISustainedData,
-      IChunkLoader, IHasFrequency {
+public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, IFrequencyHandler, IHeatTransfer, ISustainedData, IChunkLoader,
+      IHasFrequency {
 
     public InventoryFrequency frequency;
     public double heatToAbsorb = 0;
@@ -368,13 +367,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             }
         }
         return null;
-    }
-
-    @Override
-    public Object[] getManagedTanks() {
-        //TODO: Given these don't show in the GUI it may make more sense to not have this be implemented
-        // at all as it is only really used for the dropper
-        return hasFrequency() ? new Object[]{frequency.storedFluid, frequency.storedGas} : null;
     }
 
     @Override

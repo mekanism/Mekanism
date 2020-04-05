@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Collections;
 import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiInnerHolder;
@@ -31,7 +32,8 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         addButton(new GuiInnerScreen(this, 50, 23, 80, 42));
         addButton(new GuiDownArrow(this, 150, 38));
         addButton(new GuiContainerEditMode<>(this, tile));
-        addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.fluidTank, GaugeType.MEDIUM, this, 6, 13));
+        addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.fluidTank,
+              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.MEDIUM, this, 6, 13));
     }
 
     @Override

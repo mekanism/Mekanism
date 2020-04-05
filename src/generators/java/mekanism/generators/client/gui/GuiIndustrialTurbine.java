@@ -1,6 +1,7 @@
 package mekanism.generators.client.gui;
 
 import java.util.Arrays;
+import java.util.Collections;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -73,7 +74,8 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 return (double) tile.structure.lastSteamInput / rate;
             }
         }, 40, 13));
-        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.gasTank, GaugeType.MEDIUM, this, 6, 13));
+        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.gasTank,
+              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.MEDIUM, this, 6, 13));
         addButton(new GuiEnergyInfo(() -> {
             EnergyDisplay storing;
             EnergyDisplay producing;

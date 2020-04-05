@@ -35,7 +35,7 @@ public class GuiAdvancedElectricMachine<TILE extends TileEntityAdvancedElectricM
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 86, 38));
-        addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.gasTank), 68, 36, 6, 12, false));
+        addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.gasTank, tile.getGasTanks(null)), 68, 36, 6, 12, false));
     }
 
     @Override

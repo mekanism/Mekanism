@@ -57,8 +57,10 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
                                                     (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get());
             }
         }, 144, 13));
-        addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.waterTank, GaugeType.STANDARD, this, 6, 13));
-        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.steamTank, GaugeType.STANDARD, this, 152, 13));
+        addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.waterTank,
+              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
+        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.steamTank,
+              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 152, 13));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.getLastEnvironmentLoss() * unit.intervalSize, unit, false);

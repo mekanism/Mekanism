@@ -87,6 +87,12 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
     }
 
     @Override
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
+        GasStack stored = StorageUtils.getStoredGasFromNBT(stack);
+        return stored.isEmpty() ? 0 : stored.getType().getTint();
+    }
+
+    @Override
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {

@@ -19,7 +19,6 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -49,7 +48,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<RotaryRecipe>, IHasMode {
+public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ITileCachedRecipeHolder<RotaryRecipe>, IHasMode {
 
     private static final int CAPACITY = 10_000;
 
@@ -181,11 +180,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.MODE, mode);
         return nbtTags;
-    }
-
-    @Override
-    public Object[] getManagedTanks() {
-        return new Object[]{gasTank, fluidTank};
     }
 
     @Override

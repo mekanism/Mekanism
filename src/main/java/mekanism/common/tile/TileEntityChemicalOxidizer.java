@@ -15,7 +15,6 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -34,7 +33,7 @@ import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<ItemStackToGasRecipe> implements ITankManager {
+public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<ItemStackToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
     public BasicGasTank gasTank;
@@ -125,11 +124,6 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
-    }
-
-    @Override
-    public Object[] getManagedTanks() {
-        return new Object[]{gasTank};
     }
 
     public MachineEnergyContainer<TileEntityChemicalOxidizer> getEnergyContainer() {

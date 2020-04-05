@@ -57,11 +57,11 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         return Collections.singletonList(tank);
     }
 
-    private static class RateLimitGasTank extends VariableCapacityGasTank {
+    public static class RateLimitGasTank extends VariableCapacityGasTank {
 
         private final int rate;
 
-        private RateLimitGasTank(int rate, IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+        public RateLimitGasTank(int rate, IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid, IMekanismGasHandler gasHandler) {
             super(capacity, canExtract, canInsert, isValid, gasHandler);
             this.rate = rate;
