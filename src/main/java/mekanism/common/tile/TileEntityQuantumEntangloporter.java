@@ -26,7 +26,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.chemical.QuantumEntangloporterGasTankHolder;
@@ -46,7 +45,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
-import mekanism.common.network.BasePacketHandler;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -56,6 +54,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.ProxiedSlotInfo;
+import mekanism.common.tile.interfaces.IHasFrequency;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
@@ -63,7 +62,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
@@ -72,7 +70,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFrequencyHandler, IHeatTransfer, ISustainedData,
-      IChunkLoader, ITileNetwork {
+      IChunkLoader, IHasFrequency {
 
     public InventoryFrequency frequency;
     public double heatToAbsorb = 0;
@@ -251,6 +249,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         return Mekanism.privateEntangloporters.get(getSecurity().getOwnerUUID());
     }
 
+    @Override
     public void setFrequency(String name, boolean publicFreq) {
         FrequencyManager manager = getManager(new InventoryFrequency(name, null).setPublic(publicFreq));
         manager.deactivate(Coord4D.get(this));
@@ -273,6 +272,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
+    public void removeFrequency(String name, boolean publicFreq) {
+        FrequencyManager manager = getManager(new InventoryFrequency(name, null).setPublic(publicFreq));
+        if (manager != null) {
+            manager.remove(name, getSecurity().getOwnerUUID());
+        }
+    }
+
+    @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
@@ -291,25 +298,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             nbtTags.put(NBTConstants.FREQUENCY, frequencyTag);
         }
         return nbtTags;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                String name = BasePacketHandler.readString(dataStream);
-                boolean isPublic = dataStream.readBoolean();
-                setFrequency(name, isPublic);
-            } else if (type == 1) {
-                String freq = BasePacketHandler.readString(dataStream);
-                boolean isPublic = dataStream.readBoolean();
-                FrequencyManager manager = getManager(new InventoryFrequency(freq, null).setPublic(isPublic));
-                if (manager != null) {
-                    manager.remove(freq, getSecurity().getOwnerUUID());
-                }
-            }
-        }
     }
 
     @Override

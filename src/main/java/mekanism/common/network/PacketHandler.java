@@ -37,7 +37,6 @@ public class PacketHandler extends BasePacketHandler {
         //Client to server messages
         registerClientToServer(PacketRobit.class, PacketRobit::encode, PacketRobit::decode, PacketRobit::handle);
         registerClientToServer(PacketModeChange.class, PacketModeChange::encode, PacketModeChange::decode, PacketModeChange::handle);
-        registerClientToServer(PacketTileEntity.class, PacketTileEntity::encode, PacketTileEntity::decode, PacketTileEntity::handle);
         registerClientToServer(PacketNewFilter.class, PacketNewFilter::encode, PacketNewFilter::decode, PacketNewFilter::handle);
         registerClientToServer(PacketEditFilter.class, PacketEditFilter::encode, PacketEditFilter::decode, PacketEditFilter::handle);
         registerClientToServer(PacketConfigurationUpdate.class, PacketConfigurationUpdate::encode, PacketConfigurationUpdate::decode, PacketConfigurationUpdate::handle);
@@ -46,6 +45,9 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketGearStateUpdate.class, PacketGearStateUpdate::encode, PacketGearStateUpdate::decode, PacketGearStateUpdate::handle);
         registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
         registerClientToServer(PacketGuiInteract.class, PacketGuiInteract::encode, PacketGuiInteract::decode, PacketGuiInteract::handle);
+        registerClientToServer(PacketGuiSetEnergy.class, PacketGuiSetEnergy::encode, PacketGuiSetEnergy::decode, PacketGuiSetEnergy::handle);
+        registerClientToServer(PacketGuiSetFrequency.class, PacketGuiSetFrequency::encode, PacketGuiSetFrequency::decode, PacketGuiSetFrequency::handle);
+        registerClientToServer(PacketAddTrusted.class, PacketAddTrusted::encode, PacketAddTrusted::decode, PacketAddTrusted::handle);
         registerClientToServer(PacketSecurityMode.class, PacketSecurityMode::encode, PacketSecurityMode::decode, PacketSecurityMode::handle);
         registerClientToServer(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
 

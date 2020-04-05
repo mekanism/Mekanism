@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.TileNetworkList;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -14,7 +13,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketGuiSetEnergy;
+import mekanism.common.network.PacketGuiSetEnergy.GuiEnergyValue;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
@@ -134,8 +134,8 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     private void setMinThreshold() {
         if (!minField.getText().isEmpty()) {
             try {
-                FloatingLong toUse = MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(minField.getText()));
-                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, toUse)));
+                Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MIN_THRESHOLD, tile.getPos(),
+                      MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(minField.getText()))));
             } catch (Exception ignored) {
             }
             minField.setText("");
@@ -145,9 +145,9 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     private void setMaxThreshold() {
         if (!maxField.getText().isEmpty()) {
             try {
-                FloatingLong toUse = MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(maxField.getText()));
-                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, toUse)));
-            } catch (Exception ignored) {
+                Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MAX_THRESHOLD, tile.getPos(),
+                      MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(maxField.getText()))));
+            } catch (NumberFormatException ignored) {
             }
             maxField.setText("");
         }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
@@ -23,7 +22,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketGuiSetFrequency;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.UnitDisplayUtils;
@@ -86,8 +85,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.privateCache.get(selection) : tile.publicCache.get(selection);
-                TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
-                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
+                Mekanism.packetHandler.sendToServer(new PacketGuiSetFrequency(tile.getPos(), false, freq.name, freq.publicFreq));
                 scrollList.clearSelection();
             }
             updateButtons();
@@ -122,18 +120,16 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     }
 
     public void setFrequency(String freq) {
-        if (freq.isEmpty()) {
-            return;
+        if (!freq.isEmpty()) {
+            Mekanism.packetHandler.sendToServer(new PacketGuiSetFrequency(tile.getPos(), true, freq, !privateMode));
         }
-        TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
-        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
     }
 
     public ITextComponent getSecurity(Frequency freq) {
-        if (!freq.publicFreq) {
-            return MekanismLang.PRIVATE.translateColored(EnumColor.DARK_RED);
+        if (freq.publicFreq) {
+            return MekanismLang.PUBLIC.translate();
         }
-        return MekanismLang.PUBLIC.translate();
+        return MekanismLang.PRIVATE.translateColored(EnumColor.DARK_RED);
     }
 
     private void updateButtons() {
@@ -220,12 +216,12 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         drawString(securityComponent, 32, 91, 0x404040);
         Frequency frequency = tile.getFrequency(null);
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
-        if (frequency != null) {
-            renderScaledText(frequency.name, 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
-            drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
-        } else {
+        if (frequency == null) {
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
+        } else {
+            renderScaledText(frequency.name, 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
+            drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
         renderScaledText(MekanismLang.SET.translate(), 27, 104, 0x404040, 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

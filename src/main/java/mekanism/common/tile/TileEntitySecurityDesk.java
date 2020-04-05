@@ -8,7 +8,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.frequency.Frequency;
@@ -18,7 +17,6 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.list.SyncableStringList;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
-import mekanism.common.network.BasePacketHandler;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
@@ -28,7 +26,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -37,7 +34,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock, ITileNetwork {
+public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
 
     public UUID ownerUUID;
     public String clientOwner;
@@ -155,19 +152,20 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         }
     }
 
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote() && frequency != null) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(BasePacketHandler.readString(dataStream));
-                if (profile != null) {
-                    frequency.addTrusted(profile.getId(), profile.getName());
-                }
-            } else if (type == 1) {
-                frequency.securityMode = dataStream.readEnumValue(SecurityMode.class);
-            }
+    public void setSecurityMode(SecurityMode mode) {
+        if (frequency != null) {
+            frequency.securityMode = mode;
             markDirty(false);
+        }
+    }
+
+    public void addTrusted(String name) {
+        if (frequency != null) {
+            GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(name);
+            if (profile != null) {
+                frequency.addTrusted(profile.getId(), profile.getName());
+                markDirty(false);
+            }
         }
     }
 

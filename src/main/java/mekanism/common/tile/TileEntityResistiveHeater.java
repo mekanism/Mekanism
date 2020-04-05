@@ -6,9 +6,8 @@ import mekanism.api.Action;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.base.ITileNetwork;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
@@ -27,13 +26,12 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer, ITileNetwork {
+public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer {
 
     private float soundScale = 1;
     private double temperature;
@@ -100,11 +98,9 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         return nbtTags;
     }
 
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
-            energyContainer.updateEnergyUsage(FloatingLong.readFromBuffer(dataStream));
-        }
+    public void setEnergyUsageFromPacket(FloatingLong floatingLong) {
+        energyContainer.updateEnergyUsage(floatingLong);
+        markDirty(false);
     }
 
     @Override

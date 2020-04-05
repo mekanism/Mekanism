@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -21,7 +20,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketGuiSetFrequency;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
@@ -81,7 +80,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.privateCache.get(selection) : tile.publicCache.get(selection);
-                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, freq.name, freq.publicFreq)));
+                Mekanism.packetHandler.sendToServer(new PacketGuiSetFrequency(tile.getPos(), false, freq.name, freq.publicFreq));
                 scrollList.clearSelection();
             }
             updateButtons();
@@ -213,7 +212,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
 
     public void setFrequency(String freq) {
         if (!freq.isEmpty()) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, freq, !privateMode)));
+            Mekanism.packetHandler.sendToServer(new PacketGuiSetFrequency(tile.getPos(), true, freq, !privateMode));
         }
     }
 }

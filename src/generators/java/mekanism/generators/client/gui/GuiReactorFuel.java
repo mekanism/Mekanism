@@ -3,20 +3,20 @@ package mekanism.generators.client.gui;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Nonnull;
-import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.network.PacketGeneratorsGuiInteract;
+import mekanism.generators.common.network.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -102,7 +102,7 @@ public class GuiReactorFuel extends GuiReactorInfo {
 
     private void setInjection() {
         if (!injectionRateField.getText().isEmpty()) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(Integer.parseInt(injectionRateField.getText()))));
+            MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.INJECTION_RATE, tile, Integer.parseInt(injectionRateField.getText())));
             injectionRateField.setText("");
         }
     }

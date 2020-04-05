@@ -68,11 +68,11 @@ public class PacketGeneratorsGuiButtonPress {
     public static void encode(PacketGeneratorsGuiButtonPress pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.tileButton);
         buf.writeBlockPos(pkt.tilePosition);
-        buf.writeInt(pkt.extra);
+        buf.writeVarInt(pkt.extra);
     }
 
     public static PacketGeneratorsGuiButtonPress decode(PacketBuffer buf) {
-        return new PacketGeneratorsGuiButtonPress(buf.readEnumValue(ClickedGeneratorsTileButton.class), buf.readBlockPos(), buf.readInt());
+        return new PacketGeneratorsGuiButtonPress(buf.readEnumValue(ClickedGeneratorsTileButton.class), buf.readBlockPos(), buf.readVarInt());
     }
 
     public enum ClickedGeneratorsTileButton {
