@@ -223,6 +223,10 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     }
 
     public float getDamageAbsorbed(ItemStack stack, DamageSource source, float amount) {
+        // don't handle magic or starving damage
+        if (source == DamageSource.MAGIC || source == DamageSource.STARVE) {
+            return 0;
+        }
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null && amount > 0) {
             float toAbsorb = amount * absorption;

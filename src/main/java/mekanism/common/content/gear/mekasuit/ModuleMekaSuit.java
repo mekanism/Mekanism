@@ -211,7 +211,7 @@ public abstract class ModuleMekaSuit extends Module {
             if (canFunction(player)) {
                 float boost = getBoost();
                 if (!player.onGround) boost /= 5F; // throttle if we're in the air
-                if (player.isInWater()) boost /= 2F; // throttle if we're in the water
+                if (player.isInWater()) boost /= 5F; // throttle if we're in the water
                 player.moveRelative(boost, new Vec3d(0, 0, 1));
                 useEnergy(MekanismConfig.general.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
             }
@@ -224,7 +224,7 @@ public abstract class ModuleMekaSuit extends Module {
             if (canFunction(player)) {
                 float boost = getBoost();
                 if (!player.onGround) boost /= 5F; // throttle if we're in the air
-                if (player.isInWater()) boost /= 2F; // throttle if we're in the water
+                if (player.isInWater()) boost /= 5F; // throttle if we're in the water
                 player.moveRelative(boost, new Vec3d(0, 0, 1));
                 // leave energy usage up to server
             }
