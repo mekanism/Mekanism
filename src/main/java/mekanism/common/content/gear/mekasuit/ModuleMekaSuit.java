@@ -155,10 +155,12 @@ public abstract class ModuleMekaSuit extends Module {
             FloatingLong total = FloatingLong.ZERO;
             for (ItemStack stack : player.inventory.armorInventory) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                EnergySaveTarget saveTarget = new EnergySaveTarget();
-                saveTarget.addHandler(Direction.NORTH, energyContainer);
-                saveTargets.add(saveTarget);
-                total = total.plusEqual(energyContainer.getEnergy());
+                if (energyContainer != null) {
+                    EnergySaveTarget saveTarget = new EnergySaveTarget();
+                    saveTarget.addHandler(Direction.NORTH, energyContainer);
+                    saveTargets.add(saveTarget);
+                    total = total.plusEqual(energyContainer.getEnergy());
+                }
             }
             EmitUtils.sendToAcceptors(saveTargets, saveTargets.size(), total.copy());
             for (EnergySaveTarget saveTarget : saveTargets) {
