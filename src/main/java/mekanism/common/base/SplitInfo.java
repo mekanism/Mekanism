@@ -13,9 +13,13 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
 
     public abstract void send(TYPE amountNeeded);
 
-    public abstract TYPE getAmountPerTarget();
+    public abstract TYPE getShareAmount();
+
+    public abstract TYPE getRemainderAmount();
 
     public abstract TYPE getTotalSent();
+
+    public void updateRemainder() {}
 
     public static class IntegerSplitInfo extends SplitInfo<Integer> {
 
@@ -23,13 +27,14 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
         //AmountPer is the one that needs to be int or double
         private int amountPerTarget;
         private int sentSoFar;
+        private int remainder;
 
         //Amount to split also should be int or double
         public IntegerSplitInfo(int amountToSplit, int totalTargets) {
             super(totalTargets);
             this.amountToSplit = amountToSplit;
             amountPerTarget = toSplitAmong == 0 ? 0 : amountToSplit / toSplitAmong;
-            sentSoFar = 0;
+            remainder = toSplitAmong == 0 ? 0 : amountToSplit % toSplitAmong;
         }
 
         @Override
@@ -50,8 +55,18 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
         }
 
         @Override
-        public Integer getAmountPerTarget() {
+        public Integer getShareAmount() {
             return amountPerTarget;
+        }
+
+        @Override
+        public Integer getRemainderAmount() {
+            return amountPerTarget + (remainder > 0 ? 1 : 0);
+        }
+
+        @Override
+        public void updateRemainder() {
+            remainder = Math.max(0, remainder-1);
         }
 
         @Override
@@ -91,7 +106,12 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
         }
 
         @Override
-        public FloatingLong getAmountPerTarget() {
+        public FloatingLong getShareAmount() {
+            return amountPerTarget;
+        }
+
+        @Override
+        public FloatingLong getRemainderAmount() {
             return amountPerTarget;
         }
 

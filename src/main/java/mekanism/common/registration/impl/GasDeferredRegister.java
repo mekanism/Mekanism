@@ -2,6 +2,7 @@ package mekanism.common.registration.impl;
 
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.Slurry;
@@ -20,8 +21,14 @@ public class GasDeferredRegister extends WrappedDeferredRegister<Gas> {
         return register(constants.getName(), constants.getColor());
     }
 
-    public GasRegistryObject<Gas> register(String name, int color) {
-        return register(name, () -> new Gas(GasBuilder.builder().color(color)));
+    public GasRegistryObject<Gas> register(String name, int color, ChemicalAttribute... attributes) {
+        return register(name, () -> {
+            GasBuilder builder = GasBuilder.builder().color(color);
+            for (ChemicalAttribute attribute : attributes) {
+                builder.with(attribute);
+            }
+            return new Gas(builder);
+        });
     }
 
     public <GAS extends Gas> GasRegistryObject<GAS> register(String name, Supplier<? extends GAS> sup) {

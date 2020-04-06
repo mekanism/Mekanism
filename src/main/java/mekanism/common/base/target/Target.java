@@ -45,7 +45,8 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
     public void sendRemainingSplit(SplitInfo<TYPE> splitInfo) {
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
         for (Direction side : needed.keySet()) {
-            acceptAmount(handlers.get(side), splitInfo, splitInfo.getAmountPerTarget());
+            acceptAmount(handlers.get(side), splitInfo, splitInfo.getRemainderAmount());
+            splitInfo.updateRemainder();
         }
     }
 
@@ -81,7 +82,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
     public void sendPossible(EXTRA toSend, SplitInfo<TYPE> splitInfo) {
         for (Entry<Direction, HANDLER> entry : handlers.entrySet()) {
             TYPE amountNeeded = simulate(entry.getValue(), toSend);
-            if (amountNeeded.compareTo(splitInfo.getAmountPerTarget()) <= 0) {
+            if (amountNeeded.compareTo(splitInfo.getShareAmount()) <= 0) {
                 //Add the amount, in case something changed from simulation only mark actual sent amount
                 // in split info
                 acceptAmount(entry.getValue(), splitInfo, amountNeeded);
@@ -104,7 +105,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
         while (iterator.hasNext()) {
             Entry<Direction, TYPE> needInfo = iterator.next();
             TYPE amountNeeded = needInfo.getValue();
-            if (amountNeeded.compareTo(splitInfo.getAmountPerTarget()) <= 0) {
+            if (amountNeeded.compareTo(splitInfo.getShareAmount()) <= 0) {
                 acceptAmount(handlers.get(needInfo.getKey()), splitInfo, amountNeeded);
                 //Remove it as it has now been sent
                 iterator.remove();
