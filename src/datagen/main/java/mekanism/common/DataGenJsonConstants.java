@@ -21,4 +21,5 @@ public class DataGenJsonConstants {
     //Model builder key constants:
     public static final String LOADER = "loader";
     public static final String FLUID = "fluid";
+    public static final String PARTICLE = "particle";
 }

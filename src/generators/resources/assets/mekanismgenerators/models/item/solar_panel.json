@@ -1,7 +1,0 @@
-{
-    "parent": "mekanism:item/standard_item",
-    "textures": { 
-        "layer0": "mekanismgenerators:item/solar_panel"
-    }
-}
-

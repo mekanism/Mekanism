@@ -7,6 +7,7 @@ import net.minecraftforge.client.model.generators.ExistingFileHelper;
 
 public class AdditionsBlockModelProvider extends BaseBlockModelProvider {
 
+    //TODO: Add helpers for the color block stuff
     public AdditionsBlockModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         super(generator, MekanismAdditions.MODID, existingFileHelper);
     }

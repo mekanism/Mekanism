@@ -3,6 +3,7 @@ package mekanism.generators.client;
 import javax.annotation.Nonnull;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -21,5 +22,6 @@ public class GeneratorsJEI implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registry) {
         MekanismJEI.registerItemSubtypes(registry, GeneratorsItems.ITEMS.getAllItems());
+        MekanismJEI.registerItemSubtypes(registry, GeneratorsBlocks.BLOCKS.getAllBlocks());
     }
 }

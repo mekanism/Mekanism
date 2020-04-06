@@ -1,6 +1,6 @@
 package mekanism.additions.common;
 
-import mekanism.additions.client.AdditionsBlockModelProvider;
+import mekanism.additions.client.AdditionsBlockStateProvider;
 import mekanism.additions.client.AdditionsItemModelProvider;
 import mekanism.additions.client.AdditionsLangProvider;
 import mekanism.additions.client.AdditionsSoundProvider;
@@ -23,7 +23,7 @@ public class AdditionsDataGenerator {
             //Client side data generators
             gen.addProvider(new AdditionsLangProvider(gen));
             gen.addProvider(new AdditionsSoundProvider(gen, existingFileHelper));
-            gen.addProvider(new AdditionsBlockModelProvider(gen, existingFileHelper));
+            gen.addProvider(new AdditionsBlockStateProvider(gen, existingFileHelper));
             gen.addProvider(new AdditionsItemModelProvider(gen, existingFileHelper));
         }
         if (event.includeServer()) {
