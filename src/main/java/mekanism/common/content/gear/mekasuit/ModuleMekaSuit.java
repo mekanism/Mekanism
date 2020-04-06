@@ -209,7 +209,10 @@ public abstract class ModuleMekaSuit extends Module {
             super.tickServer(player);
 
             if (canFunction(player)) {
-                player.moveRelative(!player.onGround ? getBoost() / 5F : getBoost(), new Vec3d(0, 0, 1));
+                float boost = getBoost();
+                if (!player.onGround) boost /= 5F; // throttle if we're in the air
+                if (player.isInWater()) boost /= 2F; // throttle if we're in the water
+                player.moveRelative(boost, new Vec3d(0, 0, 1));
                 useEnergy(MekanismConfig.general.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
             }
         }
