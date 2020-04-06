@@ -2,9 +2,13 @@
     "parent": "mekanism:entity/robit",
     "display": {
         "thirdperson": {
-            "rotation": [ 10, -45, 170 ],
+            "rotation": [ 10, 135, 170 ],
             "translation": [ 0, 1.5, -2.75 ],
             "scale": [ 0.375, 0.375, 0.375 ]
+        },
+        "gui": {
+            "rotation": [ 30, 45, 0 ],
+            "scale": [ 0.625, 0.625, 0.625 ]
         }
     }
 }
