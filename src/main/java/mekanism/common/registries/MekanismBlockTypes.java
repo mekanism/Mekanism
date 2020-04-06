@@ -95,6 +95,7 @@ import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
+import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -472,17 +473,26 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER)
           .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER)
-          .with(new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(9F)).build();
+          .with(new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(9F))
+          .build();
     // Thermal Evaporation Valve
     public static final BlockTypeTile<TileEntityThermalEvaporationValve> THERMAL_EVAPORATION_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_VALVE)
-          .with(new AttributeComparator(), new AttributeCustomResistance(9F)).build();
+          .with(new AttributeComparator(), new AttributeCustomResistance(9F))
+          .build();
     // Thermal Evaporation Block
     public static final BlockTypeTile<TileEntityThermalEvaporationBlock> THERMAL_EVAPORATION_BLOCK = BlockTileBuilder
-          .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_BLOCK).with(new AttributeCustomResistance(9F)).build();
+          .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_BLOCK)
+          .with(new AttributeCustomResistance(9F))
+          .build();
     // Steel Casing
     public static final BlockType STEEL_CASING = BlockTileBuilder
-          .createBlock(MekanismLang.DESCRIPTION_STEEL_CASING).with(new AttributeCustomResistance(9F)).build();
+          .createBlock(MekanismLang.DESCRIPTION_STEEL_CASING)
+          .with(new AttributeCustomResistance(9F))
+          .build();
+    public static final BlockTypeTile<TileEntityRadioactiveWasteBarrel> RADIOACTIVE_WASTE_BARREL = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.RADIOACTIVE_WASTE_BARREL, MekanismLang.DESCRIPTION_RADIOACTIVE_WASTE_BARREL)
+          .build();
 
     // Induction Cells
     public static final BlockTypeTile<TileEntityInductionCell> BASIC_INDUCTION_CELL = createInductionCell(InductionCellTier.BASIC, () -> MekanismTileEntityTypes.BASIC_INDUCTION_CELL);

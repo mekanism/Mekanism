@@ -52,6 +52,7 @@ import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
+import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -156,6 +157,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityThermalEvaporationBlock> THERMAL_EVAPORATION_BLOCK = TILE_ENTITY_TYPES.register(MekanismBlocks.THERMAL_EVAPORATION_BLOCK, TileEntityThermalEvaporationBlock::new);
     public static final TileEntityTypeRegistryObject<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER = TILE_ENTITY_TYPES.register(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, TileEntityThermalEvaporationController::new);
     public static final TileEntityTypeRegistryObject<TileEntityThermalEvaporationValve> THERMAL_EVAPORATION_VALVE = TILE_ENTITY_TYPES.register(MekanismBlocks.THERMAL_EVAPORATION_VALVE, TileEntityThermalEvaporationValve::new);
+    public static final TileEntityTypeRegistryObject<TileEntityRadioactiveWasteBarrel> RADIOACTIVE_WASTE_BARREL = TILE_ENTITY_TYPES.register(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, TileEntityRadioactiveWasteBarrel::new);
 
     //Transmitters
     public static final TileEntityTypeRegistryObject<TileEntityDiversionTransporter> DIVERSION_TRANSPORTER = TILE_ENTITY_TYPES.register(MekanismBlocks.DIVERSION_TRANSPORTER, TileEntityDiversionTransporter::new);

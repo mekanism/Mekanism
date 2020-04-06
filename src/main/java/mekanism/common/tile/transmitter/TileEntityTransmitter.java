@@ -287,7 +287,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
             }
             if (upgraded > 0) {
                 //Invalidate the network so that it properly has new references to everything
-                transmitterNetwork.invalidate();
+                transmitterNetwork.invalidate(null);
                 if (!player.isCreative()) {
                     stack.shrink(1);
                     if (stack.getCount() == 0) {

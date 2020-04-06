@@ -25,7 +25,7 @@ public class RateLimitMultiTankGasHandler extends ItemStackMekanismGasHandler {
     public static RateLimitMultiTankGasHandler create(@NonNull Collection<GasTankSpec> gasTanks) {
         List<Function<IMekanismGasHandler, IChemicalTank<Gas, GasStack>>> tankProviders = new ArrayList<>();
         for (GasTankSpec spec : gasTanks) {
-            tankProviders.add(handler -> new RateLimitGasTank(spec.rate, spec.capacity, spec.canExtract, spec.canInsert, spec.isValid, handler));
+            tankProviders.add(handler -> new RateLimitGasTank(spec.rate, spec.capacity, spec.canExtract, spec.canInsert, spec.isValid, null, handler));
         }
         return new RateLimitMultiTankGasHandler(tankProviders);
     }

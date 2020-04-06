@@ -196,6 +196,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.THERMAL_EVAPORATION_BLOCK, "Thermal Evaporation Block");
         add(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, "Thermal Evaporation Controller");
         add(MekanismBlocks.THERMAL_EVAPORATION_VALVE, "Thermal Evaporation Valve");
+        add(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, "Radioactive Waste Barrel");
         //Bounding block (I don't think these lang keys actually will ever be used, but set them just in case)
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         add(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, "Advanced Bounding Block");
@@ -888,6 +889,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_ISOTOPIC_CENTRIFUGE, "A machine with one single purpose: to spin its contents really, REALLY fast.");
         add(MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER, "A highly-advanced block capable of transmitting any practical resource across long distances and dimensions.");
         add(MekanismLang.DESCRIPTION_NUTRITIONAL_LIQUIFIER, "A machine that is capable of processing any foods into non-dangerous, easily-digestible Nutritional Paste.");
+        add(MekanismLang.DESCRIPTION_RADIOACTIVE_WASTE_BARREL, "A barrel that can be used to 'safety' store radioactive waste. WARNING: breaking this barrel will release its contents into the atmosphere.");
         add(MekanismLang.DESCRIPTION_ENERGY_CUBE, "An advanced device for storing and distributing energy.");
         add(MekanismLang.DESCRIPTION_GAS_TANK, "A portable tank that lets you carry gas wherever you please.");
         add(MekanismLang.DESCRIPTION_DIVERSION, "- Controllable by redstone");

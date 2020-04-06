@@ -40,6 +40,7 @@ public class MekanismBlockLootTables extends BaseBlockLootTables {
               MekanismBlocks.TELEPORTER_FRAME,
               MekanismBlocks.THERMAL_EVAPORATION_BLOCK,
               MekanismBlocks.THERMAL_EVAPORATION_VALVE,
+              MekanismBlocks.RADIOACTIVE_WASTE_BARREL,
               MekanismBlocks.BASIC_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER,
               //Transmitters
               MekanismBlocks.RESTRICTIVE_TRANSPORTER,
@@ -90,6 +91,7 @@ public class MekanismBlockLootTables extends BaseBlockLootTables {
               MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
               MekanismBlocks.MODIFICATION_STATION,
               MekanismBlocks.ISOTOPIC_CENTRIFUGE,
+              MekanismBlocks.NUTRITIONAL_LIQUIFIER,
               //Tiered things
               MekanismBlocks.BASIC_INDUCTION_CELL, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_INDUCTION_CELL,
               MekanismBlocks.BASIC_BIN, MekanismBlocks.ADVANCED_BIN, MekanismBlocks.ELITE_BIN, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.CREATIVE_BIN,

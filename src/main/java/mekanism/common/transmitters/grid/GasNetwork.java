@@ -21,8 +21,10 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.base.target.GasTransmitterSaveTarget;
@@ -161,8 +163,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    protected void updateSaveShares() {
-        super.updateSaveShares();
+    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+        super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
             GasStack gasType = gasTank.getStack();
@@ -174,10 +176,26 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);
             }
-            EmitUtils.sendToAcceptors(saveTargets, size, gasType.getAmount(), gasType);
+            int sent = EmitUtils.sendToAcceptors(saveTargets, size, gasType.getAmount(), gasType);
+            if (sent < gasType.getAmount() && triggerTransmitter != null) {
+                disperse(triggerTransmitter, new GasStack(gasType.getType(), gasType.getAmount() - sent));
+            }
             for (GasTransmitterSaveTarget saveTarget : saveTargets) {
                 saveTarget.saveShare(side);
             }
+        }
+    }
+
+    @Override
+    protected void onLastTransmitterRemoved(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+        disperse(triggerTransmitter, gasTank.getStack());
+    }
+
+    private void disperse(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter, GasStack gasType) {
+        if (gasType.has(GasAttributes.Radiation.class)) {
+            // Handle radiation leakage
+            double radioactivity = gasType.get(GasAttributes.Radiation.class).getRadioactivity();
+            Mekanism.radiationManager.radiate(triggerTransmitter.coord(), gasType.getAmount() * radioactivity);
         }
     }
 

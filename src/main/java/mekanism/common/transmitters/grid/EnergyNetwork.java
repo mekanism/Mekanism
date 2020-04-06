@@ -1,8 +1,5 @@
 package mekanism.common.transmitters.grid;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -11,6 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
@@ -140,8 +140,8 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     }
 
     @Override
-    protected void updateSaveShares() {
-        super.updateSaveShares();
+    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+        super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
             //Just pretend we are always accessing it from the north

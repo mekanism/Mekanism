@@ -1,8 +1,5 @@
 package mekanism.common.transmitters.grid;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -11,6 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -151,8 +151,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Override
-    protected void updateSaveShares() {
-        super.updateSaveShares();
+    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+        super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
             FluidStack fluidType = fluidTank.getFluid();
@@ -236,7 +236,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public ITextComponent getNeededInfo() {
-        return MekanismLang.FLUID_NETWORK_NEEDED.translate((float) fluidTank.getNeeded() / 1_000F);
+        return MekanismLang.FLUID_NETWORK_NEEDED.translate(fluidTank.getNeeded() / 1_000F);
     }
 
     @Override

@@ -111,6 +111,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue voidInvalidGases;
     public final CachedIntValue digitalMinerMaxRadius;
     public final CachedIntValue digitalMinerTicksPerMine;
+    public final CachedIntValue radioactiveWasteBarrelMaxGas;
     public CachedEnumValue<EnergyType> energyUnit;
     public CachedEnumValue<TempType> tempUnit;
 
@@ -304,6 +305,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("digitalMinerMaxRadius", 32, 1, Integer.MAX_VALUE));
         digitalMinerTicksPerMine = CachedIntValue.wrap(this, builder.comment("Number of ticks required to mine a single block with a Digital Miner (without any upgrades).")
               .defineInRange("digitalMinerTicksPerMine", 80, 1, Integer.MAX_VALUE));
+        radioactiveWasteBarrelMaxGas = CachedIntValue.wrap(this, builder.comment("Amount of gas (mB) that can be stored in a Radioactive Waste Barrel.")
+              .defineInRange("radioactiveWasteBarrelMaxGas", 128_000, 1, Integer.MAX_VALUE));
         energyUnit = CachedEnumValue.wrap(this, builder.comment("Displayed energy type in Mekanism GUIs.")
               .defineEnum("energyType", EnergyType.FE));
         tempUnit = CachedEnumValue.wrap(this, builder.comment("Displayed temperature unit in Mekanism GUIs.")

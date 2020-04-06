@@ -1,8 +1,5 @@
 package mekanism.api.transmitters;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;
@@ -10,6 +7,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.Range3D;
 import mekanism.api.text.IHasTextComponent;
@@ -144,10 +144,16 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public abstract void clampBuffer();
 
-    protected void forceScaleUpdate() {
-    }
+    protected void forceScaleUpdate() {}
 
-    public void invalidate() {
+    protected void onLastTransmitterRemoved(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {}
+
+    public void invalidate(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+        if (transmitters.size() == 1 && triggerTransmitter != null) {
+            //We're destroying the last transmitter in the network
+            onLastTransmitterRemoved(triggerTransmitter);
+        }
+
         //Remove invalid transmitters first for share calculations
         transmitters.removeIf(transmitter -> !transmitter.isValid());
 
@@ -155,7 +161,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         clampBuffer();
 
         //Update all shares
-        updateSaveShares();
+        updateSaveShares(triggerTransmitter);
 
         //Now invalidate the transmitters
         for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
@@ -310,12 +316,12 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         if (!isRemote()) {
             if (updateSaveShares) {
                 //Update the save shares
-                updateSaveShares();
+                updateSaveShares(null);
             }
         }
     }
 
-    protected void updateSaveShares() {
+    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
         updateSaveShares = false;
     }
 

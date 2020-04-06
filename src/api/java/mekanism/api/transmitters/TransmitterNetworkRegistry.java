@@ -1,13 +1,15 @@
 package mekanism.api.transmitters;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import net.minecraft.util.Direction;
@@ -16,8 +18,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class TransmitterNetworkRegistry {
 
@@ -125,7 +125,7 @@ public class TransmitterNetworkRegistry {
             if (!(invalid.isOrphan() && invalid.isValid())) {
                 DynamicNetwork<?, ?, ?> n = invalid.getTransmitterNetwork();
                 if (n != null) {
-                    n.invalidate();
+                    n.invalidate(invalid);
                 }
             }
         }

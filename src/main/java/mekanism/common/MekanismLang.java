@@ -562,6 +562,7 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_ISOTOPIC_CENTRIFUGE("description", "isotopic_centrifuge"),
     DESCRIPTION_QUANTUM_ENTANGLOPORTER("description", "quantum_entangloporter"),
     DESCRIPTION_NUTRITIONAL_LIQUIFIER("description", "nutritional_liquifier"),
+    DESCRIPTION_RADIOACTIVE_WASTE_BARREL("description", "radioactive_waste_barrel"),
     DESCRIPTION_ENERGY_CUBE("description", "energy_cube"),
     DESCRIPTION_GAS_TANK("description", "gas_tank"),
     DESCRIPTION_DIVERSION("description", "diversion"),
