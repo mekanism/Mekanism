@@ -93,7 +93,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     /**
-     * Whether this chemical has an attribute of a certain type.
+     * Whether this stack's chemical has an attribute of a certain type.
      * @param type attribute type to check
      * @return if this chemical has the attribute
      */
@@ -111,11 +111,19 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     /**
-     * Gets all attribute instances associated with this chemical type.
+     * Gets all attribute instances associated with this chemical's type.
      * @return collection of attribute instances
      */
     public Collection<ChemicalAttribute> getAttributes() {
         return getType().getAttributes();
+    }
+
+    /**
+     * Gets all attribute types associated with this chemical's type.
+     * @return collection of attribute types
+     */
+    public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
+        return getType().getAttributeTypes();
     }
 
     @Override

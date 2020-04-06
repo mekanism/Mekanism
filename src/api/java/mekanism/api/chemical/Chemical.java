@@ -68,6 +68,14 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
         return attributeMap.values();
     }
 
+    /**
+     * Gets all attribute types associated with this chemical type.
+     * @return collection of attribute types
+     */
+    public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
+        return attributeMap.keySet();
+    }
+
     public abstract CompoundNBT write(CompoundNBT nbtTags);
 
     protected abstract String getDefaultTranslationKey();

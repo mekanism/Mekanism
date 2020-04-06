@@ -10,6 +10,7 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -81,7 +82,13 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
 
     protected BasicInfusionTank(int capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
           Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
-        super(capacity, canExtract, canInsert, validator);
+        super(capacity, canExtract, canInsert, validator, null);
+        this.infusionHandler = infusionHandler;
+    }
+
+    protected BasicInfusionTank(int capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
+        Predicate<@NonNull InfuseType> validator, ChemicalAttributeValidator attributeValidator, @Nullable IMekanismInfusionHandler infusionHandler) {
+        super(capacity, canExtract, canInsert, validator, attributeValidator);
         this.infusionHandler = infusionHandler;
     }
 
