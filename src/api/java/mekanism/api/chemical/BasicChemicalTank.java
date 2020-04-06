@@ -10,6 +10,7 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -140,7 +141,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public boolean isValid(STACK stack) {
-        return validator.test(stack.getType());
+        return ChemicalAttributeValidator.process(stack, getAttributeValidator()) && validator.test(stack.getType());
     }
 
     /**

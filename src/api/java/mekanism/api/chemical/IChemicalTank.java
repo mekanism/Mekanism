@@ -4,6 +4,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -311,6 +312,14 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      */
     default boolean isTypeEqual(CHEMICAL other) {
         return getStack().isTypeEqual(other);
+    }
+
+    /**
+     * Gets the attribute validator used by this tank. By default, this tank will not allow any chemicals that require validation.
+     * @return the tank's attribute validator
+     */
+    default ChemicalAttributeValidator getAttributeValidator() {
+        return ChemicalAttributeValidator.DEFAULT;
     }
 
     @Override

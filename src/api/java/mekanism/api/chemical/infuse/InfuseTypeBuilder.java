@@ -3,22 +3,22 @@ package mekanism.api.chemical.infuse;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.ChemicalAttributes;
+import mekanism.api.chemical.ChemicalBuilder;
 import net.minecraft.util.ResourceLocation;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class InfuseTypeAttributes extends ChemicalAttributes<InfuseType, InfuseTypeAttributes> {
+public class InfuseTypeBuilder extends ChemicalBuilder<InfuseType, InfuseTypeBuilder> {
 
-    protected InfuseTypeAttributes(ResourceLocation texture) {
+    protected InfuseTypeBuilder(ResourceLocation texture) {
         super(texture);
     }
 
-    public static InfuseTypeAttributes builder() {
+    public static InfuseTypeBuilder builder() {
         return builder(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "infuse_type/base"));
     }
 
-    public static InfuseTypeAttributes builder(ResourceLocation texture) {
-        return new InfuseTypeAttributes(texture);
+    public static InfuseTypeBuilder builder(ResourceLocation texture) {
+        return new InfuseTypeBuilder(texture);
     }
 }

@@ -1,8 +1,12 @@
 package mekanism.api.chemical;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.ParametersAreNonnullByDefault;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
@@ -16,14 +20,17 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 @MethodsReturnNonnullByDefault
 public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistryEntry<TYPE> implements IHasTextComponent, IHasTranslationKey {
 
+    private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
+
     private final ResourceLocation iconLocation;
     private final int tint;
 
     private String translationKey;
 
-    protected Chemical(ChemicalAttributes<TYPE, ?> attributes) {
-        this.iconLocation = attributes.getTexture();
-        this.tint = attributes.getColor();
+    protected Chemical(ChemicalBuilder<TYPE, ?> builder) {
+        this.attributeMap = builder.getAttributeMap();
+        this.iconLocation = builder.getTexture();
+        this.tint = builder.getColor();
     }
 
     @Override
@@ -32,6 +39,33 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
             translationKey = getDefaultTranslationKey();
         }
         return translationKey;
+    }
+
+    /**
+     * Whether this chemical has an attribute of a certain type.
+     * @param type attribute type to check
+     * @return if this chemical has the attribute
+     */
+    public boolean has(Class<? extends ChemicalAttribute> type) {
+        return attributeMap.containsKey(type);
+    }
+
+    /**
+     * Gets the attribute instance of a certain type.
+     * @param type attribute type to get
+     * @return attribute instance
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends ChemicalAttribute> T get(Class<T> type) {
+        return (T) attributeMap.get(type);
+    }
+
+    /**
+     * Gets all attribute instances associated with this chemical type.
+     * @return collection of attribute instances
+     */
+    public Collection<ChemicalAttribute> getAttributes() {
+        return attributeMap.values();
     }
 
     public abstract CompoundNBT write(CompoundNBT nbtTags);
