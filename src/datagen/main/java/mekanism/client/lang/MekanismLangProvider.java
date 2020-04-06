@@ -68,6 +68,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.JETPACK, "Jetpack");
         add(MekanismItems.ARMORED_JETPACK, "Armored Jetpack");
         add(MekanismItems.GEIGER_COUNTER, "Geiger Counter");
+        add(MekanismItems.CANTEEN, "Canteen");
         add(MekanismItems.MEKA_TOOL, "Meka-Tool");
         add(MekanismItems.HAZMAT_MASK, "Hazmat Mask");
         add(MekanismItems.HAZMAT_GOWN, "Hazmat Gown");
@@ -933,6 +934,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit");
         add(MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit");
         add(MekanismLang.MODULE_VISION_ENHANCEMENT_UNIT, "Vision Enhancement Unit");
+        add(MekanismLang.MODULE_SOLAR_RECHARGING_UNIT, "Solar Recharging Unit");
         add(MekanismLang.MODULE_NUTRITIONAL_INJECTION_UNIT, "Nutritional Injection Unit");
         add(MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit");
         add(MekanismLang.MODULE_JETPACK_UNIT, "Jetpack Unit");

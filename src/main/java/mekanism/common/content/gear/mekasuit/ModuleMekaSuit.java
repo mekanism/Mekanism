@@ -1,9 +1,10 @@
 package mekanism.common.content.gear.mekasuit;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -15,6 +16,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.base.target.EnergySaveTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.Module;
@@ -24,14 +26,17 @@ import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.integration.EnergyCompatUtils;
+import mekanism.common.item.gear.ItemCanteen;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
@@ -146,20 +151,18 @@ public abstract class ModuleMekaSuit extends Module {
         }
 
         private void chargeSuit(PlayerEntity player) {
+            Set<EnergySaveTarget> saveTargets = new ObjectOpenHashSet<>();
             FloatingLong total = FloatingLong.ZERO;
-            List<IEnergyContainer> tracking = new ArrayList<>();
             for (ItemStack stack : player.inventory.armorInventory) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                if (energyContainer != null) {
-                    total = total.plusEqual(energyContainer.getEnergy());
-                    tracking.add(energyContainer);
-                }
+                EnergySaveTarget saveTarget = new EnergySaveTarget();
+                saveTarget.addHandler(Direction.NORTH, energyContainer);
+                saveTargets.add(saveTarget);
+                total = total.plusEqual(energyContainer.getEnergy());
             }
-            if (!tracking.isEmpty()) {
-                FloatingLong divide = total.divide(tracking.size());
-                for (IEnergyContainer energyContainer : tracking) {
-                    energyContainer.setEnergy(divide);
-                }
+            EmitUtils.sendToAcceptors(saveTargets, saveTargets.size(), total.copy());
+            for (EnergySaveTarget saveTarget : saveTargets) {
+                saveTarget.save(Direction.NORTH);
             }
         }
 
@@ -301,18 +304,17 @@ public abstract class ModuleMekaSuit extends Module {
     }
 
     public static class ModuleNutritionalInjectionUnit extends ModuleMekaSuit {
-        private static final float SATURATION = 0.8F;
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
             FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageNutritionalInjection.get();
             if (!player.isCreative() && player.canEat(false) && getContainerEnergy().greaterOrEqual(usage)) {
                 ItemMekaSuitArmor item = (ItemMekaSuitArmor) getContainer().getItem();
-                int toFeed = Math.min(1, item.getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / 50);
+                int toFeed = Math.min(1, item.getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / ItemCanteen.MB_PER_FOOD);
                 if (toFeed > 0) {
                     useEnergy(usage.multiply(toFeed));
-                    item.useGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get(), toFeed * 50);
-                    player.getFoodStats().addStats(1, SATURATION);
+                    item.useGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get(), toFeed * ItemCanteen.MB_PER_FOOD);
+                    player.getFoodStats().addStats(1, ItemCanteen.SATURATION);
                 }
             }
         }
