@@ -6,13 +6,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.providers.IFluidProvider;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
+import net.minecraft.item.BucketItem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @ParametersAreNonnullByDefault
-public class FluidRegistryObject<STILL extends Fluid, FLOWING extends Fluid, BLOCK extends FlowingFluidBlock, BUCKET extends Item> implements IFluidProvider {
+public class FluidRegistryObject<STILL extends Fluid, FLOWING extends Fluid, BLOCK extends FlowingFluidBlock, BUCKET extends BucketItem> implements IFluidProvider {
 
     private RegistryObject<STILL> stillRO;
     private RegistryObject<FLOWING> flowingRO;

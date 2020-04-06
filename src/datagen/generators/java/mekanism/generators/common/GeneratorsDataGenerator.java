@@ -1,5 +1,7 @@
 package mekanism.generators.common;
 
+import mekanism.generators.client.GeneratorsBlockModelProvider;
+import mekanism.generators.client.GeneratorsItemModelProvider;
 import mekanism.generators.client.GeneratorsLangProvider;
 import mekanism.generators.client.GeneratorsSoundProvider;
 import mekanism.generators.common.loot.GeneratorsLootProvider;
@@ -21,6 +23,8 @@ public class GeneratorsDataGenerator {
             //Client side data generators
             gen.addProvider(new GeneratorsLangProvider(gen));
             gen.addProvider(new GeneratorsSoundProvider(gen, existingFileHelper));
+            gen.addProvider(new GeneratorsBlockModelProvider(gen, existingFileHelper));
+            gen.addProvider(new GeneratorsItemModelProvider(gen, existingFileHelper));
         }
         if (event.includeServer()) {
             //Server side data generators

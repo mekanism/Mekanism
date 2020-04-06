@@ -14,7 +14,6 @@ import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
-import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.ScreenManager.IScreenFactory;
@@ -31,12 +30,9 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.item.BucketItem;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
-import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -122,18 +118,16 @@ public class ClientRegistrationUtil {
         }
     }
 
-    @SafeVarargs
-    public static void setRenderLayer(RenderType type, FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem>... fluidROs) {
-        for (FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO : fluidROs) {
+    public static void setRenderLayer(RenderType type, FluidRegistryObject<?, ?, ?, ?>... fluidROs) {
+        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidROs) {
             RenderTypeLookup.setRenderLayer(fluidRO.getStillFluid(), type);
             RenderTypeLookup.setRenderLayer(fluidRO.getFlowingFluid(), type);
             //TODO: Do we need to set the block as well?
         }
     }
 
-    @SafeVarargs
-    public static synchronized void setRenderLayer(Predicate<RenderType> predicate, FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem>... fluidROs) {
-        for (FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO : fluidROs) {
+    public static synchronized void setRenderLayer(Predicate<RenderType> predicate, FluidRegistryObject<?, ?, ?, ?>... fluidROs) {
+        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidROs) {
             RenderTypeLookup.setRenderLayer(fluidRO.getStillFluid(), predicate);
             RenderTypeLookup.setRenderLayer(fluidRO.getFlowingFluid(), predicate);
             //TODO: Do we need to set the block as well?

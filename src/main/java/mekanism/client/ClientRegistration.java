@@ -115,6 +115,7 @@ import mekanism.client.render.transmitter.RenderPressurizedTube;
 import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.Mekanism;
+import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -220,9 +221,9 @@ public class ClientRegistration {
               MekanismBlocks.DIVERSION_TRANSPORTER, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
         //Fluids (translucent)
-        ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), MekanismFluids.HYDROGEN, MekanismFluids.OXYGEN, MekanismFluids.CHLORINE,
-              MekanismFluids.SULFUR_DIOXIDE, MekanismFluids.SULFUR_TRIOXIDE, MekanismFluids.SULFURIC_ACID, MekanismFluids.HYDROGEN_CHLORIDE, MekanismFluids.ETHENE,
-              MekanismFluids.SODIUM, MekanismFluids.BRINE, MekanismFluids.LITHIUM, MekanismFluids.STEAM, MekanismFluids.HEAVY_WATER);
+        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : MekanismFluids.FLUIDS.getAllFluids()) {
+            ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
+        }
     }
 
     @SubscribeEvent
