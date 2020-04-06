@@ -10,6 +10,7 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -107,7 +108,13 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
 
     protected BasicGasTank(int capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert,
           Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
-        super(capacity, canExtract, canInsert, validator);
+        super(capacity, canExtract, canInsert, validator, null);
+        this.gasHandler = gasHandler;
+    }
+
+    protected BasicGasTank(int capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator,
+        @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IMekanismGasHandler gasHandler) {
+        super(capacity, canExtract, canInsert, validator, attributeValidator);
         this.gasHandler = gasHandler;
     }
 

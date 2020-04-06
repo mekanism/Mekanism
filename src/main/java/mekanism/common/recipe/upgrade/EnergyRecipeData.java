@@ -106,11 +106,11 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
         boolean hasData = false;
         for (IEnergyContainer energyContainer : this.energyContainers) {
             if (!energyContainer.isEmpty()) {
-                if (!outputHandler.insertEnergy(energyContainer.getEnergy(), Action.EXECUTE).isZero()) {
-                    //If we have a remainder something failed so bail
-                    return false;
-                }
                 hasData = true;
+                if (!outputHandler.insertEnergy(energyContainer.getEnergy(), Action.EXECUTE).isZero()) {
+                    //If we have a remainder, stop trying to insert as our upgraded item's buffer is just full
+                    break;
+                }
             }
         }
         if (hasData) {

@@ -10,6 +10,7 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -21,6 +22,8 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     private final Predicate<@NonNull CHEMICAL> validator;
     protected final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract;
     protected final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert;
+    @Nullable
+    private final ChemicalAttributeValidator attributeValidator;
     private final int capacity;
     /**
      * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(STACK)} should be used instead.
@@ -28,11 +31,12 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     protected STACK stored;
 
     protected BasicChemicalTank(int capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull CHEMICAL> validator) {
+        Predicate<@NonNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator) {
         this.capacity = capacity;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
+        this.attributeValidator = attributeValidator;
         stored = getEmptyStack();
     }
 
@@ -140,7 +144,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public boolean isValid(STACK stack) {
-        return validator.test(stack.getType());
+        return ChemicalAttributeValidator.process(stack, getAttributeValidator()) && validator.test(stack.getType());
     }
 
     /**
@@ -247,6 +251,11 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     @Override
     public int getCapacity() {
         return capacity;
+    }
+
+    @Override
+    public ChemicalAttributeValidator getAttributeValidator() {
+        return attributeValidator != null ? attributeValidator : IChemicalTank.super.getAttributeValidator();
     }
 
     /**

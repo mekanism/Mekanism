@@ -25,8 +25,8 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
 
     private final ReverseTagWrapper<InfuseType> reverseTags = new ReverseTagWrapper<>(this, InfuseTypeTags::getGeneration, InfuseTypeTags::getCollection);
 
-    public InfuseType(InfuseTypeAttributes attributes) {
-        super(attributes);
+    public InfuseType(InfuseTypeBuilder builder) {
+        super(builder);
     }
 
     public static InfuseType readFromNBT(@Nullable CompoundNBT nbtTags) {

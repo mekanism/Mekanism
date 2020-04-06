@@ -1,7 +1,10 @@
 package mekanism.api.chemical;
 
+import java.util.Collection;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
@@ -88,6 +91,41 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
 
     public void shrink(int amount) {
         setAmount(this.amount - amount);
+    }
+
+    /**
+     * Whether this stack's chemical has an attribute of a certain type.
+     * @param type attribute type to check
+     * @return if this chemical has the attribute
+     */
+    public boolean has(Class<? extends ChemicalAttribute> type) {
+        return getType().has(type);
+    }
+
+    /**
+     * Gets the attribute instance of a certain type, or null if it doesn't exist.
+     * @param type attribute type to get
+     * @return attribute instance
+     */
+    @Nullable
+    public <T extends ChemicalAttribute> T get(Class<T> type) {
+        return getType().get(type);
+    }
+
+    /**
+     * Gets all attribute instances associated with this chemical's type.
+     * @return collection of attribute instances
+     */
+    public Collection<ChemicalAttribute> getAttributes() {
+        return getType().getAttributes();
+    }
+
+    /**
+     * Gets all attribute types associated with this chemical's type.
+     * @return collection of attribute types
+     */
+    public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
+        return getType().getAttributeTypes();
     }
 
     @Override

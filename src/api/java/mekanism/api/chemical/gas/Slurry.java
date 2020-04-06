@@ -16,7 +16,7 @@ public class Slurry extends Gas {
     private Tag<Item> oreTag;
 
     public Slurry(boolean isClean, int tint, Tag<Item> oreTag) {
-        super(GasAttributes.builder(isClean ? CLEAN_LOCATION : DIRTY_LOCATION).hidden().color(tint));
+        super(GasBuilder.builder(isClean ? CLEAN_LOCATION : DIRTY_LOCATION).hidden().color(tint));
         this.oreTag = oreTag;
     }
 

@@ -27,7 +27,7 @@ public class MultiblockGasTank<MULTIBLOCK extends TileEntityMultiblock<?>> exten
 
     protected MultiblockGasTank(MULTIBLOCK multiblock, IntSupplier capacity, Predicate<@NonNull Gas> validator) {
         super(capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.structure != null,
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.structure != null, validator, null);
+              (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.structure != null, validator, null, null);
         this.multiblock = multiblock;
     }
 

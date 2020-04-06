@@ -28,9 +28,9 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
 
     private boolean hidden;
 
-    public Gas(GasAttributes attributes) {
-        super(attributes);
-        hidden = attributes.isHidden();
+    public Gas(GasBuilder builder) {
+        super(builder);
+        hidden = builder.isHidden();
     }
 
     /**

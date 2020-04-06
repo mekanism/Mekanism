@@ -55,7 +55,7 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
 
     private GaugeDropperContentsHandler() {
         fluidTank = new RateLimitFluidTank(TRANSFER_RATE, () -> CAPACITY, BasicFluidTank.alwaysTrueBi, this::canInsert, BasicFluidTank.alwaysTrue, this);
-        gasTank = new RateLimitGasTank(TRANSFER_RATE, () -> CAPACITY, BasicGasTank.alwaysTrueBi, this::canInsert, BasicGasTank.alwaysTrue, this);
+        gasTank = new RateLimitGasTank(TRANSFER_RATE, () -> CAPACITY, BasicGasTank.alwaysTrueBi, this::canInsert, BasicGasTank.alwaysTrue, null, this);
         infusionTank = new RateLimitInfusionTank(TRANSFER_RATE, () -> CAPACITY, BasicInfusionTank.alwaysTrueBi, this::canInsert, BasicInfusionTank.alwaysTrue, this);
     }
 
