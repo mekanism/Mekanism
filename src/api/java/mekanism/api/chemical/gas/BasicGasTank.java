@@ -113,7 +113,7 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
     }
 
     protected BasicGasTank(int capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator,
-        ChemicalAttributeValidator attributeValidator, @Nullable IMekanismGasHandler gasHandler) {
+        @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IMekanismGasHandler gasHandler) {
         super(capacity, canExtract, canInsert, validator, attributeValidator);
         this.gasHandler = gasHandler;
     }

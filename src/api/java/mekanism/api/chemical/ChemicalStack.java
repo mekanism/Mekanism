@@ -2,6 +2,7 @@ package mekanism.api.chemical;
 
 import java.util.Collection;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.text.IHasTextComponent;
@@ -102,10 +103,11 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     /**
-     * Gets the attribute instance of a certain type.
+     * Gets the attribute instance of a certain type, or null if it doesn't exist.
      * @param type attribute type to get
      * @return attribute instance
      */
+    @Nullable
     public <T extends ChemicalAttribute> T get(Class<T> type) {
         return getType().get(type);
     }

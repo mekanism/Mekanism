@@ -3,6 +3,7 @@ package mekanism.api.chemical;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mcp.MethodsReturnNonnullByDefault;
@@ -51,10 +52,11 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
     }
 
     /**
-     * Gets the attribute instance of a certain type.
+     * Gets the attribute instance of a certain type, or null if it doesn't exist.
      * @param type attribute type to get
      * @return attribute instance
      */
+    @Nullable
     @SuppressWarnings("unchecked")
     public <T extends ChemicalAttribute> T get(Class<T> type) {
         return (T) attributeMap.get(type);

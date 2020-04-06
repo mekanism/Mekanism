@@ -13,6 +13,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -26,7 +27,7 @@ import mekanism.common.tier.GasTankTier;
 public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
     public static RateLimitGasHandler create(int rate, IntSupplier capacity) {
-        return create(rate, capacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue);
+        return create(rate, capacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, null);
     }
 
     public static RateLimitGasHandler create(GasTankTier tier) {
@@ -36,6 +37,11 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
     public static RateLimitGasHandler create(int rate, IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid) {
+        return create(rate, capacity, canExtract, canInsert, isValid, null);
+    }
+
+    public static RateLimitGasHandler create(int rate, IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+          BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid, @Nullable ChemicalAttributeValidator attributeValidator) {
         if (rate <= 0) {
             throw new IllegalArgumentException("Rate must be greater than zero");
         }
@@ -43,7 +49,7 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(isValid, "Gas validity check cannot be null");
-        return new RateLimitGasHandler(handler -> new RateLimitGasTank(rate, capacity, canExtract, canInsert, isValid, handler));
+        return new RateLimitGasHandler(handler -> new RateLimitGasTank(rate, capacity, canExtract, canInsert, isValid, attributeValidator, handler));
     }
 
     private IChemicalTank<Gas, GasStack> tank;
@@ -62,8 +68,9 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         private final int rate;
 
         public RateLimitGasTank(int rate, IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid, IMekanismGasHandler gasHandler) {
-            super(capacity, canExtract, canInsert, isValid, gasHandler);
+              BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid,
+              @Nullable ChemicalAttributeValidator attributeValidator, IMekanismGasHandler gasHandler) {
+            super(capacity, canExtract, canInsert, isValid, attributeValidator, gasHandler);
             this.rate = rate;
         }
 
@@ -80,7 +87,7 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         private final boolean isCreative;
 
         private GasTankRateLimitGasTank(GasTankTier tier, IMekanismGasHandler gasHandler) {
-            super(tier::getStorage, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, gasHandler);
+            super(tier::getStorage, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, null, gasHandler);
             isCreative = tier == GasTankTier.CREATIVE;
             rate = tier::getOutput;
         }

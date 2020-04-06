@@ -6,7 +6,6 @@ import mekanism.api.Action;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -111,10 +110,6 @@ public class PacketDropperUse {
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleChemicalTank(PlayerEntity player, ItemStack stack,
           IChemicalTank<CHEMICAL, STACK> chemicalTank, DropperAction action) {
-        if (!ChemicalAttributeValidator.process(chemicalTank.getStack(), ChemicalAttributeValidator.DEFAULT)) {
-            //If the default attribute validator fails, it means the chemical has an attribute requiring validation; we don't handle those
-            return;
-        }
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             chemicalTank.setEmpty();
