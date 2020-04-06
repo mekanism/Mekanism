@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -60,7 +61,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), TubeTier.class);
         gasHandlers = new EnumMap<>(Direction.class);
-        buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, this);
+        buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         tanks = Collections.singletonList(buffer);
     }
 

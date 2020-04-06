@@ -42,7 +42,7 @@ public final class GasUtils {
     public static ItemStack getFilledVariant(ItemStack toFill, int capacity, IGasProvider gasProvider) {
         //Manually handle this as capabilities are not necessarily loaded yet
         // (at least not on the first call to this, which is made via fillItemGroup)
-        BasicGasTank tank = BasicGasTank.create(capacity, null);
+        BasicGasTank tank = BasicGasTank.createDummy(capacity);
         tank.setStack(gasProvider.getGasStack(tank.getCapacity()));
         ItemDataUtils.setList(toFill, NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(Collections.singletonList(tank)));
         //The item is now filled return it for convenience
