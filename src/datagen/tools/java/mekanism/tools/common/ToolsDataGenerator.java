@@ -1,5 +1,6 @@
 package mekanism.tools.common;
 
+import mekanism.tools.client.ToolsItemModelProvider;
 import mekanism.tools.client.ToolsLangProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
@@ -18,6 +19,7 @@ public class ToolsDataGenerator {
         if (event.includeClient()) {
             //Client side data generators
             gen.addProvider(new ToolsLangProvider(gen));
+            gen.addProvider(new ToolsItemModelProvider(gen, existingFileHelper));
         }
         if (event.includeServer()) {
             //Server side data generators

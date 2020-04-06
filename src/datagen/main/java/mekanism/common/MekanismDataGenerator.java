@@ -1,6 +1,8 @@
 package mekanism.common;
 
 import mekanism.client.lang.MekanismLangProvider;
+import mekanism.client.model.MekanismBlockModelProvider;
+import mekanism.client.model.MekanismItemModelProvider;
 import mekanism.client.sound.MekanismSoundProvider;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.MekanismRecipeProvider;
@@ -23,6 +25,8 @@ public class MekanismDataGenerator {
             //Client side data generators
             gen.addProvider(new MekanismLangProvider(gen));
             gen.addProvider(new MekanismSoundProvider(gen, existingFileHelper));
+            gen.addProvider(new MekanismBlockModelProvider(gen, existingFileHelper));
+            gen.addProvider(new MekanismItemModelProvider(gen, existingFileHelper));
         }
         if (event.includeServer()) {
             //Server side data generators

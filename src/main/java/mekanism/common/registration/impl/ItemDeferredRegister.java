@@ -12,7 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
-    private List<IItemProvider> allItems = new ArrayList<>();
+    private final List<IItemProvider> allItems = new ArrayList<>();
 
     public ItemDeferredRegister(String modid) {
         super(modid, ForgeRegistries.ITEMS);

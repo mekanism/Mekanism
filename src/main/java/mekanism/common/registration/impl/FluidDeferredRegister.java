@@ -1,5 +1,7 @@
 package mekanism.common.registration.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
@@ -22,6 +24,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class FluidDeferredRegister {
 
     private static final ResourceLocation OVERLAY = new ResourceLocation("minecraft", "block/water_overlay");
+
+    private final List<FluidRegistryObject<?, ?, ?, ?>> allFluids = new ArrayList<>();
+
     private final String modid;
 
     private final DeferredRegister<Fluid> fluidRegister;
@@ -59,6 +64,7 @@ public class FluidDeferredRegister {
         //Note: The block properties used here is a copy of the ones for water
         fluidRegistryObject.updateBlock(blockRegister.register(name, () -> new FlowingFluidBlock(fluidRegistryObject::getStillFluid,
               Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops())));
+        allFluids.add(fluidRegistryObject);
         return fluidRegistryObject;
     }
 
@@ -66,5 +72,9 @@ public class FluidDeferredRegister {
         blockRegister.register(bus);
         fluidRegister.register(bus);
         itemRegister.register(bus);
+    }
+
+    public List<FluidRegistryObject<?, ?, ?, ?>> getAllFluids() {
+        return allFluids;
     }
 }
