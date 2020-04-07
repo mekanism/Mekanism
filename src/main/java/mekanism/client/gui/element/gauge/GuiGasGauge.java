@@ -59,7 +59,8 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>>
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
-        return tank.getStored() * (height - 2) / tank.getCapacity();
+        float scale = (float) tank.getStored() / (float) tank.getCapacity();
+        return Math.round(scale * (height - 2));
     }
 
     @Override
