@@ -68,6 +68,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.JETPACK, "Jetpack");
         add(MekanismItems.ARMORED_JETPACK, "Armored Jetpack");
         add(MekanismItems.GEIGER_COUNTER, "Geiger Counter");
+        add(MekanismItems.DOSIMETER, "Dosimeter");
         add(MekanismItems.CANTEEN, "Canteen");
         add(MekanismItems.MEKA_TOOL, "Meka-Tool");
         add(MekanismItems.HAZMAT_MASK, "Hazmat Mask");
@@ -407,6 +408,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COMMAND_TPOP_EMPTY, "No positions on stack");
         add(MekanismLang.COMMAND_RADIATION_ADD, "Added radiation at pos %s.");
         add(MekanismLang.COMMAND_RADIATION_GET, "Current radiation (sV/h): %s");
+        add(MekanismLang.COMMAND_RADIATION_CLEAR, "Cleared player radiation.");
         add(MekanismLang.COMMAND_RADIATION_REMOVE_ALL, "Removed all radiation sources.");
         //Tooltip stuff
         add(MekanismLang.MODE, "Mode: %s");
@@ -460,6 +462,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SET, "Set:");
         add(MekanismLang.TRUE, "True");
         add(MekanismLang.FALSE, "False");
+        add(MekanismLang.RADIATION_DOSE, "Radiation Dose: %s");
+        add(MekanismLang.RADIATION_EXPOSURE, "Radiation Exposure: %s");
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");
@@ -942,6 +946,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_JETPACK_UNIT, "Jetpack Unit");
         add(MekanismLang.MODULE_GRAVITATIONAL_MODULATING_UNIT, "Gravitational Modulating Unit");
         add(MekanismLang.MODULE_CHARGE_DISTRIBUTION_UNIT, "Charge Distribution Unit");
+        add(MekanismLang.MODULE_DOSIMETER_UNIT, "Dosimeter Unit");
         add(MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, "Locomotive Boosting Unit");
         add(MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit");
 
@@ -963,6 +968,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_JETPACK_UNIT, "Applies a hydrogen-fueled jetpack to the MekaSuit.");
         add(MekanismLang.DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT, "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");
         add(MekanismLang.DESCRIPTION_CHARGE_DISTRIBUTION_UNIT, "Evenly distributes charge throughout all worn MekaSuit armor.");
+        add(MekanismLang.DESCRIPTION_DOSIMETER_UNIT, "Displays the user's current radiation dose in the HUD.");
         add(MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, "Increases the user's sprinting speed (and jumping distance).");
         add(MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, "Allows the user to both step and jump higher.");
     }

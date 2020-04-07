@@ -15,6 +15,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleChargeDistributionUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleDosimeterUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleElectrolyticBreathingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropulsionUnit;
@@ -91,6 +92,9 @@ public class Modules {
         .setHandlesModeChange().setRendersHUD().setExclusive();
     public static final ModuleData<ModuleChargeDistributionUnit> CHARGE_DISTRIBUTION_UNIT = register("charge_distribution_unit",
         MekanismLang.MODULE_CHARGE_DISTRIBUTION_UNIT, MekanismLang.DESCRIPTION_CHARGE_DISTRIBUTION_UNIT, () -> new ModuleChargeDistributionUnit());
+    public static final ModuleData<ModuleDosimeterUnit> DOSIMETER_UNIT = register("dosimeter_unit",
+        MekanismLang.MODULE_DOSIMETER_UNIT, MekanismLang.DESCRIPTION_DOSIMETER_UNIT, () -> new ModuleDosimeterUnit())
+        .setRendersHUD();
 
     // Pants
     public static final ModuleData<ModuleLocomotiveBoostingUnit> LOCOMOTIVE_BOOSTING_UNIT = register("locomotive_boosting_unit",

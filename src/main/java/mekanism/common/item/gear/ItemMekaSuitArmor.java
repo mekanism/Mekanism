@@ -74,7 +74,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
             gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 10_000, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
             absorption = 0.15F;
         } else if (slot == EquipmentSlotType.CHEST) {
-            Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT);
+            Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT, Modules.DOSIMETER_UNIT);
             gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 24_000, gas -> gas == MekanismGases.HYDROGEN.get()));
             absorption = 0.4F;
         } else if (slot == EquipmentSlotType.LEGS) {
@@ -223,8 +223,11 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     }
 
     public float getDamageAbsorbed(ItemStack stack, DamageSource source, float amount) {
-        // don't handle magic or starving damage
-        if (source == DamageSource.MAGIC || source == DamageSource.STARVE) {
+        // don't handle magic as it's handled by inhalation purification
+        // don't handle starving as player should have nutritional injection
+        // don't handle falling as should be absorbed by boots in event handler
+        // don't handle out of world (ever)
+        if (source == DamageSource.MAGIC || source == DamageSource.STARVE || source == DamageSource.OUT_OF_WORLD || source == DamageSource.FALL) {
             return 0;
         }
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);

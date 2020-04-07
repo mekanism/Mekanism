@@ -88,7 +88,8 @@ public enum MekanismLang implements ILangEntry {
     COMMAND_TPOP("command", "tpop"),
     COMMAND_TPOP_EMPTY("command", "tpop.empty"),
     COMMAND_RADIATION_ADD("command", "radiation.add"),
-    COMMAND_RADIATION_GET("commmand", "radiation.get"),
+    COMMAND_RADIATION_GET("command", "radiation.get"),
+    COMMAND_RADIATION_CLEAR("command", "radiation.clear"),
     COMMAND_RADIATION_REMOVE_ALL("command", "radiation.remove_all"),
     //Tooltip stuff
     MODE("tooltip", "mode"),
@@ -142,6 +143,8 @@ public enum MekanismLang implements ILangEntry {
     SET("gui", "set"),
     TRUE("gui", "true"),
     FALSE("gui", "false"),
+    RADIATION_DOSE("gui", "radiation_dose"),
+    RADIATION_EXPOSURE("gui", "radiation_exposure"),
     //Laser Amplifier
     ENTITY_DETECTION("laser_amplifier", "entity_detection"),
     ENERGY_CONTENTS("laser_amplifier", "energy_contents"),
@@ -623,6 +626,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_JETPACK_UNIT("module", "jetpack_unit"),
     MODULE_GRAVITATIONAL_MODULATING_UNIT("module", "gravitational_modulating_unit"),
     MODULE_CHARGE_DISTRIBUTION_UNIT("module", "charge_distribution_unit"),
+    MODULE_DOSIMETER_UNIT("module", "dosimeter_unit"),
     MODULE_LOCOMOTIVE_BOOSTING_UNIT("module", "locomotive_boosting_unit"),
     MODULE_HYDRAULIC_PROPULSION_UNIT("module", "hydraulic_propulsion_unit"),
 
@@ -642,6 +646,7 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_JETPACK_UNIT("description", "jetpack_unit"),
     DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT("description", "gravitational_modulating_unit"),
     DESCRIPTION_CHARGE_DISTRIBUTION_UNIT("description", "charge_distribution_unit"),
+    DESCRIPTION_DOSIMETER_UNIT("description", "dosimeter_unit"),
     DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT("description", "locomotive_boosting_unit"),
     DESCRIPTION_HYDRAULIC_PROPULSION_UNIT("description", "hydraulic_propulsion_unit");
 

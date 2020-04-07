@@ -23,12 +23,15 @@ import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.Attributes.AttributeCustomSelectionBox;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.IModeItem;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
+import mekanism.common.radiation.RadiationManager;
+import mekanism.common.radiation.RadiationManager.RadiationScale;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -74,6 +77,7 @@ public class RenderTickHandler {
     public static int modeSwitchTimer = 0;
     public Random rand = new Random();
     public Minecraft minecraft = Minecraft.getInstance();
+    public static double prevRadiation = 0;
 
     public static void resetCachedOverlays() {
         cachedOverlays.clear();
@@ -219,6 +223,20 @@ public class RenderTickHandler {
                             }
                         }
                     }
+                }
+
+                if (!player.isCreative()) {
+                    player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+                        double radiation = c.getRadiation();
+                        double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;
+                        if (prevRadiation < severity) prevRadiation = Math.min(severity, prevRadiation + 0.01);
+                        if (prevRadiation > severity) prevRadiation = Math.max(severity, prevRadiation - 0.01);
+                        if (severity > RadiationManager.BASELINE) {
+                            int effect = (int)(prevRadiation * 255);
+                            int color = (0x701E1E << 8) + effect;
+                            MekanismRenderer.renderColorOverlay(0, 0, minecraft.getMainWindow().getScaledWidth(), minecraft.getMainWindow().getScaledHeight(), color);
+                        }
+                    });
                 }
             }
         }

@@ -60,7 +60,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init() {
         super.init();
-        MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
         MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
         MinecraftForge.EVENT_BUS.register(SoundHandler.class);

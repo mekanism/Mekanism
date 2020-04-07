@@ -62,14 +62,14 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        updateTag.put(NBTConstants.FLUID_STORED, gasTank.serializeNBT());
+        updateTag.put(NBTConstants.GAS_STORED, gasTank.serializeNBT());
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        NBTUtils.setCompoundIfPresent(tag, NBTConstants.FLUID_STORED, nbt -> gasTank.deserializeNBT(nbt));
+        NBTUtils.setCompoundIfPresent(tag, NBTConstants.GAS_STORED, nbt -> gasTank.deserializeNBT(nbt));
     }
 
     @Override

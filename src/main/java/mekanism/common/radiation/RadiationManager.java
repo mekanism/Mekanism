@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.api.text.EnumColor;
 import mekanism.client.sound.GeigerSound;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
@@ -23,7 +24,6 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.IAttribute;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -158,25 +158,6 @@ public class RadiationManager {
         return resistance;
     }
 
-    private void applyRadiation(double magnitude, PlayerEntity player) {
-        magnitude *= 1 - Math.min(1, getRadiationResistance(player));
-        magnitude /= 3600D; // convert to Sv/s
-        IAttributeInstance attribute = player.getAttributes().getAttributeInstance(ATTRIBUTE_RADIATION);
-        if (attribute == null) {
-            player.getAttributes().registerAttribute(ATTRIBUTE_RADIATION);
-            attribute = player.getAttributes().getAttributeInstance(ATTRIBUTE_RADIATION);
-        }
-        attribute.setBaseValue(attribute.getBaseValue() + magnitude);
-    }
-
-    private void decayRadiation(PlayerEntity player) {
-        IAttributeInstance attribute = player.getAttributes().getAttributeInstance(ATTRIBUTE_RADIATION);
-
-        if (attribute != null) {
-            attribute.setBaseValue(attribute.getBaseValue() * DECAY_RATE);
-        }
-    }
-
     public void setClientScale(RadiationScale scale) {
         clientRadiationScale = scale;
     }
@@ -208,21 +189,28 @@ public class RadiationManager {
         }
     }
 
-    public void tickServer(PlayerEntity player) {
+    public void tickServer(ServerPlayerEntity player) {
         // each tick, there is a 1/20 chance we will apply radiation to each player
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
         if (player.world.getRandom().nextInt(20) == 0) {
             double magnitude = getRadiationLevel(new Coord4D(player));
             if (magnitude > BASELINE && !player.isCreative()) {
-                applyRadiation(magnitude, player);
+                // apply radiation to the player
+                player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+                    double added = magnitude * (1 - Math.min(1, getRadiationResistance(player)));
+                    added /= 3600D; // convert to Sv/s
+                    c.radiate(added);
+                });
             }
-            decayRadiation(player);
+            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.decay());
             RadiationScale scale = RadiationScale.get(magnitude);
             if (playerExposureMap.get(player.getUniqueID()) != scale) {
                 playerExposureMap.put(player.getUniqueID(), scale);
-                Mekanism.packetHandler.sendTo(new PacketRadiationData(scale), (ServerPlayerEntity) player);
+                Mekanism.packetHandler.sendTo(PacketRadiationData.create(scale), player);
             }
         }
+        // update the radiation capability (decay, sync, effects)
+        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.update(player));
     }
 
     public void tickServer(World world) {
@@ -270,7 +258,16 @@ public class RadiationManager {
 
     public void resetClient() {
         clientRadiationScale = RadiationScale.NONE;
+        resetSounds();
+    }
+
+    public void resetSounds() {
         soundMap.clear();
+        System.out.println("RESET");
+    }
+
+    public void resetPlayer(UUID uuid) {
+        playerExposureMap.remove(uuid);
     }
 
     public static enum RadiationScale {
@@ -290,11 +287,44 @@ public class RadiationManager {
                 return LOW;
             } else if (magnitude < 0.1) { // 100 mSv/h
                 return MEDIUM;
-            } else if (magnitude < 100) { // 100 Sv/h
+            } else if (magnitude < 10) { // 100 Sv/h
                 return ELEVATED;
             } else {
                 return HIGH;
             }
+        }
+
+        /**
+         * For both Sv and Sv/h.
+         */
+        public static EnumColor getSeverityColor(double magnitude) {
+            if (magnitude <= BASELINE) {
+                return EnumColor.BRIGHT_GREEN;
+            } else if (magnitude < 0.00001) { // 10 uSv/h
+                return EnumColor.GRAY;
+            } else if (magnitude < 0.001) { // 1 mSv/h
+                return EnumColor.YELLOW;
+            } else if (magnitude < 0.1) { // 100 mSv/h
+                return EnumColor.ORANGE;
+            } else if (magnitude < 10) { // 100 Sv/h
+                return EnumColor.RED;
+            } else {
+                return EnumColor.DARK_RED;
+            }
+        }
+
+        private static final double LOG_BASELINE = Math.log10(BASELINE);
+        private static final double LOG_MAX = Math.log10(100); // 100 Sv
+        private static final double SCALE = LOG_MAX - LOG_BASELINE;
+
+        /**
+         * Gets the severity of a dose (between 0 and 1) from a provided dosage in Sv.
+         */
+        public static double getScaledDoseSeverity(double magnitude) {
+            if (magnitude < BASELINE) {
+                return 0;
+            }
+            return Math.min(1, Math.max(0, (-LOG_BASELINE + Math.log10(magnitude)) / SCALE));
         }
 
         public SoundEvent getSoundEvent() {

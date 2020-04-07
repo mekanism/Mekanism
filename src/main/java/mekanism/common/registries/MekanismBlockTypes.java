@@ -490,6 +490,7 @@ public class MekanismBlockTypes {
           .createBlock(MekanismLang.DESCRIPTION_STEEL_CASING)
           .with(new AttributeCustomResistance(9F))
           .build();
+    // Radioactive Waste Barrel
     public static final BlockTypeTile<TileEntityRadioactiveWasteBarrel> RADIOACTIVE_WASTE_BARREL = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.RADIOACTIVE_WASTE_BARREL, MekanismLang.DESCRIPTION_RADIOACTIVE_WASTE_BARREL)
           .build();

@@ -2,10 +2,15 @@ package mekanism.common;
 
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockCardboardBox;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketClearRecipeCache;
 import mekanism.common.network.PacketMekanismTags;
 import mekanism.common.network.PacketPlayerData;
+import mekanism.common.network.PacketRadiationData;
+import mekanism.common.network.PacketResetPlayerClient;
 import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.radiation.capability.DefaultRadiationEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -15,6 +20,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
@@ -45,6 +51,7 @@ public class CommonPlayerTracker {
             Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketMekanismTags(Mekanism.instance.getTagManager()), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketClearRecipeCache(), (ServerPlayerEntity) event.getPlayer());
+            event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayerEntity) event.getPlayer()));
             event.getPlayer().sendMessage(ALPHA_WARNING);
         }
     }
@@ -52,11 +59,15 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerLogoutEvent(PlayerLoggedOutEvent event) {
         Mekanism.playerState.clearPlayer(event.getPlayer().getUniqueID());
+        Mekanism.packetHandler.sendToAll(new PacketResetPlayerClient(event.getPlayer().getUniqueID()));
     }
 
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
         Mekanism.playerState.clearPlayer(event.getPlayer().getUniqueID());
+        Mekanism.packetHandler.sendToAll(new PacketResetPlayerClient(event.getPlayer().getUniqueID()));
+        event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayerEntity) event.getPlayer()));
+
     }
 
     @SubscribeEvent
@@ -64,6 +75,29 @@ public class CommonPlayerTracker {
         if (event.getTarget() instanceof PlayerEntity && event.getPlayer() instanceof ServerPlayerEntity) {
             Mekanism.packetHandler.sendTo(new PacketPlayerData(event.getTarget().getUniqueID()), (ServerPlayerEntity) event.getPlayer());
         }
+    }
+
+    @SubscribeEvent
+    public void attachCaps(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof PlayerEntity) {
+            event.addCapability(DefaultRadiationEntity.Provider.NAME, new DefaultRadiationEntity.Provider());
+        }
+    }
+
+    @SubscribeEvent
+    public void cloneEvent(PlayerEvent.Clone event) {
+        event.getOriginal().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(cap -> {
+            event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.deserializeNBT(cap.serializeNBT()));
+        });
+    }
+
+    @SubscribeEvent
+    public void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
+        event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+            c.set(0);
+            PacketRadiationData.sync((ServerPlayerEntity) event.getPlayer());
+        });
+        Mekanism.packetHandler.sendToAll(new PacketResetPlayerClient(event.getPlayer().getUniqueID()));
     }
 
     /**

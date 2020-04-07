@@ -109,7 +109,7 @@ public class CommonPlayerTickHandler {
             player.stepHeight = 0.6F;
         }
 
-        Mekanism.radiationManager.tickServer(player);
+        Mekanism.radiationManager.tickServer((ServerPlayerEntity) player);
 
         if (isFlamethrowerOn(player)) {
             player.world.addEntity(new EntityFlame(player));
@@ -301,13 +301,11 @@ public class CommonPlayerTickHandler {
             if (event.getEntityLiving() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) event.getEntityLiving();
                 float ratioAbsorbed = 0;
-
                 for (ItemStack stack : player.inventory.armorInventory) {
                     if (stack.getItem() instanceof ItemMekaSuitArmor) {
                         ratioAbsorbed += ((ItemMekaSuitArmor) stack.getItem()).getDamageAbsorbed(stack, event.getSource(), event.getAmount());
                     }
                 }
-
                 float damageRemaining = event.getAmount() * Math.max(0, 1 - ratioAbsorbed);
                 if (damageRemaining <= 0) {
                     event.setCanceled(true);

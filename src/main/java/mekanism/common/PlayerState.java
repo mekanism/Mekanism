@@ -39,6 +39,7 @@ public class PlayerState {
         if (FMLEnvironment.dist.isClient()) {
             SoundHandler.clearPlayerSounds(uuid);
         }
+        Mekanism.radiationManager.resetPlayer(uuid);
     }
 
     public void init(IWorld world) {

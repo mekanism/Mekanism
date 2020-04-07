@@ -27,6 +27,8 @@ import mekanism.common.capabilities.basic.DefaultLogisticalTransporter;
 import mekanism.common.capabilities.basic.DefaultSpecialConfigData;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyHandler;
 import mekanism.common.radiation.IRadiationShielding;
+import mekanism.common.radiation.capability.DefaultRadiationEntity;
+import mekanism.common.radiation.capability.IRadiationEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -78,6 +80,9 @@ public class Capabilities {
     @CapabilityInject(ILogisticalTransporter.class)
     public static Capability<ILogisticalTransporter> LOGISTICAL_TRANSPORTER_CAPABILITY = null;
 
+    @CapabilityInject(IRadiationEntity.class)
+    public static Capability<IRadiationEntity> RADIATION_ENTITY_CAPABILITY = null;
+
     public static void registerCapabilities() {
         DefaultStrictEnergyHandler.register();
 
@@ -95,5 +100,7 @@ public class Capabilities {
         DefaultSpecialConfigData.register();
         DefaultEvaporationSolar.register();
         DefaultLaserReceptor.register();
+
+        DefaultRadiationEntity.register();
     }
 }

@@ -12,6 +12,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
@@ -148,6 +149,15 @@ public class CommandMek {
                         Coord4D location = new Coord4D(source.getPos().x, source.getPos().y, source.getPos().z, source.getWorld().getDimension().getType());
                         double radiation = Mekanism.radiationManager.getRadiationLevel(location);
                         source.sendFeedback(MekanismLang.COMMAND_RADIATION_GET.translate(radiation), true);
+                        return 0;
+                    }))
+                .then(Commands.literal("heal")
+                    .executes(ctx -> {
+                        if (ctx.getSource().getEntity() instanceof ServerPlayerEntity) {
+                            ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
+                            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(0));
+                            ctx.getSource().sendFeedback(MekanismLang.COMMAND_RADIATION_CLEAR.translate(), true);
+                        }
                         return 0;
                     }))
                 .then(Commands.literal("removeAll")

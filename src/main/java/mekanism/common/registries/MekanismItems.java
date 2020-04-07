@@ -16,6 +16,7 @@ import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemDictionary;
+import mekanism.common.item.ItemDosimeter;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.item.ItemGeigerCounter;
@@ -68,6 +69,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.register("gauge_dropper", ItemGaugeDropper::new);
     public static final ItemRegistryObject<Item> TELEPORTATION_CORE = ITEMS.register("teleportation_core");
     public static final ItemRegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.register("geiger_counter", ItemGeigerCounter::new);
+    public static final ItemRegistryObject<ItemDosimeter> DOSIMETER = ITEMS.register("dosimeter", ItemDosimeter::new);
     public static final ItemRegistryObject<ItemCanteen> CANTEEN = ITEMS.register("canteen", ItemCanteen::new);
     public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.register("meka_tool", ItemMekaTool::new);
     //TODO: Rename enriched iron?
@@ -118,6 +120,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemModule> JETPACK_UNIT = registerModule(Modules.JETPACK_UNIT);
     public static final ItemRegistryObject<ItemModule> GRAVITATIONAL_MODULATING_UNIT = registerModule(Modules.GRAVITATIONAL_MODULATING_UNIT);
     public static final ItemRegistryObject<ItemModule> CHARGE_DISTRIBUTION_UNIT = registerModule(Modules.CHARGE_DISTRIBUTION_UNIT);
+    public static final ItemRegistryObject<ItemModule> DOSIMETER_UNIT = registerModule(Modules.DOSIMETER_UNIT);
 
     public static final ItemRegistryObject<ItemModule> LOCOMOTIVE_BOOSTING_UNIT = registerModule(Modules.LOCOMOTIVE_BOOSTING_UNIT);
 

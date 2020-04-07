@@ -65,6 +65,7 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
         registerServerToClient(PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
         registerServerToClient(PacketRadiationData.class, PacketRadiationData::encode, PacketRadiationData::decode, PacketRadiationData::handle);
+        registerServerToClient(PacketResetPlayerClient.class, PacketResetPlayerClient::encode, PacketResetPlayerClient::decode, PacketResetPlayerClient::handle);
         registerServerToClient(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
 
         //Register the different sync packets for containers

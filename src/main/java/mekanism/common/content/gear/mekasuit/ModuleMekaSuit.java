@@ -28,10 +28,15 @@ import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoos
 import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.item.gear.ItemCanteen;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
+import mekanism.common.radiation.RadiationManager.RadiationScale;
+import mekanism.common.radiation.capability.IRadiationEntity;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.UnitDisplayUtils;
+import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -331,6 +336,18 @@ public abstract class ModuleMekaSuit extends Module {
             if (!isEnabled()) return;
             GasStack stored = ((ItemMekaSuitArmor) getContainer().getItem()).getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get());
             list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.NUTRITIONAL_PASTE, EnumColor.PINK, stored.getAmount()));
+        }
+    }
+
+    public static class ModuleDosimeterUnit extends ModuleMekaSuit {
+        @Override
+        public void addHUDStrings(List<ITextComponent> list) {
+            PlayerEntity player = Minecraft.getInstance().player;
+            IRadiationEntity cap = player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).orElse(null);
+            if (cap != null) {
+                list.add(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(cap.getRadiation()),
+                    UnitDisplayUtils.getDisplayShort(cap.getRadiation(), RadiationUnit.SV, 3)));
+            }
         }
     }
 }
