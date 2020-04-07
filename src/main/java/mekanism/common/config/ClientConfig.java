@@ -22,6 +22,8 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedBooleanValue enableMultiblockFormationParticles;
     public final CachedBooleanValue alignHUDLeft;
     public final CachedBooleanValue enableHUD;
+    public final CachedIntValue radiationParticleRadius;
+    public final CachedIntValue radiationParticleCount;
 
     ClientConfig() {
         //TODO: Should this stuff be moved from constructor to an init method defined in IMekanismConfig
@@ -29,7 +31,7 @@ public class ClientConfig extends BaseMekanismConfig {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Client Config. This config only exists on the client").push("client");
 
-        enablePlayerSounds = CachedBooleanValue.wrap(this, builder.comment("Play sounds for Jetpack/Gas Mask/Flamethrower (all players).")
+        enablePlayerSounds = CachedBooleanValue.wrap(this, builder.comment("Play sounds for Jetpack/Gas Mask/Flamethrower/Radiation (all players).")
               .define("enablePlayerSounds", true));
         enableMachineSounds = CachedBooleanValue.wrap(this, builder.comment("If enabled machines play their sounds while running.")
               .define("enableMachineSounds", true));
@@ -53,6 +55,10 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("alignHUDLeft", true));
         enableHUD = CachedBooleanValue.wrap(this, builder.comment("Enable item information HUD during gameplay")
               .define("enableHUD", true));
+        radiationParticleRadius = CachedIntValue.wrap(this, builder.comment("How far (in blocks) from the player radiation particles can spawn.")
+              .define("radiationParticleRadius", 30));
+        radiationParticleCount = CachedIntValue.wrap(this, builder.comment("How many particles spawn when rendering radiation effects (scaled by radiation level).")
+              .define("radiationParticleCount", 100));
         builder.pop();
         configSpec = builder.build();
     }

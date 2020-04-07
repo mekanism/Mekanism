@@ -2,6 +2,7 @@ package mekanism.common.radiation;
 
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.nbt.CompoundNBT;
 
 public class RadiationSource {
@@ -28,8 +29,8 @@ public class RadiationSource {
     }
 
     public boolean decay() {
-        magnitude *= RadiationManager.DECAY_RATE;
-        return magnitude < RadiationManager.MIN_SRC_MAGNITUDE;
+        magnitude *= MekanismConfig.general.radiationSourceDecayRate.get();
+        return magnitude < RadiationManager.MIN_MAGNITUDE;
     }
 
     public static RadiationSource load(CompoundNBT tag) {

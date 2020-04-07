@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketRadiationData;
 import mekanism.common.radiation.RadiationManager;
 import mekanism.common.radiation.RadiationManager.RadiationScale;
@@ -20,8 +21,6 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class DefaultRadiationEntity implements IRadiationEntity {
-
-    private static final double NEGATIVE_EFFECT_MIN_SEVERITY = 0.2;
 
     private double radiation;
     private double clientSeverity = 0;
@@ -45,14 +44,15 @@ public class DefaultRadiationEntity implements IRadiationEntity {
 
         if (!player.isCreative()) {
             Random rand = player.world.getRandom();
+            double minSeverity = MekanismConfig.general.radiationNegativeEffectsMinSeverity.get();
             double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
             // Add food exhaustion randomly
-            double chance = NEGATIVE_EFFECT_MIN_SEVERITY + rand.nextDouble() * (1 - NEGATIVE_EFFECT_MIN_SEVERITY);
+            double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
             if (severityScale > chance) {
                 player.getFoodStats().addExhaustion(40F);
             }
             // Hurt player randomly
-            chance = NEGATIVE_EFFECT_MIN_SEVERITY + rand.nextDouble() * (1 - NEGATIVE_EFFECT_MIN_SEVERITY);
+            chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
             if (severityScale > chance && rand.nextInt() % 3 == 0) {
                 player.attackEntityFrom(DamageSource.OUT_OF_WORLD, 1);
             }
@@ -66,7 +66,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
 
     @Override
     public void decay() {
-        radiation = Math.max(RadiationManager.BASELINE, radiation * RadiationManager.DECAY_RATE);
+        radiation = Math.max(RadiationManager.BASELINE, radiation * MekanismConfig.general.radiationTargetDecayRate.get());
     }
 
     @Override

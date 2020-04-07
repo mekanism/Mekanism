@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -18,13 +19,13 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketRadiationData;
+import mekanism.common.radiation.capability.IRadiationShielding;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.attributes.IAttribute;
-import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -68,16 +69,10 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public class RadiationManager {
 
     private static final String DATA_HANDLER_NAME = "radiation_manager";
-    private static final int CHUNK_CHECK_RADIUS = 5;
-    private static final int MAX_RANGE = CHUNK_CHECK_RADIUS * 16;
-    private static final int PARTICLE_RADIUS = 30;
-    private static final int PARTICLE_COUNT = 100;
-
-    public static final IAttribute ATTRIBUTE_RADIATION = (new RangedAttribute((IAttribute)null, "generic.radiation", 0.0D, 0.0D, 1000.0D)).setShouldWatch(true);
+    private static final IntSupplier MAX_RANGE = () -> MekanismConfig.general.radiationChunkCheckRadius.get() * 16;
 
     public static final double BASELINE = 0.0000001; // 100 nSv/h
-    public static final double MIN_SRC_MAGNITUDE = 0.00001; // 10 uSv/h
-    public static final double DECAY_RATE = 0.9995; // decay multiplier per second, will take about 10 days to remove a 1000 Sv/h source
+    public static final double MIN_MAGNITUDE = 0.00001; // 10 uSv/h
 
     private boolean loaded;
 
@@ -106,14 +101,14 @@ public class RadiationManager {
      * @return radiation level (in sV)
      */
     public double getRadiationLevel(Coord4D coord) {
-        Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(CHUNK_CHECK_RADIUS);
+        Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get());
         double level = BASELINE;
 
         for (Chunk3D chunk : checkChunks) {
             if (radiationMap.containsKey(chunk)) {
                 for (RadiationSource src : radiationMap.get(chunk).values()) {
                     // we only compute exposure when within the MAX_RANGE bounds
-                    if (src.getPos().distanceTo(coord) <= MAX_RANGE) {
+                    if (src.getPos().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
                         double add = computeExposure(coord, src);
                         level += add;
                     }
@@ -125,6 +120,9 @@ public class RadiationManager {
     }
 
     public void radiate(Coord4D coord, double magnitude) {
+        if (!MekanismConfig.general.radiationEnabled.get()) {
+            return;
+        }
         Chunk3D chunk = new Chunk3D(coord);
         boolean found = false;
         if (radiationMap.containsKey(chunk)) {
@@ -169,16 +167,17 @@ public class RadiationManager {
     public void tickClient(PlayerEntity player) {
         // perhaps also play geiger counter sound effect, even when not using item (similar to fallout)
         if (clientRadiationScale != RadiationScale.NONE && player.world.getRandom().nextInt(2) == 0) {
-            int count = player.world.getRandom().nextInt(clientRadiationScale.ordinal() * PARTICLE_COUNT);
+            int count = player.world.getRandom().nextInt(clientRadiationScale.ordinal() * MekanismConfig.client.radiationParticleCount.get());
+            int radius = MekanismConfig.client.radiationParticleRadius.get();
             for (int i = 0; i < count; i++) {
-                double x = player.getPosX() + player.world.getRandom().nextDouble() * PARTICLE_RADIUS * 2 - PARTICLE_RADIUS;
-                double y = player.getPosY() + player.world.getRandom().nextDouble() * PARTICLE_RADIUS * 2 - PARTICLE_RADIUS;
-                double z = player.getPosZ() + player.world.getRandom().nextDouble() * PARTICLE_RADIUS * 2 - PARTICLE_RADIUS;
+                double x = player.getPosX() + player.world.getRandom().nextDouble() * radius * 2 - radius;
+                double y = player.getPosY() + player.world.getRandom().nextDouble() * radius * 2 - radius;
+                double z = player.getPosZ() + player.world.getRandom().nextDouble() * radius * 2 - radius;
                 player.world.addParticle((BasicParticleType) MekanismParticleTypes.RADIATION.getParticleType(), x, y, z, 0, 0, 0);
             }
         }
 
-        if (soundMap.isEmpty()) {
+        if (MekanismConfig.client.enablePlayerSounds.get() && soundMap.isEmpty()) {
             for (RadiationScale scale : RadiationScale.values()) {
                 if (scale != RadiationScale.NONE) {
                     GeigerSound sound = new GeigerSound(player, scale);
@@ -190,6 +189,10 @@ public class RadiationManager {
     }
 
     public void tickServer(ServerPlayerEntity player) {
+        // terminate early if we're disabled
+        if (!MekanismConfig.general.radiationEnabled.get()) {
+            return;
+        }
         // each tick, there is a 1/20 chance we will apply radiation to each player
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
         if (player.world.getRandom().nextInt(20) == 0) {
@@ -214,6 +217,10 @@ public class RadiationManager {
     }
 
     public void tickServer(World world) {
+        // terminate early if we're disabled
+        if (!MekanismConfig.general.radiationEnabled.get()) {
+            return;
+        }
         if (!loaded) {
             createOrLoad();
         }
@@ -356,7 +363,8 @@ public class RadiationManager {
         }
 
         public void syncManager() {
-            if (loadedSources != null) {
+            // don't sync the manager if radiation has been disabled
+            if (loadedSources != null && MekanismConfig.general.radiationEnabled.get()) {
                 for (RadiationSource source : loadedSources) {
                     Chunk3D chunk = new Chunk3D(source.getPos());
                     manager.radiationMap.computeIfAbsent(chunk, c -> new Object2ObjectOpenHashMap<>()).put(source.getPos(), source);

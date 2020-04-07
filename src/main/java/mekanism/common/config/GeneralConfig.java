@@ -25,6 +25,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     private static final String MEKASUIT_CATEGORY = "mekasuit";
     private static final String EVAPORATION_CATEGORY = "thermal_evaporation";
     private static final String ENTANGLOPORTER_CATEGORY = "quantum_entangloporter";
+    private static final String RADIATION_CATEGORY = "radiation";
 
     private final ForgeConfigSpec configSpec;
 
@@ -73,6 +74,12 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitEnergyUsageVisionEnhancement;
     public final CachedFloatingLongValue mekaSuitEnergyUsageNutritionalInjection;
     public final CachedFloatingLongValue mekaSuitEnergyUsageDamage;
+
+    public final CachedBooleanValue radiationEnabled;
+    public final CachedIntValue radiationChunkCheckRadius;
+    public final CachedDoubleValue radiationSourceDecayRate;
+    public final CachedDoubleValue radiationTargetDecayRate;
+    public final CachedDoubleValue radiationNegativeEffectsMinSeverity;
 
     public final CachedIntValue maxUpgradeMultiplier;
     public final CachedIntValue minerSilkMultiplier;
@@ -225,6 +232,19 @@ public class GeneralConfig extends BaseMekanismConfig {
             "energyUsageNutritionalInjection", FloatingLong.createConst(500));
         mekaSuitEnergyUsageDamage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per unit of damage applied.",
             "energyUsageDamage", FloatingLong.createConst(10_000));
+        builder.pop();
+
+        builder.comment("Radiation Settings").push(RADIATION_CATEGORY);
+        radiationEnabled = CachedBooleanValue.wrap(this, builder.comment("Enable worldwide radiation effects. Don't be a downer and disable this.")
+              .define("radiationEnabled", true));
+        radiationChunkCheckRadius = CachedIntValue.wrap(this, builder.comment("The radius of chunks checked when running radiation calculations. The algorithm is efficient, but don't abuse it by making this crazy high.")
+              .defineInRange("chunkCheckRadius", 5, 1, 100));
+        radiationSourceDecayRate = CachedDoubleValue.wrap(this, builder.comment("Radiation sources are multiplied by this constant roughly once per second to represent their emission decay. At the default rate, it takes roughly 10 days to remove a 1000 Sv/h (crazy high) source.")
+              .define("sourceDecayRate", 0.9995D));
+        radiationTargetDecayRate = CachedDoubleValue.wrap(this, builder.comment("Radiated objects and entities are multiplied by this constant roughly once per second to represent their dosage decay.")
+              .define("targetDecayRate", 0.9995D));
+        radiationNegativeEffectsMinSeverity = CachedDoubleValue.wrap(this, builder.comment("Defines the minimum severity radiation dosage severity (scale of 0 to 1) for which negative effects can take place. Set to 1 to disable negative effects completely.")
+              .defineInRange("negativeEffectsMinSeverity", 0.1D, 0, 1));
         builder.pop();
 
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.

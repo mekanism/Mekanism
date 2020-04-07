@@ -43,7 +43,7 @@ public class ItemGeigerCounter extends Item {
         ItemStack stack = player.getHeldItem(hand);
         if (!player.isShiftKeyDown() && !world.isRemote()) {
             double magnitude = Mekanism.radiationManager.getRadiationLevel(player);
-            player.sendMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY,
+            player.sendMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY,
                 RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)));
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }

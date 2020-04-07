@@ -26,9 +26,10 @@ import mekanism.common.capabilities.basic.DefaultLaserReceptor;
 import mekanism.common.capabilities.basic.DefaultLogisticalTransporter;
 import mekanism.common.capabilities.basic.DefaultSpecialConfigData;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyHandler;
-import mekanism.common.radiation.IRadiationShielding;
 import mekanism.common.radiation.capability.DefaultRadiationEntity;
+import mekanism.common.radiation.capability.DefaultRadiationShielding;
 import mekanism.common.radiation.capability.IRadiationEntity;
+import mekanism.common.radiation.capability.IRadiationShielding;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -101,6 +102,7 @@ public class Capabilities {
         DefaultEvaporationSolar.register();
         DefaultLaserReceptor.register();
 
+        DefaultRadiationShielding.register();
         DefaultRadiationEntity.register();
     }
 }

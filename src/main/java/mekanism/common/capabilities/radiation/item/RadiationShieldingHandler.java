@@ -3,7 +3,7 @@ package mekanism.common.capabilities.radiation.item;
 import java.util.function.ToDoubleFunction;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
-import mekanism.common.radiation.IRadiationShielding;
+import mekanism.common.radiation.capability.IRadiationShielding;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 
