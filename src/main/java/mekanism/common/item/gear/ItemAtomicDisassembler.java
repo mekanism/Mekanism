@@ -231,8 +231,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         DisassemblerMode mode = getMode(stack);
-        list.add(MekanismLang.MODE.translate(EnumColor.GRAY, EnumColor.INDIGO, mode));
-        list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.GRAY, EnumColor.INDIGO, mode.getEfficiency()));
+        list.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, mode));
+        list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, mode.getEfficiency()));
     }
 
     @Override

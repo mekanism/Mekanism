@@ -6,7 +6,7 @@
     }
   },
   "fluidInput": {
-    "amount": 10,
+    "amount": 1000,
     "tag": "minecraft:water"
   },
   "gasInput": {
@@ -19,6 +19,6 @@
   },
   "gasOutput": {
     "gas": "mekanism:spent_nuclear_waste",
-    "amount": 100
+    "amount": 1000
   }
 }

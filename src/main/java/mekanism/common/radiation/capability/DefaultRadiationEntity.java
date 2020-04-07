@@ -12,7 +12,6 @@ import mekanism.common.radiation.RadiationManager.RadiationScale;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -49,12 +48,12 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             // Add food exhaustion randomly
             double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
             if (severityScale > chance) {
-                player.getFoodStats().addExhaustion(40F);
+                player.getFoodStats().addExhaustion(8F);
             }
             // Hurt player randomly
             chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
             if (severityScale > chance && rand.nextInt() % 3 == 0) {
-                player.attackEntityFrom(DamageSource.OUT_OF_WORLD, 1);
+                player.attackEntityFrom(RadiationManager.RADIATION_DAMAGE, 1);
             }
         }
     }

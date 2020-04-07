@@ -1,5 +1,6 @@
 package mekanism.common.item.gear;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem, IModeItem, IItemHUDProvider/*, ISpecialGear*/ {
 
+    // TODO separate these into individual modules maybe (specifically fire-related - on_fire, in_fire, lava)
+    private static final Set<DamageSource> ALWAYS_SUPPORTED_SOURCES = new HashSet<>(Arrays.asList(
+        DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRYOUT,
+        DamageSource.FALL, DamageSource.FALLING_BLOCK, DamageSource.FIREWORKS, DamageSource.FLY_INTO_WALL, DamageSource.GENERIC,
+        DamageSource.HOT_FLOOR, DamageSource.IN_FIRE, DamageSource.IN_WALL, DamageSource.LAVA, DamageSource.LIGHTNING_BOLT,
+        DamageSource.ON_FIRE, DamageSource.SWEET_BERRY_BUSH, DamageSource.WITHER));
+
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
     private static final int GAS_TRANSFER_RATE = 256;
 
@@ -71,7 +79,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         if (slot == EquipmentSlotType.HEAD) {
             Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT, Modules.VISION_ENHANCEMENT_UNIT,
                 Modules.SOLAR_RECHARGING_UNIT, Modules.NUTRITIONAL_INJECTION_UNIT);
-            gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 10_000, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
+            gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 16_000, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
             absorption = 0.15F;
         } else if (slot == EquipmentSlotType.CHEST) {
             Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT, Modules.DOSIMETER_UNIT);
@@ -225,9 +233,8 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     public float getDamageAbsorbed(ItemStack stack, DamageSource source, float amount) {
         // don't handle magic as it's handled by inhalation purification
         // don't handle starving as player should have nutritional injection
-        // don't handle falling as should be absorbed by boots in event handler
         // don't handle out of world (ever)
-        if (source == DamageSource.MAGIC || source == DamageSource.STARVE || source == DamageSource.OUT_OF_WORLD || source == DamageSource.FALL) {
+        if (!ALWAYS_SUPPORTED_SOURCES.contains(source)) {
             return 0;
         }
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);

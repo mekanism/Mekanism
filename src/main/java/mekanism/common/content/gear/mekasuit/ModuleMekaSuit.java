@@ -63,7 +63,7 @@ public abstract class ModuleMekaSuit extends Module {
             }
             int oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
             int used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
-            useEnergy(usage.multiply(used));
+            useEnergy(player, usage.multiply(used));
             player.setAir(player.getAir() + oxygenUsed);
         }
 
@@ -79,7 +79,7 @@ public abstract class ModuleMekaSuit extends Module {
                 if (getContainerEnergy().smallerThan(MekanismConfig.general.mekaSuitEnergyUsagePotionTick.get())) {
                     break;
                 }
-                useEnergy(MekanismConfig.general.mekaSuitEnergyUsagePotionTick.get());
+                useEnergy(player, MekanismConfig.general.mekaSuitEnergyUsagePotionTick.get());
                 for (int i = 0; i < 9; i++) {
                     effect.tick(player, () -> MekanismUtils.onChangedPotionEffect(player, effect, true));
                 }
@@ -91,7 +91,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
-            useEnergy(MekanismConfig.general.mekaSuitEnergyUsageVisionEnhancement.get());
+            useEnergy(player, MekanismConfig.general.mekaSuitEnergyUsageVisionEnhancement.get());
         }
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
@@ -176,8 +176,8 @@ public abstract class ModuleMekaSuit extends Module {
         private void chargeInventory(PlayerEntity player) {
             FloatingLong toCharge = MekanismConfig.general.mekaSuitInventoryChargeRate.get();
             // first try to charge mainhand/offhand item
-            toCharge = charge(player.getHeldItemMainhand(), toCharge);
-            toCharge = charge(player.getHeldItemOffhand(), toCharge);
+            toCharge = charge(player, player.getHeldItemMainhand(), toCharge);
+            toCharge = charge(player, player.getHeldItemOffhand(), toCharge);
 
             for (ItemStack stack : player.inventory.mainInventory) {
                 if (stack == player.getHeldItemMainhand() || stack == player.getHeldItemOffhand()) {
@@ -186,15 +186,15 @@ public abstract class ModuleMekaSuit extends Module {
                 if (toCharge.isZero()) {
                     break;
                 }
-                toCharge = charge(stack, toCharge);
+                toCharge = charge(player, stack, toCharge);
             }
         }
 
         /** return rejects */
-        private FloatingLong charge(ItemStack stack, FloatingLong amount) {
+        private FloatingLong charge(PlayerEntity player, ItemStack stack, FloatingLong amount) {
             IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
             if (handler != null) {
-                return handler.insertEnergy(useEnergy(amount), Action.EXECUTE);
+                return handler.insertEnergy(useEnergy(player, amount), Action.EXECUTE);
             }
             return amount;
         }
@@ -218,7 +218,7 @@ public abstract class ModuleMekaSuit extends Module {
                 if (!player.onGround) boost /= 5F; // throttle if we're in the air
                 if (player.isInWater()) boost /= 5F; // throttle if we're in the water
                 player.moveRelative(boost, new Vec3d(0, 0, 1));
-                useEnergy(MekanismConfig.general.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
+                useEnergy(player, MekanismConfig.general.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
             }
         }
 
@@ -274,7 +274,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void init() {
             super.init();
-            addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class).withScale(0.65F), JumpBoost.LOW));
+            addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class).withScale(0.8F), JumpBoost.LOW));
         }
 
         public float getBoost() {
@@ -325,7 +325,7 @@ public abstract class ModuleMekaSuit extends Module {
                 ItemMekaSuitArmor item = (ItemMekaSuitArmor) getContainer().getItem();
                 int toFeed = Math.min(1, item.getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / ItemCanteen.MB_PER_FOOD);
                 if (toFeed > 0) {
-                    useEnergy(usage.multiply(toFeed));
+                    useEnergy(player, usage.multiply(toFeed));
                     item.useGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get(), toFeed * ItemCanteen.MB_PER_FOOD);
                     player.getFoodStats().addStats(1, ItemCanteen.SATURATION);
                 }

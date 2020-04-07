@@ -13,8 +13,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.api.Pos3D;
 import mekanism.api.RelativeSide;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
+import mekanism.client.gui.GuiUtils;
+import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
@@ -30,6 +34,7 @@ import mekanism.common.item.IModeItem;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.radiation.RadiationManager;
 import mekanism.common.radiation.RadiationManager.RadiationScale;
 import mekanism.common.registries.MekanismParticleTypes;
@@ -38,8 +43,11 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -53,6 +61,7 @@ import net.minecraft.profiler.IProfiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -62,12 +71,16 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawHighlightEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class RenderTickHandler {
 
+    private static final ResourceLocation POWER_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "horizontal_power_long.png");
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static final EquipmentSlotType[] EQUIPMENT_ORDER = new EquipmentSlotType[] {EquipmentSlotType.OFFHAND, EquipmentSlotType.MAINHAND,
         EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET};
@@ -81,6 +94,61 @@ public class RenderTickHandler {
 
     public static void resetCachedOverlays() {
         cachedOverlays.clear();
+    }
+
+    @SubscribeEvent
+    public void renderOverlay(RenderGameOverlayEvent.Pre event) {
+        if (event.getType() == ElementType.ARMOR) {
+            FloatingLong capacity = FloatingLong.ZERO, stored = FloatingLong.ZERO;
+            for (ItemStack stack : minecraft.player.inventory.armorInventory) {
+                IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
+                if (stack.getItem() instanceof ItemMekaSuitArmor && container != null) {
+                    capacity = capacity.plusEqual(container.getMaxEnergy());
+                    stored = stored.plusEqual(container.getEnergy());
+                }
+            }
+            if (!capacity.isZero()) {
+                int x = minecraft.getMainWindow().getScaledWidth() / 2 - 91;
+                int y = minecraft.getMainWindow().getScaledHeight() - ForgeIngameGui.left_height + 2;
+                int length = (int)Math.round(stored.divide(capacity).doubleValue() * 79);
+
+                GuiUtils.renderExtendedTexture(GuiBar.BAR, 2, 2, x, y, 81, 6);
+                minecraft.getTextureManager().bindTexture(POWER_BAR);
+                AbstractGui.blit(x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
+                minecraft.getTextureManager().bindTexture(ForgeIngameGui.GUI_ICONS_LOCATION);
+                ForgeIngameGui.left_height += 8;
+            }
+        } else if (event.getType() == ElementType.HOTBAR) {
+            if (!minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
+              int y = minecraft.getMainWindow().getScaledHeight();
+              boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
+              int count = 0;
+              Map<EquipmentSlotType, List<ITextComponent>> renderStrings = new LinkedHashMap<>();
+              for (EquipmentSlotType slotType : EQUIPMENT_ORDER) {
+                  ItemStack stack = minecraft.player.getItemStackFromSlot(slotType);
+                  if (stack.getItem() instanceof IItemHUDProvider) {
+                      List<ITextComponent> list = new ArrayList<>();
+                      ((IItemHUDProvider) stack.getItem()).addHUDStrings(list, stack, slotType);
+                      if (!list.isEmpty()) {
+                          renderStrings.put(slotType, list);
+                      }
+                      count += list.size();
+                  }
+              }
+
+              RenderSystem.pushMatrix();
+              RenderSystem.scaled(HUD_SCALE, HUD_SCALE, HUD_SCALE);
+              int start = (renderStrings.size() * 2) + (count * 9);
+              for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
+                  for (ITextComponent text : entry.getValue()) {
+                      drawString(text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
+                      start -= 9;
+                  }
+                  start -= 2;
+              }
+              RenderSystem.popMatrix();
+          }
+        }
     }
 
     @SubscribeEvent
@@ -106,36 +174,6 @@ public class RenderTickHandler {
                 }
 
                 modeSwitchTimer = Math.max(modeSwitchTimer - 1, 0);
-
-                if (minecraft.currentScreen == null && !minecraft.gameSettings.hideGUI && !player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
-                    int y = minecraft.getMainWindow().getScaledHeight();
-                    boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
-                    int count = 0;
-                    Map<EquipmentSlotType, List<ITextComponent>> renderStrings = new LinkedHashMap<>();
-                    for (EquipmentSlotType slotType : EQUIPMENT_ORDER) {
-                        ItemStack stack = player.getItemStackFromSlot(slotType);
-                        if (stack.getItem() instanceof IItemHUDProvider) {
-                            List<ITextComponent> list = new ArrayList<>();
-                            ((IItemHUDProvider) stack.getItem()).addHUDStrings(list, stack, slotType);
-                            if (!list.isEmpty()) {
-                                renderStrings.put(slotType, list);
-                            }
-                            count += list.size();
-                        }
-                    }
-
-                    RenderSystem.pushMatrix();
-                    RenderSystem.scaled(HUD_SCALE, HUD_SCALE, HUD_SCALE);
-                    int start = (renderStrings.size() * 2) + (count * 9);
-                    for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
-                        for (ITextComponent text : entry.getValue()) {
-                            drawString(text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
-                            start -= 9;
-                        }
-                        start -= 2;
-                    }
-                    RenderSystem.popMatrix();
-                }
 
                 // Traverse a copy of jetpack state and do animations
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {

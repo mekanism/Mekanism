@@ -32,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.particles.BasicParticleType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -73,6 +74,8 @@ public class RadiationManager {
 
     public static final double BASELINE = 0.0000001; // 100 nSv/h
     public static final double MIN_MAGNITUDE = 0.00001; // 10 uSv/h
+
+    public static final DamageSource RADIATION_DAMAGE = new DamageSource("radiation").setDamageBypassesArmor();
 
     private boolean loaded;
 

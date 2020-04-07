@@ -17,6 +17,7 @@ import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -73,9 +74,9 @@ public abstract class Module {
         return energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
     }
 
-    public FloatingLong useEnergy(FloatingLong energy) {
+    public FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
-        if (energyContainer != null) {
+        if ((!(wearer instanceof PlayerEntity) || !((PlayerEntity) wearer).isCreative()) && energyContainer != null) {
             return energyContainer.extract(energy, Action.EXECUTE, AutomationType.MANUAL);
         }
         return FloatingLong.ZERO;

@@ -181,7 +181,7 @@ public class CommonPlayerTickHandler {
                 if (boostKey) {
                     player.moveRelative(module.getBoost(), new Vec3d(0, 0, 1));
                 }
-                module.useEnergy(Mekanism.keyMap.has(player, KeySync.BOOST) ? usage.multiply(4) : usage);
+                module.useEnergy(player, Mekanism.keyMap.has(player, KeySync.BOOST) ? usage.multiply(4) : usage);
             }
         } else if (!player.isCreative()) {
             player.abilities.allowFlying = false;
@@ -248,7 +248,7 @@ public class CommonPlayerTickHandler {
                     }
                     ModuleInhalationPurificationUnit module = Modules.load(chestStack, Modules.INHALATION_PURIFICATION_UNIT);
                     if (module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(MekanismConfig.general.mekaSuitEnergyUsageMagicPrevent.get())) {
-                        module.useEnergy(MekanismConfig.general.mekaSuitEnergyUsageMagicPrevent.get());
+                        module.useEnergy(base, MekanismConfig.general.mekaSuitEnergyUsageMagicPrevent.get());
                         event.setCanceled(true);
                         return;
                     }
@@ -331,7 +331,7 @@ public class CommonPlayerTickHandler {
                         boost = (float) Math.sqrt(boost);
                     }
                     player.setMotion(player.getMotion().add(0, boost, 0));
-                    module.useEnergy(usage);
+                    module.useEnergy(player, usage);
                 }
             }
         }
