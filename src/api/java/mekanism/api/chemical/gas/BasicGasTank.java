@@ -72,14 +72,14 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
-        return new BasicGasTank(capacity, alwaysTrueBi, internalOnly, alwaysTrue, gasHandler);
+        return new BasicGasTank(capacity, alwaysTrueBi, internalOnly, alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, gasHandler);
     }
 
     public static BasicGasTank ejectOutput(int capacity, @Nullable IMekanismGasHandler gasHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
-        return new BasicGasTank(capacity, internalOnly, internalOnly, alwaysTrue, gasHandler);
+        return new BasicGasTank(capacity, internalOnly, internalOnly, alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, gasHandler);
     }
 
     public static BasicGasTank create(int capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator,

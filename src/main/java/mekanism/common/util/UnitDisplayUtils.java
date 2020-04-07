@@ -49,10 +49,10 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
     }
 
     public static ITextComponent getDisplay(double T, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort) {
-        return getDisplay(unit.convertFromK(T, shift), unit, decimalPlaces, isShort, false);
+        return getDisplayBase(unit.convertFromK(T, shift), unit, decimalPlaces, isShort, false);
     }
 
-    public static ITextComponent getDisplay(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
+    public static ITextComponent getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
         ILangEntry label = unit.getLabel();
         String prefix = "";
         String spaceStr = spaceBetweenSymbol ? " " : "";
@@ -107,7 +107,7 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
     }
 
     public static ITextComponent getDisplayShort(double value, RadiationUnit unit, int decimalPlaces) {
-        return getDisplay(value, unit, decimalPlaces, true, true);
+        return getDisplayBase(value, unit, decimalPlaces, true, true);
     }
 
     public static double roundDecimals(double d, int decimalPlaces) {
