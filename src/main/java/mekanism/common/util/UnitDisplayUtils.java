@@ -49,30 +49,32 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
     }
 
     public static ITextComponent getDisplay(double T, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort) {
-        return getDisplay(unit.convertFromK(T, shift), unit, decimalPlaces, isShort);
+        return getDisplay(unit.convertFromK(T, shift), unit, decimalPlaces, isShort, false);
     }
 
-    public static ITextComponent getDisplay(double value, Unit unit, int decimalPlaces, boolean isShort) {
+    public static ITextComponent getDisplay(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
         ILangEntry label = unit.getLabel();
         String prefix = "";
+        String spaceStr = spaceBetweenSymbol ? " " : "";
         if (value < 0) {
             value = Math.abs(value);
             prefix = "-";
         }
         if (value == 0) {
-            return isShort ? TextComponentUtil.getString(value + unit.getSymbol()) : TextComponentUtil.build(value, label);
+            return isShort ? TextComponentUtil.getString(value + spaceStr + unit.getSymbol()) : TextComponentUtil.build(value, label);
         }
         for (int i = 0; i < EnumUtils.MEASUREMENT_UNITS.length; i++) {
             MeasurementUnit lowerMeasure = EnumUtils.MEASUREMENT_UNITS[i];
+            String symbolStr = spaceStr + lowerMeasure.symbol;
             if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
                 if (isShort) {
-                    return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + lowerMeasure.symbol + unit.getSymbol());
+                    return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
                 }
                 return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
             }
             if (lowerMeasure.ordinal() + 1 >= EnumUtils.MEASUREMENT_UNITS.length) {
                 if (isShort) {
-                    return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + lowerMeasure.symbol + unit.getSymbol());
+                    return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
                 }
                 return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
             }
@@ -80,14 +82,14 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
                 MeasurementUnit upperMeasure = EnumUtils.MEASUREMENT_UNITS[i + 1];
                 if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
                     if (isShort) {
-                        return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + lowerMeasure.symbol + unit.getSymbol());
+                        return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
                     }
                     return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
                 }
             }
         }
         if (isShort) {
-            return TextComponentUtil.getString(prefix + roundDecimals(value, decimalPlaces) + unit.getSymbol());
+            return TextComponentUtil.getString(prefix + roundDecimals(value, decimalPlaces) + spaceStr + unit.getSymbol());
         }
         return TextComponentUtil.build(prefix + roundDecimals(value, decimalPlaces) + " ", label);
     }
@@ -105,7 +107,7 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
     }
 
     public static ITextComponent getDisplayShort(double value, RadiationUnit unit, int decimalPlaces) {
-        return getDisplay(value, unit, decimalPlaces, true);
+        return getDisplay(value, unit, decimalPlaces, true, true);
     }
 
     public static double roundDecimals(double d, int decimalPlaces) {

@@ -246,10 +246,10 @@ public class MekanismRenderer {
     }
 
     public static void renderColorOverlay(int x, int y, int width, int height, int color) {
-        float a = (color >> 24 & 255) / 255.0F;
-        float r = (color >> 16 & 255) / 255.0F;
-        float g = (color >> 8 & 255) / 255.0F;
-        float b = (color & 255) / 255.0F;
+        float r = (color >> 24 & 255) / 255.0F;
+        float g = (color >> 16 & 255) / 255.0F;
+        float b = (color >> 8 & 255) / 255.0F;
+        float a = (color & 255) / 255.0F;
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.disableAlphaTest();
@@ -258,10 +258,10 @@ public class MekanismRenderer {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.pos(width, y, 0).color(a, r, g, b).endVertex();
-        bufferbuilder.pos(x, y, 0).color(a, r, g, b).endVertex();
-        bufferbuilder.pos(x, height, 0).color(a, r, g, b).endVertex();
-        bufferbuilder.pos(width, height, 0).color(a, r, g, b).endVertex();
+        bufferbuilder.pos(width, y, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.pos(x, y, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.pos(x, height, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.pos(width, height, 0).color(r, g, b, a).endVertex();
         tessellator.draw();
         RenderSystem.shadeModel(7424);
         RenderSystem.disableBlend();
