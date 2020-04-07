@@ -263,7 +263,6 @@ public class RadiationManager {
 
     public void resetSounds() {
         soundMap.clear();
-        System.out.println("RESET");
     }
 
     public void resetPlayer(UUID uuid) {

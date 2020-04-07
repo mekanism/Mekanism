@@ -3159,21 +3159,21 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //plutonium pellet
         PressurizedReactionRecipeBuilder.reaction(
             ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
-            FluidStackIngredient.from(FluidTags.WATER, 10),
+            FluidStackIngredient.from(FluidTags.WATER, 1000),
             GasStackIngredient.from(MekanismGases.PLUTONIUM, 100),
             100,
             MekanismItems.PLUTONIUM_PELLET.getItemStack(),
-            MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(100)
+            MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(1000)
         ).addCriterion(Criterion.HAS_PRESSURIZED_REACTION_CHAMBER)
             .build(consumer, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
         //polonium pellet
         PressurizedReactionRecipeBuilder.reaction(
             ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
-            FluidStackIngredient.from(FluidTags.WATER, 10),
+            FluidStackIngredient.from(FluidTags.WATER, 1000),
             GasStackIngredient.from(MekanismGases.POLONIUM, 100),
             100,
             MekanismItems.POLONIUM_PELLET.getItemStack(),
-            MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(100)
+            MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(1000)
         ).addCriterion(Criterion.HAS_PRESSURIZED_REACTION_CHAMBER)
             .build(consumer, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
 
