@@ -7,9 +7,9 @@ import mekanism.common.util.EnumUtils;
 
 public enum TubeTier implements ITier {
     BASIC(BaseTier.BASIC, 256, 64),
-    ADVANCED(BaseTier.ADVANCED, 1_024, 256),
-    ELITE(BaseTier.ELITE, 4_096, 1_024),
-    ULTIMATE(BaseTier.ULTIMATE, 16_384, 4_096);
+    ADVANCED(BaseTier.ADVANCED, 4_096, 1_024),
+    ELITE(BaseTier.ELITE, 32_768, 8_192),
+    ULTIMATE(BaseTier.ULTIMATE, 131_072, 24_576);
 
     private final int baseCapacity;
     private final int basePull;

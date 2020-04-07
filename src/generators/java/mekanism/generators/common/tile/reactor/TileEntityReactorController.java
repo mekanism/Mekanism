@@ -313,5 +313,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     public void addHeatTabContainerTrackers(MekanismContainer container) {
         container.track(SyncableFluidStack.create(waterTank));
         container.track(SyncableGasStack.create(steamTank));
+        container.track(SyncableInt.create(() -> localMaxWater, (val) -> localMaxWater = val));
+        container.track(SyncableInt.create(() -> localMaxSteam, (val) -> localMaxSteam = val));
     }
 }

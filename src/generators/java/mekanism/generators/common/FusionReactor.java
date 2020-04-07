@@ -1,9 +1,9 @@
 package mekanism.generators.common;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
@@ -63,9 +63,6 @@ public class FusionReactor {
     private double heatToAbsorb = 0;
     private int injectionRate = 0;
     private boolean burning = false;
-    private boolean activelyCooled = true;
-
-    private boolean updatedThisTick;
 
     public boolean formed = false;
 
@@ -100,8 +97,6 @@ public class FusionReactor {
     }
 
     public void simulateServer() {
-        updatedThisTick = false;
-
         //Only thermal transfer happens unless we're hot enough to burn.
         if (plasmaTemperature >= burnTemperature) {
             //If we're not burning yet we need a hohlraum to ignite
@@ -181,24 +176,22 @@ public class FusionReactor {
         caseTemperature += plasmaCaseHeat / caseHeatCapacity;
 
         //Transfer from casing to water if necessary
-        if (activelyCooled) {
-            double caseWaterHeat = caseWaterConductivity * lastCaseTemperature;
-            int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
-            waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getNeeded()));
-            if (waterToVaporize > 0) {
-                if (getWaterTank().shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
-                    //TODO: Print warning/error
-                }
-                getSteamTank().insert(MekanismGases.STEAM.getGasStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
+        double caseWaterHeat = caseWaterConductivity * lastCaseTemperature;
+        int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
+        waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getNeeded()));
+        if (waterToVaporize > 0) {
+            if (getWaterTank().shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
+                //TODO: Print warning/error
             }
-
-            caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;
-            caseTemperature -= caseWaterHeat / caseHeatCapacity;
-            for (IHeatTransfer source : heatTransfers) {
-                source.simulateHeat();
-            }
-            applyTemperatureChange();
+            getSteamTank().insert(MekanismGases.STEAM.getGasStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
         }
+
+        caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;
+        caseTemperature -= caseWaterHeat / caseHeatCapacity;
+        for (IHeatTransfer source : heatTransfers) {
+            source.simulateHeat();
+        }
+        applyTemperatureChange();
 
         //Transfer from casing to environment
         double caseAirHeat = caseAirConductivity * lastCaseTemperature;
@@ -274,7 +267,6 @@ public class FusionReactor {
     }
 
     public void formMultiblock(boolean keepBurning) {
-        updatedThisTick = true;
         Coord4D controllerPosition = Coord4D.get(controller);
         Coord4D centreOfReactor = controllerPosition.offset(Direction.DOWN, 2);
         unformMultiblock(true);

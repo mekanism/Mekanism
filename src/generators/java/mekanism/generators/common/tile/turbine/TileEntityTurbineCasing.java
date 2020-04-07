@@ -49,7 +49,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
         if (structure != null && isRendering) {
             structure.lastSteamInput = structure.newSteamInput;
             structure.newSteamInput = 0;
-
             int stored = structure.gasTank.getStored();
             double flowRate = 0;
 

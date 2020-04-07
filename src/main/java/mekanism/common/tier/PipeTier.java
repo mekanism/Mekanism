@@ -7,9 +7,9 @@ import mekanism.common.util.EnumUtils;
 
 public enum PipeTier implements ITier {
     BASIC(BaseTier.BASIC, 1_000, 100),
-    ADVANCED(BaseTier.ADVANCED, 4_000, 400),
-    ELITE(BaseTier.ELITE, 16_000, 1_600),
-    ULTIMATE(BaseTier.ULTIMATE, 64_000, 6_400);
+    ADVANCED(BaseTier.ADVANCED, 8_000, 1_000),
+    ELITE(BaseTier.ELITE, 32_000, 6_400),
+    ULTIMATE(BaseTier.ULTIMATE, 128_000, 25_600);
 
     private final int baseCapacity;
     private final int basePull;
