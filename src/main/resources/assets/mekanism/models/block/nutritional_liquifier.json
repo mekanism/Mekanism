@@ -3,6 +3,8 @@
   "textures": {
     "sides": "mekanism:block/nutritional_liquifier/right",
     "front": "mekanism:block/nutritional_liquifier/front",
+    "west": "mekanism:block/nutritional_liquifier/right",
+    "east": "mekanism:block/nutritional_liquifier/left",
     "south": "mekanism:block/nutritional_liquifier/back",
     "up": "mekanism:block/nutritional_liquifier/top",
     "down": "mekanism:block/nutritional_liquifier/bottom"

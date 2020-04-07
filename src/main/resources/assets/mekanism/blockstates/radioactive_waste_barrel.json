@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mekanism:block/radioactive_waste_barrel"
+    },
+    "facing=south": {
+      "model": "mekanism:block/radioactive_waste_barrel",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanism:block/radioactive_waste_barrel",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanism:block/radioactive_waste_barrel",
+      "y": -90
+    }
+  }
+}

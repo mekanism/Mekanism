@@ -1,0 +1,8 @@
+{
+  "parent": "mekanism:block/nutritional_liquifier",
+  "textures": {
+    "front": "mekanism:block/nutritional_liquifier/front_active",
+    "west": "mekanism:block/nutritional_liquifier/right_active",
+    "east": "mekanism:block/nutritional_liquifier/left_active"
+  }
+}
