@@ -9,6 +9,8 @@ import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
+import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
+import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
 import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
@@ -34,7 +36,10 @@ public class GeneratorsTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityHeatGenerator> HEAT_GENERATOR = TILE_ENTITY_TYPES.register(GeneratorsBlocks.HEAT_GENERATOR, TileEntityHeatGenerator::new);
     public static final TileEntityTypeRegistryObject<TileEntitySolarGenerator> SOLAR_GENERATOR = TILE_ENTITY_TYPES.register(GeneratorsBlocks.SOLAR_GENERATOR, TileEntitySolarGenerator::new);
     public static final TileEntityTypeRegistryObject<TileEntityWindGenerator> WIND_GENERATOR = TILE_ENTITY_TYPES.register(GeneratorsBlocks.WIND_GENERATOR, TileEntityWindGenerator::new);
-    //Reactor
+    //Fission Reactor
+    public static final TileEntityTypeRegistryObject<TileEntityFissionReactorCasing> FISSION_REACTOR_CASING = TILE_ENTITY_TYPES.register(GeneratorsBlocks.FISSION_REACTOR_CASING, TileEntityFissionReactorCasing::new);
+    public static final TileEntityTypeRegistryObject<TileEntityFissionFuelAssembly> FISSION_FUEL_ASSEMBLY = TILE_ENTITY_TYPES.register(GeneratorsBlocks.FISSION_FUEL_ASSEMBLY, TileEntityFissionFuelAssembly::new);
+    //Fusion Reactor
     public static final TileEntityTypeRegistryObject<TileEntityReactorController> REACTOR_CONTROLLER = TILE_ENTITY_TYPES.register(GeneratorsBlocks.REACTOR_CONTROLLER, TileEntityReactorController::new);
     public static final TileEntityTypeRegistryObject<TileEntityReactorFrame> REACTOR_FRAME = TILE_ENTITY_TYPES.register(GeneratorsBlocks.REACTOR_FRAME, TileEntityReactorFrame::new);
     public static final TileEntityTypeRegistryObject<TileEntityReactorGlass> REACTOR_GLASS = TILE_ENTITY_TYPES.register(GeneratorsBlocks.REACTOR_GLASS, TileEntityReactorGlass::new);

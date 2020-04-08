@@ -9,6 +9,7 @@ import mekanism.common.config.MekanismModConfig;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import mekanism.generators.common.content.fission.SynchronizedFissionReactorData;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.network.GeneratorsPacketHandler;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -44,6 +45,7 @@ public class MekanismGenerators implements IModule {
     public static GeneratorsPacketHandler packetHandler = new GeneratorsPacketHandler();
 
     public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>("industrialTurbine");
+    public static MultiblockManager<SynchronizedFissionReactorData> fissionReactorManager = new MultiblockManager<>("fissionReactor");
 
     public MekanismGenerators() {
         Mekanism.modulesLoaded.add(instance = this);
