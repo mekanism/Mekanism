@@ -20,7 +20,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public interface IInWorldHeatHandler extends IMekanismHeatHandler {
 
     default void update(@Nullable Direction side) {
-        for (IHeatCapacitor capacitor : getCapacitors(side)) {
+        for (IHeatCapacitor capacitor : getHeatCapacitors(side)) {
             if (capacitor instanceof BasicHeatCapacitor) {
                 ((BasicHeatCapacitor) capacitor).update();
             }

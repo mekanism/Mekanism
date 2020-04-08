@@ -19,7 +19,7 @@ public interface IHeatCapacitor extends INBTSerializable<CompoundNBT> {
 
     FloatingLong getHeatCapacity();
 
-    void handleTemperatureChange(TemperaturePacket transfer);
+    void handleTemperatureChange(HeatPacket transfer);
 
     @Override
     default CompoundNBT serializeNBT() {

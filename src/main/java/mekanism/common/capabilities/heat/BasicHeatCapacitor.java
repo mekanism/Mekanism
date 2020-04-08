@@ -6,7 +6,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.heat.TemperaturePacket;
+import mekanism.api.heat.HeatPacket;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -25,7 +25,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     protected FloatingLong storedHeat = FloatingLong.ZERO;
     @Nullable
-    protected TemperaturePacket heatToHandle;
+    protected HeatPacket heatToHandle;
 
     public BasicHeatCapacitor(FloatingLong heatCapacity, FloatingLong conductionCoefficient, FloatingLong insulationCoefficient, boolean absorbHeat, boolean emitHeat) {
         this.heatCapacity = heatCapacity;
@@ -46,7 +46,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     @Override
-    public void handleTemperatureChange(TemperaturePacket transfer) {
+    public void handleTemperatureChange(HeatPacket transfer) {
         heatToHandle = transfer;
     }
 

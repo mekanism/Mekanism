@@ -14,38 +14,6 @@ public class HeatAPI {
      */
     public static final FloatingLong AIR_INVERSE_COEFFICIENT = FloatingLong.createConst(10_000);
 
-    public static FloatingLong getTotalTemperature(IHeatHandler handler) {
-        FloatingLong sum = FloatingLong.ZERO;
-        for (int capacitor = 0; capacitor < handler.getHeatCapacitorCount(); capacitor++) {
-            sum = sum.plusEqual(handler.getTemperature(capacitor).multiply(handler.getHeatCapacity(capacitor).divide(handler.getHeatCapacity(capacitor))));
-        }
-        return sum;
-    }
-
-    public static FloatingLong getTotalInverseConductionCoefficient(IHeatHandler handler) {
-        FloatingLong sum = FloatingLong.ZERO;
-        for (int capacitor = 0; capacitor < handler.getHeatCapacitorCount(); capacitor++) {
-            sum = sum.plusEqual(handler.getInverseConductionCoefficient(capacitor));
-        }
-        return sum;
-    }
-
-    public static FloatingLong getTotalHeatCapacity(IHeatHandler handler) {
-        FloatingLong sum = FloatingLong.ZERO;
-        for (int capacitor = 0; capacitor < handler.getHeatCapacitorCount(); capacitor++) {
-            sum = sum.plusEqual(handler.getHeatCapacity(capacitor));
-        }
-        return sum;
-    }
-
-    public static void handleTemperatureChange(IHeatHandler handler, TemperaturePacket packet) {
-        //TODO: FIXME
-        /*double totalHeatCapacity = handler.getHeatCapacity();
-        for (IHeatCapacitor capacitor : getCapacitors(side)) {
-            capacitor.handleHeatChange(transfer.split(capacitor.getHeatCapacity() / totalHeatCapacity));
-        }*/
-    }
-
     public static class HeatTransfer {
 
         private final FloatingLong adjacentTransfer;

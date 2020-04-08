@@ -2,12 +2,12 @@ package mekanism.api.heat;
 
 import mekanism.api.math.FloatingLong;
 
-public class TemperaturePacket {
+public class HeatPacket {
 
     private TransferType type;
     private FloatingLong amount;
 
-    public TemperaturePacket(TransferType type, FloatingLong amount) {
+    public HeatPacket(TransferType type, FloatingLong amount) {
         this.type = type;
         this.amount = amount;
     }
@@ -20,8 +20,8 @@ public class TemperaturePacket {
         return amount;
     }
 
-    public TemperaturePacket split(double ratio) {
-        return new TemperaturePacket(type, amount.multiply(ratio));
+    public HeatPacket split(double ratio) {
+        return new HeatPacket(type, amount.multiply(ratio));
     }
 
     public enum TransferType {

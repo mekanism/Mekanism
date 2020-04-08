@@ -1,6 +1,6 @@
 package mekanism.common.tile.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
@@ -265,6 +266,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         energyContainerHolder = getInitialEnergyContainers();
         if (canHandleEnergy()) {
             strictEnergyHandlers = new EnumMap<>(Direction.class);
+        }
+        heatCapacitorHolder = getInitialHeatCapacitors();
+        if (canHandleHeat()) {
+            heatHandlers = new EnumMap<>(Direction.class);
         }
         if (hasInventory()) {
             itemHandlers = new EnumMap<>(Direction.class);
@@ -588,6 +593,9 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
         if (canHandleEnergy() && persistEnergy()) {
             nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
+        }
+        if (canHandleHeat() && persistHeat()) {
+            nbtTags.put(NBTConstants.HEAT_CAPACITORS, DataHandlerUtils.writeContainers(getHeatCapacitors(null)));
         }
         if (isActivatable()) {
             nbtTags.putBoolean(NBTConstants.ACTIVE_STATE, currentActive);
@@ -1155,6 +1163,22 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         this.lastEnergyReceived = inputRate;
     }
     //End methods IMekanismStrictEnergyHandler
+
+    //Methods for implementing IInWorldHeatHandler
+    @Nullable
+    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        return null;
+    }
+
+    public boolean persistHeat() {
+        return canHandleHeat();
+    }
+
+    public boolean handlesHeat() {
+        return persistHeat();
+    }
+
+    //End methods for IInWorldHeatHandler
 
     //Methods for implementing ITileSecurity
     @Override

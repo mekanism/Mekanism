@@ -42,9 +42,36 @@ public interface IHeatHandler {
     //TODO: Do not allow this to be zero
     FloatingLong getHeatCapacity(int capacitor);
 
-    void handleTemperatureChange(int capacitor, TemperaturePacket transfer);
+    void handleHeatChange(int capacitor, HeatPacket transfer);
 
-    default void handleTemperatureChange(TemperaturePacket transfer) {
-        //TODO: Implement me and split it evenly across all the capacitors, HeatAPI#handleTemperatureChange
+    default FloatingLong getTotalTemperature() {
+        FloatingLong sum = FloatingLong.ZERO;
+        for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
+            sum = sum.plusEqual(getTemperature(capacitor).multiply(getHeatCapacity(capacitor).divide(getHeatCapacity(capacitor))));
+        }
+        return sum;
+    }
+
+    default FloatingLong getTotalInverseConductionCoefficient() {
+        FloatingLong sum = FloatingLong.ZERO;
+        for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
+            sum = sum.plusEqual(getInverseConductionCoefficient(capacitor));
+        }
+        return sum;
+    }
+
+    default FloatingLong getTotalHeatCapacity() {
+        FloatingLong sum = FloatingLong.ZERO;
+        for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
+            sum = sum.plusEqual(getHeatCapacity(capacitor));
+        }
+        return sum;
+    }
+
+    default void handleTemperatureChange(HeatPacket transfer) {
+        FloatingLong totalHeatCapacity = getTotalHeatCapacity();
+        for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
+            handleHeatChange(capacitor, transfer.split(getHeatCapacity(capacitor).divideToLevel(totalHeatCapacity)));
+        }
     }
 }

@@ -67,14 +67,14 @@ public interface ISidedHeatHandler extends IHeatHandler {
         return getHeatCapacity(capacitor, getHeatSideFor());
     }
 
-    void handleTemperatureChange(int capacitor, TemperaturePacket transfer, @Nullable Direction side);
+    void handleHeatChange(int capacitor, HeatPacket transfer, @Nullable Direction side);
 
     @Override
-    default void handleTemperatureChange(int capacitor, TemperaturePacket transfer) {
-        handleTemperatureChange(capacitor, transfer, getHeatSideFor());
+    default void handleHeatChange(int capacitor, HeatPacket transfer) {
+        handleHeatChange(capacitor, transfer, getHeatSideFor());
     }
 
-    default void handleTemperatureChange(TemperaturePacket transfer, @Nullable Direction side) {
+    default void handleTemperatureChange(HeatPacket transfer, @Nullable Direction side) {
         //TODO: Implement me and split it evenly across all the capacitors, HeatAPI#handleTemperatureChange
     }
 }

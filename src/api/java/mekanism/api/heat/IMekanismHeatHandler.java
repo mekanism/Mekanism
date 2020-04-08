@@ -35,7 +35,7 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
      * @implNote When side is null (an internal request), this method <em>MUST</em> return all capacitors in the handler. Additionally, if {@link #canHandleHeat()} is
      * false, this <em>MUST</em> return an empty list.
      */
-    List<IHeatCapacitor> getCapacitors(@Nullable Direction side);
+    List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side);
 
     /**
      * Called when the temperature of this heat handler change.
@@ -52,7 +52,7 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
      */
     @Nullable
     default IHeatCapacitor getHeatCapacitor(int capacitor, @Nullable Direction side) {
-        List<IHeatCapacitor> capacitors = getCapacitors(side);
+        List<IHeatCapacitor> capacitors = getHeatCapacitors(side);
         return capacitor >= 0 && capacitor < capacitors.size() ? capacitors.get(capacitor) : null;
     }
 
@@ -85,7 +85,7 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
     }
 
     @Override
-    default void handleTemperatureChange(int capacitor, TemperaturePacket transfer, @Nullable Direction side) {
+    default void handleHeatChange(int capacitor, HeatPacket transfer, @Nullable Direction side) {
         IHeatCapacitor heatCapacitor = getHeatCapacitor(capacitor, side);
         if (heatCapacitor != null) {
             heatCapacitor.handleTemperatureChange(transfer);
