@@ -46,7 +46,7 @@ public class FusionReactor {
     private static double plasmaHeatCapacity = 100;
     private static double caseHeatCapacity = 1;
     private static double thermocoupleEfficiency = 0.05;
-    private static double steamTransferEfficiency = 0.1;
+    private static double steamTransferEfficiency = 0.2;
     //Heat transfer metrics
     private static double plasmaCaseConductivity = 0.2;
     private static double caseWaterConductivity = 0.3;

@@ -64,11 +64,11 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         turbineBladesPerCoil = CachedIntValue.wrap(this, builder.comment("The number of blades on each turbine coil per blade applied.")
               .define("turbineBladesPerCoil", 4));
         turbineVentGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is vented into the turbine.")
-              .define("turbineVentGasFlow", 16_000D));
+              .define("turbineVentGasFlow", 32_000D));
         turbineDisperserGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is dispersed into the turbine.")
-              .define("turbineDisperserGasFlow", 640D));
+              .define("turbineDisperserGasFlow", 1_280D));
         condenserRate = CachedIntValue.wrap(this, builder.comment("The rate at which steam is condensed in the turbine.")
-              .define("condenserRate", 32_000));
+              .define("condenserRate", 64_000));
         builder.pop();
 
         builder.comment("Wind Generator Settings").push(WIND_CATEGORY);

@@ -67,6 +67,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedFloatValue evaporationHeatDissipation;
     public final CachedDoubleValue evaporationTempMultiplier;
     public final CachedDoubleValue evaporationSolarMultiplier;
+    public final CachedDoubleValue evaporationHeatCapacity;
     public final CachedDoubleValue evaporationMaxTemp;
     public final CachedFloatingLongValue maxEnergyPerSteam;
     public final CachedDoubleValue superheatingHeatTransfer;
@@ -82,6 +83,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue blacklistForge;
     public final CachedIntValue laserRange;
     public final CachedFloatingLongValue laserEnergyNeededPerHardness;
+    public final CachedDoubleValue resistiveHeaterEfficiency;
     //TODO: Replace this with a void invalid contents, rather than throwing a runtime exception for things, log a warning and then void the contents
     public final CachedBooleanValue voidInvalidGases;
     public final CachedIntValue digitalMinerMaxRadius;
@@ -194,6 +196,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("tempMultiplier", 0.1D));
         evaporationSolarMultiplier = CachedDoubleValue.wrap(this, builder.comment("Heat to absorb per Solar Panel array of Thermal Evaporation Tower.")
               .define("solarMultiplier", 0.2D));
+        evaporationHeatCapacity = CachedDoubleValue.wrap(this, builder.comment("Heat capacity of Thermal Evaporation Tower layers (increases amount of energy needed to increase temperature).")
+              .define("heatCapacity", 100D));
         evaporationMaxTemp = CachedDoubleValue.wrap(this, builder.comment("Max Temperature of the Thermal Evaporation Tower.")
               .defineInRange("maxTemp", 3_000D, 1, Double.MAX_VALUE));
         builder.pop();
@@ -203,7 +207,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         superheatingHeatTransfer = CachedDoubleValue.wrap(this, builder.comment("Amount of heat each Boiler heating element produces.")
               .define("superheatingHeatTransfer", 512_000D));
         heatPerFuelTick = CachedDoubleValue.wrap(this, builder.comment("Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.")
-              .define("heatPerFuelTick", 4D));
+              .define("heatPerFuelTick", 400D));
         allowTransmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
               .define("allowTransmitterAlloyUpgrade", true));
         allowChunkloading = CachedBooleanValue.wrap(this, builder.comment("Disable to make the anchor upgrade not do anything.")
@@ -228,6 +232,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("laserRange", 64));
         laserEnergyNeededPerHardness = CachedFloatingLongValue.define(this, builder, "Energy needed to destroy or attract blocks with a Laser (per block hardness level).",
               "laserEnergyNeededPerHardness", FloatingLong.createConst(100_000));
+        resistiveHeaterEfficiency = CachedDoubleValue.wrap(this, builder.comment("How much heat energy is created from one Joule of regular energy in the Resistive Heater.")
+            .defineInRange("resistiveHeaterEfficiency", 0.6, 0, 1));
         digitalMinerMaxRadius = CachedIntValue.wrap(this, builder.comment("Maximum radius in blocks that the Digital Miner can reach. (Increasing this may have negative effects on stability "
                                                                           + "and/or performance. We strongly recommend you leave it at the default value).")
               .defineInRange("digitalMinerMaxRadius", 32, 1, Integer.MAX_VALUE));
