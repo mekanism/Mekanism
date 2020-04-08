@@ -92,7 +92,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     }
 
     public double getHeatAvailable() {
-        double heatAvailable = (temperature - BASE_BOIL_TEMP) * locations.size();
+        double heatAvailable = (temperature - BASE_BOIL_TEMP) * locations.size() * MekanismConfig.general.boilerWaterConductivity.get();
         return Math.min(heatAvailable, superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get());
     }
 

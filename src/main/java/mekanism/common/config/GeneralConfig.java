@@ -102,6 +102,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue evaporationMaxTemp;
     public final CachedFloatingLongValue maxEnergyPerSteam;
     public final CachedDoubleValue superheatingHeatTransfer;
+    public final CachedDoubleValue boilerWaterConductivity;
     public final CachedDoubleValue heatPerFuelTick;
     public final CachedBooleanValue allowTransmitterAlloyUpgrade;
     public final CachedBooleanValue allowChunkloading;
@@ -295,8 +296,10 @@ public class GeneralConfig extends BaseMekanismConfig {
               "maxEnergyPerSteam", FloatingLong.createConst(10));
         superheatingHeatTransfer = CachedDoubleValue.wrap(this, builder.comment("Amount of heat each Boiler heating element produces.")
               .define("superheatingHeatTransfer", 512_000D));
+        boilerWaterConductivity = CachedDoubleValue.wrap(this, builder.comment("How much Boiler heat is immediately usable to convert water to steam.")
+              .define("boilerWaterConductivity", 0.7D));
         heatPerFuelTick = CachedDoubleValue.wrap(this, builder.comment("Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.")
-              .define("heatPerFuelTick", 400D));
+              .define("heatPerFuelTick", 2_000D));
         allowTransmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
               .define("allowTransmitterAlloyUpgrade", true));
         allowChunkloading = CachedBooleanValue.wrap(this, builder.comment("Disable to make the anchor upgrade not do anything.")
