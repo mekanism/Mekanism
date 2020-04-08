@@ -67,7 +67,7 @@ public class TileComponentConfig implements ITileComponent, ITrackableContainer 
             type = TransmissionType.ITEM;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             type = TransmissionType.GAS;
-        } else if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+        } else if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
             type = TransmissionType.HEAT;
         } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             type = TransmissionType.FLUID;

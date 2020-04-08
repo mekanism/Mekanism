@@ -81,7 +81,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return CapabilityUtils.getCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).isPresent();
+        return CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
     }
 
     @Override
@@ -105,7 +105,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public IHeatTransfer getCachedAcceptor(Direction side) {
-        return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())).orElse(null);
+        return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 
     @Nonnull
@@ -167,7 +167,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     public IHeatTransfer getAdjacent(Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-            Optional<IHeatTransfer> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()));
+            Optional<IHeatTransfer> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()));
             if (capability.isPresent()) {
                 return capability.get();
             }
@@ -178,8 +178,8 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return Capabilities.HEAT_TRANSFER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
+            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
     }

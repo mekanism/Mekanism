@@ -95,8 +95,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return Capabilities.HEAT_TRANSFER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
+            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         } else if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
@@ -142,12 +142,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
         if (adj instanceof TileEntityReactorBlock) {
             return null;
         }
-        return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())).orElse(null);
+        return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY && getReactor() == null) {
+        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY && getReactor() == null) {
             return true;
         }
         return super.isCapabilityDisabled(capability, side);

@@ -32,6 +32,8 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.heat.IHeatCapacitor;
+import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
@@ -56,6 +58,7 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.IInWorldHeatHandler;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -64,6 +67,7 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.proxy.ProxyFluidHandler;
 import mekanism.common.capabilities.proxy.ProxyGasHandler;
+import mekanism.common.capabilities.proxy.ProxyHeatHandler;
 import mekanism.common.capabilities.proxy.ProxyInfusionHandler;
 import mekanism.common.capabilities.proxy.ProxyItemHandler;
 import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
@@ -221,6 +225,9 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //Variables for handling IMekanismHeatHandler
     @Nullable
     private IHeatCapacitorHolder heatCapacitorHolder;
+
+    private ProxyHeatHandler readOnlyHeatHandler;
+    private Map<Direction, ProxyHeatHandler> heatHandlers;
 
     //End variables for IMekanismHeatHandler
 
@@ -635,6 +642,15 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 container.track(SyncableFluidStack.create(fluidTank));
             }
         }
+        if (canHandleHeat() && handles(SubstanceType.HEAT)) {
+            List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(null);
+            for (IHeatCapacitor capacitor : heatCapacitors) {
+                if (capacitor instanceof BasicHeatCapacitor) {
+                    BasicHeatCapacitor basicCapacitor = (BasicHeatCapacitor) capacitor;
+                    container.track(SyncableFloatingLong.create(basicCapacitor::getHeat, basicCapacitor::setHeat));
+                }
+            }
+        }
         if (canHandleEnergy() && handles(SubstanceType.ENERGY)) {
             container.track(SyncableFloatingLong.create(this::getInputRate, this::setInputRate));
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
@@ -717,6 +733,14 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 //Don't return a fluid handler if we don't actually even have any fluid tanks for that side
                 LazyOptional<IFluidHandler> lazyFluidHandler = fluidTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getFluidHandler(side));
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, lazyFluidHandler);
+            }
+        }
+        if (canHandleHeat()) {
+            if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
+                List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(side);
+                //Don't return a heat handler if we don't actually even have any heat capacitors for that side
+                LazyOptional<IHeatHandler> lazyHeatHandler = heatCapacitors.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getHeatHandler(side));
+                return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, lazyHeatHandler);
             }
         }
         if (canHandleEnergy() && EnergyCompatUtils.isEnergyCapability(capability)) {
@@ -1093,6 +1117,33 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Nullable
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
         return null;
+    }
+
+    @Nonnull
+    @Override
+    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
+        return canHandleHeat() && heatCapacitorHolder != null ? heatCapacitorHolder.getHeatCapacitors(side) : Collections.emptyList();
+    }
+
+    /**
+     * Lazily get and cache an IStrictEnergyHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null
+     * side
+     */
+    protected IHeatHandler getHeatHandler(@Nullable Direction side) {
+        if (!canHandleHeat()) {
+            return null;
+        }
+        if (side == null) {
+            if (readOnlyHeatHandler == null) {
+                readOnlyHeatHandler = new ProxyHeatHandler(this, null, heatCapacitorHolder);
+            }
+            return readOnlyHeatHandler;
+        }
+        ProxyHeatHandler heatHandler = heatHandlers.get(side);
+        if (heatHandler == null) {
+            heatHandlers.put(side, heatHandler = new ProxyHeatHandler(this, side, heatCapacitorHolder));
+        }
+        return heatHandler;
     }
 
     //End methods for IInWorldHeatHandler

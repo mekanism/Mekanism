@@ -5,10 +5,10 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.IConfigurable;
 import mekanism.api.IEvaporationSolar;
-import mekanism.api.IHeatTransfer;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.heat.IHeatHandler;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -20,7 +20,7 @@ import mekanism.common.capabilities.basic.DefaultConfigurable;
 import mekanism.common.capabilities.basic.DefaultEvaporationSolar;
 import mekanism.common.capabilities.basic.DefaultGasHandler;
 import mekanism.common.capabilities.basic.DefaultGridTransmitter;
-import mekanism.common.capabilities.basic.DefaultHeatTransfer;
+import mekanism.common.capabilities.basic.DefaultHeatHandler;
 import mekanism.common.capabilities.basic.DefaultInfusionHandler;
 import mekanism.common.capabilities.basic.DefaultLaserReceptor;
 import mekanism.common.capabilities.basic.DefaultLogisticalTransporter;
@@ -46,8 +46,8 @@ public class Capabilities {
     @CapabilityInject(IInfusionHandler.class)
     public static Capability<IInfusionHandler> INFUSION_HANDLER_CAPABILITY = null;
 
-    @CapabilityInject(IHeatTransfer.class)
-    public static Capability<IHeatTransfer> HEAT_TRANSFER_CAPABILITY = null;
+    @CapabilityInject(IHeatHandler.class)
+    public static Capability<IHeatHandler> HEAT_HANDLER_CAPABILITY = null;
 
     @CapabilityInject(IBlockableConnection.class)
     public static Capability<IBlockableConnection> BLOCKABLE_CONNECTION_CAPABILITY = null;
@@ -83,10 +83,10 @@ public class Capabilities {
 
         DefaultGasHandler.register();
         DefaultInfusionHandler.register();
+        DefaultHeatHandler.register();
 
         DefaultConfigurable.register();
         DefaultAlloyInteraction.register();
-        DefaultHeatTransfer.register();
         DefaultConfigCardAccess.register();
         DefaultSpecialConfigData.register();
         DefaultEvaporationSolar.register();

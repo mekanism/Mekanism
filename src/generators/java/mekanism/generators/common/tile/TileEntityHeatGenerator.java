@@ -163,7 +163,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     public IHeatTransfer getAdjacent(Direction side) {
         if (side == Direction.DOWN) {
             TileEntity adj = MekanismUtils.getTileEntity(getWorld(), pos.down());
-            Optional<IHeatTransfer> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()));
+            Optional<IHeatTransfer> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()));
             if (capability.isPresent()) {
                 return capability.get();
             }
@@ -173,7 +173,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY && side == Direction.DOWN) {
+        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY && side == Direction.DOWN) {
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
@@ -182,8 +182,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return Capabilities.HEAT_TRANSFER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
+            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapabilityIfEnabled(capability, side);
     }

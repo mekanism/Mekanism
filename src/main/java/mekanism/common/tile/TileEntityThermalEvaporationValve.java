@@ -87,7 +87,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY && getController() == null) {
+        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY && getController() == null) {
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
@@ -96,8 +96,8 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return Capabilities.HEAT_TRANSFER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
+            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapabilityIfEnabled(capability, side);
     }

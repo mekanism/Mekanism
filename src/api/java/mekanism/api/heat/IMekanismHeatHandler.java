@@ -24,6 +24,11 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
         return true;
     }
 
+    @Override
+    default int getHeatCapacitorCount(@Nullable Direction side) {
+        return getHeatCapacitors(side).size();
+    }
+
     /**
      * Returns the list of IHeatCapacitors that this heat handler exposes on the given side.
      *
@@ -85,10 +90,10 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
     }
 
     @Override
-    default void handleHeatChange(int capacitor, HeatPacket transfer, @Nullable Direction side) {
+    default void handleHeat(int capacitor, HeatPacket transfer, @Nullable Direction side) {
         IHeatCapacitor heatCapacitor = getHeatCapacitor(capacitor, side);
         if (heatCapacitor != null) {
-            heatCapacitor.handleTemperatureChange(transfer);
+            heatCapacitor.handleHeat(transfer);
         }
     }
 }

@@ -42,7 +42,7 @@ public interface IHeatHandler {
     //TODO: Do not allow this to be zero
     FloatingLong getHeatCapacity(int capacitor);
 
-    void handleHeatChange(int capacitor, HeatPacket transfer);
+    void handleHeat(int capacitor, HeatPacket transfer);
 
     default FloatingLong getTotalTemperature() {
         FloatingLong sum = FloatingLong.ZERO;
@@ -68,10 +68,10 @@ public interface IHeatHandler {
         return sum;
     }
 
-    default void handleTemperatureChange(HeatPacket transfer) {
+    default void handleHeatChange(HeatPacket transfer) {
         FloatingLong totalHeatCapacity = getTotalHeatCapacity();
         for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
-            handleHeatChange(capacitor, transfer.split(getHeatCapacity(capacitor).divideToLevel(totalHeatCapacity)));
+            handleHeat(capacitor, transfer.split(getHeatCapacity(capacitor).divideToLevel(totalHeatCapacity)));
         }
     }
 }
