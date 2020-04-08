@@ -1,6 +1,5 @@
 package mekanism.common.tile.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -11,6 +10,7 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
@@ -1169,13 +1169,15 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 currentActive = active;
                 if (getClientActive() != active) {
                     if (active) {
-                        //Always turn on instantly, and then clear the current delayed switch
+                        //Always turn on instantly
                         state = Attribute.setActive(state, true);
                         world.setBlockState(pos, state);
-                        updateDelay = 0;
-                    } else if (updateDelay == 0) {
-                        //If we are turning it off, and are not currently waiting for it to turn off,
-                        // then start the timer for setting it to inactive
+                    } else {
+                        // if the update delay is already zero, we can go ahead and set the state
+                        if (updateDelay == 0) {
+                            world.setBlockState(pos, Attribute.setActive(getBlockState(), currentActive));
+                        }
+                        // we always reset the update delay when turning off
                         updateDelay = delaySupplier.getAsInt();
                     }
                 }

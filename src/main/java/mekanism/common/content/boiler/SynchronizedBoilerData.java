@@ -17,6 +17,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
@@ -66,7 +67,9 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
         waterTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
         fluidTanks = Collections.singletonList(waterTank);
-        steamTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getSteamTankCapacity(), gas -> gas == MekanismGases.STEAM.getGas());
+        steamTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getSteamTankCapacity(),
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
+            gas -> gas == MekanismGases.STEAM.getGas());
         gasTanks = Collections.singletonList(steamTank);
     }
 

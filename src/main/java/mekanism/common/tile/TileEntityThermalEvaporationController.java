@@ -1,10 +1,10 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
@@ -251,7 +251,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             temperatureSet = true;
         }
         heatToAbsorb += getActiveSolars() * MekanismConfig.general.evaporationSolarMultiplier.get();
-        temperature += (float) (heatToAbsorb / height);
+        temperature += (float) (heatToAbsorb / (height * MekanismConfig.general.evaporationHeatCapacity.get()));
 
         float biome = biomeTemp - 0.5F;
         float base = biome > 0 ? biome * 20 : biomeTemp * 40;
