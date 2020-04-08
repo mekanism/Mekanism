@@ -1,17 +1,37 @@
 package mekanism.api.heat;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.math.FloatingLong;
 import net.minecraft.util.Direction;
 
+/**
+ * A sided variant of {@link IHeatHandler}
+ */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface ISidedHeatHandler extends IHeatHandler {
 
+    /**
+     * The side this {@link ISidedHeatHandler} is for. This defaults to null, which is for internal use.
+     *
+     * @return The default side to use for the normal {@link IHeatHandler} methods when wrapping them into {@link ISidedHeatHandler} methods.
+     */
     @Nullable
     default Direction getHeatSideFor() {
         return null;
     }
 
+    /**
+     * A sided variant of {@link IHeatHandler#getHeatCapacitorCount()}, docs copied for convenience.
+     *
+     * Returns the number of heat storage units ("capacitors") available
+     *
+     * @param side The side we are interacting with the handler from (null for internal).
+     *
+     * @return The number of capacitors available
+     */
     int getHeatCapacitorCount(@Nullable Direction side);
 
     @Override
@@ -19,24 +39,42 @@ public interface ISidedHeatHandler extends IHeatHandler {
         return getHeatCapacitorCount(getHeatSideFor());
     }
 
-    FloatingLong getTemperature(@Nullable Direction side);
+    FloatingLong getTemperature(int capacitor, @Nullable Direction side);
 
     @Override
-    default FloatingLong getTemperature() {
-        return getTemperature(getHeatSideFor());
+    default FloatingLong getTemperature(int capacitor) {
+        return getTemperature(capacitor, getHeatSideFor());
     }
 
-    double getInverseConductionCoefficient(@Nullable Direction side);
+    FloatingLong getInverseConductionCoefficient(int capacitor, @Nullable Direction side);
 
     @Override
-    default double getInverseConductionCoefficient() {
-        return getInverseConductionCoefficient(getHeatSideFor());
+    default FloatingLong getInverseConductionCoefficient(int capacitor) {
+        return getInverseConductionCoefficient(capacitor, getHeatSideFor());
     }
 
-    void handleHeatChange(@Nonnull HeatPacket transfer, @Nullable Direction side);
+    FloatingLong getInsulationCoefficient(int capacitor, @Nullable Direction side);
 
     @Override
-    default void handleHeatChange(@Nonnull HeatPacket transfer) {
-        handleHeatChange(transfer, getHeatSideFor());
+    default FloatingLong getInsulationCoefficient(int capacitor) {
+        return getInsulationCoefficient(capacitor, getHeatSideFor());
+    }
+
+    FloatingLong getHeatCapacity(int capacitor, @Nullable Direction side);
+
+    @Override
+    default FloatingLong getHeatCapacity(int capacitor) {
+        return getHeatCapacity(capacitor, getHeatSideFor());
+    }
+
+    void handleTemperatureChange(int capacitor, TemperaturePacket transfer, @Nullable Direction side);
+
+    @Override
+    default void handleTemperatureChange(int capacitor, TemperaturePacket transfer) {
+        handleTemperatureChange(capacitor, transfer, getHeatSideFor());
+    }
+
+    default void handleTemperatureChange(TemperaturePacket transfer, @Nullable Direction side) {
+        //TODO: Implement me and split it evenly across all the capacitors, HeatAPI#handleTemperatureChange
     }
 }

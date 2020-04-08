@@ -1,26 +1,33 @@
 package mekanism.common.capabilities.heat;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
-import mekanism.api.heat.HeatPacket;
-import mekanism.api.heat.HeatPacket.Transfer;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.heat.IHeatCapacitor;
+import mekanism.api.heat.TemperaturePacket;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class BasicHeatCapacitor implements IHeatCapacitor {
 
-    private final double heatCapacity;
-    private final double conductionCoefficient;
-    private final double insulationCoefficient;
+    private final FloatingLong heatCapacity;
+    private final FloatingLong conductionCoefficient;
+    private final FloatingLong insulationCoefficient;
 
     private boolean absorbHeat;
     private boolean emitHeat;
 
     protected FloatingLong storedHeat = FloatingLong.ZERO;
-    protected HeatPacket heatToHandle;
+    @Nullable
+    protected TemperaturePacket heatToHandle;
 
-    public BasicHeatCapacitor(double heatCapacity, double conductionCoefficient, double insulationCoefficient, boolean absorbHeat, boolean emitHeat) {
+    public BasicHeatCapacitor(FloatingLong heatCapacity, FloatingLong conductionCoefficient, FloatingLong insulationCoefficient, boolean absorbHeat, boolean emitHeat) {
         this.heatCapacity = heatCapacity;
         this.conductionCoefficient = conductionCoefficient;
         this.insulationCoefficient = insulationCoefficient;
@@ -34,36 +41,38 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     @Override
-    public double getInverseConductionCoefficient() {
+    public FloatingLong getInverseConductionCoefficient() {
         return conductionCoefficient;
     }
 
     @Override
-    public void handleHeatChange(HeatPacket transfer) {
+    public void handleTemperatureChange(TemperaturePacket transfer) {
         heatToHandle = transfer;
     }
 
     public void update() {
         if (heatToHandle != null) {
-            if (heatToHandle.getType() == Transfer.ABSORB && absorbHeat) {
+            if (heatToHandle.getType().absorb() && absorbHeat) {
                 storedHeat = storedHeat.add(heatToHandle.getAmount().divide(heatCapacity));
-            } else if (heatToHandle.getType() == Transfer.EMIT && emitHeat) {
+            } else if (heatToHandle.getType().emit() && emitHeat) {
                 storedHeat = storedHeat.subtract(heatToHandle.getAmount().divide(heatCapacity));
             }
         }
         // TODO run heat emission simulation if emitHeat = true?
     }
 
-    public double getInsulationCoefficient() {
+    @Override
+    public FloatingLong getInsulationCoefficient() {
         return insulationCoefficient;
     }
 
-    public double getHeatCapacity() {
+    @Override
+    public FloatingLong getHeatCapacity() {
         return heatCapacity;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.STORED, (heat) -> storedHeat = heat);
+        NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.STORED, heat -> storedHeat = heat);
     }
 }

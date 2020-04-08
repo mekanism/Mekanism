@@ -1,5 +1,6 @@
 package mekanism.common.tile.base;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -10,7 +11,6 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
@@ -56,7 +56,7 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.heat.IMekanismHeatHandler;
+import mekanism.common.capabilities.heat.IInWorldHeatHandler;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -127,7 +127,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends TileEntityUpdateable implements IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
-      ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, IMekanismHeatHandler {
+      ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, IInWorldHeatHandler {
 
     //TODO: Should the implementations of the various stuff be extracted into TileComponents?
 

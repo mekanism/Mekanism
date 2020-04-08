@@ -21,8 +21,6 @@ public interface ISidedGasHandler extends IGasHandler {
      */
     @Nullable
     default Direction getGasSideFor() {
-        //TODO: Decide if having this method even makes sense or would it be better to just inline null for the built in IGasHandler
-        // methods, given we just handle sides via the ProxyGasHandler anyways, in which we use our extended methods.
         return null;
     }
 

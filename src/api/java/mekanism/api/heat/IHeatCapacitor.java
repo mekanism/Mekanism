@@ -1,17 +1,25 @@
 package mekanism.api.heat;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface IHeatCapacitor extends INBTSerializable<CompoundNBT> {
 
     FloatingLong getTemperature();
 
-    double getInverseConductionCoefficient();
+    FloatingLong getInverseConductionCoefficient();
 
-    void handleHeatChange(HeatPacket transfer);
+    FloatingLong getInsulationCoefficient();
+
+    FloatingLong getHeatCapacity();
+
+    void handleTemperatureChange(TemperaturePacket transfer);
 
     @Override
     default CompoundNBT serializeNBT() {

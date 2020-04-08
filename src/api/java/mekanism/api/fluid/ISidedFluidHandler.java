@@ -22,8 +22,6 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
      */
     @Nullable
     default Direction getFluidSideFor() {
-        //TODO: Decide if having this method even makes sense or would it be better to just inline null for the built in IExtendedFluidHandler
-        // methods, given we just handle sides via the ProxyFluidHandler anyways, in which we use our extended methods.
         return null;
     }
 

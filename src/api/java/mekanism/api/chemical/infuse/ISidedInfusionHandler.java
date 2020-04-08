@@ -21,8 +21,6 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
      */
     @Nullable
     default Direction getInfusionSideFor() {
-        //TODO: Decide if having this method even makes sense or would it be better to just inline null for the built in IInfusionHandler
-        // methods, given we just handle sides via the ProxyInfusionHandler anyways, in which we use our extended methods.
         return null;
     }
 
