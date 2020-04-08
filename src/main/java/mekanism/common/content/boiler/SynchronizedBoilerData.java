@@ -1,14 +1,14 @@
 package mekanism.common.content.boiler;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.chemical.IChemicalTank;
@@ -86,13 +86,6 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
                 gasTanks.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
             }
         }
-    }
-
-    /**
-     * @return how much heat energy is needed to convert one unit of water into steam
-     */
-    public static double getHeatEnthalpy() {
-        return MekanismConfig.general.maxEnergyPerSteam.get().divideToLevel(MekanismConfig.general.energyPerHeat.get());
     }
 
     public double getHeatAvailable() {

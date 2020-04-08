@@ -3,6 +3,7 @@ package mekanism.common.util;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -31,5 +32,9 @@ public class HeatUtils {
             heatTransferred[1] += heatToTransfer;
         }
         return heatTransferred;
+    }
+
+    public static double getVaporizationEnthalpy() {
+        return MekanismConfig.general.maxEnergyPerSteam.get().doubleValue();
     }
 }

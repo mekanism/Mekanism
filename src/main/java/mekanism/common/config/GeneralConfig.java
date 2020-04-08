@@ -99,7 +99,6 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue evaporationTempMultiplier;
     public final CachedDoubleValue evaporationSolarMultiplier;
     public final CachedDoubleValue evaporationMaxTemp;
-    public final CachedFloatingLongValue energyPerHeat;
     public final CachedFloatingLongValue maxEnergyPerSteam;
     public final CachedDoubleValue superheatingHeatTransfer;
     public final CachedDoubleValue heatPerFuelTick;
@@ -288,12 +287,10 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("maxTemp", 3_000D, 1, Double.MAX_VALUE));
         builder.pop();
 
-        energyPerHeat = CachedFloatingLongValue.define(this, builder, "Joules required by the Resistive Heater to produce one unit of heat. Also affects Thermoelectric Boiler's Water->Steam rate.",
-              "energyPerHeat", FloatingLong.createConst(1_000));
         maxEnergyPerSteam = CachedFloatingLongValue.define(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
-              "maxEnergyPerSteam", FloatingLong.createConst(100));
+              "maxEnergyPerSteam", FloatingLong.createConst(10));
         superheatingHeatTransfer = CachedDoubleValue.wrap(this, builder.comment("Amount of heat each Boiler heating element produces.")
-              .define("superheatingHeatTransfer", 10_000D));
+              .define("superheatingHeatTransfer", 512_000D));
         heatPerFuelTick = CachedDoubleValue.wrap(this, builder.comment("Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.")
               .define("heatPerFuelTick", 4D));
         allowTransmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")

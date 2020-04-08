@@ -18,6 +18,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.LaserManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -44,7 +45,6 @@ public class FusionReactor {
     //Thermal characteristics
     private static double plasmaHeatCapacity = 100;
     private static double caseHeatCapacity = 1;
-    private static double enthalpyOfVaporization = 10;
     private static double thermocoupleEfficiency = 0.05;
     private static double steamTransferEfficiency = 0.1;
     //Heat transfer metrics
@@ -177,7 +177,7 @@ public class FusionReactor {
 
         //Transfer from casing to water if necessary
         double caseWaterHeat = caseWaterConductivity * lastCaseTemperature;
-        int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
+        int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / HeatUtils.getVaporizationEnthalpy());
         waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getNeeded()));
         if (waterToVaporize > 0) {
             if (getWaterTank().shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
@@ -186,7 +186,7 @@ public class FusionReactor {
             getSteamTank().insert(MekanismGases.STEAM.getGasStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
         }
 
-        caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;
+        caseWaterHeat = waterToVaporize * HeatUtils.getVaporizationEnthalpy() / steamTransferEfficiency;
         caseTemperature -= caseWaterHeat / caseHeatCapacity;
         for (IHeatTransfer source : heatTransfers) {
             source.simulateHeat();
@@ -422,7 +422,7 @@ public class FusionReactor {
 
     public int getSteamPerTick(boolean current) {
         double temperature = current ? caseTemperature : getMaxCasingTemperature(true);
-        return (int) (steamTransferEfficiency * caseWaterConductivity * temperature / enthalpyOfVaporization);
+        return (int) (steamTransferEfficiency * caseWaterConductivity * temperature / HeatUtils.getVaporizationEnthalpy());
     }
 
     public double getTemp() {
@@ -441,21 +441,9 @@ public class FusionReactor {
         heatToAbsorb += heat;
     }
 
-    public double[] simulateHeat() {
-        return null;
-    }
-
     public double applyTemperatureChange() {
         caseTemperature += heatToAbsorb / caseHeatCapacity;
         heatToAbsorb = 0;
         return caseTemperature;
-    }
-
-    public boolean canConnectHeat(Direction side) {
-        return false;
-    }
-
-    public IHeatTransfer getAdjacent(Direction side) {
-        return null;
     }
 }

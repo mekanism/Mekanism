@@ -7,10 +7,10 @@ import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.HeatUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.entity.player.PlayerInventory;
@@ -36,7 +36,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
         }, this));
         addButton(boilGraph = new GuiGraph(this, 8, 83, 160, 36, MekanismLang.BOIL_RATE::translate));
         addButton(maxGraph = new GuiGraph(this, 8, 122, 160, 36, MekanismLang.MAX_BOIL_RATE::translate));
-        maxGraph.enableFixedScale((int) ((tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get()) / SynchronizedBoilerData.getHeatEnthalpy()));
+        maxGraph.enableFixedScale((int) ((tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get()) / HeatUtils.getVaporizationEnthalpy()));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
         drawString(MekanismLang.BOILER_MAX_STEAM.translate(tile.structure == null ? 0 : tile.structure.steamTank.getCapacity()), 8, 35, 0x404040);
         drawString(MekanismLang.BOILER_HEAT_TRANSFER.translate(), 8, 49, 0x797979);
         drawString(MekanismLang.BOILER_HEATERS.translate(tile.getSuperheatingElements()), 14, 58, 0x404040);
-        int boilCapacity = (int) (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get() / SynchronizedBoilerData.getHeatEnthalpy());
+        int boilCapacity = (int) (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get() / HeatUtils.getVaporizationEnthalpy());
         drawString(MekanismLang.BOILER_CAPACITY.translate(boilCapacity), 8, 72, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

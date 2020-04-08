@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
@@ -24,6 +24,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -94,8 +95,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             if (structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
                 int steamAmount = structure.steamTank.getStored();
                 double heatAvailable = structure.getHeatAvailable();
-
-                structure.lastMaxBoil = (int) Math.floor(heatAvailable / SynchronizedBoilerData.getHeatEnthalpy());
+                structure.lastMaxBoil = (int) Math.floor(heatAvailable / HeatUtils.getVaporizationEnthalpy());
 
                 int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterTank.getFluidAmount());
                 amountToBoil = Math.min(amountToBoil, structure.steamTank.getCapacity() - steamAmount);
@@ -108,7 +108,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                     structure.steamTank.growStack(amountToBoil, Action.EXECUTE);
                 }
 
-                structure.temperature -= (amountToBoil * SynchronizedBoilerData.getHeatEnthalpy()) / structure.locations.size();
+                structure.temperature -= (amountToBoil * HeatUtils.getVaporizationEnthalpy()) / structure.locations.size();
                 structure.lastBoilRate = amountToBoil;
             } else {
                 structure.lastBoilRate = 0;

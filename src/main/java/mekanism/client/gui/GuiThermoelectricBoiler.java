@@ -12,10 +12,10 @@ import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -53,7 +53,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
 
             @Override
             public double getLevel() {
-                return tile.structure == null ? 0 : tile.getLastMaxBoil() * SynchronizedBoilerData.getHeatEnthalpy() /
+                return tile.structure == null ? 0 : tile.getLastMaxBoil() * HeatUtils.getVaporizationEnthalpy() /
                                                     (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get());
             }
         }, 144, 13));
