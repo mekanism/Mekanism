@@ -1,12 +1,12 @@
 package mekanism.common.loot.table;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
@@ -18,9 +18,11 @@ import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.data.loot.BlockLootTables;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.storage.loot.ConstantRange;
 import net.minecraft.world.storage.loot.ItemLootEntry;
@@ -29,6 +31,7 @@ import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTable.Builder;
 import net.minecraft.world.storage.loot.functions.CopyNbt;
 import net.minecraft.world.storage.loot.functions.CopyNbt.Source;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
 
 public abstract class BaseBlockLootTables extends BlockLootTables {
@@ -129,21 +132,14 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 TileEntityMekanism tileEntity = (TileEntityMekanism) tile;
                 //TODO: Evaluate a way of doing this that doesn't force TileEntityMekanism
                 //TODO: Do we care that technically breaking the reactor controller makes it grab the tanks?
-                if (tileEntity.handlesGas() && tileEntity.getGasTanks(null).size() > 0) {
-                    nbtBuilder.replaceOperation(NBTConstants.GAS_TANKS, NBTConstants.MEK_DATA + "." + NBTConstants.GAS_TANKS);
-                    hasData = true;
-                }
-                if (tileEntity.handlesInfusion() && tileEntity.getInfusionTanks(null).size() > 0) {
-                    nbtBuilder.replaceOperation(NBTConstants.INFUSION_TANKS, NBTConstants.MEK_DATA + "." + NBTConstants.INFUSION_TANKS);
-                    hasData = true;
-                }
-                if (tileEntity.handlesFluid() && tileEntity.getFluidTanks(null).size() > 0) {
-                    nbtBuilder.replaceOperation(NBTConstants.FLUID_TANKS, NBTConstants.MEK_DATA + "." + NBTConstants.FLUID_TANKS);
-                    hasData = true;
-                }
-                if (tileEntity.handlesEnergy() && tileEntity.getEnergyContainers(null).size() > 0) {
-                    nbtBuilder.replaceOperation(NBTConstants.ENERGY_CONTAINERS, NBTConstants.MEK_DATA + "." + NBTConstants.ENERGY_CONTAINERS);
-                    hasData = true;
+                for (SubstanceType type : SubstanceType.values()) {
+                    if (tileEntity.handles(type)) {
+                        List<? extends INBTSerializable<CompoundNBT>> list = type.getContainers(tileEntity);
+                        if (list.size() > 0) {
+                            nbtBuilder.replaceOperation(type.getContainerTag(), NBTConstants.MEK_DATA + "." + type.getContainerTag());
+                            hasData = true;
+                        }
+                    }
                 }
             }
             //TODO: If anything for inventories doesn't work we may have to check if the tile is an ISustainedInventory

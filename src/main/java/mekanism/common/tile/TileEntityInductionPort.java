@@ -13,6 +13,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
@@ -45,9 +46,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    public boolean persistEnergy() {
+    public boolean persists(SubstanceType type) {
         //Do not handle energy when it comes to syncing it/saving this tile to disk
-        return false;
+        if (type == SubstanceType.ENERGY) {
+            return false;
+        }
+        return super.persists(type);
     }
 
     @Override

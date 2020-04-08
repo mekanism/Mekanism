@@ -14,6 +14,7 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -78,7 +79,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
                     tile = (TileEntityMekanism) tileEntity;
                 }
             }
-            if (tile == null || !tile.handlesFluid()) {
+            if (tile == null || !tile.handles(SubstanceType.FLUID)) {
                 //Something went wrong
                 return false;
             }

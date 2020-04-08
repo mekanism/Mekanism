@@ -30,6 +30,7 @@ import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.GeneratorTags;
@@ -109,13 +110,11 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     }
 
     @Override
-    public boolean handlesGas() {
-        return false;
-    }
-
-    @Override
-    public boolean handlesFluid() {
-        return false;
+    public boolean handles(SubstanceType type) {
+        if (type == SubstanceType.GAS || type == SubstanceType.FLUID) {
+            return false;
+        }
+        return super.handles(type);
     }
 
     public IInventorySlot getReactorSlot() {

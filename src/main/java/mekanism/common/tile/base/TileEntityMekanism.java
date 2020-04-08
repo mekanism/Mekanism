@@ -1,6 +1,5 @@
 package mekanism.common.tile.base;
 
-;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -315,6 +314,27 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         return blockProvider.getBlock();
     }
 
+    /**
+     * Should data related to the given type be persisted in this tile save
+     */
+    public boolean persists(SubstanceType type) {
+        switch (type) {
+            case FLUID: return canHandleFluid();
+            case GAS: return canHandleGas();
+            case ENERGY: return canHandleEnergy();
+            case HEAT: return canHandleHeat();
+            case INFUSION: return canHandleInfusion();
+        }
+        return false;
+    }
+
+    /**
+     * Should data related to the given type be saved to the item and synced to the client in the GUI
+     */
+    public boolean handles(SubstanceType type) {
+        return persists(type);
+    }
+
     @Override
     public final boolean supportsUpgrades() {
         return supportsUpgrades;
@@ -550,17 +570,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (hasInventory() && persistInventory()) {
             DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
         }
-        if (canHandleGas() && persistGas()) {
-            DataHandlerUtils.readTanks(getGasTanks(null), nbtTags.getList(NBTConstants.GAS_TANKS, NBT.TAG_COMPOUND));
-        }
-        if (canHandleInfusion() && persistInfusion()) {
-            DataHandlerUtils.readTanks(getInfusionTanks(null), nbtTags.getList(NBTConstants.INFUSION_TANKS, NBT.TAG_COMPOUND));
-        }
-        if (canHandleFluid() && persistFluid()) {
-            DataHandlerUtils.readTanks(getFluidTanks(null), nbtTags.getList(NBTConstants.FLUID_TANKS, NBT.TAG_COMPOUND));
-        }
-        if (canHandleEnergy() && persistEnergy()) {
-            DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags.getList(NBTConstants.ENERGY_CONTAINERS, NBT.TAG_COMPOUND));
+        for (SubstanceType type : SubstanceType.values()) {
+            if (type.canHandle(this) && persists(type)) {
+                type.read(this, nbtTags);
+            }
         }
         if (isActivatable()) {
             currentActive = nbtTags.getBoolean(NBTConstants.ACTIVE_STATE);
@@ -582,21 +595,13 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (hasInventory() && persistInventory()) {
             nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeSlots(getInventorySlots(null)));
         }
-        if (canHandleGas() && persistGas()) {
-            nbtTags.put(NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(getGasTanks(null)));
+
+        for (SubstanceType type : SubstanceType.values()) {
+            if (type.canHandle(this) && persists(type)) {
+                type.write(this, nbtTags);
+            }
         }
-        if (canHandleInfusion() && persistInfusion()) {
-            nbtTags.put(NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeTanks(getInfusionTanks(null)));
-        }
-        if (canHandleFluid() && persistFluid()) {
-            nbtTags.put(NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(getFluidTanks(null)));
-        }
-        if (canHandleEnergy() && persistEnergy()) {
-            nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
-        }
-        if (canHandleHeat() && persistHeat()) {
-            nbtTags.put(NBTConstants.HEAT_CAPACITORS, DataHandlerUtils.writeContainers(getHeatCapacitors(null)));
-        }
+
         if (isActivatable()) {
             nbtTags.putBoolean(NBTConstants.ACTIVE_STATE, currentActive);
             nbtTags.putInt(NBTConstants.UPDATE_DELAY, updateDelay);
@@ -612,25 +617,25 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (supportsRedstone()) {
             container.track(SyncableEnum.create(RedstoneControl::byIndexStatic, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
         }
-        if (canHandleGas() && handlesGas()) {
+        if (canHandleGas() && handles(SubstanceType.GAS)) {
             List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(null);
             for (IChemicalTank<Gas, GasStack> gasTank : gasTanks) {
                 container.track(SyncableGasStack.create(gasTank));
             }
         }
-        if (canHandleInfusion() && handlesInfusion()) {
+        if (canHandleInfusion() && handles(SubstanceType.INFUSION)) {
             List<? extends IChemicalTank<InfuseType, InfusionStack>> infusionTanks = getInfusionTanks(null);
             for (IChemicalTank<InfuseType, InfusionStack> infusionTank : infusionTanks) {
                 container.track(SyncableInfusionStack.create(infusionTank));
             }
         }
-        if (canHandleFluid() && handlesFluid()) {
+        if (canHandleFluid() && handles(SubstanceType.FLUID)) {
             List<IExtendedFluidTank> fluidTanks = getFluidTanks(null);
             for (IExtendedFluidTank fluidTank : fluidTanks) {
                 container.track(SyncableFluidStack.create(fluidTank));
             }
         }
-        if (canHandleEnergy() && handlesEnergy()) {
+        if (canHandleEnergy() && handles(SubstanceType.ENERGY)) {
             container.track(SyncableFloatingLong.create(this::getInputRate, this::setInputRate));
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
@@ -940,20 +945,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     }
 
     /**
-     * Should gas be persisted in this tile save
-     */
-    public boolean persistGas() {
-        return canHandleGas();
-    }
-
-    /**
-     * Should gas be saved to the item, and synced to the client in the GUI
-     */
-    public boolean handlesGas() {
-        return persistGas();
-    }
-
-    /**
      * Lazily get and cache an IGasHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
      */
     protected IGasHandler getGasHandler(@Nullable Direction side) {
@@ -972,12 +963,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
         return gasHandler;
     }
-
-    public void loadGas(ListNBT nbtTags) {
-        if (nbtTags != null && !nbtTags.isEmpty() && canHandleGas()) {
-            DataHandlerUtils.readTanks(getGasTanks(null), nbtTags);
-        }
-    }
     //End methods IMekanismGasHandler
 
     //Methods for implementing IMekanismInfusionHandler
@@ -990,20 +975,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public List<? extends IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side) {
         return canHandleInfusion() && infusionTankHolder != null ? infusionTankHolder.getTanks(side) : Collections.emptyList();
-    }
-
-    /**
-     * Should infusion be persisted in this tile save
-     */
-    public boolean persistInfusion() {
-        return canHandleInfusion();
-    }
-
-    /**
-     * Should infusion be saved to the item, and synced to the client in the GUI
-     */
-    public boolean handlesInfusion() {
-        return persistInfusion();
     }
 
     /**
@@ -1025,12 +996,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
         return infusionHandler;
     }
-
-    public void loadInfusion(ListNBT nbtTags) {
-        if (nbtTags != null && !nbtTags.isEmpty() && canHandleInfusion()) {
-            DataHandlerUtils.readTanks(getInfusionTanks(null), nbtTags);
-        }
-    }
     //End methods IMekanismInfusionHandler
 
     //Methods for implementing IMekanismFluidHandler
@@ -1043,20 +1008,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return canHandleFluid() && fluidTankHolder != null ? fluidTankHolder.getTanks(side) : Collections.emptyList();
-    }
-
-    /**
-     * Should fluid be persisted in this tile save
-     */
-    public boolean persistFluid() {
-        return canHandleFluid();
-    }
-
-    /**
-     * Should fluid be saved to the item, and synced to the client in the GUI
-     */
-    public boolean handlesFluid() {
-        return persistFluid();
     }
 
     /**
@@ -1079,12 +1030,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
         return fluidHandler;
     }
-
-    public void loadFluid(ListNBT nbtTags) {
-        if (nbtTags != null && !nbtTags.isEmpty() && canHandleFluid()) {
-            DataHandlerUtils.readTanks(getFluidTanks(null), nbtTags);
-        }
-    }
     //End methods IMekanismFluidHandler
 
     //Methods for implementing IMekanismStrictEnergyHandler
@@ -1097,20 +1042,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return canHandleEnergy() && energyContainerHolder != null ? energyContainerHolder.getEnergyContainers(side) : Collections.emptyList();
-    }
-
-    /**
-     * Should energy be persisted in this tile save
-     */
-    public boolean persistEnergy() {
-        return canHandleEnergy();
-    }
-
-    /**
-     * Should energy be saved to the item, and synced to the client in the GUI
-     */
-    public boolean handlesEnergy() {
-        return persistEnergy();
     }
 
     /**
@@ -1132,12 +1063,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             strictEnergyHandlers.put(side, energyHandler = new ProxyStrictEnergyHandler(this, side, energyContainerHolder));
         }
         return energyHandler;
-    }
-
-    public void loadEnergy(ListNBT nbtTags) {
-        if (nbtTags != null && !nbtTags.isEmpty() && canHandleEnergy()) {
-            DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags);
-        }
     }
 
     @Nonnull
@@ -1168,14 +1093,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Nullable
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
         return null;
-    }
-
-    public boolean persistHeat() {
-        return canHandleHeat();
-    }
-
-    public boolean handlesHeat() {
-        return persistHeat();
     }
 
     //End methods for IInWorldHeatHandler

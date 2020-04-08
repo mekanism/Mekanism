@@ -18,6 +18,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -80,7 +81,7 @@ public class GasRecipeData implements RecipeUpgradeData<GasRecipeData> {
                     tile = (TileEntityMekanism) tileEntity;
                 }
             }
-            if (tile == null || !tile.handlesGas()) {
+            if (tile == null || !tile.handles(SubstanceType.GAS)) {
                 //Something went wrong
                 return false;
             }

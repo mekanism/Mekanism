@@ -15,6 +15,7 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
@@ -59,21 +60,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
     }
 
     @Override
-    public boolean persistGas() {
-        //Do not handle gas when it comes to syncing it/saving this tile to disk
-        return false;
-    }
-
-    @Override
-    public boolean persistFluid() {
-        //Do not handle fluid when it comes to syncing it/saving this tile to disk
-        return false;
-    }
-
-    @Override
-    public boolean persistEnergy() {
-        //But that we do not handle energy when it comes to syncing it/saving this tile to disk
-        return false;
+    public boolean persists(SubstanceType type) {
+        if (type == SubstanceType.GAS || type == SubstanceType.FLUID || type == SubstanceType.ENERGY) {
+            return false;
+        }
+        return super.persists(type);
     }
 
     @Override

@@ -18,6 +18,7 @@ import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -81,7 +82,7 @@ public class InfusionRecipeData implements RecipeUpgradeData<InfusionRecipeData>
                     tile = (TileEntityMekanism) tileEntity;
                 }
             }
-            if (tile == null || !tile.handlesInfusion()) {
+            if (tile == null || !tile.handles(SubstanceType.INFUSION)) {
                 //Something went wrong
                 return false;
             }

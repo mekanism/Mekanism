@@ -8,6 +8,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
@@ -41,15 +42,12 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }
 
     @Override
-    public boolean persistFluid() {
-        //Do not handle fluid when it comes to syncing it/saving this tile to disk
-        return false;
-    }
-
-    @Override
-    public boolean persistGas() {
-        //Do not handle gas when it comes to syncing it/saving this tile to disk
-        return false;
+    public boolean persists(SubstanceType type) {
+        //Do not handle fluid or gas when it comes to syncing it/saving this tile to disk
+        if (type == SubstanceType.FLUID || type == SubstanceType.GAS) {
+            return false;
+        }
+        return super.persists(type);
     }
 
     @Override

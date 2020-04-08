@@ -7,6 +7,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
@@ -43,9 +44,12 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public boolean persistFluid() {
+    public boolean persists(SubstanceType type) {
         //But that we do not handle fluid when it comes to syncing it/saving this tile to disk
-        return false;
+        if (type == SubstanceType.FLUID) {
+            return false;
+        }
+        return super.persists(type);
     }
 
     @Override

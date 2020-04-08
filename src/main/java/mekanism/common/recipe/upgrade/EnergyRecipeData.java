@@ -17,6 +17,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -78,7 +79,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
                     tile = (TileEntityMekanism) tileEntity;
                 }
             }
-            if (tile == null || !tile.handlesEnergy()) {
+            if (tile == null || !tile.handles(SubstanceType.ENERGY)) {
                 //Something went wrong
                 return false;
             }
