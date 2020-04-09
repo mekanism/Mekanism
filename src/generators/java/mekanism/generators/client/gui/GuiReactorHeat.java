@@ -2,6 +2,8 @@ package mekanism.generators.client.gui;
 
 import java.util.Arrays;
 import java.util.Collections;
+import javax.annotation.Nonnull;
+import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
@@ -29,6 +31,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiReactorHeat extends GuiReactorInfo {
 
+    private static final FloatingLong MAX_LEVEL = FloatingLong.createConst(500_000_000);
+
     public GuiReactorHeat(EmptyTileContainer<TileEntityReactorController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
@@ -45,19 +49,20 @@ public class GuiReactorHeat extends GuiReactorInfo {
                 return MekanismRenderer.getBaseFluidTexture(Fluids.LAVA, FluidType.STILL);
             }
 
+            @Nonnull
             @Override
-            public double getLevel() {
+            public FloatingLong getLevel() {
                 return TemperatureUnit.AMBIENT.convertToK(tile.getPlasmaTemp(), true);
             }
 
             @Override
-            public double getMaxLevel() {
-                return 5E8;
+            public double getScaledLevel() {
+                return getLevel().divideToLevel(MAX_LEVEL);
             }
 
             @Override
-            public ITextComponent getText(double level) {
-                return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
+            public ITextComponent getText() {
+                return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN));
             }
         }, GaugeType.STANDARD, this, 7, 50));
         addButton(new GuiProgress(() -> tile.getPlasmaTemp().greaterThan(tile.getCaseTemp()) ? 1 : 0, ProgressType.SMALL_RIGHT, this, 29, 76));
@@ -67,19 +72,20 @@ public class GuiReactorHeat extends GuiReactorInfo {
                 return MekanismRenderer.getBaseFluidTexture(Fluids.LAVA, FluidType.STILL);
             }
 
+            @Nonnull
             @Override
-            public double getLevel() {
+            public FloatingLong getLevel() {
                 return TemperatureUnit.AMBIENT.convertToK(tile.getCaseTemp(), true);
             }
 
             @Override
-            public double getMaxLevel() {
-                return 5E8;
+            public double getScaledLevel() {
+                return getLevel().divideToLevel(MAX_LEVEL);
             }
 
             @Override
-            public ITextComponent getText(double level) {
-                return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
+            public ITextComponent getText() {
+                return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN));
             }
         }, GaugeType.STANDARD, this, 61, 50));
         addButton(new GuiProgress(() -> !tile.getCaseTemp().isZero() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));

@@ -73,7 +73,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
             heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, MekanismConfig.general.heatPerFuelTick.get()));
         }
         HeatTransfer loss = simulate();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer().copy();
+        lastEnvironmentLoss = loss.getEnvironmentTransfer().copyAsConst();
         setActive(burning);
     }
 

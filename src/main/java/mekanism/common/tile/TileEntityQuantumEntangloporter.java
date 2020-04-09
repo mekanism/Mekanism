@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -136,7 +135,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             //Set default config directions
             heatConfig.fill(DataType.INPUT);
             heatConfig.setCanEject(false);
-            // TODO look into allowing heat output config
+            // TODO look into allowing heat output config, modify getAdjacent as needed rather than just checking canInput
         }
 
         ejectorComponent = new TileComponentEjector(this);
@@ -189,7 +188,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         HeatTransfer loss = simulate();
         lastTransferLoss = loss.getAdjacentTransfer();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer().copy();
+        lastEnvironmentLoss = loss.getEnvironmentTransfer().copyAsConst();
 
         FrequencyManager manager = getManager(frequency);
         Frequency lastFreq = frequency;
@@ -326,10 +325,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
                 TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-                Optional<IHeatHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()));
-                if (capability.isPresent()) {
-                    return capability.get();
-                }
+                return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
             }
         }
         return null;

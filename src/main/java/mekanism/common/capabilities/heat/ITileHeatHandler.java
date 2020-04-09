@@ -44,9 +44,9 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
             IHeatHandler sink = getAdjacent(side);
             if (sink != null) {
                 FloatingLong invConduction = sink.getTotalInverseConductionCoefficient().add(getTotalInverseConductionCoefficient());
-                FloatingLong heatToTransfer = getTotalTemperature().divide(invConduction);
-                handleHeatChange(new HeatPacket(TransferType.EMIT, heatToTransfer));
-                sink.handleHeatChange(new HeatPacket(TransferType.ABSORB, heatToTransfer));
+                FloatingLong heatToTransfer = getTotalTemperature(side).divide(invConduction);
+                handleHeat(new HeatPacket(TransferType.EMIT, heatToTransfer), side);
+                sink.handleHeat(new HeatPacket(TransferType.ABSORB, heatToTransfer));
                 if (!(sink instanceof ICapabilityProvider) || !CapabilityUtils.getCapability((ICapabilityProvider) sink, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)
                       .filter(transmitter -> TransmissionType.checkTransmissionType(transmitter, TransmissionType.HEAT)).isPresent()) {
                     adjacentTransfer = adjacentTransfer.plusEqual(heatToTransfer);
@@ -54,9 +54,9 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
                 continue;
             }
             //Transfer to air otherwise
-            FloatingLong invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT.add(getTotalInverseInsulation()).plusEqual(getTotalInverseConductionCoefficient());
-            FloatingLong heatToTransfer = getTotalTemperature().divide(invConduction);
-            handleHeatChange(new HeatPacket(TransferType.EMIT, heatToTransfer));
+            FloatingLong invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT.add(getTotalInverseInsulation(side)).plusEqual(getTotalInverseConductionCoefficient(side));
+            FloatingLong heatToTransfer = getTotalTemperature(side).divide(invConduction);
+            handleHeat(new HeatPacket(TransferType.EMIT, heatToTransfer), side);
             environmentTransfer = environmentTransfer.plusEqual(heatToTransfer);
         }
         return new HeatTransfer(adjacentTransfer, environmentTransfer);

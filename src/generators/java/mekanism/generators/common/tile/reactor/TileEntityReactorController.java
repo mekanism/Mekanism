@@ -66,7 +66,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     public IChemicalTank<Gas, GasStack> fuelTank;
 
     private AxisAlignedBB box;
-    private double clientTemp = 0;
+    private FloatingLong clientTemp = FloatingLong.ZERO;
     private boolean clientBurning = false;
 
     private IInventorySlot reactorSlot;
@@ -164,9 +164,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         super.onUpdateServer();
         if (isFormed()) {
             getReactor().simulateServer();
-            if (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp().doubleValue() - clientTemp) > 1_000_000) {
+            if (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp().doubleValue() - clientTemp.doubleValue()) > 1_000_000) {
                 clientBurning = getReactor().isBurning();
-                clientTemp = getReactor().getPlasmaTemp().doubleValue();
+                clientTemp = getReactor().getPlasmaTemp().copyAsConst();
                 sendUpdatePacket();
             }
         }

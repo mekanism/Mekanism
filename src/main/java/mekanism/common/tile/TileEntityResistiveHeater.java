@@ -84,7 +84,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         }
         setActive(!toUse.isZero());
         HeatTransfer transfer = simulate();
-        lastEnvironmentLoss = transfer.getEnvironmentTransfer().copy();
+        lastEnvironmentLoss = transfer.getEnvironmentTransfer().copyAsConst();
         float newSoundScale = toUse.divide(100_000).floatValue();
         if (Math.abs(newSoundScale - soundScale) > 0.01) {
             soundScale = newSoundScale;

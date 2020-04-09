@@ -58,7 +58,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     protected BasicEnergyContainer(FloatingLong maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           @Nullable IMekanismStrictEnergyHandler energyHandler) {
-        this.maxEnergy = maxEnergy.copy();
+        this.maxEnergy = maxEnergy.copyAsConst();
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.energyHandler = energyHandler;
