@@ -731,7 +731,7 @@
   "network.mekanism.mb_stored": "%s (%s mB)",
   "network.mekanism.no_network": "No Network",
   "network.mekanism.not_applicable": "Not Applicable",
-  "network_reader.mekanism.above_ambient": " *Temperature: %sK above ambient.",
+  "network_reader.mekanism.above_ambient": " *Temperature: %s above ambient.",
   "network_reader.mekanism.acceptors": " *Acceptors: %s",
   "network_reader.mekanism.border": "%s %s %1$s",
   "network_reader.mekanism.buffer": " *Buffer: %s",
