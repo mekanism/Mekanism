@@ -35,9 +35,9 @@ public interface IHeatHandler {
      */
     FloatingLong getTemperature(int capacitor);
 
-    FloatingLong getInverseConductionCoefficient(int capacitor);
+    FloatingLong getInverseConduction(int capacitor);
 
-    FloatingLong getInsulationCoefficient(int capacitor);
+    FloatingLong getInverseInsulation(int capacitor);
 
     //TODO: Do not allow this to be zero
     FloatingLong getHeatCapacity(int capacitor);
@@ -55,7 +55,15 @@ public interface IHeatHandler {
     default FloatingLong getTotalInverseConductionCoefficient() {
         FloatingLong sum = FloatingLong.ZERO;
         for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
-            sum = sum.plusEqual(getInverseConductionCoefficient(capacitor));
+            sum = sum.plusEqual(getInverseConduction(capacitor));
+        }
+        return sum;
+    }
+
+    default FloatingLong getTotalInverseInsulation() {
+        FloatingLong sum = FloatingLong.ZERO;
+        for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
+            sum = sum.plusEqual(getInverseInsulation(capacitor));
         }
         return sum;
     }

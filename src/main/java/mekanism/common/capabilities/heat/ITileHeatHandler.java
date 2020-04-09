@@ -3,7 +3,7 @@ package mekanism.common.capabilities.heat;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.IHeatTransfer;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.HeatPacket;
 import mekanism.api.heat.HeatPacket.TransferType;
@@ -21,7 +21,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 //TODO: Maybe make come up with a better name
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IInWorldHeatHandler extends IMekanismHeatHandler {
+public interface ITileHeatHandler extends IMekanismHeatHandler {
 
     default void update(@Nullable Direction side) {
         for (IHeatCapacitor capacitor : getHeatCapacitors(side)) {
@@ -55,7 +55,7 @@ public interface IInWorldHeatHandler extends IMekanismHeatHandler {
             }
 
             //Transfer to air otherwise
-            FloatingLong invConduction = IHeatTransfer.AIR_INVERSE_COEFFICIENT + getInsulationCoefficient(side) + getTotalInverseConductionCoefficient();
+            FloatingLong invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT.plusEqual(getTotalInverseInsulation()).plusEqual(getTotalInverseConductionCoefficient());
             FloatingLong heatToTransfer = getTotalTemperature().divide(invConduction);
             handleHeatChange(new HeatPacket(TransferType.EMIT, heatToTransfer));
             environmentTransfer = environmentTransfer.plusEqual(heatToTransfer);

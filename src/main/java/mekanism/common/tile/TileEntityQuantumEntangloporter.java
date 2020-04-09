@@ -20,6 +20,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
@@ -129,8 +130,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
         if (heatConfig != null) {
-            //TODO: Figure out why the quantum entangloporter doesn't seem to allow extracting heat, and can only accept it?
-            heatConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Heat(true, false));
+            Supplier<List<IHeatCapacitor>> capacitorSupplier = () -> hasFrequency() ? frequency.getHeatCapacitors(null) : Collections.emptyList();
+            heatConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Heat(true, false, capacitorSupplier));
             //Set default config directions
             heatConfig.fill(DataType.INPUT);
             heatConfig.setCanEject(false);

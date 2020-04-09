@@ -68,25 +68,21 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
     }
 
     @Override
-    default FloatingLong getInverseConductionCoefficient(int capacitor, @Nullable Direction side) {
-        //TODO: Figure out what we should use as default for when the capacitor does not exist
+    default FloatingLong getInverseConduction(int capacitor, @Nullable Direction side) {
         IHeatCapacitor heatCapacitor = getHeatCapacitor(capacitor, side);
-        return heatCapacitor == null ? FloatingLong.ZERO : heatCapacitor.getInverseConductionCoefficient();
-
+        return heatCapacitor == null ? HeatAPI.DEFAULT_INVERSE_CONDUCTION : heatCapacitor.getInverseConduction();
     }
 
     @Override
-    default FloatingLong getInsulationCoefficient(int capacitor, @Nullable Direction side) {
-        //TODO: Figure out what we should use as default for when the capacitor does not exist
+    default FloatingLong getInverseInsulation(int capacitor, @Nullable Direction side) {
         IHeatCapacitor heatCapacitor = getHeatCapacitor(capacitor, side);
-        return heatCapacitor == null ? FloatingLong.ZERO : heatCapacitor.getInsulationCoefficient();
+        return heatCapacitor == null ? HeatAPI.DEFAULT_INVERSE_INSULATION : heatCapacitor.getInverseInsulation();
     }
 
     @Override
     default FloatingLong getHeatCapacity(int capacitor, @Nullable Direction side) {
-        //TODO: Figure out what we should use as default for when the capacitor does not exist
         IHeatCapacitor heatCapacitor = getHeatCapacitor(capacitor, side);
-        return heatCapacitor == null ? FloatingLong.ZERO : heatCapacitor.getHeatCapacity();
+        return heatCapacitor == null ? HeatAPI.DEFAULT_HEAT_CAPACITY : heatCapacitor.getHeatCapacity();
     }
 
     @Override

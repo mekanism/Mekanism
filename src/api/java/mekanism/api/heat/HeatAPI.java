@@ -4,6 +4,10 @@ import mekanism.api.math.FloatingLong;
 
 public class HeatAPI {
 
+    public static final FloatingLong DEFAULT_HEAT_CAPACITY = FloatingLong.ONE;
+    public static final FloatingLong DEFAULT_INVERSE_CONDUCTION = FloatingLong.ONE;
+    public static final FloatingLong DEFAULT_INVERSE_INSULATION = FloatingLong.ZERO;
+
     /**
      * The value of the zero point of our temperature scale in kelvin
      */

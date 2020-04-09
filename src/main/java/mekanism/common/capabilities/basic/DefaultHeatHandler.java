@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.basic;
 
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatPacket;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.math.FloatingLong;
@@ -23,18 +24,18 @@ public class DefaultHeatHandler implements IHeatHandler {
     }
 
     @Override
-    public FloatingLong getInverseConductionCoefficient(int capacitor) {
-        return FloatingLong.ZERO;
+    public FloatingLong getInverseConduction(int capacitor) {
+        return HeatAPI.DEFAULT_INVERSE_CONDUCTION;
     }
 
     @Override
-    public FloatingLong getInsulationCoefficient(int capacitor) {
-        return FloatingLong.ZERO;
+    public FloatingLong getInverseInsulation(int capacitor) {
+        return HeatAPI.DEFAULT_INVERSE_INSULATION;
     }
 
     @Override
     public FloatingLong getHeatCapacity(int capacitor) {
-        return FloatingLong.ZERO;
+        return HeatAPI.DEFAULT_HEAT_CAPACITY;
     }
 
     @Override

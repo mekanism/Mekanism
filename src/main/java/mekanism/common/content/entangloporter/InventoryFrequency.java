@@ -16,11 +16,14 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyType;
@@ -29,20 +32,21 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
-public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismGasHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler {
+public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismGasHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler {
 
     public static final String ENTANGLOPORTER = "Entangloporter";
 
     public BasicFluidTank storedFluid;
     public BasicGasTank storedGas;
-    public double temperature;
     private IInventorySlot storedItem;
     public IEnergyContainer storedEnergy;
+    public BasicHeatCapacitor storedHeat;
 
     private List<IInventorySlot> inventorySlots;
     private List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
     private List<IExtendedFluidTank> fluidTanks;
     private List<IEnergyContainer> energyContainers;
+    private List<IHeatCapacitor> heatCapacitors;
 
     public InventoryFrequency(String n, UUID uuid) {
         super(FrequencyType.INVENTORY, n, uuid);
@@ -66,6 +70,8 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         inventorySlots = Collections.singletonList(storedItem);
         storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.quantumEntangloporterEnergyBuffer.get(), this);
         energyContainers = Collections.singletonList(storedEnergy);
+        storedHeat = BasicHeatCapacitor.create(this);
+        heatCapacitors = Collections.singletonList(storedHeat);
     }
 
     @Override
@@ -75,7 +81,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         nbtTags.put(NBTConstants.FLUID_STORED, storedFluid.serializeNBT());
         nbtTags.put(NBTConstants.GAS_STORED, storedGas.serializeNBT());
         nbtTags.put(NBTConstants.ITEM, storedItem.serializeNBT());
-        nbtTags.putDouble(NBTConstants.TEMPERATURE, temperature);
+        nbtTags.put(NBTConstants.HEAT_STORED, storedHeat.serializeNBT());
     }
 
     @Override
@@ -86,7 +92,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         storedFluid.deserializeNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
         storedGas.deserializeNBT(nbtTags.getCompound(NBTConstants.GAS_STORED));
         storedItem.deserializeNBT(nbtTags.getCompound(NBTConstants.ITEM));
-        temperature = nbtTags.getDouble(NBTConstants.TEMPERATURE);
+        storedHeat.deserializeNBT(nbtTags.getCompound(NBTConstants.HEAT_STORED));
     }
 
     @Override
@@ -96,7 +102,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         buffer.writeFluidStack(storedFluid.getFluid());
         ChemicalUtils.writeChemicalStack(buffer, storedGas.getStack());
         buffer.writeCompoundTag(storedItem.serializeNBT());
-        buffer.writeDouble(temperature);
+        storedHeat.getHeat().writeToBuffer(buffer);
     }
 
     @Override
@@ -107,7 +113,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         storedFluid.setStack(dataStream.readFluidStack());
         storedGas.setStack(ChemicalUtils.readGasStack(dataStream));
         storedItem.deserializeNBT(dataStream.readCompoundTag());
-        temperature = dataStream.readDouble();
+        storedHeat.setHeat(FloatingLong.readFromBuffer(dataStream));
     }
 
     @Nonnull
@@ -135,6 +141,10 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     @Override
-    public void onContentsChanged() {
+    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
+        return heatCapacitors;
     }
+
+    @Override
+    public void onContentsChanged() {}
 }

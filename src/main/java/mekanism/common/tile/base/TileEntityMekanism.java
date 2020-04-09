@@ -59,7 +59,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
-import mekanism.common.capabilities.heat.IInWorldHeatHandler;
+import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -131,7 +131,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends TileEntityUpdateable implements IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
-      ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, IInWorldHeatHandler {
+      ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler {
 
     //TODO: Should the implementations of the various stuff be extracted into TileComponents?
 
@@ -325,14 +325,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
      * Should data related to the given type be persisted in this tile save
      */
     public boolean persists(SubstanceType type) {
-        switch (type) {
-            case FLUID: return canHandleFluid();
-            case GAS: return canHandleGas();
-            case ENERGY: return canHandleEnergy();
-            case HEAT: return canHandleHeat();
-            case INFUSION: return canHandleInfusion();
-        }
-        return false;
+        return type.canHandle(this);
     }
 
     /**
@@ -523,6 +516,9 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                         world.setBlockState(pos, Attribute.setActive(getBlockState(), currentActive));
                     }
                 }
+            }
+            if (canHandleHeat()) {
+                update(null); // TODO make sure this is called
             }
             onUpdateServer();
             lastEnergyReceived = FloatingLong.ZERO;
@@ -1116,6 +1112,16 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //Methods for implementing IInWorldHeatHandler
     @Nullable
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public IHeatHandler getAdjacent(Direction side) {
+        if (getHeatCapacitors(side).size() > 0) {
+            TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+            return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
+        }
         return null;
     }
 

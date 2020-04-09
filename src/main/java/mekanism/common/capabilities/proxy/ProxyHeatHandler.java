@@ -34,13 +34,13 @@ public class ProxyHeatHandler extends ProxyHandler implements IHeatHandler {
     }
 
     @Override
-    public FloatingLong getInverseConductionCoefficient(int capacitor) {
-        return heatHandler.getInverseConductionCoefficient(capacitor, side);
+    public FloatingLong getInverseConduction(int capacitor) {
+        return heatHandler.getInverseConduction(capacitor, side);
     }
 
     @Override
-    public FloatingLong getInsulationCoefficient(int capacitor) {
-        return heatHandler.getInsulationCoefficient(capacitor, side);
+    public FloatingLong getInverseInsulation(int capacitor) {
+        return heatHandler.getInverseInsulation(capacitor, side);
     }
 
     @Override

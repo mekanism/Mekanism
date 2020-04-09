@@ -13,9 +13,9 @@ public interface IHeatCapacitor extends INBTSerializable<CompoundNBT> {
 
     FloatingLong getTemperature();
 
-    FloatingLong getInverseConductionCoefficient();
+    FloatingLong getInverseConduction();
 
-    FloatingLong getInsulationCoefficient();
+    FloatingLong getInverseInsulation();
 
     FloatingLong getHeatCapacity();
 

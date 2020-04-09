@@ -10,7 +10,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.heat.IInWorldHeatHandler;
+import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -93,11 +93,11 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
                           Capabilities.HEAT_HANDLER_CAPABILITY, null));
                     if (capability.isPresent()) {
                         IHeatHandler heatTransmitter = capability.get();
-                        if (heatTransmitter instanceof IInWorldHeatHandler) {
-                            HeatTransfer transfer = ((IInWorldHeatHandler) heatTransmitter).simulate();
+                        if (heatTransmitter instanceof ITileHeatHandler) {
+                            HeatTransfer transfer = ((ITileHeatHandler) heatTransmitter).simulate();
                             newHeatTransferred = newHeatTransferred.plusEqual(transfer.getAdjacentTransfer());
                             newHeatLost = newHeatLost.plusEqual(transfer.getEnvironmentTransfer());
-                            newSumTemp += heatTransmitter.update();
+                            newSumTemp = newSumTemp.plusEqual(transfer.update());
                         }
                     }
                 }

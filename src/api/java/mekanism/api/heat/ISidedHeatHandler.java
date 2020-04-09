@@ -46,18 +46,18 @@ public interface ISidedHeatHandler extends IHeatHandler {
         return getTemperature(capacitor, getHeatSideFor());
     }
 
-    FloatingLong getInverseConductionCoefficient(int capacitor, @Nullable Direction side);
+    FloatingLong getInverseConduction(int capacitor, @Nullable Direction side);
 
     @Override
-    default FloatingLong getInverseConductionCoefficient(int capacitor) {
-        return getInverseConductionCoefficient(capacitor, getHeatSideFor());
+    default FloatingLong getInverseConduction(int capacitor) {
+        return getInverseConduction(capacitor, getHeatSideFor());
     }
 
-    FloatingLong getInsulationCoefficient(int capacitor, @Nullable Direction side);
+    FloatingLong getInverseInsulation(int capacitor, @Nullable Direction side);
 
     @Override
-    default FloatingLong getInsulationCoefficient(int capacitor) {
-        return getInsulationCoefficient(capacitor, getHeatSideFor());
+    default FloatingLong getInverseInsulation(int capacitor) {
+        return getInverseInsulation(capacitor, getHeatSideFor());
     }
 
     FloatingLong getHeatCapacity(int capacitor, @Nullable Direction side);

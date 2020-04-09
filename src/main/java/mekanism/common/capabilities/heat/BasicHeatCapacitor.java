@@ -7,6 +7,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.heat.HeatPacket;
 import mekanism.api.heat.IHeatCapacitor;
+import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -16,8 +17,11 @@ import net.minecraft.nbt.CompoundNBT;
 @MethodsReturnNonnullByDefault
 public class BasicHeatCapacitor implements IHeatCapacitor {
 
+    @Nullable
+    private final IMekanismHeatHandler heatHandler;
+
     private final FloatingLong heatCapacity;
-    private final FloatingLong conductionCoefficient;
+    private final FloatingLong inverseConductionCoefficient;
     private final FloatingLong insulationCoefficient;
 
     private boolean absorbHeat;
@@ -27,12 +31,22 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     @Nullable
     protected HeatPacket heatToHandle;
 
-    public BasicHeatCapacitor(FloatingLong heatCapacity, FloatingLong conductionCoefficient, FloatingLong insulationCoefficient, boolean absorbHeat, boolean emitHeat) {
+    // double helper
+    public static BasicHeatCapacitor create(double heatCapacity, double inverseInductionCoefficient, double insulationCoefficient, @Nullable IMekanismHeatHandler heatHandler) {
+        return create(FloatingLong.create(heatCapacity), FloatingLong.create(inverseInductionCoefficient), FloatingLong.create(insulationCoefficient), heatHandler);
+    }
+
+    public static BasicHeatCapacitor create(FloatingLong heatCapacity, FloatingLong inverseInductionCoefficient, FloatingLong insulationCoefficient, @Nullable IMekanismHeatHandler heatHandler) {
+        return new BasicHeatCapacitor(heatCapacity, inverseInductionCoefficient, insulationCoefficient, true, true, heatHandler);
+    }
+
+    public BasicHeatCapacitor(FloatingLong heatCapacity, FloatingLong inverseConductionCoefficient, FloatingLong insulationCoefficient, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
         this.heatCapacity = heatCapacity;
-        this.conductionCoefficient = conductionCoefficient;
+        this.inverseConductionCoefficient = inverseConductionCoefficient;
         this.insulationCoefficient = insulationCoefficient;
         this.absorbHeat = absorbHeat;
         this.emitHeat = emitHeat;
+        this.heatHandler = heatHandler;
     }
 
     @Override
@@ -41,8 +55,18 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     @Override
-    public FloatingLong getInverseConductionCoefficient() {
-        return conductionCoefficient;
+    public FloatingLong getInverseConduction() {
+        return inverseConductionCoefficient;
+    }
+
+    @Override
+    public FloatingLong getInverseInsulation() {
+        return insulationCoefficient;
+    }
+
+    @Override
+    public FloatingLong getHeatCapacity() {
+        return heatCapacity;
     }
 
     @Override
@@ -50,25 +74,21 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         heatToHandle = transfer;
     }
 
-    public void update() {
+    public FloatingLong update() {
         if (heatToHandle != null) {
             if (heatToHandle.getType().absorb() && absorbHeat) {
-                storedHeat = storedHeat.add(heatToHandle.getAmount().divide(heatCapacity));
+                storedHeat = storedHeat.plusEqual(heatToHandle.getAmount().divide(heatCapacity));
             } else if (heatToHandle.getType().emit() && emitHeat) {
-                storedHeat = storedHeat.subtract(heatToHandle.getAmount().divide(heatCapacity));
+                storedHeat = storedHeat.minusEqual(heatToHandle.getAmount().divide(heatCapacity));
             }
         }
-        // TODO run heat emission simulation if emitHeat = true?
-    }
-
-    @Override
-    public FloatingLong getInsulationCoefficient() {
-        return insulationCoefficient;
-    }
-
-    @Override
-    public FloatingLong getHeatCapacity() {
-        return heatCapacity;
+        // reset our heat
+        heatToHandle = null;
+        // notify listeners
+        if (heatHandler != null) {
+            heatHandler.onContentsChanged();
+        }
+        return storedHeat.copy();
     }
 
     @Override

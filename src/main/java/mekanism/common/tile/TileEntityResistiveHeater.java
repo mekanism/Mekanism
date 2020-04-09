@@ -3,16 +3,21 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.heat.HeatAPI.HeatTransfer;
+import mekanism.api.heat.HeatPacket;
+import mekanism.api.heat.HeatPacket.TransferType;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
+import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
@@ -21,24 +26,20 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer {
+public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     private float soundScale = 1;
-    private double temperature;
-    public double heatToAbsorb = 0;
     public double lastEnvironmentLoss;
 
     private ResistiveHeaterEnergyContainer energyContainer;
+    private BasicHeatCapacitor heatCapacitor;
     private EnergyInventorySlot energySlot;
 
     public TileEntityResistiveHeater() {
@@ -50,6 +51,14 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     protected IEnergyContainerHolder getInitialEnergyContainers() {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
         builder.addContainer(energyContainer = ResistiveHeaterEnergyContainer.input(this), RelativeSide.LEFT, RelativeSide.RIGHT);
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
+        builder.addContainer(heatCapacitor = BasicHeatCapacitor.create(1, 5, 1000, this));
         return builder.build();
     }
 
@@ -69,33 +78,18 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         if (MekanismUtils.canFunction(this)) {
             toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
             if (!toUse.isZero()) {
-                heatToAbsorb += toUse.doubleValue() * MekanismConfig.general.resistiveHeaterEfficiency.get();
+                heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, toUse.multiply(MekanismConfig.general.resistiveHeaterEfficiency.get())));
                 energyContainer.extract(toUse, Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
         setActive(!toUse.isZero());
-        double[] loss = simulateHeat();
-        applyTemperatureChange();
-        lastEnvironmentLoss = loss[1];
+        HeatTransfer transfer = simulate();
+        lastEnvironmentLoss = transfer.getEnvironmentTransfer().doubleValue();
         float newSoundScale = toUse.divide(100_000).floatValue();
         if (Math.abs(newSoundScale - soundScale) > 0.01) {
             soundScale = newSoundScale;
             sendUpdatePacket();
         }
-    }
-
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        temperature = nbtTags.getDouble(NBTConstants.TEMPERATURE);
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putDouble(NBTConstants.TEMPERATURE, temperature);
-        return nbtTags;
     }
 
     public void setEnergyUsageFromPacket(FloatingLong floatingLong) {
@@ -106,45 +100,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public float getVolume() {
         return (float) Math.sqrt(soundScale);
-    }
-
-    @Override
-    public double getTemp() {
-        return temperature;
-    }
-
-    @Override
-    public double getInverseConductionCoefficient() {
-        return 5;
-    }
-
-    @Override
-    public double getInsulationCoefficient(Direction side) {
-        return 1000;
-    }
-
-    @Override
-    public void transferHeatTo(double heat) {
-        heatToAbsorb += heat;
-    }
-
-    @Override
-    public double[] simulateHeat() {
-        return HeatUtils.simulate(this);
-    }
-
-    @Override
-    public double applyTemperatureChange() {
-        temperature += heatToAbsorb;
-        heatToAbsorb = 0;
-        return temperature;
-    }
-
-    @Nullable
-    @Override
-    public IHeatTransfer getAdjacent(Direction side) {
-        TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-        return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 
     @Nonnull
@@ -168,7 +123,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(this::getTemp, value -> temperature = value));
         container.track(SyncableDouble.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 

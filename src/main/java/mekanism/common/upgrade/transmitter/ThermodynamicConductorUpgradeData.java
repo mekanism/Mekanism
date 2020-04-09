@@ -1,13 +1,14 @@
 package mekanism.common.upgrade.transmitter;
 
+import mekanism.api.math.FloatingLong;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 
 public class ThermodynamicConductorUpgradeData extends TransmitterUpgradeData {
 
-    public final double temperature;
+    public final FloatingLong heat;
 
-    public ThermodynamicConductorUpgradeData(boolean redstoneReactive, ConnectionType[] connectionTypes, double temperature) {
+    public ThermodynamicConductorUpgradeData(boolean redstoneReactive, ConnectionType[] connectionTypes, FloatingLong heat) {
         super(redstoneReactive, connectionTypes);
-        this.temperature = temperature;
+        this.heat = heat;
     }
 }

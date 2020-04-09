@@ -7,6 +7,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 
 public class ProxiedSlotInfo {
@@ -58,8 +59,16 @@ public class ProxiedSlotInfo {
 
     public static class Heat extends HeatSlotInfo {
 
-        public Heat(boolean canInput, boolean canOutput) {
+        private final Supplier<List<IHeatCapacitor>> capacitorSupplier;
+
+        public Heat(boolean canInput, boolean canOutput, Supplier<List<IHeatCapacitor>> capacitorSupplier) {
             super(canInput, canOutput);
+            this.capacitorSupplier = capacitorSupplier;
+        }
+
+        @Override
+        public List<IHeatCapacitor> getHeatCapacitors() {
+            return capacitorSupplier.get();
         }
     }
 
