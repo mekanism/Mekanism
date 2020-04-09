@@ -699,7 +699,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ENERGY_EU_SHORT, "EU");
         //Network Reader
         add(MekanismLang.NETWORK_READER_BORDER, "%s %s %1$s");
-        add(MekanismLang.NETWORK_READER_ABOVE_AMBIENT, " *Temperature: %s above ambient.");
+        add(MekanismLang.NETWORK_READER_TEMPERATURE, " *Temperature: %s");
         add(MekanismLang.NETWORK_READER_TRANSMITTERS, " *Transmitters: %s");
         add(MekanismLang.NETWORK_READER_ACCEPTORS, " *Acceptors: %s");
         add(MekanismLang.NETWORK_READER_NEEDED, " *Needed: %s");

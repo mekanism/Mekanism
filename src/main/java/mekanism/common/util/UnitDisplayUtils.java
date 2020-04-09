@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
@@ -32,7 +31,8 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
             FloatingLongMeasurementUnit lowerMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i];
             if (i == 0 && lowerMeasure.below(value)) {
                 return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
-            } else if (i + 1 >= EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length) {
+            }
+            if (i + 1 >= EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length) {
                 return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
             } else {
                 FloatingLongMeasurementUnit upperMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i + 1];
@@ -48,53 +48,66 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
         return getDisplay(value, unit, 2, true);
     }
 
-    public static ITextComponent getDisplay(FloatingLong temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort) {
+    public static ITextComponent getDisplay(double T, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort) {
         ILangEntry label = unit.langEntry;
         String prefix = "";
-        FloatingLong value;
-        if (shift && unit.smallerThanOffset(temp)) {
-            value = unit.convertFromKAbs(temp);
+        double value = unit.convertFromK(T, shift);
+        if (value < 0) {
+            value = Math.abs(value);
             prefix = "-";
-        } else {
-            value = unit.convertFromK(temp, shift);
         }
-        if (value.isZero()) {
+        if (value == 0) {
             return isShort ? TextComponentUtil.getString(value + unit.symbol) : TextComponentUtil.build(value, label);
         }
-        for (int i = 0; i < EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length; i++) {
-            FloatingLongMeasurementUnit lowerMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i];
-            if (i == 0 && lowerMeasure.below(value)) {
+        for (int i = 0; i < EnumUtils.MEASUREMENT_UNITS.length; i++) {
+            MeasurementUnit lowerMeasure = EnumUtils.MEASUREMENT_UNITS[i];
+            if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
                 if (isShort) {
-                    return TextComponentUtil.getString(prefix + lowerMeasure.process(value).toString(decimalPlaces) + lowerMeasure.symbol + unit.symbol);
+                    return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + lowerMeasure.symbol + unit.symbol);
                 }
-                return TextComponentUtil.build(prefix + lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.name, label);
-            } else if (i + 1 >= EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length) {
+                return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
+            }
+            if (lowerMeasure.ordinal() + 1 >= EnumUtils.MEASUREMENT_UNITS.length) {
                 if (isShort) {
-                    return TextComponentUtil.getString(prefix + lowerMeasure.process(value).toString(decimalPlaces) + lowerMeasure.symbol + unit.symbol);
+                    return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + lowerMeasure.symbol + unit.symbol);
                 }
-                return TextComponentUtil.build(prefix + lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.name, label);
-            } else {
-                FloatingLongMeasurementUnit upperMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i + 1];
-                if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value.equals(value)) {
+                return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
+            }
+            if (i + 1 < EnumUtils.MEASUREMENT_UNITS.length) {
+                MeasurementUnit upperMeasure = EnumUtils.MEASUREMENT_UNITS[i + 1];
+                if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
                     if (isShort) {
-                        return TextComponentUtil.getString(prefix + lowerMeasure.process(value).toString(decimalPlaces) + lowerMeasure.symbol + unit.symbol);
+                        return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + lowerMeasure.symbol + unit.symbol);
                     }
-                    return TextComponentUtil.build(prefix + lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.name, label);
+                    return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
                 }
             }
         }
         if (isShort) {
-            return TextComponentUtil.getString(prefix + value.toString(decimalPlaces) + unit.symbol);
+            return TextComponentUtil.getString(prefix + roundDecimals(value, decimalPlaces) + unit.symbol);
         }
-        return TextComponentUtil.build(prefix + value.toString(decimalPlaces) + " ", label);
+        return TextComponentUtil.build(prefix + roundDecimals(value, decimalPlaces) + " ", label);
     }
 
-    public static ITextComponent getDisplayShort(FloatingLong value, TemperatureUnit unit) {
+    public static ITextComponent getDisplayShort(double value, TemperatureUnit unit) {
         return getDisplayShort(value, unit, true);
     }
 
-    public static ITextComponent getDisplayShort(FloatingLong value, TemperatureUnit unit, boolean shift) {
-        return getDisplay(value, unit, 2, shift, true);
+    public static ITextComponent getDisplayShort(double value, TemperatureUnit unit, boolean shift) {
+        return getDisplayShort(value, unit, shift, 2);
+    }
+
+    public static ITextComponent getDisplayShort(double value, TemperatureUnit unit, boolean shift, int decimalPlaces) {
+        return getDisplay(value, unit, decimalPlaces, shift, true);
+    }
+
+    public static double roundDecimals(double d, int decimalPlaces) {
+        int j = (int) (d * Math.pow(10, decimalPlaces));
+        return j / Math.pow(10, decimalPlaces);
+    }
+
+    public static double roundDecimals(double d) {
+        return roundDecimals(d, 2);
     }
 
     public enum ElectricUnit {
@@ -114,45 +127,31 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
     }
 
     public enum TemperatureUnit {
-        KELVIN(MekanismLang.TEMPERATURE_KELVIN, "K", FloatingLong.ZERO, FloatingLong.ONE),
-        CELSIUS(MekanismLang.TEMPERATURE_CELSIUS, "°C", FloatingLong.createConst(273.15), FloatingLong.ONE),
-        RANKINE(MekanismLang.TEMPERATURE_RANKINE, "R", FloatingLong.ZERO, FloatingLong.createConst(1.8)),
-        FAHRENHEIT(MekanismLang.TEMPERATURE_FAHRENHEIT, "°F", FloatingLong.createConst(459.67), FloatingLong.createConst(1.8)),
-        AMBIENT(MekanismLang.TEMPERATURE_AMBIENT, "+STP", HeatAPI.AMBIENT_TEMP, FloatingLong.ONE);
+        KELVIN(MekanismLang.TEMPERATURE_KELVIN, "K", 0, 1),
+        CELSIUS(MekanismLang.TEMPERATURE_CELSIUS, "°C", 273.15, 1),
+        RANKINE(MekanismLang.TEMPERATURE_RANKINE, "R", 0, 1.8),
+        FAHRENHEIT(MekanismLang.TEMPERATURE_FAHRENHEIT, "°F", 459.67, 1.8),
+        AMBIENT(MekanismLang.TEMPERATURE_AMBIENT, "+STP", 300, 1);
 
         private final ILangEntry langEntry;
         //TODO: Do we want to make the symbol be localized?
         private final String symbol;
-        public final FloatingLong zeroOffset;
-        public final FloatingLong intervalSize;
+        public final double zeroOffset;
+        public final double intervalSize;
 
-        TemperatureUnit(ILangEntry langEntry, String symbol, FloatingLong offset, FloatingLong size) {
+        TemperatureUnit(ILangEntry langEntry, String symbol, double offset, double size) {
             this.langEntry = langEntry;
             this.symbol = symbol;
             this.zeroOffset = offset;
             this.intervalSize = size;
         }
 
-        public boolean smallerThanOffset(FloatingLong temp) {
-            return temp.multiply(intervalSize).smallerThan(zeroOffset);
+        public double convertFromK(double T, boolean shift) {
+            return (T * intervalSize) - (shift ? zeroOffset : 0);
         }
 
-        public FloatingLong convertFromKAbs(FloatingLong temp) {
-            return temp.multiply(intervalSize).absDifference(zeroOffset);
-        }
-
-        public FloatingLong convertFromK(FloatingLong temp, boolean shift) {
-            if (shift) {
-                return temp.multiply(intervalSize).minusEqual(zeroOffset);
-            }
-            return temp.multiply(intervalSize);
-        }
-
-        public FloatingLong convertToK(FloatingLong temp, boolean shift) {
-            if (shift) {
-                return temp.add(zeroOffset).divideEquals(intervalSize);
-            }
-            return temp.divide(intervalSize);
+        public double convertToK(double T, boolean shift) {
+            return (T + (shift ? zeroOffset : 0)) / intervalSize;
         }
     }
 

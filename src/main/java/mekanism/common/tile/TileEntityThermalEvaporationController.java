@@ -10,6 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatPacket;
 import mekanism.api.heat.HeatPacket.TransferType;
 import mekanism.api.math.FloatingLong;
@@ -25,7 +26,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
-import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
@@ -136,7 +136,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
-        builder.addCapacitor(heatCapacitor = VariableHeatCapacitor.create(() -> MekanismConfig.general.evaporationHeatCapacity.get().multiply(height), this));
+        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(MekanismConfig.general.evaporationHeatCapacity.get().multiply(3), this));
         return builder.build();
     }
 
@@ -199,6 +199,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             setActive(active);
             if (active) {
                 updateMaxFluid();
+                heatCapacitor.setHeatCapacity(MekanismConfig.general.evaporationHeatCapacity.get().multiply(height), true);
                 if (!inputTank.isEmpty()) {
                     inputTank.setStackSize(Math.min(inputTank.getFluidAmount(), getMaxFluid()), Action.EXECUTE);
                 }
@@ -271,6 +272,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
         FloatingLong biome = biomeTemp.subtract(0.5);
         FloatingLong base = !biome.isZero() ? biome.multiply(20) : biomeTemp.multiply(40);
+        base = base.plusEqual(HeatAPI.AMBIENT_TEMP);
 
         if (heatCapacitor.getTemperature().absDifference(base).doubleValue() < 0.001) {
             heatCapacitor.setHeat(base.multiply(heatCapacitor.getHeatCapacity()));

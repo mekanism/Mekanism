@@ -710,19 +710,19 @@ public final class MekanismUtils {
      *
      * @return rounded energy display
      */
-    public static ITextComponent getTemperatureDisplay(FloatingLong T, TemperatureUnit unit) {
-        FloatingLong TK = unit.convertToK(T, true);
+    public static ITextComponent getTemperatureDisplay(FloatingLong T, TemperatureUnit unit, boolean shift) {
+        double TK = unit.convertToK(T.doubleValue(), true);
         switch (MekanismConfig.general.tempUnit.get()) {
             case K:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.KELVIN);
+                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.KELVIN, shift);
             case C:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.CELSIUS);
+                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.CELSIUS, shift);
             case R:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.RANKINE);
+                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.RANKINE, shift);
             case F:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.FAHRENHEIT);
+                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.FAHRENHEIT, shift);
             case STP:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT);
+                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT, shift);
         }
         return MekanismLang.ERROR.translate();
     }

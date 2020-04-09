@@ -44,13 +44,13 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
 
     @Override
     public ITextComponent getStoredInfo() {
-        return MekanismLang.HEAT_NETWORK_STORED.translate(MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN));
+        return MekanismLang.HEAT_NETWORK_STORED.translate(MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN, true));
     }
 
     @Override
     public ITextComponent getFlowInfo() {
-        ITextComponent transferred = MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN);
-        ITextComponent lost = MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN);
+        ITextComponent transferred = MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN, false);
+        ITextComponent lost = MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN, false);
         return heatTransferred.add(heatLost).isZero() ? MekanismLang.HEAT_NETWORK_FLOW.translate(transferred, lost)
                                                : MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY.translate(transferred, lost,
                                                    heatTransferred.divide(heatTransferred.add(heatLost)).multiply(100));

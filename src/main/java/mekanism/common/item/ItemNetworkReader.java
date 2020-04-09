@@ -78,8 +78,8 @@ public class ItemNetworkReader extends ItemEnergized {
                         player.sendMessage(MekanismLang.NETWORK_READER_CAPACITY.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkCapacity()));
                     }
                     CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_HANDLER_CAPABILITY, opposite).ifPresent(heatHandler ->
-                          player.sendMessage(MekanismLang.NETWORK_READER_ABOVE_AMBIENT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
-                                MekanismUtils.getTemperatureDisplay(heatHandler.getTotalTemperature(), TemperatureUnit.KELVIN))));
+                          player.sendMessage(MekanismLang.NETWORK_READER_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
+                                MekanismUtils.getTemperatureDisplay(heatHandler.getTotalTemperature(), TemperatureUnit.KELVIN, true))));
                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
                 } else {
                     Optional<IHeatHandler> heatHandler = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_HANDLER_CAPABILITY, opposite));
@@ -87,8 +87,8 @@ public class ItemNetworkReader extends ItemEnergized {
                         IHeatHandler transfer = heatHandler.get();
                         MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
                               MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM));
-                        ITextComponent temp = MekanismUtils.getTemperatureDisplay(transfer.getTotalTemperature(), TemperatureUnit.KELVIN);
-                        player.sendMessage(MekanismLang.NETWORK_READER_ABOVE_AMBIENT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, temp));
+                        ITextComponent temp = MekanismUtils.getTemperatureDisplay(transfer.getTotalTemperature(), TemperatureUnit.KELVIN, true);
+                        player.sendMessage(MekanismLang.NETWORK_READER_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, temp));
                         player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
                     } else {
                         Coord4D tileCoord = Coord4D.get(tileEntity);

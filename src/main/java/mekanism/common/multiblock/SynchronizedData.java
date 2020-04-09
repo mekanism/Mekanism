@@ -1,6 +1,5 @@
 package mekanism.common.multiblock;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
@@ -97,4 +97,6 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
     public void setVolume(int volume) {
         this.volume = volume;
     }
+
+    public void onCreated() {}
 }

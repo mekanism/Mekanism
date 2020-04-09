@@ -52,7 +52,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
             @Nonnull
             @Override
             public FloatingLong getLevel() {
-                return TemperatureUnit.AMBIENT.convertToK(tile.getPlasmaTemp(), true);
+                return tile.getPlasmaTemp();
             }
 
             @Override
@@ -62,7 +62,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
 
             @Override
             public ITextComponent getText() {
-                return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN));
+                return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 7, 50));
         addButton(new GuiProgress(() -> tile.getPlasmaTemp().greaterThan(tile.getCaseTemp()) ? 1 : 0, ProgressType.SMALL_RIGHT, this, 29, 76));
@@ -75,7 +75,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
             @Nonnull
             @Override
             public FloatingLong getLevel() {
-                return TemperatureUnit.AMBIENT.convertToK(tile.getCaseTemp(), true);
+                return tile.getCaseTemp();
             }
 
             @Override
@@ -85,7 +85,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
 
             @Override
             public ITextComponent getText() {
-                return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN));
+                return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 61, 50));
         addButton(new GuiProgress(() -> !tile.getCaseTemp().isZero() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));
