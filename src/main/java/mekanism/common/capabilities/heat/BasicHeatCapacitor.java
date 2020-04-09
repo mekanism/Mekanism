@@ -22,7 +22,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     private final FloatingLong heatCapacity;
     private final FloatingLong inverseConductionCoefficient;
-    private final FloatingLong insulationCoefficient;
+    private final FloatingLong inverseInsulationCoefficient;
 
     private boolean absorbHeat;
     private boolean emitHeat;
@@ -32,18 +32,24 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     protected HeatPacket heatToHandle;
 
     // double helper
-    public static BasicHeatCapacitor create(double heatCapacity, double inverseInductionCoefficient, double insulationCoefficient, @Nullable IMekanismHeatHandler heatHandler) {
-        return create(FloatingLong.create(heatCapacity), FloatingLong.create(inverseInductionCoefficient), FloatingLong.create(insulationCoefficient), heatHandler);
+    public static BasicHeatCapacitor create(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient, @Nullable IMekanismHeatHandler heatHandler) {
+        return create(FloatingLong.create(heatCapacity), FloatingLong.create(inverseConductionCoefficient), FloatingLong.create(inverseInsulationCoefficient), heatHandler);
     }
 
-    public static BasicHeatCapacitor create(FloatingLong heatCapacity, FloatingLong inverseInductionCoefficient, FloatingLong insulationCoefficient, @Nullable IMekanismHeatHandler heatHandler) {
-        return new BasicHeatCapacitor(heatCapacity, inverseInductionCoefficient, insulationCoefficient, true, true, heatHandler);
+    public static BasicHeatCapacitor create(FloatingLong heatCapacity, FloatingLong inverseInductionCoefficient, FloatingLong inverseInsulationCoefficient, @Nullable IMekanismHeatHandler heatHandler) {
+        return create(heatCapacity, inverseInductionCoefficient, inverseInsulationCoefficient, true, true, heatHandler);
     }
 
-    public BasicHeatCapacitor(FloatingLong heatCapacity, FloatingLong inverseConductionCoefficient, FloatingLong insulationCoefficient, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
+    public static BasicHeatCapacitor create(FloatingLong heatCapacity, FloatingLong inverseInductionCoefficient, FloatingLong inverseInsulationCoefficient, boolean absorbHeat, boolean emitHeat,
+          @Nullable IMekanismHeatHandler heatHandler) {
+        // TODO validation
+        return new BasicHeatCapacitor(heatCapacity, inverseInductionCoefficient, inverseInsulationCoefficient, absorbHeat, emitHeat, heatHandler);
+    }
+
+    protected BasicHeatCapacitor(FloatingLong heatCapacity, FloatingLong inverseConductionCoefficient, FloatingLong inverseInsulationCoefficient, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
         this.heatCapacity = heatCapacity;
         this.inverseConductionCoefficient = inverseConductionCoefficient;
-        this.insulationCoefficient = insulationCoefficient;
+        this.inverseInsulationCoefficient = inverseInsulationCoefficient;
         this.absorbHeat = absorbHeat;
         this.emitHeat = emitHeat;
         this.heatHandler = heatHandler;
@@ -61,7 +67,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public FloatingLong getInverseInsulation() {
-        return insulationCoefficient;
+        return inverseInsulationCoefficient;
     }
 
     @Override

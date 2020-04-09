@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
-import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.IChemicalTank;
@@ -20,7 +19,9 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
+import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
@@ -33,6 +34,8 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.QuantumEntangloporterEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.fluid.QuantumEntangloporterFluidTankHolder;
+import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
+import mekanism.common.capabilities.holder.heat.QuantumEntangloporterHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.QuantumEntangloporterInventorySlotHolder;
 import mekanism.common.chunkloading.IChunkLoader;
@@ -58,7 +61,6 @@ import mekanism.common.tile.component.config.slot.ProxiedSlotInfo;
 import mekanism.common.tile.interfaces.IHasFrequency;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.HeatUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -70,11 +72,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, IFrequencyHandler, IHeatTransfer, ISustainedData, IChunkLoader,
-      IHasFrequency {
+public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, IFrequencyHandler, ISustainedData, IChunkLoader, IHasFrequency {
 
     public InventoryFrequency frequency;
-    public double heatToAbsorb = 0;
     //TODO: These seem to be used, do we want to have some sort of stats thing for the quantum entangloporter
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
@@ -135,6 +135,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             //Set default config directions
             heatConfig.fill(DataType.INPUT);
             heatConfig.setCanEject(false);
+            // TODO look into allowing heat output config
         }
 
         ejectorComponent = new TileComponentEjector(this);
@@ -165,6 +166,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
+    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        return new QuantumEntangloporterHeatCapacitorHolder(this);
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         return new QuantumEntangloporterInventorySlotHolder(this);
     }
@@ -178,11 +185,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
                 CableUtils.emit(info.getSidesForData(DataType.OUTPUT), frequency.storedEnergy, this);
             }
         }
-        double[] loss = simulateHeat();
-        applyTemperatureChange();
 
-        lastTransferLoss = loss[0];
-        lastEnvironmentLoss = loss[1];
+        HeatTransfer loss = simulate();
+        lastTransferLoss = loss.getAdjacentTransfer().doubleValue();
+        lastEnvironmentLoss = loss.getEnvironmentTransfer().doubleValue();
 
         FrequencyManager manager = getManager(frequency);
         Frequency lastFreq = frequency;
@@ -312,48 +318,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         return false;
     }
 
-    @Override
-    public double getTemp() {
-        return hasFrequency() ? frequency.temperature : 0;
-    }
-
-    @Override
-    public double getInverseConductionCoefficient() {
-        return 1;
-    }
-
-    @Override
-    public double getInsulationCoefficient(Direction side) {
-        return 1_000;
-    }
-
-    @Override
-    public void transferHeatTo(double heat) {
-        heatToAbsorb += heat;
-    }
-
-    @Override
-    public double[] simulateHeat() {
-        return HeatUtils.simulate(this);
-    }
-
-    @Override
-    public double applyTemperatureChange() {
-        if (hasFrequency()) {
-            frequency.temperature += heatToAbsorb;
-        }
-        heatToAbsorb = 0;
-        return hasFrequency() ? frequency.temperature : 0;
-    }
-
     @Nullable
     @Override
-    public IHeatTransfer getAdjacent(Direction side) {
+    public IHeatHandler getAdjacent(Direction side) {
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
                 TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-                Optional<IHeatTransfer> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()));
+                Optional<IHeatHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()));
                 if (capability.isPresent()) {
                     return capability.get();
                 }

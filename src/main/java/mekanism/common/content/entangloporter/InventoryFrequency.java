@@ -70,7 +70,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         inventorySlots = Collections.singletonList(storedItem);
         storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.quantumEntangloporterEnergyBuffer.get(), this);
         energyContainers = Collections.singletonList(storedEnergy);
-        storedHeat = BasicHeatCapacitor.create(this);
+        storedHeat = BasicHeatCapacitor.create(1, 1, 1_000, this);
         heatCapacitors = Collections.singletonList(storedHeat);
     }
 

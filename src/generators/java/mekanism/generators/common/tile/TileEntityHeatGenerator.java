@@ -7,12 +7,19 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.RelativeSide;
+import mekanism.api.heat.HeatAPI.HeatTransfer;
+import mekanism.api.heat.HeatPacket;
+import mekanism.api.heat.HeatPacket.TransferType;
+import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
+import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
+import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -21,7 +28,6 @@ import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -35,7 +41,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IHeatTransfer {
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IHeatHandler {
 
     private static final int MAX_FLUID = 24_000;
     private static final int FLUID_RATE = 10;
@@ -43,14 +49,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
      * The FluidTank for this generator.
      */
     public BasicFluidTank lavaTank;
-    private double temperature = 0;
-    private double thermalEfficiency = 0.5D;
-    private double invHeatCapacity = 1;
-    private double heatToAbsorb = 0;
+    private FloatingLong thermalEfficiency = FloatingLong.create(0.5D);
     private FloatingLong producingEnergy = FloatingLong.ZERO;
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
 
+    private BasicHeatCapacitor heatCapacitor;
     private FluidFuelInventorySlot fuelSlot;
     private EnergyInventorySlot energySlot;
 
@@ -79,25 +83,32 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         return builder.build();
     }
 
+    @Nonnull
+    @Override
+    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
+        builder.addContainer(heatCapacitor = BasicHeatCapacitor.create(1, 5, 1000, this));
+        return builder.build();
+    }
+
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
         FloatingLong prev = getEnergyContainer().getEnergy();
-        transferHeatTo(getBoost());
+        heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, getBoost()));
         if (MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero() &&
             lavaTank.extract(FLUID_RATE, Action.SIMULATE, AutomationType.INTERNAL).getAmount() == FLUID_RATE) {
             setActive(true);
             lavaTank.extract(FLUID_RATE, Action.EXECUTE, AutomationType.INTERNAL);
-            transferHeatTo(MekanismGeneratorsConfig.generators.heatGeneration.get());
+            heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, MekanismGeneratorsConfig.generators.heatGeneration.get()));
         } else {
             setActive(false);
         }
-        double[] loss = simulateHeat();
-        applyTemperatureChange();
-        lastTransferLoss = loss[0];
-        lastEnvironmentLoss = loss[1];
+        HeatTransfer loss = simulate();
+        lastTransferLoss = loss.getAdjacentTransfer().doubleValue();
+        lastEnvironmentLoss = loss.getEnvironmentTransfer().doubleValue();
         producingEnergy = getEnergyContainer().getEnergy().subtract(prev);
     }
 
@@ -115,55 +126,30 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     }
 
     @Override
-    public double getTemp() {
-        return temperature;
-    }
-
-    @Override
-    public double getInverseConductionCoefficient() {
-        return 1;
-    }
-
-    @Override
     public double getInsulationCoefficient(Direction side) {
         return side == Direction.DOWN ? 0 : 10_000;
-    }
-
-    private void transferHeatTo(FloatingLong heat) {
-        transferHeatTo(heat.doubleValue());
+        // TODO figure out how to implement this
     }
 
     @Override
-    public void transferHeatTo(double heat) {
-        heatToAbsorb += heat;
-    }
-
-    @Override
-    public double[] simulateHeat() {
-        double temp = getTemp();
-        if (temp > 0) {
-            double carnotEfficiency = temp / (temp + IHeatTransfer.AMBIENT_TEMP);
-            double heatLost = thermalEfficiency * temp;
-            double workDone = heatLost * carnotEfficiency;
-            transferHeatTo(-heatLost);
-            getEnergyContainer().insert(FloatingLong.create(workDone), Action.EXECUTE, AutomationType.INTERNAL);
+    public HeatTransfer simulate() {
+        FloatingLong temp = getTotalTemperature();
+        if (!temp.isZero()) {
+            FloatingLong carnotEfficiency = temp.divide(temp.add(IHeatTransfer.AMBIENT_TEMP));
+            FloatingLong heatLost = thermalEfficiency.multiply(temp);
+            FloatingLong workDone = heatLost.multiply(carnotEfficiency);
+            heatCapacitor.handleHeat(new HeatPacket(TransferType.EMIT, heatLost));
+            getEnergyContainer().insert(workDone, Action.EXECUTE, AutomationType.INTERNAL);
         }
-        return HeatUtils.simulate(this);
-    }
-
-    @Override
-    public double applyTemperatureChange() {
-        temperature += invHeatCapacity * heatToAbsorb;
-        heatToAbsorb = 0;
-        return temperature;
+        return super.simulate();
     }
 
     @Nullable
     @Override
-    public IHeatTransfer getAdjacent(Direction side) {
+    public IHeatHandler getAdjacent(Direction side) {
         if (side == Direction.DOWN) {
             TileEntity adj = MekanismUtils.getTileEntity(getWorld(), pos.down());
-            Optional<IHeatTransfer> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()));
+            Optional<IHeatHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()));
             if (capability.isPresent()) {
                 return capability.get();
             }

@@ -1,5 +1,7 @@
 package mekanism.common.capabilities.heat;
 
+import javax.annotation.Nullable;
+import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 
@@ -9,16 +11,16 @@ public class VariableHeatCapacitor extends BasicHeatCapacitor {
     private FloatingLongSupplier conductionCoefficientSupplier;
     private FloatingLongSupplier insulationCoefficientSupplier;
 
-    public static VariableHeatCapacitor create(FloatingLongSupplier heatCapacitySupplier) {
-        return create(heatCapacitySupplier, true, true);
+    public static VariableHeatCapacitor create(FloatingLongSupplier heatCapacitySupplier, @Nullable IMekanismHeatHandler heatHandler) {
+        return create(heatCapacitySupplier, true, true, heatHandler);
     }
 
-    public static VariableHeatCapacitor create(FloatingLongSupplier heatCapacitySupplier, boolean absorbHeat, boolean emitHeat) {
-        return new VariableHeatCapacitor(heatCapacitySupplier, null, null, absorbHeat, emitHeat);
+    public static VariableHeatCapacitor create(FloatingLongSupplier heatCapacitySupplier, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
+        return new VariableHeatCapacitor(heatCapacitySupplier, null, null, absorbHeat, emitHeat, heatHandler);
     }
 
-    protected VariableHeatCapacitor(FloatingLongSupplier heatCapacity, FloatingLongSupplier conductionCoefficient, FloatingLongSupplier insulationCoefficient, boolean absorbHeat, boolean emitHeat) {
-        super(heatCapacity.get(), conductionCoefficient.get(), insulationCoefficient.get(), absorbHeat, emitHeat);
+    protected VariableHeatCapacitor(FloatingLongSupplier heatCapacity, FloatingLongSupplier conductionCoefficient, FloatingLongSupplier insulationCoefficient, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
+        super(heatCapacity.get(), conductionCoefficient.get(), insulationCoefficient.get(), absorbHeat, emitHeat, heatHandler);
         this.heatCapacitySupplier = heatCapacity;
         this.conductionCoefficientSupplier = conductionCoefficient;
         this.insulationCoefficientSupplier = insulationCoefficient;

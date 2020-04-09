@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
+import org.lwjgl.glfw.GLFW;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
@@ -26,7 +27,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater, MekanismTileContainer<TileEntityResistiveHeater>> {
 
@@ -71,7 +71,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, 0x404040);
-        renderScaledText(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemp(), TemperatureUnit.AMBIENT)), 50, 25, 0x00CD00, 76);
+        renderScaledText(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature().doubleValue(), TemperatureUnit.AMBIENT)), 50, 25, 0x00CD00, 76);
         renderScaledText(MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick())), 50, 41, 0x00CD00, 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
