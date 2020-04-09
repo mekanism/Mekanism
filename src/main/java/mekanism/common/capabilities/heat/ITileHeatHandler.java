@@ -18,7 +18,6 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-//TODO: Maybe make come up with a better name
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public interface ITileHeatHandler extends IMekanismHeatHandler {
@@ -31,19 +30,28 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
         }
     }
 
+    /**
+     * Gets the {@link IHeatHandler} adjacent to this {@link ITileHeatHandler}.
+     *
+     * @param side The side of this {@link ITileHeatHandler} to look on.
+     *
+     * @return The {@link IHeatHandler} adjacent to this {@link ITileHeatHandler}, otherwise returns {@code null}.
+     */
     @Nullable
     default IHeatHandler getAdjacent(@Nullable Direction side) {
         return null;
     }
 
+    /**
+     * Simulate heat transfers
+     */
     default HeatTransfer simulate() {
-        //TODO: Move some of this simulation logic into BasicHeatCapacitor?
         FloatingLong adjacentTransfer = FloatingLong.ZERO;
         FloatingLong environmentTransfer = FloatingLong.ZERO;
         for (Direction side : EnumUtils.DIRECTIONS) {
             IHeatHandler sink = getAdjacent(side);
             if (sink != null) {
-                FloatingLong invConduction = sink.getTotalInverseConductionCoefficient().add(getTotalInverseConductionCoefficient());
+                FloatingLong invConduction = sink.getTotalInverseConductionCoefficient().add(getTotalInverseConductionCoefficient(side));
                 FloatingLong heatToTransfer = getTotalTemperature(side).divide(invConduction);
                 handleHeat(new HeatPacket(TransferType.EMIT, heatToTransfer), side);
                 sink.handleHeat(new HeatPacket(TransferType.ABSORB, heatToTransfer));

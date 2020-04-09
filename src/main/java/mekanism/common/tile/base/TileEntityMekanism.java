@@ -518,8 +518,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             }
             onUpdateServer();
             if (canHandleHeat()) {
-                // update heat after server tick as we now have simulate changes
-                update(null); // TODO make sure this is called
+                //update heat after server tick as we now have simulate changes
+                update(null);
             }
             lastEnergyReceived = FloatingLong.ZERO;
         }
