@@ -46,8 +46,9 @@ public interface IHeatHandler {
 
     default FloatingLong getTotalTemperature() {
         FloatingLong sum = FloatingLong.ZERO;
+        FloatingLong totalCapacity = getTotalHeatCapacity();
         for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
-            sum = sum.plusEqual(getTemperature(capacitor).multiply(getHeatCapacity(capacitor).divide(getHeatCapacity(capacitor))));
+            sum = sum.plusEqual(getTemperature(capacitor).multiply(getHeatCapacity(capacitor).divide(totalCapacity)));
         }
         return sum;
     }

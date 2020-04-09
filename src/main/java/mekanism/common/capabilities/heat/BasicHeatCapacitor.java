@@ -63,7 +63,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     @Override
     public FloatingLong getTemperature() {
         //TODO: Decide if we want to just stop heat capacity from ever being zero or handle this in another way
-        return heatCapacity.isZero() ? FloatingLong.ZERO : storedHeat.divide(heatCapacity);
+        return getHeatCapacity().isZero() ? FloatingLong.ZERO : storedHeat.divide(getHeatCapacity());
     }
 
     @Override
@@ -101,9 +101,9 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         //TODO: Make it so heat capacity cannot be zero?
         if (heatToHandle != null && !heatCapacity.isZero()) {
             if (heatToHandle.getType().absorb() && absorbHeat) {
-                storedHeat = storedHeat.plusEqual(heatToHandle.getAmount().divide(heatCapacity));
+                storedHeat = storedHeat.plusEqual(heatToHandle.getAmount());
             } else if (heatToHandle.getType().emit() && emitHeat) {
-                storedHeat = storedHeat.minusEqual(heatToHandle.getAmount().divide(heatCapacity));
+                storedHeat = storedHeat.minusEqual(heatToHandle.getAmount());
             }
         }
         // reset our heat
