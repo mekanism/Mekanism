@@ -2,9 +2,7 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -24,7 +22,6 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
-import mekanism.common.capabilities.proxy.ProxyHeatHandler;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.transmitters.grid.HeatNetwork;
@@ -46,31 +43,14 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     public FloatingLong clientTemperature = FloatingLong.ZERO;
 
-    private ProxyHeatHandler readOnlyHandler;
-    private final Map<Direction, ProxyHeatHandler> heatHandlers;
     private final List<IHeatCapacitor> capacitors;
     public BasicHeatCapacitor buffer;
 
     public TileEntityThermodynamicConductor(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), ConductorTier.class);
-        heatHandlers = new EnumMap<>(Direction.class);
         buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), true, true, this);
         capacitors = Collections.singletonList(buffer);
-    }
-
-    private IHeatHandler getHeatHandler(@Nullable Direction side) {
-        if (side == null) {
-            if (readOnlyHandler == null) {
-                readOnlyHandler = new ProxyHeatHandler(this, null, null);
-            }
-            return readOnlyHandler;
-        }
-        ProxyHeatHandler heatHandler = heatHandlers.get(side);
-        if (heatHandler == null) {
-            heatHandlers.put(side, heatHandler = new ProxyHeatHandler(this, side, null));
-        }
-        return heatHandler;
     }
 
     @Override
@@ -171,10 +151,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
-            List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(side);
-            //Don't return a heat handler if we don't actually even have any capacitors for that side
-            LazyOptional<IHeatHandler> lazyHeatHandler = heatCapacitors.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getHeatHandler(side));
-            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, lazyHeatHandler);
+            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
     }

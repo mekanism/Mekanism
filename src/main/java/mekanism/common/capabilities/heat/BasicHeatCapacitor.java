@@ -97,9 +97,8 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         }
     }
 
-    public FloatingLong update() {
-        //TODO: Make it so heat capacity cannot be zero?
-        if (heatToHandle != null && !heatCapacity.isZero()) {
+    public void update() {
+        if (heatToHandle != null) {
             if (heatToHandle.getType().absorb() && absorbHeat) {
                 storedHeat = storedHeat.plusEqual(heatToHandle.getAmount());
             } else if (heatToHandle.getType().emit() && emitHeat) {
@@ -110,8 +109,6 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         heatToHandle = null;
         // notify listeners
         onContentsChanged();
-        // return current heat
-        return storedHeat.copy();
     }
 
     @Override

@@ -47,13 +47,13 @@
                   "op": "replace"
                 },
                 {
-                  "source": "InfusionTanks",
-                  "target": "mekData.InfusionTanks",
+                  "source": "EnergyContainers",
+                  "target": "mekData.EnergyContainers",
                   "op": "replace"
                 },
                 {
-                  "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers",
+                  "source": "InfusionTanks",
+                  "target": "mekData.InfusionTanks",
                   "op": "replace"
                 },
                 {
