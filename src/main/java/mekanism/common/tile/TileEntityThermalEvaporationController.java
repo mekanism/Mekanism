@@ -297,8 +297,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         markDirty(false);
     }
 
-    public double getTemp() {
-        return heatCapacitor.getTemperature().doubleValue();
+    public FloatingLong getTemp() {
+        return heatCapacitor.getTemperature();
     }
 
     private int getActiveSolars() {
@@ -517,7 +517,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         //TODO: Should this be disabled via the inventory slots instead. (Then we can't access the items when opening the controller)
         if (!getActive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
-        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
             //Never allow the fluid handler cap to be enabled here even though internally we handle fluid
             return true;
         }

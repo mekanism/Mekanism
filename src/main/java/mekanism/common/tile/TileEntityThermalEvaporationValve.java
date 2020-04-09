@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.registries.MekanismBlocks;
@@ -11,7 +10,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock {
 
@@ -54,14 +52,6 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
             return false;
         }
         return super.persists(type);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY && getController() == null) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

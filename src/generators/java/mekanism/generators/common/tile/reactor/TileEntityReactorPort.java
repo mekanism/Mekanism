@@ -118,14 +118,6 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements ICo
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY && getReactor() == null) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
             boolean oldMode = getActive();

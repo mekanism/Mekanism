@@ -39,16 +39,16 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public static Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
-    public static final FloatingLong CASING_HEAT_CAPACITY = FloatingLong.createConst(1);
+    public static final FloatingLong CASING_HEAT_CAPACITY = FloatingLong.ONE;
     public static final FloatingLong CASING_INVERSE_INSULATION_COEFFICIENT = FloatingLong.createConst(10);
-    public static final FloatingLong CASING_INVERSE_CONDUCTION_COEFFICIENT = FloatingLong.createConst(1);
+    public static final FloatingLong CASING_INVERSE_CONDUCTION_COEFFICIENT = FloatingLong.ONE;
     public static final FloatingLong BASE_BOIL_TEMP = FloatingLong.createConst(100 - (TemperatureUnit.AMBIENT.zeroOffset - TemperatureUnit.CELSIUS.zeroOffset));
 
     public BoilerTank waterTank;
     public MultiblockGasTank<TileEntityBoilerCasing> steamTank;
     public MultiblockHeatCapacitor<TileEntityBoilerCasing> heatCapacitor;
 
-    public double lastEnvironmentLoss;
+    public FloatingLong lastEnvironmentLoss = FloatingLong.ZERO;
     public int lastBoilRate;
     public int lastMaxBoil;
 

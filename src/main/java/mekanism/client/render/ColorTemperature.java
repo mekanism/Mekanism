@@ -2,7 +2,8 @@ package mekanism.client.render;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import mekanism.api.IHeatTransfer;
+import mekanism.api.heat.HeatAPI;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.ColorRGBA;
 
 public class ColorTemperature extends ColorRGBA {
@@ -16,19 +17,9 @@ public class ColorTemperature extends ColorRGBA {
         temp = t;
     }
 
-    public static ColorTemperature fromTemperature(double temperature, ColorRGBA baseColor) {
-        if (temperature < 0) {
-            double alphaBlend = -temperature / IHeatTransfer.AMBIENT_TEMP;
-            if (alphaBlend < 0) {
-                alphaBlend = 0;
-            }
-            if (alphaBlend > 1) {
-                alphaBlend = 1;
-            }
-            return new ColorTemperature(1, 1, 1, alphaBlend, temperature).blendOnto(baseColor);
-        }
-
-        double absTemp = temperature + IHeatTransfer.AMBIENT_TEMP;
+    public static ColorTemperature fromTemperature(FloatingLong temp, ColorRGBA baseColor) {
+        double temperature = temp.doubleValue();
+        double absTemp = temp.add(HeatAPI.AMBIENT_TEMP).doubleValue();
         absTemp /= 100;
 
         if (cache.containsKey((int) absTemp)) {
@@ -74,7 +65,7 @@ public class ColorTemperature extends ColorRGBA {
             blue = tmpCalc / 255D;
         }
 
-        alpha = temperature / 1000;
+        alpha = temperature / 1_000;
 
         //clamp to 0 <= n >= 1
         red = Math.min(Math.max(red, 0), 1);

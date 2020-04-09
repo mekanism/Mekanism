@@ -6,6 +6,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.HeatPacket;
 import mekanism.api.heat.HeatPacket.TransferType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
@@ -14,7 +15,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
@@ -30,7 +31,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     public int burnTime;
     public int maxBurnTime;
 
-    public double lastEnvironmentLoss;
+    public FloatingLong lastEnvironmentLoss = FloatingLong.ZERO;
 
     private FuelInventorySlot fuelSlot;
     private BasicHeatCapacitor heatCapacitor;
@@ -72,7 +73,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
             heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, MekanismConfig.general.heatPerFuelTick.get()));
         }
         HeatTransfer loss = simulate();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer().doubleValue();
+        lastEnvironmentLoss = loss.getEnvironmentTransfer().copy();
         setActive(burning);
     }
 
@@ -111,6 +112,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
         super.addContainerTrackers(container);
         container.track(SyncableInt.create(() -> burnTime, value -> burnTime = value));
         container.track(SyncableInt.create(() -> maxBurnTime, value -> maxBurnTime = value));
-        container.track(SyncableDouble.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableFloatingLong.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 }

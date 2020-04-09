@@ -191,25 +191,25 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("Thermal Evaporation Plant Settings").push(EVAPORATION_CATEGORY);
         evaporationHeatDissipation = CachedFloatingLongValue.define(this, builder, "Thermal Evaporation Tower heat loss per tick.",
-              "heatDissipation", FloatingLong.createConst(0.02D));
+              "heatDissipation", FloatingLong.createConst(0.02));
         evaporationTempMultiplier = CachedFloatingLongValue.define(this, builder, "Temperature to amount produced ratio for Thermal Evaporation Tower.",
-              "tempMultiplier", FloatingLong.createConst(0.1D));
+              "tempMultiplier", FloatingLong.createConst(0.1));
         evaporationSolarMultiplier = CachedFloatingLongValue.define(this, builder, "Heat to absorb per Solar Panel array of Thermal Evaporation Tower.",
-              "solarMultiplier", FloatingLong.createConst(0.2D));
+              "solarMultiplier", FloatingLong.createConst(0.2));
         evaporationHeatCapacity = CachedFloatingLongValue.define(this, builder, "Heat capacity of Thermal Evaporation Tower layers (increases amount of energy needed to increase temperature).",
-              "heatCapacity", FloatingLong.createConst(100D));
+              "heatCapacity", FloatingLong.createConst(100));
         evaporationMaxTemp = CachedFloatingLongValue.define(this, builder, "Max Temperature of the Thermal Evaporation Tower.",
-              "maxTemp", FloatingLong.createConst(3_000D), CachedFloatingLongValue.POSITIVE);
+              "maxTemp", FloatingLong.createConst(3_000), CachedFloatingLongValue.POSITIVE);
         builder.pop();
 
         maxEnergyPerSteam = CachedFloatingLongValue.define(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
               "maxEnergyPerSteam", FloatingLong.createConst(10));
         superheatingHeatTransfer = CachedFloatingLongValue.define(this, builder, "Amount of heat each Boiler heating element produces.",
-              "superheatingHeatTransfer", FloatingLong.createConst(512_000D));
+              "superheatingHeatTransfer", FloatingLong.createConst(512_000));
         boilerWaterConductivity = CachedFloatingLongValue.define(this, builder, "How much Boiler heat is immediately usable to convert water to steam.",
-              "boilerWaterConductivity", FloatingLong.createConst(0.7D));
+              "boilerWaterConductivity", FloatingLong.createConst(0.7));
         heatPerFuelTick = CachedFloatingLongValue.define(this, builder, "Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.",
-              "heatPerFuelTick", FloatingLong.createConst(2_000D));
+              "heatPerFuelTick", FloatingLong.createConst(2_000));
         allowTransmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
               .define("allowTransmitterAlloyUpgrade", true));
         allowChunkloading = CachedBooleanValue.wrap(this, builder.comment("Disable to make the anchor upgrade not do anything.")

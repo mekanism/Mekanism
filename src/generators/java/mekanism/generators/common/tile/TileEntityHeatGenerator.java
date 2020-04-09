@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.IHeatTransfer;
 import mekanism.api.RelativeSide;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.HeatPacket;
 import mekanism.api.heat.HeatPacket.TransferType;
@@ -23,7 +23,6 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.CapabilityUtils;
@@ -47,10 +46,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
      * The FluidTank for this generator.
      */
     public BasicFluidTank lavaTank;
-    private FloatingLong thermalEfficiency = FloatingLong.create(0.5D);
+    private FloatingLong thermalEfficiency = FloatingLong.create(0.5);
     private FloatingLong producingEnergy = FloatingLong.ZERO;
-    private double lastTransferLoss;
-    private double lastEnvironmentLoss;
+    private FloatingLong lastTransferLoss = FloatingLong.ZERO;
+    private FloatingLong lastEnvironmentLoss = FloatingLong.ZERO;
 
     private BasicHeatCapacitor heatCapacitor;
     private FluidFuelInventorySlot fuelSlot;
@@ -105,8 +104,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
             setActive(false);
         }
         HeatTransfer loss = simulate();
-        lastTransferLoss = loss.getAdjacentTransfer().doubleValue();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer().doubleValue();
+        lastTransferLoss = loss.getAdjacentTransfer().copy();
+        lastEnvironmentLoss = loss.getEnvironmentTransfer().copy();
         producingEnergy = getEnergyContainer().getEnergy().subtract(prev);
     }
 
@@ -123,17 +122,18 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return boost;
     }
 
+    @Nonnull
     @Override
     public FloatingLong getInverseInsulation(int capacitor, @Nullable Direction side) {
-        FloatingLong insulation = super.getInverseInsulation(capacitor, side);
-        return side == Direction.DOWN ? FloatingLong.ZERO : insulation;
+        return side == Direction.DOWN ? FloatingLong.ZERO : super.getInverseInsulation(capacitor, side);
     }
 
+    @Nonnull
     @Override
     public HeatTransfer simulate() {
         FloatingLong temp = getTotalTemperature();
         if (!temp.isZero()) {
-            FloatingLong carnotEfficiency = temp.divide(temp.add(IHeatTransfer.AMBIENT_TEMP));
+            FloatingLong carnotEfficiency = temp.divide(temp.add(HeatAPI.AMBIENT_TEMP));
             FloatingLong heatLost = thermalEfficiency.multiply(temp);
             FloatingLong workDone = heatLost.multiply(carnotEfficiency);
             heatCapacitor.handleHeat(new HeatPacket(TransferType.EMIT, heatLost));
@@ -159,11 +159,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return producingEnergy;
     }
 
-    public double getLastTransferLoss() {
+    public FloatingLong getLastTransferLoss() {
         return lastTransferLoss;
     }
 
-    public double getLastEnvironmentLoss() {
+    public FloatingLong getLastEnvironmentLoss() {
         return lastEnvironmentLoss;
     }
 
@@ -176,7 +176,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableFloatingLong.create(this::getProducingEnergy, value -> producingEnergy = value));
-        container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
-        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableFloatingLong.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
+        container.track(SyncableFloatingLong.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 }

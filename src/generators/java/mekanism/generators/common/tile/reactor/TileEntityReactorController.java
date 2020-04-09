@@ -124,7 +124,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
 
     @Override
     public boolean handles(SubstanceType type) {
-        if (type == SubstanceType.GAS || type == SubstanceType.FLUID) {
+        if (type == SubstanceType.GAS || type == SubstanceType.FLUID || type == SubstanceType.HEAT) {
             return false;
         }
         return super.handles(type);
@@ -251,7 +251,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && !isFormed()) {
             return true;
-        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || EnergyCompatUtils.isEnergyCapability(capability)) {
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ||
+                   capability == Capabilities.HEAT_HANDLER_CAPABILITY || EnergyCompatUtils.isEnergyCapability(capability)) {
             //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
             return true;
         }

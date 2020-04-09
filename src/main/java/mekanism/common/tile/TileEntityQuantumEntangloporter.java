@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -23,6 +23,7 @@ import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -45,7 +46,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.registries.MekanismBlocks;
@@ -76,8 +77,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     public InventoryFrequency frequency;
     //TODO: These seem to be used, do we want to have some sort of stats thing for the quantum entangloporter
-    private double lastTransferLoss;
-    private double lastEnvironmentLoss;
+    private FloatingLong lastTransferLoss = FloatingLong.ZERO;
+    private FloatingLong lastEnvironmentLoss = FloatingLong.ZERO;
     public List<Frequency> publicCache = new ArrayList<>();
     public List<Frequency> privateCache = new ArrayList<>();
     public TileComponentEjector ejectorComponent;
@@ -187,8 +188,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         }
 
         HeatTransfer loss = simulate();
-        lastTransferLoss = loss.getAdjacentTransfer().doubleValue();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer().doubleValue();
+        lastTransferLoss = loss.getAdjacentTransfer();
+        lastEnvironmentLoss = loss.getEnvironmentTransfer().copy();
 
         FrequencyManager manager = getManager(frequency);
         Frequency lastFreq = frequency;
@@ -360,12 +361,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (configComponent.isCapabilityDisabled(capability, side)) {
-            return true;
-        } else if (capability == Capabilities.HEAT_HANDLER_CAPABILITY && side != null && !hasFrequency()) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
+        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override
@@ -401,11 +397,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         return remap;
     }
 
-    public double getLastTransferLoss() {
+    public FloatingLong getLastTransferLoss() {
         return lastTransferLoss;
     }
 
-    public double getLastEnvironmentLoss() {
+    public FloatingLong getLastEnvironmentLoss() {
         return lastEnvironmentLoss;
     }
 
@@ -438,8 +434,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
-        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableFloatingLong.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
+        container.track(SyncableFloatingLong.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
         container.track(SyncableFrequency.create(() -> frequency, value -> frequency = value));
         container.track(SyncableFrequencyList.create(this::getPublicFrequencies, value -> publicCache = value));
         container.track(SyncableFrequencyList.create(this::getPrivateFrequencies, value -> privateCache = value));

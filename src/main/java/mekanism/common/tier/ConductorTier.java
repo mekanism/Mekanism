@@ -1,5 +1,6 @@
 package mekanism.common.tier;
 
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
@@ -8,10 +9,10 @@ import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.util.EnumUtils;
 
 public enum ConductorTier implements ITier {
-    BASIC(BaseTier.BASIC, FloatingLong.create(5), FloatingLong.create(1), FloatingLong.create(10), new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ADVANCED(BaseTier.ADVANCED, FloatingLong.create(5), FloatingLong.create(1), FloatingLong.create(400), new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ELITE(BaseTier.ELITE, FloatingLong.create(5), FloatingLong.create(1), FloatingLong.create(8_000), new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.create(5), FloatingLong.create(1), FloatingLong.create(100_000), new ColorRGBA(0.2, 0.2, 0.2, 1));
+    BASIC(BaseTier.BASIC, FloatingLong.createConst(5), HeatAPI.DEFAULT_HEAT_CAPACITY, FloatingLong.createConst(10), new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(5), HeatAPI.DEFAULT_HEAT_CAPACITY, FloatingLong.createConst(400), new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ELITE(BaseTier.ELITE, FloatingLong.createConst(5), HeatAPI.DEFAULT_HEAT_CAPACITY, FloatingLong.createConst(8_000), new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(5), HeatAPI.DEFAULT_HEAT_CAPACITY, FloatingLong.createConst(100_000), new ColorRGBA(0.2, 0.2, 0.2, 1));
 
     private final ColorRGBA baseColor;
     private final FloatingLong baseConduction;
@@ -22,10 +23,10 @@ public enum ConductorTier implements ITier {
     private CachedFloatingLongValue capacityReference;
     private CachedFloatingLongValue insulationReference;
 
-    ConductorTier(BaseTier tier, FloatingLong inversek, FloatingLong inverseC, FloatingLong insulationInversek, ColorRGBA color) {
-        baseConduction = inversek;
-        baseHeatCapacity = inverseC;
-        baseConductionInsulation = insulationInversek;
+    ConductorTier(BaseTier tier, FloatingLong conduction, FloatingLong heatCapacity, FloatingLong conductionInsulation, ColorRGBA color) {
+        baseConduction = conduction;
+        baseHeatCapacity = heatCapacity;
+        baseConductionInsulation = conductionInsulation;
 
         baseColor = color;
         baseTier = tier;

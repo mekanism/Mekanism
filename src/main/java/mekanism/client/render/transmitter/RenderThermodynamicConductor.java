@@ -24,7 +24,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
           IProfiler profiler) {
         matrix.push();
         matrix.translate(0.5, 0.5, 0.5);
-        int argb = ColorTemperature.fromTemperature(conductor.getTotalTemperature().doubleValue(), conductor.getBaseColor()).argb();
+        int argb = ColorTemperature.fromTemperature(conductor.getTotalTemperature(), conductor.getBaseColor()).argb();
         renderModel(conductor, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), argb,
               MekanismRenderer.getAlpha(argb), MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.heatIcon);
         matrix.pop();

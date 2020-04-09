@@ -93,6 +93,10 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
         return getDisplayShort(value, unit, true);
     }
 
+    public static ITextComponent getDisplayShort(FloatingLong value, TemperatureUnit unit, boolean shift) {
+        return getDisplayShort(value.doubleValue(), unit, shift);
+    }
+
     public static ITextComponent getDisplayShort(double value, TemperatureUnit unit, boolean shift) {
         return getDisplayShort(value, unit, shift, 2);
     }
@@ -131,7 +135,7 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
         CELSIUS(MekanismLang.TEMPERATURE_CELSIUS, "°C", 273.15, 1),
         RANKINE(MekanismLang.TEMPERATURE_RANKINE, "R", 0, 1.8),
         FAHRENHEIT(MekanismLang.TEMPERATURE_FAHRENHEIT, "°F", 459.67, 1.8),
-        AMBIENT(MekanismLang.TEMPERATURE_AMBIENT, "+STP", 300, 1);
+        AMBIENT(MekanismLang.TEMPERATURE_AMBIENT, "+STP", 300, 1);//TODO: Isn't STP the same as celsius for the shift
 
         private final ILangEntry langEntry;
         //TODO: Do we want to make the symbol be localized?
@@ -152,6 +156,10 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
 
         public double convertToK(double T, boolean shift) {
             return (T + (shift ? zeroOffset : 0)) / intervalSize;
+        }
+
+        public double convertToK(FloatingLong T, boolean shift) {
+            return convertToK(T.doubleValue(), shift);
         }
     }
 

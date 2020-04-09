@@ -41,6 +41,8 @@ import net.minecraft.util.math.BlockPos;
 
 public class FusionReactor {
 
+    private static final FloatingLong POINT_ONE = FloatingLong.createConst(0.1);
+
     private static final int MAX_INJECTION = 98;//this is the effective cap in the GUI, as text field is limited to 2 chars
     //Reaction characteristics
     private static FloatingLong burnTemperature = FloatingLong.createConst(TemperatureUnit.AMBIENT.convertFromK(1E8, true));
@@ -54,15 +56,15 @@ public class FusionReactor {
     //Heat transfer metrics
     private static FloatingLong plasmaCaseConductivity = FloatingLong.createConst(0.2);
     private static FloatingLong caseWaterConductivity = FloatingLong.createConst(0.3);
-    private static FloatingLong caseAirConductivity = FloatingLong.createConst(0.1);
+    private static FloatingLong caseAirConductivity = POINT_ONE;
     public TileEntityReactorController controller;
     private Set<TileEntityReactorBlock> reactorBlocks = new ObjectOpenHashSet<>();
     private Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
     //Current plasma temperature - internally uses ambient-relative kelvin units
-    private FloatingLong plasmaTemperature;
+    private FloatingLong plasmaTemperature = FloatingLong.ZERO;
     //Last values of temperature
-    private FloatingLong lastPlasmaTemperature;
-    private FloatingLong lastCaseTemperature;
+    private FloatingLong lastPlasmaTemperature = FloatingLong.ZERO;
+    private FloatingLong lastCaseTemperature = FloatingLong.ZERO;
     private int injectionRate = 0;
     private boolean burning = false;
 
@@ -127,8 +129,8 @@ public class FusionReactor {
     }
 
     public void updateTemperatures() {
-        lastPlasmaTemperature = plasmaTemperature.doubleValue() < 0.1 ? FloatingLong.ZERO : plasmaTemperature;
-        lastCaseTemperature = getHeatCapacitor().getTemperature().doubleValue() < 0.1 ? FloatingLong.ZERO : getHeatCapacitor().getTemperature();
+        lastPlasmaTemperature = plasmaTemperature.smallerThan(POINT_ONE) ? FloatingLong.ZERO : plasmaTemperature.copy();
+        lastCaseTemperature = getHeatCapacitor().getTemperature().smallerThan(POINT_ONE) ? FloatingLong.ZERO : getHeatCapacitor().getTemperature().copy();
     }
 
     private void vaporiseHohlraum() {
@@ -139,7 +141,7 @@ public class FusionReactor {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem.getGasTankCount() > 0) {
                 getFuelTank().insert(gasHandlerItem.getGasInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
-                lastPlasmaTemperature = plasmaTemperature;
+                lastPlasmaTemperature = plasmaTemperature.copy();
                 reactorSlot.setStack(ItemStack.EMPTY);
                 setBurning(true);
             }

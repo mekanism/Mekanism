@@ -22,7 +22,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -36,7 +36,7 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     private float soundScale = 1;
-    public double lastEnvironmentLoss;
+    public FloatingLong lastEnvironmentLoss = FloatingLong.ZERO;
 
     private ResistiveHeaterEnergyContainer energyContainer;
     private BasicHeatCapacitor heatCapacitor;
@@ -84,7 +84,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         }
         setActive(!toUse.isZero());
         HeatTransfer transfer = simulate();
-        lastEnvironmentLoss = transfer.getEnvironmentTransfer().doubleValue();
+        lastEnvironmentLoss = transfer.getEnvironmentTransfer().copy();
         float newSoundScale = toUse.divide(100_000).floatValue();
         if (Math.abs(newSoundScale - soundScale) > 0.01) {
             soundScale = newSoundScale;
@@ -123,7 +123,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableFloatingLong.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 
     @Nonnull

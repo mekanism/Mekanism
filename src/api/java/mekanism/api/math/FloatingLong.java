@@ -649,15 +649,16 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
 
     /**
      * Returns the absolute value of the difference between two Floating Long values.
+     *
      * @param other comparing FloatingLong
+     *
      * @return the difference between values
      */
     public FloatingLong absDifference(FloatingLong other) {
         if (greaterThan(other)) {
             return subtract(other);
-        } else {
-            return add(other);
         }
+        return add(other);
     }
 
     /**

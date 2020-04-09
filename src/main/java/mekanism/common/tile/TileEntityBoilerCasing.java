@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -20,7 +20,6 @@ import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
@@ -93,7 +92,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             }
 
             HeatTransfer transfer = structure.simulate();
-            structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer().doubleValue();
+            structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer().copy();
             if (!SynchronizedBoilerData.BASE_BOIL_TEMP.greaterThan(structure.getTotalTemperature()) && !structure.waterTank.isEmpty()) {
                 int steamAmount = structure.steamTank.getStored();
                 FloatingLong heatAvailable = structure.getHeatAvailable();
@@ -154,8 +153,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return Mekanism.boilerManager;
     }
 
-    public double getLastEnvironmentLoss() {
-        return structure == null ? 0 : structure.lastEnvironmentLoss;
+    public FloatingLong getLastEnvironmentLoss() {
+        return structure == null ? FloatingLong.ZERO : structure.lastEnvironmentLoss;
     }
 
     public FloatingLong getTemperature() {
@@ -268,7 +267,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.steamTank.setStack(value);
             }
         }));
-        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> {
+        container.track(SyncableFloatingLong.create(this::getLastEnvironmentLoss, value -> {
             if (structure != null) {
                 structure.lastEnvironmentLoss = value;
             }
