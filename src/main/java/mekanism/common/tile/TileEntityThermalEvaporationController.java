@@ -261,15 +261,15 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
               });
     }
 
-    // reevaluate this sometime soon, this is bad code
+    //TODO: reevaluate this sometime soon, this is bad code
     private void updateTemperature() {
         if (!temperatureSet) {
-            biomeTemp = FloatingLong.create(world.getBiomeManager().getBiome(getPos()).getTemperature(getPos()));
+            biomeTemp = FloatingLong.createConst(world.getBiomeManager().getBiome(getPos()).getTemperature(getPos()));
             temperatureSet = true;
         }
         heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, MekanismConfig.general.evaporationSolarMultiplier.get().multiply(getActiveSolars())));
 
-        FloatingLong biome = biomeTemp.subtract(0.5F);
+        FloatingLong biome = biomeTemp.subtract(0.5);
         FloatingLong base = !biome.isZero() ? biome.multiply(20) : biomeTemp.multiply(40);
 
         if (heatCapacitor.getTemperature().absDifference(base).doubleValue() < 0.001) {

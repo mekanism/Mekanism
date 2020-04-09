@@ -35,15 +35,14 @@ public interface IHeatHandler {
      */
     FloatingLong getTemperature(int capacitor);
 
-    //TODO: Non zero
+    //TODO: Document as non zero
     FloatingLong getInverseConduction(int capacitor);
 
-    //TODO: Should be at least one
+    //TODO: Document as being at least one
     FloatingLong getHeatCapacity(int capacitor);
 
     void handleHeat(int capacitor, HeatPacket transfer);
 
-    //TODO: Evaluate usages of below methods and potentially replace some with the ones in ISidedHeatHandler
     default FloatingLong getTotalTemperature() {
         FloatingLong sum = FloatingLong.ZERO;
         FloatingLong totalCapacity = getTotalHeatCapacity();

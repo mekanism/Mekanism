@@ -3,8 +3,6 @@ package mekanism.common.tile.transmitter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,6 +21,7 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
+import mekanism.common.capabilities.proxy.ProxyHeatHandler;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.transmitters.grid.HeatNetwork;
@@ -44,6 +43,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     public FloatingLong clientTemperature = FloatingLong.ZERO;
 
+    private final ProxyHeatHandler readOnlyHandler;
     private final List<IHeatCapacitor> capacitors;
     public BasicHeatCapacitor buffer;
 
@@ -52,6 +52,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         this.tier = Attribute.getTier(blockProvider.getBlock(), ConductorTier.class);
         buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), true, true, this);
         capacitors = Collections.singletonList(buffer);
+        readOnlyHandler = new ProxyHeatHandler(this, null, null);
     }
 
     @Override
@@ -121,6 +122,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         return tier.getBaseColor();
     }
 
+    @Nonnull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
         return capacitors;
@@ -128,7 +130,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public void onContentsChanged() {
-        if (Math.abs(buffer.getTemperature().doubleValue() - clientTemperature.doubleValue()) > buffer.getTemperature().divide(20).doubleValue()) {
+        if (buffer.getTemperature().absDifference(clientTemperature).greaterThan(buffer.getTemperature().divide(20))) {
             clientTemperature = buffer.getTemperature();
             sendUpdatePacket();
         }
@@ -149,7 +151,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
-            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> side == null ? readOnlyHandler : this));
         }
         return super.getCapability(capability, side);
     }

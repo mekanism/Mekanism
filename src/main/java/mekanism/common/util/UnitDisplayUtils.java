@@ -138,8 +138,7 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
         }
 
         public FloatingLong convertFromKAbs(FloatingLong temp) {
-            FloatingLong result = temp.multiply(intervalSize);
-            return zeroOffset.minusEqual(result);
+            return temp.multiply(intervalSize).absDifference(zeroOffset);
         }
 
         public FloatingLong convertFromK(FloatingLong temp, boolean shift) {
