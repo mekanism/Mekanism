@@ -453,8 +453,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                     if (isDirectional()) {
                         //TODO: Extract this out into a handleRotation method?
                         setFacing(getDirection().rotateY());
-                        //TODO: I believe this is no longer needed, verify
-                        //world.notifyNeighborsOfStateChange(pos, getBlockType());
                     }
                     return WrenchResult.SUCCESS;
                 }
@@ -517,9 +515,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 }
             }
             onUpdateServer();
-            if (canHandleHeat()) {
+            if (persists(SubstanceType.HEAT)) {
                 // update heat after server tick as we now have simulate changes
-                update(null); // TODO make sure this is called
+                // we use persists, as only one reference should update
+                update(null);
             }
             lastEnergyReceived = FloatingLong.ZERO;
         }

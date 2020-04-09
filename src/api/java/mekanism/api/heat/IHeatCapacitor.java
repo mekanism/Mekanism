@@ -30,7 +30,7 @@ public interface IHeatCapacitor extends INBTSerializable<CompoundNBT> {
     @Override
     default CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        nbt.putString(NBTConstants.STORED, getTemperature().toString());
+        nbt.putString(NBTConstants.STORED, getHeat().toString());
         return nbt;
     }
 }
