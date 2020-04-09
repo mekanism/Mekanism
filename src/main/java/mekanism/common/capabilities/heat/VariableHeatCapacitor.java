@@ -1,6 +1,7 @@
 package mekanism.common.capabilities.heat;
 
 import javax.annotation.Nullable;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
@@ -16,7 +17,7 @@ public class VariableHeatCapacitor extends BasicHeatCapacitor {
     }
 
     public static VariableHeatCapacitor create(FloatingLongSupplier heatCapacitySupplier, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
-        return new VariableHeatCapacitor(heatCapacitySupplier, null, null, absorbHeat, emitHeat, heatHandler);
+        return new VariableHeatCapacitor(heatCapacitySupplier, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION, absorbHeat, emitHeat, heatHandler);
     }
 
     protected VariableHeatCapacitor(FloatingLongSupplier heatCapacity, FloatingLongSupplier conductionCoefficient, FloatingLongSupplier insulationCoefficient, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {

@@ -28,7 +28,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -164,9 +164,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         super.onUpdateServer();
         if (isFormed()) {
             getReactor().simulateServer();
-            if (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1_000_000) {
+            if (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp().doubleValue() - clientTemp) > 1_000_000) {
                 clientBurning = getReactor().isBurning();
-                clientTemp = getReactor().getPlasmaTemp();
+                clientTemp = getReactor().getPlasmaTemp().doubleValue();
                 sendUpdatePacket();
             }
         }
@@ -183,7 +183,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         super.write(tag);
         tag.putBoolean(NBTConstants.FORMED, isFormed());
         if (isFormed()) {
-            tag.putDouble(NBTConstants.PLASMA_TEMP, getReactor().getPlasmaTemp());
+            tag.putString(NBTConstants.PLASMA_TEMP, getReactor().getPlasmaTemp().toString());
             tag.putInt(NBTConstants.INJECTION_RATE, getReactor().getInjectionRate());
             tag.putBoolean(NBTConstants.BURNING, getReactor().isBurning());
         }
@@ -196,7 +196,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         boolean formed = tag.getBoolean(NBTConstants.FORMED);
         if (formed) {
             setReactor(new FusionReactor(this));
-            getReactor().setPlasmaTemp(tag.getDouble(NBTConstants.PLASMA_TEMP));
+            NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.PLASMA_TEMP, getReactor()::setPlasmaTemp);
             getReactor().setInjectionRate(tag.getInt(NBTConstants.INJECTION_RATE));
             getReactor().setBurning(tag.getBoolean(NBTConstants.BURNING));
             getReactor().updateTemperatures();
@@ -265,7 +265,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         boolean formed = isFormed();
         updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, formed);
         if (formed) {
-            updateTag.putDouble(NBTConstants.PLASMA_TEMP, getPlasmaTemp());
+            updateTag.putString(NBTConstants.PLASMA_TEMP, getPlasmaTemp().toString());
             updateTag.putBoolean(NBTConstants.BURNING, isBurning());
         }
         return updateTag;
@@ -285,7 +285,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
                 setReactor(reactor = new FusionReactor(this));
             }
             reactor.formed = true;
-            NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, reactor::setLastPlasmaTemp);
+            NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.PLASMA_TEMP, reactor::setLastPlasmaTemp);
             NBTUtils.setBooleanIfPresent(tag, NBTConstants.BURNING, reactor::setBurning);
         } else if (reactor != null) {
             setReactor(null);
@@ -295,13 +295,13 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(this::getPlasmaTemp, value -> {
+        container.track(SyncableFloatingLong.create(this::getPlasmaTemp, value -> {
             if (getReactor() != null) {
                 getReactor().setPlasmaTemp(value);
                 getReactor().setLastPlasmaTemp(value);
             }
         }));
-        container.track(SyncableDouble.create(this::getCaseTemp, value -> {
+        container.track(SyncableFloatingLong.create(this::getCaseTemp, value -> {
             if (getReactor() != null) {
                 getReactor().setLastCaseTemp(value);
             }

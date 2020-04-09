@@ -170,7 +170,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         BoilerCache mergeCache = (BoilerCache) merge;
         StorageUtils.mergeTanks(boilerCache.getFluidTanks(null).get(0), mergeCache.getFluidTanks(null).get(0));
         StorageUtils.mergeTanks(boilerCache.getGasTanks(null).get(0), mergeCache.getGasTanks(null).get(0));
-        boilerCache.temperature = Math.max(boilerCache.temperature, mergeCache.temperature);
+        StorageUtils.mergeContainers(boilerCache.getHeatCapacitors(null).get(0), mergeCache.getHeatCapacitors(null).get(0));
     }
 
     @Override

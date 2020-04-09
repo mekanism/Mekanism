@@ -5,6 +5,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatPacket;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IMekanismHeatHandler;
@@ -30,6 +31,10 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     protected FloatingLong storedHeat = FloatingLong.ZERO;
     @Nullable
     protected HeatPacket heatToHandle;
+
+    public static BasicHeatCapacitor create(FloatingLong heatCapacity, @Nullable IMekanismHeatHandler heatHandler) {
+        return create(heatCapacity, HeatAPI.DEFAULT_INVERSE_CONDUCTION, HeatAPI.DEFAULT_INVERSE_INSULATION, heatHandler);
+    }
 
     // double helper
     public static BasicHeatCapacitor create(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient, @Nullable IMekanismHeatHandler heatHandler) {
@@ -76,8 +81,19 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     @Override
+    public void onContentsChanged() {
+        if (heatHandler != null) {
+            heatHandler.onContentsChanged();
+        }
+    }
+
+    @Override
     public void handleHeat(HeatPacket transfer) {
-        heatToHandle = transfer;
+        if (heatToHandle == null) {
+            heatToHandle = transfer;
+        } else {
+            heatToHandle.merge(transfer);
+        }
     }
 
     public FloatingLong update() {
@@ -91,9 +107,8 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         // reset our heat
         heatToHandle = null;
         // notify listeners
-        if (heatHandler != null) {
-            heatHandler.onContentsChanged();
-        }
+        onContentsChanged();
+        // return current heat
         return storedHeat.copy();
     }
 
@@ -103,10 +118,12 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     // getters/setters for container syncing
+    @Override
     public FloatingLong getHeat() {
         return storedHeat;
     }
 
+    @Override
     public void setHeat(FloatingLong heat) {
         storedHeat = heat;
     }

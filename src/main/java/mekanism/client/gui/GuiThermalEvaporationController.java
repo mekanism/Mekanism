@@ -36,19 +36,19 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         addButton(new GuiHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT);
+                return MekanismUtils.getTemperatureDisplay(tile.getTemp(), TemperatureUnit.AMBIENT);
             }
 
             @Override
             public double getLevel() {
-                return Math.min(1, tile.getTemperature() / MekanismConfig.general.evaporationMaxTemp.get());
+                return Math.min(1, tile.getTemp() / MekanismConfig.general.evaporationMaxTemp.get().doubleValue());
             }
         }, 48, 63));
         addButton(new GuiFluidGauge(() -> tile.inputTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
         addButton(new GuiFluidGauge(() -> tile.outputTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 152, 13));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
-            ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.totalLoss * unit.intervalSize, unit, false);
+            ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.totalLoss.doubleValue() * unit.intervalSize, unit, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));
     }
@@ -59,7 +59,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
         drawString(getStruct().translate(), 50, 21, 0x00CD00);
         drawString(MekanismLang.HEIGHT.translate(tile.height), 50, 30, 0x00CD00);
-        drawString(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT)), 50, 39, 0x00CD00);
+        drawString(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemp(), TemperatureUnit.AMBIENT)), 50, 39, 0x00CD00);
         renderScaledText(MekanismLang.FLUID_PRODUCTION.translate(Math.round(tile.lastGain * 100D) / 100D), 50, 48, 0x00CD00, 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

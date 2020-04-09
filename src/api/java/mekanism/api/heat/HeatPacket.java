@@ -24,6 +24,17 @@ public class HeatPacket {
         return new HeatPacket(type, amount.multiply(ratio));
     }
 
+    public void merge(HeatPacket packet) {
+        if ((type == TransferType.ABSORB && packet.type == TransferType.ABSORB) || (type == TransferType.EMIT && packet.type == TransferType.EMIT)) {
+            amount = amount.plusEqual(packet.amount);
+        } else if (amount.greaterThan(packet.amount)) {
+            amount = amount.minusEqual(packet.amount);
+        } else {
+            amount = packet.amount.minusEqual(amount);
+            type = packet.type;
+        }
+    }
+
     public enum TransferType {
         /** Receiving heat energy. */
         ABSORB,

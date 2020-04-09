@@ -13,24 +13,28 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.heat.IHeatCapacitor;
+import mekanism.api.heat.IMekanismHeatHandler;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.multiblock.MultiblockCache;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> implements IMekanismFluidHandler, IMekanismGasHandler {
+public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> implements IMekanismFluidHandler, IMekanismGasHandler, IMekanismHeatHandler {
 
     //Note: We don't care about any restrictions here as it is just for making it be persistent
     private final List<IExtendedFluidTank> fluidTanks = Collections.singletonList(BasicFluidTank.create(Integer.MAX_VALUE, this));
     private final List<IChemicalTank<Gas, GasStack>> gasTanks = Collections.singletonList(BasicGasTank.create(Integer.MAX_VALUE, this));
-    public double temperature;
+    private final List<IHeatCapacitor> heatCapacitors = Collections.singletonList(BasicHeatCapacitor.create(FloatingLong.MAX_VALUE, this));
 
     @Override
     public void apply(SynchronizedBoilerData data) {
         data.setFluidTankData(fluidTanks);
         data.setGasTankData(gasTanks);
-        data.temperature = temperature;
+        data.setHeatCapacitorData(heatCapacitors);
     }
 
     @Override
@@ -49,21 +53,27 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> impleme
                 gasTanks.get(i).setStack(gasTanksToCopy.get(i).getStack());
             }
         }
-        temperature = data.temperature;
+        List<IHeatCapacitor> heatCapacitorsToCopy = data.getHeatCapacitors(null);
+        for (int i = 0; i < heatCapacitorsToCopy.size(); i++) {
+            if (i < heatCapacitors.size()) {
+                //Just directly set it as we don't have any restrictions on our tanks here
+                heatCapacitors.get(i).setHeat(heatCapacitorsToCopy.get(i).getHeat());
+            }
+        }
     }
 
     @Override
     public void load(CompoundNBT nbtTags) {
         DataHandlerUtils.readTanks(getFluidTanks(null), nbtTags.getList(NBTConstants.FLUID_TANKS, NBT.TAG_COMPOUND));
         DataHandlerUtils.readTanks(getGasTanks(null), nbtTags.getList(NBTConstants.GAS_TANKS, NBT.TAG_COMPOUND));
-        temperature = nbtTags.getDouble(NBTConstants.TEMPERATURE);
+        DataHandlerUtils.readContainers(getHeatCapacitors(null), nbtTags.getList(NBTConstants.HEAT_CAPACITORS, NBT.TAG_COMPOUND));
     }
 
     @Override
     public void save(CompoundNBT nbtTags) {
         nbtTags.put(NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(getFluidTanks(null)));
         nbtTags.put(NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(getGasTanks(null)));
-        nbtTags.putDouble(NBTConstants.TEMPERATURE, temperature);
+        nbtTags.put(NBTConstants.HEAT_CAPACITORS, DataHandlerUtils.writeContainers(getHeatCapacitors(null)));
     }
 
     @Nonnull
@@ -78,7 +88,12 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> impleme
         return gasTanks;
     }
 
+    @Nonnull
     @Override
-    public void onContentsChanged() {
+    public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
+        return heatCapacitors;
     }
+
+    @Override
+    public void onContentsChanged() {}
 }

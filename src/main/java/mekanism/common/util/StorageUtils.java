@@ -22,6 +22,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -199,7 +200,7 @@ public class StorageUtils {
         if (tank.isEmpty()) {
             tank.setStack(mergeTank.getFluid());
         } else if (!mergeTank.isEmpty() && tank.isFluidEqual(mergeTank.getFluid())) {
-            mergeTank.growStack(tank.getFluidAmount(), Action.EXECUTE);
+            tank.growStack(mergeTank.getFluidAmount(), Action.EXECUTE);
         }
     }
 
@@ -208,15 +209,15 @@ public class StorageUtils {
         if (tank.isEmpty()) {
             tank.setStack(mergeTank.getStack());
         } else if (!mergeTank.isEmpty() && tank.isTypeEqual(mergeTank.getStack())) {
-            mergeTank.growStack(tank.getStored(), Action.EXECUTE);
+            tank.growStack(mergeTank.getStored(), Action.EXECUTE);
         }
     }
 
     public static void mergeContainers(IEnergyContainer container, IEnergyContainer mergeContainer) {
-        if (container.isEmpty()) {
-            container.setEnergy(mergeContainer.getEnergy());
-        } else if (!mergeContainer.isEmpty()) {
-            mergeContainer.setEnergy(mergeContainer.getEnergy().add(mergeContainer.getEnergy()));
-        }
+        container.setEnergy(container.getEnergy().add(mergeContainer.getEnergy()));
+    }
+
+    public static void mergeContainers(IHeatCapacitor capacitor, IHeatCapacitor mergeCapacitor) {
+        capacitor.setHeat(capacitor.getHeat().add(mergeCapacitor.getHeat()));
     }
 }

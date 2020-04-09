@@ -10,6 +10,9 @@ import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.heat.HeatPacket;
+import mekanism.api.heat.HeatPacket.TransferType;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.FluidToFluidCachedRecipe;
@@ -21,8 +24,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
+import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
+import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
@@ -30,7 +37,8 @@ import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableFloat;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -59,18 +67,17 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public BasicFluidTank inputTank;
     public BasicFluidTank outputTank;
 
+    public BasicHeatCapacitor heatCapacitor;
+
     private Set<Coord4D> tankParts = new ObjectOpenHashSet<>();
     private IEvaporationSolar[] solars = new IEvaporationSolar[4];
 
     private boolean temperatureSet;
 
-    private float biomeTemp;
-    //TODO: Evaluate converting this temperature to a double as all other places temperature is stored it is a double
-    private float temperature;
-    public double heatToAbsorb;
-    private double tempMultiplier;
+    private FloatingLong biomeTemp;
+    private FloatingLong tempMultiplier;
 
-    public float lastGain;
+    public double lastGain;
 
     private int inputCapacity;
     public int height;
@@ -84,7 +91,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public float prevScale;
 
-    public float totalLoss;
+    public FloatingLong totalLoss;
 
     private CachedRecipe<FluidToFluidRecipe> cachedRecipe;
 
@@ -122,6 +129,14 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         builder.addSlot(outputOutputSlot = OutputInventorySlot.at(this, 132, 51));
         inputInputSlot.setSlotType(ContainerSlotType.INPUT);
         inputOutputSlot.setSlotType(ContainerSlotType.INPUT);
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
+        builder.addCapacitor(heatCapacitor = VariableHeatCapacitor.create(() -> MekanismConfig.general.evaporationHeatCapacity.get().multiply(height), this));
         return builder.build();
     }
 
@@ -226,60 +241,64 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                   // Also fix that the numbers don't quite accurately reflect the values as we modify number of operations, and not have a fractional
                   // amount
                   if (active) {
-                      if (tempMultiplier > 0 && tempMultiplier < 1) {
-                          lastGain = 1F / (int) Math.ceil(1 / tempMultiplier);
+                      if (!tempMultiplier.isZero() && tempMultiplier.smallerThan(FloatingLong.ONE)) {
+                          lastGain = 1F / (int) Math.ceil(FloatingLong.ONE.divide(tempMultiplier).doubleValue());
                       } else {
-                          lastGain = (float) tempMultiplier;
+                          lastGain = tempMultiplier.doubleValue();
                       }
                   } else {
                       lastGain = 0;
                   }
               })
-              .setRequiredTicks(() -> tempMultiplier > 0 && tempMultiplier < 1 ? (int) Math.ceil(1 / tempMultiplier) : 1)
+              .setRequiredTicks(() -> !tempMultiplier.isZero() && tempMultiplier.smallerThan(FloatingLong.ONE) ?
+                    (int) Math.ceil(FloatingLong.ONE.divide(tempMultiplier).doubleValue()) : 1)
               .setPostProcessOperations(currentMax -> {
                   if (currentMax <= 0) {
                       //Short circuit that if we already can't perform any outputs, just return
                       return currentMax;
                   }
-                  return Math.min(currentMax, tempMultiplier > 0 && tempMultiplier < 1 ? 1 : (int) tempMultiplier);
+                  return Math.min(currentMax, !tempMultiplier.isZero() && tempMultiplier.smallerThan(FloatingLong.ONE) ? 1 : tempMultiplier.intValue());
               });
     }
 
+    // reevaluate this sometime soon, this is bad code
     private void updateTemperature() {
         if (!temperatureSet) {
-            biomeTemp = world.getBiomeManager().getBiome(getPos()).getTemperature(getPos());
+            biomeTemp = FloatingLong.create(world.getBiomeManager().getBiome(getPos()).getTemperature(getPos()));
             temperatureSet = true;
         }
-        heatToAbsorb += getActiveSolars() * MekanismConfig.general.evaporationSolarMultiplier.get();
-        temperature += (float) (heatToAbsorb / (height * MekanismConfig.general.evaporationHeatCapacity.get()));
+        heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, MekanismConfig.general.evaporationSolarMultiplier.get().multiply(getActiveSolars())));
 
-        float biome = biomeTemp - 0.5F;
-        float base = biome > 0 ? biome * 20 : biomeTemp * 40;
+        FloatingLong biome = biomeTemp.subtract(0.5F);
+        FloatingLong base = !biome.isZero() ? biome.multiply(20) : biomeTemp.multiply(40);
 
-        if (Math.abs(temperature - base) < 0.001) {
-            temperature = base;
+        if (heatCapacitor.getTemperature().absDifference(base).doubleValue() < 0.001) {
+            heatCapacitor.setHeat(base.multiply(heatCapacitor.getHeatCapacity()));
         }
-        float incr = (float) Math.sqrt(Math.abs(temperature - base)) * MekanismConfig.general.evaporationHeatDissipation.get();
 
-        if (temperature > base) {
+        double incr = MekanismConfig.general.evaporationHeatDissipation.get().doubleValue() * Math.sqrt(Math.abs(heatCapacitor.getTemperature().doubleValue() - base.doubleValue()));
+
+        if (heatCapacitor.getTemperature().greaterThan(base)) {
             incr = -incr;
         }
 
-        float prev = temperature;
-        temperature = (float) Math.min(MekanismConfig.general.evaporationMaxTemp.get(), temperature + incr / height);
+        FloatingLong prev = heatCapacitor.getTemperature();
+        double maxHeat = MekanismConfig.general.evaporationMaxTemp.get().multiply(heatCapacitor.getHeatCapacity()).doubleValue();
+        double newHeat = Math.max(0, incr * heatCapacitor.getHeat().doubleValue() + incr * heatCapacitor.getHeatCapacity().doubleValue() / height);
+
+        heatCapacitor.setHeat(FloatingLong.create(Math.min(maxHeat, newHeat)));
 
         if (incr < 0) {
-            totalLoss = prev - temperature;
+            totalLoss = prev.subtract(heatCapacitor.getTemperature());
         } else {
-            totalLoss = 0;
+            totalLoss = FloatingLong.ZERO;
         }
-        heatToAbsorb = 0;
-        tempMultiplier = Math.max(0, temperature) * MekanismConfig.general.evaporationTempMultiplier.get() * height / MAX_HEIGHT;
+        tempMultiplier = heatCapacitor.getTemperature().multiply(MekanismConfig.general.evaporationTempMultiplier.get()).multiply((double)height / MAX_HEIGHT);
         markDirty(false);
     }
 
-    public float getTemperature() {
-        return temperature;
+    public double getTemp() {
+        return heatCapacitor.getTemperature().doubleValue();
     }
 
     private int getActiveSolars() {
@@ -450,20 +469,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        temperature = nbtTags.getFloat(NBTConstants.TEMPERATURE);
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putFloat(NBTConstants.TEMPERATURE, temperature);
-        return nbtTags;
-    }
-
-    @Override
     public TileEntityThermalEvaporationController getController() {
         return getActive() ? this : null;
     }
@@ -524,9 +529,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         super.addContainerTrackers(container);
         container.track(SyncableInt.create(() -> height, value -> height = value));
         container.track(SyncableBoolean.create(() -> controllerConflict, value -> controllerConflict = value));
-        container.track(SyncableFloat.create(this::getTemperature, value -> temperature = value));
-        container.track(SyncableFloat.create(() -> lastGain, value -> lastGain = value));
-        container.track(SyncableFloat.create(() -> totalLoss, value -> totalLoss = value));
+        container.track(SyncableDouble.create(() -> lastGain, value -> lastGain = value));
+        container.track(SyncableFloatingLong.create(() -> totalLoss, value -> totalLoss = value));
     }
 
     @Nonnull
