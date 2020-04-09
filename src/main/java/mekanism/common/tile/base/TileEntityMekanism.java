@@ -1115,7 +1115,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Nullable
     @Override
     public IHeatHandler getAdjacent(Direction side) {
-        if (getHeatCapacitors(side).size() > 0) {
+        if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
             return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
         }

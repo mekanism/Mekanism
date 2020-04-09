@@ -128,7 +128,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITi
         leftInputSlot.fillTank();
         rightInputSlot.fillTank();
         outputSlot.drainTank();
-        FloatingLong prev = energyContainer.getEnergy().copy();
+        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();

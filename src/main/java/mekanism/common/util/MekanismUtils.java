@@ -710,8 +710,8 @@ public final class MekanismUtils {
      *
      * @return rounded energy display
      */
-    public static ITextComponent getTemperatureDisplay(double T, TemperatureUnit unit) {
-        double TK = unit.convertToK(T, true);
+    public static ITextComponent getTemperatureDisplay(FloatingLong T, TemperatureUnit unit) {
+        FloatingLong TK = unit.convertToK(T, true);
         switch (MekanismConfig.general.tempUnit.get()) {
             case K:
                 return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.KELVIN);
@@ -725,10 +725,6 @@ public final class MekanismUtils {
                 return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT);
         }
         return MekanismLang.ERROR.translate();
-    }
-
-    public static ITextComponent getTemperatureDisplay(FloatingLong T, TemperatureUnit unit) {
-        return getTemperatureDisplay(T.doubleValue(), unit);
     }
 
     /**

@@ -92,7 +92,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             }
 
             HeatTransfer transfer = structure.simulate();
-            structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer().copy();
+            structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer().copyAsConst();
             if (!SynchronizedBoilerData.BASE_BOIL_TEMP.greaterThan(structure.getTotalTemperature()) && !structure.waterTank.isEmpty()) {
                 int steamAmount = structure.steamTank.getStored();
                 FloatingLong heatAvailable = structure.getHeatAvailable();
@@ -109,7 +109,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                     structure.steamTank.growStack(amountToBoil, Action.EXECUTE);
                 }
 
-                structure.handleHeatChange(new HeatPacket(TransferType.EMIT, HeatUtils.getVaporizationEnthalpy().multiply(amountToBoil)));
+                structure.handleHeat(new HeatPacket(TransferType.EMIT, HeatUtils.getVaporizationEnthalpy().multiply(amountToBoil)));
                 structure.lastBoilRate = amountToBoil;
             } else {
                 structure.lastBoilRate = 0;

@@ -9,9 +9,9 @@ public class HeatAPI {
     public static final FloatingLong DEFAULT_INVERSE_INSULATION = FloatingLong.ZERO;
 
     /**
-     * The value of the zero point of our temperature scale in kelvin
+     * The value of the zero point of our temperature scale in kelvin (room temperature)
      */
-    public static final FloatingLong AMBIENT_TEMP = FloatingLong.createConst(273);
+    public static final FloatingLong AMBIENT_TEMP = FloatingLong.createConst(300);
 
     /**
      * The heat transfer coefficient for air

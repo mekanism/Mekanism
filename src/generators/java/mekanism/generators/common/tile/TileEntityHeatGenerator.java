@@ -1,7 +1,6 @@
 package mekanism.generators.common.tile;
 
 import java.util.Arrays;
-import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -104,8 +103,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
             setActive(false);
         }
         HeatTransfer loss = simulate();
-        lastTransferLoss = loss.getAdjacentTransfer().copy();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer().copy();
+        lastTransferLoss = loss.getAdjacentTransfer().copyAsConst();
+        lastEnvironmentLoss = loss.getEnvironmentTransfer().copyAsConst();
         producingEnergy = getEnergyContainer().getEnergy().subtract(prev);
     }
 
@@ -147,10 +146,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     public IHeatHandler getAdjacent(Direction side) {
         if (side == Direction.DOWN) {
             TileEntity adj = MekanismUtils.getTileEntity(getWorld(), pos.down());
-            Optional<IHeatHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()));
-            if (capability.isPresent()) {
-                return capability.get();
-            }
+            return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
         }
         return null;
     }

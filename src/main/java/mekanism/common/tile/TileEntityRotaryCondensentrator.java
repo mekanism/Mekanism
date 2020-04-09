@@ -153,7 +153,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
             fluidInputSlot.drainTank(fluidOutputSlot);
             //TODO: Auto eject fluid?
         }
-        FloatingLong prev = energyContainer.getEnergy().copy();
+        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();
