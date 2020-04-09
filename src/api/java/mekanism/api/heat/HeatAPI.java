@@ -5,6 +5,14 @@ import mekanism.api.math.FloatingLong;
 public class HeatAPI {
 
     /**
+     * Default atmospheric temperature, automatically set in all heat capacitors. Heat is grounded in 0 degrees Kelvin.
+     */
+    public static final FloatingLong AMBIENT_TEMP = FloatingLong.createConst(300);
+    /**
+     * The heat transfer coefficient for air
+     */
+    public static final FloatingLong AIR_INVERSE_COEFFICIENT = FloatingLong.createConst(10_000);
+    /**
      * Default heat capacity
      */
     public static final FloatingLong DEFAULT_HEAT_CAPACITY = FloatingLong.ONE;
@@ -16,14 +24,6 @@ public class HeatAPI {
      * Default inverse insulation coefficient
      */
     public static final FloatingLong DEFAULT_INVERSE_INSULATION = FloatingLong.ZERO;
-    /**
-     * The value of the zero point of our temperature scale in kelvin (room temperature)
-     */
-    public static final FloatingLong AMBIENT_TEMP = FloatingLong.createConst(300);
-    /**
-     * The heat transfer coefficient for air
-     */
-    public static final FloatingLong AIR_INVERSE_COEFFICIENT = FloatingLong.createConst(10_000);
 
     public static class HeatTransfer {
 

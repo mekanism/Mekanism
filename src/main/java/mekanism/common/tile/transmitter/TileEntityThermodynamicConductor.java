@@ -147,9 +147,11 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public void onContentsChanged() {
-        if (buffer.getTemperature().absDifference(clientTemperature).greaterThan(buffer.getTemperature().divide(20))) {
-            clientTemperature = buffer.getTemperature();
-            sendUpdatePacket();
+        if (!world.isRemote()) {
+            if (buffer.getTemperature().absDifference(clientTemperature).greaterThan(buffer.getTemperature().divide(20))) {
+                clientTemperature = buffer.getTemperature();
+                sendUpdatePacket();
+            }
         }
         markDirty(false);
     }

@@ -1,12 +1,12 @@
 package mekanism.common.multiblock;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
@@ -376,6 +376,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
             cache.apply(structureFound);
             structureFound.inventoryID = idToUse;
+            structureFound.onCreated();
 
             onFormed();
 

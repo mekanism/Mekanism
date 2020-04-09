@@ -42,7 +42,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public static final FloatingLong CASING_HEAT_CAPACITY = FloatingLong.ONE;
     public static final FloatingLong CASING_INVERSE_INSULATION_COEFFICIENT = FloatingLong.createConst(10);
     public static final FloatingLong CASING_INVERSE_CONDUCTION_COEFFICIENT = FloatingLong.ONE;
-    public static final FloatingLong BASE_BOIL_TEMP = FloatingLong.createConst(100).subtract(TemperatureUnit.AMBIENT.zeroOffset.subtract(TemperatureUnit.CELSIUS.zeroOffset)).copyAsConst();
+    public static final FloatingLong BASE_BOIL_TEMP = FloatingLong.createConst(TemperatureUnit.CELSIUS.zeroOffset + 100);
 
     public BoilerTank waterTank;
     public MultiblockGasTank<TileEntityBoilerCasing> steamTank;
@@ -76,11 +76,17 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
             gas -> gas == MekanismGases.STEAM.getGas());
         gasTanks = Collections.singletonList(steamTank);
         heatCapacitor = MultiblockHeatCapacitor.create(tile,
-            () -> CASING_HEAT_CAPACITY.multiply(locations.size()),
+            CASING_HEAT_CAPACITY,
             () -> CASING_INVERSE_INSULATION_COEFFICIENT.multiply(locations.size()),
             () -> CASING_INVERSE_INSULATION_COEFFICIENT.multiply(locations.size()),
             true, true);
         heatCapacitors = Collections.singletonList(heatCapacitor);
+    }
+
+    @Override
+    public void onCreated() {
+        // update the heat capacity now that we've read
+        heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY.multiply(locations.size()), true);
     }
 
     public void setFluidTankData(@Nonnull List<IExtendedFluidTank> toCopy) {
@@ -106,6 +112,8 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
             if (i < heatCapacitors.size()) {
                 //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
                 heatCapacitors.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
+                System.out.println("Got capacity: " + heatCapacitors.get(i).getHeatCapacity());
+                System.out.println("Got heat: " + heatCapacitors.get(i).getHeat());
             }
         }
     }
@@ -119,7 +127,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     @Override
     public HeatTransfer simulate() {
         FloatingLong invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT.add(CASING_INVERSE_INSULATION_COEFFICIENT.add(CASING_INVERSE_CONDUCTION_COEFFICIENT).multiply(locations.size()));
-        FloatingLong heatToTransfer = heatCapacitor.getTemperature().divide(invConduction);
+        FloatingLong heatToTransfer = (heatCapacitor.getTemperature().subtract(HeatAPI.AMBIENT_TEMP)).divide(invConduction);
 
         heatCapacitor.handleHeat(new HeatPacket(TransferType.EMIT, heatToTransfer));
         return new HeatTransfer(FloatingLong.ZERO, heatToTransfer);

@@ -13,9 +13,9 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IMekanismHeatHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.multiblock.MultiblockCache;
@@ -28,13 +28,15 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> impleme
     //Note: We don't care about any restrictions here as it is just for making it be persistent
     private final List<IExtendedFluidTank> fluidTanks = Collections.singletonList(BasicFluidTank.create(Integer.MAX_VALUE, this));
     private final List<IChemicalTank<Gas, GasStack>> gasTanks = Collections.singletonList(BasicGasTank.create(Integer.MAX_VALUE, this));
-    private final List<IHeatCapacitor> heatCapacitors = Collections.singletonList(BasicHeatCapacitor.create(FloatingLong.MAX_VALUE, this));
+    private final List<IHeatCapacitor> heatCapacitors = Collections.singletonList(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, this));
 
     @Override
     public void apply(SynchronizedBoilerData data) {
         data.setFluidTankData(fluidTanks);
         data.setGasTankData(gasTanks);
         data.setHeatCapacitorData(heatCapacitors);
+        System.out.println("Applied: " + heatCapacitors.get(0).getHeatCapacity());
+        System.out.println("Heat applied: " + heatCapacitors.get(0).getHeat());
     }
 
     @Override
@@ -58,6 +60,11 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> impleme
             if (i < heatCapacitors.size()) {
                 //Just directly set it as we don't have any restrictions on our tanks here
                 heatCapacitors.get(i).setHeat(heatCapacitorsToCopy.get(i).getHeat());
+                if (heatCapacitors.get(i) instanceof BasicHeatCapacitor) {
+                    System.out.println("Sync heat capacity: " + heatCapacitorsToCopy.get(i).getHeatCapacity());
+                    ((BasicHeatCapacitor) heatCapacitors.get(i)).setHeatCapacity(heatCapacitorsToCopy.get(i).getHeatCapacity(), false);
+                    System.out.println("Now: " + heatCapacitors.get(i).getHeatCapacity());
+                }
             }
         }
     }

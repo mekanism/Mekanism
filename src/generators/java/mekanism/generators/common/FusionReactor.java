@@ -11,6 +11,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatPacket;
 import mekanism.api.heat.HeatPacket.TransferType;
 import mekanism.api.inventory.AutomationType;
@@ -23,7 +24,6 @@ import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsGases;
@@ -45,7 +45,7 @@ public class FusionReactor {
 
     private static final int MAX_INJECTION = 98;//this is the effective cap in the GUI, as text field is limited to 2 chars
     //Reaction characteristics
-    private static FloatingLong burnTemperature = TemperatureUnit.AMBIENT.convertFromK(FloatingLong.createConst(100_000_000), true).copyAsConst();
+    private static FloatingLong burnTemperature = FloatingLong.createConst(100_000_000);
     private static FloatingLong burnRatio = FloatingLong.ONE;
     //Thermal characteristics
     private static FloatingLong plasmaHeatCapacity = FloatingLong.createConst(100);
@@ -61,10 +61,10 @@ public class FusionReactor {
     private Set<TileEntityReactorBlock> reactorBlocks = new ObjectOpenHashSet<>();
     private Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
     //Current plasma temperature - internally uses ambient-relative kelvin units
-    private FloatingLong plasmaTemperature = FloatingLong.ZERO;
+    private FloatingLong plasmaTemperature = HeatAPI.AMBIENT_TEMP;
     //Last values of temperature
-    private FloatingLong lastPlasmaTemperature = FloatingLong.ZERO;
-    private FloatingLong lastCaseTemperature = FloatingLong.ZERO;
+    private FloatingLong lastPlasmaTemperature = HeatAPI.AMBIENT_TEMP;
+    private FloatingLong lastCaseTemperature = HeatAPI.AMBIENT_TEMP;
     private int injectionRate = 0;
     private boolean burning = false;
 

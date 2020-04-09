@@ -24,7 +24,7 @@ public class DefaultHeatHandler implements IHeatHandler {
 
     @Override
     public FloatingLong getTemperature(int capacitor) {
-        return FloatingLong.ZERO;
+        return HeatAPI.AMBIENT_TEMP;
     }
 
     @Override

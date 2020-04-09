@@ -87,6 +87,7 @@ public final class NBTConstants {
     public static final String GAS_STORED = "gas";
     public static final String GAS_TANKS = "GasTanks";
     public static final String HEAT_CAPACITORS = "HeatCapacitors";
+    public static final String HEAT_CAPACITY = "heatCapacity";
     public static final String HEAT_STORED = "heat";
     public static final String HOME_LOCATION = "homeLocation";
     public static final String IDLE_DIR = "idleDir";

@@ -58,6 +58,7 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -641,6 +642,9 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(null);
             for (IHeatCapacitor capacitor : heatCapacitors) {
                 container.track(SyncableFloatingLong.create(capacitor::getHeat, capacitor::setHeat));
+                if (capacitor instanceof BasicHeatCapacitor) {
+                    container.track(SyncableFloatingLong.create(capacitor::getHeatCapacity, (capacity) -> ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacity, true)));
+                }
             }
         }
         if (canHandleEnergy() && handles(SubstanceType.ENERGY)) {
