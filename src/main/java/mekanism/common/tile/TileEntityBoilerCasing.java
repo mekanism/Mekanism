@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -13,6 +14,7 @@ import mekanism.api.heat.HeatPacket.TransferType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -26,6 +28,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -169,6 +172,21 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
     public int getSuperheatingElements() {
         return structure == null ? 0 : structure.superheatingElements;
+    }
+
+    @Nonnull
+    @Override
+    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        return side -> structure == null ? Collections.emptyList() : structure.getHeatCapacitors(side);
+    }
+
+    @Override
+    public boolean persists(SubstanceType type) {
+        //Do not handle heat when it comes to syncing it/saving this tile to disk
+        if (type == SubstanceType.HEAT) {
+            return false;
+        }
+        return super.persists(type);
     }
 
     @Nonnull

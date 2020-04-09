@@ -53,7 +53,6 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
                 }
                 continue;
             }
-
             //Transfer to air otherwise
             FloatingLong invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT.plusEqual(getTotalInverseInsulation()).plusEqual(getTotalInverseConductionCoefficient());
             FloatingLong heatToTransfer = getTotalTemperature().divide(invConduction);

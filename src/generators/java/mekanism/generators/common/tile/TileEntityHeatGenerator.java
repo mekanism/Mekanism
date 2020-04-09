@@ -124,9 +124,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public double getInsulationCoefficient(Direction side) {
-        return side == Direction.DOWN ? 0 : 10_000;
-        // TODO figure out how to implement this
+    public FloatingLong getInverseInsulation(int capacitor, @Nullable Direction side) {
+        FloatingLong insulation = super.getInverseInsulation(capacitor, side);
+        return side == Direction.DOWN ? FloatingLong.ZERO : insulation;
     }
 
     @Override
