@@ -4,15 +4,22 @@ import mekanism.api.math.FloatingLong;
 
 public class HeatAPI {
 
+    /**
+     * Default heat capacity
+     */
     public static final FloatingLong DEFAULT_HEAT_CAPACITY = FloatingLong.ONE;
+    /**
+     * Default inverse conduction coefficient
+     */
     public static final FloatingLong DEFAULT_INVERSE_CONDUCTION = FloatingLong.ONE;
+    /**
+     * Default inverse insulation coefficient
+     */
     public static final FloatingLong DEFAULT_INVERSE_INSULATION = FloatingLong.ZERO;
-
     /**
      * The value of the zero point of our temperature scale in kelvin (room temperature)
      */
     public static final FloatingLong AMBIENT_TEMP = FloatingLong.createConst(300);
-
     /**
      * The heat transfer coefficient for air
      */

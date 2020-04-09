@@ -115,11 +115,11 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
             } else if (heatToHandle.getType().emit() && emitHeat) {
                 storedHeat = storedHeat.minusEqual(heatToHandle.getAmount());
             }
+            //notify listeners
+            onContentsChanged();
         }
         // reset our heat
         heatToHandle = null;
-        // notify listeners
-        onContentsChanged();
     }
 
     @Override
@@ -134,6 +134,9 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void setHeat(FloatingLong heat) {
-        storedHeat = heat;
+        if (!storedHeat.equals(heat)) {
+            storedHeat = heat;
+            onContentsChanged();
+        }
     }
 }
