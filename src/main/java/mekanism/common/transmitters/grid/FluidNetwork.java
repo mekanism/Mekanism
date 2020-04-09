@@ -1,8 +1,5 @@
 package mekanism.common.transmitters.grid;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -11,6 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -84,7 +84,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the fluid scales
         int capacity = getCapacity();
-        fluidScale = capacity == 0 ? 0 : (fluidScale * oldCapacity + net.fluidScale * net.capacity) / capacity;
+        fluidScale = Math.min(1, capacity == 0 ? 0 : (fluidScale * oldCapacity + net.fluidScale * net.capacity) / capacity);
         if (isRemote()) {
             if (fluidTank.isEmpty() && !net.fluidTank.isEmpty()) {
                 fluidTank.setStack(net.getBuffer());
@@ -205,7 +205,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     public void onUpdate() {
         super.onUpdate();
         if (!isRemote()) {
-            float scale = MekanismUtils.getScale(fluidScale, fluidTank);
+            float scale = computeContentScale();
             if (scale != fluidScale) {
                 fluidScale = scale;
                 needsUpdate = true;
@@ -225,6 +225,17 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         }
     }
 
+    public float computeContentScale() {
+        float scale = (float) fluidTank.getFluidAmount() / (float) fluidTank.getCapacity();
+        float ret = Math.max(fluidScale, scale);
+        if (prevTransferAmount > 0 && ret < 1) {
+            ret = Math.min(1, ret + 0.02F);
+        } else if (prevTransferAmount <= 0 && ret > 0) {
+            ret = Math.max(scale, ret - 0.02F);
+        }
+        return ret;
+    }
+
     public int getPrevTransferAmount() {
         return prevTransferAmount;
     }
@@ -236,7 +247,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public ITextComponent getNeededInfo() {
-        return MekanismLang.FLUID_NETWORK_NEEDED.translate((float) fluidTank.getNeeded() / 1_000F);
+        return MekanismLang.FLUID_NETWORK_NEEDED.translate(fluidTank.getNeeded() / 1_000F);
     }
 
     @Override

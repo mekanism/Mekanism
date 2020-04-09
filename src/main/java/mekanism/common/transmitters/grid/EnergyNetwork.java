@@ -1,8 +1,5 @@
 package mekanism.common.transmitters.grid;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -11,6 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
@@ -84,7 +84,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
         FloatingLong ourScale = energyScale == 0 ? FloatingLong.ZERO : oldCapacity.multiply(energyScale);
         FloatingLong theirScale = net.energyScale == 0 ? FloatingLong.ZERO : net.getCapacityAsFloatingLong().multiply(net.energyScale);
         FloatingLong capacity = getCapacityAsFloatingLong();
-        energyScale = capacity.isZero() ? 0 : ourScale.add(theirScale).divide(getCapacityAsFloatingLong()).floatValue();
+        energyScale = Math.min(1, capacity.isZero() ? 0 : ourScale.add(theirScale).divide(getCapacityAsFloatingLong()).floatValue());
         if (!isRemote() && !net.energyContainer.isEmpty()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(net.getBuffer()));
             net.energyContainer.setEmpty();
@@ -197,8 +197,13 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     public void onUpdate() {
         super.onUpdate();
         if (!isRemote()) {
-            float scale = MekanismUtils.getScale(energyScale, energyContainer);
+            float scale = computeContentScale();
             if (scale != energyScale) {
+                energyScale = scale;
+                needsUpdate = true;
+            }
+            if(Math.abs(scale-energyScale) > 0.01 || (scale != energyScale && (scale == 0 || scale == 1)))
+            {
                 energyScale = scale;
                 needsUpdate = true;
             }
@@ -213,6 +218,16 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
                 energyContainer.extract(prevTransferAmount, Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
+    }
+
+    public float computeContentScale() {
+        if (prevTransferAmount.isZero()) {
+            return 0;
+        }
+        FloatingLong stored = energyContainer.getEnergy(), max = energyContainer.getMaxEnergy();
+        FloatingLong scale = stored.divide(energyContainer.getMaxEnergy());
+        double transferScale = Math.min(Math.ceil(Math.log10(prevTransferAmount.floatValue())*2)/10, 1);
+        return (float) Math.max(transferScale, max.isZero() ? 0 : scale.floatValue());
     }
 
     @Override
