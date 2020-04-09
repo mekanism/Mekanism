@@ -47,7 +47,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
 
             @Override
             public double getLevel() {
-                return TemperatureUnit.AMBIENT.convertToK(tile.getPlasmaTemp(), true);
+                return TemperatureUnit.AMBIENT.convertToK(tile.getPlasmaTemp().doubleValue(), true);
             }
 
             @Override
@@ -60,7 +60,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
                 return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
         }, GaugeType.STANDARD, this, 7, 50));
-        addButton(new GuiProgress(() -> tile.getPlasmaTemp() > tile.getCaseTemp() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 29, 76));
+        addButton(new GuiProgress(() -> tile.getPlasmaTemp().greaterThan(tile.getCaseTemp()) ? 1 : 0, ProgressType.SMALL_RIGHT, this, 29, 76));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
@@ -69,7 +69,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
 
             @Override
             public double getLevel() {
-                return TemperatureUnit.AMBIENT.convertToK(tile.getCaseTemp(), true);
+                return TemperatureUnit.AMBIENT.convertToK(tile.getCaseTemp().doubleValue(), true);
             }
 
             @Override
@@ -82,8 +82,8 @@ public class GuiReactorHeat extends GuiReactorInfo {
                 return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
         }, GaugeType.STANDARD, this, 61, 50));
-        addButton(new GuiProgress(() -> tile.getCaseTemp() > 0 ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));
-        addButton(new GuiProgress(() -> (tile.getCaseTemp() > 0 && !tile.waterTank.isEmpty() && tile.steamTank.getStored() < tile.steamTank.getCapacity()) ? 1 : 0,
+        addButton(new GuiProgress(() -> !tile.getCaseTemp().isZero() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));
+        addButton(new GuiProgress(() -> (!tile.getCaseTemp().isZero() && !tile.waterTank.isEmpty() && tile.steamTank.getStored() < tile.steamTank.getCapacity()) ? 1 : 0,
               ProgressType.SMALL_RIGHT, this, 83, 91));
         addButton(new GuiFluidGauge(() -> tile.waterTank, () -> tile.getFluidTanks(null), GaugeType.SMALL, this, 115, 84));
         addButton(new GuiGasGauge(() -> tile.steamTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 151, 84));

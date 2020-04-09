@@ -24,7 +24,7 @@ public class HeatCapacitorHelper {
         return new HeatCapacitorHelper(new ConfigHeatCapacitorHolder(facingSupplier, configSupplier));
     }
 
-    public void addContainer(@Nonnull IHeatCapacitor capacitor) {
+    public void addCapacitor(@Nonnull IHeatCapacitor capacitor) {
         if (built) {
             throw new RuntimeException("Builder has already built.");
         }
@@ -35,7 +35,7 @@ public class HeatCapacitorHelper {
         }
     }
 
-    public void addContainer(@Nonnull IHeatCapacitor container, RelativeSide... sides) {
+    public void addCapacitor(@Nonnull IHeatCapacitor container, RelativeSide... sides) {
         if (built) {
             throw new RuntimeException("Builder has already built.");
         }

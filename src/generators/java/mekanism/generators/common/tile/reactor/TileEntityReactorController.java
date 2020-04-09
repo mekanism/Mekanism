@@ -8,18 +8,22 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
+import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
+import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.EnergyCompatUtils;
@@ -54,6 +58,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     public static final int MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
 
     public BasicEnergyContainer energyContainer;
+    public BasicHeatCapacitor heatCapacitor;
     public IExtendedFluidTank waterTank;
     public IChemicalTank<Gas, GasStack> steamTank;
     public IChemicalTank<Gas, GasStack> deuteriumTank;
@@ -102,6 +107,14 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
 
     @Nonnull
     @Override
+    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
+        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(FusionReactor.caseHeatCapacity, FusionReactor.getInverseConductionCoefficient(), FusionReactor.inverseInsulation, this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //TODO: FIXME, make the slot only "exist" or at least be accessible when the reactor is formed
@@ -138,12 +151,12 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         getReactor().formMultiblock(keepBurning);
     }
 
-    public double getPlasmaTemp() {
-        return isFormed() ? getReactor().getPlasmaTemp() : 0;
+    public FloatingLong getPlasmaTemp() {
+        return isFormed() ? getReactor().getPlasmaTemp() : FloatingLong.ZERO;
     }
 
-    public double getCaseTemp() {
-        return isFormed() ? getReactor().getCaseTemp() : 0;
+    public FloatingLong getCaseTemp() {
+        return isFormed() ? getReactor().getCaseTemp() : FloatingLong.ZERO;
     }
 
     @Override
@@ -171,7 +184,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         tag.putBoolean(NBTConstants.FORMED, isFormed());
         if (isFormed()) {
             tag.putDouble(NBTConstants.PLASMA_TEMP, getReactor().getPlasmaTemp());
-            tag.putDouble(NBTConstants.CASE_TEMP, getReactor().getCaseTemp());
             tag.putInt(NBTConstants.INJECTION_RATE, getReactor().getInjectionRate());
             tag.putBoolean(NBTConstants.BURNING, getReactor().isBurning());
         }
@@ -185,7 +197,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         if (formed) {
             setReactor(new FusionReactor(this));
             getReactor().setPlasmaTemp(tag.getDouble(NBTConstants.PLASMA_TEMP));
-            getReactor().setCaseTemp(tag.getDouble(NBTConstants.CASE_TEMP));
             getReactor().setInjectionRate(tag.getInt(NBTConstants.INJECTION_RATE));
             getReactor().setBurning(tag.getBoolean(NBTConstants.BURNING));
             getReactor().updateTemperatures();
@@ -292,7 +303,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         }));
         container.track(SyncableDouble.create(this::getCaseTemp, value -> {
             if (getReactor() != null) {
-                getReactor().setCaseTemp(value);
                 getReactor().setLastCaseTemp(value);
             }
         }));

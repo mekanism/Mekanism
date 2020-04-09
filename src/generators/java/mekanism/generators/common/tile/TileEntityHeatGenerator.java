@@ -37,11 +37,9 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IHeatHandler {
+public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     private static final int MAX_FLUID = 24_000;
     private static final int FLUID_RATE = 10;
@@ -87,7 +85,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
-        builder.addContainer(heatCapacitor = BasicHeatCapacitor.create(1, 5, 1000, this));
+        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(1, 5, 10_000, this));
         return builder.build();
     }
 
@@ -155,23 +153,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
             }
         }
         return null;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY && side == Direction.DOWN) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
-            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     public FloatingLong getProducingEnergy() {

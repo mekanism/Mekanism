@@ -5,9 +5,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
-import mekanism.api.IHeatTransfer;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -15,11 +15,11 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
+import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
@@ -33,7 +33,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 //TODO: Allow reactor controller inventory slot to be interacted with via the port again
-public class TileEntityReactorPort extends TileEntityReactorBlock implements IHeatTransfer, IConfigurable {
+public class TileEntityReactorPort extends TileEntityReactorBlock implements IConfigurable {
 
     public TileEntityReactorPort() {
         super(GeneratorsBlocks.REACTOR_PORT);
@@ -59,9 +59,15 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
               side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getEnergyContainers(side));
     }
 
+    @Nonnull
+    @Override
+    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        return side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getHeatCapacitors(side);
+    }
+
     @Override
     public boolean persists(SubstanceType type) {
-        if (type == SubstanceType.GAS || type == SubstanceType.FLUID || type == SubstanceType.ENERGY) {
+        if (type == SubstanceType.GAS || type == SubstanceType.FLUID || type == SubstanceType.ENERGY || type == SubstanceType.HEAT) {
             return false;
         }
         return super.persists(type);
@@ -95,49 +101,15 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
-            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        } else if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
+        if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapabilityIfEnabled(capability, side);
     }
 
-    @Override
-    public double getTemp() {
-        return getReactor() == null ? 0 : getReactor().getTemp();
-    }
-
-    @Override
-    public double getInverseConductionCoefficient() {
-        return 5;
-    }
-
-    @Override
-    public double getInsulationCoefficient(Direction side) {
-        return getReactor() == null ? 0 : getReactor().getInsulationCoefficient(side);
-    }
-
-    @Override
-    public void transferHeatTo(double heat) {
-        if (getReactor() != null) {
-            getReactor().transferHeatTo(heat);
-        }
-    }
-
-    @Override
-    public double[] simulateHeat() {
-        return HeatUtils.simulate(this);
-    }
-
-    @Override
-    public double applyTemperatureChange() {
-        return getReactor() == null ? 0 : getReactor().applyTemperatureChange();
-    }
-
     @Nullable
     @Override
-    public IHeatTransfer getAdjacent(Direction side) {
+    public IHeatHandler getAdjacent(Direction side) {
         TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         if (adj instanceof TileEntityReactorBlock) {
             return null;

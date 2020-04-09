@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import mekanism.api.IHeatTransfer;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -34,7 +35,7 @@ public class HeatUtils {
         return heatTransferred;
     }
 
-    public static double getVaporizationEnthalpy() {
-        return MekanismConfig.general.maxEnergyPerSteam.get().doubleValue();
+    public static FloatingLong getVaporizationEnthalpy() {
+        return MekanismConfig.general.maxEnergyPerSteam.get();
     }
 }
