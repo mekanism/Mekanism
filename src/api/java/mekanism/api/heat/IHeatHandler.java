@@ -35,15 +35,15 @@ public interface IHeatHandler {
      */
     FloatingLong getTemperature(int capacitor);
 
+    //TODO: Non zero
     FloatingLong getInverseConduction(int capacitor);
 
-    FloatingLong getInverseInsulation(int capacitor);
-
-    //TODO: Do not allow this to be zero
+    //TODO: Should be at least one
     FloatingLong getHeatCapacity(int capacitor);
 
     void handleHeat(int capacitor, HeatPacket transfer);
 
+    //TODO: Evaluate usages of below methods and potentially replace some with the ones in ISidedHeatHandler
     default FloatingLong getTotalTemperature() {
         FloatingLong sum = FloatingLong.ZERO;
         FloatingLong totalCapacity = getTotalHeatCapacity();
@@ -61,14 +61,6 @@ public interface IHeatHandler {
         return sum;
     }
 
-    default FloatingLong getTotalInverseInsulation() {
-        FloatingLong sum = FloatingLong.ZERO;
-        for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
-            sum = sum.plusEqual(getInverseInsulation(capacitor));
-        }
-        return sum;
-    }
-
     default FloatingLong getTotalHeatCapacity() {
         FloatingLong sum = FloatingLong.ZERO;
         for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
@@ -77,7 +69,7 @@ public interface IHeatHandler {
         return sum;
     }
 
-    default void handleHeatChange(HeatPacket transfer) {
+    default void handleHeat(HeatPacket transfer) {
         FloatingLong totalHeatCapacity = getTotalHeatCapacity();
         for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
             handleHeat(capacitor, transfer.split(getHeatCapacity(capacitor).divideToLevel(totalHeatCapacity)));

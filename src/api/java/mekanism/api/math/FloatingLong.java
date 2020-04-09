@@ -224,6 +224,13 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
+     * Copies this {@link FloatingLong}, into a constant {@link FloatingLong}. If the current {@link FloatingLong{ is already a constant just returns self.
+     */
+    public FloatingLong copyAsConst() {
+        return isConstant ? this : new FloatingLong(value, decimal, true);
+    }
+
+    /**
      * Adds the given {@link FloatingLong} to this {@link FloatingLong}, modifying the current object unless it is a constant in which case it instead returns the result
      * in a new object. This gets clamped at the upper bound of {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
@@ -532,6 +539,36 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     public FloatingLong min(FloatingLong other) {
         return greaterThan(other) ? other : this;
+    }
+
+    /**
+     * Returns the smallest {@link FloatingLong} that is greater than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @return the smallest {@link FloatingLong} that is greater than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long, then the result is the same as the argument. Additionally, if this {@link
+     * FloatingLong} is larger than the maximum unsigned long, this instead returns a {@link FloatingLong} representing the maximum unsigned long.
+     */
+    public FloatingLong ceil() {
+        if (decimal == 0) {
+            return this;
+        }
+        if (value == -1) {
+            //It is the max long value already then actually just floor it
+            return new FloatingLong(value, (short) 0, false);
+        }
+        return new FloatingLong(value + 1, (short) 0, false);
+    }
+
+    /**
+     * Returns the largest {@link FloatingLong} that is less than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @return the largest {@link FloatingLong} that is less than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long, then the result is the same as the argument.
+     */
+    public FloatingLong floor() {
+        return decimal == 0 ? this : new FloatingLong(value, (short) 0, false);
     }
 
     /**

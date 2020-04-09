@@ -1,11 +1,18 @@
 package mekanism.common.capabilities.heat;
 
+import java.util.Objects;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class VariableHeatCapacitor extends BasicHeatCapacitor {
 
     private FloatingLongSupplier heatCapacitySupplier;
@@ -17,10 +24,12 @@ public class VariableHeatCapacitor extends BasicHeatCapacitor {
     }
 
     public static VariableHeatCapacitor create(FloatingLongSupplier heatCapacitySupplier, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
+        Objects.requireNonNull(heatCapacitySupplier, "Heat capacity supplier cannot be null");
         return new VariableHeatCapacitor(heatCapacitySupplier, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION, absorbHeat, emitHeat, heatHandler);
     }
 
-    protected VariableHeatCapacitor(FloatingLongSupplier heatCapacity, FloatingLongSupplier conductionCoefficient, FloatingLongSupplier insulationCoefficient, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
+    protected VariableHeatCapacitor(FloatingLongSupplier heatCapacity, FloatingLongSupplier conductionCoefficient, FloatingLongSupplier insulationCoefficient,
+          boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
         super(heatCapacity.get(), conductionCoefficient.get(), insulationCoefficient.get(), absorbHeat, emitHeat, heatHandler);
         this.heatCapacitySupplier = heatCapacity;
         this.conductionCoefficientSupplier = conductionCoefficient;
@@ -29,16 +38,16 @@ public class VariableHeatCapacitor extends BasicHeatCapacitor {
 
     @Override
     public FloatingLong getInverseConduction() {
-        return conductionCoefficientSupplier != null ? conductionCoefficientSupplier.get() : super.getInverseConduction();
+        return conductionCoefficientSupplier.get();
     }
 
     @Override
     public FloatingLong getInverseInsulation() {
-        return insulationCoefficientSupplier != null ? insulationCoefficientSupplier.get() : super.getInverseInsulation();
+        return insulationCoefficientSupplier.get();
     }
 
     @Override
     public FloatingLong getHeatCapacity() {
-        return heatCapacitySupplier != null ? heatCapacitySupplier.get() : super.getHeatCapacity();
+        return heatCapacitySupplier.get();
     }
 }

@@ -73,7 +73,7 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
         return heatCapacitor == null ? HeatAPI.DEFAULT_INVERSE_CONDUCTION : heatCapacitor.getInverseConduction();
     }
 
-    @Override
+    //TODO: JavaDocs
     default FloatingLong getInverseInsulation(int capacitor, @Nullable Direction side) {
         IHeatCapacitor heatCapacitor = getHeatCapacitor(capacitor, side);
         return heatCapacitor == null ? HeatAPI.DEFAULT_INVERSE_INSULATION : heatCapacitor.getInverseInsulation();
@@ -91,5 +91,13 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
         if (heatCapacitor != null) {
             heatCapacitor.handleHeat(transfer);
         }
+    }
+
+    default FloatingLong getTotalInverseInsulation(@Nullable Direction side) {
+        FloatingLong sum = FloatingLong.ZERO;
+        for (int capacitor = 0; capacitor < getHeatCapacitorCount(); capacitor++) {
+            sum = sum.plusEqual(getInverseInsulation(capacitor, side));
+        }
+        return sum;
     }
 }

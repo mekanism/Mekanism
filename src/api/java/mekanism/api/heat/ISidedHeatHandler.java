@@ -53,13 +53,6 @@ public interface ISidedHeatHandler extends IHeatHandler {
         return getInverseConduction(capacitor, getHeatSideFor());
     }
 
-    FloatingLong getInverseInsulation(int capacitor, @Nullable Direction side);
-
-    @Override
-    default FloatingLong getInverseInsulation(int capacitor) {
-        return getInverseInsulation(capacitor, getHeatSideFor());
-    }
-
     FloatingLong getHeatCapacity(int capacitor, @Nullable Direction side);
 
     @Override
@@ -72,5 +65,37 @@ public interface ISidedHeatHandler extends IHeatHandler {
     @Override
     default void handleHeat(int capacitor, HeatPacket transfer) {
         handleHeat(capacitor, transfer, getHeatSideFor());
+    }
+
+    default FloatingLong getTotalTemperature(@Nullable Direction side) {
+        FloatingLong sum = FloatingLong.ZERO;
+        FloatingLong totalCapacity = getTotalHeatCapacity(side);
+        for (int capacitor = 0; capacitor < getHeatCapacitorCount(side); capacitor++) {
+            sum = sum.plusEqual(getTemperature(capacitor, side).multiply(getHeatCapacity(capacitor, side).divide(totalCapacity)));
+        }
+        return sum;
+    }
+
+    default FloatingLong getTotalInverseConductionCoefficient(@Nullable Direction side) {
+        FloatingLong sum = FloatingLong.ZERO;
+        for (int capacitor = 0; capacitor < getHeatCapacitorCount(side); capacitor++) {
+            sum = sum.plusEqual(getInverseConduction(capacitor, side));
+        }
+        return sum;
+    }
+
+    default FloatingLong getTotalHeatCapacity(@Nullable Direction side) {
+        FloatingLong sum = FloatingLong.ZERO;
+        for (int capacitor = 0; capacitor < getHeatCapacitorCount(side); capacitor++) {
+            sum = sum.plusEqual(getHeatCapacity(capacitor, side));
+        }
+        return sum;
+    }
+
+    default void handleHeat(HeatPacket transfer, @Nullable Direction side) {
+        FloatingLong totalHeatCapacity = getTotalHeatCapacity(side);
+        for (int capacitor = 0; capacitor < getHeatCapacitorCount(side); capacitor++) {
+            handleHeat(capacitor, transfer.split(getHeatCapacity(capacitor, side).divideToLevel(totalHeatCapacity)), side);
+        }
     }
 }

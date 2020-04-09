@@ -45,7 +45,7 @@ public class FusionReactor {
 
     private static final int MAX_INJECTION = 98;//this is the effective cap in the GUI, as text field is limited to 2 chars
     //Reaction characteristics
-    private static FloatingLong burnTemperature = FloatingLong.createConst(TemperatureUnit.AMBIENT.convertFromK(1E8, true));
+    private static FloatingLong burnTemperature = TemperatureUnit.AMBIENT.convertFromK(FloatingLong.createConst(100_000_000), true).copyAsConst();
     private static FloatingLong burnRatio = FloatingLong.ONE;
     //Thermal characteristics
     private static FloatingLong plasmaHeatCapacity = FloatingLong.createConst(100);
@@ -129,8 +129,8 @@ public class FusionReactor {
     }
 
     public void updateTemperatures() {
-        lastPlasmaTemperature = plasmaTemperature.smallerThan(POINT_ONE) ? FloatingLong.ZERO : plasmaTemperature.copy();
-        lastCaseTemperature = getHeatCapacitor().getTemperature().smallerThan(POINT_ONE) ? FloatingLong.ZERO : getHeatCapacitor().getTemperature().copy();
+        lastPlasmaTemperature = plasmaTemperature.smallerThan(POINT_ONE) ? FloatingLong.ZERO : plasmaTemperature.copyAsConst();
+        lastCaseTemperature = getHeatCapacitor().getTemperature().smallerThan(POINT_ONE) ? FloatingLong.ZERO : getHeatCapacitor().getTemperature().copyAsConst();
     }
 
     private void vaporiseHohlraum() {
@@ -141,7 +141,7 @@ public class FusionReactor {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem.getGasTankCount() > 0) {
                 getFuelTank().insert(gasHandlerItem.getGasInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
-                lastPlasmaTemperature = plasmaTemperature.copy();
+                lastPlasmaTemperature = plasmaTemperature.copyAsConst();
                 reactorSlot.setStack(ItemStack.EMPTY);
                 setBurning(true);
             }
@@ -389,21 +389,21 @@ public class FusionReactor {
 
     public int getMinInjectionRate(boolean active) {
         FloatingLong k = active ? caseWaterConductivity : FloatingLong.ZERO;
-
-        FloatingLong aMin = burnTemperature.multiply(burnRatio).multiply(plasmaCaseConductivity).multiply(k.add(caseAirConductivity)).divide(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(burnRatio)
-              .multiply(plasmaCaseConductivity.add(k).add(caseAirConductivity)).subtract(plasmaCaseConductivity.multiply(k.add(caseAirConductivity))));
-        return (int) (2 * Math.ceil(aMin.divide(2).doubleValue()));
+        FloatingLong aMin = burnTemperature.multiply(burnRatio).timesEqual(plasmaCaseConductivity).timesEqual(k.add(caseAirConductivity))
+              .divideEquals(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(burnRatio)
+              .timesEqual(plasmaCaseConductivity.add(k).plusEqual(caseAirConductivity)).minusEqual(plasmaCaseConductivity.multiply(k.add(caseAirConductivity))));
+        return aMin.divide(2).ceil().multiply(2).intValue();
     }
 
     public FloatingLong getMaxPlasmaTemperature(boolean active) {
         FloatingLong k = active ? caseWaterConductivity : FloatingLong.ZERO;
-        return (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().divide(plasmaCaseConductivity).multiply(plasmaCaseConductivity.add(k)
-              .add(caseAirConductivity)).divide(k.add(caseAirConductivity))).multiply(injectionRate);
+        return MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().divide(plasmaCaseConductivity).timesEqual(
+              plasmaCaseConductivity.add(k).add(caseAirConductivity)).divideEquals(k.add(caseAirConductivity)).multiply(injectionRate);
     }
 
     public FloatingLong getMaxCasingTemperature(boolean active) {
         FloatingLong k = active ? caseWaterConductivity : FloatingLong.ZERO;
-        return MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(injectionRate).divide(k.add(caseAirConductivity));
+        return MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(injectionRate).divideEquals(k.add(caseAirConductivity));
     }
 
     // burn temp x energy per fuel x burn ratio x (plasma case conductivity + k + air conductivity) / (
@@ -411,20 +411,21 @@ public class FusionReactor {
         FloatingLong k = active ? caseWaterConductivity : FloatingLong.ZERO;
         FloatingLong totalConductivity = plasmaCaseConductivity.add(k).add(caseAirConductivity);
         FloatingLong energyPerFusionFuel = MekanismGeneratorsConfig.generators.energyPerFusionFuel.get();
-        return burnTemperature.multiply(energyPerFusionFuel).multiply(burnRatio).multiply(totalConductivity).divide((energyPerFusionFuel
-            .multiply(burnRatio).multiply(totalConductivity).subtract(plasmaCaseConductivity.multiply(k.add(caseAirConductivity)))));
+        return burnTemperature.multiply(energyPerFusionFuel).timesEqual(burnRatio).timesEqual(totalConductivity).divideEquals(
+              energyPerFusionFuel.multiply(burnRatio).timesEqual(totalConductivity).minusEqual(plasmaCaseConductivity.multiply(k.add(caseAirConductivity))));
     }
 
     // thermocouple efficiency x air conductivity x temp
     public FloatingLong getPassiveGeneration(boolean active, boolean current) {
         FloatingLong temperature = current ? getCaseTemp() : getMaxCasingTemperature(active);
-        return thermocoupleEfficiency.multiply(caseAirConductivity).multiply(temperature);
+        return thermocoupleEfficiency.multiply(caseAirConductivity).timesEqual(temperature);
     }
 
     // steam efficiency x water conductivity x temp / water enthalpy
     public int getSteamPerTick(boolean current) {
         FloatingLong temperature = current ? getCaseTemp() : getMaxCasingTemperature(true);
-        return steamTransferEfficiency.multiply(caseWaterConductivity).multiply(temperature).divide(HeatUtils.getVaporizationEnthalpy()).intValue();
+        //TODO: Switch this to long, when we move gases to being able to be stored as longs
+        return steamTransferEfficiency.multiply(caseWaterConductivity).timesEqual(temperature).divideEquals(HeatUtils.getVaporizationEnthalpy()).intValue();
     }
 
     public static FloatingLong getInverseConductionCoefficient() {

@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.heat;
 
+import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -37,21 +38,32 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     // double helper
-    public static BasicHeatCapacitor create(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient, @Nullable IMekanismHeatHandler heatHandler) {
+    public static BasicHeatCapacitor create(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient,
+          @Nullable IMekanismHeatHandler heatHandler) {
         return create(FloatingLong.create(heatCapacity), FloatingLong.create(inverseConductionCoefficient), FloatingLong.create(inverseInsulationCoefficient), heatHandler);
     }
 
-    public static BasicHeatCapacitor create(FloatingLong heatCapacity, FloatingLong inverseInductionCoefficient, FloatingLong inverseInsulationCoefficient, @Nullable IMekanismHeatHandler heatHandler) {
-        return create(heatCapacity, inverseInductionCoefficient, inverseInsulationCoefficient, true, true, heatHandler);
-    }
-
-    public static BasicHeatCapacitor create(FloatingLong heatCapacity, FloatingLong inverseInductionCoefficient, FloatingLong inverseInsulationCoefficient, boolean absorbHeat, boolean emitHeat,
+    public static BasicHeatCapacitor create(FloatingLong heatCapacity, FloatingLong inverseConductionCoefficient, FloatingLong inverseInsulationCoefficient,
           @Nullable IMekanismHeatHandler heatHandler) {
-        // TODO validation
-        return new BasicHeatCapacitor(heatCapacity, inverseInductionCoefficient, inverseInsulationCoefficient, absorbHeat, emitHeat, heatHandler);
+        return create(heatCapacity, inverseConductionCoefficient, inverseInsulationCoefficient, true, true, heatHandler);
     }
 
-    protected BasicHeatCapacitor(FloatingLong heatCapacity, FloatingLong inverseConductionCoefficient, FloatingLong inverseInsulationCoefficient, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
+    public static BasicHeatCapacitor create(FloatingLong heatCapacity, FloatingLong inverseConductionCoefficient, FloatingLong inverseInsulationCoefficient,
+          boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
+        Objects.requireNonNull(heatCapacity, "Heat capacity cannot be null");
+        if (heatCapacity.smallerThan(FloatingLong.ONE)) {
+            throw new IllegalArgumentException("Heat capacity must be at least one");
+        }
+        Objects.requireNonNull(inverseConductionCoefficient, "Inverse conduction coefficient cannot be null");
+        if (inverseConductionCoefficient.isZero()) {
+            throw new IllegalArgumentException("Inverse conduction coefficient must be greater than zero");
+        }
+        Objects.requireNonNull(inverseInsulationCoefficient, "Inverse insulation coefficient cannot be null");
+        return new BasicHeatCapacitor(heatCapacity, inverseConductionCoefficient, inverseInsulationCoefficient, absorbHeat, emitHeat, heatHandler);
+    }
+
+    protected BasicHeatCapacitor(FloatingLong heatCapacity, FloatingLong inverseConductionCoefficient, FloatingLong inverseInsulationCoefficient, boolean absorbHeat,
+          boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
         this.heatCapacity = heatCapacity;
         this.inverseConductionCoefficient = inverseConductionCoefficient;
         this.inverseInsulationCoefficient = inverseInsulationCoefficient;
@@ -62,8 +74,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public FloatingLong getTemperature() {
-        //TODO: Decide if we want to just stop heat capacity from ever being zero or handle this in another way
-        return getHeatCapacity().isZero() ? FloatingLong.ZERO : storedHeat.divide(getHeatCapacity());
+        return storedHeat.divide(getHeatCapacity());
     }
 
     @Override
@@ -116,7 +127,6 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.STORED, heat -> storedHeat = heat);
     }
 
-    // getters/setters for container syncing
     @Override
     public FloatingLong getHeat() {
         return storedHeat;

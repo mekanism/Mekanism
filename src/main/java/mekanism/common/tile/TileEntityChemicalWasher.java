@@ -119,7 +119,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
         //TODO: Fix this not moving the item to the output slot
         fluidSlot.fillTank();
         gasOutputSlot.drainTank();
-        FloatingLong prev = energyContainer.getEnergy().copy();
+        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();

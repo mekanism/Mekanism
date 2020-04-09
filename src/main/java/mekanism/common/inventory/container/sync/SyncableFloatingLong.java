@@ -42,7 +42,7 @@ public class SyncableFloatingLong implements ISyncableData {
         if (!value.equals(lastKnownValue)) {
             //Make sure to copy it in case our floating long object is the same object so would be getting modified
             // only do so though if it is dirty, as we don't need to spam object creation
-            this.lastKnownValue = value.copy();
+            this.lastKnownValue = value.copyAsConst();
             return DirtyType.DIRTY;
         }
         return DirtyType.CLEAN;

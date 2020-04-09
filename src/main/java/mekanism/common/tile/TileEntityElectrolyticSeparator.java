@@ -147,7 +147,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
         leftOutputSlot.drainTank();
         rightOutputSlot.drainTank();
-        FloatingLong prev = energyContainer.getEnergy().copy();
+        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
         CachedRecipe<ElectrolysisRecipe> oldCache = cachedRecipe;
         cachedRecipe = getUpdatedCache(0);
         if (oldCache != cachedRecipe) {

@@ -42,7 +42,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public static final FloatingLong CASING_HEAT_CAPACITY = FloatingLong.ONE;
     public static final FloatingLong CASING_INVERSE_INSULATION_COEFFICIENT = FloatingLong.createConst(10);
     public static final FloatingLong CASING_INVERSE_CONDUCTION_COEFFICIENT = FloatingLong.ONE;
-    public static final FloatingLong BASE_BOIL_TEMP = FloatingLong.createConst(100 - (TemperatureUnit.AMBIENT.zeroOffset - TemperatureUnit.CELSIUS.zeroOffset));
+    public static final FloatingLong BASE_BOIL_TEMP = FloatingLong.createConst(100).subtract(TemperatureUnit.AMBIENT.zeroOffset.subtract(TemperatureUnit.CELSIUS.zeroOffset)).copyAsConst();
 
     public BoilerTank waterTank;
     public MultiblockGasTank<TileEntityBoilerCasing> steamTank;
@@ -79,7 +79,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
             () -> CASING_HEAT_CAPACITY.multiply(locations.size()),
             () -> CASING_INVERSE_INSULATION_COEFFICIENT.multiply(locations.size()),
             () -> CASING_INVERSE_INSULATION_COEFFICIENT.multiply(locations.size()),
-            true, false, null);
+            true, false);
         heatCapacitors = Collections.singletonList(heatCapacitor);
     }
 
