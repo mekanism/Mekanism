@@ -94,10 +94,12 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
                     if (capability.isPresent()) {
                         IHeatHandler heatTransmitter = capability.get();
                         if (heatTransmitter instanceof ITileHeatHandler) {
+                            ITileHeatHandler heatTile = (ITileHeatHandler) heatTransmitter;
                             HeatTransfer transfer = ((ITileHeatHandler) heatTransmitter).simulate();
+                            heatTile.update(null);
                             newHeatTransferred = newHeatTransferred.plusEqual(transfer.getAdjacentTransfer());
                             newHeatLost = newHeatLost.plusEqual(transfer.getEnvironmentTransfer());
-                            newSumTemp = newSumTemp.plusEqual(transfer.update());
+                            newSumTemp = newSumTemp.plusEqual(heatTile.getTotalTemperature());
                         }
                     }
                 }

@@ -389,13 +389,12 @@ public class FusionReactor {
         FloatingLong k = active ? caseWaterConductivity : FloatingLong.ZERO;
 
         FloatingLong aMin = burnTemperature.multiply(burnRatio).multiply(plasmaCaseConductivity).multiply(k.add(caseAirConductivity)).divide(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(burnRatio)
-              .multiply(plasmaCaseConductivity.add(k).add(caseAirConductivity)).subtract(plasmaCaseConductivity).multiply(k.add(caseAirConductivity)));
+              .multiply(plasmaCaseConductivity.add(k).add(caseAirConductivity)).subtract(plasmaCaseConductivity.multiply(k.add(caseAirConductivity))));
         return (int) (2 * Math.ceil(aMin.divide(2).doubleValue()));
     }
 
     public FloatingLong getMaxPlasmaTemperature(boolean active) {
         FloatingLong k = active ? caseWaterConductivity : FloatingLong.ZERO;
-        //TODO: Switch this to all being in the FloatingLong once temperature starts using floating longs
         return (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().divide(plasmaCaseConductivity).multiply(plasmaCaseConductivity.add(k)
               .add(caseAirConductivity)).divide(k.add(caseAirConductivity))).multiply(injectionRate);
     }
@@ -405,21 +404,22 @@ public class FusionReactor {
         return MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(injectionRate).divide(k.add(caseAirConductivity));
     }
 
+    // burn temp x energy per fuel x burn ratio x (plasma case conductivity + k + air conductivity) / (
     public FloatingLong getIgnitionTemperature(boolean active) {
         FloatingLong k = active ? caseWaterConductivity : FloatingLong.ZERO;
-        //TODO: Switch this to all being in the FloatingLong once temperature starts using floating longs
+        FloatingLong totalConductivity = plasmaCaseConductivity.add(k).add(caseAirConductivity);
         FloatingLong energyPerFusionFuel = MekanismGeneratorsConfig.generators.energyPerFusionFuel.get();
-        return burnTemperature.multiply(energyPerFusionFuel).multiply(burnRatio).multiply(plasmaCaseConductivity.add(k).add(caseAirConductivity))
-            .divide(energyPerFusionFuel.multiply(burnRatio).multiply(plasmaCaseConductivity.add(k).add(caseAirConductivity)).subtract(plasmaCaseConductivity)
-                  .multiply(k.add(caseAirConductivity)));
+        return burnTemperature.multiply(energyPerFusionFuel).multiply(burnRatio).multiply(totalConductivity).divide((energyPerFusionFuel
+            .multiply(burnRatio).multiply(totalConductivity).subtract(plasmaCaseConductivity.multiply(k.add(caseAirConductivity)))));
     }
 
+    // thermocouple efficiency x air conductivity x temp
     public FloatingLong getPassiveGeneration(boolean active, boolean current) {
         FloatingLong temperature = current ? getCaseTemp() : getMaxCasingTemperature(active);
-        //TODO: Switch the multiplication to all being done via FloatingLongs once temperature starts using floating longs
         return thermocoupleEfficiency.multiply(caseAirConductivity).multiply(temperature);
     }
 
+    // steam efficiency x water conductivity x temp / water enthalpy
     public int getSteamPerTick(boolean current) {
         FloatingLong temperature = current ? getCaseTemp() : getMaxCasingTemperature(true);
         return steamTransferEfficiency.multiply(caseWaterConductivity).multiply(temperature).divide(HeatUtils.getVaporizationEnthalpy()).intValue();
