@@ -2,9 +2,7 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -52,34 +50,16 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Nonnull
     public GasStack lastWrite = GasStack.EMPTY;
-    private ProxyGasHandler readOnlyHandler;
-    private final Map<Direction, ProxyGasHandler> gasHandlers;
+    private final ProxyGasHandler readOnlyHandler;
     private final List<IChemicalTank<Gas, GasStack>> tanks;
     public BasicGasTank buffer;
 
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), TubeTier.class);
-        gasHandlers = new EnumMap<>(Direction.class);
         buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         tanks = Collections.singletonList(buffer);
-    }
-
-    /**
-     * Lazily get and cache an IGasHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
-     */
-    private IGasHandler getGasHandler(@Nullable Direction side) {
-        if (side == null) {
-            if (readOnlyHandler == null) {
-                readOnlyHandler = new ProxyGasHandler(this, null, null);
-            }
-            return readOnlyHandler;
-        }
-        ProxyGasHandler gasHandler = gasHandlers.get(side);
-        if (gasHandler == null) {
-            gasHandlers.put(side, gasHandler = new ProxyGasHandler(this, side, null));
-        }
-        return gasHandler;
+        readOnlyHandler = new ProxyGasHandler(this, null, null);
     }
 
     @Override
@@ -335,10 +315,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(side);
-            //Don't return a gas handler if we don't actually even have any tanks for that side
-            LazyOptional<IGasHandler> lazyGasHandler = gasTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getGasHandler(side));
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, lazyGasHandler);
+            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> side == null ? readOnlyHandler : this));
         }
         return super.getCapability(capability, side);
     }

@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -90,8 +90,10 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.clientHot = newHot;
                 SynchronizedBoilerData.hotMap.put(structure.inventoryID, structure.clientHot);
             }
-
+            // external heat dissipation
             HeatTransfer transfer = structure.simulate();
+            // update temperature
+            structure.update(null);
             structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer().copyAsConst();
             if (!SynchronizedBoilerData.BASE_BOIL_TEMP.greaterThan(structure.getTotalTemperature()) && !structure.waterTank.isEmpty()) {
                 int steamAmount = structure.steamTank.getStored();

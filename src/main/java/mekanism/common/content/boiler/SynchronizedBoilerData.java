@@ -79,7 +79,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
             () -> CASING_HEAT_CAPACITY.multiply(locations.size()),
             () -> CASING_INVERSE_INSULATION_COEFFICIENT.multiply(locations.size()),
             () -> CASING_INVERSE_INSULATION_COEFFICIENT.multiply(locations.size()),
-            true, false);
+            true, true);
         heatCapacitors = Collections.singletonList(heatCapacitor);
     }
 

@@ -263,12 +263,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     private void updateTemperature() {
         if (!temperatureSet) {
-            biomeTemp = FloatingLong.create(world.getBiomeManager().getBiome(getPos()).getTemperature(getPos()));
+            biomeTemp = FloatingLong.createConst(world.getBiomeManager().getBiome(getPos()).getTemperature(getPos()));
             temperatureSet = true;
         }
         heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, MekanismConfig.general.evaporationSolarMultiplier.get().multiply(getActiveSolars())));
 
-        FloatingLong biome = biomeTemp.subtract(0.5F);
+        FloatingLong biome = biomeTemp.subtract(0.5);
         FloatingLong base = !biome.isZero() ? biome.multiply(20) : biomeTemp.multiply(40);
 
         double incr = MekanismConfig.general.evaporationHeatDissipation.get().doubleValue() * Math.sqrt(Math.abs(heatCapacitor.getTemperature().doubleValue() - base.doubleValue()));
