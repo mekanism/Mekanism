@@ -74,7 +74,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public FloatingLong getTemperature() {
-        return storedHeat.divide(heatCapacity);
+        return storedHeat.divide(getHeatCapacity());
     }
 
     @Override
@@ -108,20 +108,18 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         }
     }
 
-    public FloatingLong update() {
+    public void update() {
         if (heatToHandle != null) {
             if (heatToHandle.getType().absorb() && absorbHeat) {
-                storedHeat = storedHeat.plusEqual(heatToHandle.getAmount().divide(heatCapacity));
+                storedHeat = storedHeat.plusEqual(heatToHandle.getAmount());
             } else if (heatToHandle.getType().emit() && emitHeat) {
-                storedHeat = storedHeat.minusEqual(heatToHandle.getAmount().divide(heatCapacity));
+                storedHeat = storedHeat.minusEqual(heatToHandle.getAmount());
             }
+            //notify listeners
+            onContentsChanged();
         }
         // reset our heat
         heatToHandle = null;
-        // notify listeners
-        onContentsChanged();
-        // return current heat
-        return storedHeat.copy();
     }
 
     @Override
@@ -136,6 +134,9 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void setHeat(FloatingLong heat) {
-        storedHeat = heat;
+        if (!storedHeat.equals(heat)) {
+            storedHeat = heat;
+            onContentsChanged();
+        }
     }
 }
