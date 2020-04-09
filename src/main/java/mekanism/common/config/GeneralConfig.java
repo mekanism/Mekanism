@@ -67,7 +67,6 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue evaporationTempMultiplier;
     public final CachedFloatingLongValue evaporationSolarMultiplier;
     public final CachedFloatingLongValue evaporationHeatCapacity;
-    public final CachedFloatingLongValue evaporationMaxTemp;
     public final CachedFloatingLongValue maxEnergyPerSteam;
     public final CachedFloatingLongValue superheatingHeatTransfer;
     public final CachedFloatingLongValue boilerWaterConductivity;
@@ -198,8 +197,6 @@ public class GeneralConfig extends BaseMekanismConfig {
               "solarMultiplier", FloatingLong.createConst(0.2));
         evaporationHeatCapacity = CachedFloatingLongValue.define(this, builder, "Heat capacity of Thermal Evaporation Tower layers (increases amount of energy needed to increase temperature).",
               "heatCapacity", FloatingLong.createConst(100));
-        evaporationMaxTemp = CachedFloatingLongValue.define(this, builder, "Max Temperature of the Thermal Evaporation Tower.",
-              "maxTemp", FloatingLong.createConst(3_000), CachedFloatingLongValue.POSITIVE);
         builder.pop();
 
         maxEnergyPerSteam = CachedFloatingLongValue.define(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",

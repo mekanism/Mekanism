@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.Collections;
+import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -22,6 +23,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityThermalEvaporationController, MekanismTileContainer<TileEntityThermalEvaporationController>> {
 
+    private static final FloatingLong MAX_SCALE = FloatingLong.createConst(3_000);
+
     public GuiThermalEvaporationController(MekanismTileContainer<TileEntityThermalEvaporationController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
@@ -41,7 +44,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
             @Override
             public double getLevel() {
-                return tile.getTemp().divideToLevel(MekanismConfig.general.evaporationMaxTemp.get());
+                return tile.getTemp().divideToLevel(MAX_SCALE);
             }
         }, 48, 63));
         addButton(new GuiFluidGauge(() -> tile.inputTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));

@@ -1,7 +1,6 @@
 package mekanism.common.transmitters.grid;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
@@ -9,10 +8,8 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.transmitters.TransmitterImpl;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.util.text.ITextComponent;
@@ -86,18 +83,14 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
             FloatingLong newHeatTransferred = FloatingLong.ZERO;
             for (IGridTransmitter<IHeatHandler, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof TransmitterImpl) {
-                    Optional<IHeatHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(((TransmitterImpl<?, ?, ?>) transmitter).getTileEntity(),
-                          Capabilities.HEAT_HANDLER_CAPABILITY, null));
-                    if (capability.isPresent()) {
-                        IHeatHandler heatTransmitter = capability.get();
-                        if (heatTransmitter instanceof ITileHeatHandler) {
-                            ITileHeatHandler heatTile = (ITileHeatHandler) heatTransmitter;
-                            HeatTransfer transfer = ((ITileHeatHandler) heatTransmitter).simulate();
-                            heatTile.update(null);
-                            newHeatTransferred = newHeatTransferred.plusEqual(transfer.getAdjacentTransfer());
-                            newHeatLost = newHeatLost.plusEqual(transfer.getEnvironmentTransfer());
-                            newSumTemp = newSumTemp.plusEqual(heatTile.getTotalTemperature());
-                        }
+                    // change this when we re-integrate with multipart
+                    if (((TransmitterImpl<?, ?, ?>) transmitter).containingTile instanceof ITileHeatHandler) {
+                        ITileHeatHandler heatTile = (ITileHeatHandler) ((TransmitterImpl<?, ?, ?>) transmitter).containingTile;
+                        HeatTransfer transfer = heatTile.simulate();
+                        heatTile.update(null);
+                        newHeatTransferred = newHeatTransferred.plusEqual(transfer.getAdjacentTransfer());
+                        newHeatLost = newHeatLost.plusEqual(transfer.getEnvironmentTransfer());
+                        newSumTemp = newSumTemp.plusEqual(heatTile.getTotalTemperature());
                     }
                 }
             }

@@ -38,7 +38,7 @@ public class VariableHeatCapacitor extends BasicHeatCapacitor {
 
     @Override
     public FloatingLong getInverseConduction() {
-        return conductionCoefficientSupplier.get();
+        return conductionCoefficientSupplier.get().max(FloatingLong.ONE);
     }
 
     @Override
@@ -48,6 +48,6 @@ public class VariableHeatCapacitor extends BasicHeatCapacitor {
 
     @Override
     public FloatingLong getHeatCapacity() {
-        return heatCapacitySupplier.get();
+        return heatCapacitySupplier.get().max(FloatingLong.ONE);
     }
 }
