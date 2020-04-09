@@ -541,7 +541,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         return greaterThan(other) ? other : this;
     }
 
-    //TODO: JavaDocs
+    /**
+     * Returns the smallest {@link FloatingLong} that is greater than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @return the smallest {@link FloatingLong} that is greater than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long, then the result is the same as the argument. Additionally, if this {@link
+     * FloatingLong} is larger than the maximum unsigned long, this instead returns a {@link FloatingLong} representing the maximum unsigned long.
+     */
     public FloatingLong ceil() {
         if (decimal == 0) {
             return this;
@@ -553,7 +560,13 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         return new FloatingLong(value + 1, (short) 0, false);
     }
 
-    //TODO: JavaDocs
+    /**
+     * Returns the largest {@link FloatingLong} that is less than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @return the largest {@link FloatingLong} that is less than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long, then the result is the same as the argument.
+     */
     public FloatingLong floor() {
         return decimal == 0 ? this : new FloatingLong(value, (short) 0, false);
     }

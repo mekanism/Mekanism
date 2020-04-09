@@ -69,8 +69,9 @@ public interface ISidedHeatHandler extends IHeatHandler {
 
     default FloatingLong getTotalTemperature(@Nullable Direction side) {
         FloatingLong sum = FloatingLong.ZERO;
+        FloatingLong totalCapacity = getTotalHeatCapacity(side);
         for (int capacitor = 0; capacitor < getHeatCapacitorCount(side); capacitor++) {
-            sum = sum.plusEqual(getTemperature(capacitor, side).multiply(getHeatCapacity(capacitor, side).divideEquals(getHeatCapacity(capacitor, side))));
+            sum = sum.plusEqual(getTemperature(capacitor, side).multiply(getHeatCapacity(capacitor, side).divide(totalCapacity)));
         }
         return sum;
     }
