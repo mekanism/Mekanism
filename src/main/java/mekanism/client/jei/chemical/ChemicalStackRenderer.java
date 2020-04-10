@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -31,16 +32,16 @@ public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();
     protected static final int TEX_WIDTH = 16;
     protected static final int TEX_HEIGHT = 16;
-    private static final int MIN_FLUID_HEIGHT = 1; // ensure tiny amounts of gas are still visible
+    private static final int MIN_CHEMICAL_HEIGHT = 1; // ensure tiny amounts of chemical are still visible
 
-    private final int capacityMb;
+    private final long capacityMb;
     private final TooltipMode tooltipMode;
     private final int width;
     private final int height;
     @Nullable
     private final IDrawable overlay;
 
-    protected ChemicalStackRenderer(int capacityMb, TooltipMode tooltipMode, int width, int height, @Nullable IDrawable overlay) {
+    protected ChemicalStackRenderer(long capacityMb, TooltipMode tooltipMode, int width, int height, @Nullable IDrawable overlay) {
         this.capacityMb = capacityMb;
         this.tooltipMode = tooltipMode;
         this.width = width;
@@ -70,9 +71,9 @@ public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         if (stack.isEmpty()) {
             return;
         }
-        int desiredHeight = (stack.getAmount() * height) / capacityMb;
-        if (desiredHeight < MIN_FLUID_HEIGHT) {
-            desiredHeight = MIN_FLUID_HEIGHT;
+        int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
+        if (desiredHeight < MIN_CHEMICAL_HEIGHT) {
+            desiredHeight = MIN_CHEMICAL_HEIGHT;
         }
         if (desiredHeight > height) {
             desiredHeight = height;

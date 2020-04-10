@@ -13,7 +13,7 @@ public class LSItemStackFilterContainer extends FilterContainer<TItemStackFilter
     }
 
     public LSItemStackFilterContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, getTileFromBuf(buf, TileEntityLogisticalSorter.class), buf.readInt());
+        this(id, inv, getTileFromBuf(buf, TileEntityLogisticalSorter.class), buf.readVarInt());
     }
 
     @Override

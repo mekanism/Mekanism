@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.MathUtils;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
@@ -59,8 +60,8 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>>
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
-        float scale = (float) tank.getStored() / (float) tank.getCapacity();
-        return Math.round(scale * (height - 2));
+        double scale = tank.getStored() / (double) tank.getCapacity();
+        return MathUtils.clampToInt(Math.round(scale * (height - 2)));
     }
 
     @Override
@@ -80,8 +81,8 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>>
         if (tank == null || tank.isEmpty()) {
             return MekanismLang.EMPTY.translate();
         }
-        int amount = tank.getStored();
-        if (amount == Integer.MAX_VALUE) {
+        long amount = tank.getStored();
+        if (amount == Long.MAX_VALUE) {
             return MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE);
         }
         return MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), amount);

@@ -12,6 +12,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.RotaryCachedRecipe;
@@ -61,7 +62,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
      */
     public boolean mode;
 
-    public int gasOutput = 256;
+    public long gasOutput = 256;
 
     private final IOutputHandler<@NonNull GasStack> gasOutputHandler;
     private final IOutputHandler<@NonNull FluidStack> fluidOutputHandler;
@@ -250,10 +251,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
                   int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
                   if (mode) {
                       //Fluid to gas
-                      return Math.min(Math.min(fluidTank.getFluidAmount(), gasTank.getNeeded()), possibleProcess);
+                      return Math.min(Math.min(fluidTank.getFluidAmount(), MathUtils.clampToInt(gasTank.getNeeded())), possibleProcess);
                   }
                   //Gas to fluid
-                  return Math.min(Math.min(gasTank.getStored(), fluidTank.getNeeded()), possibleProcess);
+                  return Math.min(Math.min(MathUtils.clampToInt(gasTank.getStored()), fluidTank.getNeeded()), possibleProcess);
               });
     }
 

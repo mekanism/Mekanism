@@ -28,7 +28,7 @@ public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>,
     protected abstract STACK getEmptyStack();
 
     @Nonnull
-    protected abstract STACK createStack(STACK stored, int size);
+    protected abstract STACK createStack(STACK stored, long size);
 
     @Nonnull
     public STACK get() {
@@ -39,7 +39,7 @@ public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>,
         setter.accept(value);
     }
 
-    public void set(int amount) {
+    public void set(long amount) {
         STACK stack = get();
         if (!stack.isEmpty()) {
             //Double check it is not empty

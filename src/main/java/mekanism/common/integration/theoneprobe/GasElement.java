@@ -12,12 +12,12 @@ public class GasElement extends ChemicalElement<Gas, GasStack> {
 
     public static int ID;
 
-    public GasElement(@Nonnull GasStack stored, int capacity) {
+    public GasElement(@Nonnull GasStack stored, long capacity) {
         super(stored, capacity);
     }
 
     public GasElement(PacketBuffer buf) {
-        this(ChemicalUtils.readGasStack(buf), buf.readVarInt());
+        this(ChemicalUtils.readGasStack(buf), buf.readVarLong());
     }
 
     @Override

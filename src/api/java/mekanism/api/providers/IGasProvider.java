@@ -12,7 +12,7 @@ public interface IGasProvider extends IBaseProvider {
     Gas getGas();
 
     @Nonnull
-    default GasStack getGasStack(int size) {
+    default GasStack getGasStack(long size) {
         return new GasStack(getGas(), size);
     }
 

@@ -60,7 +60,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     /**
      * The maximum amount of gas this block can store.
      */
-    private static final int MAX_GAS = 2_400;
+    private static final long MAX_GAS = 2_400;
     /**
      * The amount of oxygen this block is storing.
      */
@@ -72,7 +72,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     /**
      * How fast this block can output gas.
      */
-    public int output = 512;
+    public long output = 512;
     /**
      * The type of gas this block is outputting.
      */
@@ -160,19 +160,19 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
         clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
 
-        int dumpAmount = 8 * (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+        long dumpAmount = 8 * (long) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
         handleTank(leftTank, dumpLeft, getLeftSide(), dumpAmount);
         handleTank(rightTank, dumpRight, getRightSide(), dumpAmount);
     }
 
-    private void handleTank(IChemicalTank<Gas, GasStack> tank, GasMode mode, Direction side, int dumpAmount) {
+    private void handleTank(IChemicalTank<Gas, GasStack> tank, GasMode mode, Direction side, long dumpAmount) {
         if (!tank.isEmpty()) {
             if (mode == GasMode.DUMPING) {
                 tank.shrinkStack(dumpAmount, Action.EXECUTE);
             } else {
                 GasUtils.emit(EnumSet.of(side), tank, this, output);
                 if (mode == GasMode.DUMPING_EXCESS) {
-                    int needed = tank.getNeeded();
+                    long needed = tank.getNeeded();
                     if (needed < output) {
                         tank.shrinkStack(output - needed, Action.EXECUTE);
                     }

@@ -31,7 +31,7 @@ public class DefaultInfusionHandler implements IInfusionHandler {
     }
 
     @Override
-    public int getInfusionTankCapacity(int tank) {
+    public long getInfusionTankCapacity(int tank) {
         return 0;
     }
 
@@ -46,7 +46,7 @@ public class DefaultInfusionHandler implements IInfusionHandler {
     }
 
     @Override
-    public InfusionStack extractInfusion(int tank, int amount, Action action) {
+    public InfusionStack extractInfusion(int tank, long amount, Action action) {
         return InfusionStack.EMPTY;
     }
 }

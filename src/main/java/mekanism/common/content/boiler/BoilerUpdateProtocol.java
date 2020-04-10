@@ -25,7 +25,7 @@ import net.minecraft.util.math.BlockPos;
 public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData> {
 
     public static final int WATER_PER_TANK = 16_000;
-    public static final int STEAM_PER_TANK = 160_000;
+    public static final long STEAM_PER_TANK = 160_000;
 
     public BoilerUpdateProtocol(TileEntityBoilerCasing tile) {
         super(tile);

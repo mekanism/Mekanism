@@ -210,7 +210,7 @@ public class ClientTickHandler {
                 GasStack received = tank.useGas(chestStack, max - minecraft.player.getAir());
 
                 if (!received.isEmpty()) {
-                    minecraft.player.setAir(minecraft.player.getAir() + received.getAmount());
+                    minecraft.player.setAir(minecraft.player.getAir() + (int) received.getAmount());
                 }
                 if (minecraft.player.getAir() == max) {
                     for (EffectInstance effect : minecraft.player.getActivePotionEffects()) {

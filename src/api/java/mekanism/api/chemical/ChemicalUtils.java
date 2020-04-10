@@ -78,14 +78,14 @@ public class ChemicalUtils {
     /**
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(int amount, Action action, STACK empty,
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(long amount, Action action, STACK empty,
           IntSupplier tankCount, Int2ObjectFunction<@NonNull STACK> inTankGetter, ExtractChemical<CHEMICAL, STACK> extractChemical) {
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             return extractChemical.extract(0, amount, action);
         }
         STACK extracted = empty;
-        int toDrain = amount;
+        long toDrain = amount;
         for (int tank = 0; tank < tanks; tank++) {
             if (extracted.isEmpty() || extracted.isTypeEqual(inTankGetter.get(tank))) {
                 //If there is chemical in the tank that matches the type we have started draining, or we haven't found a type yet
@@ -124,7 +124,7 @@ public class ChemicalUtils {
             return extractChemical.extract(0, stack.getAmount(), action);
         }
         STACK extracted = empty;
-        int toDrain = stack.getAmount();
+        long toDrain = stack.getAmount();
         for (int tank = 0; tank < tanks; tank++) {
             if (stack.isTypeEqual(inTankGetter.get(tank))) {
                 //If there is chemical in the tank that matches the type we are trying to drain, try to draining from it
@@ -157,6 +157,6 @@ public class ChemicalUtils {
     @FunctionalInterface
     public interface ExtractChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
 
-        STACK extract(int tank, int amount, Action action);
+        STACK extract(int tank, long amount, Action action);
     }
 }

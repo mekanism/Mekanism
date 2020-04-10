@@ -32,11 +32,11 @@ public class PacketKey {
     }
 
     public static void encode(PacketKey pkt, PacketBuffer buf) {
-        buf.writeInt(pkt.key);
+        buf.writeVarInt(pkt.key);
         buf.writeBoolean(pkt.add);
     }
 
     public static PacketKey decode(PacketBuffer buf) {
-        return new PacketKey(buf.readInt(), buf.readBoolean());
+        return new PacketKey(buf.readVarInt(), buf.readBoolean());
     }
 }

@@ -108,7 +108,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar<
             public ITextComponent getTooltip() {
                 if (tank.isEmpty()) {
                     return MekanismLang.EMPTY.translate();
-                } else if (tank.getStored() == Integer.MAX_VALUE) {
+                } else if (tank.getStored() == Long.MAX_VALUE) {
                     return MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE);
                 }
                 return MekanismLang.GENERIC_STORED.translate(tank.getType(), tank.getStored());

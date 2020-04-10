@@ -41,11 +41,11 @@ import mekanism.common.util.MekanismUtils;
 
 public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
 
-    public static final int MAX_GAS = 10_000;
+    public static final long MAX_GAS = 10_000;
     public BasicGasTank leftTank;
     public BasicGasTank rightTank;
     public BasicGasTank centerTank;
-    public int gasOutput = 256;
+    public long gasOutput = 256;
 
     public CachedRecipe<ChemicalInfuserRecipe> cachedRecipe;
 

@@ -50,7 +50,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine<PressurizedReactionRecipe> {
 
     private static final int BASE_DURATION = 100;
-    private static final int MAX_GAS = 10_000;
+    private static final long MAX_GAS = 10_000;
     public BasicFluidTank inputFluidTank;
     public BasicGasTank inputGasTank;
     public BasicGasTank outputGasTank;

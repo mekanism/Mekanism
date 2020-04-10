@@ -276,13 +276,13 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         public void write(PacketBuffer buffer) {
             super.write(buffer);
             buffer.writeResourceLocation(filterLocation);
-            buffer.writeInt(index);
+            buffer.writeVarInt(index);
         }
 
         @Override
         public void read(PacketBuffer dataStream) {
             filterLocation = dataStream.readResourceLocation();
-            index = dataStream.readInt();
+            index = dataStream.readVarInt();
         }
 
         public List<Item> getMatchingItems() {

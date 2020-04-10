@@ -1,7 +1,7 @@
-package mekanism.common.base.target;
+package mekanism.common.distribution.target;
 
 import mekanism.api.annotations.NonNull;
-import mekanism.common.base.SplitInfo;
+import mekanism.common.distribution.SplitInfo;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;

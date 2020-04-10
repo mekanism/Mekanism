@@ -56,7 +56,7 @@ public class PacketGeneratorsGuiButtonPress {
                         //Ensure valid data
                         NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> {
                             buf.writeBlockPos(message.tilePosition);
-                            buf.writeInt(message.extra);
+                            buf.writeVarInt(message.extra);
                         });
                     }
                 }

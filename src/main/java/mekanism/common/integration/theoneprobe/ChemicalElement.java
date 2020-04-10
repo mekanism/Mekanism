@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils;
+import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
@@ -15,9 +16,9 @@ public abstract class ChemicalElement<CHEMICAL extends Chemical<CHEMICAL>, STACK
 
     @Nonnull
     protected final STACK stored;
-    protected final int capacity;
+    protected final long capacity;
 
-    protected ChemicalElement(@Nonnull STACK stored, int capacity) {
+    protected ChemicalElement(@Nonnull STACK stored, long capacity) {
         super(0xFF000000, 0xFFFFFF);
         this.stored = stored;
         this.capacity = capacity;
@@ -26,15 +27,15 @@ public abstract class ChemicalElement<CHEMICAL extends Chemical<CHEMICAL>, STACK
     @Override
     public void toBytes(PacketBuffer buf) {
         ChemicalUtils.writeChemicalStack(buf, stored);
-        buf.writeVarInt(capacity);
+        buf.writeVarLong(capacity);
     }
 
     @Override
     public int getScaledLevel(int level) {
-        if (capacity == 0 || stored.getAmount() == Integer.MAX_VALUE) {
+        if (capacity == 0 || stored.getAmount() == Long.MAX_VALUE) {
             return level;
         }
-        return stored.getAmount() * level / capacity;
+        return MathUtils.clampToInt(level * (double) stored.getAmount() / capacity);
     }
 
     @Override
@@ -46,8 +47,8 @@ public abstract class ChemicalElement<CHEMICAL extends Chemical<CHEMICAL>, STACK
 
     @Override
     public ITextComponent getText() {
-        int amount = stored.getAmount();
-        if (amount == Integer.MAX_VALUE) {
+        long amount = stored.getAmount();
+        if (amount == Long.MAX_VALUE) {
             return MekanismLang.GENERIC_STORED.translate(stored.getType(), MekanismLang.INFINITE);
         }
         return getStoredFormat().translate(stored.getType(), amount);

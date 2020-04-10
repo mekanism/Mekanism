@@ -182,7 +182,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.SINGLE);
             ingredient.write(buffer);
-            buffer.writeInt(amount);
+            buffer.writeVarInt(amount);
         }
 
         @Nonnull
@@ -197,7 +197,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         }
 
         public static Single read(PacketBuffer buffer) {
-            return new Single(Ingredient.read(buffer), buffer.readInt());
+            return new Single(Ingredient.read(buffer), buffer.readVarInt());
         }
     }
 
@@ -246,7 +246,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.MULTI);
-            buffer.writeInt(ingredients.length);
+            buffer.writeVarInt(ingredients.length);
             for (ItemStackIngredient ingredient : ingredients) {
                 ingredient.write(buffer);
             }
@@ -264,7 +264,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
 
         public static ItemStackIngredient read(PacketBuffer buffer) {
             //TODO: Verify this works
-            ItemStackIngredient[] ingredients = new ItemStackIngredient[buffer.readInt()];
+            ItemStackIngredient[] ingredients = new ItemStackIngredient[buffer.readVarInt()];
             for (int i = 0; i < ingredients.length; i++) {
                 ingredients[i] = ItemStackIngredient.read(buffer);
             }

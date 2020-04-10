@@ -49,13 +49,13 @@ public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>
     public void write(PacketBuffer buffer) {
         super.write(buffer);
         buffer.writeBoolean(allowDefault);
-        buffer.writeInt(TransporterUtils.getColorIndex(color));
+        buffer.writeVarInt(TransporterUtils.getColorIndex(color));
     }
 
     @Override
     public void read(PacketBuffer dataStream) {
         allowDefault = dataStream.readBoolean();
-        color = TransporterUtils.readColor(dataStream.readInt());
+        color = TransporterUtils.readColor(dataStream.readVarInt());
     }
 
     @Override

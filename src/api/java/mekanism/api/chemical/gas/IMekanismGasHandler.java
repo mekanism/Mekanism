@@ -78,7 +78,7 @@ public interface IMekanismGasHandler extends ISidedGasHandler {
     }
 
     @Override
-    default int getGasTankCapacity(int tank, @Nullable Direction side) {
+    default long getGasTankCapacity(int tank, @Nullable Direction side) {
         IChemicalTank<Gas, GasStack> gasTank = getGasTank(tank, side);
         return gasTank == null ? 0 : gasTank.getCapacity();
     }
@@ -96,7 +96,7 @@ public interface IMekanismGasHandler extends ISidedGasHandler {
     }
 
     @Override
-    default GasStack extractGas(int tank, int amount, @Nullable Direction side, Action action) {
+    default GasStack extractGas(int tank, long amount, @Nullable Direction side, Action action) {
         IChemicalTank<Gas, GasStack> gasTank = getGasTank(tank, side);
         return gasTank == null ? GasStack.EMPTY : gasTank.extract(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }

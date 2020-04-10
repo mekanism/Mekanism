@@ -53,7 +53,7 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      *
      * @return The maximum gas amount held by the tank.
      */
-    int getTankCapacity(int tank);
+    long getTankCapacity(int tank);
 
     /**
      * <p>
@@ -103,7 +103,7 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the tank
      * should return a new or copied stack.
      */
-    STACK extractChemical(int tank, int amount, Action action);
+    STACK extractChemical(int tank, long amount, Action action);
 
     /**
      * <p>
@@ -133,7 +133,7 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the tank
      * should return a new or copied stack.
      */
-    STACK extractChemical(int amount, Action action);
+    STACK extractChemical(long amount, Action action);
 
     /**
      * Extracts a {@link STACK} from this handler, distribution is left <strong>entirely</strong> to the handler.

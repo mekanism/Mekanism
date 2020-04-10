@@ -24,8 +24,8 @@ import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.target.GasHandlerTarget;
-import mekanism.common.base.target.GasTransmitterSaveTarget;
+import mekanism.common.distribution.target.GasHandlerTarget;
+import mekanism.common.distribution.target.GasTransmitterSaveTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
 import mekanism.common.util.CapabilityUtils;
@@ -54,7 +54,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Nonnull
     public Gas lastGas = MekanismAPI.EMPTY_GAS;
     public float gasScale;
-    private int prevTransferAmount;
+    private long prevTransferAmount;
 
     public GasNetwork() {
         gasTank = VariableCapacityGasTank.create(this::getCapacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this);
@@ -81,7 +81,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     protected void forceScaleUpdate() {
         if (!gasTank.isEmpty() && gasTank.getCapacity() > 0) {
-            gasScale = Math.min(1, (float) gasTank.getStored() / gasTank.getCapacity());
+            gasScale = (float) Math.min(1, gasTank.getStored() / (double) gasTank.getCapacity());
         } else {
             gasScale = 0;
         }
@@ -105,7 +105,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 if (gasTank.isEmpty()) {
                     gasTank.setStack(net.getBuffer());
                 } else if (gasTank.isTypeEqual(net.gasTank.getType())) {
-                    int amount = net.gasTank.getStored();
+                    long amount = net.gasTank.getStored();
                     if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
                         //TODO: Print warning/error
                     }
@@ -141,7 +141,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             gasTank.setStack(gas.copy());
         } else if (gas.isTypeEqual(gasTank.getType())) {
             //TODO: better multiple buffer impl
-            int amount = gas.getAmount();
+            long amount = gas.getAmount();
             if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
                 //TODO: Print warning/error
             }
@@ -151,7 +151,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void clampBuffer() {
         if (!gasTank.isEmpty()) {
-            int capacity = getCapacity();
+            //TODO: Make a getCapacityAsLong
+            long capacity = getCapacity();
             if (gasTank.getStored() > capacity) {
                 if (gasTank.setStackSize(capacity, Action.EXECUTE) != capacity) {
                     //TODO: Print warning/error
@@ -181,7 +182,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         }
     }
 
-    private int tickEmit(@Nonnull GasStack stack) {
+    private long tickEmit(@Nonnull GasStack stack) {
         Set<GasHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
         GasStack unitStack = new GasStack(stack, 1);
@@ -247,7 +248,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         return ret;
     }
 
-    public int getPrevTransferAmount() {
+    public long getPrevTransferAmount() {
         return prevTransferAmount;
     }
 

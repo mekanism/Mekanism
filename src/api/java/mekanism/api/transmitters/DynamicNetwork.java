@@ -267,6 +267,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
      */
     protected synchronized void updateCapacity(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
         int transmitterCapacity = transmitter.getCapacity();
+        //TODO: Capacity as long for use in gas network?
         if (transmitterCapacity > Integer.MAX_VALUE - capacity) {
             //Ensure we don't overflow
             capacity = Integer.MAX_VALUE;

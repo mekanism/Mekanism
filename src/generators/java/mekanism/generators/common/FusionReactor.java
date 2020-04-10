@@ -1,9 +1,9 @@
 package mekanism.generators.common;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.IChemicalTank;
@@ -15,6 +15,7 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.LaserManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -106,7 +107,7 @@ public class FusionReactor {
             //Only inject fuel if we're burning
             if (burning) {
                 injectFuel();
-                int fuelBurned = burnFuel();
+                long fuelBurned = burnFuel();
                 if (fuelBurned == 0) {
                     setBurning(false);
                 }
@@ -145,11 +146,11 @@ public class FusionReactor {
     }
 
     private void injectFuel() {
-        int amountNeeded = getFuelTank().getNeeded();
-        int amountAvailable = 2 * Math.min(getDeuteriumTank().getStored(), getTritiumTank().getStored());
-        int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
+        long amountNeeded = getFuelTank().getNeeded();
+        long amountAvailable = 2 * Math.min(getDeuteriumTank().getStored(), getTritiumTank().getStored());
+        long amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
-        int injectingAmount = amountToInject / 2;
+        long injectingAmount = amountToInject / 2;
         if (getDeuteriumTank().shrinkStack(injectingAmount, Action.EXECUTE) != injectingAmount) {
             //TODO: Print warning/error
         }
@@ -159,8 +160,8 @@ public class FusionReactor {
         getFuelTank().insert(GeneratorsGases.FUSION_FUEL.getGasStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private int burnFuel() {
-        int fuelBurned = (int) Math.min(getFuelTank().getStored(), Math.max(0, lastPlasmaTemperature - burnTemperature) * burnRatio);
+    private long burnFuel() {
+        long fuelBurned = (long) Math.min(getFuelTank().getStored(), Math.max(0, lastPlasmaTemperature - burnTemperature) * burnRatio);
         if (getFuelTank().shrinkStack(fuelBurned, Action.EXECUTE) != fuelBurned) {
             //TODO: Print warning/error
         }
@@ -177,7 +178,7 @@ public class FusionReactor {
         //Transfer from casing to water if necessary
         double caseWaterHeat = caseWaterConductivity * lastCaseTemperature;
         int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / HeatUtils.getVaporizationEnthalpy());
-        waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getNeeded()));
+        waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), MathUtils.clampToInt(getSteamTank().getNeeded())));
         if (waterToVaporize > 0) {
             if (getWaterTank().shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
                 //TODO: Print warning/error
@@ -383,7 +384,6 @@ public class FusionReactor {
 
     public int getMinInjectionRate(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        //TODO: Switch this to all being in the FloatingLong once temperature starts using floating longs
         double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) /
                       (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
                        plasmaCaseConductivity * (k + caseAirConductivity));
@@ -413,9 +413,9 @@ public class FusionReactor {
         return FloatingLong.create(thermocoupleEfficiency * caseAirConductivity * temperature);
     }
 
-    public int getSteamPerTick(boolean current) {
+    public long getSteamPerTick(boolean current) {
         double temperature = current ? getCaseTemp() : getMaxCasingTemperature(true);
-        return (int) (steamTransferEfficiency * caseWaterConductivity * temperature / HeatUtils.getVaporizationEnthalpy());
+        return MathUtils.clampToLong(steamTransferEfficiency * caseWaterConductivity * temperature / HeatUtils.getVaporizationEnthalpy());
     }
 
     public static double getInverseConductionCoefficient() {

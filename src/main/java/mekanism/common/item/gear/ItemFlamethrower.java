@@ -60,7 +60,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
     }
 
     @Nonnull
-    public GasStack useGas(ItemStack stack, int amount) {
+    public GasStack useGas(ItemStack stack, long amount) {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
@@ -110,7 +110,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(TRANSFER_RATE, MekanismConfig.general.maxFlamethrowerGas::get,
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(TRANSFER_RATE, MekanismConfig.general.maxFlamethrowerGas,
               (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getGas()));
     }
 

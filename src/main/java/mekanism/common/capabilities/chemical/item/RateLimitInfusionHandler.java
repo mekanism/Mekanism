@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,11 +23,11 @@ import mekanism.common.capabilities.chemical.VariableCapacityInfusionTank;
 @MethodsReturnNonnullByDefault
 public class RateLimitInfusionHandler extends ItemStackMekanismInfusionHandler {
 
-    public static RateLimitInfusionHandler create(int rate, IntSupplier capacity) {
+    public static RateLimitInfusionHandler create(long rate, LongSupplier capacity) {
         return create(rate, capacity, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrue);
     }
 
-    public static RateLimitInfusionHandler create(int rate, IntSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
+    public static RateLimitInfusionHandler create(long rate, LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> isValid) {
         if (rate <= 0) {
             throw new IllegalArgumentException("Rate must be greater than zero");
@@ -39,7 +39,7 @@ public class RateLimitInfusionHandler extends ItemStackMekanismInfusionHandler {
         return new RateLimitInfusionHandler(handler -> new RateLimitInfusionTank(rate, capacity, canExtract, canInsert, isValid, handler));
     }
 
-    private IChemicalTank<InfuseType, InfusionStack> tank;
+    private final IChemicalTank<InfuseType, InfusionStack> tank;
 
     private RateLimitInfusionHandler(Function<IMekanismInfusionHandler, IChemicalTank<InfuseType, InfusionStack>> tankProvider) {
         this.tank = tankProvider.apply(this);
@@ -52,16 +52,16 @@ public class RateLimitInfusionHandler extends ItemStackMekanismInfusionHandler {
 
     public static class RateLimitInfusionTank extends VariableCapacityInfusionTank {
 
-        private final int rate;
+        private final long rate;
 
-        public RateLimitInfusionTank(int rate, IntSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
+        public RateLimitInfusionTank(long rate, LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> isValid, IMekanismInfusionHandler infusionHandler) {
             super(capacity, canExtract, canInsert, isValid, infusionHandler);
             this.rate = rate;
         }
 
         @Override
-        protected int getRate(@Nullable AutomationType automationType) {
+        protected long getRate(@Nullable AutomationType automationType) {
             //Allow unknown or manual interaction to bypass rate limit for the item
             return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate;
         }
