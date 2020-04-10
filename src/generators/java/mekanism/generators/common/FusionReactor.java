@@ -384,7 +384,6 @@ public class FusionReactor {
 
     public int getMinInjectionRate(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        //TODO: Switch this to all being in the FloatingLong once temperature starts using floating longs
         double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) /
                       (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
                        plasmaCaseConductivity * (k + caseAirConductivity));
@@ -414,9 +413,9 @@ public class FusionReactor {
         return FloatingLong.create(thermocoupleEfficiency * caseAirConductivity * temperature);
     }
 
-    public int getSteamPerTick(boolean current) {
+    public long getSteamPerTick(boolean current) {
         double temperature = current ? getCaseTemp() : getMaxCasingTemperature(true);
-        return (int) (steamTransferEfficiency * caseWaterConductivity * temperature / HeatUtils.getVaporizationEnthalpy());
+        return MathUtils.clampToLong(steamTransferEfficiency * caseWaterConductivity * temperature / HeatUtils.getVaporizationEnthalpy());
     }
 
     public static double getInverseConductionCoefficient() {
