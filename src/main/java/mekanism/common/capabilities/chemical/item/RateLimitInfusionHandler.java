@@ -39,7 +39,7 @@ public class RateLimitInfusionHandler extends ItemStackMekanismInfusionHandler {
         return new RateLimitInfusionHandler(handler -> new RateLimitInfusionTank(rate, capacity, canExtract, canInsert, isValid, handler));
     }
 
-    private IChemicalTank<InfuseType, InfusionStack> tank;
+    private final IChemicalTank<InfuseType, InfusionStack> tank;
 
     private RateLimitInfusionHandler(Function<IMekanismInfusionHandler, IChemicalTank<InfuseType, InfusionStack>> tankProvider) {
         this.tank = tankProvider.apply(this);

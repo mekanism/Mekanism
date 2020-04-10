@@ -95,7 +95,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
         return (volLength - 2) * (volWidth - 2) - 1;
     }
 
-    public int getSteamCapacity() {
+    public long getSteamCapacity() {
         return lowerVolume * TurbineUpdateProtocol.GAS_PER_TANK;
     }
 

@@ -9,6 +9,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -43,7 +44,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
      * How much secondary energy each operation consumes per tick
      */
     private double secondaryEnergyPerTick;
-    private int secondaryEnergyThisTick;
+    private long secondaryEnergyThisTick;
     private GasInventorySlot extraSlot;
     private BasicGasTank gasTank;
 
@@ -147,7 +148,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         if (getSupportedUpgrade().contains(Upgrade.GAS)) {
             secondaryEnergyThisTick = StatUtils.inversePoisson(secondaryEnergyPerTick);
         } else {
-            secondaryEnergyThisTick = (int) Math.ceil(secondaryEnergyPerTick);
+            secondaryEnergyThisTick = MathUtils.clampToLong(Math.ceil(secondaryEnergyPerTick));
         }
     }
 

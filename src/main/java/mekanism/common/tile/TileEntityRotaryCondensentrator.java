@@ -62,7 +62,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
      */
     public boolean mode;
 
-    public int gasOutput = 256;
+    public long gasOutput = 256;
 
     private final IOutputHandler<@NonNull GasStack> gasOutputHandler;
     private final IOutputHandler<@NonNull FluidStack> fluidOutputHandler;

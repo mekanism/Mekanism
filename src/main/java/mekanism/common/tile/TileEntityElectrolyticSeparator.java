@@ -60,7 +60,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     /**
      * The maximum amount of gas this block can store.
      */
-    private static final int MAX_GAS = 2_400;
+    private static final long MAX_GAS = 2_400;
     /**
      * The amount of oxygen this block is storing.
      */
@@ -72,7 +72,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     /**
      * How fast this block can output gas.
      */
-    public int output = 512;
+    public long output = 512;
     /**
      * The type of gas this block is outputting.
      */

@@ -42,7 +42,7 @@ import net.minecraft.item.ItemStack;
 
 public class TileEntityMetallurgicInfuser extends TileEntityBasicMachine<MetallurgicInfuserRecipe> implements IHasDumpButton {
 
-    public static final int MAX_INFUSE = 1_000;
+    public static final long MAX_INFUSE = 1_000;
     public BasicInfusionTank infusionTank;
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;

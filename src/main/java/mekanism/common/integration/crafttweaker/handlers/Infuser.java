@@ -10,7 +10,7 @@ public class Infuser {
 
     //TODO: CrT Integration
     /*@ZenCodeType.Method
-    public static void addRecipe(String infuseType, int infuseAmount, IIngredient ingredientInput, IItemStack itemOutput) {
+    public static void addRecipe(String infuseType, long infuseAmount, IIngredient ingredientInput, IItemStack itemOutput) {
         if (infuseType == null || infuseType.isEmpty()) {
             CraftTweakerAPI.logError(String.format("Required parameters missing for %s Recipe.", NAME));
             return;

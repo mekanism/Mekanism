@@ -63,7 +63,6 @@ public class InputHelper {
         };
     }
 
-    //TODO: IGasHandler?
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> IInputHandler<@NonNull STACK> getInputHandler(@Nonnull IChemicalTank<CHEMICAL, STACK> tank) {
         return new IInputHandler<@NonNull STACK>() {
 

@@ -32,7 +32,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemHohlraum extends Item {
 
-    private static final int MAX_GAS = 10;
+    private static final long MAX_GAS = 10;
     private static final int TRANSFER_RATE = 1;
 
     public ItemHohlraum(Properties properties) {
