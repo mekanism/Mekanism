@@ -49,7 +49,7 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
             IHeatHandler sink = getAdjacent(side);
             if (sink != null) {
                 double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
-                double heatToTransfer = getTotalTemperature(side) / invConduction;
+                double heatToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
                 handleHeat(-heatToTransfer, side);
                 sink.handleHeat(heatToTransfer);
                 if (!(sink instanceof ICapabilityProvider) || !CapabilityUtils.getCapability((ICapabilityProvider) sink, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)
