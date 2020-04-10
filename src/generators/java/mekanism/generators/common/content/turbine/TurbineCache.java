@@ -25,7 +25,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> implements IMekanismGasHandler, IMekanismStrictEnergyHandler {
 
     //Note: We don't care about any restrictions here as it is just for making it be persistent
-    private final List<IChemicalTank<Gas, GasStack>> gasTanks = Collections.singletonList(BasicGasTank.create(Integer.MAX_VALUE, this));
+    private final List<IChemicalTank<Gas, GasStack>> gasTanks = Collections.singletonList(BasicGasTank.create(Long.MAX_VALUE, this));
     private final List<IEnergyContainer> energyContainers = Collections.singletonList(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, this));
     public GasMode dumpMode = GasMode.IDLE;
 

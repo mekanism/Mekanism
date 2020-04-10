@@ -36,7 +36,7 @@ public class GasHandlerWrapper implements IChemicalHandlerWrapper<Gas, GasStack>
     }
 
     @Override
-    public int getTankCapacity(int tank) {
+    public long getTankCapacity(int tank) {
         return handler.getGasTankCapacity(tank);
     }
 
@@ -51,7 +51,7 @@ public class GasHandlerWrapper implements IChemicalHandlerWrapper<Gas, GasStack>
     }
 
     @Override
-    public GasStack extractChemical(int tank, int amount, Action action) {
+    public GasStack extractChemical(int tank, long amount, Action action) {
         return handler.extractGas(tank, amount, action);
     }
 
@@ -61,7 +61,7 @@ public class GasHandlerWrapper implements IChemicalHandlerWrapper<Gas, GasStack>
     }
 
     @Override
-    public GasStack extractChemical(int amount, Action action) {
+    public GasStack extractChemical(long amount, Action action) {
         return handler.extractGas(amount, action);
     }
 

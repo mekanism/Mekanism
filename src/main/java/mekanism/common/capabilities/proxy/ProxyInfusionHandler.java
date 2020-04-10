@@ -41,7 +41,7 @@ public class ProxyInfusionHandler extends ProxyHandler implements IInfusionHandl
     }
 
     @Override
-    public int getInfusionTankCapacity(int tank) {
+    public long getInfusionTankCapacity(int tank) {
         return infusionHandler.getInfusionTankCapacity(tank, side);
     }
 
@@ -56,7 +56,7 @@ public class ProxyInfusionHandler extends ProxyHandler implements IInfusionHandl
     }
 
     @Override
-    public InfusionStack extractInfusion(int tank, int amount, Action action) {
+    public InfusionStack extractInfusion(int tank, long amount, Action action) {
         return readOnly || readOnlyExtract.getAsBoolean() ? InfusionStack.EMPTY : infusionHandler.extractInfusion(tank, amount, side, action);
     }
 
@@ -66,7 +66,7 @@ public class ProxyInfusionHandler extends ProxyHandler implements IInfusionHandl
     }
 
     @Override
-    public InfusionStack extractInfusion(int amount, Action action) {
+    public InfusionStack extractInfusion(long amount, Action action) {
         return readOnly || readOnlyExtract.getAsBoolean() ? InfusionStack.EMPTY : infusionHandler.extractInfusion(amount, side, action);
     }
 

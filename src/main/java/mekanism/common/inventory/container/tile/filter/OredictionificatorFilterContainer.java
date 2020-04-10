@@ -13,7 +13,7 @@ public class OredictionificatorFilterContainer extends FilterContainer<Oredictio
     }
 
     public OredictionificatorFilterContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, getTileFromBuf(buf, TileEntityOredictionificator.class), buf.readInt());
+        this(id, inv, getTileFromBuf(buf, TileEntityOredictionificator.class), buf.readVarInt());
     }
 
     @Override

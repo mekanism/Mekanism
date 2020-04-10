@@ -41,7 +41,7 @@ public class ProxyGasHandler extends ProxyHandler implements IGasHandler {
     }
 
     @Override
-    public int getGasTankCapacity(int tank) {
+    public long getGasTankCapacity(int tank) {
         return gasHandler.getGasTankCapacity(tank, side);
     }
 
@@ -56,7 +56,7 @@ public class ProxyGasHandler extends ProxyHandler implements IGasHandler {
     }
 
     @Override
-    public GasStack extractGas(int tank, int amount, Action action) {
+    public GasStack extractGas(int tank, long amount, Action action) {
         return readOnly || readOnlyExtract.getAsBoolean() ? GasStack.EMPTY : gasHandler.extractGas(tank, amount, side, action);
     }
 
@@ -66,7 +66,7 @@ public class ProxyGasHandler extends ProxyHandler implements IGasHandler {
     }
 
     @Override
-    public GasStack extractGas(int amount, Action action) {
+    public GasStack extractGas(long amount, Action action) {
         return readOnly || readOnlyExtract.getAsBoolean() ? GasStack.EMPTY : gasHandler.extractGas(amount, side, action);
     }
 

@@ -1,18 +1,16 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
+import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
-import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -47,16 +45,18 @@ public class ItemStackGasToGasRecipeMapper implements IRecipeTypeMapper {
         List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
         List<@NonNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
         int gasMultiplier = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
-        for (ItemStack itemRepresentation : itemRepresentations) {
-            NormalizedSimpleStack nssItem = NSSItem.createItem(itemRepresentation);
-            for (GasStack gasRepresentation : gasRepresentations) {
-                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-                ingredientMap.put(nssItem, itemRepresentation.getCount());
-                ingredientMap.put(NSSGas.createGas(gasRepresentation), gasRepresentation.getAmount() * gasMultiplier);
+        for (GasStack gasRepresentation : gasRepresentations) {
+            NSSGas nssGas = NSSGas.createGas(gasRepresentation);
+            long gasAmount = gasRepresentation.getAmount() * gasMultiplier;
+            for (ItemStack itemRepresentation : itemRepresentations) {
                 GasStack output = recipe.getOutput(itemRepresentation, gasRepresentation);
                 if (!output.isEmpty()) {
-                    mapper.addConversion(output.getAmount(), NSSGas.createGas(output), ingredientMap);
-                    handled = true;
+                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+                    ingredientHelper.put(itemRepresentation);
+                    ingredientHelper.put(nssGas, gasAmount);
+                    if (ingredientHelper.addAsConversion(output)) {
+                        handled = true;
+                    }
                 }
             }
         }

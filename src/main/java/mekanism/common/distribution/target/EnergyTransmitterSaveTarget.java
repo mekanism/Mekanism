@@ -1,9 +1,9 @@
-package mekanism.common.base.target;
+package mekanism.common.distribution.target;
 
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.base.SplitInfo;
+import mekanism.common.distribution.SplitInfo;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.transmitters.grid.EnergyNetwork;

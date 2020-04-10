@@ -11,6 +11,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -164,12 +165,12 @@ public class OutputHelper {
             return currentMax;
         }
         //Copy the stack and make it be max size
-        STACK maxOutput = tank.createStack(toOutput, Integer.MAX_VALUE);
+        STACK maxOutput = tank.createStack(toOutput, Long.MAX_VALUE);
         //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
         STACK remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
-        int amountUsed = maxOutput.getAmount() - remainder.getAmount();
+        long amountUsed = maxOutput.getAmount() - remainder.getAmount();
         //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
-        return Math.min(amountUsed / toOutput.getAmount(), currentMax);
+        return Math.min(MathUtils.clampToInt(amountUsed / toOutput.getAmount()), currentMax);
     }
 
     private static int operationsRoomFor(@Nonnull IExtendedFluidTank fluidTank, @NonNull FluidStack toOutput, int currentMax) {

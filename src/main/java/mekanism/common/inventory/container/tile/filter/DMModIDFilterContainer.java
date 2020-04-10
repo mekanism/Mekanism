@@ -13,7 +13,7 @@ public class DMModIDFilterContainer extends FilterContainer<MModIDFilter, TileEn
     }
 
     public DMModIDFilterContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, getTileFromBuf(buf, TileEntityDigitalMiner.class), buf.readInt());
+        this(id, inv, getTileFromBuf(buf, TileEntityDigitalMiner.class), buf.readVarInt());
     }
 
     @Override

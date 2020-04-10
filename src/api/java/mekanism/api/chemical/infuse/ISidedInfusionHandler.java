@@ -94,10 +94,10 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
      *
      * @return The maximum infusion type amount held by the tank.
      */
-    int getInfusionTankCapacity(int tank, @Nullable Direction side);
+    long getInfusionTankCapacity(int tank, @Nullable Direction side);
 
     @Override
-    default int getInfusionTankCapacity(int tank) {
+    default long getInfusionTankCapacity(int tank) {
         return getInfusionTankCapacity(tank, getInfusionSideFor());
     }
 
@@ -152,7 +152,7 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
     }
 
     /**
-     * A sided variant of {@link IInfusionHandler#extractInfusion(int, int, Action)}, docs copied for convenience.
+     * A sided variant of {@link IInfusionHandler#extractInfusion(int, long, Action)}, docs copied for convenience.
      *
      * Extracts a {@link InfusionStack} from a specific tank in this handler.
      * <p>
@@ -167,10 +167,10 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
      * @return {@link InfusionStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link InfusionStack} can be safely modified after,
      * so the tank should return a new or copied stack.
      */
-    InfusionStack extractInfusion(int tank, int amount, @Nullable Direction side, Action action);
+    InfusionStack extractInfusion(int tank, long amount, @Nullable Direction side, Action action);
 
     @Override
-    default InfusionStack extractInfusion(int tank, int amount, Action action) {
+    default InfusionStack extractInfusion(int tank, long amount, Action action) {
         return extractInfusion(tank, amount, getInfusionSideFor(), action);
     }
 
@@ -201,7 +201,7 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
     }
 
     /**
-     * A sided variant of {@link IInfusionHandler#extractInfusion(int, Action)}, docs copied for convenience.
+     * A sided variant of {@link IInfusionHandler#extractInfusion(long, Action)}, docs copied for convenience.
      *
      * Extracts a {@link InfusionStack} from this handler, distribution is left <strong>entirely</strong> to this {@link IInfusionHandler}.
      * <p>
@@ -219,7 +219,7 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
      * be extracted is found, all future extractions will make sure to also make sure they are for the same type of infusion.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IInfusionHandler} ends up distributing the extraction.
      */
-    default InfusionStack extractInfusion(int amount, @Nullable Direction side, Action action) {
+    default InfusionStack extractInfusion(long amount, @Nullable Direction side, Action action) {
         return ChemicalUtils.extract(amount, action, InfusionStack.EMPTY, () -> getInfusionTankCount(side), tank -> getInfusionInTank(tank, side),
               (tank, a, act) -> extractInfusion(tank, a, side, act));
     }

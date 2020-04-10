@@ -40,7 +40,7 @@ public class InfusionRecipeData implements RecipeUpgradeData<InfusionRecipeData>
         int count = DataHandlerUtils.getMaxId(tanks, NBTConstants.TANK);
         infusionTanks = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            infusionTanks.add(BasicInfusionTank.create(Integer.MAX_VALUE, null));
+            infusionTanks.add(BasicInfusionTank.create(Long.MAX_VALUE, null));
         }
         DataHandlerUtils.readTanks(infusionTanks, tanks);
     }

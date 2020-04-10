@@ -17,6 +17,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -57,7 +58,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), TubeTier.class);
-        buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this);
+        buffer = BasicGasTank.create(getCapacityAsLong(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         tanks = Collections.singletonList(buffer);
         readOnlyHandler = new ProxyGasHandler(this, null, null);
     }
@@ -94,7 +95,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         super.tick();
     }
 
-    private int getAvailablePull() {
+    private long getAvailablePull() {
         if (getTransmitter().hasTransmitterNetwork()) {
             return Math.min(tier.getTubePullAmount(), getTransmitter().getTransmitterNetwork().gasTank.getNeeded());
         }
@@ -200,9 +201,13 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         return true;
     }
 
+    public long getCapacityAsLong() {
+        return tier.getTubeCapacity();
+    }
+
     @Override
     public int getCapacity() {
-        return tier.getTubeCapacity();
+        return MathUtils.clampToInt(getCapacityAsLong());
     }
 
     @Nonnull
@@ -232,7 +237,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         if (getTransmitter().hasTransmitterNetwork()) {
             GasNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
             if (!transmitterNetwork.gasTank.isEmpty() && !lastWrite.isEmpty()) {
-                int amount = lastWrite.getAmount();
+                long amount = lastWrite.getAmount();
                 if (transmitterNetwork.gasTank.shrinkStack(amount, Action.EXECUTE) != amount) {
                     //TODO: Print warning/error
                 }

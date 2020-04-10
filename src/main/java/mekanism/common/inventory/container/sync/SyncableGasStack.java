@@ -8,7 +8,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.common.network.container.property.GasStackPropertyData;
-import mekanism.common.network.container.property.IntPropertyData;
+import mekanism.common.network.container.property.LongPropertyData;
 import mekanism.common.network.container.property.PropertyData;
 
 /**
@@ -36,7 +36,7 @@ public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> {
 
     @Nonnull
     @Override
-    protected GasStack createStack(GasStack stored, int size) {
+    protected GasStack createStack(GasStack stored, long size) {
         return new GasStack(stored, size);
     }
 
@@ -44,7 +44,7 @@ public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> {
     public PropertyData getPropertyData(short property, DirtyType dirtyType) {
         if (dirtyType == DirtyType.SIZE) {
             //If only the size changed, don't bother re-syncing the type
-            return new IntPropertyData(property, get().getAmount());
+            return new LongPropertyData(property, get().getAmount());
         }
         return new GasStackPropertyData(property, get());
     }

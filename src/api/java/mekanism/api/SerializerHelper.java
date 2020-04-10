@@ -94,7 +94,7 @@ public class SerializerHelper {
         if (!JSONUtils.isNumber(count)) {
             throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
-        int amount = count.getAsJsonPrimitive().getAsInt();
+        long amount = count.getAsJsonPrimitive().getAsLong();
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
@@ -147,7 +147,7 @@ public class SerializerHelper {
         if (!JSONUtils.isNumber(count)) {
             throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
-        int amount = count.getAsJsonPrimitive().getAsInt();
+        long amount = count.getAsJsonPrimitive().getAsLong();
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }

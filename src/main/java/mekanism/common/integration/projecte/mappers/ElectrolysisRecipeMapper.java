@@ -1,11 +1,10 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.HashMap;
-import java.util.Map;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -46,24 +45,27 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
         ElectrolysisRecipe recipe = (ElectrolysisRecipe) iRecipe;
         FluidStackIngredient input = recipe.getInput();
         for (FluidStack representation : input.getRepresentations()) {
-            NormalizedSimpleStack nssInput = NSSFluid.createFluid(representation);
             Pair<@NonNull GasStack, @NonNull GasStack> output = recipe.getOutput(representation);
             GasStack leftOutput = output.getLeft();
             GasStack rightOutput = output.getRight();
             if (!leftOutput.isEmpty() && !rightOutput.isEmpty()) {
+                NormalizedSimpleStack nssInput = NSSFluid.createFluid(representation);
                 NormalizedSimpleStack nssLeftOutput = NSSGas.createGas(leftOutput);
                 NormalizedSimpleStack nssRightOutput = NSSGas.createGas(rightOutput);
                 //Add trying to calculate left output (using it as if we needed negative of right output)
-                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-                ingredientMap.put(nssInput, representation.getAmount());
-                ingredientMap.put(nssRightOutput, -rightOutput.getAmount());
-                mapper.addConversion(leftOutput.getAmount(), nssLeftOutput, ingredientMap);
+                IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+                ingredientHelper.put(nssInput, representation.getAmount());
+                ingredientHelper.put(nssRightOutput, -rightOutput.getAmount());
+                if (ingredientHelper.addAsConversion(nssLeftOutput, leftOutput.getAmount())) {
+                    handled = true;
+                }
                 //Add trying to calculate right output (using it as if we needed negative of left output)
-                ingredientMap = new HashMap<>();
-                ingredientMap.put(nssInput, representation.getAmount());
-                ingredientMap.put(nssLeftOutput, -leftOutput.getAmount());
-                mapper.addConversion(rightOutput.getAmount(), nssRightOutput, ingredientMap);
-                handled = true;
+                ingredientHelper.resetHelper();
+                ingredientHelper.put(nssInput, representation.getAmount());
+                ingredientHelper.put(nssLeftOutput, -leftOutput.getAmount());
+                if (ingredientHelper.addAsConversion(nssRightOutput, rightOutput.getAmount())) {
+                    handled = true;
+                }
             }
         }
         return handled;

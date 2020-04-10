@@ -1,15 +1,12 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.HashMap;
-import java.util.Map;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
-import mekanism.common.integration.projecte.NSSGas;
+import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
-import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -43,23 +40,25 @@ public class RotaryRecipeMapper implements IRecipeTypeMapper {
         boolean handled = false;
         if (recipe.hasFluidToGas()) {
             for (FluidStack representation : recipe.getFluidInput().getRepresentations()) {
-                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-                ingredientMap.put(NSSFluid.createFluid(representation), representation.getAmount());
-                GasStack recipeOutput = recipe.getGasOutput(representation);
-                if (!recipeOutput.isEmpty()) {
-                    mapper.addConversion(recipeOutput.getAmount(), NSSGas.createGas(recipeOutput), ingredientMap);
-                    handled = true;
+                GasStack output = recipe.getGasOutput(representation);
+                if (!output.isEmpty()) {
+                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+                    ingredientHelper.put(representation);
+                    if (ingredientHelper.addAsConversion(output)) {
+                        handled = true;
+                    }
                 }
             }
         }
         if (recipe.hasGasToFluid()) {
             for (GasStack representation : recipe.getGasInput().getRepresentations()) {
-                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-                ingredientMap.put(NSSGas.createGas(representation), representation.getAmount());
-                FluidStack recipeOutput = recipe.getFluidOutput(representation);
-                if (!recipeOutput.isEmpty()) {
-                    mapper.addConversion(recipeOutput.getAmount(), NSSFluid.createFluid(recipeOutput), ingredientMap);
-                    handled = true;
+                FluidStack output = recipe.getFluidOutput(representation);
+                if (!output.isEmpty()) {
+                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+                    ingredientHelper.put(representation);
+                    if (ingredientHelper.addAsConversion(output)) {
+                        handled = true;
+                    }
                 }
             }
         }

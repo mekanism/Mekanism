@@ -2,7 +2,7 @@ package mekanism.common.tier;
 
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.util.EnumUtils;
 
 public enum TubeTier implements ITier {
@@ -11,13 +11,13 @@ public enum TubeTier implements ITier {
     ELITE(BaseTier.ELITE, 32_768, 8_192),
     ULTIMATE(BaseTier.ULTIMATE, 131_072, 24_576);
 
-    private final int baseCapacity;
-    private final int basePull;
+    private final long baseCapacity;
+    private final long basePull;
     private final BaseTier baseTier;
-    private CachedIntValue capacityReference;
-    private CachedIntValue pullReference;
+    private CachedLongValue capacityReference;
+    private CachedLongValue pullReference;
 
-    TubeTier(BaseTier tier, int capacity, int pullAmount) {
+    TubeTier(BaseTier tier, long capacity, long pullAmount) {
         baseCapacity = capacity;
         basePull = pullAmount;
         baseTier = tier;
@@ -37,26 +37,26 @@ public enum TubeTier implements ITier {
         return baseTier;
     }
 
-    public int getTubeCapacity() {
+    public long getTubeCapacity() {
         return capacityReference == null ? getBaseCapacity() : capacityReference.get();
     }
 
-    public int getTubePullAmount() {
+    public long getTubePullAmount() {
         return pullReference == null ? getBasePull() : pullReference.get();
     }
 
-    public int getBaseCapacity() {
+    public long getBaseCapacity() {
         return baseCapacity;
     }
 
-    public int getBasePull() {
+    public long getBasePull() {
         return basePull;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the TubeTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedIntValue capacityReference, CachedIntValue pullReference) {
+    public void setConfigReference(CachedLongValue capacityReference, CachedLongValue pullReference) {
         this.capacityReference = capacityReference;
         this.pullReference = pullReference;
     }

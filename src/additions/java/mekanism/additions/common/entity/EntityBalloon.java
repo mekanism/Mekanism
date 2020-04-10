@@ -299,7 +299,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
             data.writeBlockPos(latched);
         } else if (latchedEntity != null) {
             data.writeByte((byte) 2);
-            data.writeInt(latchedEntity.getEntityId());
+            data.writeVarInt(latchedEntity.getEntityId());
         } else {
             data.writeByte((byte) 0);
         }
@@ -313,7 +313,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         if (type == 1) {
             latched = data.readBlockPos();
         } else if (type == 2) {
-            latchedEntity = (LivingEntity) world.getEntityByID(data.readInt());
+            latchedEntity = (LivingEntity) world.getEntityByID(data.readVarInt());
         } else {
             latched = null;
         }

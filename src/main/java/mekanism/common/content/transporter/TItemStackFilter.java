@@ -65,8 +65,8 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
         super.write(buffer);
         buffer.writeBoolean(sizeMode);
         buffer.writeBoolean(fuzzyMode);
-        buffer.writeInt(min);
-        buffer.writeInt(max);
+        buffer.writeVarInt(min);
+        buffer.writeVarInt(max);
         buffer.writeItemStack(itemType);
     }
 
@@ -75,8 +75,8 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
         super.read(dataStream);
         sizeMode = dataStream.readBoolean();
         fuzzyMode = dataStream.readBoolean();
-        min = dataStream.readInt();
-        max = dataStream.readInt();
+        min = dataStream.readVarInt();
+        max = dataStream.readVarInt();
         itemType = dataStream.readItemStack();
     }
 

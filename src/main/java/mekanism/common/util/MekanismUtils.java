@@ -199,6 +199,11 @@ public final class MekanismUtils {
         return getScale(prevScale, capacity == 0 ? 0 : (float) stored / capacity, empty);
     }
 
+    public static float getScale(float prevScale, long stored, long capacity, boolean empty) {
+        return getScale(prevScale, capacity == 0 ? 0 : (float) (stored / (double) capacity), empty);
+    }
+
+
     public static float getScale(float prevScale, IEnergyContainer container) {
         float targetScale;
         FloatingLong maxEnergy = container.getMaxEnergy();

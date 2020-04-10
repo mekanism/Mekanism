@@ -1,7 +1,5 @@
 package mekanism.api.recipes.inputs;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -28,10 +26,7 @@ import net.minecraftforge.fluids.FluidStack;
 /**
  * Created by Thiakil on 12/07/2019.
  */
-//TODO: Allow for empty fluid stacks (at least in 1.14 with FluidStack.EMPTY)
 public abstract class FluidStackIngredient implements InputIngredient<@NonNull FluidStack> {
-
-    private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public static FluidStackIngredient from(@NonNull Fluid instance, int amount) {
         return from(new FluidStack(instance, amount));
@@ -225,7 +220,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.TAGGED);
             buffer.writeResourceLocation(tag.getId());
-            buffer.writeInt(amount);
+            buffer.writeVarInt(amount);
         }
 
         @Nonnull
@@ -238,7 +233,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         }
 
         public static Tagged read(PacketBuffer buffer) {
-            return new Tagged(new FluidTags.Wrapper(buffer.readResourceLocation()), buffer.readInt());
+            return new Tagged(new FluidTags.Wrapper(buffer.readResourceLocation()), buffer.readVarInt());
         }
     }
 
@@ -287,7 +282,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.MULTI);
-            buffer.writeInt(ingredients.length);
+            buffer.writeVarInt(ingredients.length);
             for (FluidStackIngredient ingredient : ingredients) {
                 ingredient.write(buffer);
             }
@@ -305,7 +300,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
 
         public static FluidStackIngredient read(PacketBuffer buffer) {
             //TODO: Verify this works
-            FluidStackIngredient[] ingredients = new FluidStackIngredient[buffer.readInt()];
+            FluidStackIngredient[] ingredients = new FluidStackIngredient[buffer.readVarInt()];
             for (int i = 0; i < ingredients.length; i++) {
                 ingredients[i] = FluidStackIngredient.read(buffer);
             }

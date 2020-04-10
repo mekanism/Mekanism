@@ -3,6 +3,7 @@ package mekanism.common.config;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
@@ -81,10 +82,10 @@ public class TierConfig extends BaseMekanismConfig {
         builder.comment("Gas Tanks").push(GAS_TANK_CATEGORY);
         for (GasTankTier tier : EnumUtils.GAS_TANK_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
-            CachedIntValue storageReference = CachedIntValue.wrap(this, builder.comment("Storage size of " + tierName + " gas tanks in mB.")
-                  .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE));
-            CachedIntValue outputReference = CachedIntValue.wrap(this, builder.comment("Output rate of " + tierName + " gas tanks in mB.")
-                  .defineInRange(tierName.toLowerCase() + "Output", tier.getBaseOutput(), 1, Integer.MAX_VALUE));
+            CachedLongValue storageReference = CachedLongValue.wrap(this, builder.comment("Storage size of " + tierName + " gas tanks in mB.")
+                  .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Long.MAX_VALUE));
+            CachedLongValue outputReference = CachedLongValue.wrap(this, builder.comment("Output rate of " + tierName + " gas tanks in mB.")
+                  .defineInRange(tierName.toLowerCase() + "Output", tier.getBaseOutput(), 1, Long.MAX_VALUE));
             tier.setConfigReference(storageReference, outputReference);
         }
         builder.pop();
@@ -156,10 +157,10 @@ public class TierConfig extends BaseMekanismConfig {
         builder.comment("Pressurized Tubes").push(GAS_CATEGORY);
         for (TubeTier tier : EnumUtils.TUBE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
-            CachedIntValue capacityReference = CachedIntValue.wrap(this, builder.comment("Capacity of " + tierName + " pressurized tubes in mB.")
-                  .defineInRange(tierName.toLowerCase() + "Capacity", tier.getBaseCapacity(), 1, Integer.MAX_VALUE));
-            CachedIntValue pullReference = CachedIntValue.wrap(this, builder.comment("Pump rate of " + tierName + " pressurized tubes in mB/t.")
-                  .defineInRange(tierName.toLowerCase() + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE));
+            CachedLongValue capacityReference = CachedLongValue.wrap(this, builder.comment("Capacity of " + tierName + " pressurized tubes in mB.")
+                  .defineInRange(tierName.toLowerCase() + "Capacity", tier.getBaseCapacity(), 1, Long.MAX_VALUE));
+            CachedLongValue pullReference = CachedLongValue.wrap(this, builder.comment("Pump rate of " + tierName + " pressurized tubes in mB/t.")
+                  .defineInRange(tierName.toLowerCase() + "PullAmount", tier.getBasePull(), 1, Long.MAX_VALUE));
             tier.setConfigReference(capacityReference, pullReference);
         }
         builder.pop();

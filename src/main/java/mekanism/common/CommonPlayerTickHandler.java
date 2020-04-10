@@ -137,7 +137,7 @@ public class CommonPlayerTickHandler {
             tank.useGas(stack, 1);
             GasStack received = tank.useGas(stack, max - player.getAir());
             if (!received.isEmpty()) {
-                player.setAir(player.getAir() + received.getAmount());
+                player.setAir(player.getAir() + (int) received.getAmount());
             }
             if (player.getAir() == max) {
                 for (EffectInstance effect : player.getActivePotionEffects()) {

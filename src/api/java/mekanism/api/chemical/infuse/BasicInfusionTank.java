@@ -27,11 +27,11 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
     @Nullable
     private final IMekanismInfusionHandler infusionHandler;
 
-    public static BasicInfusionTank create(int capacity, @Nullable IMekanismInfusionHandler infusionHandler) {
+    public static BasicInfusionTank create(long capacity, @Nullable IMekanismInfusionHandler infusionHandler) {
         return create(capacity, alwaysTrue, infusionHandler);
     }
 
-    public static BasicInfusionTank create(int capacity, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
+    public static BasicInfusionTank create(long capacity, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -39,12 +39,12 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
         return new BasicInfusionTank(capacity, alwaysTrueBi, alwaysTrueBi, validator, infusionHandler);
     }
 
-    public static BasicInfusionTank create(int capacity, Predicate<@NonNull InfuseType> canExtract, Predicate<@NonNull InfuseType> canInsert,
+    public static BasicInfusionTank create(long capacity, Predicate<@NonNull InfuseType> canExtract, Predicate<@NonNull InfuseType> canInsert,
           @Nullable IMekanismInfusionHandler infusionHandler) {
         return create(capacity, canExtract, canInsert, alwaysTrue, infusionHandler);
     }
 
-    public static BasicInfusionTank input(int capacity, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
+    public static BasicInfusionTank input(long capacity, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -52,7 +52,7 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
         return new BasicInfusionTank(capacity, notExternal, alwaysTrueBi, validator, infusionHandler);
     }
 
-    public static BasicInfusionTank create(int capacity, Predicate<@NonNull InfuseType> canExtract, Predicate<@NonNull InfuseType> canInsert,
+    public static BasicInfusionTank create(long capacity, Predicate<@NonNull InfuseType> canExtract, Predicate<@NonNull InfuseType> canInsert,
           Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
@@ -63,7 +63,7 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
         return new BasicInfusionTank(capacity, canExtract, canInsert, validator, infusionHandler);
     }
 
-    public static BasicInfusionTank create(int capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
+    public static BasicInfusionTank create(long capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
           Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
@@ -74,19 +74,19 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
         return new BasicInfusionTank(capacity, canExtract, canInsert, validator, infusionHandler);
     }
 
-    protected BasicInfusionTank(int capacity, Predicate<@NonNull InfuseType> canExtract, Predicate<@NonNull InfuseType> canInsert, Predicate<@NonNull InfuseType> validator,
+    protected BasicInfusionTank(long capacity, Predicate<@NonNull InfuseType> canExtract, Predicate<@NonNull InfuseType> canInsert, Predicate<@NonNull InfuseType> validator,
           @Nullable IMekanismInfusionHandler infusionHandler) {
         this(capacity, (stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack),
               validator, infusionHandler);
     }
 
-    protected BasicInfusionTank(int capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
+    protected BasicInfusionTank(long capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
           Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
         super(capacity, canExtract, canInsert, validator, null);
         this.infusionHandler = infusionHandler;
     }
 
-    protected BasicInfusionTank(int capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
+    protected BasicInfusionTank(long capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
         Predicate<@NonNull InfuseType> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IMekanismInfusionHandler infusionHandler) {
         super(capacity, canExtract, canInsert, validator, attributeValidator);
         this.infusionHandler = infusionHandler;
@@ -98,7 +98,7 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
     }
 
     @Override
-    public InfusionStack createStack(InfusionStack stored, int size) {
+    public InfusionStack createStack(InfusionStack stored, long size) {
         return new InfusionStack(stored, size);
     }
 
@@ -134,7 +134,7 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
     }
 
     @Override
-    public int getInfusionTankCapacity(int tank) {
+    public long getInfusionTankCapacity(int tank) {
         return tank == 0 ? getCapacity() : 0;
     }
 
@@ -149,7 +149,7 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
     }
 
     @Override
-    public InfusionStack extractInfusion(int tank, int amount, Action action) {
+    public InfusionStack extractInfusion(int tank, long amount, Action action) {
         return tank == 0 ? extract(amount, action, AutomationType.EXTERNAL) : getEmptyStack();
     }
 }

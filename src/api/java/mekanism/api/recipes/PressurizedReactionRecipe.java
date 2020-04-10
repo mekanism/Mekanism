@@ -85,7 +85,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
         inputFluid.write(buffer);
         inputGas.write(buffer);
         energyRequired.writeToBuffer(buffer);
-        buffer.writeInt(duration);
+        buffer.writeVarInt(duration);
         buffer.writeItemStack(outputItem);
         outputGas.writeToPacket(buffer);
     }

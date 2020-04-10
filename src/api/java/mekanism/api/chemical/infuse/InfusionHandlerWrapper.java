@@ -36,7 +36,7 @@ public class InfusionHandlerWrapper implements IChemicalHandlerWrapper<InfuseTyp
     }
 
     @Override
-    public int getTankCapacity(int tank) {
+    public long getTankCapacity(int tank) {
         return handler.getInfusionTankCapacity(tank);
     }
 
@@ -51,7 +51,7 @@ public class InfusionHandlerWrapper implements IChemicalHandlerWrapper<InfuseTyp
     }
 
     @Override
-    public InfusionStack extractChemical(int tank, int amount, Action action) {
+    public InfusionStack extractChemical(int tank, long amount, Action action) {
         return handler.extractInfusion(tank, amount, action);
     }
 
@@ -61,7 +61,7 @@ public class InfusionHandlerWrapper implements IChemicalHandlerWrapper<InfuseTyp
     }
 
     @Override
-    public InfusionStack extractChemical(int amount, Action action) {
+    public InfusionStack extractChemical(long amount, Action action) {
         return handler.extractInfusion(amount, action);
     }
 
