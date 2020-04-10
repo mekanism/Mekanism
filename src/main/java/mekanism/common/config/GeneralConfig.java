@@ -61,7 +61,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue opsBypassRestrictions;
     public final CachedLongValue maxJetpackGas;
     public final CachedLongValue maxScubaGas;
-    public final CachedIntValue maxFlamethrowerGas;
+    public final CachedLongValue maxFlamethrowerGas;
     public final CachedIntValue maxPumpRange;
     public final CachedBooleanValue pumpWaterSources;
     public final CachedIntValue maxPlenisherNodes;
@@ -181,8 +181,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("maxJetpackGas", 24_000, 1, Long.MAX_VALUE));
         maxScubaGas = CachedLongValue.wrap(this, builder.comment("Scuba Tank Gas Tank capacity in mB.")
               .defineInRange("maxScubaGas", 24_000, 1, Long.MAX_VALUE));
-        maxFlamethrowerGas = CachedIntValue.wrap(this, builder.comment("Flamethrower Gas Tank capacity in mB.")
-              .define("maxFlamethrowerGas", 24_000));
+        maxFlamethrowerGas = CachedLongValue.wrap(this, builder.comment("Flamethrower Gas Tank capacity in mB.")
+              .defineInRange("maxFlamethrowerGas", 24_000, 1, Long.MAX_VALUE));
         maxPumpRange = CachedIntValue.wrap(this, builder.comment("Maximum block distance to pull fluid from for the Electric Pump.")
               .define("maxPumpRange", 80));
         pumpWaterSources = CachedBooleanValue.wrap(this, builder.comment("If enabled makes Water and Heavy Water blocks be removed from the world on pump.")

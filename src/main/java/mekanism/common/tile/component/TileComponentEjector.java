@@ -46,9 +46,9 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class TileComponentEjector implements ITileComponent, ITrackableContainer {
 
     //TODO: Figure out why these limits for output rates are here/if there should be an upgrade that modifies the output rates
-    private static final int GAS_OUTPUT = 256;
+    private static final long GAS_OUTPUT = 256;
     private static final int FLUID_OUTPUT = 256;
-    private TileEntityMekanism tile;
+    private final TileEntityMekanism tile;
     private boolean strictInput;
     private EnumColor outputColor;
     private EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};

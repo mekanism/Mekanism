@@ -38,12 +38,12 @@ import net.minecraft.world.biome.Biome.RainType;
 
 public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, ITileCachedRecipeHolder<GasToGasRecipe> {
 
-    public static final int MAX_GAS = 10_000;
+    public static final long MAX_GAS = 10_000;
 
     public BasicGasTank inputTank;
     public BasicGasTank outputTank;
 
-    public int gasOutput = 256;
+    public long gasOutput = 256;
 
     private CachedRecipe<GasToGasRecipe> cachedRecipe;
 

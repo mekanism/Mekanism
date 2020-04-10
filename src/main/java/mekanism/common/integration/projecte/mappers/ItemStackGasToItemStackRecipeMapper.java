@@ -44,7 +44,7 @@ public class ItemStackGasToItemStackRecipeMapper implements IRecipeTypeMapper {
         ItemStackGasToItemStackRecipe recipe = (ItemStackGasToItemStackRecipe) iRecipe;
         List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
         List<@NonNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
-        int gasMultiplier = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
+        long gasMultiplier = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
         for (GasStack gasRepresentation : gasRepresentations) {
             NSSGas nssGas = NSSGas.createGas(gasRepresentation);
             long gasAmount = gasRepresentation.getAmount() * gasMultiplier;

@@ -45,12 +45,12 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityChemicalWasher extends TileEntityMekanism implements ITileCachedRecipeHolder<FluidGasToGasRecipe> {
 
-    public static final int MAX_GAS = 10_000;
+    public static final long MAX_GAS = 10_000;
     public static final int MAX_FLUID = 10_000;
     public BasicFluidTank fluidTank;
     public BasicGasTank inputTank;
     public BasicGasTank outputTank;
-    public int gasOutput = 256;
+    public long gasOutput = 256;
 
     public CachedRecipe<FluidGasToGasRecipe> cachedRecipe;
 

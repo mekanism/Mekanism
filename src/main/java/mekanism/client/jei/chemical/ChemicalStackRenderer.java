@@ -32,7 +32,7 @@ public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();
     protected static final int TEX_WIDTH = 16;
     protected static final int TEX_HEIGHT = 16;
-    private static final int MIN_FLUID_HEIGHT = 1; // ensure tiny amounts of gas are still visible
+    private static final int MIN_CHEMICAL_HEIGHT = 1; // ensure tiny amounts of chemical are still visible
 
     private final long capacityMb;
     private final TooltipMode tooltipMode;
@@ -72,8 +72,8 @@ public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
             return;
         }
         int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
-        if (desiredHeight < MIN_FLUID_HEIGHT) {
-            desiredHeight = MIN_FLUID_HEIGHT;
+        if (desiredHeight < MIN_CHEMICAL_HEIGHT) {
+            desiredHeight = MIN_CHEMICAL_HEIGHT;
         }
         if (desiredHeight > height) {
             desiredHeight = height;

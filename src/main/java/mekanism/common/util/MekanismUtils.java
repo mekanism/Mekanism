@@ -265,7 +265,7 @@ public final class MekanismUtils {
      *
      * @return max secondary energy per tick
      */
-    public static double getGasPerTickMean(IUpgradeTile mgmt, int def) {
+    public static double getGasPerTickMean(IUpgradeTile mgmt, long def) {
         if (mgmt.supportsUpgrades()) {
             if (mgmt.getComponent().supports(Upgrade.GAS)) {
                 return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));

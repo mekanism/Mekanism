@@ -26,7 +26,7 @@ import mekanism.common.tier.GasTankTier;
 @MethodsReturnNonnullByDefault
 public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
-    public static RateLimitGasHandler create(int rate, LongSupplier capacity) {
+    public static RateLimitGasHandler create(long rate, LongSupplier capacity) {
         return create(rate, capacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, null);
     }
 
@@ -35,12 +35,12 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         return new RateLimitGasHandler(handler -> new GasTankRateLimitGasTank(tier, handler));
     }
 
-    public static RateLimitGasHandler create(int rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+    public static RateLimitGasHandler create(long rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid) {
         return create(rate, capacity, canExtract, canInsert, isValid, null);
     }
 
-    public static RateLimitGasHandler create(int rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+    public static RateLimitGasHandler create(long rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid, @Nullable ChemicalAttributeValidator attributeValidator) {
         if (rate <= 0) {
             throw new IllegalArgumentException("Rate must be greater than zero");
@@ -52,7 +52,7 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         return new RateLimitGasHandler(handler -> new RateLimitGasTank(rate, capacity, canExtract, canInsert, isValid, attributeValidator, handler));
     }
 
-    private IChemicalTank<Gas, GasStack> tank;
+    private final IChemicalTank<Gas, GasStack> tank;
 
     private RateLimitGasHandler(Function<IMekanismGasHandler, IChemicalTank<Gas, GasStack>> tankProvider) {
         this.tank = tankProvider.apply(this);

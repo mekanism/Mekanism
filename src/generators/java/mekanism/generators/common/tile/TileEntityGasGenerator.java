@@ -31,7 +31,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     /**
      * The maximum amount of gas this block can store.
      */
-    private static final int MAX_GAS = 18_000;
+    private static final long MAX_GAS = 18_000;
     /**
      * The tank this block is storing fuel in.
      */
