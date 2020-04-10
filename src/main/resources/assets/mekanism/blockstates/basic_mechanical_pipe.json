@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mekanism:block/transmitter/large/mechanical_pipe/basic"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:gas_conversion",
+  "input": {
+    "ingredient": {
+      "tag": "forge:dusts/sulfur"
+    }
+  },
+  "output": {
+    "gas": "mekanism:sulfuric_acid",
+    "amount": 2
+  }
+}

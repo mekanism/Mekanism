@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:sawdust"
+    }
+  },
+  "result": {
+    "item": "mekanism:cardboard_box"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "I I",
+    "I I"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/osmium"
+    }
+  },
+  "result": {
+    "item": "mekanismtools:osmium_leggings"
+  }
+}

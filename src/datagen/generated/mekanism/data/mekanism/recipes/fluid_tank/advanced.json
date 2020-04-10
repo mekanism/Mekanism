@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:mek_data",
+  "pattern": [
+    "AIA",
+    "IPI",
+    "AIA"
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:basic_fluid_tank"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    }
+  },
+  "result": {
+    "item": "mekanism:advanced_fluid_tank"
+  }
+}

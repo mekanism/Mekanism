@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:chemical_infusing/hydrogen_chloride"
+    ]
+  },
+  "criteria": {
+    "has_chemical_infuser": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:chemical_infuser"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:chemical_infusing/hydrogen_chloride"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chemical_infuser",
+      "has_the_recipe"
+    ]
+  ]
+}

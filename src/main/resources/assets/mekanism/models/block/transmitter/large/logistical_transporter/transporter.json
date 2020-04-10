@@ -1,0 +1,29 @@
+{
+  "parent": "block/block",
+  "loader": "mekanism:transmitter",
+  "model": "mekanism:models/block/transmitter_large.obj.mek",
+  "flip-v": true,
+  "glass": {
+    "loader": "forge:obj",
+    "model": "mekanism:models/block/transmitter_large.obj.mek",
+    "materialLibraryOverride": "mekanism:models/block/transmitter_glass_large.mtl",
+    "flip-v": true
+  },
+  "textures": {
+    "particle": "#center_down",
+    "center_up": "#center_down",
+    "center_north": "#center_down",
+    "center_south": "#center_down",
+    "center_east": "#center_down",
+    "center_west": "#center_down",
+    "center_glass_down": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "center_glass_up": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "center_glass_north": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "center_glass_south": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "center_glass_east": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "center_glass_west": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "side_glass": "mekanism:block/models/multipart/logistical_transporter_vertical_glass_colored",
+    "center_glass_opaque": "mekanism:block/models/multipart/opaque/logistical_transporter_glass_colored",
+    "side_glass_opaque": "mekanism:block/models/multipart/opaque/logistical_transporter_vertical_glass_colored"
+  }
+}

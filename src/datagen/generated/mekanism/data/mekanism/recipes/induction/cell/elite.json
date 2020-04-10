@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:mek_data",
+  "pattern": [
+    "EPE",
+    "P#P",
+    "EPE"
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:advanced_induction_cell"
+    },
+    "#": {
+      "item": "mekanism:elite_energy_cube"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    }
+  },
+  "result": {
+    "item": "mekanism:elite_induction_cell"
+  }
+}

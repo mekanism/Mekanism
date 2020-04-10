@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:dynamic_valve"
+    ]
+  },
+  "criteria": {
+    "has_dynamic_tank": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:dynamic_tank"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:dynamic_valve"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_dynamic_tank",
+      "has_the_recipe"
+    ]
+  ]
+}

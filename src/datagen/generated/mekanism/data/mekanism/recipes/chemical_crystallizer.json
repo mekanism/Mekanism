@@ -1,0 +1,25 @@
+{
+  "type": "mekanism:mek_data",
+  "pattern": [
+    "CTC",
+    "AXA",
+    "CTC"
+  ],
+  "key": {
+    "T": {
+      "item": "mekanism:basic_gas_tank"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    }
+  },
+  "result": {
+    "item": "mekanism:chemical_crystallizer"
+  }
+}

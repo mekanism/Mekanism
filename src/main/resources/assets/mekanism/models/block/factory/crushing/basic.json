@@ -1,0 +1,11 @@
+{
+  "parent": "mekanism:block/factory/base",
+  "textures": {
+    "sides": "mekanism:block/factory/basic/crushing/right",
+    "front": "mekanism:block/factory/basic/crushing/front",
+    "south": "mekanism:block/factory/basic/crushing/back",
+    "west": "mekanism:block/factory/basic/crushing/right",
+    "east": "mekanism:block/factory/basic/crushing/left",
+    "up": "mekanism:block/factory/basic/crushing/top"
+  }
+}

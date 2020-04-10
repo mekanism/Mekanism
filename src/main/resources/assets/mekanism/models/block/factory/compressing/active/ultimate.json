@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/compressing/ultimate",
+  "textures": {
+    "front": "mekanism:block/factory/ultimate/compressing/front_active",
+    "south": "mekanism:block/factory/ultimate/compressing/back_active",
+    "west": "mekanism:block/factory/ultimate/compressing/right_active",
+    "east": "mekanism:block/factory/ultimate/compressing/left_active",
+    "up": "mekanism:block/factory/ultimate/compressing/top_active"
+  }
+}

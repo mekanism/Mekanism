@@ -1,0 +1,9 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanismgenerators:block/rotational_complex_side",
+    "front": "mekanismgenerators:block/rotational_complex_side",
+    "up": "mekanismgenerators:block/rotational_complex_top",
+    "down": "mekanismgenerators:block/rotational_complex_top"
+  }
+}

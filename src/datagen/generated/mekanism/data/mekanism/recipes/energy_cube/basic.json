@@ -1,0 +1,25 @@
+{
+  "type": "mekanism:mek_data",
+  "pattern": [
+    "AEA",
+    "IPI",
+    "AEA"
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:steel_casing"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "A": {
+      "tag": "mekanism:alloys/basic"
+    }
+  },
+  "result": {
+    "item": "mekanism:basic_energy_cube"
+  }
+}

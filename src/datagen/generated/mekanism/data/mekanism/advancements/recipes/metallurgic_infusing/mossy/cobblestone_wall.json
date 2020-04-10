@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:metallurgic_infusing/mossy/cobblestone_wall"
+    ]
+  },
+  "criteria": {
+    "has_metallurgic_infuser": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:metallurgic_infuser"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:metallurgic_infusing/mossy/cobblestone_wall"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_metallurgic_infuser",
+      "has_the_recipe"
+    ]
+  ]
+}

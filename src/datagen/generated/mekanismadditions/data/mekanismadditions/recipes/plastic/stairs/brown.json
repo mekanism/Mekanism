@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "mekanismadditions:brown_plastic"
+    }
+  },
+  "result": {
+    "item": "mekanismadditions:brown_plastic_stairs",
+    "count": 4
+  }
+}

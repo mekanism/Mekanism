@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:atomic_disassembler"
+    ]
+  },
+  "criteria": {
+    "has_energy_tablet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:energy_tablet"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:atomic_disassembler"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_energy_tablet",
+      "has_the_recipe"
+    ]
+  ]
+}

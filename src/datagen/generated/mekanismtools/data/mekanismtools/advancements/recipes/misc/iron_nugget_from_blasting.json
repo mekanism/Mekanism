@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:iron_nugget_from_blasting"
+    ]
+  },
+  "criteria": {
+    "has_iron_paxel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:iron_paxel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:iron_nugget_from_blasting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_iron_paxel",
+      "has_the_recipe"
+    ]
+  ]
+}

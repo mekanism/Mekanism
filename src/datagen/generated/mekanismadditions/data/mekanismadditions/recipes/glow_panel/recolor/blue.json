@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "tag": "mekanismadditions:glow_panels"
+    },
+    "D": {
+      "tag": "forge:dyes/blue"
+    }
+  },
+  "result": {
+    "item": "mekanismadditions:blue_glow_panel",
+    "count": 4
+  }
+}

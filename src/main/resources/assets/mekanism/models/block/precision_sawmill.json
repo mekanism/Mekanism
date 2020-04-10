@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanism:block/precision_sawmill/right",
+    "front": "mekanism:block/precision_sawmill/front",
+    "west": "mekanism:block/precision_sawmill/right",
+    "east": "mekanism:block/precision_sawmill/left",
+    "south": "mekanism:block/precision_sawmill/back",
+    "up": "mekanism:block/precision_sawmill/top",
+    "down": "mekanism:block/precision_sawmill/bottom"
+  }
+}

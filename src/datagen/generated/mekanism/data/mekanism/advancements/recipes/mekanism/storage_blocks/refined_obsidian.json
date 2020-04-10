@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:storage_blocks/refined_obsidian"
+    ]
+  },
+  "criteria": {
+    "has_refined_obsidian": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/refined_obsidian"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:storage_blocks/refined_obsidian"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_refined_obsidian",
+      "has_the_recipe"
+    ]
+  ]
+}

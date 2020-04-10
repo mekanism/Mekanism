@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanism:block/combiner/right",
+    "front": "mekanism:block/combiner/front",
+    "west": "mekanism:block/combiner/right",
+    "east": "mekanism:block/combiner/left",
+    "south": "mekanism:block/combiner/back",
+    "up": "mekanism:block/combiner/top",
+    "down": "mekanism:block/combiner/bottom"
+  }
+}

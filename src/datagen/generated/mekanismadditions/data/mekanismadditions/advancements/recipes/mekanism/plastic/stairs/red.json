@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/stairs/red"
+    ]
+  },
+  "criteria": {
+    "has_red_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismadditions:red_plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/stairs/red"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_red_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}

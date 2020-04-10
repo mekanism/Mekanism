@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:compat/ilikewood/crafting_table/oak"
+    ]
+  },
+  "criteria": {
+    "has_precision_sawmill": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:precision_sawmill"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:compat/ilikewood/crafting_table/oak"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_precision_sawmill",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:osmium/tools/paxel"
+    ]
+  },
+  "criteria": {
+    "has_osmium_axe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:osmium_axe"
+          }
+        ]
+      }
+    },
+    "has_osmium_pickaxe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:osmium_pickaxe"
+          }
+        ]
+      }
+    },
+    "has_osmium_shovel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:osmium_shovel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:osmium/tools/paxel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_osmium_axe",
+      "has_osmium_pickaxe",
+      "has_osmium_shovel",
+      "has_the_recipe"
+    ]
+  ]
+}

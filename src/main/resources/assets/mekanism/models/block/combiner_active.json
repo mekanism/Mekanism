@@ -1,0 +1,6 @@
+{
+  "parent": "mekanism:block/combiner",
+  "textures": {
+    "front": "mekanism:block/combiner/front_active"
+  }
+}

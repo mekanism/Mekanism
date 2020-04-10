@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/road/white"
+    ]
+  },
+  "criteria": {
+    "has_white_slick_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismadditions:white_slick_plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/road/white"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_white_slick_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}

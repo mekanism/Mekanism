@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S#S"
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "#": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "result": {
+    "item": "mekanism:basic_mechanical_pipe",
+    "count": 8
+  }
+}

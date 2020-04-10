@@ -1,0 +1,56 @@
+# Blender MTL File: 'transmitter_small.blend'
+# Material Count: 9
+
+newmtl CentreMaterialUp
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_up
+
+newmtl CentreMaterialDown
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_down
+
+newmtl CentreMaterialNorth
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_north
+
+newmtl CentreMaterialSouth
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_south
+
+newmtl CentreMaterialEast
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_east
+
+newmtl CentreMaterialWest
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_west
+
+newmtl None
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #side
+
+newmtl CentreMaterial_Opaque
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_opaque
+
+newmtl None_Opaque
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #side_opaque

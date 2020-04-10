@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:fences/plastic"
+    },
+    "D": {
+      "tag": "forge:dyes/yellow"
+    }
+  },
+  "result": {
+    "item": "mekanismadditions:yellow_plastic_fence",
+    "count": 4
+  }
+}

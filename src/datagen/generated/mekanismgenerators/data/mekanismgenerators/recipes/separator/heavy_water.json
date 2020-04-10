@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:separating",
+  "input": {
+    "amount": 2,
+    "tag": "forge:heavy_water"
+  },
+  "energyMultiplier": 2,
+  "leftGasOutput": {
+    "gas": "mekanismgenerators:deuterium",
+    "amount": 2
+  },
+  "rightGasOutput": {
+    "gas": "mekanism:oxygen",
+    "amount": 1
+  }
+}

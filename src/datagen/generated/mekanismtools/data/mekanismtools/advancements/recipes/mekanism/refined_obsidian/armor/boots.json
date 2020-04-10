@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:refined_obsidian/armor/boots"
+    ]
+  },
+  "criteria": {
+    "has_refined_obsidian": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/refined_obsidian"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:refined_obsidian/armor/boots"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_refined_obsidian",
+      "has_the_recipe"
+    ]
+  ]
+}

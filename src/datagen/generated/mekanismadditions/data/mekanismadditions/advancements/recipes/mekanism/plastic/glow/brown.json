@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/glow/brown"
+    ]
+  },
+  "criteria": {
+    "has_brown_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismadditions:brown_plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/glow/brown"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_brown_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}

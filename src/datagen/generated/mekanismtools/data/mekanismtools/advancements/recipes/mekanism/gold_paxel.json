@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:gold_paxel"
+    ]
+  },
+  "criteria": {
+    "has_golden_axe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:golden_axe"
+          }
+        ]
+      }
+    },
+    "has_golden_pickaxe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:golden_pickaxe"
+          }
+        ]
+      }
+    },
+    "has_golden_shovel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:golden_shovel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:gold_paxel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_golden_axe",
+      "has_golden_pickaxe",
+      "has_golden_shovel",
+      "has_the_recipe"
+    ]
+  ]
+}

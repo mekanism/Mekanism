@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:factory/elite/compressing"
+    ]
+  },
+  "criteria": {
+    "has_advanced_compressing_factory": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:advanced_compressing_factory"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:factory/elite/compressing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_advanced_compressing_factory",
+      "has_the_recipe"
+    ]
+  ]
+}

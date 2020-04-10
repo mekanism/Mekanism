@@ -1,0 +1,65 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismgenerators:generator/wind"
+    ]
+  },
+  "criteria": {
+    "has_energy_tablet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:energy_tablet"
+          }
+        ]
+      }
+    },
+    "has_basic_circuit": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:circuits/basic"
+          }
+        ]
+      }
+    },
+    "has_infused_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/infused"
+          }
+        ]
+      }
+    },
+    "has_osmium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/osmium"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismgenerators:generator/wind"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_energy_tablet",
+      "has_basic_circuit",
+      "has_infused_alloy",
+      "has_osmium",
+      "has_the_recipe"
+    ]
+  ]
+}

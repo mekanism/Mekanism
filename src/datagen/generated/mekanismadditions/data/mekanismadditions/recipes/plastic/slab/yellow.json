@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "mekanismadditions:yellow_plastic"
+    }
+  },
+  "result": {
+    "item": "mekanismadditions:yellow_plastic_slab",
+    "count": 6
+  }
+}

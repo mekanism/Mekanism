@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "tag": "forge:ores/osmium"
+    }
+  },
+  "output": {
+    "item": "mekanism:dust_osmium",
+    "count": 2
+  }
+}

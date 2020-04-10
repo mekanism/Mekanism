@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:mek_data",
+  "pattern": [
+    "AOA",
+    "OPO",
+    "AOA"
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:basic_gas_tank"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    }
+  },
+  "result": {
+    "item": "mekanism:advanced_gas_tank"
+  }
+}

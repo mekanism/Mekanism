@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/biofuel/cookie"
+    ]
+  },
+  "criteria": {
+    "has_crusher": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:crusher"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:crushing/biofuel/cookie"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_crusher",
+      "has_the_recipe"
+    ]
+  ]
+}

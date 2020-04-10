@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mekanism:block/induction/port"
+    },
+    "active=true": {
+      "model": "mekanism:block/induction/port_output"
+    }
+  }
+}

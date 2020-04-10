@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "biomesoplenty",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:dead_fence_gate"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:dead_planks",
+    "count": 2
+  },
+  "secondaryOutput": {
+    "item": "minecraft:stick",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:fluid_tank/ultimate"
+    ]
+  },
+  "criteria": {
+    "has_atomic_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/atomic"
+          }
+        ]
+      }
+    },
+    "has_elite_fluid_tank": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:elite_fluid_tank"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:fluid_tank/ultimate"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_atomic_alloy",
+      "has_elite_fluid_tank",
+      "has_the_recipe"
+    ]
+  ]
+}

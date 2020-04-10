@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "tag": "forge:fences/wooden"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:stick",
+    "count": 3
+  }
+}

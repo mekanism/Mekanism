@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "mekanism:block/energy_cube",
+      "x": -90
+    },
+    "facing=down": {
+      "model": "mekanism:block/energy_cube",
+      "x": 90
+    },
+    "facing=north": {
+      "model": "mekanism:block/energy_cube"
+    },
+    "facing=south": {
+      "model": "mekanism:block/energy_cube",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanism:block/energy_cube",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanism:block/energy_cube",
+      "y": -90
+    }
+  }
+}

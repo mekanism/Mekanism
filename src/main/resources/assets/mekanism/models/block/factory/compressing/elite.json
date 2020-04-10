@@ -1,0 +1,11 @@
+{
+  "parent": "mekanism:block/factory/base",
+  "textures": {
+    "sides": "mekanism:block/factory/elite/compressing/right",
+    "front": "mekanism:block/factory/elite/compressing/front",
+    "south": "mekanism:block/factory/elite/compressing/back",
+    "west": "mekanism:block/factory/elite/compressing/right",
+    "east": "mekanism:block/factory/elite/compressing/left",
+    "up": "mekanism:block/factory/elite/compressing/top"
+  }
+}

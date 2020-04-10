@@ -1,0 +1,18 @@
+modLoader="javafml"
+loaderVersion="[${loader_version},)"
+issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
+
+[[mods]]
+    modId="mekanismadditions"
+    version="${version}"
+    displayName="Mekanism: Additions"
+    displayURL="http://aidancbrady.com/mekanism/"
+    authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
+    credits="unpairedbracket, CyanideX and many others"
+    description='''Additions module for Mekanism, contains things that don't quite fit in the other modules.'''
+
+[[dependencies.mekanismadditions]]
+    modId="mekanism"
+    mandatory=true
+    versionRange="[${version}]"
+    side="BOTH"

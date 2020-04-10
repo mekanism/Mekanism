@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/smelting/advanced",
+  "textures": {
+    "front": "mekanism:block/factory/advanced/smelting/front_active",
+    "south": "mekanism:block/factory/advanced/smelting/back_active",
+    "west": "mekanism:block/factory/advanced/smelting/right_active",
+    "east": "mekanism:block/factory/advanced/smelting/left_active",
+    "up": "mekanism:block/factory/advanced/smelting/top_active"
+  }
+}

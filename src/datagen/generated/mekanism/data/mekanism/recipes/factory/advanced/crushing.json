@@ -1,0 +1,25 @@
+{
+  "type": "mekanism:mek_data",
+  "pattern": [
+    "ACA",
+    "IPI",
+    "ACA"
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:basic_crushing_factory"
+    },
+    "C": {
+      "tag": "forge:circuits/advanced"
+    },
+    "I": {
+      "tag": "forge:ingots/osmium"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    }
+  },
+  "result": {
+    "item": "mekanism:advanced_crushing_factory"
+  }
+}

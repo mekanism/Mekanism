@@ -1,0 +1,6 @@
+{
+    "parent": "mekanismadditions:block/colored/fence_post",
+    "textures": {
+        "texture": "mekanismadditions:block/plastic_fence"
+    }
+}

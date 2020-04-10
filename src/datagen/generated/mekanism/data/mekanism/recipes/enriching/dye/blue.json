@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cornflower"
+    }
+  },
+  "output": {
+    "item": "minecraft:blue_dye",
+    "count": 2
+  }
+}

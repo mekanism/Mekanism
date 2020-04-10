@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "tag": "forge:dusts/copper"
+  },
+  "result": "mekanism:ingot_copper",
+  "experience": 0.5,
+  "cookingtime": 200
+}

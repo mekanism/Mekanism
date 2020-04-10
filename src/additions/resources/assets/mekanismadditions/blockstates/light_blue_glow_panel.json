@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "mekanismadditions:block/glow_panel"
+    },
+    "facing=down": {
+      "model": "mekanismadditions:block/glow_panel",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "mekanismadditions:block/glow_panel",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "mekanismadditions:block/glow_panel",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanismadditions:block/glow_panel",
+      "x": 90,
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanismadditions:block/glow_panel",
+      "x": 90,
+      "y": -90
+    }
+  }
+}

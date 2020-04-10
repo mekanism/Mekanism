@@ -1,0 +1,7 @@
+{
+  "parent": "mekanism:block/cardboard_box",
+  "textures": {
+    "sides": "mekanism:block/cardboard_box_side_storage",
+    "front": "mekanism:block/cardboard_box_side_storage"
+  }
+}

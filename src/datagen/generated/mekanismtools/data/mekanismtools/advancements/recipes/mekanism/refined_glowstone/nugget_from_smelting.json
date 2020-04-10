@@ -1,0 +1,131 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:refined_glowstone/nugget_from_smelting"
+    ]
+  },
+  "criteria": {
+    "has_refined_glowstone_helmet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_glowstone_helmet"
+          }
+        ]
+      }
+    },
+    "has_refined_glowstone_chestplate": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_glowstone_chestplate"
+          }
+        ]
+      }
+    },
+    "has_refined_glowstone_leggings": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_glowstone_leggings"
+          }
+        ]
+      }
+    },
+    "has_refined_glowstone_boots": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_glowstone_boots"
+          }
+        ]
+      }
+    },
+    "has_refined_glowstone_sword": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_glowstone_sword"
+          }
+        ]
+      }
+    },
+    "has_refined_glowstone_axe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_glowstone_axe"
+          }
+        ]
+      }
+    },
+    "has_refined_glowstone_pickaxe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_glowstone_pickaxe"
+          }
+        ]
+      }
+    },
+    "has_refined_glowstone_shovel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_glowstone_shovel"
+          }
+        ]
+      }
+    },
+    "has_refined_glowstone_hoe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_glowstone_hoe"
+          }
+        ]
+      }
+    },
+    "has_refined_glowstone_paxel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_glowstone_paxel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:refined_glowstone/nugget_from_smelting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_refined_glowstone_helmet",
+      "has_refined_glowstone_chestplate",
+      "has_refined_glowstone_leggings",
+      "has_refined_glowstone_boots",
+      "has_refined_glowstone_sword",
+      "has_refined_glowstone_axe",
+      "has_refined_glowstone_pickaxe",
+      "has_refined_glowstone_shovel",
+      "has_refined_glowstone_hoe",
+      "has_refined_glowstone_paxel",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mekanism:block/electrolytic_separator",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mekanism:block/electrolytic_separator",
+      "y": -90
+    },
+    "facing=east": {
+      "model": "mekanism:block/electrolytic_separator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mekanism:block/electrolytic_separator"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "all": "mekanism:block/models/personal_chest"
+  },
+  "elements": [
+    {
+      "name": "body",
+      "from": [1, 0, 1],
+      "to": [15, 10, 15],
+      "faces": {
+        "north": {"uv": [10.5, 10.65, 14, 8.25], "texture": "#all"},
+        "east": {"uv": [7, 10.65, 10.5, 8.25], "texture": "#all"},
+        "south": {"uv": [3.5, 10.65, 7, 8.25], "texture": "#all"},
+        "west": {"uv": [0, 10.7, 3.5, 8.3], "texture": "#all"},
+        "up": {"uv": [7, 8.2, 10.5, 4.8], "texture": "#all"},
+        "down": {"uv": [3.5, 8.3, 7, 4.7], "texture": "#all"}
+      }
+    },
+    {
+      "name": "lid",
+      "from": [1, 10, 1],
+      "to": [15, 15, 15],
+      "faces": {
+        "north": {"uv": [10.5, 4.65, 14, 3.5], "texture": "#all"},
+        "east": {"uv": [7, 4.7, 10.5, 3.5], "texture": "#all"},
+        "south": {"uv": [3.5, 4.7, 7, 3.5], "texture": "#all"},
+        "west": {"uv": [0, 4.7, 3.5, 3.5], "texture": "#all"},
+        "up": {"uv": [7, 3.5, 10.5, 0], "texture": "#all"},
+        "down": {"uv": [3.5, 3.5, 7, 0], "texture": "#all"}
+      }
+    },
+    {
+      "name": "latch",
+      "from": [7, 8, 0],
+      "to": [9, 12, 1],
+      "faces": {
+        "north": {"uv": [0.75, 1.25, 0.25, 0.25], "texture": "#all"},
+        "east": {"uv": [1.25, 1.25, 1.5, 0.25], "texture": "#all"},
+        "south": {"uv": [0.75, 1.25, 1.25, 0.25], "texture": "#all"},
+        "west": {"uv": [0, 1.25, 0.25, 0.25], "texture": "#all"},
+        "up": {"uv": [0.25, 0.25, 0.75, 0], "texture": "#all"},
+        "down": {"uv": [0.75, 0.25, 1.25, 0], "texture": "#all"}
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "biomesoplenty",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:umbran_door"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:umbran_planks",
+    "count": 2
+  }
+}

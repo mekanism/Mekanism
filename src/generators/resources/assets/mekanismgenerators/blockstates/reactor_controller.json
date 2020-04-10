@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mekanismgenerators:block/reactor/controller"
+    },
+    "active=true": {
+      "model": "mekanismgenerators:block/reactor/controller_on"
+    }
+  }
+}

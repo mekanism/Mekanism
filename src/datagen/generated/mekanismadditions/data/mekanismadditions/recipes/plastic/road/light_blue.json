@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "###",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:sand"
+    },
+    "#": {
+      "item": "mekanismadditions:light_blue_slick_plastic"
+    }
+  },
+  "result": {
+    "item": "mekanismadditions:light_blue_plastic_road",
+    "count": 3
+  }
+}

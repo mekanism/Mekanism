@@ -1,0 +1,28 @@
+{
+  "type": "mekanism:mek_data",
+  "pattern": [
+    "III",
+    "ITS",
+    "#C#"
+  ],
+  "key": {
+    "T": {
+      "item": "mekanism:basic_gas_tank"
+    },
+    "C": {
+      "tag": "forge:circuits/advanced"
+    },
+    "#": {
+      "tag": "forge:ingots/bronze"
+    },
+    "I": {
+      "tag": "forge:ingots/tin"
+    },
+    "S": {
+      "item": "minecraft:flint_and_steel"
+    }
+  },
+  "result": {
+    "item": "mekanism:flamethrower"
+  }
+}

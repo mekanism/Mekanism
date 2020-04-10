@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:factory/advanced/purifying"
+    ]
+  },
+  "criteria": {
+    "has_basic_purifying_factory": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:basic_purifying_factory"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:factory/advanced/purifying"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_basic_purifying_factory",
+      "has_the_recipe"
+    ]
+  ]
+}

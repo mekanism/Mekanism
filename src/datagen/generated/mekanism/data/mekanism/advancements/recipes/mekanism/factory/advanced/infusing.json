@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:factory/advanced/infusing"
+    ]
+  },
+  "criteria": {
+    "has_basic_infusing_factory": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:basic_infusing_factory"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:factory/advanced/infusing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_basic_infusing_factory",
+      "has_the_recipe"
+    ]
+  ]
+}

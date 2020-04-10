@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "amount": 1,
+    "tag": "forge:steam"
+  },
+  "gasOutput": {
+    "gas": "mekanism:steam",
+    "amount": 1
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:steam"
+  },
+  "fluidOutput": {
+    "fluid": "mekanism:steam",
+    "amount": 1
+  }
+}

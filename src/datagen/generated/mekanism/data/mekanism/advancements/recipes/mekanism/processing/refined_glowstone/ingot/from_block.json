@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/refined_glowstone/ingot/from_block"
+    ]
+  },
+  "criteria": {
+    "has_refined_glowstone_block": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:storage_blocks/refined_glowstone"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:processing/refined_glowstone/ingot/from_block"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_refined_glowstone_block",
+      "has_the_recipe"
+    ]
+  ]
+}

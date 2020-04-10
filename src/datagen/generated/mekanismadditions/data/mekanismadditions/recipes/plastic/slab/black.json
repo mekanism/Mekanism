@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "mekanismadditions:black_plastic"
+    }
+  },
+  "result": {
+    "item": "mekanismadditions:black_plastic_slab",
+    "count": 6
+  }
+}

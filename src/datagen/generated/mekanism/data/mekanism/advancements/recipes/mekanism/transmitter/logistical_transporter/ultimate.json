@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:transmitter/logistical_transporter/ultimate"
+    ]
+  },
+  "criteria": {
+    "has_elite_logistical_transporter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:elite_logistical_transporter"
+          }
+        ]
+      }
+    },
+    "has_atomic_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/atomic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:transmitter/logistical_transporter/ultimate"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_elite_logistical_transporter",
+      "has_atomic_alloy",
+      "has_the_recipe"
+    ]
+  ]
+}

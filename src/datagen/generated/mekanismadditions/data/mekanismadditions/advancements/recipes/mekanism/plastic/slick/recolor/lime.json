@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/slick/recolor/lime"
+    ]
+  },
+  "criteria": {
+    "has_slick_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanismadditions:plastic_blocks/slick"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/slick/recolor/lime"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_slick_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}

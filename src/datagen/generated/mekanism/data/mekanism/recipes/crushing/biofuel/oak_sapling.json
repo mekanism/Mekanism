@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:oak_sapling"
+    }
+  },
+  "output": {
+    "item": "mekanism:bio_fuel",
+    "count": 2
+  }
+}

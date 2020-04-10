@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "itemInput": {
+    "ingredient": {
+      "tag": "mekanism:alloys/infused"
+    }
+  },
+  "infusionInput": {
+    "amount": 10,
+    "tag": "mekanism:diamond"
+  },
+  "output": {
+    "item": "mekanism:alloy_reinforced"
+  }
+}

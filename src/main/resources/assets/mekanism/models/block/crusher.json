@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanism:block/crusher/side",
+    "front": "mekanism:block/crusher/front",
+    "west": "mekanism:block/crusher/side",
+    "east": "mekanism:block/crusher/side",
+    "south": "mekanism:block/crusher/back",
+    "up": "mekanism:block/crusher/top",
+    "down": "mekanism:block/crusher/bottom"
+  }
+}

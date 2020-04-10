@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismgenerators:chemical_infusing/fusion_fuel"
+    ]
+  },
+  "criteria": {
+    "has_chemical_infuser": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:chemical_infuser"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismgenerators:chemical_infusing/fusion_fuel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chemical_infuser",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:evaporating",
+  "input": {
+    "amount": 10,
+    "tag": "forge:brine"
+  },
+  "output": {
+    "fluid": "mekanism:lithium",
+    "amount": 1
+  }
+}

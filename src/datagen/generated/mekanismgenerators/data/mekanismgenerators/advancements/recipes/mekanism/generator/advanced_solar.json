@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismgenerators:generator/advanced_solar"
+    ]
+  },
+  "criteria": {
+    "has_solar_generator": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismgenerators:solar_generator"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismgenerators:generator/advanced_solar"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_solar_generator",
+      "has_the_recipe"
+    ]
+  ]
+}

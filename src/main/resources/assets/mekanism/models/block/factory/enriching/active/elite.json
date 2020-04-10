@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/enriching/elite",
+  "textures": {
+    "front": "mekanism:block/factory/elite/enriching/front_active",
+    "south": "mekanism:block/factory/elite/enriching/back_active",
+    "west": "mekanism:block/factory/elite/enriching/right_active",
+    "east": "mekanism:block/factory/elite/enriching/left_active",
+    "up": "mekanism:block/factory/elite/enriching/top_active"
+  }
+}

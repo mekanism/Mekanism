@@ -1,0 +1,52 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "componentSecurity.ownerMost",
+                  "target": "mekData.ownerMost",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentSecurity.ownerLeast",
+                  "target": "mekData.ownerLeast",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentSecurity.securityMode",
+                  "target": "mekData.securityMode",
+                  "op": "replace"
+                },
+                {
+                  "source": "FluidTanks",
+                  "target": "mekData.FluidTanks",
+                  "op": "replace"
+                },
+                {
+                  "source": "Items",
+                  "target": "mekData.Items",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
+          "name": "mekanism:basic_fluid_tank"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

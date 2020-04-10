@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:gas_tank/advanced"
+    ]
+  },
+  "criteria": {
+    "has_infused_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/infused"
+          }
+        ]
+      }
+    },
+    "has_basic_gas_tank": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:basic_gas_tank"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:gas_tank/advanced"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_infused_alloy",
+      "has_basic_gas_tank",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:compressing",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:dusts/glowstone"
+    }
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:liquid_osmium"
+  },
+  "output": {
+    "item": "mekanism:ingot_refined_glowstone"
+  }
+}

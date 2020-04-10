@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/bin/advanced",
+  "textures": {
+    "front": "mekanism:block/bin/advanced_front_on",
+    "west": "mekanism:block/bin/advanced_side_on",
+    "east": "mekanism:block/bin/advanced_side_on",
+    "south": "mekanism:block/bin/advanced_side_on",
+    "up": "mekanism:block/bin/advanced_top_on"
+  }
+}

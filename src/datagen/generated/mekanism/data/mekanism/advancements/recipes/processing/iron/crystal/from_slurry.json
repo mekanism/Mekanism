@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/iron/crystal/from_slurry"
+    ]
+  },
+  "criteria": {
+    "has_chemical_crystallizer": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:chemical_crystallizer"
+          }
+        ]
+      }
+    },
+    "has_iron_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ores/iron"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:processing/iron/crystal/from_slurry"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chemical_crystallizer",
+      "has_iron_ore",
+      "has_the_recipe"
+    ]
+  ]
+}

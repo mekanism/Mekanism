@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mekanism:block/chemical_infuser"
+    },
+    "facing=south": {
+      "model": "mekanism:block/chemical_infuser",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanism:block/chemical_infuser",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanism:block/chemical_infuser",
+      "y": -90
+    }
+  }
+}

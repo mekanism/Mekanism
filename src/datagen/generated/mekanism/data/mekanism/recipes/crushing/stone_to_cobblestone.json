@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:stone"
+    }
+  },
+  "output": {
+    "item": "minecraft:cobblestone"
+  }
+}

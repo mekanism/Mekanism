@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/copper/ingot/from_nuggets"
+    ]
+  },
+  "criteria": {
+    "has_copper_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ores/copper"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:processing/copper/ingot/from_nuggets"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_copper_ore",
+      "has_the_recipe"
+    ]
+  ]
+}

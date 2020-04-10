@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S#S"
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "#": {
+      "tag": "forge:circuits/basic"
+    }
+  },
+  "result": {
+    "item": "mekanism:basic_logistical_transporter",
+    "count": 8
+  }
+}

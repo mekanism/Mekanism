@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/sawing/ultimate",
+  "textures": {
+    "front": "mekanism:block/factory/ultimate/sawing/front_active",
+    "south": "mekanism:block/factory/ultimate/sawing/back_active",
+    "west": "mekanism:block/factory/ultimate/sawing/side_active",
+    "east": "mekanism:block/factory/ultimate/sawing/side_active",
+    "up": "mekanism:block/factory/ultimate/sawing/top_active"
+  }
+}

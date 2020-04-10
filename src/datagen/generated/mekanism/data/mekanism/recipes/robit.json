@@ -1,0 +1,28 @@
+{
+  "type": "mekanism:mek_data",
+  "pattern": [
+    " S ",
+    "EAE",
+    "IPI"
+  ],
+  "key": {
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "I": {
+      "tag": "forge:ingots/refined_obsidian"
+    },
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "P": {
+      "tag": "forge:chests/personal"
+    }
+  },
+  "result": {
+    "item": "mekanism:robit"
+  }
+}

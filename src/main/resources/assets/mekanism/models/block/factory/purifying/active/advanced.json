@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/purifying/advanced",
+  "textures": {
+    "front": "mekanism:block/factory/advanced/purifying/front_active",
+    "south": "mekanism:block/factory/advanced/purifying/back_active",
+    "west": "mekanism:block/factory/advanced/purifying/right_active",
+    "east": "mekanism:block/factory/advanced/purifying/left_active",
+    "up": "mekanism:block/factory/advanced/purifying/top_active"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/fence/recolor/light_gray"
+    ]
+  },
+  "criteria": {
+    "has_plastic_fence": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:fences/plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/fence/recolor/light_gray"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_plastic_fence",
+      "has_the_recipe"
+    ]
+  ]
+}

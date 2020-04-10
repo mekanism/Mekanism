@@ -1,0 +1,24 @@
+[
+  {
+    "modid": "mekanismgenerators",
+    "name": "Mekanism: Generators",
+    "description": "Generators module for Mekanism",
+    "version": "${version}",
+    "mcversion": "${mc_version}",
+    "authorList": [
+      "aidancbrady",
+      "thommy101",
+      "thiakil",
+      "pupnewfster",
+      "dizzyd"
+    ],
+    "credits": "unpairedbracket, CyanideX and many others",
+    "useDependencyInformation": true,
+    "dependencies": [
+      "mekanism@[${version}]"
+    ],
+    "requiredMods": [
+      "mekanism@[${version}]"
+    ]
+  }
+]

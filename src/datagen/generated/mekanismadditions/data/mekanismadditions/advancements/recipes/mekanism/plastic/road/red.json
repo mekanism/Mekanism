@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/road/red"
+    ]
+  },
+  "criteria": {
+    "has_red_slick_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismadditions:red_slick_plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/road/red"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_red_slick_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}

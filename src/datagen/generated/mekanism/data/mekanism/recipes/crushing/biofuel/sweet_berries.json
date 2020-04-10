@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:sweet_berries"
+    }
+  },
+  "output": {
+    "item": "mekanism:bio_fuel",
+    "count": 2
+  }
+}

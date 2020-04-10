@@ -1,0 +1,51 @@
+package mekanism.common.inventory.container.sync;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import javax.annotation.Nonnull;
+import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.common.network.container.property.GasStackPropertyData;
+import mekanism.common.network.container.property.IntPropertyData;
+import mekanism.common.network.container.property.PropertyData;
+
+/**
+ * Version of {@link net.minecraft.util.IntReferenceHolder} for handling gas stacks
+ */
+public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> {
+
+    public static SyncableGasStack create(IChemicalTank<Gas, GasStack> handler) {
+        return new SyncableGasStack(handler::getStack, handler::setStack);
+    }
+
+    public static SyncableGasStack create(Supplier<@NonNull GasStack> getter, Consumer<@NonNull GasStack> setter) {
+        return new SyncableGasStack(getter, setter);
+    }
+
+    private SyncableGasStack(Supplier<@NonNull GasStack> getter, Consumer<@NonNull GasStack> setter) {
+        super(getter, setter);
+    }
+
+    @Nonnull
+    @Override
+    protected GasStack getEmptyStack() {
+        return GasStack.EMPTY;
+    }
+
+    @Nonnull
+    @Override
+    protected GasStack createStack(GasStack stored, int size) {
+        return new GasStack(stored, size);
+    }
+
+    @Override
+    public PropertyData getPropertyData(short property, DirtyType dirtyType) {
+        if (dirtyType == DirtyType.SIZE) {
+            //If only the size changed, don't bother re-syncing the type
+            return new IntPropertyData(property, get().getAmount());
+        }
+        return new GasStackPropertyData(property, get());
+    }
+}

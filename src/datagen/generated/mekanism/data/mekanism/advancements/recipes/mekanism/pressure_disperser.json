@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:pressure_disperser"
+    ]
+  },
+  "criteria": {
+    "has_infused_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/infused"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:pressure_disperser"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_infused_alloy",
+      "has_the_recipe"
+    ]
+  ]
+}

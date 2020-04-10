@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "APS",
+    " R ",
+    " R "
+  ],
+  "key": {
+    "A": {
+      "item": "mekanismtools:bronze_axe"
+    },
+    "P": {
+      "item": "mekanismtools:bronze_pickaxe"
+    },
+    "S": {
+      "item": "mekanismtools:bronze_shovel"
+    },
+    "R": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "mekanismtools:bronze_paxel"
+  }
+}

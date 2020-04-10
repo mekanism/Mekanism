@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:infusion_conversion/refined_obsidian/from_enriched"
+    ]
+  },
+  "criteria": {
+    "has_enriched_refined_obsidian": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:enriched/obsidian"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:infusion_conversion/refined_obsidian/from_enriched"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_enriched_refined_obsidian",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:stone_brick_slab"
+    }
+  },
+  "infusionInput": {
+    "amount": 10,
+    "tag": "mekanism:bio"
+  },
+  "output": {
+    "item": "minecraft:mossy_stone_brick_slab"
+  }
+}

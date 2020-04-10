@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mekanism:block/chargepad"
+    },
+    "facing=south": {
+      "model": "mekanism:block/chargepad",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanism:block/chargepad",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanism:block/chargepad",
+      "y": -90
+    }
+  }
+}

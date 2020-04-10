@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/combining/ultimate",
+  "textures": {
+    "front": "mekanism:block/factory/ultimate/combining/front_active",
+    "south": "mekanism:block/factory/ultimate/combining/back_active",
+    "west": "mekanism:block/factory/ultimate/combining/right_active",
+    "east": "mekanism:block/factory/ultimate/combining/left_active",
+    "up": "mekanism:block/factory/ultimate/combining/top_active"
+  }
+}

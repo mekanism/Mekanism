@@ -1,0 +1,50 @@
+{
+  "variants": {
+    "facing=north,active=false": {
+      "model": "mekanism:block/logistical_sorter"
+    },
+    "facing=south,active=false": {
+      "model": "mekanism:block/logistical_sorter",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/logistical_sorter",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/logistical_sorter",
+      "y": -90
+    },
+    "facing=up,active=false": {
+      "model": "mekanism:block/logistical_sorter",
+      "x": -90
+    },
+    "facing=down,active=false": {
+      "model": "mekanism:block/logistical_sorter",
+      "x": 90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/logistical_sorter_active"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/logistical_sorter_active",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/logistical_sorter_active",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/logistical_sorter_active",
+      "y": -90
+    },
+    "facing=up,active=true": {
+      "model": "mekanism:block/logistical_sorter_active",
+      "x": -90
+    },
+    "facing=down,active=true": {
+      "model": "mekanism:block/logistical_sorter_active",
+      "x": 90
+    }
+  }
+}

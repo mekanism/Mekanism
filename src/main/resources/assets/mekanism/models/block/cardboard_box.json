@@ -1,0 +1,9 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanism:block/cardboard_box_side",
+    "front": "mekanism:block/cardboard_box_side",
+    "up": "mekanism:block/cardboard_box_top",
+    "down": "mekanism:block/cardboard_box_top"
+  }
+}

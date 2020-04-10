@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/enriching/ultimate",
+  "textures": {
+    "front": "mekanism:block/factory/ultimate/enriching/front_active",
+    "south": "mekanism:block/factory/ultimate/enriching/back_active",
+    "west": "mekanism:block/factory/ultimate/enriching/right_active",
+    "east": "mekanism:block/factory/ultimate/enriching/left_active",
+    "up": "mekanism:block/factory/ultimate/enriching/top_active"
+  }
+}

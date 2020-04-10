@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "mekanismadditions:lime_plastic"
+    },
+    {
+      "item": "mekanismadditions:lime_plastic"
+    },
+    {
+      "item": "mekanismadditions:lime_plastic"
+    },
+    {
+      "tag": "forge:dusts/glowstone"
+    }
+  ],
+  "result": {
+    "item": "mekanismadditions:lime_plastic_glow",
+    "count": 3
+  }
+}

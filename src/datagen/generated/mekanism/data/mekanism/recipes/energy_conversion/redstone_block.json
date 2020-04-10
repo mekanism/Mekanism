@@ -1,0 +1,9 @@
+{
+  "type": "mekanism:energy_conversion",
+  "input": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/redstone"
+    }
+  },
+  "output": 90000
+}

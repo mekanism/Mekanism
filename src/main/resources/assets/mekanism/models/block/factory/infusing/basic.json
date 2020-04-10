@@ -1,0 +1,11 @@
+{
+  "parent": "mekanism:block/factory/base",
+  "textures": {
+    "sides": "mekanism:block/factory/basic/infusing/right",
+    "front": "mekanism:block/factory/basic/infusing/front",
+    "south": "mekanism:block/factory/basic/infusing/back",
+    "west": "mekanism:block/factory/basic/infusing/right",
+    "east": "mekanism:block/factory/basic/infusing/left",
+    "up": "mekanism:block/factory/basic/infusing/top"
+  }
+}

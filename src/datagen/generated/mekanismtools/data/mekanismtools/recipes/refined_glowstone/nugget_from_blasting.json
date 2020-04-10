@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": [
+    {
+      "item": "mekanismtools:refined_glowstone_helmet"
+    },
+    {
+      "item": "mekanismtools:refined_glowstone_chestplate"
+    },
+    {
+      "item": "mekanismtools:refined_glowstone_leggings"
+    },
+    {
+      "item": "mekanismtools:refined_glowstone_boots"
+    },
+    {
+      "item": "mekanismtools:refined_glowstone_sword"
+    },
+    {
+      "item": "mekanismtools:refined_glowstone_pickaxe"
+    },
+    {
+      "item": "mekanismtools:refined_glowstone_axe"
+    },
+    {
+      "item": "mekanismtools:refined_glowstone_shovel"
+    },
+    {
+      "item": "mekanismtools:refined_glowstone_hoe"
+    },
+    {
+      "item": "mekanismtools:refined_glowstone_paxel"
+    }
+  ],
+  "result": "mekanism:nugget_refined_glowstone",
+  "experience": 0.1,
+  "cookingtime": 100
+}

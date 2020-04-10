@@ -1,0 +1,20 @@
+{
+    "parent": "mekanism:item/standard_item",
+    "textures": { 
+        "layer0": "mekanism:item/crafting_formula"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "mekanism:invalid": 1
+            },
+            "model": "mekanism:item/crafting_formula_invalid"
+        },
+        {
+            "predicate": {
+                "mekanism:encoded": 1
+            },
+            "model": "mekanism:item/crafting_formula_encoded"
+        }
+    ]
+}

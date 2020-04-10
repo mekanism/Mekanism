@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/fence_gate/gray"
+    ]
+  },
+  "criteria": {
+    "has_gray_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismadditions:gray_plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/fence_gate/gray"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_gray_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}

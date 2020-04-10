@@ -1,0 +1,11 @@
+{
+  "values": [
+    "#forge:ingots/bronze",
+    "#forge:ingots/copper",
+    "#forge:ingots/osmium",
+    "#forge:ingots/refined_glowstone",
+    "#forge:ingots/refined_obsidian",
+    "#forge:ingots/steel",
+    "#forge:ingots/tin"
+  ]
+}

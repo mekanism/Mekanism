@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:gas_conversion",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:flint"
+    }
+  },
+  "output": {
+    "gas": "mekanism:oxygen",
+    "amount": 10
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/slick/enriching/black"
+    ]
+  },
+  "criteria": {
+    "has_black_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismadditions:black_plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/slick/enriching/black"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_black_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}

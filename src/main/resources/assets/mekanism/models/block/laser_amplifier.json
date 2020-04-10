@@ -1,0 +1,9 @@
+{
+	"parent": "mekanism:block/laser_cube_base",
+	"textures": {
+		"frame": "mekanism:block/models/laser_device_frame",
+		"side_empty": "mekanism:block/models/laser_amplifier_side_empty",
+		"side_full": "mekanism:block/models/laser_amplifier_side_full",
+		"side_maybe": "mekanism:block/models/laser_amplifier_side_empty"
+	}
+}

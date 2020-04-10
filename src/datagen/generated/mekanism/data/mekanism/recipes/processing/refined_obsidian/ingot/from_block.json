@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:storage_blocks/refined_obsidian"
+    }
+  ],
+  "result": {
+    "item": "mekanism:ingot_refined_obsidian",
+    "count": 9
+  }
+}

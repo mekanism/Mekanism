@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanism:block/chemical_injection_chamber/right",
+    "front": "mekanism:block/chemical_injection_chamber/front",
+    "west": "mekanism:block/chemical_injection_chamber/right",
+    "east": "mekanism:block/chemical_injection_chamber/left",
+    "south": "mekanism:block/chemical_injection_chamber/back",
+    "up": "mekanism:block/chemical_injection_chamber/top",
+    "down": "mekanism:block/chemical_injection_chamber/bottom"
+  }
+}

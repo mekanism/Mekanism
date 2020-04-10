@@ -1,0 +1,25 @@
+{
+  "type": "mekanism:reaction",
+  "itemInput": {
+    "amount": 2,
+    "ingredient": {
+      "tag": "forge:fuels/bio"
+    }
+  },
+  "fluidInput": {
+    "amount": 10,
+    "tag": "minecraft:water"
+  },
+  "gasInput": {
+    "amount": 100,
+    "gas": "mekanism:hydrogen"
+  },
+  "duration": 100,
+  "itemOutput": {
+    "item": "mekanism:substrate"
+  },
+  "gasOutput": {
+    "gas": "mekanism:ethene",
+    "amount": 100
+  }
+}

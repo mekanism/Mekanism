@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "ingredient": {
+      "tag": "forge:dyes/black"
+    }
+  },
+  "extraInput": {
+    "amount": 2,
+    "ingredient": {
+      "tag": "forge:dyes/white"
+    }
+  },
+  "output": {
+    "item": "minecraft:light_gray_dye",
+    "count": 6
+  }
+}

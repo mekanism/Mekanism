@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mekanism:block/transmitter/small/universal_cable/basic"
+    }
+  }
+}

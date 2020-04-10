@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:lime_bed"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:oak_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:lime_wool",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

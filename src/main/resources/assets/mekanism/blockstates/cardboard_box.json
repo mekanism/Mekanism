@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "storage=false": {
+      "model": "mekanism:block/cardboard_box"
+    },
+    "storage=true": {
+      "model": "mekanism:block/cardboard_box_storage"
+    }
+  }
+}

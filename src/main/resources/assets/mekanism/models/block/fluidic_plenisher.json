@@ -1,0 +1,191 @@
+{
+    "parent": "block/cube_all",
+    "elements": [
+        {
+            "__comment": "ringTop",
+            "from": [4, 14, 4],
+            "to": [12, 15, 12],
+            "faces": {
+                "down":  {"uv": [6, 11, 4, 13], "texture": "#all"},
+                "up":    {"uv": [4, 13, 2, 11], "texture": "#all"},
+                "north": {"uv": [2, 13, 4, 13.25], "texture": "#all"},
+                "south": {"uv": [6, 13, 8, 13.25], "texture": "#all"},
+                "west":  {"uv": [4, 13, 6, 13.25], "texture": "#all"},
+                "east":  {"uv": [0, 13, 2, 13.25], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "rod1",
+            "from": [10, 10, 12],
+            "to": [11, 11, 15],
+            "faces": {
+                "down":  {"uv": [1.25, 0, 1, 0.75], "texture": "#all"},
+                "up":    {"uv": [1, 0.75, 0.75, 0], "texture": "#all"},
+                "north": {"uv": [0.75, 0.75, 1, 1], "texture": "#all"},
+                "south": {"uv": [1.75, 0.75, 2, 1], "texture": "#all"},
+                "west":  {"uv": [1, 0.75, 1.75, 1], "texture": "#all"},
+                "east":  {"uv": [0, 0.75, 0.75, 1], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "ringBottom",
+            "from": [4, 0, 4],
+            "to": [12, 1, 12],
+            "faces": {
+                "down":  {"uv": [6, 13.25, 4, 15.25], "texture": "#all"},
+                "up":    {"uv": [4, 15.25, 2, 13.25], "texture": "#all"},
+                "north": {"uv": [2, 15.25, 4, 15.5], "texture": "#all"},
+                "south": {"uv": [6, 15.25, 8, 15.5], "texture": "#all"},
+                "west":  {"uv": [4, 15.25, 6, 15.5], "texture": "#all"},
+                "east":  {"uv": [0, 15.25, 2, 15.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "portTop",
+            "from": [3, 15, 3],
+            "to": [13, 16, 13],
+            "faces": {
+                "down":  {"uv": [7.5, 5.25, 5, 7.75], "texture": "#all"},
+                "up":    {"uv": [5, 7.75, 2.5, 5.25], "texture": "#all"},
+                "north": {"uv": [2.5, 7.75, 5, 8], "texture": "#all"},
+                "south": {"uv": [7.5, 7.75, 10, 8], "texture": "#all"},
+                "west":  {"uv": [5, 7.75, 7.5, 8], "texture": "#all"},
+                "east":  {"uv": [0, 7.75, 2.5, 8], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "portBack",
+            "from": [4, 4, 15],
+            "to": [12, 12, 16],
+            "faces": {
+                "down":  {"uv": [13.25, 0, 11.25, 0.25], "texture": "#all"},
+                "up":    {"uv": [11.25, 0.25, 9.25, 0], "texture": "#all"},
+                "north": {"uv": [9.25, 0.25, 11.25, 2.25], "texture": "#all"},
+                "south": {"uv": [11.5, 0.25, 13.5, 2.25], "texture": "#all"},
+                "west":  {"uv": [11.25, 0.25, 11.5, 2.25], "texture": "#all"},
+                "east":  {"uv": [9, 0.25, 9.25, 2.25], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "ringTank",
+            "from": [2.5, 13, 2.5],
+            "to": [13.5, 14, 13.5],
+            "faces": {
+                "down":  {"uv": [8.25, 8, 5.5, 10.75], "texture": "#all"},
+                "up":    {"uv": [5.5, 10.75, 2.75, 8], "texture": "#all"},
+                "north": {"uv": [2.75, 10.75, 5.5, 11], "texture": "#all"},
+                "south": {"uv": [8.25, 10.75, 11, 11], "texture": "#all"},
+                "west":  {"uv": [5.5, 10.75, 8.25, 11], "texture": "#all"},
+                "east":  {"uv": [0, 10.75, 2.75, 11], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "Connector",
+            "from": [5.5, 5.5, 11],
+            "to": [10.5, 10.5, 15],
+            "faces": {
+                "down":  {"uv": [12.5, 2.25, 11.25, 3.25], "texture": "#all"},
+                "up":    {"uv": [11.25, 3.25, 10, 2.25], "texture": "#all"},
+                "north": {"uv": [10, 3.25, 11.25, 4.5], "texture": "#all"},
+                "south": {"uv": [12.25, 3.25, 13.5, 4.5], "texture": "#all"},
+                "west":  {"uv": [11.25, 3.25, 12.25, 4.5], "texture": "#all"},
+                "east":  {"uv": [9, 3.25, 10, 4.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "rod4",
+            "from": [5, 5, 12],
+            "to": [6, 6, 15],
+            "faces": {
+                "down":  {"uv": [1.25, 0, 1, 0.75], "texture": "#all"},
+                "up":    {"uv": [1, 0.75, 0.75, 0], "texture": "#all"},
+                "north": {"uv": [0.75, 0.75, 1, 1], "texture": "#all"},
+                "south": {"uv": [1.75, 0.75, 2, 1], "texture": "#all"},
+                "west":  {"uv": [1, 0.75, 1.75, 1], "texture": "#all"},
+                "east":  {"uv": [0, 0.75, 0.75, 1], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "bearingLeft",
+            "from": [12, 6, 6],
+            "to": [13, 10, 10],
+            "faces": {
+                "down":  {"uv": [12.5, 6.5, 12.25, 7.5], "texture": "#all"},
+                "up":    {"uv": [12.25, 7.5, 12, 6.5], "texture": "#all"},
+                "north": {"uv": [12, 7.5, 12.25, 8.5], "texture": "#all"},
+                "south": {"uv": [13.25, 7.5, 13.5, 8.5], "texture": "#all"},
+                "west":  {"uv": [12.25, 7.5, 13.25, 8.5], "texture": "#all"},
+                "east":  {"uv": [11, 7.5, 12, 8.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "rod2",
+            "from": [5, 10, 12],
+            "to": [6, 11, 15],
+            "faces": {
+                "down":  {"uv": [1.25, 0, 1, 0.75], "texture": "#all"},
+                "up":    {"uv": [1, 0.75, 0.75, 0], "texture": "#all"},
+                "north": {"uv": [0.75, 0.75, 1, 1], "texture": "#all"},
+                "south": {"uv": [1.75, 0.75, 2, 1], "texture": "#all"},
+                "west":  {"uv": [1, 0.75, 1.75, 1], "texture": "#all"},
+                "east":  {"uv": [0, 0.75, 0.75, 1], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "tank",
+            "from": [3.5, 1, 3.5],
+            "to": [12.5, 13, 12.5],
+            "faces": {
+                "down":  {"uv": [6.75, 0, 4.5, 2.25], "texture": "#all"},
+                "up":    {"uv": [4.5, 2.25, 2.25, 0], "texture": "#all"},
+                "north": {"uv": [2.25, 2.25, 4.5, 5.25], "texture": "#all"},
+                "south": {"uv": [6.75, 2.25, 9, 5.25], "texture": "#all"},
+                "west":  {"uv": [4.5, 2.25, 6.75, 5.25], "texture": "#all"},
+                "east":  {"uv": [0, 2.25, 2.25, 5.25], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "connectorRing",
+            "from": [4.5, 4.5, 13],
+            "to": [11.5, 11.5, 14],
+            "faces": {
+                "down":  {"uv": [13.75, 4.5, 12, 4.75], "texture": "#all"},
+                "up":    {"uv": [12, 4.75, 10.25, 4.5], "texture": "#all"},
+                "north": {"uv": [10.25, 4.75, 12, 6.5], "texture": "#all"},
+                "south": {"uv": [12.25, 4.75, 14, 6.5], "texture": "#all"},
+                "west":  {"uv": [12, 4.75, 12.25, 6.5], "texture": "#all"},
+                "east":  {"uv": [10, 4.75, 10.25, 6.5], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "rod3",
+            "from": [10, 5, 12],
+            "to": [11, 6, 15],
+            "faces": {
+                "down":  {"uv": [1.25, 0, 1, 0.75], "texture": "#all"},
+                "up":    {"uv": [1, 0.75, 0.75, 0], "texture": "#all"},
+                "north": {"uv": [0.75, 0.75, 1, 1], "texture": "#all"},
+                "south": {"uv": [1.75, 0.75, 2, 1], "texture": "#all"},
+                "west":  {"uv": [1, 0.75, 1.75, 1], "texture": "#all"},
+                "east":  {"uv": [0, 0.75, 0.75, 1], "texture": "#all"}
+            }
+        },
+        {
+            "__comment": "bearingRight",
+            "from": [3, 6, 6],
+            "to": [4, 10, 10],
+            "faces": {
+                "down":  {"uv": [12.5, 6.5, 12.25, 7.5], "texture": "#all"},
+                "up":    {"uv": [12.25, 7.5, 12, 6.5], "texture": "#all"},
+                "north": {"uv": [12, 7.5, 12.25, 8.5], "texture": "#all"},
+                "south": {"uv": [13.25, 7.5, 13.5, 8.5], "texture": "#all"},
+                "west":  {"uv": [12.25, 7.5, 13.25, 8.5], "texture": "#all"},
+                "east":  {"uv": [11, 7.5, 12, 8.5], "texture": "#all"}
+            }
+        }
+    ],
+    "textures": {
+        "all": "mekanism:block/models/fluidic_plenisher",
+        "particle": "mekanism:block/steel_casing"
+    }
+}

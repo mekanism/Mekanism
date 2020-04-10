@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:cobblestone_wall"
+    }
+  },
+  "infusionInput": {
+    "amount": 10,
+    "tag": "mekanism:bio"
+  },
+  "output": {
+    "item": "minecraft:mossy_cobblestone_wall"
+  }
+}

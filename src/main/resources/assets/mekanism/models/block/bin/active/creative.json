@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/bin/creative",
+  "textures": {
+    "front": "mekanism:block/bin/creative_front_on",
+    "west": "mekanism:block/bin/creative_side_on",
+    "east": "mekanism:block/bin/creative_side_on",
+    "south": "mekanism:block/bin/creative_side_on",
+    "up": "mekanism:block/bin/creative_top_on"
+  }
+}

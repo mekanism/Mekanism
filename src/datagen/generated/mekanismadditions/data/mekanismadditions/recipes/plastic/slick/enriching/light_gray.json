@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:light_gray_plastic"
+    }
+  },
+  "output": {
+    "item": "mekanismadditions:light_gray_slick_plastic"
+  }
+}

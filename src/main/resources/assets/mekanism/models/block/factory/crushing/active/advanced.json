@@ -1,0 +1,10 @@
+{
+  "parent": "mekanism:block/factory/crushing/advanced",
+  "textures": {
+    "front": "mekanism:block/factory/advanced/crushing/front_active",
+    "south": "mekanism:block/factory/advanced/crushing/back_active",
+    "west": "mekanism:block/factory/advanced/crushing/right_active",
+    "east": "mekanism:block/factory/advanced/crushing/left_active",
+    "up": "mekanism:block/factory/advanced/crushing/top_active"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "amount": 8,
+    "ingredient": {
+      "tag": "forge:dusts/wood"
+    }
+  },
+  "output": {
+    "item": "mekanism:dust_charcoal"
+  }
+}

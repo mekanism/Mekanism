@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/road/orange"
+    ]
+  },
+  "criteria": {
+    "has_orange_slick_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismadditions:orange_slick_plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/road/orange"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_orange_slick_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}

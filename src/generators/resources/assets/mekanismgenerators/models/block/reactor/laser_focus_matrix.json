@@ -1,0 +1,6 @@
+{
+  "parent": "mekanism:block/basic_cube",
+  "textures": {
+    "all": "mekanismgenerators:block/laser_focus_matrix"
+  }
+}

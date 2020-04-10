@@ -1,0 +1,25 @@
+{
+  "type": "mekanism:mek_data",
+  "pattern": [
+    "ACA",
+    "IPI",
+    "ACA"
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:chemical_injection_chamber"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "A": {
+      "tag": "mekanism:alloys/basic"
+    }
+  },
+  "result": {
+    "item": "mekanism:basic_injecting_factory"
+  }
+}

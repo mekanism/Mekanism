@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "tag": "mekanismadditions:plastic_blocks/road"
+    },
+    "D": {
+      "tag": "forge:dyes/magenta"
+    }
+  },
+  "result": {
+    "item": "mekanismadditions:magenta_plastic_road",
+    "count": 4
+  }
+}

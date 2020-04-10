@@ -1,0 +1,11 @@
+{
+  "parent": "mekanism:block/factory/base",
+  "textures": {
+    "sides": "mekanism:block/factory/advanced/combining/right",
+    "front": "mekanism:block/factory/advanced/combining/front",
+    "south": "mekanism:block/factory/advanced/combining/back",
+    "west": "mekanism:block/factory/advanced/combining/right",
+    "east": "mekanism:block/factory/advanced/combining/left",
+    "up": "mekanism:block/factory/advanced/combining/top"
+  }
+}

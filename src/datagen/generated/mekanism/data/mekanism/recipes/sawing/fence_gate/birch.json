@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:birch_fence_gate"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:birch_planks",
+    "count": 2
+  },
+  "secondaryOutput": {
+    "item": "minecraft:stick",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

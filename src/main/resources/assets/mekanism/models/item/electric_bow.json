@@ -1,0 +1,27 @@
+{
+    "parent": "item/bow",
+    "textures": { 
+        "layer0": "mekanism:item/electric_bow"
+    },
+    "overrides": [
+    {
+        "predicate": {
+            "pulling": 1
+        },
+        "model": "mekanism:item/electric_bow_pulling_0"
+    },
+    {
+        "predicate": {
+            "pulling": 1,
+            "pull": 0.65
+        },
+        "model": "mekanism:item/electric_bow_pulling_1"
+    },
+    {
+        "predicate": {
+            "pulling": 1,
+            "pull": 0.9
+        },
+        "model": "mekanism:item/electric_bow_pulling_2"
+    }]
+}

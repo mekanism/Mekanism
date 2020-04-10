@@ -1,0 +1,7 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanism:block/thermal_evaporation_block",
+    "front": "mekanism:block/thermal_evaporation_controller"
+  }
+}

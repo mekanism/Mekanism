@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:osmium/armor/boots"
+    ]
+  },
+  "criteria": {
+    "has_osmium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/osmium"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:osmium/armor/boots"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_osmium",
+      "has_the_recipe"
+    ]
+  ]
+}

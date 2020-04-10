@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:enriching/dye/green"
+    ]
+  },
+  "criteria": {
+    "has_enrichment_chamber": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:enrichment_chamber"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:enriching/dye/green"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_enrichment_chamber",
+      "has_the_recipe"
+    ]
+  ]
+}

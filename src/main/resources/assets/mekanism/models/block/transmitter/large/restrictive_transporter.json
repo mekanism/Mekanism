@@ -1,0 +1,9 @@
+{
+  "parent": "mekanism:block/transmitter/large/large",
+  "textures": {
+    "side": "mekanism:block/models/multipart/restrictive_transporter_vertical",
+    "center_down": "mekanism:block/models/multipart/restrictive_transporter",
+    "side_opaque": "mekanism:block/models/multipart/opaque/restrictive_transporter_vertical",
+    "center_opaque": "mekanism:block/models/multipart/opaque/restrictive_transporter"
+  }
+}

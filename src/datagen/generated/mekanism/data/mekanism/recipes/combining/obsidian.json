@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "amount": 4,
+    "ingredient": {
+      "tag": "forge:dusts/obsidian"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:cobblestone"
+    }
+  },
+  "output": {
+    "item": "minecraft:obsidian"
+  }
+}

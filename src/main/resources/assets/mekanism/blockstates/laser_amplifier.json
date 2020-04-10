@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "mekanism:block/laser_amplifier"
+    },
+    "facing=down": {
+      "model": "mekanism:block/laser_amplifier",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "mekanism:block/laser_amplifier",
+      "x": -90,
+      "y": 180
+    },
+    "facing=south": {
+      "model": "mekanism:block/laser_amplifier",
+      "x": -90
+    },
+    "facing=east": {
+      "model": "mekanism:block/laser_amplifier",
+      "x": -90,
+      "y": -90
+    },
+    "facing=west": {
+      "model": "mekanism:block/laser_amplifier",
+      "x": -90,
+      "y": 90
+    }
+  }
+}

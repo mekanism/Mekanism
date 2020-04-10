@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:quantum_entangloporter"
+    ]
+  },
+  "criteria": {
+    "has_ultimate_circuit": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:circuits/ultimate"
+          }
+        ]
+      }
+    },
+    "has_atomic_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/atomic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:quantum_entangloporter"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ultimate_circuit",
+      "has_atomic_alloy",
+      "has_the_recipe"
+    ]
+  ]
+}

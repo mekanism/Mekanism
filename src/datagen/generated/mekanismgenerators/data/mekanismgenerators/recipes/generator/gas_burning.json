@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "OAO",
+    "XCX",
+    "OAO"
+  ],
+  "key": {
+    "C": {
+      "item": "mekanism:electrolytic_core"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    }
+  },
+  "result": {
+    "item": "mekanismgenerators:gas_burning_generator"
+  }
+}

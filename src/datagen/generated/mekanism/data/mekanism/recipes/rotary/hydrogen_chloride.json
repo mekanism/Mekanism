@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "amount": 1,
+    "tag": "forge:hydrogen_chloride"
+  },
+  "gasOutput": {
+    "gas": "mekanism:hydrogen_chloride",
+    "amount": 1
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:hydrogen_chloride"
+  },
+  "fluidOutput": {
+    "fluid": "mekanism:hydrogen_chloride",
+    "amount": 1
+  }
+}

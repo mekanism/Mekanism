@@ -1,0 +1,11 @@
+{
+  "parent": "mekanism:block/cardboard_box",
+  "overrides": [
+    {
+      "predicate": {
+        "mekanism:storage": 1
+      },
+      "model": "mekanism:item/cardboard_box_storage"
+    }
+  ]
+}

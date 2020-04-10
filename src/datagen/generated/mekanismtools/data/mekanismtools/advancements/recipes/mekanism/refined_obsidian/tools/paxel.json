@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:refined_obsidian/tools/paxel"
+    ]
+  },
+  "criteria": {
+    "has_refined_obsidian_axe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_obsidian_axe"
+          }
+        ]
+      }
+    },
+    "has_refined_obsidian_pickaxe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_obsidian_pickaxe"
+          }
+        ]
+      }
+    },
+    "has_refined_obsidian_shovel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:refined_obsidian_shovel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:refined_obsidian/tools/paxel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_refined_obsidian_axe",
+      "has_refined_obsidian_pickaxe",
+      "has_refined_obsidian_shovel",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "biomesoplenty",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:mahogany_door"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:mahogany_planks",
+    "count": 2
+  }
+}
