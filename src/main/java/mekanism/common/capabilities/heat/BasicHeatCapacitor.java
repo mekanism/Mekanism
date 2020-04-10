@@ -72,12 +72,8 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         this.emitHeat = emitHeat;
         this.heatHandler = heatHandler;
 
-        Thread.dumpStack();
-        System.out.println("Pre: " + storedHeat + " " + heatCapacity + " " + HeatAPI.AMBIENT_TEMP);
         // update the stored heat based on initial capacity
         storedHeat = heatCapacity.multiply(HeatAPI.AMBIENT_TEMP);
-        System.out.println("Default heat: " + storedHeat + " " + heatCapacity + " " + HeatAPI.AMBIENT_TEMP);
-        System.out.println(FloatingLong.ONE);
     }
 
     @Override
@@ -134,8 +130,6 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     public void deserializeNBT(CompoundNBT nbt) {
         NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.STORED, heat -> storedHeat = heat);
         NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.HEAT_CAPACITY, capacity -> heatCapacity = capacity);
-        System.out.println("READ CAPACITY " + heatCapacity);
-        System.out.println("READ HEAT " + getHeat());
     }
 
     @Override
@@ -143,8 +137,6 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putString(NBTConstants.STORED, getHeat().toString());
         nbt.putString(NBTConstants.HEAT_CAPACITY, getHeatCapacity().toString());
-        System.out.println("WRITE CAPACITY " + getHeatCapacity());
-        System.out.println("WRITE HEAT " + getHeat());
         return nbt;
     }
 
@@ -163,7 +155,6 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     public void setHeatCapacity(FloatingLong newCapacity, boolean updateHeat) {
         if (updateHeat) {
-            System.out.println("UPDATE " + heatCapacity + " " + newCapacity);
             setHeat(getHeat().add(newCapacity.subtract(getHeatCapacity()).multiply(HeatAPI.AMBIENT_TEMP)));
         }
         heatCapacity = newCapacity.copyAsConst();

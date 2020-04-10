@@ -427,7 +427,9 @@ public class MekanismBlockTypes {
           .build();
     // Superheating Element
     public static final BlockTypeTile<TileEntitySuperheatingElement> SUPERHEATING_ELEMENT =
-          BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.SUPERHEATING_ELEMENT, MekanismLang.DESCRIPTION_SUPERHEATING_ELEMENT).with(new AttributeStateActive()).build();
+          BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.SUPERHEATING_ELEMENT, MekanismLang.DESCRIPTION_SUPERHEATING_ELEMENT)
+          .with(new AttributeStateActive())
+          .build();
     // Induction Casing
     public static final BlockTypeTile<TileEntityInductionCasing> INDUCTION_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.INDUCTION_CASING, MekanismLang.DESCRIPTION_INDUCTION_CASING)

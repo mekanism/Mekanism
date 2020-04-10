@@ -262,7 +262,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
               });
     }
 
-    //TODO: reevaluate this sometime soon, this is bad code
     private void updateTemperature() {
         if (!temperatureSet) {
             biomeTemp = FloatingLong.createConst(world.getBiomeManager().getBiome(getPos()).getTemperature(getPos()));
@@ -274,28 +273,20 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         FloatingLong base = !biome.isZero() ? biome.multiply(20) : biomeTemp.multiply(40);
         base = base.plusEqual(HeatAPI.AMBIENT_TEMP);
 
-        if (heatCapacitor.getTemperature().absDifference(base).doubleValue() < 0.001) {
-            heatCapacitor.setHeat(base.multiply(heatCapacitor.getHeatCapacity()));
-        }
-
         double incr = MekanismConfig.general.evaporationHeatDissipation.get().doubleValue() * Math.sqrt(Math.abs(heatCapacitor.getTemperature().doubleValue() - base.doubleValue()));
 
         if (heatCapacitor.getTemperature().greaterThan(base)) {
             incr = -incr;
         }
 
-        FloatingLong prev = heatCapacitor.getTemperature();
-        double maxHeat = MekanismConfig.general.evaporationMaxTemp.get().multiply(heatCapacitor.getHeatCapacity()).doubleValue();
-        double newHeat = Math.max(0, incr * heatCapacitor.getHeat().doubleValue() + incr * heatCapacitor.getHeatCapacity().doubleValue() / height);
-
-        heatCapacitor.setHeat(FloatingLong.create(Math.min(maxHeat, newHeat)));
-
         if (incr < 0) {
-            totalLoss = prev.subtract(heatCapacitor.getTemperature());
+            heatCapacitor.handleHeat(new HeatPacket(TransferType.EMIT, heatCapacitor.getHeatCapacity().multiply(-incr)));
         } else {
-            totalLoss = FloatingLong.ZERO;
+            heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, heatCapacitor.getHeatCapacity().multiply(incr)));
         }
-        tempMultiplier = heatCapacitor.getTemperature().multiply(MekanismConfig.general.evaporationTempMultiplier.get()).multiply((double)height / MAX_HEIGHT);
+
+        totalLoss = incr < 0 ? FloatingLong.create(-incr).divide(heatCapacitor.getHeatCapacity()) : FloatingLong.ZERO;
+        tempMultiplier = heatCapacitor.getTemperature().subtract(HeatAPI.AMBIENT_TEMP).multiply(MekanismConfig.general.evaporationTempMultiplier.get()).multiply((double)height / MAX_HEIGHT);
         markDirty(false);
     }
 
