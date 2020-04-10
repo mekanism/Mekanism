@@ -71,7 +71,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 if (rate == 0) {
                     return 0;
                 }
-                return (double) tile.structure.lastSteamInput / rate;
+                return tile.structure.lastSteamInput / rate;
             }
         }, 40, 13));
         addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.gasTank,
@@ -84,7 +84,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 producing = EnergyDisplay.ZERO;
             } else {
                 storing = EnergyDisplay.of(tile.structure.energyContainer.getEnergy(), tile.structure.energyContainer.getMaxEnergy());
-                producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES).multiply(
+                producing = EnergyDisplay.of(FloatingLong.create(MekanismConfig.general.maxEnergyPerSteam.get()).divide(TurbineUpdateProtocol.MAX_BLADES).multiply(
                       tile.structure.clientFlow * Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));
             }
             return Arrays.asList(MekanismLang.STORING.translate(storing), GeneratorsLang.PRODUCING_AMOUNT.translate(producing));
@@ -98,7 +98,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, 0x404040);
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 5, 0x404040);
         if (tile.structure != null) {
-            FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES)
+            FloatingLong energyMultiplier = FloatingLong.create(MekanismConfig.general.maxEnergyPerSteam.get()).divide(TurbineUpdateProtocol.MAX_BLADES)
                   .multiply(Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
             double rate = tile.structure.lowerVolume * (tile.structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
             rate = Math.min(rate, tile.structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());

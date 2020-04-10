@@ -9,9 +9,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
-import mekanism.api.heat.HeatPacket;
-import mekanism.api.heat.HeatPacket.TransferType;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
@@ -20,7 +17,7 @@ import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -84,7 +81,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 data.prevActive = data.activeTicks > 0;
             }
 
-            boolean newHot = !SynchronizedBoilerData.BASE_BOIL_TEMP.subtract(0.01).greaterThan(structure.getTotalTemperature());
+            boolean newHot = structure.getTotalTemperature() >= SynchronizedBoilerData.BASE_BOIL_TEMP - 0.01;
             if (newHot != structure.clientHot) {
                 needsPacket = true;
                 structure.clientHot = newHot;
@@ -94,11 +91,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             HeatTransfer transfer = structure.simulate();
             // update temperature
             structure.update(null);
-            structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer().copyAsConst();
-            if (!SynchronizedBoilerData.BASE_BOIL_TEMP.greaterThan(structure.getTotalTemperature()) && !structure.waterTank.isEmpty()) {
+            structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer();
+            if (structure.getTotalTemperature() >= SynchronizedBoilerData.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
                 int steamAmount = structure.steamTank.getStored();
-                FloatingLong heatAvailable = structure.getHeatAvailable();
-                structure.lastMaxBoil = heatAvailable.divide(HeatUtils.getVaporizationEnthalpy()).intValue();
+                double heatAvailable = structure.getHeatAvailable();
+                structure.lastMaxBoil = (int)(heatAvailable / HeatUtils.getVaporizationEnthalpy());
 
                 int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterTank.getFluidAmount());
                 amountToBoil = Math.min(amountToBoil, structure.steamTank.getCapacity() - steamAmount);
@@ -111,7 +108,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                     structure.steamTank.growStack(amountToBoil, Action.EXECUTE);
                 }
 
-                structure.handleHeat(new HeatPacket(TransferType.EMIT, HeatUtils.getVaporizationEnthalpy().multiply(amountToBoil)));
+                structure.handleHeat(-amountToBoil * HeatUtils.getVaporizationEnthalpy());
                 structure.lastBoilRate = amountToBoil;
             } else {
                 structure.lastBoilRate = 0;
@@ -155,12 +152,12 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return Mekanism.boilerManager;
     }
 
-    public FloatingLong getLastEnvironmentLoss() {
-        return structure == null ? FloatingLong.ZERO : structure.lastEnvironmentLoss;
+    public double getLastEnvironmentLoss() {
+        return structure == null ? 0 : structure.lastEnvironmentLoss;
     }
 
-    public FloatingLong getTemperature() {
-        return structure == null ? FloatingLong.ZERO : structure.getTotalTemperature();
+    public double getTemperature() {
+        return structure == null ? 0 : structure.getTotalTemperature();
     }
 
     public int getLastBoilRate() {
@@ -269,7 +266,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.steamTank.setStack(value);
             }
         }));
-        container.track(SyncableFloatingLong.create(this::getLastEnvironmentLoss, value -> {
+        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> {
             if (structure != null) {
                 structure.lastEnvironmentLoss = value;
             }
@@ -284,7 +281,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.superheatingElements = value;
             }
         }));
-        container.track(SyncableFloatingLong.create(this::getTemperature, value -> {
+        container.track(SyncableDouble.create(this::getTemperature, value -> {
             if (structure != null) {
                 structure.heatCapacitor.setHeat(value);
             }

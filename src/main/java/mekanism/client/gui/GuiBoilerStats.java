@@ -34,7 +34,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
         }, this));
         addButton(boilGraph = new GuiGraph(this, 8, 83, 160, 36, MekanismLang.BOIL_RATE::translate));
         addButton(maxGraph = new GuiGraph(this, 8, 122, 160, 36, MekanismLang.MAX_BOIL_RATE::translate));
-        maxGraph.enableFixedScale((MekanismConfig.general.superheatingHeatTransfer.get().multiply(tile.getSuperheatingElements())).divide(HeatUtils.getVaporizationEnthalpy()).intValue());
+        maxGraph.enableFixedScale((int)((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getSuperheatingElements()) / HeatUtils.getVaporizationEnthalpy()));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
         drawString(MekanismLang.BOILER_MAX_STEAM.translate(tile.structure == null ? 0 : tile.structure.steamTank.getCapacity()), 8, 35, 0x404040);
         drawString(MekanismLang.BOILER_HEAT_TRANSFER.translate(), 8, 49, 0x797979);
         drawString(MekanismLang.BOILER_HEATERS.translate(tile.getSuperheatingElements()), 14, 58, 0x404040);
-        int boilCapacity = MekanismConfig.general.superheatingHeatTransfer.get().multiply(tile.getSuperheatingElements()).divide(HeatUtils.getVaporizationEnthalpy()).intValue();
+        int boilCapacity = (int)((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getSuperheatingElements()) / HeatUtils.getVaporizationEnthalpy());
         drawString(MekanismLang.BOILER_CAPACITY.translate(boilCapacity), 8, 72, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

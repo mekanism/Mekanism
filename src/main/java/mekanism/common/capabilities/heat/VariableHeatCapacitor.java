@@ -17,12 +17,12 @@ public class VariableHeatCapacitor extends BasicHeatCapacitor {
     private DoubleSupplier insulationCoefficientSupplier;
 
     public static VariableHeatCapacitor create(double heatCapacity, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
-        return new VariableHeatCapacitor(heatCapacity, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION, absorbHeat, emitHeat, heatHandler);
+        return new VariableHeatCapacitor(heatCapacity, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION, heatHandler);
     }
 
     protected VariableHeatCapacitor(double heatCapacity, DoubleSupplier conductionCoefficient, DoubleSupplier insulationCoefficient,
-          boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
-        super(heatCapacity, conductionCoefficient.getAsDouble(), insulationCoefficient.getAsDouble(), absorbHeat, emitHeat, heatHandler);
+          @Nullable IMekanismHeatHandler heatHandler) {
+        super(heatCapacity, conductionCoefficient.getAsDouble(), insulationCoefficient.getAsDouble(), heatHandler);
         this.conductionCoefficientSupplier = conductionCoefficient;
         this.insulationCoefficientSupplier = insulationCoefficient;
     }

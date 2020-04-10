@@ -7,8 +7,6 @@ import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
-import mekanism.api.heat.HeatPacket;
-import mekanism.api.heat.HeatPacket.TransferType;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
@@ -22,6 +20,7 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.CapabilityUtils;
@@ -45,10 +44,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
      * The FluidTank for this generator.
      */
     public BasicFluidTank lavaTank;
-    private FloatingLong thermalEfficiency = FloatingLong.create(0.5);
+    private double thermalEfficiency = 0.5;
     private FloatingLong producingEnergy = FloatingLong.ZERO;
-    private FloatingLong lastTransferLoss = FloatingLong.ZERO;
-    private FloatingLong lastEnvironmentLoss = FloatingLong.ZERO;
+    private double lastTransferLoss;
+    private double lastEnvironmentLoss;
 
     private BasicHeatCapacitor heatCapacitor;
     private FluidFuelInventorySlot fuelSlot;
@@ -93,18 +92,18 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
         FloatingLong prev = getEnergyContainer().getEnergy();
-        heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, getBoost()));
+        heatCapacitor.handleHeat(getBoost().doubleValue());
         if (MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero() &&
             lavaTank.extract(FLUID_RATE, Action.SIMULATE, AutomationType.INTERNAL).getAmount() == FLUID_RATE) {
             setActive(true);
             lavaTank.extract(FLUID_RATE, Action.EXECUTE, AutomationType.INTERNAL);
-            heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, MekanismGeneratorsConfig.generators.heatGeneration.get()));
+            heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.heatGeneration.get().doubleValue());
         } else {
             setActive(false);
         }
         HeatTransfer loss = simulate();
-        lastTransferLoss = loss.getAdjacentTransfer().copyAsConst();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer().copyAsConst();
+        lastTransferLoss = loss.getAdjacentTransfer();
+        lastEnvironmentLoss = loss.getEnvironmentTransfer();
         producingEnergy = getEnergyContainer().getEnergy().subtract(prev);
     }
 
@@ -123,20 +122,19 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     @Nonnull
     @Override
-    public FloatingLong getInverseInsulation(int capacitor, @Nullable Direction side) {
-        return side == Direction.DOWN ? FloatingLong.ZERO : super.getInverseInsulation(capacitor, side);
+    public double getInverseInsulation(int capacitor, @Nullable Direction side) {
+        return side == Direction.DOWN ? 0 : super.getInverseInsulation(capacitor, side);
     }
 
     @Nonnull
     @Override
     public HeatTransfer simulate() {
-        FloatingLong temp = getTotalTemperature();
-        if (!temp.isZero()) {
-            FloatingLong carnotEfficiency = temp.divide(temp.add(HeatAPI.AMBIENT_TEMP));
-            FloatingLong heatLost = thermalEfficiency.multiply(temp);
-            FloatingLong workDone = heatLost.multiply(carnotEfficiency);
-            heatCapacitor.handleHeat(new HeatPacket(TransferType.EMIT, heatLost));
-            getEnergyContainer().insert(workDone, Action.EXECUTE, AutomationType.INTERNAL);
+        double temp = getTotalTemperature();
+        if (temp > HeatAPI.AMBIENT_TEMP) {
+            double carnotEfficiency = temp / (temp + HeatAPI.AMBIENT_TEMP);
+            double heatLost = thermalEfficiency * temp;
+            heatCapacitor.handleHeat(-heatLost);
+            getEnergyContainer().insert(FloatingLong.create(heatLost * carnotEfficiency), Action.EXECUTE, AutomationType.INTERNAL);
         }
         return super.simulate();
     }
@@ -155,11 +153,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return producingEnergy;
     }
 
-    public FloatingLong getLastTransferLoss() {
+    public double getLastTransferLoss() {
         return lastTransferLoss;
     }
 
-    public FloatingLong getLastEnvironmentLoss() {
+    public double getLastEnvironmentLoss() {
         return lastEnvironmentLoss;
     }
 
@@ -172,7 +170,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableFloatingLong.create(this::getProducingEnergy, value -> producingEnergy = value));
-        container.track(SyncableFloatingLong.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
-        container.track(SyncableFloatingLong.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
+        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 }

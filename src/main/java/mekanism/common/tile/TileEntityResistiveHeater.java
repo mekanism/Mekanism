@@ -6,8 +6,6 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
-import mekanism.api.heat.HeatPacket;
-import mekanism.api.heat.HeatPacket.TransferType;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
@@ -22,7 +20,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -36,7 +34,7 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     private float soundScale = 1;
-    public FloatingLong lastEnvironmentLoss = FloatingLong.ZERO;
+    public double lastEnvironmentLoss;
 
     private ResistiveHeaterEnergyContainer energyContainer;
     private BasicHeatCapacitor heatCapacitor;
@@ -78,13 +76,13 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         if (MekanismUtils.canFunction(this)) {
             toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
             if (!toUse.isZero()) {
-                heatCapacitor.handleHeat(new HeatPacket(TransferType.ABSORB, toUse.multiply(MekanismConfig.general.resistiveHeaterEfficiency.get())));
+                heatCapacitor.handleHeat(-toUse.multiply(MekanismConfig.general.resistiveHeaterEfficiency.get()).doubleValue());
                 energyContainer.extract(toUse, Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
         setActive(!toUse.isZero());
         HeatTransfer transfer = simulate();
-        lastEnvironmentLoss = transfer.getEnvironmentTransfer().copyAsConst();
+        lastEnvironmentLoss = transfer.getEnvironmentTransfer();
         float newSoundScale = toUse.divide(100_000).floatValue();
         if (Math.abs(newSoundScale - soundScale) > 0.01) {
             soundScale = newSoundScale;
@@ -123,7 +121,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableDouble.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 
     @Nonnull

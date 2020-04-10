@@ -20,7 +20,6 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
@@ -46,7 +45,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public MultiblockGasTank<TileEntityBoilerCasing> steamTank;
     public MultiblockHeatCapacitor<TileEntityBoilerCasing> heatCapacitor;
 
-    public FloatingLong lastEnvironmentLoss = FloatingLong.ZERO;
+    public double lastEnvironmentLoss;
     public int lastBoilRate;
     public int lastMaxBoil;
 
@@ -76,15 +75,14 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
         heatCapacitor = MultiblockHeatCapacitor.create(tile,
             CASING_HEAT_CAPACITY,
             () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size(),
-            () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size(),
-            true, true);
+            () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size());
         heatCapacitors = Collections.singletonList(heatCapacitor);
     }
 
     @Override
     public void onCreated() {
         // update the heat capacity now that we've read
-        heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY.multiply(locations.size()), true);
+        heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY * locations.size(), true);
     }
 
     public void setFluidTankData(@Nonnull List<IExtendedFluidTank> toCopy) {
