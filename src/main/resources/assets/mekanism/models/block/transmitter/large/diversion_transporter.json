@@ -1,9 +1,0 @@
-{
-  "parent": "mekanism:block/transmitter/large/large",
-  "textures": {
-    "side": "mekanism:block/models/multipart/diversion_transporter_vertical",
-    "center_down": "mekanism:block/models/multipart/diversion_transporter",
-    "side_opaque": "mekanism:block/models/multipart/opaque/diversion_transporter_vertical",
-    "center_opaque": "mekanism:block/models/multipart/opaque/diversion_transporter"
-  }
-}

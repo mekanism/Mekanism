@@ -1,9 +1,0 @@
-{
-  "parent": "mekanism:block/transmitter/large/large",
-  "textures": {
-    "side": "mekanism:block/models/multipart/basic_mechanical_pipe_vertical",
-    "center_down": "mekanism:block/models/multipart/basic_mechanical_pipe",
-    "side_opaque": "mekanism:block/models/multipart/opaque/basic_mechanical_pipe_vertical",
-    "center_opaque": "mekanism:block/models/multipart/opaque/basic_mechanical_pipe"
-  }
-}

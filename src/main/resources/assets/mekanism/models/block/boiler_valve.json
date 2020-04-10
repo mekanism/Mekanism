@@ -1,6 +1,0 @@
-{
-  "parent": "mekanism:block/basic_cube",
-  "textures": {
-    "all": "mekanism:block/boiler_valve"
-  }
-}

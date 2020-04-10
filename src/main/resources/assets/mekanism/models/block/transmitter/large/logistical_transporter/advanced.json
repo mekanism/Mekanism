@@ -1,9 +1,0 @@
-{
-  "parent": "mekanism:block/transmitter/large/logistical_transporter/transporter",
-  "textures": {
-    "side": "mekanism:block/models/multipart/advanced_logistical_transporter_vertical",
-    "center_down": "mekanism:block/models/multipart/advanced_logistical_transporter",
-    "side_opaque": "mekanism:block/models/multipart/opaque/advanced_logistical_transporter_vertical",
-    "center_opaque": "mekanism:block/models/multipart/opaque/advanced_logistical_transporter"
-  }
-}

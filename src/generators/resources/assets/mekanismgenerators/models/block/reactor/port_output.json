@@ -1,6 +1,0 @@
-{
-  "parent": "mekanismgenerators:block/reactor/port",
-  "textures": {
-    "all": "mekanismgenerators:block/reactor_port_output"
-  }
-}
