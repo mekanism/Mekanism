@@ -17,7 +17,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -58,7 +57,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), TubeTier.class);
-        buffer = BasicGasTank.create(getCapacityAsLong(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this);
+        buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         tanks = Collections.singletonList(buffer);
         readOnlyHandler = new ProxyGasHandler(this, null, null);
     }
@@ -201,13 +200,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         return true;
     }
 
-    public long getCapacityAsLong() {
-        return tier.getTubeCapacity();
-    }
-
     @Override
-    public int getCapacity() {
-        return MathUtils.clampToInt(getCapacityAsLong());
+    public long getCapacity() {
+        return tier.getTubeCapacity();
     }
 
     @Nonnull

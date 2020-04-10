@@ -1,5 +1,8 @@
 package mekanism.common.transmitters.grid;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -8,20 +11,18 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.math.MathUtils;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
-import mekanism.common.distribution.target.FluidHandlerTarget;
-import mekanism.common.distribution.target.FluidTransmitterSaveTarget;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.distribution.target.FluidHandlerTarget;
+import mekanism.common.distribution.target.FluidTransmitterSaveTarget;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
@@ -46,14 +47,17 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     public float fluidScale;
     private int prevTransferAmount;
 
+    //TODO: Make fluid storage support storing as longs?
+    private int intCapacity;
+
     public FluidNetwork() {
-        fluidTank = VariableCapacityFluidTank.create(this::getCapacity, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, this);
+        fluidTank = VariableCapacityFluidTank.create(this::getCapacityAsInt, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, this);
         fluidTanks = Collections.singletonList(fluidTank);
     }
 
     public FluidNetwork(UUID networkID) {
         super(networkID);
-        fluidTank = VariableCapacityFluidTank.create(this::getCapacity, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, this);
+        fluidTank = VariableCapacityFluidTank.create(this::getCapacityAsInt, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, this);
         fluidTanks = Collections.singletonList(fluidTank);
     }
 
@@ -80,10 +84,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void adoptTransmittersAndAcceptorsFrom(FluidNetwork net) {
         float oldScale = fluidScale;
-        int oldCapacity = getCapacity();
+        long oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the fluid scales
-        int capacity = getCapacity();
+        long capacity = getCapacity();
         fluidScale = Math.min(1, capacity == 0 ? 0 : (fluidScale * oldCapacity + net.fluidScale * net.capacity) / capacity);
         if (isRemote()) {
             if (fluidTank.isEmpty() && !net.fluidTank.isEmpty()) {
@@ -141,13 +145,29 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void clampBuffer() {
         if (!fluidTank.isEmpty()) {
-            int capacity = getCapacity();
+            int capacity = getCapacityAsInt();
             if (fluidTank.getFluidAmount() > capacity) {
                 if (fluidTank.setStackSize(capacity, Action.EXECUTE) != capacity) {
                     //TODO: Print warning/error
                 }
             }
         }
+    }
+
+    @Override
+    protected synchronized void updateCapacity(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
+        super.updateCapacity(transmitter);
+        intCapacity = MathUtils.clampToInt(getCapacity());
+    }
+
+    @Override
+    public synchronized void updateCapacity() {
+        super.updateCapacity();
+        intCapacity = MathUtils.clampToInt(getCapacity());
+    }
+
+    public int getCapacityAsInt() {
+        return intCapacity;
     }
 
     @Override
@@ -226,7 +246,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     public float computeContentScale() {
-        float scale = (float) fluidTank.getFluidAmount() / (float) fluidTank.getCapacity();
+        float scale = fluidTank.getFluidAmount() / (float) fluidTank.getCapacity();
         float ret = Math.max(fluidScale, scale);
         if (prevTransferAmount > 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);

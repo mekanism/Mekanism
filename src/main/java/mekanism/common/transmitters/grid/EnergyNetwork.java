@@ -118,7 +118,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     @Override
     protected synchronized void updateCapacity(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
         floatingLongCapacity = floatingLongCapacity.plusEqual(transmitter.getCapacityAsFloatingLong());
-        capacity = floatingLongCapacity.intValue();
+        capacity = floatingLongCapacity.longValue();
     }
 
     @Override
@@ -129,7 +129,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
         }
         if (!floatingLongCapacity.equals(sum)) {
             floatingLongCapacity = sum;
-            capacity = floatingLongCapacity.intValue();
+            capacity = floatingLongCapacity.longValue();
             updateSaveShares = true;
         }
     }
@@ -202,11 +202,6 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
                 energyScale = scale;
                 needsUpdate = true;
             }
-            if(Math.abs(scale-energyScale) > 0.01 || (scale != energyScale && (scale == 0 || scale == 1)))
-            {
-                energyScale = scale;
-                needsUpdate = true;
-            }
             if (needsUpdate) {
                 MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, energyScale));
                 needsUpdate = false;
@@ -221,7 +216,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     }
 
     public float computeContentScale() {
-        float scale = energyContainer.getEnergy().floatValue() / energyContainer.getMaxEnergy().floatValue();
+        float scale = (float) energyContainer.getEnergy().divideToLevel(energyContainer.getMaxEnergy());
         float ret = Math.max(energyScale, scale);
         if (!prevTransferAmount.isZero() && ret < 1) {
             ret = Math.min(1, ret + 0.02F);

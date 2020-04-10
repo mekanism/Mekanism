@@ -95,7 +95,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             structure.update(null);
             structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer();
             if (structure.getTotalTemperature() >= SynchronizedBoilerData.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
-                long steamAmount = structure.steamTank.getStored();
                 double heatAvailable = structure.getHeatAvailable();
                 structure.lastMaxBoil = (int)(heatAvailable / HeatUtils.getVaporizationEnthalpy());
 

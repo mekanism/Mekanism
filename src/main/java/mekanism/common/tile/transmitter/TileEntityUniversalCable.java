@@ -219,8 +219,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     }
 
     @Override
-    public int getCapacity() {
-        return getCapacityAsFloatingLong().intValue();
+    public long getCapacity() {
+        return getCapacityAsFloatingLong().longValue();
     }
 
     /**

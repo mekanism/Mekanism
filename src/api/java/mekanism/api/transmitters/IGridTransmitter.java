@@ -43,12 +43,12 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     ITextComponent getTransmitterNetworkBuffer();
 
-    int getTransmitterNetworkCapacity();
+    long getTransmitterNetworkCapacity();
 
     @Nonnull
     FloatingLong getCapacityAsFloatingLong();
 
-    int getCapacity();
+    long getCapacity();
 
     World world();
 
