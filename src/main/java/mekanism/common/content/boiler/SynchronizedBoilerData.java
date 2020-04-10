@@ -112,8 +112,6 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
             if (i < heatCapacitors.size()) {
                 //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
                 heatCapacitors.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
-                System.out.println("Got capacity: " + heatCapacitors.get(i).getHeatCapacity());
-                System.out.println("Got heat: " + heatCapacitors.get(i).getHeat());
             }
         }
     }

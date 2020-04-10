@@ -643,7 +643,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             for (IHeatCapacitor capacitor : heatCapacitors) {
                 container.track(SyncableFloatingLong.create(capacitor::getHeat, capacitor::setHeat));
                 if (capacitor instanceof BasicHeatCapacitor) {
-                    container.track(SyncableFloatingLong.create(capacitor::getHeatCapacity, (capacity) -> ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacity, true)));
+                    container.track(SyncableFloatingLong.create(capacitor::getHeatCapacity, (capacity) -> ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacity, false)));
                 }
             }
         }

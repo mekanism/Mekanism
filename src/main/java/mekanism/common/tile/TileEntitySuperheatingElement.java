@@ -27,6 +27,11 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
     }
 
     @Override
+    public boolean lightUpdate() {
+        return true;
+    }
+
+    @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
         boolean newHot = false;

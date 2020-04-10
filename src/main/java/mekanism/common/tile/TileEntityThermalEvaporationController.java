@@ -286,7 +286,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         }
 
         totalLoss = incr < 0 ? FloatingLong.create(-incr).divide(heatCapacitor.getHeatCapacity()) : FloatingLong.ZERO;
-        tempMultiplier = heatCapacitor.getTemperature().multiply(MekanismConfig.general.evaporationTempMultiplier.get()).multiply((double)height / MAX_HEIGHT);
+        tempMultiplier = heatCapacitor.getTemperature().subtract(HeatAPI.AMBIENT_TEMP).multiply(MekanismConfig.general.evaporationTempMultiplier.get()).multiply((double)height / MAX_HEIGHT);
         markDirty(false);
     }
 

@@ -30,6 +30,7 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -219,5 +220,8 @@ public class StorageUtils {
 
     public static void mergeContainers(IHeatCapacitor capacitor, IHeatCapacitor mergeCapacitor) {
         capacitor.setHeat(capacitor.getHeat().add(mergeCapacitor.getHeat()));
+        if (capacitor instanceof BasicHeatCapacitor) {
+            ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacitor.getHeatCapacity().add(mergeCapacitor.getHeatCapacity()), false);
+        }
     }
 }
