@@ -87,7 +87,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     public void update() {
-        if (heatToHandle > 0) {
+        if (heatToHandle != 0) {
             storedHeat += heatToHandle;
             //notify listeners
             onContentsChanged();

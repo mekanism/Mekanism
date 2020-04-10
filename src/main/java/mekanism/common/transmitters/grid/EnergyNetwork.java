@@ -221,13 +221,14 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     }
 
     public float computeContentScale() {
-        if (prevTransferAmount.isZero()) {
-            return 0;
+        float scale = energyContainer.getEnergy().floatValue() / energyContainer.getMaxEnergy().floatValue();
+        float ret = Math.max(energyScale, scale);
+        if (!prevTransferAmount.isZero() && ret < 1) {
+            ret = Math.min(1, ret + 0.02F);
+        } else if (prevTransferAmount.isZero() && ret > 0) {
+            ret = Math.max(scale, ret - 0.02F);
         }
-        FloatingLong stored = energyContainer.getEnergy(), max = energyContainer.getMaxEnergy();
-        FloatingLong scale = stored.divide(energyContainer.getMaxEnergy());
-        double transferScale = Math.min(Math.ceil(Math.log10(prevTransferAmount.floatValue())*2)/10, 1);
-        return (float) Math.max(transferScale, max.isZero() ? 0 : scale.floatValue());
+        return ret;
     }
 
     @Override

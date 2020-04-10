@@ -76,7 +76,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         if (MekanismUtils.canFunction(this)) {
             toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
             if (!toUse.isZero()) {
-                heatCapacitor.handleHeat(-toUse.multiply(MekanismConfig.general.resistiveHeaterEfficiency.get()).doubleValue());
+                heatCapacitor.handleHeat(toUse.multiply(MekanismConfig.general.resistiveHeaterEfficiency.get()).doubleValue());
                 energyContainer.extract(toUse, Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
