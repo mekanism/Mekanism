@@ -219,9 +219,9 @@ public class StorageUtils {
     }
 
     public static void mergeContainers(IHeatCapacitor capacitor, IHeatCapacitor mergeCapacitor) {
-        capacitor.setHeat(capacitor.getHeat().add(mergeCapacitor.getHeat()));
+        capacitor.setHeat(capacitor.getHeat() + mergeCapacitor.getHeat());
         if (capacitor instanceof BasicHeatCapacitor) {
-            ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacitor.getHeatCapacity().add(mergeCapacitor.getHeatCapacity()), false);
+            ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacitor.getHeatCapacity() + mergeCapacitor.getHeatCapacity(), false);
         }
     }
 }

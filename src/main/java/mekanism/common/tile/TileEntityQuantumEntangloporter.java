@@ -22,7 +22,6 @@ import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -45,7 +44,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.registries.MekanismBlocks;
@@ -74,14 +73,14 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, IFrequencyHandler, ISustainedData, IChunkLoader, IHasFrequency {
 
     public InventoryFrequency frequency;
-    //TODO: These seem to be used, do we want to have some sort of stats thing for the quantum entangloporter
-    private FloatingLong lastTransferLoss = FloatingLong.ZERO;
-    private FloatingLong lastEnvironmentLoss = FloatingLong.ZERO;
     public List<Frequency> publicCache = new ArrayList<>();
     public List<Frequency> privateCache = new ArrayList<>();
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
     public TileComponentChunkLoader<TileEntityQuantumEntangloporter> chunkLoaderComponent;
+
+    private double lastTransferLoss;
+    private double lastEnvironmentLoss;
 
     public TileEntityQuantumEntangloporter() {
         super(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
@@ -187,7 +186,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         HeatTransfer loss = simulate();
         lastTransferLoss = loss.getAdjacentTransfer();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer().copyAsConst();
+        lastEnvironmentLoss = loss.getEnvironmentTransfer();
 
         FrequencyManager manager = getManager(frequency);
         Frequency lastFreq = frequency;
@@ -383,11 +382,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         return remap;
     }
 
-    public FloatingLong getLastTransferLoss() {
+    public double getLastTransferLoss() {
         return lastTransferLoss;
     }
 
-    public FloatingLong getLastEnvironmentLoss() {
+    public double getLastEnvironmentLoss() {
         return lastEnvironmentLoss;
     }
 
@@ -420,8 +419,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
-        container.track(SyncableFloatingLong.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
+        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
         container.track(SyncableFrequency.create(() -> frequency, value -> frequency = value));
         container.track(SyncableFrequencyList.create(this::getPublicFrequencies, value -> publicCache = value));
         container.track(SyncableFrequencyList.create(this::getPrivateFrequencies, value -> privateCache = value));

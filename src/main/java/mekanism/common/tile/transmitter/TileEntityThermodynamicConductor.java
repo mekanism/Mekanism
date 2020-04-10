@@ -8,9 +8,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -43,7 +43,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     public final ConductorTier tier;
 
-    public FloatingLong clientTemperature = FloatingLong.ZERO;
+    public double clientTemperature = HeatAPI.AMBIENT_TEMP;
 
     private final ProxyHeatHandler readOnlyHandler;
     private final List<IHeatCapacitor> capacitors;
@@ -125,14 +125,14 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        updateTag.putString(NBTConstants.TEMPERATURE, buffer.getHeat().toString());
+        updateTag.putDouble(NBTConstants.TEMPERATURE, buffer.getHeat());
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.TEMPERATURE, heat -> buffer.setHeat(heat));
+        NBTUtils.setDoubleIfPresent(tag, NBTConstants.TEMPERATURE, heat -> buffer.setHeat(heat));
     }
 
     public ColorRGBA getBaseColor() {

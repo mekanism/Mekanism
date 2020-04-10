@@ -4,10 +4,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.heat.HeatPacket;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.ISidedHeatHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.util.Direction;
 
@@ -29,44 +27,44 @@ public class ProxyHeatHandler extends ProxyHandler implements IHeatHandler {
     }
 
     @Override
-    public FloatingLong getTemperature(int capacitor) {
+    public double getTemperature(int capacitor) {
         return heatHandler.getTemperature(capacitor, side);
     }
 
     @Override
-    public FloatingLong getInverseConduction(int capacitor) {
+    public double getInverseConduction(int capacitor) {
         return heatHandler.getInverseConduction(capacitor, side);
     }
 
     @Override
-    public FloatingLong getHeatCapacity(int capacitor) {
+    public double getHeatCapacity(int capacitor) {
         return heatHandler.getHeatCapacity(capacitor, side);
     }
 
     @Override
-    public void handleHeat(int capacitor, HeatPacket transfer) {
+    public void handleHeat(int capacitor, double transfer) {
         if (!readOnly) {
             heatHandler.handleHeat(capacitor, transfer, side);
         }
     }
 
     @Override
-    public FloatingLong getTotalTemperature() {
+    public double getTotalTemperature() {
         return heatHandler.getTotalTemperature(side);
     }
 
     @Override
-    public FloatingLong getTotalInverseConductionCoefficient() {
+    public double getTotalInverseConduction() {
         return heatHandler.getTotalInverseConductionCoefficient(side);
     }
 
     @Override
-    public FloatingLong getTotalHeatCapacity() {
+    public double getTotalHeatCapacity() {
         return heatHandler.getTotalHeatCapacity(side);
     }
 
     @Override
-    public void handleHeat(HeatPacket transfer) {
+    public void handleHeat(double transfer) {
         if (!readOnly) {
             heatHandler.handleHeat(transfer, side);
         }

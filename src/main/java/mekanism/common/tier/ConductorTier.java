@@ -1,29 +1,28 @@
 package mekanism.common.tier;
 
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.ColorRGBA;
-import mekanism.common.config.value.CachedFloatingLongValue;
+import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.util.EnumUtils;
 
 public enum ConductorTier implements ITier {
-    BASIC(BaseTier.BASIC, FloatingLong.createConst(5), HeatAPI.DEFAULT_HEAT_CAPACITY, FloatingLong.createConst(10), new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(5), HeatAPI.DEFAULT_HEAT_CAPACITY, FloatingLong.createConst(400), new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ELITE(BaseTier.ELITE, FloatingLong.createConst(5), HeatAPI.DEFAULT_HEAT_CAPACITY, FloatingLong.createConst(8_000), new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(5), HeatAPI.DEFAULT_HEAT_CAPACITY, FloatingLong.createConst(100_000), new ColorRGBA(0.2, 0.2, 0.2, 1));
+    BASIC(BaseTier.BASIC, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 10, new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ADVANCED(BaseTier.ADVANCED, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 400, new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ELITE(BaseTier.ELITE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 8_000, new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ULTIMATE(BaseTier.ULTIMATE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 100_000, new ColorRGBA(0.2, 0.2, 0.2, 1));
 
     private final ColorRGBA baseColor;
-    private final FloatingLong baseConduction;
-    private final FloatingLong baseHeatCapacity;
-    private final FloatingLong baseConductionInsulation;
+    private final double baseConduction;
+    private final double baseHeatCapacity;
+    private final double baseConductionInsulation;
     private final BaseTier baseTier;
-    private CachedFloatingLongValue conductionReference;
-    private CachedFloatingLongValue capacityReference;
-    private CachedFloatingLongValue insulationReference;
+    private CachedDoubleValue conductionReference;
+    private CachedDoubleValue capacityReference;
+    private CachedDoubleValue insulationReference;
 
-    ConductorTier(BaseTier tier, FloatingLong conduction, FloatingLong heatCapacity, FloatingLong conductionInsulation, ColorRGBA color) {
+    ConductorTier(BaseTier tier, double conduction, double heatCapacity, double conductionInsulation, ColorRGBA color) {
         baseConduction = conduction;
         baseHeatCapacity = heatCapacity;
         baseConductionInsulation = conductionInsulation;
@@ -46,15 +45,15 @@ public enum ConductorTier implements ITier {
         return baseTier;
     }
 
-    public FloatingLong getInverseConduction() {
+    public double getInverseConduction() {
         return conductionReference == null ? getBaseConduction() : conductionReference.get();
     }
 
-    public FloatingLong getInverseConductionInsulation() {
+    public double getInverseConductionInsulation() {
         return insulationReference == null ? getBaseConductionInsulation() : insulationReference.get();
     }
 
-    public FloatingLong getHeatCapacity() {
+    public double getHeatCapacity() {
         return capacityReference == null ? getBaseHeatCapacity() : capacityReference.get();
     }
 
@@ -62,22 +61,22 @@ public enum ConductorTier implements ITier {
         return baseColor;
     }
 
-    public FloatingLong getBaseConduction() {
+    public double getBaseConduction() {
         return baseConduction;
     }
 
-    public FloatingLong getBaseHeatCapacity() {
+    public double getBaseHeatCapacity() {
         return baseHeatCapacity;
     }
 
-    public FloatingLong getBaseConductionInsulation() {
+    public double getBaseConductionInsulation() {
         return baseConductionInsulation;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the BinTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedFloatingLongValue conductionReference, CachedFloatingLongValue capacityReference, CachedFloatingLongValue insulationReference) {
+    public void setConfigReference(CachedDoubleValue conductionReference, CachedDoubleValue capacityReference, CachedDoubleValue insulationReference) {
         this.conductionReference = conductionReference;
         this.capacityReference = capacityReference;
         this.insulationReference = insulationReference;
