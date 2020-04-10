@@ -322,7 +322,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         return FloatingLong.create(getCapacity());
     }
 
-    public abstract int getCapacity();
+    public abstract long getCapacity();
 
     @Nullable
     public abstract BUFFER getBuffer();

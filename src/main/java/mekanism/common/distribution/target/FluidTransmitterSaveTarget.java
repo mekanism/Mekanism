@@ -1,6 +1,7 @@
 package mekanism.common.distribution.target;
 
 import mekanism.api.annotations.NonNull;
+import mekanism.api.math.MathUtils;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.distribution.SplitInfo;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
@@ -11,6 +12,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+//TODO: Improve handling for fluid storage as longs
 public class FluidTransmitterSaveTarget extends Target<IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack>, Integer, @NonNull FluidStack> {
 
     private FluidStack currentStored = FluidStack.EMPTY;
@@ -21,7 +23,7 @@ public class FluidTransmitterSaveTarget extends Target<IGridTransmitter<IFluidHa
 
     @Override
     protected void acceptAmount(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter, SplitInfo<Integer> splitInfo, Integer amount) {
-        amount = Math.min(amount, transmitter.getCapacity() - currentStored.getAmount());
+        amount = Math.min(amount, MathUtils.clampToInt(transmitter.getCapacity() - currentStored.getAmount()));
         FluidStack newFluid = new FluidStack(extra, amount);
         if (currentStored.isEmpty()) {
             currentStored = newFluid;
@@ -36,7 +38,7 @@ public class FluidTransmitterSaveTarget extends Target<IGridTransmitter<IFluidHa
         if (!currentStored.isEmpty() && !currentStored.isFluidEqual(fluidStack)) {
             return 0;
         }
-        return Math.min(fluidStack.getAmount(), transmitter.getCapacity() - currentStored.getAmount());
+        return Math.min(fluidStack.getAmount(), MathUtils.clampToInt(transmitter.getCapacity() - currentStored.getAmount()));
     }
 
     public void saveShare(Direction handlerDirection) {

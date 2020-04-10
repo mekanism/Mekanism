@@ -90,10 +90,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
         float oldScale = gasScale;
-        int oldCapacity = getCapacity();
+        long oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the gas scales
-        int capacity = getCapacity();
+        long capacity = getCapacity();
         gasScale = Math.min(1, capacity == 0 ? 0 : (gasScale * oldCapacity + net.gasScale * net.capacity) / capacity);
         if (isRemote()) {
             if (gasTank.isEmpty() && !net.gasTank.isEmpty()) {
@@ -151,7 +151,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void clampBuffer() {
         if (!gasTank.isEmpty()) {
-            //TODO: Make a getCapacityAsLong
             long capacity = getCapacity();
             if (gasTank.getStored() > capacity) {
                 if (gasTank.setStackSize(capacity, Action.EXECUTE) != capacity) {
@@ -238,7 +237,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     public float computeContentScale() {
-        float scale = (float) gasTank.getStored() / (float) gasTank.getCapacity();
+        float scale = (float) (gasTank.getStored() / (double) gasTank.getCapacity());
         float ret = Math.max(gasScale, scale);
         if (prevTransferAmount > 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);

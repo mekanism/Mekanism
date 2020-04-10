@@ -119,7 +119,7 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public int getTransmitterNetworkCapacity() {
+    public long getTransmitterNetworkCapacity() {
         return 0;
     }
 
@@ -130,7 +130,7 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public int getCapacity() {
+    public long getCapacity() {
         return 0;
     }
 

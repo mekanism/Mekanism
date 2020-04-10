@@ -219,7 +219,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     @Override
-    public int getCapacity() {
+    public long getCapacity() {
         return 0;
     }
 

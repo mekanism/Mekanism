@@ -12,6 +12,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -56,7 +57,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public TileEntityMechanicalPipe(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), PipeTier.class);
-        buffer = BasicFluidTank.create(getCapacity(), BasicFluidTank.alwaysFalse, BasicFluidTank.alwaysTrue, this);
+        //TODO: If we make fluids support longs then adjust this
+        buffer = BasicFluidTank.create(MathUtils.clampToInt(getCapacity()), BasicFluidTank.alwaysFalse, BasicFluidTank.alwaysTrue, this);
         tanks = Collections.singletonList(buffer);
         readOnlyHandler = new ProxyFluidHandler(this, null, null);
     }
@@ -199,7 +201,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public int getCapacity() {
+    public long getCapacity() {
         return tier.getPipeCapacity();
     }
 

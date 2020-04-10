@@ -73,7 +73,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public int getCapacity() {
+    public long getCapacity() {
         return 0;
     }
 

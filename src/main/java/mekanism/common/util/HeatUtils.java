@@ -5,6 +5,6 @@ import mekanism.common.config.MekanismConfig;
 public class HeatUtils {
 
     public static double getVaporizationEnthalpy() {
-        return MekanismConfig.general.maxEnergyPerSteam.get();
+        return MekanismConfig.general.maxEnergyPerSteam.get().doubleValue();
     }
 }
