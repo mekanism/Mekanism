@@ -78,6 +78,7 @@ import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
@@ -641,9 +642,9 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (canHandleHeat() && handles(SubstanceType.HEAT)) {
             List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(null);
             for (IHeatCapacitor capacitor : heatCapacitors) {
-                container.track(SyncableFloatingLong.create(capacitor::getHeat, capacitor::setHeat));
+                container.track(SyncableDouble.create(capacitor::getHeat, capacitor::setHeat));
                 if (capacitor instanceof BasicHeatCapacitor) {
-                    container.track(SyncableFloatingLong.create(capacitor::getHeatCapacity, (capacity) -> ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacity, false)));
+                    container.track(SyncableDouble.create(capacitor::getHeatCapacity, (capacity) -> ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacity, false)));
                 }
             }
         }

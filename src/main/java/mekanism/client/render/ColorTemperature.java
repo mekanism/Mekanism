@@ -3,7 +3,6 @@ package mekanism.client.render;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.ColorRGBA;
 
 public class ColorTemperature extends ColorRGBA {
@@ -17,9 +16,8 @@ public class ColorTemperature extends ColorRGBA {
         temp = t;
     }
 
-    public static ColorTemperature fromTemperature(FloatingLong temp, ColorRGBA baseColor) {
-        double temperature = temp.doubleValue();
-        double absTemp = temp.add(HeatAPI.AMBIENT_TEMP).doubleValue();
+    public static ColorTemperature fromTemperature(double temperature, ColorRGBA baseColor) {
+        double absTemp = temperature + HeatAPI.AMBIENT_TEMP;
         absTemp /= 100;
 
         if (cache.containsKey((int) absTemp)) {

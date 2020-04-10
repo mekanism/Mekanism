@@ -1,7 +1,5 @@
 package mekanism.client.gui.element.gauge;
 
-import javax.annotation.Nonnull;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -41,8 +39,7 @@ public class GuiNumberGauge extends GuiGauge<Void> {
 
         TextureAtlasSprite getIcon();
 
-        @Nonnull
-        FloatingLong getLevel();
+        double getLevel();
 
         double getScaledLevel();
 

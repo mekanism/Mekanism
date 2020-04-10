@@ -52,7 +52,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     public TileEntityThermodynamicConductor(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), ConductorTier.class);
-        buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), true, true, this);
+        buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), this);
         capacitors = Collections.singletonList(buffer);
         readOnlyHandler = new ProxyHeatHandler(this, null, null);
     }
@@ -148,7 +148,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public void onContentsChanged() {
         if (!world.isRemote()) {
-            if (buffer.getTemperature().absDifference(clientTemperature).greaterThan(buffer.getTemperature().divide(20))) {
+            if (Math.abs(buffer.getTemperature() - clientTemperature) > (buffer.getTemperature() / 20)) {
                 clientTemperature = buffer.getTemperature();
                 sendUpdatePacket();
             }

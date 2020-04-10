@@ -2,9 +2,9 @@ package mekanism.common.transmitters.grid;
 
 import java.util.Collection;
 import java.util.UUID;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
@@ -16,9 +16,9 @@ import net.minecraft.util.text.ITextComponent;
 
 public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void> {
 
-    private FloatingLong meanTemp = FloatingLong.ZERO;
-    private FloatingLong heatLost = FloatingLong.ZERO;
-    private FloatingLong heatTransferred = FloatingLong.ZERO;
+    private double meanTemp = HeatAPI.AMBIENT_TEMP;
+    private double heatLost;
+    private double heatTransferred;
 
     public HeatNetwork() {
     }
@@ -51,9 +51,9 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
     public ITextComponent getFlowInfo() {
         ITextComponent transferred = MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN, false);
         ITextComponent lost = MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN, false);
-        return heatTransferred.add(heatLost).isZero() ? MekanismLang.HEAT_NETWORK_FLOW.translate(transferred, lost)
+        return heatTransferred + heatLost == 0 ? MekanismLang.HEAT_NETWORK_FLOW.translate(transferred, lost)
                                                : MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY.translate(transferred, lost,
-                                                   heatTransferred.divide(heatTransferred.add(heatLost)).multiply(100));
+                                                   heatTransferred / (heatTransferred + heatLost) * 100);
     }
 
     @Override
@@ -78,9 +78,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
     public void onUpdate() {
         super.onUpdate();
         if (!isRemote()) {
-            FloatingLong newSumTemp = FloatingLong.ZERO;
-            FloatingLong newHeatLost = FloatingLong.ZERO;
-            FloatingLong newHeatTransferred = FloatingLong.ZERO;
+            double newSumTemp = 0, newHeatLost = 0, newHeatTransferred = 0;
             for (IGridTransmitter<IHeatHandler, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof TransmitterImpl) {
                     // change this when we re-integrate with multipart
@@ -88,15 +86,15 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
                         ITileHeatHandler heatTile = (ITileHeatHandler) ((TransmitterImpl<?, ?, ?>) transmitter).containingTile;
                         HeatTransfer transfer = heatTile.simulate();
                         heatTile.update(null);
-                        newHeatTransferred = newHeatTransferred.plusEqual(transfer.getAdjacentTransfer());
-                        newHeatLost = newHeatLost.plusEqual(transfer.getEnvironmentTransfer());
-                        newSumTemp = newSumTemp.plusEqual(heatTile.getTotalTemperature());
+                        newHeatTransferred += transfer.getAdjacentTransfer();
+                        newHeatLost += transfer.getEnvironmentTransfer();
+                        newSumTemp += heatTile.getTotalTemperature();
                     }
                 }
             }
             heatLost = newHeatLost;
             heatTransferred = newHeatTransferred;
-            meanTemp = newSumTemp.divide(transmitters.size());
+            meanTemp = newSumTemp / transmitters.size();
         }
     }
 

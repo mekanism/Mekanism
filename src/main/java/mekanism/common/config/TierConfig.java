@@ -1,5 +1,6 @@
 package mekanism.common.config;
 
+import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.tier.BinTier;
@@ -181,12 +182,12 @@ public class TierConfig extends BaseMekanismConfig {
         builder.comment("Thermodynamic Conductors").push(HEAT_CATEGORY);
         for (ConductorTier tier : EnumUtils.CONDUCTOR_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
-            CachedFloatingLongValue conductionReference = CachedFloatingLongValue.define(this, builder, "Conduction value of " + tierName + " thermodynamic conductors.",
-                tierName.toLowerCase() + "InverseConduction", tier.getBaseConduction(), CachedFloatingLongValue.POSITIVE);
-            CachedFloatingLongValue capacityReference = CachedFloatingLongValue.define(this, builder, "Heat capacity of " + tierName + " thermodynamic conductors.",
-                tierName.toLowerCase() + "HeatCapacity", tier.getBaseHeatCapacity(), CachedFloatingLongValue.POSITIVE);
-            CachedFloatingLongValue insulationReference = CachedFloatingLongValue.define(this, builder, "Insulation value of " + tierName + " thermodynamic conductor.",
-                tierName.toLowerCase() + "Insulation", tier.getBaseConductionInsulation(), CachedFloatingLongValue.POSITIVE);
+            CachedDoubleValue conductionReference = CachedDoubleValue.wrap(this, builder.comment("Conduction value of " + tierName + " thermodynamic conductors.")
+                .defineInRange(tierName.toLowerCase() + "InverseConduction", tier.getBaseConduction(), 1, Double.MAX_VALUE));
+            CachedDoubleValue capacityReference = CachedDoubleValue.wrap(this, builder.comment("Heat capacity of " + tierName + " thermodynamic conductors.")
+                .defineInRange(tierName.toLowerCase() + "HeatCapacity", tier.getBaseHeatCapacity(), 1, Double.MAX_VALUE));
+            CachedDoubleValue insulationReference = CachedDoubleValue.wrap(this, builder.comment("Insulation value of " + tierName + " thermodynamic conductor.")
+                .defineInRange(tierName.toLowerCase() + "Insulation", tier.getBaseConductionInsulation(), 0, Double.MAX_VALUE));
             tier.setConfigReference(conductionReference, capacityReference, insulationReference);
         }
         builder.pop();

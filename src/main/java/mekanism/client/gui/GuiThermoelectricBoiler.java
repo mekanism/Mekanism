@@ -51,8 +51,8 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
 
             @Override
             public double getLevel() {
-                return tile.structure == null ? 0 : HeatUtils.getVaporizationEnthalpy().multiply(tile.getLastMaxBoil())
-                    .divideToLevel(MekanismConfig.general.superheatingHeatTransfer.get().multiply(tile.getSuperheatingElements()));
+                return tile.structure == null ? 0 : tile.getLastMaxBoil() * HeatUtils.getVaporizationEnthalpy() /
+                    (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get());
             }
         }, 144, 13));
         addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.waterTank,

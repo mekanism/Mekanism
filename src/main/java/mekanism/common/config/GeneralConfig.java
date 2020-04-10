@@ -67,7 +67,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue evaporationTempMultiplier;
     public final CachedDoubleValue evaporationSolarMultiplier;
     public final CachedDoubleValue evaporationHeatCapacity;
-    public final CachedFloatingLongValue maxEnergyPerSteam;
+    public final CachedDoubleValue maxEnergyPerSteam;
     public final CachedDoubleValue superheatingHeatTransfer;
     public final CachedDoubleValue boilerWaterConductivity;
     public final CachedDoubleValue heatPerFuelTick;
@@ -199,8 +199,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("heatCapacity", 100D));
         builder.pop();
 
-        maxEnergyPerSteam = CachedFloatingLongValue.define(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
-              "maxEnergyPerSteam", FloatingLong.createConst(10));
+        maxEnergyPerSteam = CachedDoubleValue.wrap(this, builder.comment("Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.")
+              .define("maxEnergyPerSteam", 10D));
         superheatingHeatTransfer = CachedDoubleValue.wrap(this, builder.comment("Amount of heat each Boiler heating element produces.")
               .define("superheatingHeatTransfer", 512_000D));
         boilerWaterConductivity = CachedDoubleValue.wrap(this, builder.comment("How much Boiler heat is immediately usable to convert water to steam.")

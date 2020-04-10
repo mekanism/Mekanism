@@ -2,8 +2,6 @@ package mekanism.generators.client.gui;
 
 import java.util.Arrays;
 import java.util.Collections;
-import javax.annotation.Nonnull;
-import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
@@ -31,7 +29,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiReactorHeat extends GuiReactorInfo {
 
-    private static final FloatingLong MAX_LEVEL = FloatingLong.createConst(500_000_000);
+    private static final double MAX_LEVEL = 500_000_000;
 
     public GuiReactorHeat(EmptyTileContainer<TileEntityReactorController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -49,15 +47,14 @@ public class GuiReactorHeat extends GuiReactorInfo {
                 return MekanismRenderer.getBaseFluidTexture(Fluids.LAVA, FluidType.STILL);
             }
 
-            @Nonnull
             @Override
-            public FloatingLong getLevel() {
+            public double getLevel() {
                 return tile.getPlasmaTemp();
             }
 
             @Override
             public double getScaledLevel() {
-                return getLevel().divideToLevel(MAX_LEVEL);
+                return getLevel() / MAX_LEVEL;
             }
 
             @Override
@@ -65,22 +62,21 @@ public class GuiReactorHeat extends GuiReactorInfo {
                 return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 7, 50));
-        addButton(new GuiProgress(() -> tile.getPlasmaTemp().greaterThan(tile.getCaseTemp()) ? 1 : 0, ProgressType.SMALL_RIGHT, this, 29, 76));
+        addButton(new GuiProgress(() -> tile.getPlasmaTemp() > tile.getCaseTemp() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 29, 76));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
                 return MekanismRenderer.getBaseFluidTexture(Fluids.LAVA, FluidType.STILL);
             }
 
-            @Nonnull
             @Override
-            public FloatingLong getLevel() {
+            public double getLevel() {
                 return tile.getCaseTemp();
             }
 
             @Override
             public double getScaledLevel() {
-                return getLevel().divideToLevel(MAX_LEVEL);
+                return getLevel() / MAX_LEVEL;
             }
 
             @Override
@@ -88,8 +84,8 @@ public class GuiReactorHeat extends GuiReactorInfo {
                 return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 61, 50));
-        addButton(new GuiProgress(() -> !tile.getCaseTemp().isZero() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));
-        addButton(new GuiProgress(() -> (!tile.getCaseTemp().isZero() && !tile.waterTank.isEmpty() && tile.steamTank.getStored() < tile.steamTank.getCapacity()) ? 1 : 0,
+        addButton(new GuiProgress(() -> tile.getCaseTemp() > 0 ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));
+        addButton(new GuiProgress(() -> (tile.getCaseTemp() > 0 && !tile.waterTank.isEmpty() && tile.steamTank.getStored() < tile.steamTank.getCapacity()) ? 1 : 0,
               ProgressType.SMALL_RIGHT, this, 83, 91));
         addButton(new GuiFluidGauge(() -> tile.waterTank, () -> tile.getFluidTanks(null), GaugeType.SMALL, this, 115, 84));
         addButton(new GuiGasGauge(() -> tile.steamTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 151, 84));

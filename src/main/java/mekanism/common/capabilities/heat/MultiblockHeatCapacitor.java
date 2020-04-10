@@ -16,20 +16,20 @@ public class MultiblockHeatCapacitor<MULTIBLOCK extends TileEntityMultiblock<?>>
     private MULTIBLOCK multiblock;
 
     public static <MULTIBLOCK extends TileEntityMultiblock<?>> MultiblockHeatCapacitor<MULTIBLOCK> create(MULTIBLOCK multiblock, double heatCapacity) {
-        return create(multiblock, heatCapacity, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION, true, true);
+        return create(multiblock, heatCapacity, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION);
     }
 
     public static <MULTIBLOCK extends TileEntityMultiblock<?>> MultiblockHeatCapacitor<MULTIBLOCK> create(MULTIBLOCK multiblock, double heatCapacity,
-          DoubleSupplier conductionCoefficient, DoubleSupplier insulationCoefficient, boolean absorbHeat, boolean emitHeat) {
+          DoubleSupplier conductionCoefficient, DoubleSupplier insulationCoefficient) {
         Objects.requireNonNull(heatCapacity, "Heat capacity cannot be null");
         Objects.requireNonNull(conductionCoefficient, "Conduction coefficient supplier cannot be null");
         Objects.requireNonNull(insulationCoefficient, "Insulation coefficient supplier cannot be null");
-        return new MultiblockHeatCapacitor<>(multiblock, heatCapacity, conductionCoefficient, insulationCoefficient, absorbHeat, emitHeat);
+        return new MultiblockHeatCapacitor<>(multiblock, heatCapacity, conductionCoefficient, insulationCoefficient);
     }
 
     protected MultiblockHeatCapacitor(MULTIBLOCK multiblock, double heatCapacity, DoubleSupplier conductionCoefficient,
-          DoubleSupplier insulationCoefficient, boolean absorbHeat, boolean emitHeat) {
-        super(heatCapacity, conductionCoefficient, insulationCoefficient, absorbHeat, emitHeat, null);
+          DoubleSupplier insulationCoefficient) {
+        super(heatCapacity, conductionCoefficient, insulationCoefficient, null);
         this.multiblock = multiblock;
     }
 
