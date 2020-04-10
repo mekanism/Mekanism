@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -26,7 +26,7 @@ import mekanism.common.tier.GasTankTier;
 @MethodsReturnNonnullByDefault
 public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
-    public static RateLimitGasHandler create(int rate, IntSupplier capacity) {
+    public static RateLimitGasHandler create(int rate, LongSupplier capacity) {
         return create(rate, capacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, null);
     }
 
@@ -35,12 +35,12 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         return new RateLimitGasHandler(handler -> new GasTankRateLimitGasTank(tier, handler));
     }
 
-    public static RateLimitGasHandler create(int rate, IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+    public static RateLimitGasHandler create(int rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid) {
         return create(rate, capacity, canExtract, canInsert, isValid, null);
     }
 
-    public static RateLimitGasHandler create(int rate, IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+    public static RateLimitGasHandler create(int rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid, @Nullable ChemicalAttributeValidator attributeValidator) {
         if (rate <= 0) {
             throw new IllegalArgumentException("Rate must be greater than zero");
@@ -65,9 +65,9 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
     public static class RateLimitGasTank extends VariableCapacityGasTank {
 
-        private final int rate;
+        private final long rate;
 
-        public RateLimitGasTank(int rate, IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+        public RateLimitGasTank(long rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid,
               @Nullable ChemicalAttributeValidator attributeValidator, IMekanismGasHandler gasHandler) {
             super(capacity, canExtract, canInsert, isValid, attributeValidator, gasHandler);
@@ -75,15 +75,17 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         }
 
         @Override
-        protected int getRate(@Nullable AutomationType automationType) {
+        protected long getRate(@Nullable AutomationType automationType) {
             //Allow unknown or manual interaction to bypass rate limit for the item
             return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate;
         }
     }
 
+    @ParametersAreNonnullByDefault
+    @MethodsReturnNonnullByDefault
     private static class GasTankRateLimitGasTank extends VariableCapacityGasTank {
 
-        private final IntSupplier rate;
+        private final LongSupplier rate;
         private final boolean isCreative;
 
         private GasTankRateLimitGasTank(GasTankTier tier, IMekanismGasHandler gasHandler) {
@@ -98,25 +100,25 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         }
 
         @Override
-        public GasStack extract(int amount, Action action, AutomationType automationType) {
+        public GasStack extract(long amount, Action action, AutomationType automationType) {
             return super.extract(amount, action.combine(!isCreative), automationType);
         }
 
         /**
          * {@inheritDoc}
          *
-         * Note: We are only patching {@link #setStackSize(int, Action)}, as both {@link #growStack(int, Action)} and {@link #shrinkStack(int, Action)} are wrapped
+         * Note: We are only patching {@link #setStackSize(long, Action)}, as both {@link #growStack(long, Action)} and {@link #shrinkStack(long, Action)} are wrapped
          * through this method.
          */
         @Override
-        public int setStackSize(int amount, Action action) {
+        public long setStackSize(long amount, Action action) {
             return super.setStackSize(amount, action.combine(!isCreative));
         }
 
         @Override
-        protected int getRate(@Nullable AutomationType automationType) {
+        protected long getRate(@Nullable AutomationType automationType) {
             //Allow unknown or manual interaction to bypass rate limit for the item
-            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsInt();
+            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsLong();
         }
     }
 }

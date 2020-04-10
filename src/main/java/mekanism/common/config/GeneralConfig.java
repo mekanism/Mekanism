@@ -9,7 +9,9 @@ import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.tier.EnergyCubeTier;
+import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
@@ -57,8 +59,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue freeRunnerFallEnergyCost;
     public final CachedBooleanValue aestheticWorldDamage;
     public final CachedBooleanValue opsBypassRestrictions;
-    public final CachedIntValue maxJetpackGas;
-    public final CachedIntValue maxScubaGas;
+    public final CachedLongValue maxJetpackGas;
+    public final CachedLongValue maxScubaGas;
     public final CachedIntValue maxFlamethrowerGas;
     public final CachedIntValue maxPumpRange;
     public final CachedBooleanValue pumpWaterSources;
@@ -77,7 +79,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue portableTeleporterDelay;
     public final CachedFloatingLongValue quantumEntangloporterEnergyBuffer;
     public final CachedIntValue quantumEntangloporterFluidBuffer;
-    public final CachedIntValue quantumEntangloporterGasBuffer;
+    public final CachedLongValue quantumEntangloporterGasBuffer;
     public final CachedBooleanValue blacklistIC2;
     public final CachedBooleanValue blacklistForge;
     public final CachedIntValue laserRange;
@@ -175,10 +177,10 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("aestheticWorldDamage", true));
         opsBypassRestrictions = CachedBooleanValue.wrap(this, builder.comment("Ops can bypass the block security restrictions if enabled.")
               .define("opsBypassRestrictions", false));
-        maxJetpackGas = CachedIntValue.wrap(this, builder.comment("Jetpack Gas Tank capacity in mB.")
-              .define("maxJetpackGas", 24_000));
-        maxScubaGas = CachedIntValue.wrap(this, builder.comment("Scuba Tank Gas Tank capacity in mB.")
-              .define("maxScubaGas", 24_000));
+        maxJetpackGas = CachedLongValue.wrap(this, builder.comment("Jetpack Gas Tank capacity in mB.")
+              .defineInRange("maxJetpackGas", 24_000, 1, Long.MAX_VALUE));
+        maxScubaGas = CachedLongValue.wrap(this, builder.comment("Scuba Tank Gas Tank capacity in mB.")
+              .defineInRange("maxScubaGas", 24_000, 1, Long.MAX_VALUE));
         maxFlamethrowerGas = CachedIntValue.wrap(this, builder.comment("Flamethrower Gas Tank capacity in mB.")
               .define("maxFlamethrowerGas", 24_000));
         maxPumpRange = CachedIntValue.wrap(this, builder.comment("Maximum block distance to pull fluid from for the Electric Pump.")
@@ -218,13 +220,13 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("Quantum Entangloporter Settings").push(ENTANGLOPORTER_CATEGORY);
         quantumEntangloporterEnergyBuffer = CachedFloatingLongValue.define(this, builder, "Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier energy cube capacity.",
-              "energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), true);
+              "energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), true, CachedFloatingLongValue.POSITIVE);
         quantumEntangloporterFluidBuffer = CachedIntValue.wrap(this, builder.comment("Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
-              .defineInRange("fluidBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 0, Integer.MAX_VALUE));
-        quantumEntangloporterGasBuffer = CachedIntValue.wrap(this, builder.comment("Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
+              .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseStorage(), 1, Integer.MAX_VALUE));
+        quantumEntangloporterGasBuffer = CachedLongValue.wrap(this, builder.comment("Maximum gas buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
-              .defineInRange("gasBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 0, Integer.MAX_VALUE));
+              .defineInRange("gasBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
         builder.pop();
 
         laserRange = CachedIntValue.wrap(this, builder.comment("How far (in blocks) a laser can travel.")

@@ -40,7 +40,7 @@ public class GasRecipeData implements RecipeUpgradeData<GasRecipeData> {
         int count = DataHandlerUtils.getMaxId(tanks, NBTConstants.TANK);
         gasTanks = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            gasTanks.add(BasicGasTank.create(Integer.MAX_VALUE, null));
+            gasTanks.add(BasicGasTank.create(Long.MAX_VALUE, null));
         }
         DataHandlerUtils.readTanks(gasTanks, tanks);
     }

@@ -184,8 +184,8 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                 if (!chemicalInItem.isEmpty()) {
                     //Simulate inserting chemical from each tank in the item into our tank
                     STACK simulatedRemainder = chemicalTank.insert(chemicalInItem, Action.SIMULATE, AutomationType.INTERNAL);
-                    int chemicalInItemAmount = chemicalInItem.getAmount();
-                    int remainder = simulatedRemainder.getAmount();
+                    long chemicalInItemAmount = chemicalInItem.getAmount();
+                    long remainder = simulatedRemainder.getAmount();
                     if (remainder < chemicalInItemAmount) {
                         //If we were simulated that we could actually insert any, then
                         // extract up to as much chemical as we were able to accept from the item
@@ -225,8 +225,8 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
             if (wrapper != null) {
                 STACK storedChemical = chemicalTank.getStack();
                 STACK simulatedRemainder = wrapper.insertChemical(storedChemical, Action.SIMULATE);
-                int remainder = simulatedRemainder.getAmount();
-                int amount = storedChemical.getAmount();
+                long remainder = simulatedRemainder.getAmount();
+                long amount = storedChemical.getAmount();
                 if (remainder < amount) {
                     //We are able to fit at least some of the chemical from our tank into the item
                     STACK extractedChemical = chemicalTank.extract(amount - remainder, Action.EXECUTE, AutomationType.INTERNAL);

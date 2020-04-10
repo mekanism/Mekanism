@@ -1,10 +1,10 @@
-package mekanism.common.base.target;
+package mekanism.common.distribution.target;
 
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import mekanism.common.base.SplitInfo;
+import mekanism.common.distribution.SplitInfo;
 import net.minecraft.util.Direction;
 
 /**

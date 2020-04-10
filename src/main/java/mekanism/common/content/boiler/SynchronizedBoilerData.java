@@ -54,9 +54,9 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public int superheatingElements;
 
     private int waterVolume;
-    private int steamVolume;
+    private long steamVolume;
     private int waterTankCapacity;
-    private int steamTankCapacity;
+    private long steamTankCapacity;
 
     public Coord4D upperRenderLocation;
 
@@ -130,7 +130,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
         return waterTankCapacity;
     }
 
-    public int getSteamTankCapacity() {
+    public long getSteamTankCapacity() {
         return steamTankCapacity;
     }
 
@@ -143,11 +143,11 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
         waterTankCapacity = getWaterVolume() * BoilerUpdateProtocol.WATER_PER_TANK;
     }
 
-    public int getSteamVolume() {
+    public long getSteamVolume() {
         return steamVolume;
     }
 
-    public void setSteamVolume(int volume) {
+    public void setSteamVolume(long volume) {
         steamVolume = volume;
         steamTankCapacity = getSteamVolume() * BoilerUpdateProtocol.STEAM_PER_TANK;
     }

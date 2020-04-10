@@ -27,18 +27,17 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Created by Thiakil on 11/07/2019.
  */
-//TODO: Allow for empty gas stacks (at least in 1.14 when we will have an empty variant of GasStack)
 public abstract class GasStackIngredient implements InputIngredient<@NonNull GasStack> {
 
     public static GasStackIngredient from(@NonNull GasStack instance) {
         return from(instance.getType(), instance.getAmount());
     }
 
-    public static GasStackIngredient from(@NonNull IGasProvider instance, int amount) {
+    public static GasStackIngredient from(@NonNull IGasProvider instance, long amount) {
         return new Single(instance.getGas(), amount);
     }
 
-    public static GasStackIngredient from(@NonNull Tag<Gas> gasTag, int amount) {
+    public static GasStackIngredient from(@NonNull Tag<Gas> gasTag, long amount) {
         return new Tagged(gasTag, amount);
     }
 
@@ -92,7 +91,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
             if (!JSONUtils.isNumber(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
             }
-            int amount = count.getAsJsonPrimitive().getAsInt();
+            long amount = count.getAsJsonPrimitive().getAsLong();
             if (amount < 1) {
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
@@ -131,9 +130,9 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         //TODO: Convert this to storing a GasStack?
         @NonNull
         private final Gas gasInstance;
-        private final int amount;
+        private final long amount;
 
-        protected Single(@NonNull Gas gasInstance, int amount) {
+        protected Single(@NonNull Gas gasInstance, long amount) {
             this.gasInstance = Objects.requireNonNull(gasInstance);
             this.amount = amount;
         }
@@ -167,7 +166,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.SINGLE);
             buffer.writeRegistryId(gasInstance);
-            buffer.writeInt(amount);
+            buffer.writeVarLong(amount);
         }
 
         @Nonnull
@@ -180,7 +179,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         }
 
         public static Single read(PacketBuffer buffer) {
-            return new Single(buffer.readRegistryId(), buffer.readInt());
+            return new Single(buffer.readRegistryId(), buffer.readVarLong());
         }
     }
 
@@ -188,9 +187,9 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
 
         @Nonnull
         private final Tag<Gas> tag;
-        private final int amount;
+        private final long amount;
 
-        public Tagged(@Nonnull Tag<Gas> tag, int amount) {
+        public Tagged(@Nonnull Tag<Gas> tag, long amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -234,7 +233,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.TAGGED);
             buffer.writeResourceLocation(tag.getId());
-            buffer.writeInt(amount);
+            buffer.writeVarLong(amount);
         }
 
         @Nonnull
@@ -248,7 +247,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
 
         public static Tagged read(PacketBuffer buffer) {
             //TODO: Should this only check already defined tags??
-            return new Tagged(new GasTags.Wrapper(buffer.readResourceLocation()), buffer.readInt());
+            return new Tagged(new GasTags.Wrapper(buffer.readResourceLocation()), buffer.readVarLong());
         }
     }
 
@@ -302,7 +301,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.MULTI);
-            buffer.writeInt(ingredients.length);
+            buffer.writeVarInt(ingredients.length);
             for (GasStackIngredient ingredient : ingredients) {
                 ingredient.write(buffer);
             }
@@ -320,7 +319,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
 
         public static GasStackIngredient read(PacketBuffer buffer) {
             //TODO: Verify this works
-            GasStackIngredient[] ingredients = new GasStackIngredient[buffer.readInt()];
+            GasStackIngredient[] ingredients = new GasStackIngredient[buffer.readVarInt()];
             for (int i = 0; i < ingredients.length; i++) {
                 ingredients[i] = GasStackIngredient.read(buffer);
             }

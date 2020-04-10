@@ -51,7 +51,7 @@ public interface IInfusionHandler {
      *
      * @return The maximum infusion type amount held by the tank.
      */
-    int getInfusionTankCapacity(int tank);
+    long getInfusionTankCapacity(int tank);
 
     /**
      * <p>
@@ -101,7 +101,7 @@ public interface IInfusionHandler {
      * @return {@link InfusionStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link InfusionStack} can be safely modified after,
      * so the tank should return a new or copied stack.
      */
-    InfusionStack extractInfusion(int tank, int amount, Action action);
+    InfusionStack extractInfusion(int tank, long amount, Action action);
 
     /**
      * <p>
@@ -141,7 +141,7 @@ public interface IInfusionHandler {
      * be extracted is found, all future extractions will make sure to also make sure they are for the same type of infusion.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IInfusionHandler} ends up distributing the extraction.
      */
-    default InfusionStack extractInfusion(int amount, Action action) {
+    default InfusionStack extractInfusion(long amount, Action action) {
         return ChemicalUtils.extract(amount, action, InfusionStack.EMPTY, this::getInfusionTankCount, this::getInfusionInTank, this::extractInfusion);
     }
 

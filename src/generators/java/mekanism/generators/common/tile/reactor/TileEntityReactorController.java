@@ -32,6 +32,7 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.base.SubstanceType;
@@ -54,8 +55,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityReactorController extends TileEntityReactorBlock {
 
     public static final int MAX_WATER = 100 * FluidAttributes.BUCKET_VOLUME;
-    public static final int MAX_STEAM = MAX_WATER * 100;
-    public static final int MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
+    public static final long MAX_STEAM = MAX_WATER * 100;
+    public static final long MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
 
     public BasicEnergyContainer energyContainer;
     public BasicHeatCapacitor heatCapacitor;
@@ -72,7 +73,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     private IInventorySlot reactorSlot;
 
     private int localMaxWater = MAX_WATER;
-    private int localMaxSteam = MAX_STEAM;
+    private long localMaxSteam = MAX_STEAM;
 
     public TileEntityReactorController() {
         super(GeneratorsBlocks.REACTOR_CONTROLLER);
@@ -324,6 +325,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         container.track(SyncableFluidStack.create(waterTank));
         container.track(SyncableGasStack.create(steamTank));
         container.track(SyncableInt.create(() -> localMaxWater, (val) -> localMaxWater = val));
-        container.track(SyncableInt.create(() -> localMaxSteam, (val) -> localMaxSteam = val));
+        container.track(SyncableLong.create(() -> localMaxSteam, (val) -> localMaxSteam = val));
     }
 }

@@ -2,7 +2,7 @@ package mekanism.common.capabilities.chemical;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;
-import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,7 +21,7 @@ import mekanism.api.inventory.AutomationType;
 @MethodsReturnNonnullByDefault
 public class VariableCapacityInfusionTank extends BasicInfusionTank {
 
-    public static VariableCapacityInfusionTank create(IntSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
+    public static VariableCapacityInfusionTank create(LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
@@ -30,27 +30,27 @@ public class VariableCapacityInfusionTank extends BasicInfusionTank {
         return new VariableCapacityInfusionTank(capacity, canExtract, canInsert, validator, infusionHandler);
     }
 
-    public static VariableCapacityInfusionTank output(IntSupplier capacity, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
+    public static VariableCapacityInfusionTank output(LongSupplier capacity, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Infuse type validity check cannot be null");
         return new VariableCapacityInfusionTank(capacity, alwaysTrueBi, internalOnly, validator, infusionHandler);
     }
 
-    private final IntSupplier capacity;
+    private final LongSupplier capacity;
 
-    protected VariableCapacityInfusionTank(IntSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
+    protected VariableCapacityInfusionTank(LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
-        super(capacity.getAsInt(), canExtract, canInsert, validator, infusionHandler);
+        super(capacity.getAsLong(), canExtract, canInsert, validator, infusionHandler);
         this.capacity = capacity;
     }
 
     @Override
-    public int getCapacity() {
-        return capacity.getAsInt();
+    public long getCapacity() {
+        return capacity.getAsLong();
     }
 
     @Override
-    public int setStackSize(int amount, @Nonnull Action action) {
+    public long setStackSize(long amount, @Nonnull Action action) {
         if (isEmpty()) {
             return 0;
         } else if (amount <= 0) {
@@ -59,7 +59,7 @@ public class VariableCapacityInfusionTank extends BasicInfusionTank {
             }
             return 0;
         }
-        int maxStackSize = getCapacity();
+        long maxStackSize = getCapacity();
         //Our capacity should never actually be zero, and given we fake it being zero
         // until we finish building the network, we need to override this method to bypass the upper limit check
         // when our upper limit is zero

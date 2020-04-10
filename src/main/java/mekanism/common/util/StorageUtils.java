@@ -104,7 +104,7 @@ public class StorageUtils {
      */
     @Nonnull
     public static GasStack getStoredGasFromNBT(ItemStack stack) {
-        BasicGasTank tank = BasicGasTank.create(Integer.MAX_VALUE, null);
+        BasicGasTank tank = BasicGasTank.create(Long.MAX_VALUE, null);
         DataHandlerUtils.readTanks(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
         return tank.getStack();
     }
@@ -115,7 +115,7 @@ public class StorageUtils {
      */
     @Nonnull
     public static InfusionStack getStoredInfusionFromNBT(ItemStack stack) {
-        BasicInfusionTank tank = BasicInfusionTank.create(Integer.MAX_VALUE, null);
+        BasicInfusionTank tank = BasicInfusionTank.create(Long.MAX_VALUE, null);
         DataHandlerUtils.readTanks(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
         return tank.getStack();
     }
@@ -193,7 +193,7 @@ public class StorageUtils {
         return 1 - bestRatio;
     }
 
-    private static double getRatio(int amount, int capacity) {
+    private static double getRatio(long amount, long capacity) {
         return capacity == 0 ? 1 : amount / (double) capacity;
     }
 

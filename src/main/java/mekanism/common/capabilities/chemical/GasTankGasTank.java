@@ -1,7 +1,7 @@
 package mekanism.common.capabilities.chemical;
 
 import java.util.Objects;
-import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -22,7 +22,7 @@ public class GasTankGasTank extends BasicGasTank {
     }
 
     private final boolean isCreative;
-    private final IntSupplier rate;
+    private final LongSupplier rate;
 
     private GasTankGasTank(GasTankTier tier, @Nullable IMekanismGasHandler gasHandler) {
         super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, gasHandler);
@@ -31,9 +31,9 @@ public class GasTankGasTank extends BasicGasTank {
     }
 
     @Override
-    protected int getRate(@Nullable AutomationType automationType) {
+    protected long getRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate so as to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getRate(automationType);
+        return automationType == AutomationType.INTERNAL ? rate.getAsLong() : super.getRate(automationType);
     }
 
     @Override
@@ -52,18 +52,18 @@ public class GasTankGasTank extends BasicGasTank {
     }
 
     @Override
-    public GasStack extract(int amount, Action action, AutomationType automationType) {
+    public GasStack extract(long amount, Action action, AutomationType automationType) {
         return super.extract(amount, action.combine(!isCreative), automationType);
     }
 
     /**
      * {@inheritDoc}
      *
-     * Note: We are only patching {@link #setStackSize(int, Action)}, as both {@link #growStack(int, Action)} and {@link #shrinkStack(int, Action)} are wrapped through
+     * Note: We are only patching {@link #setStackSize(long, Action)}, as both {@link #growStack(long, Action)} and {@link #shrinkStack(long, Action)} are wrapped through
      * this method.
      */
     @Override
-    public int setStackSize(int amount, Action action) {
+    public long setStackSize(long amount, Action action) {
         return super.setStackSize(amount, action.combine(!isCreative));
     }
 }

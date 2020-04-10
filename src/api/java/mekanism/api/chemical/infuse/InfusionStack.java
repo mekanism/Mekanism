@@ -24,11 +24,11 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
      * @param infuseTypeProvider - provides the infusion type of the stack
      * @param amount             - amount of the infusion type to be referenced in this InfusionStack
      */
-    public InfusionStack(@Nonnull IInfuseTypeProvider infuseTypeProvider, int amount) {
+    public InfusionStack(@Nonnull IInfuseTypeProvider infuseTypeProvider, long amount) {
         super(infuseTypeProvider.getInfuseType(), amount);
     }
 
-    public InfusionStack(@Nonnull InfusionStack stack, int amount) {
+    public InfusionStack(@Nonnull InfusionStack stack, long amount) {
         this(stack.getType(), amount);
     }
 
@@ -65,7 +65,7 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
         if (type.isEmptyType()) {
             return EMPTY;
         }
-        int amount = nbtTags.getInt(NBTConstants.AMOUNT);
+        long amount = nbtTags.getLong(NBTConstants.AMOUNT);
         if (amount <= 0) {
             return EMPTY;
         }
@@ -74,7 +74,7 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
 
     public static InfusionStack readFromPacket(PacketBuffer buf) {
         InfuseType infuseType = buf.readRegistryId();
-        int amount = buf.readVarInt();
+        long amount = buf.readVarLong();
         if (infuseType.isEmptyType()) {
             return EMPTY;
         }
@@ -90,16 +90,6 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
     @Override
     public InfusionStack copy() {
         return new InfusionStack(this, getAmount());
-    }
-
-    //TODO: Method to check infuse type an itemstack can produce/stores? Could allow for a "tank" that can store infusion
-
-    @Override
-    public final int hashCode() {
-        int code = 1;
-        code = 31 * code + getType().hashCode();
-        code = 31 * code + getAmount();
-        return code;
     }
 
     /**

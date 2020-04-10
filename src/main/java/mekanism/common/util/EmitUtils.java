@@ -3,10 +3,11 @@ package mekanism.common.util;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.base.SplitInfo;
-import mekanism.common.base.SplitInfo.FloatingLongSplitInfo;
-import mekanism.common.base.SplitInfo.IntegerSplitInfo;
-import mekanism.common.base.target.Target;
+import mekanism.common.distribution.LongSplitInfo;
+import mekanism.common.distribution.SplitInfo;
+import mekanism.common.distribution.FloatingLongSplitInfo;
+import mekanism.common.distribution.IntegerSplitInfo;
+import mekanism.common.distribution.target.Target;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -63,6 +64,21 @@ public class EmitUtils {
      */
     public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(Set<TARGET> availableTargets, int totalTargets, int amountToSplit, EXTRA toSend) {
         return sendToAcceptors(availableTargets, totalTargets, new IntegerSplitInfo(amountToSplit, totalTargets), toSend);
+    }
+
+    /**
+     * @param <HANDLER>        The handler of our target.
+     * @param <EXTRA>          Any extra information we may need
+     * @param <TARGET>         The emitter target
+     * @param availableTargets The targets to distribute toSend fairly among.
+     * @param totalTargets     The total number of targets. Note: this number is bigger than availableTargets.size if any targets have more than one acceptor.
+     * @param amountToSplit    The amount to split between all the targets
+     * @param toSend           Any extra information such as gas stack or fluid stack.
+     *
+     * @return The amount that actually got sent.
+     */
+    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Long, EXTRA>> long sendToAcceptors(Set<TARGET> availableTargets, int totalTargets, long amountToSplit, EXTRA toSend) {
+        return sendToAcceptors(availableTargets, totalTargets, new LongSplitInfo(amountToSplit, totalTargets), toSend);
     }
 
     /**

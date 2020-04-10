@@ -146,7 +146,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements ICo
 
     @Nonnull
     @Override
-    public GasStack extractGas(int tank, int amount, @Nullable Direction side, @Nonnull Action action) {
+    public GasStack extractGas(int tank, long amount, @Nullable Direction side, @Nonnull Action action) {
         //TODO: Do this better so there is no magic numbers
         if (tank == 3 && !getActive()) {
             //Don't allow extracting from the steam tank, if we are on input mode

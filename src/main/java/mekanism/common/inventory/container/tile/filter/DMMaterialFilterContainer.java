@@ -13,7 +13,7 @@ public class DMMaterialFilterContainer extends FilterContainer<MMaterialFilter, 
     }
 
     public DMMaterialFilterContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, getTileFromBuf(buf, TileEntityDigitalMiner.class), buf.readInt());
+        this(id, inv, getTileFromBuf(buf, TileEntityDigitalMiner.class), buf.readVarInt());
     }
 
     @Override

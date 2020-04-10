@@ -12,7 +12,7 @@ public interface IInfuseTypeProvider extends IBaseProvider {
     InfuseType getInfuseType();
 
     @Nonnull
-    default InfusionStack getInfusionStack(int size) {
+    default InfusionStack getInfusionStack(long size) {
         return new InfusionStack(getInfuseType(), size);
     }
 

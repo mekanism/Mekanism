@@ -28,22 +28,22 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
     @Nullable
     private final IMekanismGasHandler gasHandler;
 
-    public static BasicGasTank createDummy(int capacity) {
+    public static BasicGasTank createDummy(long capacity) {
         return create(capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, null);
     }
 
-    public static BasicGasTank create(int capacity, @Nullable IMekanismGasHandler gasHandler) {
+    public static BasicGasTank create(long capacity, @Nullable IMekanismGasHandler gasHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
         return new BasicGasTank(capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, gasHandler);
     }
 
-    public static BasicGasTank create(int capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, @Nullable IMekanismGasHandler gasHandler) {
+    public static BasicGasTank create(long capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, @Nullable IMekanismGasHandler gasHandler) {
         return create(capacity, canExtract, canInsert, alwaysTrue, gasHandler);
     }
 
-    public static BasicGasTank create(int capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
+    public static BasicGasTank create(long capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -51,7 +51,7 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
         return new BasicGasTank(capacity, alwaysTrueBi, alwaysTrueBi, validator, gasHandler);
     }
 
-    public static BasicGasTank input(int capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
+    public static BasicGasTank input(long capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -59,7 +59,7 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
         return new BasicGasTank(capacity, notExternal, alwaysTrueBi, validator, gasHandler);
     }
 
-    public static BasicGasTank input(int capacity, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
+    public static BasicGasTank input(long capacity, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -68,31 +68,31 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
         return new BasicGasTank(capacity, notExternal, (stack, automationType) -> canInsert.test(stack), validator, gasHandler);
     }
 
-    public static BasicGasTank output(int capacity, @Nullable IMekanismGasHandler gasHandler) {
+    public static BasicGasTank output(long capacity, @Nullable IMekanismGasHandler gasHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
         return new BasicGasTank(capacity, alwaysTrueBi, internalOnly, alwaysTrue, gasHandler);
     }
 
-    public static BasicGasTank ejectOutput(int capacity, @Nullable IMekanismGasHandler gasHandler) {
+    public static BasicGasTank ejectOutput(long capacity, @Nullable IMekanismGasHandler gasHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
         return new BasicGasTank(capacity, internalOnly, internalOnly, alwaysTrue, gasHandler);
     }
 
-    public static BasicGasTank create(int capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator,
+    public static BasicGasTank create(long capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator,
           @Nullable IMekanismGasHandler gasHandler) {
         return create(capacity, canExtract, canInsert, validator, null, gasHandler);
     }
 
-    public static BasicGasTank create(int capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+    public static BasicGasTank create(long capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
         return create(capacity, canExtract, canInsert, validator, null, gasHandler);
     }
 
-    public static BasicGasTank create(int capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator,
+    public static BasicGasTank create(long capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IMekanismGasHandler gasHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
@@ -103,7 +103,7 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
         return new BasicGasTank(capacity, canExtract, canInsert, validator, attributeValidator, gasHandler);
     }
 
-    public static BasicGasTank create(int capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert,
+    public static BasicGasTank create(long capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert,
           Predicate<@NonNull Gas> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IMekanismGasHandler gasHandler) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
@@ -114,26 +114,26 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
         return new BasicGasTank(capacity, canExtract, canInsert, validator, attributeValidator, gasHandler);
     }
 
-    protected BasicGasTank(int capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator,
+    protected BasicGasTank(long capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator,
           @Nullable IMekanismGasHandler gasHandler) {
         this(capacity, (stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack),
               validator, gasHandler);
     }
 
-    protected BasicGasTank(int capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert,
+    protected BasicGasTank(long capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert,
           Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
         super(capacity, canExtract, canInsert, validator, null);
         this.gasHandler = gasHandler;
     }
 
-    protected BasicGasTank(int capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator,
+    protected BasicGasTank(long capacity, Predicate<@NonNull Gas> canExtract, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IMekanismGasHandler gasHandler) {
         this(capacity, (stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack), validator,
               attributeValidator, gasHandler);
     }
 
-    protected BasicGasTank(int capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator,
-          @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IMekanismGasHandler gasHandler) {
+    protected BasicGasTank(long capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert,
+          Predicate<@NonNull Gas> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IMekanismGasHandler gasHandler) {
         super(capacity, canExtract, canInsert, validator, attributeValidator);
         this.gasHandler = gasHandler;
     }
@@ -144,7 +144,7 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
     }
 
     @Override
-    public GasStack createStack(GasStack stored, int size) {
+    public GasStack createStack(GasStack stored, long size) {
         return new GasStack(stored, size);
     }
 
@@ -180,7 +180,7 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
     }
 
     @Override
-    public int getGasTankCapacity(int tank) {
+    public long getGasTankCapacity(int tank) {
         return tank == 0 ? getCapacity() : 0;
     }
 
@@ -195,7 +195,7 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
     }
 
     @Override
-    public GasStack extractGas(int tank, int amount, Action action) {
+    public GasStack extractGas(int tank, long amount, Action action) {
         return tank == 0 ? extract(amount, action, AutomationType.EXTERNAL) : getEmptyStack();
     }
 }

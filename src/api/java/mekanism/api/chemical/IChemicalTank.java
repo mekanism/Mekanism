@@ -28,7 +28,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      *
      * @return A new stack
      */
-    STACK createStack(STACK stored, int size);
+    STACK createStack(STACK stored, long size);
 
     /**
      * Returns the {@link ChemicalStack} in this tank.
@@ -79,14 +79,14 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
             //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
             return stack;
         }
-        int needed = getNeeded();
+        long needed = getNeeded();
         if (needed <= 0) {
             //Fail if we are a full tank
             return stack;
         }
         boolean sameType = false;
         if (isEmpty() || (sameType = isTypeEqual(stack))) {
-            int toAdd = Math.min(stack.getAmount(), needed);
+            long toAdd = Math.min(stack.getAmount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the chemical, then update the current chemical
                 if (sameType) {
@@ -122,7 +122,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * sure to call {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ChemicalStack} is mutable so that a copy does not have
      * to be made every run
      */
-    default STACK extract(int amount, Action action, AutomationType automationType) {
+    default STACK extract(long amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1) {
             return getEmptyStack();
         }
@@ -139,7 +139,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      *
      * @return The maximum stack size allowed in this {@link IChemicalTank}.
      */
-    int getCapacity();
+    long getCapacity();
 
     /**
      * <p>
@@ -178,7 +178,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @implNote It is recommended to override this if your internal {@link ChemicalStack} is mutable so that a copy does not have to be made every run. If the internal
      * stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    default int setStackSize(int amount, Action action) {
+    default long setStackSize(long amount, Action action) {
         if (isEmpty()) {
             return 0;
         } else if (amount <= 0) {
@@ -187,7 +187,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
             }
             return 0;
         }
-        int maxStackSize = getCapacity();
+        long maxStackSize = getCapacity();
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
@@ -213,13 +213,13 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    default int growStack(int amount, Action action) {
-        int current = getStored();
+    default long growStack(long amount, Action action) {
+        long current = getStored();
         if (amount > 0) {
-            //Cap adding amount at how much we need, so that we don't risk integer overflow
+            //Cap adding amount at how much we need, so that we don't risk long overflow
             amount = Math.min(amount, getNeeded());
         }
-        int newSize = setStackSize(current + amount, action);
+        long newSize = setStackSize(current + amount, action);
         return newSize - current;
     }
 
@@ -237,7 +237,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    default int shrinkStack(int amount, Action action) {
+    default long shrinkStack(long amount, Action action) {
         return -growStack(-amount, action);
     }
 
@@ -266,7 +266,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      *
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
-    default int getStored() {
+    default long getStored() {
         return getStack().getAmount();
     }
 
@@ -275,7 +275,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      *
      * @return Amount of chemical needed
      */
-    default int getNeeded() {
+    default long getNeeded() {
         return Math.max(0, getCapacity() - getStored());
     }
 

@@ -8,7 +8,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.network.container.property.InfusionStackPropertyData;
-import mekanism.common.network.container.property.IntPropertyData;
+import mekanism.common.network.container.property.LongPropertyData;
 import mekanism.common.network.container.property.PropertyData;
 
 /**
@@ -36,7 +36,7 @@ public class SyncableInfusionStack extends SyncableChemicalStack<InfuseType, Inf
 
     @Nonnull
     @Override
-    protected InfusionStack createStack(InfusionStack stored, int size) {
+    protected InfusionStack createStack(InfusionStack stored, long size) {
         return new InfusionStack(stored, size);
     }
 
@@ -44,7 +44,7 @@ public class SyncableInfusionStack extends SyncableChemicalStack<InfuseType, Inf
     public PropertyData getPropertyData(short property, DirtyType dirtyType) {
         if (dirtyType == DirtyType.SIZE) {
             //If only the size changed, don't bother re-syncing the type
-            return new IntPropertyData(property, get().getAmount());
+            return new LongPropertyData(property, get().getAmount());
         }
         return new InfusionStackPropertyData(property, get());
     }

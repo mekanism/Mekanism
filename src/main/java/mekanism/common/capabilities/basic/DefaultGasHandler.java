@@ -31,7 +31,7 @@ public class DefaultGasHandler implements IGasHandler {
     }
 
     @Override
-    public int getGasTankCapacity(int tank) {
+    public long getGasTankCapacity(int tank) {
         return 0;
     }
 
@@ -46,7 +46,7 @@ public class DefaultGasHandler implements IGasHandler {
     }
 
     @Override
-    public GasStack extractGas(int tank, int amount, Action action) {
+    public GasStack extractGas(int tank, long amount, Action action) {
         return GasStack.EMPTY;
     }
 }

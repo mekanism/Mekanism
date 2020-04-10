@@ -169,6 +169,6 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     @FunctionalInterface
     private interface ElementCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
 
-        IElementNew create(STACK stored, int capacity);
+        IElementNew create(STACK stored, long capacity);
     }
 }
