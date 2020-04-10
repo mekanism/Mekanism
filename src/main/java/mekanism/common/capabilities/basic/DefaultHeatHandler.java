@@ -3,9 +3,7 @@ package mekanism.common.capabilities.basic;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.heat.HeatPacket;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -23,21 +21,20 @@ public class DefaultHeatHandler implements IHeatHandler {
     }
 
     @Override
-    public FloatingLong getTemperature(int capacitor) {
+    public double getTemperature(int capacitor) {
         return HeatAPI.AMBIENT_TEMP;
     }
 
     @Override
-    public FloatingLong getInverseConduction(int capacitor) {
+    public double getInverseConduction(int capacitor) {
         return HeatAPI.DEFAULT_INVERSE_CONDUCTION;
     }
 
     @Override
-    public FloatingLong getHeatCapacity(int capacitor) {
+    public double getHeatCapacity(int capacitor) {
         return HeatAPI.DEFAULT_HEAT_CAPACITY;
     }
 
     @Override
-    public void handleHeat(int capacitor, HeatPacket transfer) {
-    }
+    public void handleHeat(int capacitor, double transfer) {}
 }

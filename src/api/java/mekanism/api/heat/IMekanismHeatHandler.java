@@ -4,7 +4,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.math.FloatingLong;
 import net.minecraft.util.Direction;
 
 @ParametersAreNonnullByDefault
@@ -62,25 +61,25 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
     }
 
     @Override
-    default FloatingLong getTemperature(int capacitor, @Nullable Direction side) {
+    default double getTemperature(int capacitor, @Nullable Direction side) {
         IHeatCapacitor heatCapacitor = getHeatCapacitor(capacitor, side);
-        return heatCapacitor == null ? FloatingLong.ZERO : heatCapacitor.getTemperature();
+        return heatCapacitor == null ? HeatAPI.AMBIENT_TEMP : heatCapacitor.getTemperature();
     }
 
     @Override
-    default FloatingLong getInverseConduction(int capacitor, @Nullable Direction side) {
+    default double getInverseConduction(int capacitor, @Nullable Direction side) {
         IHeatCapacitor heatCapacitor = getHeatCapacitor(capacitor, side);
         return heatCapacitor == null ? HeatAPI.DEFAULT_INVERSE_CONDUCTION : heatCapacitor.getInverseConduction();
     }
 
     @Override
-    default FloatingLong getHeatCapacity(int capacitor, @Nullable Direction side) {
+    default double getHeatCapacity(int capacitor, @Nullable Direction side) {
         IHeatCapacitor heatCapacitor = getHeatCapacitor(capacitor, side);
         return heatCapacitor == null ? HeatAPI.DEFAULT_HEAT_CAPACITY : heatCapacitor.getHeatCapacity();
     }
 
     @Override
-    default void handleHeat(int capacitor, HeatPacket transfer, @Nullable Direction side) {
+    default void handleHeat(int capacitor, double transfer, @Nullable Direction side) {
         IHeatCapacitor heatCapacitor = getHeatCapacitor(capacitor, side);
         if (heatCapacitor != null) {
             heatCapacitor.handleHeat(transfer);
@@ -90,21 +89,12 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
     /**
      * Returns the inverse insulation coefficient of a given capacitor. The larger the value the less heat dissipates into the environment.
      *
-     * <p>
-     * <strong>IMPORTANT:</strong> This {@link FloatingLong} <em>MUST NOT</em> be modified. This method is not for altering the conduction coefficient. Any implementers
-     * who are able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the value returned here will be a copy.
-     * </p>
-     *
-     * <p>
-     * <strong><em>SERIOUSLY: DO NOT MODIFY THE RETURNED FLOATING LONG</em></strong>
-     * </p>
-     *
      * @param capacitor Capacitor to query.
      * @param side      The side we are interacting with the handler from (null for internal).
      *
      * @return Inverse insulation coefficient of a given capacitor.
      */
-    default FloatingLong getInverseInsulation(int capacitor, @Nullable Direction side) {
+    default double getInverseInsulation(int capacitor, @Nullable Direction side) {
         IHeatCapacitor heatCapacitor = getHeatCapacitor(capacitor, side);
         return heatCapacitor == null ? HeatAPI.DEFAULT_INVERSE_INSULATION : heatCapacitor.getInverseInsulation();
     }
@@ -115,17 +105,16 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
      * @param side The side we are interacting with the handler from (null for internal).
      *
      * @return The total inverse insulation coefficient across all capacitors in this handler.
-     *
-     * @apiNote The returned {@link FloatingLong} can be safely modified afterwards.
      */
-    default FloatingLong getTotalInverseInsulation(@Nullable Direction side) {
+    default double getTotalInverseInsulation(@Nullable Direction side) {
         int heatCapacitorCount = getHeatCapacitorCount(side);
         if (heatCapacitorCount == 1) {
-            return getInverseInsulation(0, side).copy();
+            return getInverseInsulation(0, side);
         }
-        FloatingLong sum = FloatingLong.ZERO;
+        double sum = 0;
+        double totalCapacity = getTotalHeatCapacity(side);
         for (int capacitor = 0; capacitor < heatCapacitorCount; capacitor++) {
-            sum = sum.plusEqual(getInverseInsulation(capacitor, side));
+            sum += getInverseInsulation(capacitor, side) * (getHeatCapacity(capacitor, side) / totalCapacity);
         }
         return sum;
     }

@@ -5,12 +5,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
-import mekanism.api.heat.HeatPacket;
-import mekanism.api.heat.HeatPacket.TransferType;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.IMekanismHeatHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
@@ -46,27 +43,27 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
      * Simulate heat transfers
      */
     default HeatTransfer simulate() {
-        FloatingLong adjacentTransfer = FloatingLong.ZERO;
-        FloatingLong environmentTransfer = FloatingLong.ZERO;
+        double adjacentTransfer = 0, environmentTransfer = 0;
+
         for (Direction side : EnumUtils.DIRECTIONS) {
             IHeatHandler sink = getAdjacent(side);
             if (sink != null) {
-                FloatingLong invConduction = sink.getTotalInverseConductionCoefficient().add(getTotalInverseConductionCoefficient(side));
-                FloatingLong heatToTransfer = getTotalTemperature(side).divide(invConduction);
-                handleHeat(new HeatPacket(TransferType.EMIT, heatToTransfer), side);
-                sink.handleHeat(new HeatPacket(TransferType.ABSORB, heatToTransfer));
+                double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
+                double heatToTransfer = getTotalTemperature(side) / invConduction;
+                handleHeat(-heatToTransfer, side);
+                sink.handleHeat(heatToTransfer);
                 if (!(sink instanceof ICapabilityProvider) || !CapabilityUtils.getCapability((ICapabilityProvider) sink, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)
                       .filter(transmitter -> TransmissionType.checkTransmissionType(transmitter, TransmissionType.HEAT)).isPresent()) {
-                    adjacentTransfer = adjacentTransfer.plusEqual(heatToTransfer);
+                    adjacentTransfer += heatToTransfer;
                 }
                 continue;
             }
             //Transfer to air otherwise
-            FloatingLong invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT.add(getTotalInverseInsulation(side)).plusEqual(getTotalInverseConductionCoefficient(side));
+            double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + getTotalInverseInsulation(side) + getTotalInverseConductionCoefficient(side);
             //Transfer heat difference based on environment temperature (ambient)
-            FloatingLong heatToTransfer = (getTotalTemperature(side).subtract(HeatAPI.AMBIENT_TEMP)).divide(invConduction);
-            handleHeat(new HeatPacket(TransferType.EMIT, heatToTransfer), side);
-            environmentTransfer = environmentTransfer.plusEqual(heatToTransfer);
+            double heatToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
+            handleHeat(-heatToTransfer, side);
+            environmentTransfer += heatToTransfer;
         }
         return new HeatTransfer(adjacentTransfer, environmentTransfer);
     }
