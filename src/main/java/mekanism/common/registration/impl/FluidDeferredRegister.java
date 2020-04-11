@@ -3,6 +3,7 @@ package mekanism.common.registration.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
+import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -38,6 +39,14 @@ public class FluidDeferredRegister {
         blockRegister = new DeferredRegister<>(ForgeRegistries.BLOCKS, modid);
         fluidRegister = new DeferredRegister<>(ForgeRegistries.FLUIDS, modid);
         itemRegister = new DeferredRegister<>(ForgeRegistries.ITEMS, modid);
+    }
+
+    public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(ChemicalConstants constants) {
+        int color = constants.getColor();
+        int temperature = Math.round(constants.getTemperature());
+        int density = Math.round(constants.getDensity());
+        //TODO: Support for luminosity?
+        return register(constants.getName(), fluidAttributes -> fluidAttributes.color(color).temperature(temperature).density(density).viscosity(density).gaseous());
     }
 
     public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> register(String name, UnaryOperator<Builder> fluidAttributes) {

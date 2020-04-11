@@ -16,7 +16,6 @@ public enum ChemicalConstants {
     // Sulfuric acid is a liquid at room temperature
     SULFURIC_ACID("sulfuric_acid", 0xFF82802B, 300, 1840),
     HYDROGEN_CHLORIDE("hydrogen_chloride", 0xFFA8F1E9, 188.1F, 821.43F),
-    //TODO: Do we want to have this go by ethene or ethylene
     ETHENE("ethene", 0xFFEACCF9, 169.45F, 577),
     //Note: it is a solid at room temperature
     SODIUM("sodium", 0xFFE9FEF4, 370.944F, 927),
