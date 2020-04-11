@@ -25,7 +25,7 @@ import net.minecraft.util.math.BlockPos;
 public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData> {
 
     public static final int WATER_PER_TANK = 16_000;
-    public static final int STEAM_PER_TANK = 160_000;
+    public static final long STEAM_PER_TANK = 160_000;
 
     public BoilerUpdateProtocol(TileEntityBoilerCasing tile) {
         super(tile);
@@ -170,7 +170,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         BoilerCache mergeCache = (BoilerCache) merge;
         StorageUtils.mergeTanks(boilerCache.getFluidTanks(null).get(0), mergeCache.getFluidTanks(null).get(0));
         StorageUtils.mergeTanks(boilerCache.getGasTanks(null).get(0), mergeCache.getGasTanks(null).get(0));
-        boilerCache.temperature = Math.max(boilerCache.temperature, mergeCache.temperature);
+        StorageUtils.mergeContainers(boilerCache.getHeatCapacitors(null).get(0), mergeCache.getHeatCapacitors(null).get(0));
     }
 
     @Override

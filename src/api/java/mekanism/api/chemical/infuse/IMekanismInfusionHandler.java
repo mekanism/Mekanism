@@ -19,7 +19,7 @@ public interface IMekanismInfusionHandler extends ISidedInfusionHandler {
      * @return True if we are actually capable of handling infuse types.
      *
      * @apiNote If for some reason you are comparing to {@link IMekanismInfusionHandler} without having gotten the object via the infusion handler capability, then you
-     * must call this method to make sure that it really is an inventory. As most mekanism tiles have this class in their hierarchy.
+     * must call this method to make sure that it really can handle infusion types. As most mekanism tiles have this class in their hierarchy.
      * @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
      */
     default boolean canHandleInfusion() {
@@ -78,7 +78,7 @@ public interface IMekanismInfusionHandler extends ISidedInfusionHandler {
     }
 
     @Override
-    default int getInfusionTankCapacity(int tank, @Nullable Direction side) {
+    default long getInfusionTankCapacity(int tank, @Nullable Direction side) {
         IChemicalTank<InfuseType, InfusionStack> infusionTank = getInfusionTank(tank, side);
         return infusionTank == null ? 0 : infusionTank.getCapacity();
     }
@@ -96,7 +96,7 @@ public interface IMekanismInfusionHandler extends ISidedInfusionHandler {
     }
 
     @Override
-    default InfusionStack extractInfusion(int tank, int amount, @Nullable Direction side, Action action) {
+    default InfusionStack extractInfusion(int tank, long amount, @Nullable Direction side, Action action) {
         IChemicalTank<InfuseType, InfusionStack> infusionTank = getInfusionTank(tank, side);
         return infusionTank == null ? InfusionStack.EMPTY : infusionTank.extract(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }

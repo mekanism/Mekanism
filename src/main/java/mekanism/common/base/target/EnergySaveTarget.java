@@ -2,7 +2,8 @@ package mekanism.common.base.target;
 
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.base.SplitInfo;
+import mekanism.common.distribution.SplitInfo;
+import mekanism.common.distribution.target.Target;
 import net.minecraft.util.Direction;
 
 public class EnergySaveTarget extends Target<IEnergyContainer, FloatingLong, FloatingLong> {

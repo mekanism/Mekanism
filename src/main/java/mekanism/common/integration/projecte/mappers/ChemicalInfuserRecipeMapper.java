@@ -1,11 +1,10 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -46,13 +45,14 @@ public class ChemicalInfuserRecipeMapper implements IRecipeTypeMapper {
         for (GasStack leftRepresentation : leftInputRepresentations) {
             NormalizedSimpleStack nssLeft = NSSGas.createGas(leftRepresentation);
             for (GasStack rightRepresentation : rightInputRepresentations) {
-                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-                ingredientMap.put(nssLeft, leftRepresentation.getAmount());
-                ingredientMap.put(NSSGas.createGas(rightRepresentation), rightRepresentation.getAmount());
                 GasStack output = recipe.getOutput(leftRepresentation, rightRepresentation);
                 if (!output.isEmpty()) {
-                    mapper.addConversion(output.getAmount(), NSSGas.createGas(output), ingredientMap);
-                    handled = true;
+                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+                    ingredientHelper.put(nssLeft, leftRepresentation.getAmount());
+                    ingredientHelper.put(rightRepresentation);
+                    if (ingredientHelper.addAsConversion(output)) {
+                        handled = true;
+                    }
                 }
             }
         }

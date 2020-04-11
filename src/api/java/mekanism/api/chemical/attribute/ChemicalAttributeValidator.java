@@ -8,45 +8,51 @@ import mekanism.api.chemical.ChemicalStack;
 
 public interface ChemicalAttributeValidator {
 
-    public static ChemicalAttributeValidator DEFAULT = (attr) -> !attr.needsValidation();
-    public static ChemicalAttributeValidator ALWAYS_ALLOW = (attr) -> true;
+    ChemicalAttributeValidator DEFAULT = attr -> !attr.needsValidation();
+    ChemicalAttributeValidator ALWAYS_ALLOW = attr -> true;
 
     /**
      * Whether a certain attribute is considered valid by the caller.
+     *
      * @param attribute attribute to check
+     *
      * @return if the attribute is valid
      */
-    public boolean validate(ChemicalAttribute attribute);
+    boolean validate(ChemicalAttribute attribute);
 
     /**
      * Determines if a Chemical is considered valid from a provided attribute validator.
-     * @param chemical chemical to test
+     *
+     * @param chemical  chemical to test
      * @param validator validator to use
+     *
      * @return if the chemical is valid
      */
-    public static boolean process(Chemical<?> chemical, ChemicalAttributeValidator validator) {
-        return chemical.getAttributes().stream().noneMatch(attr -> !validator.validate(attr));
+    static boolean process(Chemical<?> chemical, ChemicalAttributeValidator validator) {
+        return chemical.getAttributes().stream().allMatch(validator::validate);
     }
 
     /**
      * Determines if a ChemicalStack is considered valid from a provided attribute validator.
-     * @param stack stack to test
+     *
+     * @param stack     stack to test
      * @param validator validator to use
+     *
      * @return if the stack is valid
      */
-    public static boolean process(ChemicalStack<?> stack, ChemicalAttributeValidator validator) {
+    static boolean process(ChemicalStack<?> stack, ChemicalAttributeValidator validator) {
         return process(stack.getType(), validator);
     }
 
     /**
-     * Creates a simple attribute validator which accepts any attributes that don't require validation,
-     * and any attributes provided in the parameters.
+     * Creates a simple attribute validator which accepts any attributes that don't require validation, and any attributes provided in the parameters.
      *
      * @param validAttributes attributes which can be accepted
+     *
      * @return simple attribute validator
      */
     @SafeVarargs
-    public static ChemicalAttributeValidator create(Class<? extends ChemicalAttribute>... validAttributes) {
+    static ChemicalAttributeValidator create(Class<? extends ChemicalAttribute>... validAttributes) {
         return new SimpleAttributeValidator(validAttributes, true);
     }
 
@@ -54,10 +60,11 @@ public interface ChemicalAttributeValidator {
      * Creates a simple attribute validator which accepts only attributes provided in the parameters.
      *
      * @param validAttributes attributes which can be accepted
+     *
      * @return simple attribute validator
      */
     @SafeVarargs
-    public static ChemicalAttributeValidator createStrict(Class<? extends ChemicalAttribute>... validAttributes) {
+    static ChemicalAttributeValidator createStrict(Class<? extends ChemicalAttribute>... validAttributes) {
         return new SimpleAttributeValidator(validAttributes, false);
     }
 

@@ -53,18 +53,18 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void tickServer(PlayerEntity player) {
             FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
-            int maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(usage).intValue());
-            int hydrogenUsed = 0;
+            long maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(usage).intValue());
+            long hydrogenUsed = 0;
             GasStack hydrogenStack = new GasStack(MekanismGases.HYDROGEN.get(), maxRate * 2);
             ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             Optional<IGasHandler> capability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
             if (Modules.load(chestStack, Modules.JETPACK_UNIT) != null && capability.isPresent()) {
                 hydrogenUsed = maxRate * 2 - capability.get().insertGas(hydrogenStack, Action.EXECUTE).getAmount();
             }
-            int oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
-            int used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
+            long oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
+            long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
             useEnergy(player, usage.multiply(used));
-            player.setAir(player.getAir() + oxygenUsed);
+            player.setAir(player.getAir() + (int) oxygenUsed);
         }
 
         private int getMaxRate() {
@@ -323,7 +323,7 @@ public abstract class ModuleMekaSuit extends Module {
             FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageNutritionalInjection.get();
             if (!player.isCreative() && player.canEat(false) && getContainerEnergy().greaterOrEqual(usage)) {
                 ItemMekaSuitArmor item = (ItemMekaSuitArmor) getContainer().getItem();
-                int toFeed = Math.min(1, item.getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / ItemCanteen.MB_PER_FOOD);
+                long toFeed = Math.min(1, item.getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / ItemCanteen.MB_PER_FOOD);
                 if (toFeed > 0) {
                     useEnergy(player, usage.multiply(toFeed));
                     item.useGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get(), toFeed * ItemCanteen.MB_PER_FOOD);

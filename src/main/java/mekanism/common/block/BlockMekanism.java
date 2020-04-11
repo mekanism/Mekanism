@@ -3,7 +3,6 @@ package mekanism.common.block;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.sustained.ISustainedData;
@@ -19,6 +18,7 @@ import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.security.ISecurityItem;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -81,17 +81,10 @@ public abstract class BlockMekanism extends Block {
         if (tile.supportsRedstone()) {
             ItemDataUtils.setInt(itemStack, NBTConstants.CONTROL_TYPE, tile.getControlType().ordinal());
         }
-        if (tile.handlesGas()) {
-            ItemDataUtils.setList(itemStack, NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(tile.getGasTanks(null)));
-        }
-        if (tile.handlesInfusion()) {
-            ItemDataUtils.setList(itemStack, NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeTanks(tile.getInfusionTanks(null)));
-        }
-        if (tile.handlesFluid()) {
-            ItemDataUtils.setList(itemStack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(tile.getFluidTanks(null)));
-        }
-        if (tile.handlesEnergy()) {
-            ItemDataUtils.setList(itemStack, NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(tile.getEnergyContainers(null)));
+        for (SubstanceType type : SubstanceType.values()) {
+            if (tile.handles(type)) {
+                ItemDataUtils.setList(itemStack, type.getContainerTag(), type.getWriteFunction().apply(type.getContainers(tile)));
+            }
         }
         if (item instanceof ISustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
@@ -188,17 +181,10 @@ public abstract class BlockMekanism extends Block {
             config.getConfig().read(ItemDataUtils.getDataMap(stack));
             config.getEjector().read(ItemDataUtils.getDataMap(stack));
         }
-        if (tile.handlesGas()) {
-            tile.loadGas(ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
-        }
-        if (tile.handlesInfusion()) {
-            tile.loadInfusion(ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
-        }
-        if (tile.handlesFluid()) {
-            tile.loadFluid(ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
-        }
-        if (tile.handlesEnergy()) {
-            tile.loadEnergy(ItemDataUtils.getList(stack, NBTConstants.ENERGY_CONTAINERS));
+        for (SubstanceType type : SubstanceType.values()) {
+            if (type.canHandle(tile)) {
+                type.getReadFunction().accept(type.getContainers(tile), ItemDataUtils.getList(stack, type.getContainerTag()));
+            }
         }
         if (tile instanceof ISustainedData && stack.hasTag()) {
             ((ISustainedData) tile).readSustainedData(stack);

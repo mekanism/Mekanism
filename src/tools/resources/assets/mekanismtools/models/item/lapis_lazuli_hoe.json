@@ -1,7 +1,0 @@
-{
-    "parent": "item/handheld",
-    "textures": { 
-        "layer0": "mekanismtools:item/lapis_lazuli_hoe"
-    }
-}
-

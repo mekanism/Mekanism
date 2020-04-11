@@ -224,6 +224,13 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
+     * Copies this {@link FloatingLong}, into a constant {@link FloatingLong}. If the current {@link FloatingLong{ is already a constant just returns self.
+     */
+    public FloatingLong copyAsConst() {
+        return isConstant ? this : new FloatingLong(value, decimal, true);
+    }
+
+    /**
      * Adds the given {@link FloatingLong} to this {@link FloatingLong}, modifying the current object unless it is a constant in which case it instead returns the result
      * in a new object. This gets clamped at the upper bound of {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
@@ -535,6 +542,36 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
+     * Returns the smallest {@link FloatingLong} that is greater than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @return the smallest {@link FloatingLong} that is greater than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long, then the result is the same as the argument. Additionally, if this {@link
+     * FloatingLong} is larger than the maximum unsigned long, this instead returns a {@link FloatingLong} representing the maximum unsigned long.
+     */
+    public FloatingLong ceil() {
+        if (decimal == 0) {
+            return this;
+        }
+        if (value == -1) {
+            //It is the max long value already then actually just floor it
+            return new FloatingLong(value, (short) 0, false);
+        }
+        return new FloatingLong(value + 1, (short) 0, false);
+    }
+
+    /**
+     * Returns the largest {@link FloatingLong} that is less than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @return the largest {@link FloatingLong} that is less than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long, then the result is the same as the argument.
+     */
+    public FloatingLong floor() {
+        return decimal == 0 ? this : new FloatingLong(value, (short) 0, false);
+    }
+
+    /**
      * Helper method to check if a given {@link FloatingLong} is smaller than this {@link FloatingLong}
      *
      * @param toCompare The {@link FloatingLong} to compare to
@@ -670,6 +707,20 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
+     * Returns the absolute value of the difference between two Floating Long values.
+     *
+     * @param other comparing FloatingLong
+     *
+     * @return the difference between values
+     */
+    public FloatingLong absDifference(FloatingLong other) {
+        if (greaterThan(other)) {
+            return subtract(other);
+        }
+        return add(other);
+    }
+
+    /**
      * Writes this {@link FloatingLong} to the given buffer
      *
      * @param buffer The {@link PacketBuffer} to write to.
@@ -700,12 +751,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         String valueAsString = Long.toUnsignedString(value) + ".";
         String decimalAsString = Short.toString(decimal);
         int numberDigits = decimalAsString.length();
+        if (numberDigits < DECIMAL_DIGITS) {
+            //We need to prepend some zeros so that 1 -> 0.0001 rather than 0.01 for when we want two decimal places
+            decimalAsString = getZeros(DECIMAL_DIGITS - numberDigits) + decimalAsString;
+            numberDigits = DECIMAL_DIGITS;
+        }
         if (numberDigits > decimalPlaces) {
             //We need to trim it
             decimalAsString = decimalAsString.substring(0, decimalPlaces);
-        } else if (numberDigits < decimalPlaces) {
-            //We need to prepend some zeros
-            decimalAsString = getZeros(decimalPlaces - numberDigits) + decimalAsString;
         }
         return valueAsString + decimalAsString;
     }

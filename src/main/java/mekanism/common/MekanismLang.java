@@ -430,7 +430,7 @@ public enum MekanismLang implements ILangEntry {
     ENERGY_EU_SHORT("energy", "eu.short"),
     //Network Reader
     NETWORK_READER_BORDER("network_reader", "border"),
-    NETWORK_READER_ABOVE_AMBIENT("network_reader", "above_ambient"),
+    NETWORK_READER_TEMPERATURE("network_reader", "temperature"),
     NETWORK_READER_TRANSMITTERS("network_reader", "transmitters"),
     NETWORK_READER_ACCEPTORS("network_reader", "acceptors"),
     NETWORK_READER_NEEDED("network_reader", "needed"),

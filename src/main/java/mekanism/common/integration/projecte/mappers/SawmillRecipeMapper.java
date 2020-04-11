@@ -1,10 +1,9 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.HashMap;
-import java.util.Map;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
@@ -66,33 +65,38 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
             ItemStack mainOutput = output.getMainOutput();
             ItemStack secondaryOutput = output.getMaxSecondaryOutput();
             NormalizedSimpleStack nssInput = NSSItem.createItem(representation);
-            Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+            IngredientHelper ingredientHelper = new IngredientHelper(mapper);
             if (secondaryOutput.isEmpty()) {
                 //We only have a main output
-                ingredientMap.put(nssInput, representation.getCount());
                 if (!mainOutput.isEmpty()) {
-                    mapper.addConversion(mainOutput.getCount(), NSSItem.createItem(mainOutput), ingredientMap);
-                    handled = true;
+                    ingredientHelper.put(nssInput, representation.getCount());
+                    if (ingredientHelper.addAsConversion(mainOutput)) {
+                        handled = true;
+                    }
                 }
             } else if (mainOutput.isEmpty()) {
                 //We only have a secondary output
-                ingredientMap.put(nssInput, representation.getCount() * primaryMultiplier);
-                mapper.addConversion(secondaryOutput.getCount() * secondaryMultiplier, NSSItem.createItem(secondaryOutput), ingredientMap);
-                handled = true;
+                ingredientHelper.put(nssInput, representation.getCount() * primaryMultiplier);
+                if (ingredientHelper.addAsConversion(NSSItem.createItem(secondaryOutput), secondaryOutput.getCount() * secondaryMultiplier)) {
+                    handled = true;
+                }
             } else {
                 NormalizedSimpleStack nssMainOutput = NSSItem.createItem(mainOutput);
                 NormalizedSimpleStack nssSecondaryOutput = NSSItem.createItem(secondaryOutput);
                 //We have both so do our best guess by trying to subtract them from each other
                 //Add trying to calculate the main output (using it as if we needed negative of secondary output)
-                ingredientMap.put(nssInput, representation.getCount() * primaryMultiplier);
-                ingredientMap.put(nssSecondaryOutput, -secondaryOutput.getCount() * secondaryMultiplier);
-                mapper.addConversion(mainOutput.getCount() * primaryMultiplier, nssMainOutput, ingredientMap);
+                ingredientHelper.put(nssInput, representation.getCount() * primaryMultiplier);
+                ingredientHelper.put(nssSecondaryOutput, -secondaryOutput.getCount() * secondaryMultiplier);
+                if (ingredientHelper.addAsConversion(nssMainOutput, mainOutput.getCount() * primaryMultiplier)) {
+                    handled = true;
+                }
                 //Add trying to calculate secondary output (using it as if we needed negative of main output)
-                ingredientMap = new HashMap<>();
-                ingredientMap.put(nssInput, representation.getCount() * primaryMultiplier);
-                ingredientMap.put(nssMainOutput, -mainOutput.getCount() * primaryMultiplier);
-                mapper.addConversion(secondaryOutput.getCount() * secondaryMultiplier, nssSecondaryOutput, ingredientMap);
-                handled = true;
+                ingredientHelper.resetHelper();
+                ingredientHelper.put(nssInput, representation.getCount() * primaryMultiplier);
+                ingredientHelper.put(nssMainOutput, -mainOutput.getCount() * primaryMultiplier);
+                if (ingredientHelper.addAsConversion(nssSecondaryOutput, secondaryOutput.getCount() * secondaryMultiplier)) {
+                    handled = true;
+                }
             }
         }
         return handled;

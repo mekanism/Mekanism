@@ -169,7 +169,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     }
 
     @Nonnull
-    public GasStack useGas(ItemStack stack, Gas type, int amount) {
+    public GasStack useGas(ItemStack stack, Gas type, long amount) {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();

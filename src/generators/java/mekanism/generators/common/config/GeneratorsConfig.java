@@ -53,9 +53,9 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
         builder.comment("Heat Generator Settings").push(HEAT_CATEGORY);
         heatGeneration = CachedFloatingLongValue.define(this, builder, "Amount of energy in Joules the Heat Generator produces per tick. (heatGenerationLava * heatGenerationLava) + heatGenerationNether",
-              "heatGeneration", FloatingLong.createConst(150));
+              "heatGeneration", FloatingLong.createConst(200));
         heatGenerationLava = CachedFloatingLongValue.define(this, builder, "Multiplier of effectiveness of Lava in the Heat Generator.",
-              "heatGenerationLava", FloatingLong.createConst(15));
+              "heatGenerationLava", FloatingLong.createConst(30));
         heatGenerationNether = CachedFloatingLongValue.define(this, builder, "Add this amount of Joules to the energy produced by a heat generator if it is in the Nether.",
               "heatGenerationNether", FloatingLong.createConst(100));
         builder.pop();
@@ -82,8 +82,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         //TODO: Test this, maybe make default supplier be 255 OR 1 higher than minY
         //TODO: Also see if we can somehow check world.getHeight()
         windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation.")
-              .define("windGenerationMaxY", 255,
-                    value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
+              .define("windGenerationMaxY", 255, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
         windGenerationDimBlacklist = CachedResourceLocationListValue.wrap(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
               .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> {
                   if (o instanceof String) {

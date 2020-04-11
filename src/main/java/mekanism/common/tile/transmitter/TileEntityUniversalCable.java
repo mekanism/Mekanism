@@ -2,9 +2,7 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -48,8 +46,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
 
     public final CableTier tier;
 
-    private ProxyStrictEnergyHandler readOnlyStrictEnergyHandler;
-    private final Map<Direction, ProxyStrictEnergyHandler> strictEnergyHandlers;
+    private final ProxyStrictEnergyHandler readOnlyHandler;
     private final List<IEnergyContainer> energyContainers;
     public BasicEnergyContainer buffer;
     public FloatingLong lastWrite = FloatingLong.ZERO;
@@ -57,27 +54,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     public TileEntityUniversalCable(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), CableTier.class);
-        strictEnergyHandlers = new EnumMap<>(Direction.class);
         buffer = BasicEnergyContainer.create(getCapacityAsFloatingLong(), BasicEnergyContainer.alwaysFalse, BasicEnergyContainer.alwaysTrue, this);
         energyContainers = Collections.singletonList(buffer);
-    }
-
-    /**
-     * Lazily get and cache an IStrictEnergyHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null
-     * side
-     */
-    private IStrictEnergyHandler getEnergyHandler(@Nullable Direction side) {
-        if (side == null) {
-            if (readOnlyStrictEnergyHandler == null) {
-                readOnlyStrictEnergyHandler = new ProxyStrictEnergyHandler(this, null, null);
-            }
-            return readOnlyStrictEnergyHandler;
-        }
-        ProxyStrictEnergyHandler energyHandler = strictEnergyHandlers.get(side);
-        if (energyHandler == null) {
-            strictEnergyHandlers.put(side, energyHandler = new ProxyStrictEnergyHandler(this, side, null));
-        }
-        return energyHandler;
+        readOnlyHandler = new ProxyStrictEnergyHandler(this, null, null);
     }
 
     @Override
@@ -240,8 +219,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     }
 
     @Override
-    public int getCapacity() {
-        return getCapacityAsFloatingLong().intValue();
+    public long getCapacity() {
+        return getCapacityAsFloatingLong().longValue();
     }
 
     /**
@@ -302,8 +281,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (EnergyCompatUtils.isEnergyCapability(capability)) {
-            List<IEnergyContainer> energyContainers = getEnergyContainers(side);
-            return energyContainers.isEmpty() ? LazyOptional.empty() : EnergyCompatUtils.getEnergyCapability(capability, getEnergyHandler(side));
+            return EnergyCompatUtils.getEnergyCapability(capability, side == null ? readOnlyHandler : this);
         }
         return super.getCapability(capability, side);
     }

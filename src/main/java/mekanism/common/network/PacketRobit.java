@@ -54,7 +54,7 @@ public class PacketRobit {
 
     public static void encode(PacketRobit pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.activeType);
-        buf.writeInt(pkt.entityId);
+        buf.writeVarInt(pkt.entityId);
         if (pkt.activeType == RobitPacketType.NAME) {
             buf.writeTextComponent(pkt.name);
         }
@@ -62,7 +62,7 @@ public class PacketRobit {
 
     public static PacketRobit decode(PacketBuffer buf) {
         RobitPacketType activeType = buf.readEnumValue(RobitPacketType.class);
-        int entityId = buf.readInt();
+        int entityId = buf.readVarInt();
         if (activeType == RobitPacketType.NAME) {
             return new PacketRobit(entityId, buf.readTextComponent());
         }

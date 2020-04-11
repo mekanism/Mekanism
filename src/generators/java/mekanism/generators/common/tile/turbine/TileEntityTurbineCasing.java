@@ -6,6 +6,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -13,6 +14,7 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
@@ -49,7 +51,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
         if (structure != null && isRendering) {
             structure.lastSteamInput = structure.newSteamInput;
             structure.newSteamInput = 0;
-            int stored = structure.gasTank.getStored();
+            long stored = structure.gasTank.getStored();
             double flowRate = 0;
 
             FloatingLong energyNeeded = structure.energyContainer.getNeeded();
@@ -59,7 +61,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 double rate = structure.lowerVolume * (structure.getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
                 rate = Math.min(rate, structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
 
-                double proportion = (double) stored / (double) structure.getSteamCapacity();
+                double proportion = stored / (double) structure.getSteamCapacity();
                 double origRate = rate;
                 //TODO: FloatingLong evaluate
                 rate = Math.min(Math.min(stored, rate), energyNeeded.divide(energyMultiplier).doubleValue()) * proportion;
@@ -68,16 +70,16 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
 
                 if (!structure.gasTank.isEmpty()) {
-                    structure.gasTank.shrinkStack((int) rate, Action.EXECUTE);
+                    structure.gasTank.shrinkStack((long) rate, Action.EXECUTE);
                 }
-                structure.clientFlow = (int) rate;
-                structure.ventTank.setStack(new FluidStack(Fluids.WATER, Math.min((int) rate, structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
+                structure.clientFlow = (long) rate;
+                structure.ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
             } else {
                 structure.clientFlow = 0;
             }
 
             if (structure.dumpMode == GasMode.DUMPING && !structure.gasTank.isEmpty()) {
-                int amount = structure.gasTank.getStored();
+                long amount = structure.gasTank.getStored();
                 structure.gasTank.shrinkStack(Math.min(amount, Math.max(amount / 50, structure.lastSteamInput * 2)), Action.EXECUTE);
             }
 
@@ -204,12 +206,12 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.energyContainer.setEnergy(value);
             }
         }));
-        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.clientFlow, value -> {
+        container.track(SyncableLong.create(() -> structure == null ? 0 : structure.clientFlow, value -> {
             if (structure != null) {
                 structure.clientFlow = value;
             }
         }));
-        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.lastSteamInput, value -> {
+        container.track(SyncableLong.create(() -> structure == null ? 0 : structure.lastSteamInput, value -> {
             if (structure != null) {
                 structure.lastSteamInput = value;
             }

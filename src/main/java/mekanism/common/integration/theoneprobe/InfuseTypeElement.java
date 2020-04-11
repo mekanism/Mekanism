@@ -12,12 +12,12 @@ public class InfuseTypeElement extends ChemicalElement<InfuseType, InfusionStack
 
     public static int ID;
 
-    public InfuseTypeElement(@Nonnull InfusionStack stored, int capacity) {
+    public InfuseTypeElement(@Nonnull InfusionStack stored, long capacity) {
         super(stored, capacity);
     }
 
     public InfuseTypeElement(PacketBuffer buf) {
-        this(ChemicalUtils.readInfusionStack(buf), buf.readVarInt());
+        this(ChemicalUtils.readInfusionStack(buf), buf.readVarLong());
     }
 
     @Override

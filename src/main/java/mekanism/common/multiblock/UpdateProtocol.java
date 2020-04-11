@@ -376,6 +376,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
             cache.apply(structureFound);
             structureFound.inventoryID = idToUse;
+            structureFound.onCreated();
 
             onFormed();
 

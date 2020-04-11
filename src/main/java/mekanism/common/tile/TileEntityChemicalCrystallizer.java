@@ -40,7 +40,7 @@ import net.minecraft.item.ItemStack;
 
 public class TileEntityChemicalCrystallizer extends TileEntityBasicMachine<GasToItemStackRecipe> {
 
-    public static final int MAX_GAS = 10_000;
+    public static final long MAX_GAS = 10_000;
 
     public BasicGasTank inputTank;
 

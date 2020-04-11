@@ -7,6 +7,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.network.container.property.FloatingLongPropertyData;
 import mekanism.common.network.container.property.PropertyData;
+import mekanism.common.network.container.property.ShortPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling floating long
@@ -19,8 +20,8 @@ public class SyncableFloatingLong implements ISyncableData {
 
     private final Supplier<@NonNull FloatingLong> getter;
     private final Consumer<@NonNull FloatingLong> setter;
-    @Nonnull
-    private FloatingLong lastKnownValue = FloatingLong.ZERO;
+    private long lastKnownValue;
+    private short lastKnownDecimal;
 
     private SyncableFloatingLong(Supplier<@NonNull FloatingLong> getter, Consumer<@NonNull FloatingLong> setter) {
         this.getter = getter;
@@ -36,20 +37,33 @@ public class SyncableFloatingLong implements ISyncableData {
         setter.accept(value);
     }
 
+    public void setDecimal(short decimal) {
+        set(FloatingLong.create(get().getValue(), decimal));
+    }
+
     @Override
     public DirtyType isDirty() {
-        FloatingLong value = get();
-        if (!value.equals(lastKnownValue)) {
-            //Make sure to copy it in case our floating long object is the same object so would be getting modified
-            // only do so though if it is dirty, as we don't need to spam object creation
-            this.lastKnownValue = value.copy();
-            return DirtyType.DIRTY;
+        FloatingLong val = get();
+        long value = val.getValue();
+        short decimal = val.getDecimal();
+        if (value == lastKnownValue && decimal == lastKnownDecimal) {
+            return DirtyType.CLEAN;
         }
-        return DirtyType.CLEAN;
+        DirtyType type = DirtyType.DIRTY;
+        if (value == lastKnownValue) {
+            type = DirtyType.SIZE;
+        }
+        lastKnownValue = value;
+        lastKnownDecimal = decimal;
+        return type;
     }
 
     @Override
     public PropertyData getPropertyData(short property, DirtyType dirtyType) {
+        if (dirtyType == DirtyType.SIZE) {
+            //If only the size changed, don't bother re-syncing the type
+            return new ShortPropertyData(property, get().getDecimal());
+        }
         return new FloatingLongPropertyData(property, get());
     }
 }

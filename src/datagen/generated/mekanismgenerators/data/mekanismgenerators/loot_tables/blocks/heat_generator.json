@@ -32,13 +32,18 @@
                   "op": "replace"
                 },
                 {
+                  "source": "EnergyContainers",
+                  "target": "mekData.EnergyContainers",
+                  "op": "replace"
+                },
+                {
                   "source": "FluidTanks",
                   "target": "mekData.FluidTanks",
                   "op": "replace"
                 },
                 {
-                  "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers",
+                  "source": "HeatCapacitors",
+                  "target": "mekData.HeatCapacitors",
                   "op": "replace"
                 },
                 {

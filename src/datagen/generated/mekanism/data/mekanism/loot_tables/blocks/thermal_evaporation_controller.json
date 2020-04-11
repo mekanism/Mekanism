@@ -17,6 +17,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "HeatCapacitors",
+                  "target": "mekData.HeatCapacitors",
+                  "op": "replace"
+                },
+                {
                   "source": "Items",
                   "target": "mekData.Items",
                   "op": "replace"

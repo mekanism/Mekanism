@@ -22,6 +22,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -29,6 +30,7 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -103,7 +105,7 @@ public class StorageUtils {
      */
     @Nonnull
     public static GasStack getStoredGasFromNBT(ItemStack stack) {
-        BasicGasTank tank = BasicGasTank.create(Integer.MAX_VALUE, null);
+        BasicGasTank tank = BasicGasTank.create(Long.MAX_VALUE, null);
         DataHandlerUtils.readTanks(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
         return tank.getStack();
     }
@@ -114,7 +116,7 @@ public class StorageUtils {
      */
     @Nonnull
     public static InfusionStack getStoredInfusionFromNBT(ItemStack stack) {
-        BasicInfusionTank tank = BasicInfusionTank.create(Integer.MAX_VALUE, null);
+        BasicInfusionTank tank = BasicInfusionTank.create(Long.MAX_VALUE, null);
         DataHandlerUtils.readTanks(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
         return tank.getStack();
     }
@@ -213,7 +215,7 @@ public class StorageUtils {
         return 1 - bestRatio;
     }
 
-    private static double getRatio(int amount, int capacity) {
+    private static double getRatio(long amount, long capacity) {
         return capacity == 0 ? 1 : amount / (double) capacity;
     }
 
@@ -221,7 +223,7 @@ public class StorageUtils {
         if (tank.isEmpty()) {
             tank.setStack(mergeTank.getFluid());
         } else if (!mergeTank.isEmpty() && tank.isFluidEqual(mergeTank.getFluid())) {
-            mergeTank.growStack(tank.getFluidAmount(), Action.EXECUTE);
+            tank.growStack(mergeTank.getFluidAmount(), Action.EXECUTE);
         }
     }
 
@@ -230,15 +232,18 @@ public class StorageUtils {
         if (tank.isEmpty()) {
             tank.setStack(mergeTank.getStack());
         } else if (!mergeTank.isEmpty() && tank.isTypeEqual(mergeTank.getStack())) {
-            mergeTank.growStack(tank.getStored(), Action.EXECUTE);
+            tank.growStack(mergeTank.getStored(), Action.EXECUTE);
         }
     }
 
     public static void mergeContainers(IEnergyContainer container, IEnergyContainer mergeContainer) {
-        if (container.isEmpty()) {
-            container.setEnergy(mergeContainer.getEnergy());
-        } else if (!mergeContainer.isEmpty()) {
-            mergeContainer.setEnergy(mergeContainer.getEnergy().add(mergeContainer.getEnergy()));
+        container.setEnergy(container.getEnergy().add(mergeContainer.getEnergy()));
+    }
+
+    public static void mergeContainers(IHeatCapacitor capacitor, IHeatCapacitor mergeCapacitor) {
+        capacitor.setHeat(capacitor.getHeat() + mergeCapacitor.getHeat());
+        if (capacitor instanceof BasicHeatCapacitor) {
+            ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacitor.getHeatCapacity() + mergeCapacitor.getHeatCapacity(), false);
         }
     }
 }

@@ -8,6 +8,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.MathUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -62,7 +63,6 @@ public class InputHelper {
         };
     }
 
-    //TODO: IGasHandler?
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> IInputHandler<@NonNull STACK> getInputHandler(@Nonnull IChemicalTank<CHEMICAL, STACK> tank) {
         return new IInputHandler<@NonNull STACK>() {
 
@@ -94,7 +94,7 @@ public class InputHelper {
                 }
                 STACK inputGas = getInput();
                 if (!inputGas.isEmpty()) {
-                    int amount = recipeInput.getAmount() * operations;
+                    long amount = recipeInput.getAmount() * operations;
                     if (tank.shrinkStack(amount, Action.EXECUTE) != amount) {
                         //TODO: Print error/warning that something went wrong
                     }
@@ -114,7 +114,7 @@ public class InputHelper {
                     return 0;
                 }
                 //TODO: Simulate the drain?
-                return Math.min(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier), currentMax);
+                return Math.min(MathUtils.clampToInt(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier)), currentMax);
             }
         };
     }

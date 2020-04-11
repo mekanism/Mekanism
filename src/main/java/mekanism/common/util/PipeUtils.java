@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.base.target.FluidHandlerTarget;
+import mekanism.common.distribution.target.FluidHandlerTarget;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;

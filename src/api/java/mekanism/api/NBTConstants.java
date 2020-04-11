@@ -49,7 +49,6 @@ public final class NBTConstants {
     public static final String BUCKET_MODE = "bucketMode";
     public static final String BURNING = "burning";
     public static final String BURN_TIME = "burnTime";
-    public static final String CASE_TEMP = "caseTemp";
     public static final String CHANNEL = "channel";
     public static final String CHUNK_SET = "chunkSet";
     public static final String COLOR = "color";
@@ -87,6 +86,9 @@ public final class NBTConstants {
     public static final String GAS_NAME = "gasName";
     public static final String GAS_STORED = "gas";
     public static final String GAS_TANKS = "GasTanks";
+    public static final String HEAT_CAPACITORS = "HeatCapacitors";
+    public static final String HEAT_CAPACITY = "heatCapacity";
+    public static final String HEAT_STORED = "heat";
     public static final String HOME_LOCATION = "homeLocation";
     public static final String IDLE_DIR = "idleDir";
     public static final String INDEX = "index";

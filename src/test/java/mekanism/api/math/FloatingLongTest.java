@@ -77,4 +77,10 @@ class FloatingLongTest {
         FloatingLong b = FloatingLong.create((long) 7 * 7 * 73 * 127 * 92737, (short) 0);
         Assertions.assertEquals(FloatingLong.create((long) 649657 * 337), a.divide(b));
     }
+
+    @Test
+    @DisplayName("Test to string as two decimals")
+    void testConvertingStringToDecimal() {
+        Assertions.assertEquals("0.00",  FloatingLong.create(0, (short) 1).toString(2));
+    }
 }

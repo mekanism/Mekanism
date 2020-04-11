@@ -2,7 +2,7 @@ package mekanism.common.capabilities.chemical;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;
-import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,13 +22,13 @@ import mekanism.api.inventory.AutomationType;
 @MethodsReturnNonnullByDefault
 public class VariableCapacityGasTank extends BasicGasTank {
 
-    public static VariableCapacityGasTank create(IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+    public static VariableCapacityGasTank create(LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
         BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator,
         @Nullable IMekanismGasHandler gasHandler) {
         return create(capacity, canExtract, canInsert, validator, null, gasHandler);
     }
 
-    public static VariableCapacityGasTank create(IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+    public static VariableCapacityGasTank create(LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator, @Nullable ChemicalAttributeValidator attributeValidator,
           @Nullable IMekanismGasHandler gasHandler) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
@@ -38,28 +38,28 @@ public class VariableCapacityGasTank extends BasicGasTank {
         return new VariableCapacityGasTank(capacity, canExtract, canInsert, validator, attributeValidator, gasHandler);
     }
 
-    public static VariableCapacityGasTank output(IntSupplier capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
+    public static VariableCapacityGasTank output(LongSupplier capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Gas validity check cannot be null");
         return new VariableCapacityGasTank(capacity, alwaysTrueBi, internalOnly, validator, null, gasHandler);
     }
 
-    private final IntSupplier capacity;
+    private final LongSupplier capacity;
 
-    protected VariableCapacityGasTank(IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+    protected VariableCapacityGasTank(LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator, @Nullable ChemicalAttributeValidator attributeValidator,
           @Nullable IMekanismGasHandler gasHandler) {
-        super(capacity.getAsInt(), canExtract, canInsert, validator, attributeValidator, gasHandler);
+        super(capacity.getAsLong(), canExtract, canInsert, validator, attributeValidator, gasHandler);
         this.capacity = capacity;
     }
 
     @Override
-    public int getCapacity() {
-        return capacity.getAsInt();
+    public long getCapacity() {
+        return capacity.getAsLong();
     }
 
     @Override
-    public int setStackSize(int amount, @Nonnull Action action) {
+    public long setStackSize(long amount, @Nonnull Action action) {
         if (isEmpty()) {
             return 0;
         } else if (amount <= 0) {
@@ -68,7 +68,7 @@ public class VariableCapacityGasTank extends BasicGasTank {
             }
             return 0;
         }
-        int maxStackSize = getCapacity();
+        long maxStackSize = getCapacity();
         //Our capacity should never actually be zero, and given we fake it being zero
         // until we finish building the network, we need to override this method to bypass the upper limit check
         // when our upper limit is zero

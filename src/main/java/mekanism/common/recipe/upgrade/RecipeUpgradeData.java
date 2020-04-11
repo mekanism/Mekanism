@@ -16,6 +16,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.security.ISecurityItem;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.Block;
@@ -58,19 +59,19 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 supportedTypes.add(RecipeUpgradeType.UPGRADE);
             }
         }
-        if (stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).isPresent() || tile != null && tile.handlesEnergy()) {
+        if (stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.ENERGY)) {
             //If we are for a block that handles energy or we have an energy handler capability
             supportedTypes.add(RecipeUpgradeType.ENERGY);
         }
-        if (stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent() || tile != null && tile.handlesFluid()) {
+        if (stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.FLUID)) {
             //If we are for a block that handles fluid or we have an fluid handler capability
             supportedTypes.add(RecipeUpgradeType.FLUID);
         }
-        if (stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent() || tile != null && tile.handlesGas()) {
+        if (stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.GAS)) {
             //If we are for a block that handles gas or we have an gas handler capability
             supportedTypes.add(RecipeUpgradeType.GAS);
         }
-        if (stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent() || tile != null && tile.handlesInfusion()) {
+        if (stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.INFUSION)) {
             //If we are for a block that handles infusion or we have an infusion handler capability
             supportedTypes.add(RecipeUpgradeType.INFUSION);
         }

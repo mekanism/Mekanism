@@ -93,13 +93,13 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     public void setMinThresholdFromPacket(FloatingLong floatingLong) {
         FloatingLong maxEnergy = energyContainer.getMaxEnergy();
-        minThreshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copy();
+        minThreshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copyAsConst();
         markDirty(false);
     }
 
     public void setMaxThresholdFromPacket(FloatingLong floatingLong) {
         FloatingLong maxEnergy = energyContainer.getMaxEnergy();
-        maxThreshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copy();
+        maxThreshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copyAsConst();
         markDirty(false);
     }
 

@@ -35,9 +35,9 @@ import net.minecraft.item.ItemStack;
 
 public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<ItemStackToGasRecipe> {
 
-    public static final int MAX_GAS = 10_000;
+    public static final long MAX_GAS = 10_000;
     public BasicGasTank gasTank;
-    public int gasOutput = 256;
+    public long gasOutput = 256;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;

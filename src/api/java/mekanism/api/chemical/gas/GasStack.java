@@ -24,13 +24,11 @@ public class GasStack extends ChemicalStack<Gas> {
      * @param gasProvider - provides the gas type of the stack
      * @param amount      - amount of gas to be referenced in this GasStack
      */
-    //TODO: Get rid of uses of this that are just stack.getGas() and use below helper method, to make it so if we ever add NBT or other stuff
-    // it can copy it easier
-    public GasStack(@Nonnull IGasProvider gasProvider, int amount) {
+    public GasStack(@Nonnull IGasProvider gasProvider, long amount) {
         super(gasProvider.getGas(), amount);
     }
 
-    public GasStack(@Nonnull GasStack stack, int amount) {
+    public GasStack(@Nonnull GasStack stack, long amount) {
         this(stack.getType(), amount);
     }
 
@@ -66,7 +64,7 @@ public class GasStack extends ChemicalStack<Gas> {
         if (type.isEmptyType()) {
             return EMPTY;
         }
-        int amount = nbtTags.getInt(NBTConstants.AMOUNT);
+        long amount = nbtTags.getLong(NBTConstants.AMOUNT);
         if (amount <= 0) {
             return EMPTY;
         }
@@ -75,7 +73,7 @@ public class GasStack extends ChemicalStack<Gas> {
 
     public static GasStack readFromPacket(PacketBuffer buf) {
         Gas gas = buf.readRegistryId();
-        int amount = buf.readVarInt();
+        long amount = buf.readVarLong();
         if (gas.isEmptyType()) {
             return EMPTY;
         }
@@ -91,16 +89,6 @@ public class GasStack extends ChemicalStack<Gas> {
     @Override
     public GasStack copy() {
         return new GasStack(this, getAmount());
-    }
-
-    //TODO: Method to check gas in an itemstack (capabilities instead of IGasItem)
-
-    @Override
-    public int hashCode() {
-        int code = 1;
-        code = 31 * code + getType().hashCode();
-        code = 31 * code + getAmount();
-        return code;
     }
 
     /**

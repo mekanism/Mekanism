@@ -28,7 +28,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineData> {
 
-    public static final int GAS_PER_TANK = TankUpdateProtocol.FLUID_PER_TANK;
+    public static final long GAS_PER_TANK = TankUpdateProtocol.FLUID_PER_TANK;
     public static final int MAX_BLADES = 28;
 
     public TurbineUpdateProtocol(TileEntityTurbineCasing tile) {

@@ -71,7 +71,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 if (rate == 0) {
                     return 0;
                 }
-                return (double) tile.structure.lastSteamInput / rate;
+                return tile.structure.lastSteamInput / rate;
             }
         }, 40, 13));
         addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.gasTank,
@@ -84,8 +84,9 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 producing = EnergyDisplay.ZERO;
             } else {
                 storing = EnergyDisplay.of(tile.structure.energyContainer.getEnergy(), tile.structure.energyContainer.getMaxEnergy());
-                producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES).multiply(
-                      tile.structure.clientFlow * Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));
+                producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES)
+                      .multiply(tile.structure.clientFlow * Math.min(tile.structure.blades,
+                            tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));
             }
             return Arrays.asList(MekanismLang.STORING.translate(storing), GeneratorsLang.PRODUCING_AMOUNT.translate(producing));
         }, this));

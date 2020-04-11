@@ -47,8 +47,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "GasTanks",
-                  "target": "mekData.GasTanks",
+                  "source": "EnergyContainers",
+                  "target": "mekData.EnergyContainers",
                   "op": "replace"
                 },
                 {
@@ -57,8 +57,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers",
+                  "source": "GasTanks",
+                  "target": "mekData.GasTanks",
                   "op": "replace"
                 },
                 {

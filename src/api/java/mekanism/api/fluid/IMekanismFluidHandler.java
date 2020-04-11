@@ -19,7 +19,7 @@ public interface IMekanismFluidHandler extends ISidedFluidHandler {
      * @return True if we are actually capable of handling fluid.
      *
      * @apiNote If for some reason you are comparing to {@link IMekanismFluidHandler} without having gotten the object via the fluid handler capability, then you must
-     * call this method to make sure that it really is an inventory. As most mekanism tiles have this class in their hierarchy.
+     * call this method to make sure that it really can handle fluid. As most mekanism tiles have this class in their hierarchy.
      * @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
      */
     default boolean canHandleFluid() {

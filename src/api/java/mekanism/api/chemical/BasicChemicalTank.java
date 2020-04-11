@@ -24,13 +24,13 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     protected final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert;
     @Nullable
     private final ChemicalAttributeValidator attributeValidator;
-    private final int capacity;
+    private final long capacity;
     /**
      * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(STACK)} should be used instead.
      */
     protected STACK stored;
 
-    protected BasicChemicalTank(int capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert,
+    protected BasicChemicalTank(long capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert,
         Predicate<@NonNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator) {
         this.capacity = capacity;
         this.canExtract = canExtract;
@@ -63,12 +63,12 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default this returns {@link Integer#MAX_VALUE} so as to not actually limit the tank's rate. By default this is also ignored for direct setting of the
+     * @implNote By default this returns {@link Long#MAX_VALUE} so as to not actually limit the tank's rate. By default this is also ignored for direct setting of the
      * stack/stack size
      */
-    protected int getRate(@Nullable AutomationType automationType) {
+    protected long getRate(@Nullable AutomationType automationType) {
         //TODO: Decide if we want to split this into a rate for inserting and a rate for extracting.
-        return Integer.MAX_VALUE;
+        return Long.MAX_VALUE;
     }
 
     protected void setStackUnchecked(STACK stack) {
@@ -94,14 +94,14 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
             //"Fail quick" if the given stack is empty or we can never insert the chemical or currently are unable to insert it
             return stack;
         }
-        int needed = Math.min(getRate(automationType), getNeeded());
+        long needed = Math.min(getRate(automationType), getNeeded());
         if (needed <= 0) {
             //Fail if we are a full tank or our rate is zero
             return stack;
         }
         boolean sameType = false;
         if (isEmpty() || (sameType = isTypeEqual(stack))) {
-            int toAdd = Math.min(stack.getAmount(), needed);
+            long toAdd = Math.min(stack.getAmount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the chemical, then update the current chemical
                 if (sameType) {
@@ -122,14 +122,14 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     }
 
     @Override
-    public STACK extract(int amount, Action action, AutomationType automationType) {
+    public STACK extract(long amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1 || !canExtract.test(stored.getType(), automationType)) {
             //"Fail quick" if we don't can never extract from this tank, have a chemical stored, or the amount being requested is less than one
             return getEmptyStack();
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // We also are limiting it by the rate this tank has
-        int size = Math.min(Math.min(getRate(automationType), getStored()), amount);
+        long size = Math.min(Math.min(getRate(automationType), getStored()), amount);
         if (size == 0) {
             return getEmptyStack();
         }
@@ -154,7 +154,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      * instead of having to make a copy.
      */
     @Override
-    public int setStackSize(int amount, Action action) {
+    public long setStackSize(long amount, Action action) {
         if (isEmpty()) {
             return 0;
         } else if (amount <= 0) {
@@ -163,7 +163,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
             }
             return 0;
         }
-        int maxStackSize = getCapacity();
+        long maxStackSize = getCapacity();
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
@@ -182,19 +182,19 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      * @implNote Overwritten so that we can make this obey the rate limit our tank may have
      */
     @Override
-    public int growStack(int amount, Action action) {
+    public long growStack(long amount, Action action) {
         //TODO: We should go through all the places we have TODOs about errors/warnings, and debate removing them/add
         // some form of graceful handling as it is valid they may not grow the full amount due to rate limiting
         // Though I believe most places we manually call it we have already done a simulation, which should really
         // have caught any rate limit issues
-        int current = getStored();
+        long current = getStored();
         if (amount > 0) {
-            //Cap adding amount at how much we need, so that we don't risk integer overflow
+            //Cap adding amount at how much we need, so that we don't risk long overflow
             amount = Math.min(Math.min(amount, getNeeded()), getRate(null));
         } else if (amount < 0) {
             amount = Math.max(amount, -getRate(null));
         }
-        int newSize = setStackSize(current + amount, action);
+        long newSize = setStackSize(current + amount, action);
         return newSize - current;
     }
 
@@ -214,7 +214,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
      */
     @Override
-    public int getStored() {
+    public long getStored() {
         return stored.getAmount();
     }
 
@@ -249,7 +249,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     }
 
     @Override
-    public int getCapacity() {
+    public long getCapacity() {
         return capacity;
     }
 

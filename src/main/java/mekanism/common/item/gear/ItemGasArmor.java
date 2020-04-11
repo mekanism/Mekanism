@@ -2,7 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -45,7 +45,7 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
         super(material, slot, properties.setNoRepair().maxStackSize(1));
     }
 
-    protected abstract IntSupplier getMaxGas();
+    protected abstract LongSupplier getMaxGas();
 
     protected abstract IGasProvider getGasType();
 
@@ -84,7 +84,7 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
     }
 
     @Nonnull
-    public GasStack useGas(ItemStack stack, int amount) {
+    public GasStack useGas(ItemStack stack, long amount) {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
@@ -104,7 +104,7 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(GasUtils.getFilledVariant(new ItemStack(this), getMaxGas().getAsInt(), getGasType()));
+            items.add(GasUtils.getFilledVariant(new ItemStack(this), getMaxGas().getAsLong(), getGasType()));
         }
     }
 

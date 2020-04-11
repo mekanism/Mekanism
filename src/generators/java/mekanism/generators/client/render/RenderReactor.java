@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
@@ -19,6 +19,7 @@ import net.minecraft.profiler.IProfiler;
 @ParametersAreNonnullByDefault
 public class RenderReactor extends MekanismTileEntityRenderer<TileEntityReactorController> {
 
+    private static final double SCALE = 100_000_000;
     private ModelEnergyCore core = new ModelEnergyCore();
 
     public RenderReactor(TileEntityRendererDispatcher renderer) {
@@ -32,7 +33,7 @@ public class RenderReactor extends MekanismTileEntityRenderer<TileEntityReactorC
             matrix.push();
             matrix.translate(0.5, -1.5, 0.5);
 
-            long scaledTemp = Math.round(tile.getPlasmaTemp() / 1E8);
+            long scaledTemp = Math.round(tile.getPlasmaTemp() / SCALE);
             float ticks = MekanismClient.ticksPassed + partialTick;
             double scale = 1 + 0.7 * Math.sin(Math.toRadians(ticks * 3.14 * scaledTemp + 135F));
             IVertexBuilder buffer = core.getBuffer(renderer);

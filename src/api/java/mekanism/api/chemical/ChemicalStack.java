@@ -15,11 +15,11 @@ import net.minecraftforge.registries.IRegistryDelegate;
 public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey {
 
     private boolean isEmpty;
-    private int amount;
+    private long amount;
     @Nonnull
     private IRegistryDelegate<CHEMICAL> chemicalDelegate;
 
-    protected ChemicalStack(@Nonnull CHEMICAL chemical, int amount) {
+    protected ChemicalStack(@Nonnull CHEMICAL chemical, long amount) {
         this.chemicalDelegate = getDelegate(chemical);
         this.amount = amount;
         updateEmpty();
@@ -73,11 +73,11 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         isEmpty = getRaw().isEmptyType() || amount <= 0;
     }
 
-    public int getAmount() {
+    public long getAmount() {
         return isEmpty ? 0 : amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(long amount) {
         if (getRaw().isEmptyType()) {
             throw new IllegalStateException("Can't modify the empty stack.");
         }
@@ -85,11 +85,13 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         updateEmpty();
     }
 
-    public void grow(int amount) {
+    public void grow(long amount) {
+        //TODO: Validate this doesn't overflow
         setAmount(this.amount + amount);
     }
 
-    public void shrink(int amount) {
+    public void shrink(long amount) {
+        //TODO: Validate this doesn't underflow?
         setAmount(this.amount - amount);
     }
 
@@ -126,6 +128,14 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      */
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
         return getType().getAttributeTypes();
+    }
+
+    @Override
+    public int hashCode() {
+        int code = 1;
+        code = 31 * code + getType().hashCode();
+        code = 31 * code + Long.hashCode(getAmount());
+        return code;
     }
 
     @Override
@@ -175,12 +185,12 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
         getType().write(nbtTags);
-        nbtTags.putInt(NBTConstants.AMOUNT, getAmount());
+        nbtTags.putLong(NBTConstants.AMOUNT, getAmount());
         return nbtTags;
     }
 
     public void writeToPacket(PacketBuffer buf) {
         buf.writeRegistryId(getType());
-        buf.writeVarInt(getAmount());
+        buf.writeVarLong(getAmount());
     }
 }

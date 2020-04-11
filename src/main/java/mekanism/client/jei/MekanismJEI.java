@@ -159,7 +159,7 @@ public class MekanismJEI implements IModPlugin {
         return Mekanism.rl("jei_plugin");
     }
 
-    public static void registerItemSubtypes(ISubtypeRegistration registry, List<IItemProvider> itemProviders) {
+    public static void registerItemSubtypes(ISubtypeRegistration registry, List<? extends IItemProvider> itemProviders) {
         for (IItemProvider itemProvider : itemProviders) {
             //Handle items
             ItemStack itemStack = itemProvider.getItemStack();
@@ -173,17 +173,7 @@ public class MekanismJEI implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registry) {
         registerItemSubtypes(registry, MekanismItems.ITEMS.getAllItems());
-        //We don't have a get all blocks so just manually add them
-        registry.registerSubtypeInterpreter(MekanismBlocks.BASIC_GAS_TANK.getItem(), MEKANISM_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ADVANCED_GAS_TANK.getItem(), MEKANISM_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ELITE_GAS_TANK.getItem(), MEKANISM_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ULTIMATE_GAS_TANK.getItem(), MEKANISM_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.CREATIVE_GAS_TANK.getItem(), MEKANISM_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.BASIC_ENERGY_CUBE.getItem(), MEKANISM_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ADVANCED_ENERGY_CUBE.getItem(), MEKANISM_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ELITE_ENERGY_CUBE.getItem(), MEKANISM_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.ULTIMATE_ENERGY_CUBE.getItem(), MEKANISM_NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(MekanismBlocks.CREATIVE_ENERGY_CUBE.getItem(), MEKANISM_NBT_INTERPRETER);
+        registerItemSubtypes(registry, MekanismBlocks.BLOCKS.getAllBlocks());
     }
 
     @Override

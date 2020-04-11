@@ -1,7 +1,5 @@
 package mekanism.client.gui.element.gauge;
 
-import static java.lang.Math.min;
-
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -23,7 +21,7 @@ public class GuiNumberGauge extends GuiGauge<Void> {
 
     @Override
     public int getScaledLevel() {
-        return (int) ((height - 2) * min(infoHandler.getLevel() / infoHandler.getMaxLevel(), 1));
+        return (int) ((height - 2) * infoHandler.getScaledLevel());
     }
 
     @Override
@@ -33,7 +31,7 @@ public class GuiNumberGauge extends GuiGauge<Void> {
 
     @Override
     public ITextComponent getTooltipText() {
-        return infoHandler.getText(infoHandler.getLevel());
+        return infoHandler.getText();
     }
 
 
@@ -43,8 +41,8 @@ public class GuiNumberGauge extends GuiGauge<Void> {
 
         double getLevel();
 
-        double getMaxLevel();
+        double getScaledLevel();
 
-        ITextComponent getText(double level);
+        ITextComponent getText();
     }
 }

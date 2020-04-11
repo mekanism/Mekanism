@@ -48,7 +48,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     protected MachineEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract,
           Predicate<@NonNull AutomationType> canInsert, TILE tile) {
         super(maxEnergy, canExtract, canInsert, tile);
-        this.baseEnergyPerTick = energyPerTick.copy();
+        this.baseEnergyPerTick = energyPerTick.copyAsConst();
         this.tile = tile;
         currentMaxEnergy = getBaseMaxEnergy();
         currentEnergyPerTick = baseEnergyPerTick;

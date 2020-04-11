@@ -17,7 +17,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
-import mekanism.common.base.target.GasHandlerTarget;
+import mekanism.common.distribution.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -39,7 +39,7 @@ public final class GasUtils {
         return acceptors;
     }
 
-    public static ItemStack getFilledVariant(ItemStack toFill, int capacity, IGasProvider gasProvider) {
+    public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IGasProvider gasProvider) {
         //Manually handle this as capabilities are not necessarily loaded yet
         // (at least not on the first call to this, which is made via fillItemGroup)
         BasicGasTank tank = BasicGasTank.createDummy(capacity);
@@ -79,7 +79,7 @@ public final class GasUtils {
         emit(outputSides, tank, from, tank.getCapacity());
     }
 
-    public static void emit(Set<Direction> outputSides, IChemicalTank<Gas, GasStack> tank, TileEntity from, int maxOutput) {
+    public static void emit(Set<Direction> outputSides, IChemicalTank<Gas, GasStack> tank, TileEntity from, long maxOutput) {
         if (!tank.isEmpty() && maxOutput > 0) {
             tank.extract(emit(outputSides, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
         }
@@ -94,7 +94,7 @@ public final class GasUtils {
      *
      * @return the amount of gas emitted
      */
-    public static int emit(Set<Direction> sides, @Nonnull GasStack stack, TileEntity from) {
+    public static long emit(Set<Direction> sides, @Nonnull GasStack stack, TileEntity from) {
         if (stack.isEmpty() || sides.isEmpty()) {
             return 0;
         }

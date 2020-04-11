@@ -13,7 +13,7 @@ public class LSModIDFilterContainer extends FilterContainer<TModIDFilter, TileEn
     }
 
     public LSModIDFilterContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, getTileFromBuf(buf, TileEntityLogisticalSorter.class), buf.readInt());
+        this(id, inv, getTileFromBuf(buf, TileEntityLogisticalSorter.class), buf.readVarInt());
     }
 
     @Override

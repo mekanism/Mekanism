@@ -4,6 +4,7 @@ import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.MekanismUtils;
 
 public class TileEntityDynamicValve extends TileEntityDynamicTank {
@@ -19,9 +20,12 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     }
 
     @Override
-    public boolean persistFluid() {
+    public boolean persists(SubstanceType type) {
         //Do not handle fluid when it comes to syncing it/saving this tile to disk
-        return false;
+        if (type == SubstanceType.FLUID) {
+            return false;
+        }
+        return super.persists(type);
     }
 
     @Override

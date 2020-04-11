@@ -82,8 +82,8 @@ public class ItemCanteen extends Item {
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
         if (entityLiving instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entityLiving;
-            int needed = Math.min(20 - player.getFoodStats().getFoodLevel(), getGas(stack).getAmount() / MB_PER_FOOD);
-            player.getFoodStats().addStats(needed, SATURATION);
+            long needed = Math.min(20 - player.getFoodStats().getFoodLevel(), getGas(stack).getAmount() / MB_PER_FOOD);
+            player.getFoodStats().addStats((int) needed, SATURATION);
             useGas(stack, needed * MB_PER_FOOD);
         }
         return stack;
@@ -106,7 +106,7 @@ public class ItemCanteen extends Item {
     }
 
     @Nonnull
-    private GasStack useGas(ItemStack stack, int amount) {
+    private GasStack useGas(ItemStack stack, long amount) {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();

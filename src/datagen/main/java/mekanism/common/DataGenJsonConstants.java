@@ -17,4 +17,9 @@ public class DataGenJsonConstants {
     public static final String TYPE = "type";
     //Forge tag optional
     public static final String OPTIONAL = "optional";
+
+    //Model builder key constants:
+    public static final String LOADER = "loader";
+    public static final String FLUID = "fluid";
+    public static final String PARTICLE = "particle";
 }

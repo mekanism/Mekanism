@@ -33,7 +33,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     }
 
     @Override
-    public int getCapacity() {
+    public long getCapacity() {
         return getTileEntity().getCapacity();
     }
 

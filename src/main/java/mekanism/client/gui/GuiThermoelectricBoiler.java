@@ -14,10 +14,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityBoilerCasing;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -54,7 +52,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
             @Override
             public double getLevel() {
                 return tile.structure == null ? 0 : tile.getLastMaxBoil() * HeatUtils.getVaporizationEnthalpy() /
-                                                    (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get());
+                      (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get());
             }
         }, 144, 13));
         addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.waterTank,
@@ -62,8 +60,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
         addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.steamTank,
               () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 152, 13));
         addButton(new GuiHeatInfo(() -> {
-            TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
-            ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.getLastEnvironmentLoss() * unit.intervalSize, unit, false);
+            ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));
     }
@@ -72,7 +69,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, 0x404040);
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 5, 0x404040);
-        renderScaledText(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT)), 43, 30, 0x00CD00, 90);
+        renderScaledText(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)), 43, 30, 0x00CD00, 90);
         renderScaledText(MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()), 43, 39, 0x00CD00, 90);
         renderScaledText(MekanismLang.MAX_BOIL_RATE.translate(tile.getLastMaxBoil()), 43, 48, 0x00CD00, 90);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

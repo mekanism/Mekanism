@@ -8,6 +8,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -42,14 +43,14 @@ import net.minecraft.item.ItemStack;
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicMachine<ItemStackGasToItemStackRecipe> {
 
     public static final int BASE_TICKS_REQUIRED = 200;
-    public static final int MAX_GAS = 210;
-    public static final int BASE_GAS_PER_TICK = 1;
+    public static final long MAX_GAS = 210;
+    public static final long BASE_GAS_PER_TICK = 1;
 
     /**
      * How much secondary energy this machine uses per tick, including upgrades.
      */
     public double gasUsage;
-    private int gasUsageThisTick;
+    private long gasUsageThisTick;
     public BasicGasTank gasTank;
 
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;
@@ -128,7 +129,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         secondarySlot.fillTankOrConvert();
         //TODO: Is there some better way to do this rather than storing it and then doing it like this?
         // TODO: Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics
-        gasUsageThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(gasUsage) : (int) Math.ceil(gasUsage);
+        gasUsageThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(gasUsage) : MathUtils.clampToLong(Math.ceil(gasUsage));
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();

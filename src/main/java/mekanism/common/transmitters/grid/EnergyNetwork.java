@@ -21,8 +21,8 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.target.EnergyAcceptorTarget;
-import mekanism.common.base.target.EnergyTransmitterSaveTarget;
+import mekanism.common.distribution.target.EnergyAcceptorTarget;
+import mekanism.common.distribution.target.EnergyTransmitterSaveTarget;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.integration.EnergyCompatUtils;
@@ -84,7 +84,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
         FloatingLong ourScale = energyScale == 0 ? FloatingLong.ZERO : oldCapacity.multiply(energyScale);
         FloatingLong theirScale = net.energyScale == 0 ? FloatingLong.ZERO : net.getCapacityAsFloatingLong().multiply(net.energyScale);
         FloatingLong capacity = getCapacityAsFloatingLong();
-        energyScale = capacity.isZero() ? 0 : ourScale.add(theirScale).divide(getCapacityAsFloatingLong()).floatValue();
+        energyScale = Math.min(1, capacity.isZero() ? 0 : ourScale.add(theirScale).divide(getCapacityAsFloatingLong()).floatValue());
         if (!isRemote() && !net.energyContainer.isEmpty()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(net.getBuffer()));
             net.energyContainer.setEmpty();
@@ -118,7 +118,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     @Override
     protected synchronized void updateCapacity(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
         floatingLongCapacity = floatingLongCapacity.plusEqual(transmitter.getCapacityAsFloatingLong());
-        capacity = floatingLongCapacity.intValue();
+        capacity = floatingLongCapacity.longValue();
     }
 
     @Override
@@ -129,7 +129,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
         }
         if (!floatingLongCapacity.equals(sum)) {
             floatingLongCapacity = sum;
-            capacity = floatingLongCapacity.intValue();
+            capacity = floatingLongCapacity.longValue();
             updateSaveShares = true;
         }
     }
@@ -197,7 +197,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     public void onUpdate() {
         super.onUpdate();
         if (!isRemote()) {
-            float scale = MekanismUtils.getScale(energyScale, energyContainer);
+            float scale = computeContentScale();
             if (scale != energyScale) {
                 energyScale = scale;
                 needsUpdate = true;
@@ -213,6 +213,17 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
                 energyContainer.extract(prevTransferAmount, Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
+    }
+
+    public float computeContentScale() {
+        float scale = (float) energyContainer.getEnergy().divideToLevel(energyContainer.getMaxEnergy());
+        float ret = Math.max(energyScale, scale);
+        if (!prevTransferAmount.isZero() && ret < 1) {
+            ret = Math.min(1, ret + 0.02F);
+        } else if (prevTransferAmount.isZero() && ret > 0) {
+            ret = Math.max(scale, ret - 0.02F);
+        }
+        return ret;
     }
 
     @Override

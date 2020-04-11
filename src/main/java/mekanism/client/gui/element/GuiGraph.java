@@ -1,16 +1,16 @@
 package mekanism.client.gui.element;
 
+import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongList;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.opengl.GL11;
 
 public class GuiGraph extends GuiTexturedElement {
 
@@ -18,10 +18,10 @@ public class GuiGraph extends GuiTexturedElement {
     private static int textureHeight = 10;
 
     private final GuiInnerScreen innerScreen;
-    private final IntList graphData = new IntArrayList();
+    private final LongList graphData = new LongArrayList();
     private final GraphDataHandler dataHandler;
 
-    private int currentScale = 10;
+    private long currentScale = 10;
     private boolean fixedScale = false;
 
     public GuiGraph(IGuiWrapper gui, int x, int y, int width, int height, GraphDataHandler handler) {
@@ -30,19 +30,19 @@ public class GuiGraph extends GuiTexturedElement {
         dataHandler = handler;
     }
 
-    public void enableFixedScale(int scale) {
+    public void enableFixedScale(long scale) {
         fixedScale = true;
         currentScale = scale;
     }
 
-    public void addData(int data) {
+    public void addData(long data) {
         if (graphData.size() == width) {
-            graphData.removeInt(0);
+            graphData.removeLong(0);
         }
 
         graphData.add(data);
         if (!fixedScale) {
-            for (int i : graphData) {
+            for (long i : graphData) {
                 if (i > currentScale) {
                     currentScale = i;
                 }
@@ -58,7 +58,7 @@ public class GuiGraph extends GuiTexturedElement {
         //Draw the graph
         int size = graphData.size();
         for (int i = 0; i < size; i++) {
-            int data = Math.min(currentScale, graphData.getInt(i));
+            long data = Math.min(currentScale, graphData.getLong(i));
             int relativeHeight = (int) (data * height / (double) currentScale);
             blit(x + i, y + height - relativeHeight, 0, 0, 1, 1, textureWidth, textureHeight);
 
@@ -84,12 +84,12 @@ public class GuiGraph extends GuiTexturedElement {
     public void renderToolTip(int mouseX, int mouseY) {
         //TODO: Check
         int heightCalculated = height - (mouseY - guiObj.getTop() - y);
-        int scaled = (int) (heightCalculated * currentScale / (double) height);
+        long scaled = (long) (heightCalculated * currentScale / (double) height);
         displayTooltip(dataHandler.getDataDisplay(scaled), mouseX, mouseY);
     }
 
     public interface GraphDataHandler {
 
-        ITextComponent getDataDisplay(int data);
+        ITextComponent getDataDisplay(long data);
     }
 }

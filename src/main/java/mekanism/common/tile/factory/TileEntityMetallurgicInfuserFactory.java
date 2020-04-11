@@ -87,7 +87,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         //TODO: Decide if recipe.getOutput *should* assume that it is given a valid input or not
         // Here we are using it as if it is not assuming it, but that is in part because it currently does not care about the value passed
         // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
-        int stored = infusionTank.getStored();
+        long stored = infusionTank.getStored();
         InfuseType type = infusionTank.getType();
         ItemStack output = outputSlot.getStack();
         MetallurgicInfuserRecipe foundRecipe = findFirstRecipe(recipe -> {

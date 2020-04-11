@@ -55,11 +55,11 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 
     public Coord4D complex;
 
-    public int lastSteamInput;
-    public int newSteamInput;
+    public long lastSteamInput;
+    public long newSteamInput;
 
     public int clientDispersers;
-    public int clientFlow;
+    public long clientFlow;
     public float clientRotation;
 
     public SynchronizedTurbineData(TileEntityTurbineCasing tile) {
@@ -95,7 +95,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
         return (volLength - 2) * (volWidth - 2) - 1;
     }
 
-    public int getSteamCapacity() {
+    public long getSteamCapacity() {
         return lowerVolume * TurbineUpdateProtocol.GAS_PER_TANK;
     }
 

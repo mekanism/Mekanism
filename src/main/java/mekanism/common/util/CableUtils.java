@@ -8,7 +8,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.base.target.EnergyAcceptorTarget;
+import mekanism.common.distribution.target.EnergyAcceptorTarget;
 import mekanism.common.integration.EnergyCompatUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;

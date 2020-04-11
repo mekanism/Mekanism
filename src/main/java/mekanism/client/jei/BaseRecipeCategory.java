@@ -1,7 +1,7 @@
 package mekanism.client.jei;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import it.unimi.dsi.fastutil.longs.Long2ObjectFunction;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
@@ -147,11 +147,11 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void initChemical(IGuiIngredientGroup<@NonNull STACK> group, int slot,
-          boolean input, int x, int y, int width, int height, @Nonnull List<STACK> stacks, Int2ObjectFunction<ChemicalStackRenderer<CHEMICAL, STACK>> rendererSupplier) {
+          boolean input, int x, int y, int width, int height, @Nonnull List<STACK> stacks, Long2ObjectFunction<ChemicalStackRenderer<CHEMICAL, STACK>> rendererSupplier) {
         if (stacks.isEmpty()) {
             return;
         }
-        int max = stacks.stream().mapToInt(STACK::getAmount).filter(stack -> stack >= 0).max().orElse(0);
+        long max = stacks.stream().mapToLong(STACK::getAmount).filter(stack -> stack >= 0).max().orElse(0);
         group.init(slot, input, rendererSupplier.apply(max), x, y, width, height, 0, 0);
         group.set(slot, stacks);
     }

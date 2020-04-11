@@ -10,12 +10,9 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -36,19 +33,18 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         addButton(new GuiHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT);
+                return MekanismUtils.getTemperatureDisplay(tile.getTemp(), TemperatureUnit.KELVIN, true);
             }
 
             @Override
             public double getLevel() {
-                return Math.min(1, tile.getTemperature() / MekanismConfig.general.evaporationMaxTemp.get());
+                return Math.min(1, tile.getTemp() / TileEntityThermalEvaporationController.MAX_MULTIPLIER_TEMP);
             }
         }, 48, 63));
         addButton(new GuiFluidGauge(() -> tile.inputTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
         addButton(new GuiFluidGauge(() -> tile.outputTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 152, 13));
         addButton(new GuiHeatInfo(() -> {
-            TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
-            ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.totalLoss * unit.intervalSize, unit, false);
+            ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.totalLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));
     }
@@ -59,7 +55,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
         drawString(getStruct().translate(), 50, 21, 0x00CD00);
         drawString(MekanismLang.HEIGHT.translate(tile.height), 50, 30, 0x00CD00);
-        drawString(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT)), 50, 39, 0x00CD00);
+        drawString(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemp(), TemperatureUnit.KELVIN, true)), 50, 39, 0x00CD00);
         renderScaledText(MekanismLang.FLUID_PRODUCTION.translate(Math.round(tile.lastGain * 100D) / 100D), 50, 48, 0x00CD00, 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

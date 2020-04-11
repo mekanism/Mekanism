@@ -1,25 +1,24 @@
 package mekanism.common.transmitters.grid;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
-import mekanism.api.IHeatTransfer;
+import mekanism.api.heat.HeatAPI;
+import mekanism.api.heat.HeatAPI.HeatTransfer;
+import mekanism.api.heat.IHeatHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.transmitters.TransmitterImpl;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.util.text.ITextComponent;
 
-public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void> {
+public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void> {
 
-    public double meanTemp = 0;
-
-    public double heatLost = 0;
-    public double heatTransferred = 0;
+    private double meanTemp = HeatAPI.AMBIENT_TEMP;
+    private double heatLost;
+    private double heatTransferred;
 
     public HeatNetwork() {
     }
@@ -45,19 +44,20 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
 
     @Override
     public ITextComponent getStoredInfo() {
-        return MekanismLang.HEAT_NETWORK_STORED.translate(MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN));
+        return MekanismLang.HEAT_NETWORK_STORED.translate(MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN, true));
     }
 
     @Override
     public ITextComponent getFlowInfo() {
-        ITextComponent transferred = MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN);
-        ITextComponent lost = MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN);
+        ITextComponent transferred = MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN, false);
+        ITextComponent lost = MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN, false);
         return heatTransferred + heatLost == 0 ? MekanismLang.HEAT_NETWORK_FLOW.translate(transferred, lost)
-                                               : MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY.translate(transferred, lost, heatTransferred / (heatTransferred + heatLost) * 100);
+                                               : MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY.translate(transferred, lost,
+                                                   heatTransferred / (heatTransferred + heatLost) * 100);
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter) {
+    public void absorbBuffer(IGridTransmitter<IHeatHandler, HeatNetwork, Void> transmitter) {
     }
 
     @Override
@@ -65,7 +65,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
     }
 
     @Override
-    protected synchronized void updateCapacity(IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter) {
+    protected synchronized void updateCapacity(IGridTransmitter<IHeatHandler, HeatNetwork, Void> transmitter) {
         //The capacity is always zero so no point in doing calculations.
     }
 
@@ -77,29 +77,25 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
     @Override
     public void onUpdate() {
         super.onUpdate();
-
-        double newSumTemp = 0;
-        double newHeatLost = 0;
-        double newHeatTransferred = 0;
-
         if (!isRemote()) {
-            for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
+            double newSumTemp = 0, newHeatLost = 0, newHeatTransferred = 0;
+            for (IGridTransmitter<IHeatHandler, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof TransmitterImpl) {
-                    Optional<IHeatTransfer> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(((TransmitterImpl<?, ?, ?>) transmitter).getTileEntity(),
-                          Capabilities.HEAT_TRANSFER_CAPABILITY, null));
-                    if (capability.isPresent()) {
-                        IHeatTransfer heatTransmitter = capability.get();
-                        double[] d = heatTransmitter.simulateHeat();
-                        newHeatTransferred += d[0];
-                        newHeatLost += d[1];
-                        newSumTemp += heatTransmitter.applyTemperatureChange();
+                    // change this when we re-integrate with multipart
+                    if (((TransmitterImpl<?, ?, ?>) transmitter).containingTile instanceof ITileHeatHandler) {
+                        ITileHeatHandler heatTile = (ITileHeatHandler) ((TransmitterImpl<?, ?, ?>) transmitter).containingTile;
+                        HeatTransfer transfer = heatTile.simulate();
+                        heatTile.update(null);
+                        newHeatTransferred += transfer.getAdjacentTransfer();
+                        newHeatLost += transfer.getEnvironmentTransfer();
+                        newSumTemp += heatTile.getTotalTemperature();
                     }
                 }
             }
+            heatLost = newHeatLost;
+            heatTransferred = newHeatTransferred;
+            meanTemp = newSumTemp / transmitters.size();
         }
-        heatLost = newHeatLost;
-        heatTransferred = newHeatTransferred;
-        meanTemp = newSumTemp / transmitters.size();
     }
 
     @Override

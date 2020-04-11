@@ -3,7 +3,7 @@ package mekanism.common.item.gear;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -56,8 +56,8 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     }
 
     @Override
-    protected IntSupplier getMaxGas() {
-        return MekanismConfig.general.maxJetpackGas::get;
+    protected LongSupplier getMaxGas() {
+        return MekanismConfig.general.maxJetpackGas;
     }
 
     @Override

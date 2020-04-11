@@ -5,6 +5,7 @@ import java.util.function.Function;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -70,8 +71,9 @@ public class GeneratorsClientRegistration {
         //Block render layers
         ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), GeneratorsBlocks.LASER_FOCUS_MATRIX, GeneratorsBlocks.REACTOR_GLASS);
         //Fluids (translucent)
-        ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), GeneratorsFluids.BIOETHANOL, GeneratorsFluids.DEUTERIUM, GeneratorsFluids.FUSION_FUEL,
-              GeneratorsFluids.TRITIUM);
+        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : GeneratorsFluids.FLUIDS.getAllFluids()) {
+            ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
+        }
     }
 
     @SubscribeEvent

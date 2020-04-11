@@ -51,7 +51,7 @@ public interface IGasHandler {
      *
      * @return The maximum gas amount held by the tank.
      */
-    int getGasTankCapacity(int tank);
+    long getGasTankCapacity(int tank);
 
     /**
      * <p>
@@ -101,7 +101,7 @@ public interface IGasHandler {
      * @return {@link GasStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link GasStack} can be safely modified after, so the
      * tank should return a new or copied stack.
      */
-    GasStack extractGas(int tank, int amount, Action action);
+    GasStack extractGas(int tank, long amount, Action action);
 
     /**
      * <p>
@@ -141,7 +141,7 @@ public interface IGasHandler {
      * extracted is found, all future extractions will make sure to also make sure they are for the same type of gas.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IGasHandler} ends up distributing the extraction.
      */
-    default GasStack extractGas(int amount, Action action) {
+    default GasStack extractGas(long amount, Action action) {
         return ChemicalUtils.extract(amount, action, GasStack.EMPTY, this::getGasTankCount, this::getGasInTank, this::extractGas);
     }
 

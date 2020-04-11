@@ -10,7 +10,9 @@ import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.tier.EnergyCubeTier;
+import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
@@ -89,17 +91,16 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue freeRunnerFallEnergyCost;
     public final CachedBooleanValue aestheticWorldDamage;
     public final CachedBooleanValue opsBypassRestrictions;
-    public final CachedIntValue maxJetpackGas;
-    public final CachedIntValue maxScubaGas;
-    public final CachedIntValue maxFlamethrowerGas;
+    public final CachedLongValue maxJetpackGas;
+    public final CachedLongValue maxScubaGas;
+    public final CachedLongValue maxFlamethrowerGas;
     public final CachedIntValue maxPumpRange;
     public final CachedBooleanValue pumpWaterSources;
     public final CachedIntValue maxPlenisherNodes;
-    public final CachedFloatValue evaporationHeatDissipation;
+    public final CachedDoubleValue evaporationHeatDissipation;
     public final CachedDoubleValue evaporationTempMultiplier;
     public final CachedDoubleValue evaporationSolarMultiplier;
     public final CachedDoubleValue evaporationHeatCapacity;
-    public final CachedDoubleValue evaporationMaxTemp;
     public final CachedFloatingLongValue maxEnergyPerSteam;
     public final CachedDoubleValue superheatingHeatTransfer;
     public final CachedDoubleValue boilerWaterConductivity;
@@ -110,7 +111,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue portableTeleporterDelay;
     public final CachedFloatingLongValue quantumEntangloporterEnergyBuffer;
     public final CachedIntValue quantumEntangloporterFluidBuffer;
-    public final CachedIntValue quantumEntangloporterGasBuffer;
+    public final CachedLongValue quantumEntangloporterGasBuffer;
     public final CachedBooleanValue blacklistIC2;
     public final CachedBooleanValue blacklistForge;
     public final CachedIntValue laserRange;
@@ -266,12 +267,12 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("aestheticWorldDamage", true));
         opsBypassRestrictions = CachedBooleanValue.wrap(this, builder.comment("Ops can bypass the block security restrictions if enabled.")
               .define("opsBypassRestrictions", false));
-        maxJetpackGas = CachedIntValue.wrap(this, builder.comment("Jetpack Gas Tank capacity in mB.")
-              .define("maxJetpackGas", 24_000));
-        maxScubaGas = CachedIntValue.wrap(this, builder.comment("Scuba Tank Gas Tank capacity in mB.")
-              .define("maxScubaGas", 24_000));
-        maxFlamethrowerGas = CachedIntValue.wrap(this, builder.comment("Flamethrower Gas Tank capacity in mB.")
-              .define("maxFlamethrowerGas", 24_000));
+        maxJetpackGas = CachedLongValue.wrap(this, builder.comment("Jetpack Gas Tank capacity in mB.")
+              .defineInRange("maxJetpackGas", 24_000, 1, Long.MAX_VALUE));
+        maxScubaGas = CachedLongValue.wrap(this, builder.comment("Scuba Tank Gas Tank capacity in mB.")
+              .defineInRange("maxScubaGas", 24_000, 1, Long.MAX_VALUE));
+        maxFlamethrowerGas = CachedLongValue.wrap(this, builder.comment("Flamethrower Gas Tank capacity in mB.")
+              .defineInRange("maxFlamethrowerGas", 24_000, 1, Long.MAX_VALUE));
         maxPumpRange = CachedIntValue.wrap(this, builder.comment("Maximum block distance to pull fluid from for the Electric Pump.")
               .define("maxPumpRange", 80));
         pumpWaterSources = CachedBooleanValue.wrap(this, builder.comment("If enabled makes Water and Heavy Water blocks be removed from the world on pump.")
@@ -280,16 +281,14 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("maxPlenisherNodes", 4_000));
 
         builder.comment("Thermal Evaporation Plant Settings").push(EVAPORATION_CATEGORY);
-        evaporationHeatDissipation = CachedFloatValue.wrap(this, builder.comment("Thermal Evaporation Tower heat loss per tick.")
-              .define("heatDissipation", 0.02D));
+        evaporationHeatDissipation = CachedDoubleValue.wrap(this, builder.comment("Thermal Evaporation Tower heat loss per tick.")
+              .define("heatDissipation", 0.02));
         evaporationTempMultiplier = CachedDoubleValue.wrap(this, builder.comment("Temperature to amount produced ratio for Thermal Evaporation Tower.")
-              .define("tempMultiplier", 0.1D));
+              .define("tempMultiplier", 0.1));
         evaporationSolarMultiplier = CachedDoubleValue.wrap(this, builder.comment("Heat to absorb per Solar Panel array of Thermal Evaporation Tower.")
-              .define("solarMultiplier", 0.2D));
+              .define("solarMultiplier", 0.2));
         evaporationHeatCapacity = CachedDoubleValue.wrap(this, builder.comment("Heat capacity of Thermal Evaporation Tower layers (increases amount of energy needed to increase temperature).")
               .define("heatCapacity", 100D));
-        evaporationMaxTemp = CachedDoubleValue.wrap(this, builder.comment("Max Temperature of the Thermal Evaporation Tower.")
-              .defineInRange("maxTemp", 3_000D, 1, Double.MAX_VALUE));
         builder.pop();
 
         maxEnergyPerSteam = CachedFloatingLongValue.define(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
@@ -297,9 +296,9 @@ public class GeneralConfig extends BaseMekanismConfig {
         superheatingHeatTransfer = CachedDoubleValue.wrap(this, builder.comment("Amount of heat each Boiler heating element produces.")
               .define("superheatingHeatTransfer", 512_000D));
         boilerWaterConductivity = CachedDoubleValue.wrap(this, builder.comment("How much Boiler heat is immediately usable to convert water to steam.")
-              .define("boilerWaterConductivity", 0.7D));
+              .define("boilerWaterConductivity", 0.7));
         heatPerFuelTick = CachedDoubleValue.wrap(this, builder.comment("Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.")
-              .define("heatPerFuelTick", 2_000D));
+              .define("heatPerFuelTick", 400D));
         allowTransmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
               .define("allowTransmitterAlloyUpgrade", true));
         allowChunkloading = CachedBooleanValue.wrap(this, builder.comment("Disable to make the anchor upgrade not do anything.")
@@ -311,13 +310,13 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("Quantum Entangloporter Settings").push(ENTANGLOPORTER_CATEGORY);
         quantumEntangloporterEnergyBuffer = CachedFloatingLongValue.define(this, builder, "Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier energy cube capacity.",
-              "energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), true);
+              "energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), true, CachedFloatingLongValue.POSITIVE);
         quantumEntangloporterFluidBuffer = CachedIntValue.wrap(this, builder.comment("Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
-              .defineInRange("fluidBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 0, Integer.MAX_VALUE));
-        quantumEntangloporterGasBuffer = CachedIntValue.wrap(this, builder.comment("Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
+              .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseStorage(), 1, Integer.MAX_VALUE));
+        quantumEntangloporterGasBuffer = CachedLongValue.wrap(this, builder.comment("Maximum gas buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
-              .defineInRange("gasBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 0, Integer.MAX_VALUE));
+              .defineInRange("gasBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
         builder.pop();
 
         laserRange = CachedIntValue.wrap(this, builder.comment("How far (in blocks) a laser can travel.")

@@ -10,15 +10,19 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
-import mekanism.api.IHeatTransfer;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.heat.HeatAPI;
+import mekanism.api.heat.HeatAPI.HeatTransfer;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
+import mekanism.common.capabilities.heat.ITileHeatHandler;
+import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
@@ -28,16 +32,18 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 
-public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer, IMekanismFluidHandler, IMekanismGasHandler {
+public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IMekanismFluidHandler, IMekanismGasHandler, ITileHeatHandler {
 
     public static Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
-    public static double CASING_INSULATION_COEFFICIENT = 1;
-    public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
-    public static double BASE_BOIL_TEMP = 100 - (TemperatureUnit.AMBIENT.zeroOffset - TemperatureUnit.CELSIUS.zeroOffset);
+    public static final double CASING_HEAT_CAPACITY = 5;
+    public static final double CASING_INVERSE_INSULATION_COEFFICIENT = 10;
+    public static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
+    public static final double BASE_BOIL_TEMP = TemperatureUnit.CELSIUS.zeroOffset + 100;
 
     public BoilerTank waterTank;
     public MultiblockGasTank<TileEntityBoilerCasing> steamTank;
+    public MultiblockHeatCapacitor<TileEntityBoilerCasing> heatCapacitor;
 
     public double lastEnvironmentLoss;
     public int lastBoilRate;
@@ -45,24 +51,19 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public boolean clientHot;
 
-    public double temperature;
-
-    public double heatToAbsorb;
-
-    public double heatCapacity = 1_000;
-
     public int superheatingElements;
 
     private int waterVolume;
-    private int steamVolume;
+    private long steamVolume;
     private int waterTankCapacity;
-    private int steamTankCapacity;
+    private long steamTankCapacity;
 
     public Coord4D upperRenderLocation;
 
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
     private List<IExtendedFluidTank> fluidTanks;
     private List<IChemicalTank<Gas, GasStack>> gasTanks;
+    private List<IHeatCapacitor> heatCapacitors;
 
     public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
         waterTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
@@ -71,6 +72,17 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
             (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
             gas -> gas == MekanismGases.STEAM.getGas());
         gasTanks = Collections.singletonList(steamTank);
+        heatCapacitor = MultiblockHeatCapacitor.create(tile,
+            CASING_HEAT_CAPACITY,
+            () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size(),
+            () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size());
+        heatCapacitors = Collections.singletonList(heatCapacitor);
+    }
+
+    @Override
+    public void onCreated() {
+        // update the heat capacity now that we've read
+        heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY * locations.size(), true);
     }
 
     public void setFluidTankData(@Nonnull List<IExtendedFluidTank> toCopy) {
@@ -91,51 +103,34 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
         }
     }
 
+    public void setHeatCapacitorData(@Nonnull List<IHeatCapacitor> toCopy) {
+        for (int i = 0; i < toCopy.size(); i++) {
+            if (i < heatCapacitors.size()) {
+                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
+                heatCapacitors.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
+            }
+        }
+    }
+
     public double getHeatAvailable() {
-        double heatAvailable = (temperature - BASE_BOIL_TEMP) * locations.size() * MekanismConfig.general.boilerWaterConductivity.get();
-        return Math.min(heatAvailable, superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get());
+        double heatAvailable = (heatCapacitor.getTemperature() - BASE_BOIL_TEMP) * (heatCapacitor.getHeatCapacity() * MekanismConfig.general.boilerWaterConductivity.get());
+        return Math.min(heatAvailable, MekanismConfig.general.superheatingHeatTransfer.get() * superheatingElements);
     }
 
     @Override
-    public double getTemp() {
-        return temperature;
-    }
+    public HeatTransfer simulate() {
+        double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (CASING_INVERSE_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT) * locations.size();
+        double heatToTransfer = (heatCapacitor.getTemperature() - HeatAPI.AMBIENT_TEMP) / invConduction;
 
-    @Override
-    public double getInverseConductionCoefficient() {
-        return CASING_INVERSE_CONDUCTION_COEFFICIENT * locations.size();
-    }
-
-    @Override
-    public double getInsulationCoefficient(Direction side) {
-        return CASING_INSULATION_COEFFICIENT * locations.size();
-    }
-
-    @Override
-    public void transferHeatTo(double heat) {
-        heatToAbsorb += heat;
-    }
-
-    @Override
-    public double[] simulateHeat() {
-        double invConduction = IHeatTransfer.AIR_INVERSE_COEFFICIENT + (CASING_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT) * locations.size();
-        double heatToTransfer = temperature / invConduction;
-        transferHeatTo(-heatToTransfer);
-        return new double[]{0, heatToTransfer};
-    }
-
-    @Override
-    public double applyTemperatureChange() {
-        temperature += heatToAbsorb / locations.size();
-        heatToAbsorb = 0;
-        return temperature;
+        heatCapacitor.handleHeat(-heatToTransfer * heatCapacitor.getHeatCapacity());
+        return new HeatTransfer(0, heatToTransfer);
     }
 
     public int getWaterTankCapacity() {
         return waterTankCapacity;
     }
 
-    public int getSteamTankCapacity() {
+    public long getSteamTankCapacity() {
         return steamTankCapacity;
     }
 
@@ -148,11 +143,11 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
         waterTankCapacity = getWaterVolume() * BoilerUpdateProtocol.WATER_PER_TANK;
     }
 
-    public int getSteamVolume() {
+    public long getSteamVolume() {
         return steamVolume;
     }
 
-    public void setSteamVolume(int volume) {
+    public void setSteamVolume(long volume) {
         steamVolume = volume;
         steamTankCapacity = getSteamVolume() * BoilerUpdateProtocol.STEAM_PER_TANK;
     }
@@ -167,5 +162,11 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     @Override
     public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
         return gasTanks;
+    }
+
+    @Nonnull
+    @Override
+    public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
+        return heatCapacitors;
     }
 }

@@ -31,7 +31,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
     protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
     protected Range3D packetRange = null;
-    protected int capacity;
+    protected long capacity;
     protected boolean needsUpdate = false;
     protected boolean updateSaveShares;
     @Nullable
@@ -272,22 +272,22 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
      * @param transmitter The transmitter that was added
      */
     protected synchronized void updateCapacity(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
-        int transmitterCapacity = transmitter.getCapacity();
-        if (transmitterCapacity > Integer.MAX_VALUE - capacity) {
+        long transmitterCapacity = transmitter.getCapacity();
+        if (transmitterCapacity > Long.MAX_VALUE - capacity) {
             //Ensure we don't overflow
-            capacity = Integer.MAX_VALUE;
+            capacity = Long.MAX_VALUE;
         } else {
             capacity += transmitterCapacity;
         }
     }
 
     public synchronized void updateCapacity() {
-        int sum = 0;
+        long sum = 0;
         for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
-            int transmitterCapacity = transmitter.getCapacity();
-            if (transmitterCapacity > Integer.MAX_VALUE - capacity) {
+            long transmitterCapacity = transmitter.getCapacity();
+            if (transmitterCapacity > Long.MAX_VALUE - capacity) {
                 //Ensure we don't overflow
-                sum = Integer.MAX_VALUE;
+                sum = Long.MAX_VALUE;
                 break;
             } else {
                 sum += transmitterCapacity;
@@ -299,7 +299,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
     }
 
-    public int getCapacity() {
+    public long getCapacity() {
         return capacity;
     }
 

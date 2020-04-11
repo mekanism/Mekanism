@@ -32,6 +32,8 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.heat.IHeatCapacitor;
+import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
@@ -56,12 +58,16 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
+import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.proxy.ProxyFluidHandler;
 import mekanism.common.capabilities.proxy.ProxyGasHandler;
+import mekanism.common.capabilities.proxy.ProxyHeatHandler;
 import mekanism.common.capabilities.proxy.ProxyInfusionHandler;
 import mekanism.common.capabilities.proxy.ProxyItemHandler;
 import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
@@ -72,6 +78,7 @@ import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
@@ -125,7 +132,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends TileEntityUpdateable implements IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
-      ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler {
+      ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler {
 
     //TODO: Should the implementations of the various stuff be extracted into TileComponents?
 
@@ -216,6 +223,15 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     private FloatingLong lastEnergyReceived = FloatingLong.ZERO;
     //End variables IMekanismStrictEnergyHandler
 
+    //Variables for handling IMekanismHeatHandler
+    @Nullable
+    private IHeatCapacitorHolder heatCapacitorHolder;
+
+    private ProxyHeatHandler readOnlyHeatHandler;
+    private Map<Direction, ProxyHeatHandler> heatHandlers;
+
+    //End variables for IMekanismHeatHandler
+
     //Variables for handling ITileSecurity
     private TileComponentSecurity securityComponent;
     //End variables ITileSecurity
@@ -257,6 +273,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         energyContainerHolder = getInitialEnergyContainers();
         if (canHandleEnergy()) {
             strictEnergyHandlers = new EnumMap<>(Direction.class);
+        }
+        heatCapacitorHolder = getInitialHeatCapacitors();
+        if (canHandleHeat()) {
+            heatHandlers = new EnumMap<>(Direction.class);
         }
         if (hasInventory()) {
             itemHandlers = new EnumMap<>(Direction.class);
@@ -300,6 +320,20 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     public Block getBlockType() {
         return blockProvider.getBlock();
+    }
+
+    /**
+     * Should data related to the given type be persisted in this tile save
+     */
+    public boolean persists(SubstanceType type) {
+        return type.canHandle(this);
+    }
+
+    /**
+     * Should data related to the given type be saved to the item and synced to the client in the GUI
+     */
+    public boolean handles(SubstanceType type) {
+        return persists(type);
     }
 
     @Override
@@ -371,6 +405,11 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         return energyContainerHolder != null;
     }
 
+    @Override
+    public boolean canHandleHeat() {
+        return heatCapacitorHolder != null;
+    }
+
     public void addComponent(ITileComponent component) {
         components.add(component);
     }
@@ -416,8 +455,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                     if (isDirectional()) {
                         //TODO: Extract this out into a handleRotation method?
                         setFacing(getDirection().rotateY());
-                        //TODO: I believe this is no longer needed, verify
-                        //world.notifyNeighborsOfStateChange(pos, getBlockType());
                     }
                     return WrenchResult.SUCCESS;
                 }
@@ -480,6 +517,11 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 }
             }
             onUpdateServer();
+            if (persists(SubstanceType.HEAT)) {
+                // update heat after server tick as we now have simulate changes
+                // we use persists, as only one reference should update
+                update(null);
+            }
             lastEnergyReceived = FloatingLong.ZERO;
         }
         ticker++;
@@ -532,17 +574,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (hasInventory() && persistInventory()) {
             DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
         }
-        if (canHandleGas() && persistGas()) {
-            DataHandlerUtils.readTanks(getGasTanks(null), nbtTags.getList(NBTConstants.GAS_TANKS, NBT.TAG_COMPOUND));
-        }
-        if (canHandleInfusion() && persistInfusion()) {
-            DataHandlerUtils.readTanks(getInfusionTanks(null), nbtTags.getList(NBTConstants.INFUSION_TANKS, NBT.TAG_COMPOUND));
-        }
-        if (canHandleFluid() && persistFluid()) {
-            DataHandlerUtils.readTanks(getFluidTanks(null), nbtTags.getList(NBTConstants.FLUID_TANKS, NBT.TAG_COMPOUND));
-        }
-        if (canHandleEnergy() && persistEnergy()) {
-            DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags.getList(NBTConstants.ENERGY_CONTAINERS, NBT.TAG_COMPOUND));
+        for (SubstanceType type : SubstanceType.values()) {
+            if (type.canHandle(this) && persists(type)) {
+                type.read(this, nbtTags);
+            }
         }
         if (isActivatable()) {
             currentActive = nbtTags.getBoolean(NBTConstants.ACTIVE_STATE);
@@ -564,18 +599,13 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (hasInventory() && persistInventory()) {
             nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeSlots(getInventorySlots(null)));
         }
-        if (canHandleGas() && persistGas()) {
-            nbtTags.put(NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(getGasTanks(null)));
+
+        for (SubstanceType type : SubstanceType.values()) {
+            if (type.canHandle(this) && persists(type)) {
+                type.write(this, nbtTags);
+            }
         }
-        if (canHandleInfusion() && persistInfusion()) {
-            nbtTags.put(NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeTanks(getInfusionTanks(null)));
-        }
-        if (canHandleFluid() && persistFluid()) {
-            nbtTags.put(NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(getFluidTanks(null)));
-        }
-        if (canHandleEnergy() && persistEnergy()) {
-            nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
-        }
+
         if (isActivatable()) {
             nbtTags.putBoolean(NBTConstants.ACTIVE_STATE, currentActive);
             nbtTags.putInt(NBTConstants.UPDATE_DELAY, updateDelay);
@@ -591,25 +621,34 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (supportsRedstone()) {
             container.track(SyncableEnum.create(RedstoneControl::byIndexStatic, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
         }
-        if (canHandleGas() && handlesGas()) {
+        if (canHandleGas() && handles(SubstanceType.GAS)) {
             List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(null);
             for (IChemicalTank<Gas, GasStack> gasTank : gasTanks) {
                 container.track(SyncableGasStack.create(gasTank));
             }
         }
-        if (canHandleInfusion() && handlesInfusion()) {
+        if (canHandleInfusion() && handles(SubstanceType.INFUSION)) {
             List<? extends IChemicalTank<InfuseType, InfusionStack>> infusionTanks = getInfusionTanks(null);
             for (IChemicalTank<InfuseType, InfusionStack> infusionTank : infusionTanks) {
                 container.track(SyncableInfusionStack.create(infusionTank));
             }
         }
-        if (canHandleFluid() && handlesFluid()) {
+        if (canHandleFluid() && handles(SubstanceType.FLUID)) {
             List<IExtendedFluidTank> fluidTanks = getFluidTanks(null);
             for (IExtendedFluidTank fluidTank : fluidTanks) {
                 container.track(SyncableFluidStack.create(fluidTank));
             }
         }
-        if (canHandleEnergy() && handlesEnergy()) {
+        if (canHandleHeat() && handles(SubstanceType.HEAT)) {
+            List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(null);
+            for (IHeatCapacitor capacitor : heatCapacitors) {
+                container.track(SyncableDouble.create(capacitor::getHeat, capacitor::setHeat));
+                if (capacitor instanceof BasicHeatCapacitor) {
+                    container.track(SyncableDouble.create(capacitor::getHeatCapacity, (capacity) -> ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacity, false)));
+                }
+            }
+        }
+        if (canHandleEnergy() && handles(SubstanceType.ENERGY)) {
             container.track(SyncableFloatingLong.create(this::getInputRate, this::setInputRate));
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
@@ -691,6 +730,14 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 //Don't return a fluid handler if we don't actually even have any fluid tanks for that side
                 LazyOptional<IFluidHandler> lazyFluidHandler = fluidTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getFluidHandler(side));
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, lazyFluidHandler);
+            }
+        }
+        if (canHandleHeat()) {
+            if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
+                List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(side);
+                //Don't return a heat handler if we don't actually even have any heat capacitors for that side
+                LazyOptional<IHeatHandler> lazyHeatHandler = heatCapacitors.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getHeatHandler(side));
+                return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, lazyHeatHandler);
             }
         }
         if (canHandleEnergy() && EnergyCompatUtils.isEnergyCapability(capability)) {
@@ -919,20 +966,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     }
 
     /**
-     * Should gas be persisted in this tile save
-     */
-    public boolean persistGas() {
-        return canHandleGas();
-    }
-
-    /**
-     * Should gas be saved to the item, and synced to the client in the GUI
-     */
-    public boolean handlesGas() {
-        return persistGas();
-    }
-
-    /**
      * Lazily get and cache an IGasHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
      */
     protected IGasHandler getGasHandler(@Nullable Direction side) {
@@ -951,12 +984,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
         return gasHandler;
     }
-
-    public void loadGas(ListNBT nbtTags) {
-        if (nbtTags != null && !nbtTags.isEmpty() && canHandleGas()) {
-            DataHandlerUtils.readTanks(getGasTanks(null), nbtTags);
-        }
-    }
     //End methods IMekanismGasHandler
 
     //Methods for implementing IMekanismInfusionHandler
@@ -969,20 +996,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public List<? extends IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side) {
         return canHandleInfusion() && infusionTankHolder != null ? infusionTankHolder.getTanks(side) : Collections.emptyList();
-    }
-
-    /**
-     * Should infusion be persisted in this tile save
-     */
-    public boolean persistInfusion() {
-        return canHandleInfusion();
-    }
-
-    /**
-     * Should infusion be saved to the item, and synced to the client in the GUI
-     */
-    public boolean handlesInfusion() {
-        return persistInfusion();
     }
 
     /**
@@ -1004,12 +1017,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
         return infusionHandler;
     }
-
-    public void loadInfusion(ListNBT nbtTags) {
-        if (nbtTags != null && !nbtTags.isEmpty() && canHandleInfusion()) {
-            DataHandlerUtils.readTanks(getInfusionTanks(null), nbtTags);
-        }
-    }
     //End methods IMekanismInfusionHandler
 
     //Methods for implementing IMekanismFluidHandler
@@ -1022,20 +1029,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return canHandleFluid() && fluidTankHolder != null ? fluidTankHolder.getTanks(side) : Collections.emptyList();
-    }
-
-    /**
-     * Should fluid be persisted in this tile save
-     */
-    public boolean persistFluid() {
-        return canHandleFluid();
-    }
-
-    /**
-     * Should fluid be saved to the item, and synced to the client in the GUI
-     */
-    public boolean handlesFluid() {
-        return persistFluid();
     }
 
     /**
@@ -1058,12 +1051,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
         return fluidHandler;
     }
-
-    public void loadFluid(ListNBT nbtTags) {
-        if (nbtTags != null && !nbtTags.isEmpty() && canHandleFluid()) {
-            DataHandlerUtils.readTanks(getFluidTanks(null), nbtTags);
-        }
-    }
     //End methods IMekanismFluidHandler
 
     //Methods for implementing IMekanismStrictEnergyHandler
@@ -1076,20 +1063,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return canHandleEnergy() && energyContainerHolder != null ? energyContainerHolder.getEnergyContainers(side) : Collections.emptyList();
-    }
-
-    /**
-     * Should energy be persisted in this tile save
-     */
-    public boolean persistEnergy() {
-        return canHandleEnergy();
-    }
-
-    /**
-     * Should energy be saved to the item, and synced to the client in the GUI
-     */
-    public boolean handlesEnergy() {
-        return persistEnergy();
     }
 
     /**
@@ -1111,12 +1084,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             strictEnergyHandlers.put(side, energyHandler = new ProxyStrictEnergyHandler(this, side, energyContainerHolder));
         }
         return energyHandler;
-    }
-
-    public void loadEnergy(ListNBT nbtTags) {
-        if (nbtTags != null && !nbtTags.isEmpty() && canHandleEnergy()) {
-            DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags);
-        }
     }
 
     @Nonnull
@@ -1142,6 +1109,51 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         this.lastEnergyReceived = inputRate;
     }
     //End methods IMekanismStrictEnergyHandler
+
+    //Methods for implementing IInWorldHeatHandler
+    @Nullable
+    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public IHeatHandler getAdjacent(Direction side) {
+        if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
+            TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+            return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
+        }
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
+        return canHandleHeat() && heatCapacitorHolder != null ? heatCapacitorHolder.getHeatCapacitors(side) : Collections.emptyList();
+    }
+
+    /**
+     * Lazily get and cache an IStrictEnergyHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null
+     * side
+     */
+    protected IHeatHandler getHeatHandler(@Nullable Direction side) {
+        if (!canHandleHeat()) {
+            return null;
+        }
+        if (side == null) {
+            if (readOnlyHeatHandler == null) {
+                readOnlyHeatHandler = new ProxyHeatHandler(this, null, heatCapacitorHolder);
+            }
+            return readOnlyHeatHandler;
+        }
+        ProxyHeatHandler heatHandler = heatHandlers.get(side);
+        if (heatHandler == null) {
+            heatHandlers.put(side, heatHandler = new ProxyHeatHandler(this, side, heatCapacitorHolder));
+        }
+        return heatHandler;
+    }
+
+    //End methods for IInWorldHeatHandler
 
     //Methods for implementing ITileSecurity
     @Override

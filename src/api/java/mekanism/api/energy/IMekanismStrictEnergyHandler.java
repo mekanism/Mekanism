@@ -19,7 +19,7 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler 
      * @return True if we are actually capable of handling energy.
      *
      * @apiNote If for some reason you are comparing to {@link IMekanismStrictEnergyHandler} without having gotten the object via the strict energy handler capability,
-     * then you must call this method to make sure that it really is an inventory. As most mekanism tiles have this class in their hierarchy.
+     * then you must call this method to make sure that it really can handle energy. As most mekanism tiles have this class in their hierarchy.
      * @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
      */
     default boolean canHandleEnergy() {

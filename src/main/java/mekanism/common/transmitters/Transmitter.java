@@ -75,8 +75,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     @Override
-    public int getTransmitterNetworkCapacity() {
-        //This isn't *fully* accurate as the fluid and gas networks only actually support up to max int currently
+    public long getTransmitterNetworkCapacity() {
         return hasTransmitterNetwork() ? getTransmitterNetwork().getCapacity() : getCapacity();
     }
 

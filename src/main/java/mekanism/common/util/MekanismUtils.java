@@ -199,6 +199,11 @@ public final class MekanismUtils {
         return getScale(prevScale, capacity == 0 ? 0 : (float) stored / capacity, empty);
     }
 
+    public static float getScale(float prevScale, long stored, long capacity, boolean empty) {
+        return getScale(prevScale, capacity == 0 ? 0 : (float) (stored / (double) capacity), empty);
+    }
+
+
     public static float getScale(float prevScale, IEnergyContainer container) {
         float targetScale;
         FloatingLong maxEnergy = container.getMaxEnergy();
@@ -260,7 +265,7 @@ public final class MekanismUtils {
      *
      * @return max secondary energy per tick
      */
-    public static double getGasPerTickMean(IUpgradeTile mgmt, int def) {
+    public static double getGasPerTickMean(IUpgradeTile mgmt, long def) {
         if (mgmt.supportsUpgrades()) {
             if (mgmt.getComponent().supports(Upgrade.GAS)) {
                 return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
@@ -713,19 +718,19 @@ public final class MekanismUtils {
      *
      * @return rounded energy display
      */
-    public static ITextComponent getTemperatureDisplay(double T, TemperatureUnit unit) {
+    public static ITextComponent getTemperatureDisplay(double T, TemperatureUnit unit, boolean shift) {
         double TK = unit.convertToK(T, true);
         switch (MekanismConfig.general.tempUnit.get()) {
             case K:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.KELVIN);
+                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.KELVIN, shift);
             case C:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.CELSIUS);
+                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.CELSIUS, shift);
             case R:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.RANKINE);
+                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.RANKINE, shift);
             case F:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.FAHRENHEIT);
+                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.FAHRENHEIT, shift);
             case STP:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT);
+                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT, shift);
         }
         return MekanismLang.ERROR.translate();
     }

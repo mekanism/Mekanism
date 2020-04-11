@@ -21,8 +21,6 @@ public interface ISidedGasHandler extends IGasHandler {
      */
     @Nullable
     default Direction getGasSideFor() {
-        //TODO: Decide if having this method even makes sense or would it be better to just inline null for the built in IGasHandler
-        // methods, given we just handle sides via the ProxyGasHandler anyways, in which we use our extended methods.
         return null;
     }
 
@@ -96,10 +94,10 @@ public interface ISidedGasHandler extends IGasHandler {
      *
      * @return The maximum gas amount held by the tank.
      */
-    int getGasTankCapacity(int tank, @Nullable Direction side);
+    long getGasTankCapacity(int tank, @Nullable Direction side);
 
     @Override
-    default int getGasTankCapacity(int tank) {
+    default long getGasTankCapacity(int tank) {
         return getGasTankCapacity(tank, getGasSideFor());
     }
 
@@ -154,7 +152,7 @@ public interface ISidedGasHandler extends IGasHandler {
     }
 
     /**
-     * A sided variant of {@link IGasHandler#extractGas(int, int, Action)}, docs copied for convenience.
+     * A sided variant of {@link IGasHandler#extractGas(int, long, Action)}, docs copied for convenience.
      *
      * Extracts a {@link GasStack} from a specific tank in this handler.
      * <p>
@@ -169,10 +167,10 @@ public interface ISidedGasHandler extends IGasHandler {
      * @return {@link GasStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link GasStack} can be safely modified after, so the
      * tank should return a new or copied stack.
      */
-    GasStack extractGas(int tank, int amount, @Nullable Direction side, Action action);
+    GasStack extractGas(int tank, long amount, @Nullable Direction side, Action action);
 
     @Override
-    default GasStack extractGas(int tank, int amount, Action action) {
+    default GasStack extractGas(int tank, long amount, Action action) {
         return extractGas(tank, amount, getGasSideFor(), action);
     }
 
@@ -202,7 +200,7 @@ public interface ISidedGasHandler extends IGasHandler {
     }
 
     /**
-     * A sided variant of {@link IGasHandler#extractGas(int, Action)}, docs copied for convenience.
+     * A sided variant of {@link IGasHandler#extractGas(long, Action)}, docs copied for convenience.
      *
      * Extracts a {@link GasStack} from this handler, distribution is left <strong>entirely</strong> to this {@link IGasHandler}.
      * <p>
@@ -220,7 +218,7 @@ public interface ISidedGasHandler extends IGasHandler {
      * extracted is found, all future extractions will make sure to also make sure they are for the same type of gas.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IGasHandler} ends up distributing the extraction.
      */
-    default GasStack extractGas(int amount, @Nullable Direction side, Action action) {
+    default GasStack extractGas(long amount, @Nullable Direction side, Action action) {
         return ChemicalUtils.extract(amount, action, GasStack.EMPTY, () -> getGasTankCount(side), tank -> getGasInTank(tank, side), (tank, a, act) -> extractGas(tank, a, side, act));
     }
 

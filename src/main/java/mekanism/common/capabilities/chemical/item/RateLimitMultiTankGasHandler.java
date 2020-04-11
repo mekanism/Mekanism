@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -46,11 +46,11 @@ public class RateLimitMultiTankGasHandler extends ItemStackMekanismGasHandler {
 
     public static class GasTankSpec {
         int rate;
-        IntSupplier capacity;
+        LongSupplier capacity;
         Predicate<@NonNull Gas> isValid;
         BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract;
         BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert;
-        public GasTankSpec(int rate, IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+        public GasTankSpec(int rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid) {
             this.rate = rate;
             this.capacity = capacity;
@@ -58,10 +58,10 @@ public class RateLimitMultiTankGasHandler extends ItemStackMekanismGasHandler {
             this.canExtract = canExtract;
             this.canInsert = canInsert;
         }
-        public static GasTankSpec create(int rate, IntSupplier capacity) {
+        public static GasTankSpec create(int rate, LongSupplier capacity) {
             return new GasTankSpec(rate, capacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue);
         }
-        public static GasTankSpec createFillOnly(int rate, IntSupplier capacity, Predicate<@NonNull Gas> isValid) {
+        public static GasTankSpec createFillOnly(int rate, LongSupplier capacity, Predicate<@NonNull Gas> isValid) {
             return new GasTankSpec(rate, capacity, (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, isValid);
         }
         public boolean isValid(@NonNull Gas gas) {

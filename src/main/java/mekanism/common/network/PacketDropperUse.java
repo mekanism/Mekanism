@@ -179,8 +179,8 @@ public class PacketDropperUse {
         if (!drainTank.isEmpty() && fillTank.getNeeded() > 0) {
             STACK chemicalInDrainTank = drainTank.getStack();
             STACK simulatedRemainder = fillTank.insert(chemicalInDrainTank, Action.SIMULATE, AutomationType.MANUAL);
-            int remainder = simulatedRemainder.getAmount();
-            int amount = chemicalInDrainTank.getAmount();
+            long remainder = simulatedRemainder.getAmount();
+            long amount = chemicalInDrainTank.getAmount();
             if (remainder < amount) {
                 //We are able to fit at least some of the chemical from our drain tank into the fill tank
                 STACK extractedChemical = drainTank.extract(amount - remainder, Action.EXECUTE, AutomationType.MANUAL);

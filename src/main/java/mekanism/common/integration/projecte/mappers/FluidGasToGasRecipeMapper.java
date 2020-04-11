@@ -1,12 +1,10 @@
 package mekanism.common.integration.projecte.mappers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.FluidGasToGasRecipe;
-import mekanism.common.integration.projecte.NSSGas;
+import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
@@ -48,13 +46,14 @@ public class FluidGasToGasRecipeMapper implements IRecipeTypeMapper {
         for (FluidStack fluidRepresentation : fluidRepresentations) {
             NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
             for (GasStack gasRepresentation : gasRepresentations) {
-                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-                ingredientMap.put(nssFluid, fluidRepresentation.getAmount());
-                ingredientMap.put(NSSGas.createGas(gasRepresentation), gasRepresentation.getAmount());
                 GasStack output = recipe.getOutput(fluidRepresentation, gasRepresentation);
                 if (!output.isEmpty()) {
-                    mapper.addConversion(output.getAmount(), NSSGas.createGas(output), ingredientMap);
-                    handled = true;
+                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+                    ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
+                    ingredientHelper.put(gasRepresentation);
+                    if (ingredientHelper.addAsConversion(output)) {
+                        handled = true;
+                    }
                 }
             }
         }

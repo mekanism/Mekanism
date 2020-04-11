@@ -29,6 +29,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiReactorHeat extends GuiReactorInfo {
 
+    private static final double MAX_LEVEL = 500_000_000;
+
     public GuiReactorHeat(EmptyTileContainer<TileEntityReactorController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
@@ -47,17 +49,17 @@ public class GuiReactorHeat extends GuiReactorInfo {
 
             @Override
             public double getLevel() {
-                return TemperatureUnit.AMBIENT.convertToK(tile.getPlasmaTemp(), true);
+                return tile.getPlasmaTemp();
             }
 
             @Override
-            public double getMaxLevel() {
-                return 5E8;
+            public double getScaledLevel() {
+                return Math.min(1, getLevel() / MAX_LEVEL);
             }
 
             @Override
-            public ITextComponent getText(double level) {
-                return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
+            public ITextComponent getText() {
+                return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 7, 50));
         addButton(new GuiProgress(() -> tile.getPlasmaTemp() > tile.getCaseTemp() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 29, 76));
@@ -69,17 +71,17 @@ public class GuiReactorHeat extends GuiReactorInfo {
 
             @Override
             public double getLevel() {
-                return TemperatureUnit.AMBIENT.convertToK(tile.getCaseTemp(), true);
+                return tile.getCaseTemp();
             }
 
             @Override
-            public double getMaxLevel() {
-                return 5E8;
+            public double getScaledLevel() {
+                return Math.min(1, getLevel() / MAX_LEVEL);
             }
 
             @Override
-            public ITextComponent getText(double level) {
-                return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
+            public ITextComponent getText() {
+                return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 61, 50));
         addButton(new GuiProgress(() -> tile.getCaseTemp() > 0 ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));

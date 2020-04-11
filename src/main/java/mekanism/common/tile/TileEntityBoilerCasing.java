@@ -1,17 +1,18 @@
 package mekanism.common.tile;
 
+import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
-import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.heat.HeatAPI.HeatTransfer;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -21,21 +22,21 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IHeatTransfer {
+public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> {
 
     /**
      * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids.
@@ -82,23 +83,23 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 data.prevActive = data.activeTicks > 0;
             }
 
-            boolean newHot = structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP - 0.01F;
+            boolean newHot = structure.getTotalTemperature() >= SynchronizedBoilerData.BASE_BOIL_TEMP - 0.01;
             if (newHot != structure.clientHot) {
                 needsPacket = true;
                 structure.clientHot = newHot;
                 SynchronizedBoilerData.hotMap.put(structure.inventoryID, structure.clientHot);
             }
-
-            double[] d = structure.simulateHeat();
-            structure.applyTemperatureChange();
-            structure.lastEnvironmentLoss = d[1];
-            if (structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
-                int steamAmount = structure.steamTank.getStored();
+            // external heat dissipation
+            HeatTransfer transfer = structure.simulate();
+            // update temperature
+            structure.update(null);
+            structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer();
+            if (structure.getTotalTemperature() >= SynchronizedBoilerData.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
                 double heatAvailable = structure.getHeatAvailable();
                 structure.lastMaxBoil = (int) Math.floor(heatAvailable / HeatUtils.getVaporizationEnthalpy());
 
                 int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterTank.getFluidAmount());
-                amountToBoil = Math.min(amountToBoil, structure.steamTank.getCapacity() - steamAmount);
+                amountToBoil = Math.min(amountToBoil, MathUtils.clampToInt(structure.steamTank.getNeeded()));
                 if (!structure.waterTank.isEmpty()) {
                     structure.waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
                 }
@@ -108,7 +109,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                     structure.steamTank.growStack(amountToBoil, Action.EXECUTE);
                 }
 
-                structure.temperature -= (amountToBoil * HeatUtils.getVaporizationEnthalpy()) / structure.locations.size();
+                structure.handleHeat(-amountToBoil * HeatUtils.getVaporizationEnthalpy());
                 structure.lastBoilRate = amountToBoil;
             } else {
                 structure.lastBoilRate = 0;
@@ -157,7 +158,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     }
 
     public double getTemperature() {
-        return structure == null ? 0 : structure.temperature;
+        return structure == null ? 0 : structure.getTotalTemperature();
     }
 
     public int getLastBoilRate() {
@@ -172,54 +173,19 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return structure == null ? 0 : structure.superheatingElements;
     }
 
-    @Override
-    public double getTemp() {
-        return 0;
-    }
-
-    @Override
-    public double getInverseConductionCoefficient() {
-        return SynchronizedBoilerData.CASING_INVERSE_CONDUCTION_COEFFICIENT;
-    }
-
-    @Override
-    public double getInsulationCoefficient(Direction side) {
-        return SynchronizedBoilerData.CASING_INSULATION_COEFFICIENT;
-    }
-
-    @Override
-    public void transferHeatTo(double heat) {
-        if (structure != null) {
-            structure.heatToAbsorb += heat;
-        }
-    }
-
-    @Override
-    public double[] simulateHeat() {
-        return new double[]{0, 0};
-    }
-
-    @Override
-    public double applyTemperatureChange() {
-        return 0;
-    }
-
-    //TODO: Decide if heat capability should be moved to valve only
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return Capabilities.HEAT_TRANSFER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
+    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        return side -> structure == null ? Collections.emptyList() : structure.getHeatCapacitors(side);
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY && structure == null) {
-            return true;
+    public boolean persists(SubstanceType type) {
+        //Do not handle heat when it comes to syncing it/saving this tile to disk
+        if (type == SubstanceType.HEAT) {
+            return false;
         }
-        return super.isCapabilityDisabled(capability, side);
+        return super.persists(type);
     }
 
     @Nonnull
@@ -230,7 +196,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             updateTag.putFloat(NBTConstants.SCALE, prevWaterScale);
             updateTag.putFloat(NBTConstants.SCALE_ALT, prevSteamScale);
             updateTag.putInt(NBTConstants.VOLUME, structure.getWaterVolume());
-            updateTag.putInt(NBTConstants.LOWER_VOLUME, structure.getSteamVolume());
+            updateTag.putLong(NBTConstants.LOWER_VOLUME, structure.getSteamVolume());
             updateTag.put(NBTConstants.FLUID_STORED, structure.waterTank.getFluid().writeToNBT(new CompoundNBT()));
             updateTag.put(NBTConstants.GAS_STORED, structure.steamTank.getStack().write(new CompoundNBT()));
             updateTag.put(NBTConstants.RENDER_Y, structure.upperRenderLocation.write(new CompoundNBT()));
@@ -251,11 +217,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        if (clientHasStructure && isRendering) {
+        if (clientHasStructure && isRendering && structure != null) {
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevSteamScale = scale);
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.setWaterVolume(value));
-            NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> structure.setSteamVolume(value));
+            NBTUtils.setLongIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> structure.setSteamVolume(value));
             NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.waterTank.setStack(value));
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.steamTank.setStack(value));
             NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_Y, value -> structure.upperRenderLocation = value);
@@ -286,7 +252,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.setWaterVolume(value);
             }
         }));
-        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getSteamVolume(), value -> {
+        container.track(SyncableLong.create(() -> structure == null ? 0 : structure.getSteamVolume(), value -> {
             if (structure != null) {
                 structure.setSteamVolume(value);
             }
@@ -316,9 +282,14 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.superheatingElements = value;
             }
         }));
-        container.track(SyncableDouble.create(this::getTemperature, value -> {
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.heatCapacitor.getHeat(), value -> {
             if (structure != null) {
-                structure.temperature = value;
+                structure.heatCapacitor.setHeat(value);
+            }
+        }));
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.heatCapacitor.getHeatCapacity(), value -> {
+            if (structure != null) {
+                structure.heatCapacitor.setHeatCapacity(value, false);
             }
         }));
         container.track(SyncableInt.create(this::getLastMaxBoil, value -> {

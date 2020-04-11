@@ -60,7 +60,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
 
     public GasMode dumping;
 
-    public int currentGasAmount;
+    public long currentGasAmount;
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
@@ -141,14 +141,14 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
             if (dumping == GasMode.DUMPING) {
                 gasTank.shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
             } else if (dumping == GasMode.DUMPING_EXCESS) {
-                int needed = gasTank.getNeeded();
+                long needed = gasTank.getNeeded();
                 if (needed < tier.getOutput()) {
                     gasTank.shrinkStack(tier.getOutput() - needed, Action.EXECUTE);
                 }
             }
         }
 
-        int newGasAmount = gasTank.getStored();
+        long newGasAmount = gasTank.getStored();
         if (newGasAmount != currentGasAmount) {
             markDirty(false);
         }

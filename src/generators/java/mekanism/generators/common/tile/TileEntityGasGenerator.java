@@ -31,12 +31,12 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     /**
      * The maximum amount of gas this block can store.
      */
-    private static final int MAX_GAS = 18_000;
+    private static final long MAX_GAS = 18_000;
     /**
      * The tank this block is storing fuel in.
      */
     public FuelTank fuelTank;
-    private int burnTicks;
+    private long burnTicks;
     private int maxBurnTicks;
     private FloatingLong generationRate = FloatingLong.ZERO;
     private double gasUsedLastTick;
@@ -76,17 +76,17 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         boolean operate = (!fuelTank.isEmpty() || burnTicks > 0) && MekanismUtils.canFunction(this);
         if (operate && getEnergyContainer().insert(generationRate, Action.SIMULATE, AutomationType.INTERNAL).isZero()) {
             setActive(true);
-            if (fuelTank.getStored() != 0) {
+            if (!fuelTank.isEmpty()) {
                 FuelGas fuel = FuelHandler.getFuel(fuelTank.getType());
                 maxBurnTicks = fuel.burnTicks;
                 generationRate = fuel.energyPerTick;
             }
 
-            int toUse = getToUse();
+            long toUse = getToUse();
             FloatingLong toUseGeneration = generationRate.multiply(toUse);
             output = MekanismConfig.general.FROM_H2.get().max(toUseGeneration).multiply(2);
 
-            int total = burnTicks + fuelTank.getStored() * maxBurnTicks;
+            long total = burnTicks + fuelTank.getStored() * maxBurnTicks;
             total -= toUse;
             getEnergyContainer().insert(toUseGeneration, Action.EXECUTE, AutomationType.INTERNAL);
             if (!fuelTank.isEmpty()) {
@@ -94,7 +94,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
                 fuelTank.setStack(new GasStack(fuelTank.getStack(), total / maxBurnTicks));
             }
             burnTicks = total % maxBurnTicks;
-            gasUsedLastTick = (double) toUse / (double) maxBurnTicks;
+            gasUsedLastTick = toUse / (double) maxBurnTicks;
         } else {
             if (!operate) {
                 reset();
@@ -111,11 +111,11 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         output = MekanismConfig.general.FROM_H2.get().multiply(2);
     }
 
-    private int getToUse() {
+    private long getToUse() {
         if (generationRate.isZero() || fuelTank.isEmpty()) {
             return 0;
         }
-        int max = (int) Math.ceil(256F * (fuelTank.getStored() / (float) fuelTank.getCapacity()));
+        long max = (long) Math.ceil(256 * (fuelTank.getStored() / (double) fuelTank.getCapacity()));
         max = Math.min(maxBurnTicks * fuelTank.getStored() + burnTicks, max);
         max = Math.min(getEnergyContainer().getNeeded().divide(generationRate).intValue(), max);
         return max;

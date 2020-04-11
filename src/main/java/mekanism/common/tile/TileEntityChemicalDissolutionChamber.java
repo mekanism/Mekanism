@@ -38,14 +38,14 @@ import net.minecraft.item.ItemStack;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalMachine<ItemStackGasToGasRecipe> {
 
-    public static final int MAX_GAS = 10_000;
+    public static final long MAX_GAS = 10_000;
     public static final int BASE_INJECT_USAGE = 1;
     public static final int BASE_TICKS_REQUIRED = 100;
     public BasicGasTank injectTank;
     public BasicGasTank outputTank;
     public double injectUsage = BASE_INJECT_USAGE;
-    public int injectUsageThisTick;
-    public int gasOutput = 256;
+    public long injectUsageThisTick;
+    public long gasOutput = 256;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;

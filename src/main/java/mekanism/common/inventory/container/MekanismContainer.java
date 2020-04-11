@@ -290,6 +290,8 @@ public abstract class MekanismContainer extends Container {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableShort) {
             ((SyncableShort) data).set(value);
+        } else if (data instanceof SyncableFloatingLong) {
+            ((SyncableFloatingLong) data).setDecimal(value);
         }
     }
 
@@ -299,8 +301,6 @@ public abstract class MekanismContainer extends Container {
             ((SyncableInt) data).set(value);
         } else if (data instanceof SyncableEnum) {
             ((SyncableEnum<?>) data).set(value);
-        } else if (data instanceof SyncableChemicalStack<?, ?>) {
-            ((SyncableChemicalStack<?, ?>) data).set(value);
         } else if (data instanceof SyncableFluidStack) {
             ((SyncableFluidStack) data).set(value);
         } else if (data instanceof SyncableItemStack) {
@@ -312,6 +312,8 @@ public abstract class MekanismContainer extends Container {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableLong) {
             ((SyncableLong) data).set(value);
+        } else if (data instanceof SyncableChemicalStack<?, ?>) {
+            ((SyncableChemicalStack<?, ?>) data).set(value);
         }
     }
 

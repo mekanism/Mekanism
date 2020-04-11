@@ -2,7 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -49,8 +49,8 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
     }
 
     @Override
-    protected IntSupplier getMaxGas() {
-        return MekanismConfig.general.maxScubaGas::get;
+    protected LongSupplier getMaxGas() {
+        return MekanismConfig.general.maxScubaGas;
     }
 
     @Override

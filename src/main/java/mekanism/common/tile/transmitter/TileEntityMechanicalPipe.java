@@ -2,9 +2,7 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -14,6 +12,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -51,34 +50,17 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Nonnull
     public FluidStack lastWrite = FluidStack.EMPTY;
-    private ProxyFluidHandler readOnlyHandler;
-    private final Map<Direction, ProxyFluidHandler> fluidHandlers;
+    private final ProxyFluidHandler readOnlyHandler;
     private final List<IExtendedFluidTank> tanks;
     public BasicFluidTank buffer;
 
     public TileEntityMechanicalPipe(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), PipeTier.class);
-        fluidHandlers = new EnumMap<>(Direction.class);
-        buffer = BasicFluidTank.create(getCapacity(), BasicFluidTank.alwaysFalse, BasicFluidTank.alwaysTrue, this);
+        //TODO: If we make fluids support longs then adjust this
+        buffer = BasicFluidTank.create(MathUtils.clampToInt(getCapacity()), BasicFluidTank.alwaysFalse, BasicFluidTank.alwaysTrue, this);
         tanks = Collections.singletonList(buffer);
-    }
-
-    /**
-     * Lazily get and cache an IFluidHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
-     */
-    private IFluidHandler getFluidHandler(@Nullable Direction side) {
-        if (side == null) {
-            if (readOnlyHandler == null) {
-                readOnlyHandler = new ProxyFluidHandler(this, null, null);
-            }
-            return readOnlyHandler;
-        }
-        ProxyFluidHandler fluidHandler = fluidHandlers.get(side);
-        if (fluidHandler == null) {
-            fluidHandlers.put(side, fluidHandler = new ProxyFluidHandler(this, side, null));
-        }
-        return fluidHandler;
+        readOnlyHandler = new ProxyFluidHandler(this, null, null);
     }
 
     @Override
@@ -219,7 +201,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public int getCapacity() {
+    public long getCapacity() {
         return tier.getPipeCapacity();
     }
 
@@ -333,10 +315,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            List<IExtendedFluidTank> fluidTanks = getFluidTanks(side);
-            //Don't return a fluid handler if we don't actually even have any tanks for that side
-            LazyOptional<IFluidHandler> lazyFluidHandler = fluidTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getFluidHandler(side));
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, lazyFluidHandler);
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> side == null ? readOnlyHandler : this));
         }
         return super.getCapability(capability, side);
     }

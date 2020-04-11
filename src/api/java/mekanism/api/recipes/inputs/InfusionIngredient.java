@@ -33,11 +33,11 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         return from(instance.getType(), instance.getAmount());
     }
 
-    public static InfusionIngredient from(@NonNull IInfuseTypeProvider infuseType, int amount) {
+    public static InfusionIngredient from(@NonNull IInfuseTypeProvider infuseType, long amount) {
         return new Single(infuseType.getInfuseType(), amount);
     }
 
-    public static InfusionIngredient from(@NonNull Tag<InfuseType> infuseTypeTag, int amount) {
+    public static InfusionIngredient from(@NonNull Tag<InfuseType> infuseTypeTag, long amount) {
         return new Tagged(infuseTypeTag, amount);
     }
 
@@ -91,7 +91,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
             if (!JSONUtils.isNumber(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
             }
-            int amount = count.getAsJsonPrimitive().getAsInt();
+            long amount = count.getAsJsonPrimitive().getAsLong();
             if (amount < 1) {
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
@@ -130,10 +130,10 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         @NonNull
         private final InfuseType infuseType;
 
-        private final int amount;
+        private final long amount;
         private final InfusionStack infuseObject;
 
-        public Single(@NonNull InfuseType infuseType, int amount) {
+        public Single(@NonNull InfuseType infuseType, long amount) {
             this.infuseType = infuseType;
             this.amount = amount;
             infuseObject = new InfusionStack(infuseType, amount);
@@ -170,7 +170,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.SINGLE);
             buffer.writeRegistryId(infuseType);
-            buffer.writeInt(amount);
+            buffer.writeVarLong(amount);
         }
 
         @Nonnull
@@ -183,7 +183,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         }
 
         public static Single read(PacketBuffer buffer) {
-            return new Single(buffer.readRegistryId(), buffer.readInt());
+            return new Single(buffer.readRegistryId(), buffer.readVarLong());
         }
     }
 
@@ -191,9 +191,9 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
 
         @Nonnull
         private final Tag<InfuseType> tag;
-        private final int amount;
+        private final long amount;
 
-        public Tagged(@Nonnull Tag<InfuseType> tag, int amount) {
+        public Tagged(@Nonnull Tag<InfuseType> tag, long amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -237,7 +237,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.TAGGED);
             buffer.writeResourceLocation(tag.getId());
-            buffer.writeInt(amount);
+            buffer.writeVarLong(amount);
         }
 
         @Nonnull
@@ -250,7 +250,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         }
 
         public static Tagged read(PacketBuffer buffer) {
-            return new Tagged(new InfuseTypeTags.Wrapper(buffer.readResourceLocation()), buffer.readInt());
+            return new Tagged(new InfuseTypeTags.Wrapper(buffer.readResourceLocation()), buffer.readVarLong());
         }
     }
 
@@ -304,7 +304,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.MULTI);
-            buffer.writeInt(ingredients.length);
+            buffer.writeVarInt(ingredients.length);
             for (InfusionIngredient ingredient : ingredients) {
                 ingredient.write(buffer);
             }
@@ -322,7 +322,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
 
         public static InfusionIngredient read(PacketBuffer buffer) {
             //TODO: Verify this works
-            InfusionIngredient[] ingredients = new InfusionIngredient[buffer.readInt()];
+            InfusionIngredient[] ingredients = new InfusionIngredient[buffer.readVarInt()];
             for (int i = 0; i < ingredients.length; i++) {
                 ingredients[i] = InfusionIngredient.read(buffer);
             }

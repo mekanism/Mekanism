@@ -4,10 +4,10 @@ import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 
 public class ThermodynamicConductorUpgradeData extends TransmitterUpgradeData {
 
-    public final double temperature;
+    public final double heat;
 
-    public ThermodynamicConductorUpgradeData(boolean redstoneReactive, ConnectionType[] connectionTypes, double temperature) {
+    public ThermodynamicConductorUpgradeData(boolean redstoneReactive, ConnectionType[] connectionTypes, double heat) {
         super(redstoneReactive, connectionTypes);
-        this.temperature = temperature;
+        this.heat = heat;
     }
 }

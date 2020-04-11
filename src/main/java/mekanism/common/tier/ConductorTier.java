@@ -1,5 +1,6 @@
 package mekanism.common.tier;
 
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.ColorRGBA;
@@ -7,10 +8,10 @@ import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.util.EnumUtils;
 
 public enum ConductorTier implements ITier {
-    BASIC(BaseTier.BASIC, 5, 1, 10, new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ADVANCED(BaseTier.ADVANCED, 5, 1, 400, new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ELITE(BaseTier.ELITE, 5, 1, 8_000, new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ULTIMATE(BaseTier.ULTIMATE, 5, 1, 100_000, new ColorRGBA(0.2, 0.2, 0.2, 1));
+    BASIC(BaseTier.BASIC, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 10, new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ADVANCED(BaseTier.ADVANCED, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 400, new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ELITE(BaseTier.ELITE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 8_000, new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ULTIMATE(BaseTier.ULTIMATE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 100_000, new ColorRGBA(0.2, 0.2, 0.2, 1));
 
     private final ColorRGBA baseColor;
     private final double baseConduction;
@@ -21,10 +22,10 @@ public enum ConductorTier implements ITier {
     private CachedDoubleValue capacityReference;
     private CachedDoubleValue insulationReference;
 
-    ConductorTier(BaseTier tier, double inversek, double inverseC, double insulationInversek, ColorRGBA color) {
-        baseConduction = inversek;
-        baseHeatCapacity = inverseC;
-        baseConductionInsulation = insulationInversek;
+    ConductorTier(BaseTier tier, double conduction, double heatCapacity, double conductionInsulation, ColorRGBA color) {
+        baseConduction = conduction;
+        baseHeatCapacity = heatCapacity;
+        baseConductionInsulation = conductionInsulation;
 
         baseColor = color;
         baseTier = tier;
@@ -52,7 +53,7 @@ public enum ConductorTier implements ITier {
         return insulationReference == null ? getBaseConductionInsulation() : insulationReference.get();
     }
 
-    public double getInverseHeatCapacity() {
+    public double getHeatCapacity() {
         return capacityReference == null ? getBaseHeatCapacity() : capacityReference.get();
     }
 
