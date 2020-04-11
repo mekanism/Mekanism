@@ -279,6 +279,8 @@ public abstract class MekanismContainer extends Container {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableShort) {
             ((SyncableShort) data).set(value);
+        } else if (data instanceof SyncableFloatingLong) {
+            ((SyncableFloatingLong) data).setDecimal(value);
         }
     }
 

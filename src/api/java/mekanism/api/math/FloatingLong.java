@@ -729,12 +729,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         String valueAsString = Long.toUnsignedString(value) + ".";
         String decimalAsString = Short.toString(decimal);
         int numberDigits = decimalAsString.length();
+        if (numberDigits < DECIMAL_DIGITS) {
+            //We need to prepend some zeros so that 1 -> 0.0001 rather than 0.01 for when we want two decimal places
+            decimalAsString = getZeros(DECIMAL_DIGITS - numberDigits) + decimalAsString;
+            numberDigits = DECIMAL_DIGITS;
+        }
         if (numberDigits > decimalPlaces) {
             //We need to trim it
             decimalAsString = decimalAsString.substring(0, decimalPlaces);
-        } else if (numberDigits < decimalPlaces) {
-            //We need to prepend some zeros
-            decimalAsString = getZeros(decimalPlaces - numberDigits) + decimalAsString;
         }
         return valueAsString + decimalAsString;
     }
