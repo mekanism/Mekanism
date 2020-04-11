@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -282,9 +282,14 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.superheatingElements = value;
             }
         }));
-        container.track(SyncableDouble.create(this::getTemperature, value -> {
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.heatCapacitor.getHeat(), value -> {
             if (structure != null) {
                 structure.heatCapacitor.setHeat(value);
+            }
+        }));
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.heatCapacitor.getHeatCapacity(), value -> {
+            if (structure != null) {
+                structure.heatCapacitor.setHeatCapacity(value, false);
             }
         }));
         container.track(SyncableInt.create(this::getLastMaxBoil, value -> {

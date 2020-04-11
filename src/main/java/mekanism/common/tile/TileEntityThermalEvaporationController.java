@@ -60,6 +60,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     private static final int MAX_OUTPUT = 10_000;
     private static final int MAX_HEIGHT = 18;
+    public static final double MAX_MULTIPLIER_TEMP = 3000;
 
     public BasicFluidTank inputTank;
     public BasicFluidTank outputTank;
@@ -264,8 +265,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             biomeTemp = world.getBiomeManager().getBiome(getPos()).getTemperature(getPos());
             temperatureSet = true;
         }
-        heatCapacitor.handleHeat(MekanismConfig.general.evaporationSolarMultiplier.get() * getActiveSolars());
-
+        heatCapacitor.handleHeat(MekanismConfig.general.evaporationSolarMultiplier.get() * getActiveSolars() * heatCapacitor.getHeatCapacity());
         double biome = biomeTemp - 0.5;
         double base = biome > 0 ? biome * 20 : biomeTemp * 40;
         base += HeatAPI.AMBIENT_TEMP;
@@ -279,7 +279,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         heatCapacitor.handleHeat(heatCapacitor.getHeatCapacity() * incr);
 
         totalLoss = incr < 0 ? -incr / heatCapacitor.getHeatCapacity() : 0;
-        tempMultiplier = (heatCapacitor.getTemperature() - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() * ((double)height / MAX_HEIGHT);
+        tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, heatCapacitor.getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() * ((double)height / MAX_HEIGHT);
         markDirty(false);
     }
 

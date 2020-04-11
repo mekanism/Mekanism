@@ -47,23 +47,25 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
 
         for (Direction side : EnumUtils.DIRECTIONS) {
             IHeatHandler sink = getAdjacent(side);
+            //we use the same heat capacity for all further calculations
+            double heatCapacity = getTotalHeatCapacity(side);
             if (sink != null) {
                 double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
-                double heatToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
-                handleHeat(-heatToTransfer, side);
-                sink.handleHeat(heatToTransfer);
+                double tempToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
+                handleHeat(-tempToTransfer * heatCapacity, side);
+                sink.handleHeat(tempToTransfer * heatCapacity);
                 if (!(sink instanceof ICapabilityProvider) || !CapabilityUtils.getCapability((ICapabilityProvider) sink, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)
                       .filter(transmitter -> TransmissionType.checkTransmissionType(transmitter, TransmissionType.HEAT)).isPresent()) {
-                    adjacentTransfer += heatToTransfer;
+                    adjacentTransfer += tempToTransfer;
                 }
                 continue;
             }
-            //Transfer to air otherwise
+            //transfer to air otherwise
             double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + getTotalInverseInsulation(side) + getTotalInverseConductionCoefficient(side);
-            //Transfer heat difference based on environment temperature (ambient)
-            double heatToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
-            handleHeat(-heatToTransfer, side);
-            environmentTransfer += heatToTransfer;
+            //transfer heat difference based on environment temperature (ambient)
+            double tempToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
+            handleHeat(-tempToTransfer * heatCapacity, side);
+            environmentTransfer += tempToTransfer;
         }
         return new HeatTransfer(adjacentTransfer, environmentTransfer);
     }

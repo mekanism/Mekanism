@@ -208,7 +208,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         boilerWaterConductivity = CachedDoubleValue.wrap(this, builder.comment("How much Boiler heat is immediately usable to convert water to steam.")
               .define("boilerWaterConductivity", 0.7));
         heatPerFuelTick = CachedDoubleValue.wrap(this, builder.comment("Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.")
-              .define("heatPerFuelTick", 2_000D));
+              .define("heatPerFuelTick", 400D));
         allowTransmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
               .define("allowTransmitterAlloyUpgrade", true));
         allowChunkloading = CachedBooleanValue.wrap(this, builder.comment("Disable to make the anchor upgrade not do anything.")

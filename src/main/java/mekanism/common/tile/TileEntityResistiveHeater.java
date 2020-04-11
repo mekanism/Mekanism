@@ -56,7 +56,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
-        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(1, 5, 1000, this));
+        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(100, 5, 100, this));
         return builder.build();
     }
 

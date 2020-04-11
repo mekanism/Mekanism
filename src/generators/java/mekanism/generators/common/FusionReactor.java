@@ -1,9 +1,9 @@
 package mekanism.generators.common;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.IChemicalTank;
@@ -57,8 +57,6 @@ public class FusionReactor {
     public TileEntityReactorController controller;
     private Set<TileEntityReactorBlock> reactorBlocks = new ObjectOpenHashSet<>();
     private Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
-    //Current plasma temperature - internally uses ambient-relative kelvin units
-    private double plasmaTemperature = HeatAPI.AMBIENT_TEMP;
     //Last values of temperature
     private double lastPlasmaTemperature = HeatAPI.AMBIENT_TEMP;
     private double lastCaseTemperature = HeatAPI.AMBIENT_TEMP;
@@ -73,9 +71,9 @@ public class FusionReactor {
 
     public void addTemperatureFromEnergyInput(FloatingLong energyAdded) {
         if (isBurning()) {
-            plasmaTemperature += energyAdded.divide(plasmaHeatCapacity).doubleValue();
+            setPlasmaTemp(getPlasmaTemp() + energyAdded.divide(plasmaHeatCapacity).doubleValue());
         } else {
-            plasmaTemperature += energyAdded.divide(plasmaHeatCapacity).multiply(10).doubleValue();
+            setPlasmaTemp(getPlasmaTemp() + energyAdded.divide(plasmaHeatCapacity).multiply(10).doubleValue());
         }
     }
 
@@ -98,7 +96,7 @@ public class FusionReactor {
 
     public void simulateServer() {
         //Only thermal transfer happens unless we're hot enough to burn.
-        if (plasmaTemperature >= burnTemperature) {
+        if (getPlasmaTemp() >= burnTemperature) {
             //If we're not burning yet we need a hohlraum to ignite
             if (!burning && hasHohlraum()) {
                 vaporiseHohlraum();
@@ -126,7 +124,7 @@ public class FusionReactor {
     }
 
     public void updateTemperatures() {
-        lastPlasmaTemperature = plasmaTemperature;
+        lastPlasmaTemperature = getPlasmaTemp();
         lastCaseTemperature = getHeatCapacitor().getTemperature();
     }
 
@@ -138,7 +136,7 @@ public class FusionReactor {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem.getGasTankCount() > 0) {
                 getFuelTank().insert(gasHandlerItem.getGasInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
-                lastPlasmaTemperature = plasmaTemperature;
+                lastPlasmaTemperature = getPlasmaTemp();
                 reactorSlot.setStack(ItemStack.EMPTY);
                 setBurning(true);
             }
@@ -165,18 +163,18 @@ public class FusionReactor {
         if (getFuelTank().shrinkStack(fuelBurned, Action.EXECUTE) != fuelBurned) {
             //TODO: Print warning/error
         }
-        plasmaTemperature += MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(fuelBurned).divide(plasmaHeatCapacity).doubleValue();
+        setPlasmaTemp(getPlasmaTemp() + MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(fuelBurned).divide(plasmaHeatCapacity).doubleValue());
         return fuelBurned;
     }
 
     private void transferHeat() {
         //Transfer from plasma to casing
         double plasmaCaseHeat = plasmaCaseConductivity * (lastPlasmaTemperature - lastCaseTemperature);
-        plasmaTemperature -= plasmaCaseHeat / plasmaHeatCapacity;
-        getHeatCapacitor().handleHeat(-plasmaCaseHeat);
+        setPlasmaTemp(getPlasmaTemp() - plasmaCaseHeat / plasmaHeatCapacity);
+        getHeatCapacitor().handleHeat(plasmaCaseHeat);
 
         //Transfer from casing to water if necessary
-        double caseWaterHeat = caseWaterConductivity * lastCaseTemperature;
+        double caseWaterHeat = caseWaterConductivity * (lastCaseTemperature -  HeatAPI.AMBIENT_TEMP);
         int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / HeatUtils.getVaporizationEnthalpy());
         waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), MathUtils.clampToInt(getSteamTank().getNeeded())));
         if (waterToVaporize > 0) {
@@ -194,7 +192,7 @@ public class FusionReactor {
         }
 
         //Passive energy generation
-        double caseAirHeat = caseAirConductivity * lastCaseTemperature;
+        double caseAirHeat = caseAirConductivity * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
         getHeatCapacitor().handleHeat(-caseAirHeat);
         controller.energyContainer.insert(FloatingLong.create(caseAirHeat * thermocoupleEfficiency), Action.EXECUTE, AutomationType.INTERNAL);
     }
@@ -223,7 +221,7 @@ public class FusionReactor {
         return controller.fuelTank;
     }
 
-    public double getPlasmaTemp() {
+    public double getLastPlasmaTemp() {
         return lastPlasmaTemperature;
     }
 
@@ -231,11 +229,15 @@ public class FusionReactor {
         lastPlasmaTemperature = temp;
     }
 
-    public void setPlasmaTemp(double temp) {
-        plasmaTemperature = temp;
+    public double getPlasmaTemp() {
+        return controller.plasmaTemperature;
     }
 
-    public double getCaseTemp() {
+    public void setPlasmaTemp(double temp) {
+        controller.plasmaTemperature = temp;
+    }
+
+    public double getLastCaseTemp() {
         return lastCaseTemperature;
     }
 
@@ -409,12 +411,12 @@ public class FusionReactor {
     }
 
     public FloatingLong getPassiveGeneration(boolean active, boolean current) {
-        double temperature = current ? getCaseTemp() : getMaxCasingTemperature(active);
+        double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(active);
         return FloatingLong.create(thermocoupleEfficiency * caseAirConductivity * temperature);
     }
 
     public long getSteamPerTick(boolean current) {
-        double temperature = current ? getCaseTemp() : getMaxCasingTemperature(true);
+        double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(true);
         return MathUtils.clampToLong(steamTransferEfficiency * caseWaterConductivity * temperature / HeatUtils.getVaporizationEnthalpy());
     }
 

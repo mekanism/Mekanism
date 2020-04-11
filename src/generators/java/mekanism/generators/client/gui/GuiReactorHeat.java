@@ -54,7 +54,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
 
             @Override
             public double getScaledLevel() {
-                return getLevel() / MAX_LEVEL;
+                return Math.min(1, getLevel() / MAX_LEVEL);
             }
 
             @Override
@@ -76,7 +76,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
 
             @Override
             public double getScaledLevel() {
-                return getLevel() / MAX_LEVEL;
+                return Math.min(1, getLevel() / MAX_LEVEL);
             }
 
             @Override

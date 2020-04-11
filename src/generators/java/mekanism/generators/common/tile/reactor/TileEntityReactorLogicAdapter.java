@@ -54,9 +54,9 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         }
         switch (logicType) {
             case READY:
-                return getReactor().getPlasmaTemp() >= getReactor().getIgnitionTemperature(activeCooled);
+                return getReactor().getLastPlasmaTemp() >= getReactor().getIgnitionTemperature(activeCooled);
             case CAPACITY:
-                return getReactor().getPlasmaTemp() >= getReactor().getMaxPlasmaTemperature(activeCooled);
+                return getReactor().getLastPlasmaTemp() >= getReactor().getMaxPlasmaTemperature(activeCooled);
             case DEPLETED:
                 return (getReactor().getDeuteriumTank().getStored() < getReactor().getInjectionRate() / 2) ||
                        (getReactor().getTritiumTank().getStored() < getReactor().getInjectionRate() / 2);

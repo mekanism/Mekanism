@@ -65,6 +65,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     public IChemicalTank<Gas, GasStack> deuteriumTank;
     public IChemicalTank<Gas, GasStack> tritiumTank;
     public IChemicalTank<Gas, GasStack> fuelTank;
+    public double plasmaTemperature;
 
     private AxisAlignedBB box;
     private double clientTemp = HeatAPI.AMBIENT_TEMP;
@@ -153,11 +154,11 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     }
 
     public double getPlasmaTemp() {
-        return isFormed() ? getReactor().getPlasmaTemp() : 0;
+        return isFormed() ? getReactor().getLastPlasmaTemp() : 0;
     }
 
     public double getCaseTemp() {
-        return isFormed() ? getReactor().getCaseTemp() : 0;
+        return isFormed() ? getReactor().getLastCaseTemp() : 0;
     }
 
     @Override
@@ -165,9 +166,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         super.onUpdateServer();
         if (isFormed()) {
             getReactor().simulateServer();
-            if (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1_000_000) {
+            if (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getLastPlasmaTemp() - clientTemp) > 1_000_000) {
                 clientBurning = getReactor().isBurning();
-                clientTemp = getReactor().getPlasmaTemp();
+                clientTemp = getReactor().getLastPlasmaTemp();
                 sendUpdatePacket();
             }
         }
@@ -182,9 +183,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         super.write(tag);
+        tag.putDouble(NBTConstants.PLASMA_TEMP, plasmaTemperature);
         tag.putBoolean(NBTConstants.FORMED, isFormed());
         if (isFormed()) {
-            tag.putDouble(NBTConstants.PLASMA_TEMP, getReactor().getPlasmaTemp());
             tag.putInt(NBTConstants.INJECTION_RATE, getReactor().getInjectionRate());
             tag.putBoolean(NBTConstants.BURNING, getReactor().isBurning());
         }
@@ -194,10 +195,10 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     @Override
     public void read(CompoundNBT tag) {
         super.read(tag);
+        NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, (temp) -> plasmaTemperature = temp);
         boolean formed = tag.getBoolean(NBTConstants.FORMED);
         if (formed) {
             setReactor(new FusionReactor(this));
-            NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, getReactor()::setPlasmaTemp);
             getReactor().setInjectionRate(tag.getInt(NBTConstants.INJECTION_RATE));
             getReactor().setBurning(tag.getBoolean(NBTConstants.BURNING));
             getReactor().updateTemperatures();
