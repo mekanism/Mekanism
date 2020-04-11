@@ -91,7 +91,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         super.onUpdateServer();
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
-        FloatingLong prev = getEnergyContainer().getEnergy();
+        FloatingLong prev = getEnergyContainer().getEnergy().copy();
         heatCapacitor.handleHeat(getBoost().doubleValue());
         if (MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero() &&
             lavaTank.extract(FLUID_RATE, Action.SIMULATE, AutomationType.INTERNAL).getAmount() == FLUID_RATE) {
@@ -130,12 +130,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     public HeatTransfer simulate() {
         double temp = getTotalTemperature();
-        if (temp > HeatAPI.AMBIENT_TEMP) {
-            double carnotEfficiency = temp / (temp + HeatAPI.AMBIENT_TEMP);
-            double heatLost = thermalEfficiency * temp;
-            heatCapacitor.handleHeat(-heatLost);
-            getEnergyContainer().insert(FloatingLong.create(heatLost * carnotEfficiency), Action.EXECUTE, AutomationType.INTERNAL);
-        }
+        // 1 - Qc / Qh
+        double carnotEfficiency = 1 - Math.min(HeatAPI.AMBIENT_TEMP, temp) / Math.max(HeatAPI.AMBIENT_TEMP, temp);
+        double heatLost = thermalEfficiency * (temp - HeatAPI.AMBIENT_TEMP);
+        heatCapacitor.handleHeat(-heatLost);
+        getEnergyContainer().insert(FloatingLong.create(Math.abs(heatLost) * carnotEfficiency), Action.EXECUTE, AutomationType.INTERNAL);
         return super.simulate();
     }
 
