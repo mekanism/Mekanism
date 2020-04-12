@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
@@ -50,7 +50,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     public static final Map<String, List<String>> possibleFilters = new Object2ObjectOpenHashMap<>();
 
     static {
-        possibleFilters.put("forge", Arrays.asList("ingots/", "ores/", "dusts/", "nuggets/"));
+        possibleFilters.put("forge", Arrays.asList("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/"));
     }
 
     private HashList<OredictionificatorFilter> filters = new HashList<>();
