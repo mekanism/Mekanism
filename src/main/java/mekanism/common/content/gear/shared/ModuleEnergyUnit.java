@@ -10,7 +10,12 @@ import mekanism.common.util.StorageUtils;
 public class ModuleEnergyUnit extends Module {
 
     public FloatingLong getEnergyCapacity() {
-        FloatingLong base = getContainer().getItem() instanceof ItemMekaSuitArmor ? MekanismConfig.general.mekaSuitBaseEnergyCapacity.get() : MekanismConfig.general.mekaToolBaseEnergyCapacity.get();
+        FloatingLong base = getContainer().getItem() instanceof ItemMekaSuitArmor ? MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get() : MekanismConfig.gear.mekaToolBaseEnergyCapacity.get();
+        return base.multiply(Math.pow(2, getInstalledCount()));
+    }
+
+    public FloatingLong getChargeRate() {
+        FloatingLong base = getContainer().getItem() instanceof ItemMekaSuitArmor ? MekanismConfig.gear.mekaSuitBaseChargeRate.get() : MekanismConfig.gear.mekaToolBaseChargeRate.get();
         return base.multiply(Math.pow(2, getInstalledCount()));
     }
 

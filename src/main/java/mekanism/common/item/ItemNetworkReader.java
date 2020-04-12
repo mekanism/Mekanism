@@ -17,6 +17,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
@@ -36,11 +37,8 @@ import net.minecraft.world.World;
 
 public class ItemNetworkReader extends ItemEnergized {
 
-    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(60_000);//TODO: Config
-    private static final FloatingLong ENERGY_PER_USE = FloatingLong.createConst(400);
-
     public ItemNetworkReader(Properties properties) {
-        super(MAX_ENERGY, properties);
+        super(MekanismConfig.gear.networkReaderChargeRate, MekanismConfig.gear.networkReaderMaxEnergy, properties);
     }
 
     @Nonnull
@@ -54,11 +52,12 @@ public class ItemNetworkReader extends ItemEnergized {
             TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (tileEntity != null) {
                 if (!player.isCreative()) {
+                    FloatingLong energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                    if (energyContainer == null) {
+                    if (energyContainer == null || energyContainer.extract(energyPerUse, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerUse)) {
                         return ActionResultType.FAIL;
                     }
-                    energyContainer.extract(ENERGY_PER_USE, Action.EXECUTE, AutomationType.MANUAL);
+                    energyContainer.extract(energyPerUse, Action.EXECUTE, AutomationType.MANUAL);
                 }
                 Direction opposite = context.getFace().getOpposite();
                 Optional<IGridTransmitter<?, ?, ?>> gridTransmitter = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, opposite));

@@ -13,7 +13,7 @@ import mekanism.common.tile.TileEntityMultiblock;
 @MethodsReturnNonnullByDefault
 public class MultiblockHeatCapacitor<MULTIBLOCK extends TileEntityMultiblock<?>> extends VariableHeatCapacitor {
 
-    private MULTIBLOCK multiblock;
+    private final MULTIBLOCK multiblock;
 
     public static <MULTIBLOCK extends TileEntityMultiblock<?>> MultiblockHeatCapacitor<MULTIBLOCK> create(MULTIBLOCK multiblock, double heatCapacity) {
         return create(multiblock, heatCapacity, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION);
@@ -21,7 +21,6 @@ public class MultiblockHeatCapacitor<MULTIBLOCK extends TileEntityMultiblock<?>>
 
     public static <MULTIBLOCK extends TileEntityMultiblock<?>> MultiblockHeatCapacitor<MULTIBLOCK> create(MULTIBLOCK multiblock, double heatCapacity,
           DoubleSupplier conductionCoefficient, DoubleSupplier insulationCoefficient) {
-        Objects.requireNonNull(heatCapacity, "Heat capacity cannot be null");
         Objects.requireNonNull(conductionCoefficient, "Conduction coefficient supplier cannot be null");
         Objects.requireNonNull(insulationCoefficient, "Insulation coefficient supplier cannot be null");
         return new MultiblockHeatCapacitor<>(multiblock, heatCapacity, conductionCoefficient, insulationCoefficient);

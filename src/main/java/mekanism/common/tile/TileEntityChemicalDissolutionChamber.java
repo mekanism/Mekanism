@@ -13,6 +13,7 @@ import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToGasCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
+import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
@@ -49,7 +50,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
-    private final IInputHandler<@NonNull GasStack> gasInputHandler;
+    private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer;
     private GasInventorySlot gasInputSlot;

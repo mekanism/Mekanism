@@ -69,10 +69,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem, IItemHUDProvider {
 
-    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000_000);
-
     public ItemMekaTool(Properties properties) {
-        super(MAX_ENERGY, properties.setNoRepair().setISTER(ISTERProvider::disassembler));
+        super(MekanismConfig.gear.mekaToolBaseChargeRate, MekanismConfig.gear.mekaToolBaseEnergyCapacity, properties.setNoRepair().setISTER(ISTERProvider::disassembler));
         Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.ATTACK_AMPLIFICATION_UNIT, Modules.SILK_TOUCH_UNIT, Modules.VEIN_MINING_UNIT, Modules.FARMING_UNIT,
             Modules.TELEPORTATION_UNIT, Modules.EXCAVATION_ESCALATION_UNIT);
     }
@@ -122,7 +120,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     public float getDestroySpeed(ItemStack stack, BlockState state) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         ModuleExcavationEscalationUnit module = Modules.load(stack, Modules.EXCAVATION_ESCALATION_UNIT);
-        double efficiency = module == null || !module.isEnabled() ? MekanismConfig.general.mekaToolBaseEfficiency.get() : module.getEfficiency();
+        double efficiency = module == null || !module.isEnabled() ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getEfficiency();
         return energyContainer == null || energyContainer.isEmpty() ? 1 : (float) efficiency;
     }
 
@@ -140,11 +138,11 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
         FloatingLong energyCost = FloatingLong.ZERO;
-        int minDamage = MekanismConfig.general.mekaToolBaseDamage.get(), maxDamage = minDamage;
+        int minDamage = MekanismConfig.gear.mekaToolBaseDamage.get(), maxDamage = minDamage;
         if (isModuleEnabled(stack, Modules.ATTACK_AMPLIFICATION_UNIT)) {
             maxDamage = Modules.load(stack, Modules.ATTACK_AMPLIFICATION_UNIT).getDamage();
             if (maxDamage > minDamage) {
-                energyCost = MekanismConfig.general.mekaToolEnergyUsageWeapon.get().multiply((maxDamage - minDamage) / 4F);
+                energyCost = MekanismConfig.gear.mekaToolEnergyUsageWeapon.get().multiply((maxDamage - minDamage) / 4F);
             }
             minDamage = Math.min(minDamage, maxDamage);
         }
@@ -193,7 +191,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                 //If it is extended or should be treated as an ore
                 if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
-                    List<BlockPos> found = findPositions(state, pos, world, extended ? MekanismConfig.general.disassemblerMiningRange.get() : -1);
+                    List<BlockPos> found = findPositions(state, pos, world, extended ? MekanismConfig.gear.disassemblerMiningRange.get() : -1);
                     for (BlockPos foundPos : found) {
                         if (pos.equals(foundPos)) {
                             continue;
@@ -248,7 +246,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         Set<BlockPos> checked = new ObjectOpenHashSet<>();
         found.add(location);
         Block startBlock = state.getBlock();
-        int maxCount = MekanismConfig.general.disassemblerMiningCount.get() - 1;
+        int maxCount = MekanismConfig.gear.disassemblerMiningCount.get() - 1;
         for (int i = 0; i < found.size(); i++) {
             BlockPos blockPos = found.get(i);
             checked.add(blockPos);
@@ -271,9 +269,9 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     private FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
-        FloatingLong destroyEnergy = silk ? MekanismConfig.general.mekaToolEnergyUsageSilk.get() : MekanismConfig.general.mekaToolEnergyUsage.get();
+        FloatingLong destroyEnergy = silk ? MekanismConfig.gear.mekaToolEnergyUsageSilk.get() : MekanismConfig.gear.mekaToolEnergyUsage.get();
         ModuleExcavationEscalationUnit module = Modules.load(itemStack, Modules.EXCAVATION_ESCALATION_UNIT);
-        double efficiency = module == null || !module.isEnabled() ? MekanismConfig.general.mekaToolBaseEfficiency.get() : module.getEfficiency();
+        double efficiency = module == null || !module.isEnabled() ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getEfficiency();
         destroyEnergy = destroyEnergy.multiply(efficiency);
         return hardness == 0 ? destroyEnergy.divide(2) : destroyEnergy;
     }
@@ -301,7 +299,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote() && isModuleEnabled(stack, Modules.TELEPORTATION_UNIT)) {
-            BlockRayTraceResult pos = MekanismUtils.rayTrace(player, MekanismConfig.general.mekaToolMaxTeleportReach.get());
+            BlockRayTraceResult pos = MekanismUtils.rayTrace(player, MekanismConfig.gear.mekaToolMaxTeleportReach.get());
             if (pos.getType() != RayTraceResult.Type.MISS) {
                 // make sure we fit
                 if (world.isAirBlock(pos.getPos().add(0, 1, 0)) && world.isAirBlock(pos.getPos().add(0, 2, 0))) {
@@ -310,7 +308,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                         return new ActionResult<>(ActionResultType.PASS, stack);
                     }
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                    FloatingLong energyNeeded = MekanismConfig.general.mekaToolEnergyUsageTeleport.get().multiply(distance / 10D);
+                    FloatingLong energyNeeded = MekanismConfig.gear.mekaToolEnergyUsageTeleport.get().multiply(distance / 10D);
                     if (energyContainer == null || energyContainer.getEnergy().smallerThan(energyNeeded)) {
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
@@ -359,6 +357,12 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     @Override
     protected FloatingLong getMaxEnergy(ItemStack stack) {
         ModuleEnergyUnit module = Modules.load(stack, Modules.ENERGY_UNIT);
-        return module != null ? module.getEnergyCapacity() : MekanismConfig.general.mekaToolBaseEnergyCapacity.get();
+        return module != null ? module.getEnergyCapacity() : MekanismConfig.gear.mekaToolBaseEnergyCapacity.get();
+    }
+
+    @Override
+    protected FloatingLong getChargeRate(ItemStack stack) {
+        ModuleEnergyUnit module = Modules.load(stack, Modules.ENERGY_UNIT);
+        return module != null ? module.getChargeRate() : MekanismConfig.gear.mekaToolBaseChargeRate.get();
     }
 }

@@ -31,7 +31,7 @@ public class SparkleAnimation {
 
 
     public void run() {
-        if (MekanismConfig.general.dynamicTankEasterEgg.get()) {
+        if (MekanismConfig.client.dynamicTankEasterEgg.get()) {
             tile.getWorld().playSound(null, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), MekanismSounds.CJ_EASTER_EGG.getSoundEvent(), SoundCategory.BLOCKS, 1F, 1F);
         }
         World world = tile.getWorld();

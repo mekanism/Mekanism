@@ -60,7 +60,7 @@ public interface ISidedHeatHandler extends IHeatHandler {
      *
      * Returns the inverse conduction coefficient of a given capacitor. This value defines how much heat is allowed to be dissipated. The larger the number the less heat
      * can dissipate. The trade off is that it also allows for lower amounts of heat to be inserted.
-
+     *
      * @param capacitor Capacitor to query.
      * @param side      The side we are interacting with the handler from (null for internal).
      *
@@ -166,8 +166,6 @@ public interface ISidedHeatHandler extends IHeatHandler {
      * @param side The side we are interacting with the handler from (null for internal).
      *
      * @return The total heat capacity across all capacitors in this handler.
-     *
-     * @apiNote The returned {@link double} can be safely modified afterwards.
      */
     default double getTotalHeatCapacity(@Nullable Direction side) {
         int heatCapacitorCount = getHeatCapacitorCount(side);

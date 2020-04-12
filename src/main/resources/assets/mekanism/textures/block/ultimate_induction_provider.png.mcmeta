@@ -1,28 +1,38 @@
 {
-    "ctm":{
-        "ctm_version": 1,
-        "type":"CTM",
-        "layer":"SOLID",
-        "textures":[
-            "mekanism:block/induction_provider_ultimate-ctm"
-        ],
-        "extra": {
-            "connect_to": [
-                {
-                    "block": "mekanism:basicblock2",
-                    "predicate":
-                    {
-                        "type": "induction_cell"
-                    }
-                },
-                {
-                    "block": "mekanism:basicblock2",
-                    "predicate":
-                    {
-                        "type": "induction_provider"
-                    }
-                }
-            ]
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "SOLID",
+    "textures": [
+      "mekanism:block/ultimate_induction_provider-ctm"
+    ],
+    "extra": {
+      "connect_to": [
+        {
+          "block": "mekanism:basic_induction_cell"
+        },
+        {
+          "block": "mekanism:advanced_induction_cell"
+        },
+        {
+          "block": "mekanism:elite_induction_cell"
+        },
+        {
+          "block": "mekanism:ultimate_induction_cell"
+        },
+        {
+          "block": "mekanism:basic_induction_provider"
+        },
+        {
+          "block": "mekanism:advanced_induction_provider"
+        },
+        {
+          "block": "mekanism:elite_induction_provider"
+        },
+        {
+          "block": "mekanism:ultimate_induction_provider"
         }
+      ]
     }
+  }
 }

@@ -1,10 +1,10 @@
 {
-    "ctm":{
-        "ctm_version": 1,
-        "type":"CTM",
-        "layer":"SOLID",
-        "textures":[
-            "mekanismgenerators:block/saturating_condenser-ctm"
-        ]
-    }
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "SOLID",
+    "textures": [
+      "mekanismgenerators:block/saturating_condenser-ctm"
+    ]
+  }
 }

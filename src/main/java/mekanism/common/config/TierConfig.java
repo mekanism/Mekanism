@@ -19,7 +19,6 @@ import mekanism.common.util.EnumUtils;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
-//TODO: Name things better
 public class TierConfig extends BaseMekanismConfig {
 
     private static final String ENERGY_CUBE_CATEGORY = "energy_cubes";

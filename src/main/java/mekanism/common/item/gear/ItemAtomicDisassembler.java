@@ -56,7 +56,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     public ItemAtomicDisassembler(Properties properties) {
         //TODO: Set some tool types? What would we set the "harvest level to"
-        super(MekanismConfig.general.disassemblerBatteryCapacity.get(), properties.setNoRepair().setISTER(ISTERProvider::disassembler));
+        super(MekanismConfig.gear.disassemblerChargeRate, MekanismConfig.gear.disassemblerMaxEnergy, properties.setNoRepair().setISTER(ISTERProvider::disassembler));
     }
 
     @Override
@@ -77,9 +77,9 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
-        FloatingLong energyCost = MekanismConfig.general.disassemblerEnergyUsageWeapon.get();
-        int minDamage = MekanismConfig.general.disassemblerDamageMin.get();
-        int damageDifference = MekanismConfig.general.disassemblerDamageMax.get() - minDamage;
+        FloatingLong energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
+        int minDamage = MekanismConfig.gear.disassemblerMinDamage.get();
+        int damageDifference = MekanismConfig.gear.disassemblerMaxDamage.get() - minDamage;
         //If we don't have enough power use it at a reduced power level
         double percent = 1;
         if (energy.smallerThan(energyCost)) {
@@ -133,7 +133,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                 //If it is extended or should be treated as an ore
                 if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
-                    List<BlockPos> found = findPositions(state, pos, world, extended ? MekanismConfig.general.disassemblerMiningRange.get() : -1);
+                    List<BlockPos> found = findPositions(state, pos, world, extended ? MekanismConfig.gear.disassemblerMiningRange.get() : -1);
                     for (BlockPos foundPos : found) {
                         if (pos.equals(foundPos)) {
                             continue;
@@ -182,7 +182,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         Set<BlockPos> checked = new ObjectOpenHashSet<>();
         found.add(location);
         Block startBlock = state.getBlock();
-        int maxCount = MekanismConfig.general.disassemblerMiningCount.get() - 1;
+        int maxCount = MekanismConfig.gear.disassemblerMiningCount.get() - 1;
         for (int i = 0; i < found.size(); i++) {
             BlockPos blockPos = found.get(i);
             checked.add(blockPos);
@@ -205,7 +205,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     private FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness) {
-        FloatingLong destroyEnergy = MekanismConfig.general.disassemblerEnergyUsage.get().multiply(getMode(itemStack).getEfficiency());
+        FloatingLong destroyEnergy = MekanismConfig.gear.disassemblerEnergyUsage.get().multiply(getMode(itemStack).getEfficiency());
         return hardness == 0 ? destroyEnergy.divide(2) : destroyEnergy;
     }
 
@@ -266,10 +266,10 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     public enum DisassemblerMode implements IDisableableEnum<DisassemblerMode>, IHasTranslationKey {
         NORMAL(MekanismLang.DISASSEMBLER_NORMAL, 20, () -> true),
-        SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, MekanismConfig.general.disassemblerSlowMode),
-        FAST(MekanismLang.DISASSEMBLER_FAST, 128, MekanismConfig.general.disassemblerFastMode),
-        VEIN(MekanismLang.DISASSEMBLER_VEIN, 20, MekanismConfig.general.disassemblerVeinMining),
-        EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, MekanismConfig.general.disassemblerExtendedMining),
+        SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode),
+        FAST(MekanismLang.DISASSEMBLER_FAST, 128, MekanismConfig.gear.disassemblerFastMode),
+        VEIN(MekanismLang.DISASSEMBLER_VEIN, 20, MekanismConfig.gear.disassemblerVeinMining),
+        EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, MekanismConfig.gear.disassemblerExtendedMining),
         OFF(MekanismLang.DISASSEMBLER_OFF, 0, () -> true);
 
         private static DisassemblerMode[] MODES = values();

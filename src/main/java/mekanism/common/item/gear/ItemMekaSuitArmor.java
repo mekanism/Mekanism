@@ -42,15 +42,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -79,11 +75,11 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         if (slot == EquipmentSlotType.HEAD) {
             Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT, Modules.VISION_ENHANCEMENT_UNIT,
                 Modules.SOLAR_RECHARGING_UNIT, Modules.NUTRITIONAL_INJECTION_UNIT);
-            gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 16_000, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
+            gasTankSpecs.add(GasTankSpec.createFillOnly(() -> GAS_TRANSFER_RATE, () -> 16_000, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
             absorption = 0.15F;
         } else if (slot == EquipmentSlotType.CHEST) {
             Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT, Modules.DOSIMETER_UNIT);
-            gasTankSpecs.add(GasTankSpec.createFillOnly(GAS_TRANSFER_RATE, () -> 24_000, gas -> gas == MekanismGases.HYDROGEN.get()));
+            gasTankSpecs.add(GasTankSpec.createFillOnly(() -> GAS_TRANSFER_RATE, () -> 24_000, gas -> gas == MekanismGases.HYDROGEN.get()));
             absorption = 0.4F;
         } else if (slot == EquipmentSlotType.LEGS) {
             Modules.setSupported(this, Modules.LOCOMOTIVE_BOOSTING_UNIT);
@@ -160,7 +156,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         stack.getTag().putInt("HideFlags", 2);
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
-        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getMaxEnergy(stack), BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue),
+        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack), BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue),
             RadiationShieldingHandler.create(item -> isModuleEnabled(item, Modules.RADIATION_SHIELDING_UNIT) ? ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
         if (!gasTankSpecs.isEmpty()) {
             wrapper.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
@@ -227,7 +223,12 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
     private FloatingLong getMaxEnergy(ItemStack stack) {
         ModuleEnergyUnit module = Modules.load(stack, Modules.ENERGY_UNIT);
-        return module != null ? module.getEnergyCapacity() : MekanismConfig.general.mekaToolBaseEnergyCapacity.get();
+        return module != null ? module.getEnergyCapacity() : MekanismConfig.gear.mekaToolBaseEnergyCapacity.get();
+    }
+
+    private FloatingLong getChargeRate(ItemStack stack) {
+        ModuleEnergyUnit module = Modules.load(stack, Modules.ENERGY_UNIT);
+        return module != null ? module.getChargeRate() : MekanismConfig.gear.mekaToolBaseChargeRate.get();
     }
 
     public float getDamageAbsorbed(ItemStack stack, DamageSource source, float amount) {
@@ -240,32 +241,18 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null && amount > 0) {
             float toAbsorb = amount * absorption;
-            FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageDamage.get().multiply(toAbsorb);
+            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageDamage.get().multiply(toAbsorb);
             return absorption * energyContainer.extract(usage, Action.EXECUTE, AutomationType.MANUAL).divide(usage).floatValue();
         }
         return 0;
     }
 
     // This is unused for the most part; toughness / damage reduction is handled manually
-    protected static class MekaSuitMaterial implements IArmorMaterial {
-        @Override
-        public int getDurability(EquipmentSlotType slotType) { return 0; }
+    protected static class MekaSuitMaterial extends BaseSpecialArmorMaterial {
         @Override
         public int getDamageReductionAmount(EquipmentSlotType slotType) { return 0; }
         @Override
-        public int getEnchantability() { return 0; }
-        @Override
         public float getToughness() { return 0; }
-
-        @Override
-        public SoundEvent getSoundEvent() {
-            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
-        }
-
-        @Override
-        public Ingredient getRepairMaterial() {
-            return Ingredient.EMPTY;
-        }
 
         @Override
         public String getName() {

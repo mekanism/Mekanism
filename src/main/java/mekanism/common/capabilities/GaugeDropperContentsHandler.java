@@ -39,6 +39,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 public class GaugeDropperContentsHandler extends ItemCapability implements IMekanismFluidHandler, IFluidHandlerItem, IMekanismGasHandler, IMekanismInfusionHandler {
 
     private static final int CAPACITY = 16 * FluidAttributes.BUCKET_VOLUME;
+    //TODO: Convert this to a long and make it a config option after making fluids be able to handle longs
     private static final int TRANSFER_RATE = 256;
 
     public static GaugeDropperContentsHandler create() {
@@ -55,7 +56,7 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
 
     private GaugeDropperContentsHandler() {
         fluidTank = new RateLimitFluidTank(TRANSFER_RATE, () -> CAPACITY, BasicFluidTank.alwaysTrueBi, this::canInsert, BasicFluidTank.alwaysTrue, this);
-        gasTank = new RateLimitGasTank(TRANSFER_RATE, () -> CAPACITY, BasicGasTank.alwaysTrueBi, this::canInsert, BasicGasTank.alwaysTrue, null, this);
+        gasTank = new RateLimitGasTank(() -> TRANSFER_RATE, () -> CAPACITY, BasicGasTank.alwaysTrueBi, this::canInsert, BasicGasTank.alwaysTrue, null, this);
         infusionTank = new RateLimitInfusionTank(TRANSFER_RATE, () -> CAPACITY, BasicInfusionTank.alwaysTrueBi, this::canInsert, BasicInfusionTank.alwaysTrue, this);
     }
 

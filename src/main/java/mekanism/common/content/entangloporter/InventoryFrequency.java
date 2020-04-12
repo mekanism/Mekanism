@@ -62,13 +62,13 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     private void presetVariables() {
-        storedFluid = BasicFluidTank.create(MekanismConfig.general.quantumEntangloporterFluidBuffer.get(), this);
+        storedFluid = BasicFluidTank.create(MekanismConfig.general.entangloporterFluidBuffer.get(), this);
         fluidTanks = Collections.singletonList(storedFluid);
-        storedGas = BasicGasTank.create(MekanismConfig.general.quantumEntangloporterGasBuffer.get(), this);
+        storedGas = BasicGasTank.create(MekanismConfig.general.entangloporterGasBuffer.get(), this);
         gasTanks = Collections.singletonList(storedGas);
         storedItem = EntangloporterInventorySlot.create(this);
         inventorySlots = Collections.singletonList(storedItem);
-        storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.quantumEntangloporterEnergyBuffer.get(), this);
+        storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.get(), this);
         energyContainers = Collections.singletonList(storedEnergy);
         storedHeat = BasicHeatCapacitor.create(1, 1, 1_000, this);
         heatCapacitors = Collections.singletonList(storedHeat);

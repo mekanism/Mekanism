@@ -23,7 +23,7 @@ public interface IHeatCapacitor extends INBTSerializable<CompoundNBT> {
      *
      * @return Inverse conduction coefficient of this capacitor.
      *
-     * @apiNote Must be greater than {@link double#ZERO}
+     * @apiNote Must be greater than {@code 0}
      */
     double getInverseConduction();
 
@@ -39,7 +39,7 @@ public interface IHeatCapacitor extends INBTSerializable<CompoundNBT> {
      *
      * @return Heat capacity of this capacitor.
      *
-     * @apiNote Must be at least {@link double#ONE}
+     * @apiNote Must be at least {@code 1}
      */
     double getHeatCapacity();
 
@@ -53,7 +53,7 @@ public interface IHeatCapacitor extends INBTSerializable<CompoundNBT> {
     /**
      * Overrides the amount of heat in this {@link IHeatCapacitor}.
      *
-     * @param heat Heat to set this capacitor's storage to (may be {@link double#ZERO}).
+     * @param heat Heat to set this capacitor's storage to (may be {@code 0}).
      *
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}

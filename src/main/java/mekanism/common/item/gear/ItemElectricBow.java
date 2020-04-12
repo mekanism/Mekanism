@@ -12,6 +12,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.IModeItem;
 import mekanism.common.util.ItemDataUtils;
@@ -43,11 +44,6 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvider {
 
-    //TODO: Config max energy, damage, etc
-    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(120_000);
-    private static final FloatingLong FIRE_ENERGY = FloatingLong.createConst(1_200);
-    private static final FloatingLong NORMAL_ENERGY = FloatingLong.createConst(120);
-
     public ItemElectricBow(Properties properties) {
         super(properties.setNoRepair());
     }
@@ -68,7 +64,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
             boolean fireState = getFireState(stack);
             if (!player.isCreative()) {
                 energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                FloatingLong energyNeeded = fireState ? FIRE_ENERGY : NORMAL_ENERGY;
+                FloatingLong energyNeeded = fireState ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
                 if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
                     return;
                 }
@@ -92,13 +88,13 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                     ArrowItem arrowitem = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
                     AbstractArrowEntity arrowEntity = arrowitem.createArrow(world, ammo, player);
                     arrowEntity = customeArrow(arrowEntity);
-                    arrowEntity.shoot(player, player.rotationPitch, player.rotationYaw, 0, velocity * 3, 1);
+                    arrowEntity.shoot(player, player.rotationPitch, player.rotationYaw, 0, 3 * velocity, 1);
                     if (velocity == 1) {
                         arrowEntity.setIsCritical(true);
                     }
                     int power = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
                     if (power > 0) {
-                        arrowEntity.setDamage(arrowEntity.getDamage() + (double) power * 0.5D + 0.5D);
+                        arrowEntity.setDamage(arrowEntity.getDamage() + 0.5 * power + 0.5);
                     }
                     int punch = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, stack);
                     if (punch > 0) {
@@ -110,7 +106,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                     }
                     //Vanilla diff - Instead of damaging the item we remove energy from it
                     if (!player.isCreative() && energyContainer != null) {
-                        energyContainer.extract(fireState ? FIRE_ENERGY : NORMAL_ENERGY, Action.EXECUTE, AutomationType.MANUAL);
+                        energyContainer.extract(fireState ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get(), Action.EXECUTE, AutomationType.MANUAL);
                     }
                     if (noConsume || player.isCreative() && (ammo.getItem() == Items.SPECTRAL_ARROW || ammo.getItem() == Items.TIPPED_ARROW)) {
                         arrowEntity.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
@@ -157,7 +153,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MAX_ENERGY));
+            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.electricBowMaxEnergy.get()));
         }
     }
 
@@ -165,7 +161,8 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> MAX_ENERGY, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
+        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(MekanismConfig.gear.electricBowChargeRate, MekanismConfig.gear.electricBowMaxEnergy,
+              BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
     }
 
     @Override

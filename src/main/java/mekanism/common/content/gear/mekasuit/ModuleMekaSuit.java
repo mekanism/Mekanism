@@ -76,10 +76,10 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void tickServer(PlayerEntity player) {
             for (EffectInstance effect : player.getActivePotionEffects()) {
-                if (getContainerEnergy().smallerThan(MekanismConfig.general.mekaSuitEnergyUsagePotionTick.get())) {
+                if (getContainerEnergy().smallerThan(MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get())) {
                     break;
                 }
-                useEnergy(player, MekanismConfig.general.mekaSuitEnergyUsagePotionTick.get());
+                useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get());
                 for (int i = 0; i < 9; i++) {
                     effect.tick(player, () -> MekanismUtils.onChangedPotionEffect(player, effect, true));
                 }
@@ -91,7 +91,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
-            useEnergy(player, MekanismConfig.general.mekaSuitEnergyUsageVisionEnhancement.get());
+            useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get());
         }
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
@@ -174,7 +174,7 @@ public abstract class ModuleMekaSuit extends Module {
         }
 
         private void chargeInventory(PlayerEntity player) {
-            FloatingLong toCharge = MekanismConfig.general.mekaSuitInventoryChargeRate.get();
+            FloatingLong toCharge = MekanismConfig.gear.mekaSuitInventoryChargeRate.get();
             // first try to charge mainhand/offhand item
             toCharge = charge(player, player.getHeldItemMainhand(), toCharge);
             toCharge = charge(player, player.getHeldItemOffhand(), toCharge);
@@ -218,7 +218,7 @@ public abstract class ModuleMekaSuit extends Module {
                 if (!player.onGround) boost /= 5F; // throttle if we're in the air
                 if (player.isInWater()) boost /= 5F; // throttle if we're in the water
                 player.moveRelative(boost, new Vec3d(0, 0, 1));
-                useEnergy(player, MekanismConfig.general.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
+                useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
             }
         }
 
@@ -236,7 +236,7 @@ public abstract class ModuleMekaSuit extends Module {
         }
 
         public boolean canFunction(PlayerEntity player) {
-            FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F);
+            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F);
             return player.isSprinting() && getContainerEnergy().greaterOrEqual(usage);
         }
 
@@ -310,7 +310,7 @@ public abstract class ModuleMekaSuit extends Module {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
             if (energyContainer != null && !energyContainer.getNeeded().isZero() && player.world.isDaytime() &&
                 player.world.canSeeSky(new BlockPos(player)) && !player.world.isRaining() && !player.world.getDimension().isNether()) {
-                FloatingLong rate = MekanismConfig.general.mekaSuitSolarRechargingRate.get().multiply(getInstalledCount());
+                FloatingLong rate = MekanismConfig.gear.mekaSuitSolarRechargingRate.get().multiply(getInstalledCount());
                 energyContainer.insert(rate, Action.EXECUTE, AutomationType.MANUAL);
             }
         }
@@ -320,7 +320,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
-            FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageNutritionalInjection.get();
+            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
             if (!player.isCreative() && player.canEat(false) && getContainerEnergy().greaterOrEqual(usage)) {
                 ItemMekaSuitArmor item = (ItemMekaSuitArmor) getContainer().getItem();
                 long toFeed = Math.min(1, item.getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / ItemCanteen.MB_PER_FOOD);

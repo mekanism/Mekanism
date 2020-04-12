@@ -4,7 +4,8 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
@@ -25,6 +26,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: Test this recipe in various modded crafting tables/auto crafters
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class BinInsertRecipe extends BinRecipe {
 
     public BinInsertRecipe(ResourceLocation id) {
@@ -32,7 +35,7 @@ public class BinInsertRecipe extends BinRecipe {
     }
 
     @Override
-    public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World world) {
+    public boolean matches(CraftingInventory inv, World world) {
         ItemStack binStack = ItemStack.EMPTY;
         ItemStack foundType = ItemStack.EMPTY;
         for (int i = 0; i < inv.getSizeInventory(); ++i) {
@@ -63,9 +66,8 @@ public class BinInsertRecipe extends BinRecipe {
         return !ItemStack.areItemStacksEqual(remaining, foundType);
     }
 
-    @Nonnull
     @Override
-    public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
+    public ItemStack getCraftingResult(CraftingInventory inv) {
         ItemStack binStack = ItemStack.EMPTY;
         ItemStack foundType = ItemStack.EMPTY;
         List<ItemStack> foundItems = new ArrayList<>();
@@ -113,7 +115,6 @@ public class BinInsertRecipe extends BinRecipe {
         return binStack;
     }
 
-    @Nonnull
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
         NonNullList<ItemStack> remainingItems = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
@@ -162,7 +163,6 @@ public class BinInsertRecipe extends BinRecipe {
         return width * height >= 2;
     }
 
-    @Nonnull
     @Override
     public IRecipeSerializer<?> getSerializer() {
         return MekanismRecipeSerializers.BIN_INSERT.getRecipeSerializer();

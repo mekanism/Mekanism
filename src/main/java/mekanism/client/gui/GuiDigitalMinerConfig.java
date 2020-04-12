@@ -64,7 +64,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 141, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, tile)), getOnHover(MekanismLang.MINER_INVERSE)));
         addButton(radiusField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 67, 26, 11, ""));
-        radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.digitalMinerMaxRadius.get()).length());
+        radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
         addButton(minField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 92, 26, 11, ""));
         minField.setMaxStringLength(3);
         addButton(maxField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 117, 26, 11, ""));

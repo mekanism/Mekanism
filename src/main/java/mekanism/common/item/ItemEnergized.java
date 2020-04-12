@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
@@ -24,20 +25,20 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemEnergized extends Item {
 
-    /**
-     * The maximum amount of energy this item can hold.
-     */
-    private final FloatingLong MAX_ENERGY;
+    private final FloatingLongSupplier chargeRateSupplier;
+    private final FloatingLongSupplier maxEnergySupplier;
     private final Predicate<@NonNull AutomationType> canExtract;
     private final Predicate<@NonNull AutomationType> canInsert;
 
-    public ItemEnergized(FloatingLong maxElectricity, Properties properties) {
-        this(maxElectricity, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue, properties);
+    public ItemEnergized(FloatingLongSupplier chargeRateSupplier, FloatingLongSupplier maxEnergySupplier, Properties properties) {
+        this(chargeRateSupplier, maxEnergySupplier, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue, properties);
     }
 
-    public ItemEnergized(FloatingLong maxElectricity, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert, Properties properties) {
+    public ItemEnergized(FloatingLongSupplier chargeRateSupplier, FloatingLongSupplier maxEnergySupplier, Predicate<@NonNull AutomationType> canExtract,
+          Predicate<@NonNull AutomationType> canInsert, Properties properties) {
         super(properties.maxStackSize(1));
-        MAX_ENERGY = maxElectricity;
+        this.chargeRateSupplier = chargeRateSupplier;
+        this.maxEnergySupplier = maxEnergySupplier;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
     }
@@ -62,19 +63,22 @@ public class ItemEnergized extends Item {
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            ItemStack stack = new ItemStack(this);
-            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), getMaxEnergy(stack)));
+            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), maxEnergySupplier.get()));
         }
     }
 
     protected FloatingLong getMaxEnergy(ItemStack stack) {
-        return MAX_ENERGY;
+        return maxEnergySupplier.get();
+    }
+
+    protected FloatingLong getChargeRate(ItemStack stack) {
+        return chargeRateSupplier.get();
     }
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getMaxEnergy(stack), canExtract, canInsert));
+        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack), canExtract, canInsert));
     }
 }

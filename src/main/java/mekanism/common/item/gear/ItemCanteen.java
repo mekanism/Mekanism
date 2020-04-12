@@ -41,8 +41,8 @@ public class ItemCanteen extends Item {
     public static final float SATURATION = 0.8F;
     public static final int MB_PER_FOOD = 50;
 
-    private static final int TRANSFER_RATE = 16;
-    private static final int MAX_GAS = 16_000;
+    private static final long TRANSFER_RATE = 16;
+    private static final long MAX_GAS = 16_000;
 
     public ItemCanteen(Properties properties) {
         super(properties.maxStackSize(1).setNoRepair());
@@ -101,7 +101,7 @@ public class ItemCanteen extends Item {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(TRANSFER_RATE, () -> MAX_GAS,
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> MAX_GAS,
               (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.getGas()));
     }
 

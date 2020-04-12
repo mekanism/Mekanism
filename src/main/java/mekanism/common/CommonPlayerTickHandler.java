@@ -174,7 +174,7 @@ public class CommonPlayerTickHandler {
         if (isGravitationalModulationReady(player)) {
             player.abilities.allowFlying = true;
             if (player.abilities.isFlying) {
-                FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageGravitationalModulation.get();
+                FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
                 boolean boostKey = Mekanism.keyMap.has(player, KeySync.BOOST);
                 ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
                 player.setSprinting(false);
@@ -211,7 +211,7 @@ public class CommonPlayerTickHandler {
 
     public static boolean isGravitationalModulationReady(PlayerEntity player) {
         ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
-        FloatingLong usage = MekanismConfig.general.mekaSuitEnergyUsageGravitationalModulation.get();
+        FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
         return !player.isCreative() && module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(usage);
     }
 
@@ -247,8 +247,8 @@ public class CommonPlayerTickHandler {
                         return;
                     }
                     ModuleInhalationPurificationUnit module = Modules.load(chestStack, Modules.INHALATION_PURIFICATION_UNIT);
-                    if (module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(MekanismConfig.general.mekaSuitEnergyUsageMagicPrevent.get())) {
-                        module.useEnergy(base, MekanismConfig.general.mekaSuitEnergyUsageMagicPrevent.get());
+                    if (module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(MekanismConfig.gear.mekaSuitEnergyUsageMagicPrevent.get())) {
+                        module.useEnergy(base, MekanismConfig.gear.mekaSuitEnergyUsageMagicPrevent.get());
                         event.setCanceled(true);
                         return;
                     }
@@ -261,7 +261,7 @@ public class CommonPlayerTickHandler {
         if (event.getSource() == DamageSource.FALL) {
             IEnergyContainer energyContainer = getFallAbsorptionEnergyContainer(base);
             if (energyContainer != null) {
-                FloatingLong energyRequirement = MekanismConfig.general.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
+                FloatingLong energyRequirement = MekanismConfig.gear.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
                 FloatingLong simulatedExtract = energyContainer.extract(energyRequirement, Action.SIMULATE, AutomationType.MANUAL);
                 if (simulatedExtract.equals(energyRequirement)) {
                     //If we could fully negate the damage cancel the event
@@ -277,7 +277,7 @@ public class CommonPlayerTickHandler {
         if (event.getSource() == DamageSource.FALL) {
             IEnergyContainer energyContainer = getFallAbsorptionEnergyContainer(event.getEntityLiving());
             if (energyContainer != null) {
-                FloatingLong energyRequirement = MekanismConfig.general.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
+                FloatingLong energyRequirement = MekanismConfig.gear.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
                 FloatingLong extracted = energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
                 if (!extracted.isZero()) {
                     //If we managed to remove any power, then we want to lower (or negate) the amount of fall damage
@@ -286,7 +286,7 @@ public class CommonPlayerTickHandler {
                         //If we used all the power we required, then cancel the event
                         event.setCanceled(true);
                     } else {
-                        float newDamage = remainder.divide(MekanismConfig.general.freeRunnerFallEnergyCost.get()).floatValue();
+                        float newDamage = remainder.divide(MekanismConfig.gear.freeRunnerFallEnergyCost.get()).floatValue();
                         if (newDamage == 0) {
                             //If we ended up being close enough that it rounds down to zero, just cancel it anyways
                             event.setCanceled(true);
@@ -322,7 +322,7 @@ public class CommonPlayerTickHandler {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
             ModuleHydraulicPropulsionUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.FEET), Modules.HYDRAULIC_PROPULSION_UNIT);
             if (module != null && module.isEnabled() && Mekanism.keyMap.has(player, KeySync.BOOST)) {
-                FloatingLong usage = MekanismConfig.general.mekaSuitBaseJumpEnergyUsage.get().multiply(module.getBoost() / 0.1F);
+                FloatingLong usage = MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get().multiply(module.getBoost() / 0.1F);
                 if (module.getContainerEnergy().greaterOrEqual(usage)) {
                     float boost = module.getBoost();
                     // if we're sprinting with the boost module, limit the height

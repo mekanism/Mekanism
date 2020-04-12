@@ -1,10 +1,10 @@
 {
-    "ctm":{
-        "ctm_version": 1,
-        "type":"CTM",
-        "layer":"SOLID",
-        "textures":[
-            "mekanism:block/superheating_element_on-ctm"
-        ]
-    }
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "SOLID",
+    "textures": [
+      "mekanism:block/superheating_element_on-ctm"
+    ]
+  }
 }

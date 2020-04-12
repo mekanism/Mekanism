@@ -114,7 +114,7 @@ public class ClientTickHandler {
 
     public static boolean isVisionEnhancementOn(PlayerEntity player) {
         ModuleVisionEnhancementUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.HEAD), Modules.VISION_ENHANCEMENT_UNIT);
-        if (module != null && module.isEnabled() && module.getContainerEnergy().greaterThan(MekanismConfig.general.mekaSuitEnergyUsageVisionEnhancement.get())) {
+        if (module != null && module.isEnabled() && module.getContainerEnergy().greaterThan(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get())) {
             return true;
         }
         return false;
@@ -133,7 +133,7 @@ public class ClientTickHandler {
     }
 
     public static void portableTeleport(PlayerEntity player, Hand hand, Frequency freq) {
-        int delay = MekanismConfig.general.portableTeleporterDelay.get();
+        int delay = MekanismConfig.gear.portableTeleporterDelay.get();
         if (delay == 0) {
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.TELEPORT, hand, freq));
         } else {

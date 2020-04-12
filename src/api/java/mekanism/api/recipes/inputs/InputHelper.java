@@ -63,8 +63,9 @@ public class InputHelper {
         };
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> IInputHandler<@NonNull STACK> getInputHandler(@Nonnull IChemicalTank<CHEMICAL, STACK> tank) {
-        return new IInputHandler<@NonNull STACK>() {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ILongInputHandler<@NonNull STACK> getInputHandler(
+          @Nonnull IChemicalTank<CHEMICAL, STACK> tank) {
+        return new ILongInputHandler<@NonNull STACK>() {
 
             @Override
             public @NonNull STACK getInput() {
@@ -83,7 +84,7 @@ public class InputHelper {
             }
 
             @Override
-            public void use(@NonNull STACK recipeInput, int operations) {
+            public void use(@NonNull STACK recipeInput, long operations) {
                 if (operations == 0) {
                     //Just exit if we are somehow here at zero operations
                     return;
@@ -102,7 +103,7 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(InputIngredient<@NonNull STACK> recipeIngredient, int currentMax, int usageMultiplier) {
+            public int operationsCanSupport(InputIngredient<@NonNull STACK> recipeIngredient, int currentMax, long usageMultiplier) {
                 if (currentMax <= 0 || usageMultiplier == 0) {
                     //Short circuit that if we already can't perform any operations or don't want to use any, just return
                     return currentMax;

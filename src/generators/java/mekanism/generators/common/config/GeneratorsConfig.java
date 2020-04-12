@@ -6,6 +6,7 @@ import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
@@ -17,10 +18,10 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     private static final String TURBINE_CATEGORY = "turbine";
     private static final String WIND_CATEGORY = "wind_generator";
     private static final String HEAT_CATEGORY = "heat_generator";
+    private static final String HOHLRAUM_CATEGORY = "hohlraum";
 
     private final ForgeConfigSpec configSpec;
 
-    //TODO: Limits on remaining things?
     public final CachedFloatingLongValue advancedSolarGeneration;
     public final CachedFloatingLongValue bioGeneration;
     public final CachedFloatingLongValue heatGeneration;
@@ -37,6 +38,9 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedIntValue windGenerationMinY;
     public final CachedIntValue windGenerationMaxY;
     public final CachedResourceLocationListValue windGenerationDimBlacklist;
+
+    public final CachedLongValue hohlraumMaxGas;
+    public final CachedLongValue hohlraumFillRate;
 
     GeneratorsConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -98,7 +102,16 @@ public class GeneratorsConfig extends BaseMekanismConfig {
                   }
                   return false;
               }));
-        builder.pop(2);
+        builder.pop();
+
+        builder.comment("Hohlraum Settings").push(HOHLRAUM_CATEGORY);
+        hohlraumMaxGas = CachedLongValue.wrap(this, builder.comment("Hohlraum capacity in mB.")
+              .defineInRange("maxGas", 10, 1, Long.MAX_VALUE));
+        hohlraumFillRate = CachedLongValue.wrap(this, builder.comment("Amount of DT-Fuel Hohlraum can accept per tick.")
+              .defineInRange("fillRate", 1, 1, Long.MAX_VALUE));
+        builder.pop();
+
+        builder.pop();
         configSpec = builder.build();
     }
 

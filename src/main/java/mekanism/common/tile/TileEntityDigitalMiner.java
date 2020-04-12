@@ -113,7 +113,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     public int delay;
 
-    private int delayLength = MekanismConfig.general.digitalMinerTicksPerMine.get();
+    private int delayLength = MekanismConfig.general.minerTicksPerMine.get();
 
     public int cachedToMine;
 
@@ -345,7 +345,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     public void setRadiusFromPacket(int newRadius) {
-        setRadius(Math.min(Math.max(0, newRadius), MekanismConfig.general.digitalMinerMaxRadius.get()));
+        setRadius(Math.min(Math.max(0, newRadius), MekanismConfig.general.minerMaxRadius.get()));
         //Send a packet to update the visual renderer
         //TODO: Only do this if the renderer is actually active
         sendUpdatePacket();
@@ -744,7 +744,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
-        setRadius(Math.min(nbtTags.getInt(NBTConstants.RADIUS), MekanismConfig.general.digitalMinerMaxRadius.get()));
+        setRadius(Math.min(nbtTags.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MIN, this::setMinY);
         NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MAX, this::setMaxY);
         doEject = nbtTags.getBoolean(NBTConstants.EJECT);
@@ -789,7 +789,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public void readSustainedData(ItemStack itemStack) {
         if (ItemDataUtils.hasData(itemStack, NBTConstants.RADIUS, NBT.TAG_INT)) {
-            setRadius(Math.min(ItemDataUtils.getInt(itemStack, NBTConstants.RADIUS), MekanismConfig.general.digitalMinerMaxRadius.get()));
+            setRadius(Math.min(ItemDataUtils.getInt(itemStack, NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         }
         if (ItemDataUtils.hasData(itemStack, NBTConstants.MIN, NBT.TAG_INT)) {
             setMinY(ItemDataUtils.getInt(itemStack, NBTConstants.MIN));
@@ -838,7 +838,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
-            delayLength = MekanismUtils.getTicks(this, MekanismConfig.general.digitalMinerTicksPerMine.get());
+            delayLength = MekanismUtils.getTicks(this, MekanismConfig.general.minerTicksPerMine.get());
         }
     }
 

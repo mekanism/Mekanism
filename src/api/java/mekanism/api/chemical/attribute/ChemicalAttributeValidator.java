@@ -70,7 +70,7 @@ public interface ChemicalAttributeValidator {
 
     class SimpleAttributeValidator implements ChemicalAttributeValidator {
 
-        Set<Class<? extends ChemicalAttribute>> validTypes = new HashSet<>();
+        Set<Class<? extends ChemicalAttribute>> validTypes;
         boolean allowNoValidation;
 
         SimpleAttributeValidator(Class<? extends ChemicalAttribute>[] attributeTypes, boolean allowNoValidation) {

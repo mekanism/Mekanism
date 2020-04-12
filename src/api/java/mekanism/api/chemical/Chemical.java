@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.text.IHasTextComponent;
@@ -21,7 +20,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 @MethodsReturnNonnullByDefault
 public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistryEntry<TYPE> implements IHasTextComponent, IHasTranslationKey {
 
-    private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
+    private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
 
     private final ResourceLocation iconLocation;
     private final int tint;

@@ -26,6 +26,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -54,12 +55,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IModeItem, IItemHUDProvider {
 
-    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(60_000);//TODO: Config
-    private static final FloatingLong ENERGY_PER_CONFIGURE = FloatingLong.createConst(400);
-    private static final FloatingLong ENERGY_PER_ITEM_DUMP = FloatingLong.createConst(8);
-
     public ItemConfigurator(Properties properties) {
-        super(MAX_ENERGY, properties);
+        super(MekanismConfig.gear.configuratorChargeRate, MekanismConfig.gear.configuratorMaxEnergy, properties);
     }
 
     @Override
@@ -96,10 +93,11 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
                         } else if (SecurityUtils.canAccess(player, tile)) {
                             if (!player.isCreative()) {
                                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                                if (energyContainer == null || energyContainer.extract(ENERGY_PER_CONFIGURE, Action.SIMULATE, AutomationType.MANUAL).smallerThan(ENERGY_PER_CONFIGURE)) {
+                                FloatingLong energyPerConfigure = MekanismConfig.gear.configuratorEnergyPerConfigure.get();
+                                if (energyContainer == null || energyContainer.extract(energyPerConfigure, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerConfigure)) {
                                     return ActionResultType.FAIL;
                                 }
-                                energyContainer.extract(ENERGY_PER_CONFIGURE, Action.EXECUTE, AutomationType.MANUAL);
+                                energyContainer.extract(energyPerConfigure, Action.EXECUTE, AutomationType.MANUAL);
                             }
                             dataType = info.incrementDataType(relativeSide);
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
@@ -140,13 +138,14 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
                                 return ActionResultType.FAIL;
                             }
                             //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
+                            FloatingLong energyPerItemDump = MekanismConfig.gear.configuratorEnergyPerItem.get();
                             for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
                                 if (!inventorySlot.isEmpty()) {
                                     if (!creative) {
-                                        if (energyContainer.extract(ENERGY_PER_ITEM_DUMP, Action.SIMULATE, AutomationType.MANUAL).smallerThan(ENERGY_PER_ITEM_DUMP)) {
+                                        if (energyContainer.extract(energyPerItemDump, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerItemDump)) {
                                             break;
                                         }
-                                        energyContainer.extract(ENERGY_PER_ITEM_DUMP, Action.EXECUTE, AutomationType.MANUAL);
+                                        energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
                                     }
                                     Block.spawnAsEntity(world, pos, inventorySlot.getStack().copy());
                                     inventorySlot.setStack(ItemStack.EMPTY);
@@ -239,7 +238,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
         ROTATE(MekanismLang.CONFIGURATOR_ROTATE, null, EnumColor.YELLOW, false),
         WRENCH(MekanismLang.CONFIGURATOR_WRENCH, null, EnumColor.PINK, false);
 
-        private static ConfiguratorMode[] MODES = values();
+        private static final ConfiguratorMode[] MODES = values();
         private final ILangEntry langEntry;
         @Nullable
         private final TransmissionType transmissionType;

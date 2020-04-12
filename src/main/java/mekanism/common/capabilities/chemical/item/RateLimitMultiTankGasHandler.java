@@ -45,12 +45,12 @@ public class RateLimitMultiTankGasHandler extends ItemStackMekanismGasHandler {
     }
 
     public static class GasTankSpec {
-        int rate;
+        LongSupplier rate;
         LongSupplier capacity;
         Predicate<@NonNull Gas> isValid;
         BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract;
         BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert;
-        public GasTankSpec(int rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+        public GasTankSpec(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid) {
             this.rate = rate;
             this.capacity = capacity;
@@ -58,10 +58,10 @@ public class RateLimitMultiTankGasHandler extends ItemStackMekanismGasHandler {
             this.canExtract = canExtract;
             this.canInsert = canInsert;
         }
-        public static GasTankSpec create(int rate, LongSupplier capacity) {
+        public static GasTankSpec create(LongSupplier rate, LongSupplier capacity) {
             return new GasTankSpec(rate, capacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue);
         }
-        public static GasTankSpec createFillOnly(int rate, LongSupplier capacity, Predicate<@NonNull Gas> isValid) {
+        public static GasTankSpec createFillOnly(LongSupplier rate, LongSupplier capacity, Predicate<@NonNull Gas> isValid) {
             return new GasTankSpec(rate, capacity, (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, isValid);
         }
         public boolean isValid(@NonNull Gas gas) {

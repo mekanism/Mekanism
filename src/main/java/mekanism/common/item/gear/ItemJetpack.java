@@ -18,6 +18,7 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.JetpackArmor;
 import mekanism.client.render.item.ISTERProvider;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
@@ -33,10 +34,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,7 +43,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IModeItem {
 
-    public static final JetpackMaterial JETPACK_MATERIAL = new JetpackMaterial();
+    private static final JetpackMaterial JETPACK_MATERIAL = new JetpackMaterial();
 
     public ItemJetpack(Properties properties) {
         this(JETPACK_MATERIAL, properties.setISTER(ISTERProvider::jetpack));
@@ -57,7 +55,12 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
 
     @Override
     protected LongSupplier getMaxGas() {
-        return MekanismConfig.general.maxJetpackGas;
+        return MekanismConfig.gear.jetpackMaxGas;
+    }
+
+    @Override
+    protected LongSupplier getFillRate() {
+        return MekanismConfig.gear.jetpackFillRate;
     }
 
     @Override
@@ -178,12 +181,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    protected static class JetpackMaterial implements IArmorMaterial {
-
-        @Override
-        public int getDurability(EquipmentSlotType slotType) {
-            return 0;
-        }
+    protected static class JetpackMaterial extends BaseSpecialArmorMaterial {
 
         @Override
         public int getDamageReductionAmount(EquipmentSlotType slotType) {
@@ -191,23 +189,8 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
         }
 
         @Override
-        public int getEnchantability() {
-            return 0;
-        }
-
-        @Override
-        public SoundEvent getSoundEvent() {
-            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
-        }
-
-        @Override
-        public Ingredient getRepairMaterial() {
-            return Ingredient.EMPTY;
-        }
-
-        @Override
         public String getName() {
-            return "jetpack";
+            return Mekanism.MODID + ":jetpack";
         }
 
         @Override

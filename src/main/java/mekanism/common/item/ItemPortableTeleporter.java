@@ -5,10 +5,10 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
@@ -34,10 +34,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem {
 
-    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000);//TODO: Config
-
     public ItemPortableTeleporter(Properties properties) {
-        super(MAX_ENERGY, properties);
+        super(MekanismConfig.gear.portableTeleporterChargeRate, MekanismConfig.gear.portableTeleporterMaxEnergy, properties);
     }
 
     @Override

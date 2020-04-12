@@ -33,7 +33,6 @@ public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
     }
 
     public static RateLimitEnergyHandler create(FloatingLongSupplier capacity, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert) {
-        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         return create(() -> capacity.get().multiply(0.005), capacity, canExtract, canInsert);
     }
 
@@ -46,7 +45,7 @@ public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
         return new RateLimitEnergyHandler(handler -> new RateLimitEnergyContainer(rate, capacity, canExtract, canInsert, handler));
     }
 
-    private IEnergyContainer energyContainer;
+    private final IEnergyContainer energyContainer;
 
     private RateLimitEnergyHandler(Function<IMekanismStrictEnergyHandler, IEnergyContainer> energyContainerProvider) {
         this.energyContainer = energyContainerProvider.apply(this);

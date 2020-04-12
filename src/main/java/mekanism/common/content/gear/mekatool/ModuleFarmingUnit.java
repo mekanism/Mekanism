@@ -62,9 +62,9 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
             //Fire a generic use event, if we are allowed to use the tool return zero otherwise return -1
             // This is to mirror how onHoeUse returns of 0 if allowed, -1 if not allowed, and 1 if processing happened in the event
             () -> tillAOE(context, ShovelItem.SHOVEL_LOOKUP, ctx -> onToolUse(ctx.getPlayer(), ctx.getHand(), ctx.getPos(), ctx.getFace()) ? 0 : -1,
-                  SoundEvents.ITEM_SHOVEL_FLATTEN, MekanismConfig.general.disassemblerEnergyUsageShovel.get()),
+                  SoundEvents.ITEM_SHOVEL_FLATTEN, MekanismConfig.gear.mekaToolEnergyUsageShovel.get()),
             //Finally as a hoe
-            () -> tillAOE(context, HoeItem.HOE_LOOKUP, ForgeEventFactory::onHoeUse, SoundEvents.ITEM_HOE_TILL, MekanismConfig.general.disassemblerEnergyUsageHoe.get())
+            () -> tillAOE(context, HoeItem.HOE_LOOKUP, ForgeEventFactory::onHoeUse, SoundEvents.ITEM_HOE_TILL, MekanismConfig.gear.mekaToolEnergyUsageHoe.get())
       );
     }
 
@@ -205,7 +205,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
             return ActionResultType.FAIL;
         }
         FloatingLong energy = energyContainer.getEnergy();
-        FloatingLong energyUsage = MekanismConfig.general.disassemblerEnergyUsageAxe.get();
+        FloatingLong energyUsage = MekanismConfig.gear.mekaToolEnergyUsageAxe.get();
         if (energy.smallerThan(energyUsage)) {
             //Fail if we don't have enough energy or using the item failed
             return ActionResultType.FAIL;

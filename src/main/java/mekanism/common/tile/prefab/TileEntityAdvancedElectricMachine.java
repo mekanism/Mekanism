@@ -14,6 +14,7 @@ import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
+import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
@@ -55,7 +56,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;
     protected final IInputHandler<@NonNull ItemStack> itemInputHandler;
-    protected final IInputHandler<@NonNull GasStack> gasInputHandler;
+    protected final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer;
     private InputInventorySlot inputSlot;

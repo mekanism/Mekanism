@@ -1,6 +1,7 @@
 package mekanism.common.recipe.bin;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.inventory.BinMekanismInventory;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import net.minecraft.inventory.CraftingInventory;
@@ -12,24 +13,24 @@ import net.minecraft.world.World;
 
 //Note: We don't bother checking anywhere to ensure the bin's item stack size is one, as we only allow bins
 // to be in stacks of one anyways. If this changes at some point, then we will need to adjust this recipe
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class BinRecipe extends SpecialRecipe {
 
     protected BinRecipe(ResourceLocation id) {
         super(id);
     }
 
-    protected static BinInventorySlot convertToSlot(@Nonnull ItemStack binStack) {
+    protected static BinInventorySlot convertToSlot(ItemStack binStack) {
         return BinMekanismInventory.create(binStack).getBinSlot();
     }
 
     @Override
-    public abstract boolean matches(@Nonnull CraftingInventory inv, @Nonnull World world);
+    public abstract boolean matches(CraftingInventory inv, World world);
 
-    @Nonnull
     @Override
-    public abstract ItemStack getCraftingResult(@Nonnull CraftingInventory inv);
+    public abstract ItemStack getCraftingResult(CraftingInventory inv);
 
-    @Nonnull
     @Override
     public abstract NonNullList<ItemStack> getRemainingItems(CraftingInventory inv);
 

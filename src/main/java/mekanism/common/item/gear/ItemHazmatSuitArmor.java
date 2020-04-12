@@ -6,12 +6,8 @@ import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemHazmatSuitArmor extends ArmorItem {
@@ -46,41 +42,16 @@ public class ItemHazmatSuitArmor extends ArmorItem {
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    protected static class HazmatMaterial implements IArmorMaterial {
+    protected static class HazmatMaterial extends BaseSpecialArmorMaterial {
+        @Override
+        public int getDamageReductionAmount(EquipmentSlotType slotType) { return 0; }
 
         @Override
-        public int getDurability(EquipmentSlotType slotType) {
-            return 0;
-        }
-
-        @Override
-        public int getDamageReductionAmount(EquipmentSlotType slotType) {
-            return 0;
-        }
-
-        @Override
-        public int getEnchantability() {
-            return 0;
-        }
-
-        @Override
-        public SoundEvent getSoundEvent() {
-            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
-        }
-
-        @Override
-        public Ingredient getRepairMaterial() {
-            return Ingredient.EMPTY;
-        }
+        public float getToughness() { return 0; }
 
         @Override
         public String getName() {
             return "hazmat";
-        }
-
-        @Override
-        public float getToughness() {
-            return 0;
         }
     }
 }

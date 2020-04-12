@@ -39,13 +39,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
 
-    private final int TRANSFER_RATE = 16;
-
     protected ItemGasArmor(IArmorMaterial material, EquipmentSlotType slot, Properties properties) {
         super(material, slot, properties.setNoRepair().maxStackSize(1));
     }
 
     protected abstract LongSupplier getMaxGas();
+
+    protected abstract LongSupplier getFillRate();
 
     protected abstract IGasProvider getGasType();
 
@@ -110,7 +110,7 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(TRANSFER_RATE, getMaxGas(),
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(getFillRate(), getMaxGas(),
               (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == getGasType().getGas()));
     }
 }

@@ -49,10 +49,10 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
 
     public enum ExcavationMode implements IDisableableEnum<ExcavationMode>, IHasTextComponent {
         OFF(0, () -> true),
-        SLOW(4, MekanismConfig.general.disassemblerSlowMode),
+        SLOW(4, MekanismConfig.gear.disassemblerSlowMode),
         NORMAL(16, () -> true),
         FAST(32, () -> true),
-        EXTREME(128, MekanismConfig.general.disassemblerFastMode);
+        EXTREME(128, MekanismConfig.gear.disassemblerFastMode);
 
         private static ExcavationMode[] MODES = values();
 
