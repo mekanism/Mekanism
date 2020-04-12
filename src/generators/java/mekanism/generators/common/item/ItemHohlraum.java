@@ -17,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsGases;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -31,9 +32,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemHohlraum extends Item {
-
-    private static final long MAX_GAS = 10;
-    private static final int TRANSFER_RATE = 1;
 
     public ItemHohlraum(Properties properties) {
         super(properties.maxStackSize(1));
@@ -86,13 +84,13 @@ public class ItemHohlraum extends Item {
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(GasUtils.getFilledVariant(new ItemStack(this), MAX_GAS, GeneratorsGases.FUSION_FUEL));
+            items.add(GasUtils.getFilledVariant(new ItemStack(this), MekanismGeneratorsConfig.generators.hohlraumMaxGas.get(), GeneratorsGases.FUSION_FUEL));
         }
     }
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(TRANSFER_RATE, () -> MAX_GAS, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi,
-              gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL)));
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(MekanismGeneratorsConfig.generators.hohlraumFillRate,
+              MekanismGeneratorsConfig.generators.hohlraumMaxGas, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL)));
     }
 }

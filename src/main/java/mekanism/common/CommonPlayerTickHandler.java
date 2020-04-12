@@ -192,7 +192,7 @@ public class CommonPlayerTickHandler {
         if (event.getSource() == DamageSource.FALL) {
             IEnergyContainer energyContainer = getFreeRunnerEnergyContainer(base);
             if (energyContainer != null) {
-                FloatingLong energyRequirement = MekanismConfig.general.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
+                FloatingLong energyRequirement = MekanismConfig.gear.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
                 FloatingLong simulatedExtract = energyContainer.extract(energyRequirement, Action.SIMULATE, AutomationType.MANUAL);
                 if (simulatedExtract.equals(energyRequirement)) {
                     //If we could fully negate the damage cancel the event
@@ -209,7 +209,7 @@ public class CommonPlayerTickHandler {
             //Free runner checks
             IEnergyContainer energyContainer = getFreeRunnerEnergyContainer(event.getEntityLiving());
             if (energyContainer != null) {
-                FloatingLong energyRequirement = MekanismConfig.general.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
+                FloatingLong energyRequirement = MekanismConfig.gear.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
                 FloatingLong extracted = energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
                 if (!extracted.isZero()) {
                     //If we managed to remove any power, then we want to lower (or negate) the amount of fall damage
@@ -218,7 +218,7 @@ public class CommonPlayerTickHandler {
                         //If we used all the power we required, then cancel the event
                         event.setCanceled(true);
                     } else {
-                        float newDamage = remainder.divide(MekanismConfig.general.freeRunnerFallEnergyCost.get()).floatValue();
+                        float newDamage = remainder.divide(MekanismConfig.gear.freeRunnerFallEnergyCost.get()).floatValue();
                         if (newDamage == 0) {
                             //If we ended up being close enough that it rounds down to zero, just cancel it anyways
                             event.setCanceled(true);

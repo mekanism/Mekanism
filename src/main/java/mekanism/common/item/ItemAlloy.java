@@ -30,7 +30,7 @@ public class ItemAlloy extends Item {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        if (player != null && MekanismConfig.general.allowTransmitterAlloyUpgrade.get()) {
+        if (player != null && MekanismConfig.general.transmitterAlloyUpgrade.get()) {
             World world = context.getWorld();
             BlockPos pos = context.getPos();
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);

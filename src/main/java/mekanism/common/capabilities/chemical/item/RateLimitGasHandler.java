@@ -26,7 +26,7 @@ import mekanism.common.tier.GasTankTier;
 @MethodsReturnNonnullByDefault
 public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
-    public static RateLimitGasHandler create(long rate, LongSupplier capacity) {
+    public static RateLimitGasHandler create(LongSupplier rate, LongSupplier capacity) {
         return create(rate, capacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, null);
     }
 
@@ -35,16 +35,14 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         return new RateLimitGasHandler(handler -> new GasTankRateLimitGasTank(tier, handler));
     }
 
-    public static RateLimitGasHandler create(long rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+    public static RateLimitGasHandler create(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid) {
         return create(rate, capacity, canExtract, canInsert, isValid, null);
     }
 
-    public static RateLimitGasHandler create(long rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+    public static RateLimitGasHandler create(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid, @Nullable ChemicalAttributeValidator attributeValidator) {
-        if (rate <= 0) {
-            throw new IllegalArgumentException("Rate must be greater than zero");
-        }
+        Objects.requireNonNull(rate, "Rate supplier cannot be null");
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
@@ -65,9 +63,9 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
     public static class RateLimitGasTank extends VariableCapacityGasTank {
 
-        private final long rate;
+        private final LongSupplier rate;
 
-        public RateLimitGasTank(long rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
+        public RateLimitGasTank(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid,
               @Nullable ChemicalAttributeValidator attributeValidator, IMekanismGasHandler gasHandler) {
             super(capacity, canExtract, canInsert, isValid, attributeValidator, gasHandler);
@@ -77,21 +75,19 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         @Override
         protected long getRate(@Nullable AutomationType automationType) {
             //Allow unknown or manual interaction to bypass rate limit for the item
-            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate;
+            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsLong();
         }
     }
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    private static class GasTankRateLimitGasTank extends VariableCapacityGasTank {
+    private static class GasTankRateLimitGasTank extends RateLimitGasTank {
 
-        private final LongSupplier rate;
         private final boolean isCreative;
 
         private GasTankRateLimitGasTank(GasTankTier tier, IMekanismGasHandler gasHandler) {
-            super(tier::getStorage, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, null, gasHandler);
+            super(tier::getOutput, tier::getStorage, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, null, gasHandler);
             isCreative = tier == GasTankTier.CREATIVE;
-            rate = tier::getOutput;
         }
 
         @Override
@@ -113,12 +109,6 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         @Override
         public long setStackSize(long amount, Action action) {
             return super.setStackSize(amount, action.combine(!isCreative));
-        }
-
-        @Override
-        protected long getRate(@Nullable AutomationType automationType) {
-            //Allow unknown or manual interaction to bypass rate limit for the item
-            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsLong();
         }
     }
 }

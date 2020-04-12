@@ -15,6 +15,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.client.render.item.ISTERProvider;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -28,11 +29,7 @@ import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,7 +37,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IModeItem {
 
-    public static final ScubaTankMaterial SCUBA_TANK_MATERIAL = new ScubaTankMaterial();
+    private static final ScubaTankMaterial SCUBA_TANK_MATERIAL = new ScubaTankMaterial();
 
     public ItemScubaTank(Properties properties) {
         super(SCUBA_TANK_MATERIAL, EquipmentSlotType.CHEST, properties.setISTER(ISTERProvider::scubaTank));
@@ -48,7 +45,12 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
 
     @Override
     protected LongSupplier getMaxGas() {
-        return MekanismConfig.general.maxScubaGas;
+        return MekanismConfig.gear.scubaMaxGas;
+    }
+
+    @Override
+    protected LongSupplier getFillRate() {
+        return MekanismConfig.gear.scubaFillRate;
     }
 
     @Override
@@ -121,12 +123,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    protected static class ScubaTankMaterial implements IArmorMaterial {
-
-        @Override
-        public int getDurability(EquipmentSlotType slotType) {
-            return 0;
-        }
+    protected static class ScubaTankMaterial extends BaseSpecialArmorMaterial {
 
         @Override
         public int getDamageReductionAmount(EquipmentSlotType slotType) {
@@ -134,23 +131,8 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
         }
 
         @Override
-        public int getEnchantability() {
-            return 0;
-        }
-
-        @Override
-        public SoundEvent getSoundEvent() {
-            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
-        }
-
-        @Override
-        public Ingredient getRepairMaterial() {
-            return Ingredient.EMPTY;
-        }
-
-        @Override
         public String getName() {
-            return "scuba_tank";
+            return Mekanism.MODID + ":scuba_tank";
         }
 
         @Override

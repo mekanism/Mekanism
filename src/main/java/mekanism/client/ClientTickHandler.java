@@ -96,7 +96,7 @@ public class ClientTickHandler {
     }
 
     public static void portableTeleport(PlayerEntity player, Hand hand, Frequency freq) {
-        int delay = MekanismConfig.general.portableTeleporterDelay.get();
+        int delay = MekanismConfig.gear.portableTeleporterDelay.get();
         if (delay == 0) {
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.TELEPORT, hand, freq));
         } else {

@@ -7,17 +7,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.FreeRunnerArmor;
 import mekanism.client.render.item.ISTERProvider;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.IModeItem;
 import mekanism.common.util.ItemDataUtils;
@@ -27,14 +28,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,12 +40,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUDProvider, IModeItem {
 
-    public static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
-
-    /**
-     * The maximum amount of energy this item can hold.
-     */
-    private static FloatingLong MAX_ENERGY = FloatingLong.createConst(64_000);//TODO: Move this to a config?
+    private static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
 
     public ItemFreeRunners(Properties properties) {
         super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, properties.setNoRepair().setISTER(ISTERProvider::freeRunners));
@@ -77,7 +69,7 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MAX_ENERGY));
+            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.freeRunnerMaxEnergy.get()));
         }
     }
 
@@ -93,7 +85,8 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> MAX_ENERGY, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
+        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy,
+              BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
     }
 
     public FreeRunnerMode getMode(ItemStack itemStack) {
@@ -168,12 +161,7 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    protected static class FreeRunnerMaterial implements IArmorMaterial {
-
-        @Override
-        public int getDurability(EquipmentSlotType slotType) {
-            return 0;
-        }
+    protected static class FreeRunnerMaterial extends BaseSpecialArmorMaterial {
 
         @Override
         public int getDamageReductionAmount(EquipmentSlotType slotType) {
@@ -181,23 +169,8 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
         }
 
         @Override
-        public int getEnchantability() {
-            return 0;
-        }
-
-        @Override
-        public SoundEvent getSoundEvent() {
-            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
-        }
-
-        @Override
-        public Ingredient getRepairMaterial() {
-            return Ingredient.EMPTY;
-        }
-
-        @Override
         public String getName() {
-            return "free_runners";
+            return Mekanism.MODID + ":free_runners";
         }
 
         @Override

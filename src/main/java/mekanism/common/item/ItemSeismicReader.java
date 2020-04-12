@@ -10,6 +10,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
@@ -28,11 +29,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemSeismicReader extends ItemEnergized {
 
-    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(12_000);//TODO: Config
-    private static final FloatingLong ENERGY_USAGE = FloatingLong.createConst(250);
-
     public ItemSeismicReader(Properties properties) {
-        super(MAX_ENERGY, properties);
+        super(MekanismConfig.gear.seismicReaderChargeRate, MekanismConfig.gear.seismicReaderMaxEnergy, properties);
     }
 
     @Override
@@ -59,11 +57,12 @@ public class ItemSeismicReader extends ItemEnergized {
         } else {
             if (!player.isCreative()) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                if (energyContainer == null || energyContainer.extract(ENERGY_USAGE, Action.SIMULATE, AutomationType.MANUAL).smallerThan(ENERGY_USAGE)) {
+                FloatingLong energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
+                if (energyContainer == null || energyContainer.extract(energyUsage, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyUsage)) {
                     player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NEEDS_ENERGY.translateColored(EnumColor.RED)));
                     return new ActionResult<>(ActionResultType.SUCCESS, stack);
                 }
-                energyContainer.extract(ENERGY_USAGE, Action.EXECUTE, AutomationType.MANUAL);
+                energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);
             }
             NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new SeismicReaderContainer(i, inv, hand, stack)), buf -> {
                 buf.writeEnumValue(hand);

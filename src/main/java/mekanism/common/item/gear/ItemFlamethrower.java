@@ -46,8 +46,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeItem {
 
-    private final int TRANSFER_RATE = 16;
-
     public ItemFlamethrower(Properties properties) {
         super(properties.maxStackSize(1).setNoRepair().setISTER(ISTERProvider::flamethrower));
     }
@@ -96,7 +94,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(GasUtils.getFilledVariant(new ItemStack(this), MekanismConfig.general.maxFlamethrowerGas.get(), MekanismGases.HYDROGEN));
+            items.add(GasUtils.getFilledVariant(new ItemStack(this), MekanismConfig.gear.flamethrowerMaxGas.get(), MekanismGases.HYDROGEN));
         }
     }
 
@@ -110,7 +108,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(TRANSFER_RATE, MekanismConfig.general.maxFlamethrowerGas,
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerMaxGas,
               (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getGas()));
     }
 

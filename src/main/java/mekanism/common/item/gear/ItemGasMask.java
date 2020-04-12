@@ -6,20 +6,17 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.GasMaskArmor;
 import mekanism.client.render.item.ISTERProvider;
+import mekanism.common.Mekanism;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemGasMask extends ArmorItem implements ISpecialGear {
 
-    public static final GasMaskMaterial GAS_MASK_MATERIAL = new GasMaskMaterial();
+    private static final GasMaskMaterial GAS_MASK_MATERIAL = new GasMaskMaterial();
 
     public ItemGasMask(Properties properties) {
         super(GAS_MASK_MATERIAL, EquipmentSlotType.HEAD, properties.setNoRepair().setISTER(ISTERProvider::gasMask));
@@ -39,12 +36,7 @@ public class ItemGasMask extends ArmorItem implements ISpecialGear {
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    protected static class GasMaskMaterial implements IArmorMaterial {
-
-        @Override
-        public int getDurability(EquipmentSlotType slotType) {
-            return 0;
-        }
+    protected static class GasMaskMaterial extends BaseSpecialArmorMaterial {
 
         @Override
         public int getDamageReductionAmount(EquipmentSlotType slotType) {
@@ -52,23 +44,8 @@ public class ItemGasMask extends ArmorItem implements ISpecialGear {
         }
 
         @Override
-        public int getEnchantability() {
-            return 0;
-        }
-
-        @Override
-        public SoundEvent getSoundEvent() {
-            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
-        }
-
-        @Override
-        public Ingredient getRepairMaterial() {
-            return Ingredient.EMPTY;
-        }
-
-        @Override
         public String getName() {
-            return "gas_mask";
+            return Mekanism.MODID + ":gas_mask";
         }
 
         @Override
