@@ -22,6 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -29,6 +30,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.EntityPredicates;
@@ -130,7 +132,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                 }
             }
             if (!entity.getEntity().isImmuneToFire()) {
-                if (entity.getEntity() instanceof ItemEntity && mode != ItemFlamethrower.FlamethrowerMode.COMBAT) {
+                if (entity.getEntity() instanceof ItemEntity && mode == FlamethrowerMode.HEAT) {
                     if (entity.getEntity().ticksExisted > 100 && !smeltItem((ItemEntity) entity.getEntity())) {
                         burn(entity.getEntity());
                     }
@@ -144,20 +146,22 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
             Direction hitSide = blockRayTrace.getFace();
             boolean fluid = MekanismUtils.isFluid(world, hitPos) || MekanismUtils.isDeadFluid(world, hitPos);
             if (!world.isRemote && MekanismConfig.general.aestheticWorldDamage.get() && !fluid) {
-                if (mode != FlamethrowerMode.COMBAT && !smeltBlock(hitPos)) {
+                if (mode == FlamethrowerMode.HEAT) {
+                    smeltBlock(hitPos);
+                } else if (mode == FlamethrowerMode.INFERNO) {
                     BlockState hitState = world.getBlockState(hitPos);
-                    if (hitState.isFlammable(world, hitPos, hitSide)) {
-                        //Attempt to light the block on fire if it is flammable
-                        PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
+                    BlockPos sidePos = hitPos.offset(hitSide);
+                    BlockState sideState = world.getBlockState(sidePos);
+                    PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
+
+                    if (FlintAndSteelItem.canSetFire(sideState, world, sidePos)) {
+                        world.setBlockState(sidePos, Blocks.FIRE.getDefaultState());
+                    } else if (FlintAndSteelItem.isUnlitCampfire(hitState)) {
+                        world.setBlockState(hitPos, hitState.with(BlockStateProperties.LIT, Boolean.valueOf(true)));
+                    } else if (hitState.isFlammable(world, hitPos, hitSide)) {
                         hitState.catchFire(world, hitPos, hitSide, shooter);
                         if (hitState.getBlock() instanceof TNTBlock) {
                             world.removeBlock(hitPos, false);
-                        }
-                    } else {
-                        BlockPos sidePos = hitPos.offset(hitSide);
-                        if (mode == FlamethrowerMode.INFERNO && MekanismUtils.isValidReplaceableBlock(world, sidePos)) {
-                            //Otherwise light a fire next to the block
-                            world.setBlockState(sidePos, Blocks.FIRE.getDefaultState());
                         }
                     }
                 }
