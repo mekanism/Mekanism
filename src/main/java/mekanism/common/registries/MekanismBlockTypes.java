@@ -291,6 +291,7 @@ public class MekanismBlockTypes {
           .without(AttributeParticleFX.class)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
           .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
+          .with(new AttributeCustomSelectionBox())
           .build();
     // Teleporter
     public static final Machine<TileEntityTeleporter> TELEPORTER = MachineBuilder
@@ -344,6 +345,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.seismicVibrator, MekanismConfig.storage.seismicVibrator)
           .without(AttributeComparator.class, AttributeParticleFX.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.SEISMIC_VIBRATOR)
+          .with(new AttributeCustomSelectionBox())
           .build();
     // Personal Chest
     public static final BlockTypeTile<TileEntityPersonalChest> PERSONAL_CHEST = BlockTileBuilder
@@ -396,6 +398,7 @@ public class MekanismBlockTypes {
           .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new SecurityDeskContainer(i, inv, (TileEntitySecurityDesk) tile)))
           .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
           .withCustomShape(BlockShapes.SECURITY_DESK)
+          .with(new AttributeCustomSelectionBox())
           .build();
 
     // Dynamic Tank

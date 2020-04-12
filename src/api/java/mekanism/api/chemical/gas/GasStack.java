@@ -96,15 +96,8 @@ public class GasStack extends ChemicalStack<Gas> {
      *
      * This is included for use in data structures.
      */
-    //TODO: Is this a problem that it does not check size
     @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (o instanceof GasStack) {
-            return isTypeEqual((GasStack) o);
-        }
-        return false;
+        return o instanceof GasStack && isTypeEqual((GasStack) o);
     }
 }

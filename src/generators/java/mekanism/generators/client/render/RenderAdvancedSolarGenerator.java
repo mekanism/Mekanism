@@ -15,7 +15,7 @@ import net.minecraft.profiler.IProfiler;
 @ParametersAreNonnullByDefault
 public class RenderAdvancedSolarGenerator extends MekanismTileEntityRenderer<TileEntityAdvancedSolarGenerator> {
 
-    private static final ModelAdvancedSolarGenerator model = new ModelAdvancedSolarGenerator();
+    private final ModelAdvancedSolarGenerator model = new ModelAdvancedSolarGenerator();
 
     public RenderAdvancedSolarGenerator(TileEntityRendererDispatcher renderer) {
         super(renderer);

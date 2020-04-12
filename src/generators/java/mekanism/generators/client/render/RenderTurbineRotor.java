@@ -19,7 +19,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
 
     public static RenderTurbineRotor INSTANCE;
     private static final float BASE_SPEED = 512F;
-    public ModelTurbine model = new ModelTurbine();
+    public final ModelTurbine model = new ModelTurbine();
 
     public RenderTurbineRotor(TileEntityRendererDispatcher renderer) {
         super(renderer);

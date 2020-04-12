@@ -14,7 +14,7 @@ import net.minecraft.profiler.IProfiler;
 @ParametersAreNonnullByDefault
 public class RenderResistiveHeater extends MekanismTileEntityRenderer<TileEntityResistiveHeater> {
 
-    private ModelResistiveHeater model = new ModelResistiveHeater();
+    private final ModelResistiveHeater model = new ModelResistiveHeater();
 
     public RenderResistiveHeater(TileEntityRendererDispatcher renderer) {
         super(renderer);
