@@ -65,22 +65,22 @@ class FloatingLongTest {
     @Test
     @DisplayName("Test basic division")
     void testBasicDivision() {
-        FloatingLong a = FloatingLong.create(6, (short) 1000);
-        FloatingLong b = FloatingLong.create(3, (short) 1000);
-        Assertions.assertEquals(FloatingLong.create((double)1.9677), a.divide(b));
+        FloatingLong a = FloatingLong.create(6, (short) 1_000);
+        FloatingLong b = FloatingLong.create(3, (short) 1_000);
+        Assertions.assertEquals(FloatingLong.create(1.9677), a.divide(b));
     }
 
     @Test
     @DisplayName("Test division with a very large numerator")
     void testDivisionLargeNumerator() {
-        FloatingLong a = FloatingLong.create(Long.MAX_VALUE, (short) 0);
-        FloatingLong b = FloatingLong.create((long) 7 * 7 * 73 * 127 * 92737, (short) 0);
+        FloatingLong a = FloatingLong.create(Long.MAX_VALUE);
+        FloatingLong b = FloatingLong.create((long) 7 * 7 * 73 * 127 * 92737);
         Assertions.assertEquals(FloatingLong.create((long) 649657 * 337), a.divide(b));
     }
 
     @Test
     @DisplayName("Test to string as two decimals")
     void testConvertingStringToDecimal() {
-        Assertions.assertEquals("0.00",  FloatingLong.create(0, (short) 1).toString(2));
+        Assertions.assertEquals("0.00", FloatingLong.create(0, (short) 1).toString(2));
     }
 }

@@ -16,7 +16,7 @@ public interface IHeatHandler {
 
     /**
      * Returns the temperature of a given capacitor.
-
+     *
      * @param capacitor Capacitor to query.
      *
      * @return Temperature of a given capacitor.
@@ -37,7 +37,7 @@ public interface IHeatHandler {
 
     /**
      * Returns the heat capacity of a given capacitor. This number can be thought of as the specific heat of the capacitor.
-
+     *
      * @param capacitor Capacitor to query.
      *
      * @return Heat capacity of a given capacitor.
@@ -50,7 +50,7 @@ public interface IHeatHandler {
      * Handles transferring a heat amount to the given capacitor.
      *
      * @param capacitor Capacitor to target
-     * @param transfer The amount of heat being transferred.
+     * @param transfer  The amount of heat being transferred.
      */
     void handleHeat(int capacitor, double transfer);
 
@@ -77,7 +77,7 @@ public interface IHeatHandler {
      *
      * @return The total inverse conduction coefficient across all capacitors in this handler.
      *
-     * @apiNote Must be greater than {@link double#ZERO}, and the returned {@link double} can be safely modified afterwards.
+     * @apiNote Must be greater than {@code 0}.
      */
     default double getTotalInverseConduction() {
         int heatCapacitorCount = getHeatCapacitorCount();

@@ -1,6 +1,7 @@
 package mekanism.common.recipe.bin;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
@@ -12,6 +13,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class BinExtractRecipe extends BinRecipe {
 
     public BinExtractRecipe(ResourceLocation id) {
@@ -19,7 +22,7 @@ public class BinExtractRecipe extends BinRecipe {
     }
 
     @Override
-    public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World world) {
+    public boolean matches(CraftingInventory inv, World world) {
         ItemStack binStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getSizeInventory(); ++i) {
             ItemStack stackInSlot = inv.getStackInSlot(i);
@@ -44,9 +47,8 @@ public class BinExtractRecipe extends BinRecipe {
         return !convertToSlot(binStack).isEmpty();
     }
 
-    @Nonnull
     @Override
-    public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
+    public ItemStack getCraftingResult(CraftingInventory inv) {
         ItemStack binStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getSizeInventory(); ++i) {
             ItemStack stackInSlot = inv.getStackInSlot(i);
@@ -71,7 +73,6 @@ public class BinExtractRecipe extends BinRecipe {
         return convertToSlot(binStack).getBottomStack();
     }
 
-    @Nonnull
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
         NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
@@ -95,7 +96,6 @@ public class BinExtractRecipe extends BinRecipe {
         return remaining;
     }
 
-    @Nonnull
     @Override
     public IRecipeSerializer<?> getSerializer() {
         return MekanismRecipeSerializers.BIN_EXTRACT.getRecipeSerializer();
