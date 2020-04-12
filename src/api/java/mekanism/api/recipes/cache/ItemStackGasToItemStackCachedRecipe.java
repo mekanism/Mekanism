@@ -5,9 +5,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
+import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.item.ItemStack;
 
@@ -17,11 +17,11 @@ public class ItemStackGasToItemStackCachedRecipe extends CachedRecipe<ItemStackG
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
-    private final IInputHandler<@NonNull GasStack> gasInputHandler;
+    private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
     private final LongSupplier gasUsage;
 
     public ItemStackGasToItemStackCachedRecipe(ItemStackGasToItemStackRecipe recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
-          IInputHandler<@NonNull GasStack> gasInputHandler, LongSupplier gasUsage, IOutputHandler<@NonNull ItemStack> outputHandler) {
+          ILongInputHandler<@NonNull GasStack> gasInputHandler, LongSupplier gasUsage, IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
         this.itemInputHandler = itemInputHandler;
         this.gasInputHandler = gasInputHandler;
@@ -29,9 +29,8 @@ public class ItemStackGasToItemStackCachedRecipe extends CachedRecipe<ItemStackG
         this.outputHandler = outputHandler;
     }
 
-    private int getGasUsage() {
-        //TODO: Convert this more properly to being a long
-        return MathUtils.clampToInt(gasUsage.getAsLong());
+    private long getGasUsage() {
+        return gasUsage.getAsLong();
     }
 
     @Override

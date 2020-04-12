@@ -14,7 +14,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
-import mekanism.api.recipes.inputs.IInputHandler;
+import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ITileComponent;
@@ -38,7 +38,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 //Compressing, injecting, purifying
 public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IMekanismGasHandler, IHasDumpButton {
 
-    private final IInputHandler<@NonNull GasStack> gasInputHandler;
+    private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
     /**
      * How much secondary energy each operation consumes per tick
