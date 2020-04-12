@@ -1,42 +1,26 @@
 {
-    "ctm":{
-        "ctm_version": 1,
-        "type":"CTM",
-        "layer":"SOLID",
-        "textures":[
-            "mekanismgenerators:block/reactor_logic_adapter-ctm"
-        ],
-        "extra": {
-            "connect_to": [
-                {
-                    "block": "mekanismgenerators:reactor",
-                    "predicate":
-                    {
-                        "type": "reactor_frame"
-                    }
-                },
-                {
-                    "block": "mekanismgenerators:reactor",
-                    "predicate":
-                    {
-                        "type": "reactor_controller"
-                    }
-                },
-                {
-                    "block": "mekanismgenerators:reactor",
-                    "predicate":
-                    {
-                        "type": "reactor_logic_adapter"
-                    }
-                },
-                {
-                    "block": "mekanismgenerators:reactor",
-                    "predicate":
-                    {
-                        "type": "reactor_port"
-                    }
-                }
-            ]
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "SOLID",
+    "textures": [
+      "mekanismgenerators:block/reactor_logic_adapter-ctm"
+    ],
+    "extra": {
+      "connect_to": [
+        {
+          "block": "mekanismgenerators:reactor_frame"
+        },
+        {
+          "block": "mekanismgenerators:reactor_controller"
+        },
+        {
+          "block": "mekanismgenerators:reactor_logic_adapter"
+        },
+        {
+          "block": "mekanismgenerators:reactor_port"
         }
+      ]
     }
+  }
 }

@@ -1,28 +1,20 @@
 {
-    "ctm":{
-        "ctm_version": 1,
-        "type":"CTM",
-        "layer":"SOLID",
-        "textures":[
-            "mekanism:block/induction_port-ctm"
-        ],
-        "extra": {
-            "connect_to": [
-                {
-                    "block": "mekanism:basicblock2",
-                    "predicate":
-                    {
-                        "type": "induction_casing"
-                    }
-                },
-                {
-                    "block": "mekanism:basicblock2",
-                    "predicate":
-                    {
-                        "type": "induction_port"
-                    }
-                }
-            ]
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "SOLID",
+    "textures": [
+      "mekanism:block/induction_port-ctm"
+    ],
+    "extra": {
+      "connect_to": [
+        {
+          "block": "mekanism:induction_casing"
+        },
+        {
+          "block": "mekanism:induction_port"
         }
+      ]
     }
+  }
 }
