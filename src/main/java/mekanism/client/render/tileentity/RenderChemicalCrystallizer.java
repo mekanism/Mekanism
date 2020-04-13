@@ -14,7 +14,7 @@ import net.minecraft.profiler.IProfiler;
 @ParametersAreNonnullByDefault
 public class RenderChemicalCrystallizer extends MekanismTileEntityRenderer<TileEntityChemicalCrystallizer> {
 
-    private ModelChemicalCrystallizer model = new ModelChemicalCrystallizer();
+    private final ModelChemicalCrystallizer model = new ModelChemicalCrystallizer();
 
     public RenderChemicalCrystallizer(TileEntityRendererDispatcher renderer) {
         super(renderer);

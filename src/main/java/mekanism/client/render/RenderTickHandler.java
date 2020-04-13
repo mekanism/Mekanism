@@ -10,7 +10,6 @@ import java.util.Random;
 import java.util.UUID;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.api.Pos3D;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
@@ -20,6 +19,7 @@ import mekanism.client.MekanismClient;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
@@ -51,8 +51,9 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -66,8 +67,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawHighlightEvent;
@@ -295,6 +294,8 @@ public class RenderTickHandler {
             MatrixStack matrix = event.getMatrix();
             IProfiler profiler = world.getProfiler();
             BlockState blockState = world.getBlockState(pos);
+            boolean shouldCancel = false;
+            profiler.startSection(ProfilerConstants.MEKANISM_OUTLINE);
             if (!blockState.isAir(world, pos) && world.getWorldBorder().contains(pos)) {
                 BlockPos actualPos = pos;
                 BlockState actualState = blockState;
@@ -306,24 +307,30 @@ public class RenderTickHandler {
                     }
                 }
                 if (Attribute.has(actualState.getBlock(), AttributeCustomSelectionBox.class)) {
-                    profiler.startSection(ProfilerConstants.MEKANISM_OUTLINE);
-                    matrix.push();
-                    Vec3d viewPosition = info.getProjectedView();
-                    matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
-                    drawWireFrame(matrix, renderer.getBuffer(RenderType.getLines()), actualState.getShape(world, actualPos, ISelectionContext.forEntity(player)),
-                          0, 0, 0, 0.4F);
-                    matrix.pop();
-                    event.setCanceled(true);
-                    profiler.endSection();
-                    return;
+                    TileEntity tile = MekanismUtils.getTileEntity(world, actualPos);
+                    if (tile != null) {
+                        TileEntityRenderer<TileEntity> tileRenderer = TileEntityRendererDispatcher.instance.getRenderer(tile);
+                        if (tileRenderer instanceof IWireFrameRenderer) {
+                            matrix.push();
+                            Vec3d viewPosition = info.getProjectedView();
+                            matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
+                            ((IWireFrameRenderer) tileRenderer).renderWireFrame(tile, event.getPartialTicks(), matrix, renderer.getBuffer(RenderType.getLines()), 0, 0, 0, 0.4F);
+                            matrix.pop();
+                            shouldCancel = true;
+                        }
+                    }
                 }
             }
+            profiler.endSection();
 
             ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
             if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
                 //If we are not holding a configurator, look if we are in the offhand
                 stack = player.getHeldItem(Hand.OFF_HAND);
                 if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
+                    if (shouldCancel) {
+                        event.setCanceled(true);
+                    }
                     return;
                 }
             }
@@ -350,6 +357,9 @@ public class RenderTickHandler {
                 }
             }
             profiler.endSection();
+            if (shouldCancel) {
+                event.setCanceled(true);
+            }
         }
     }
 
@@ -438,42 +448,5 @@ public class RenderTickHandler {
                 break;
         }
         return toReturn;
-    }
-
-    private void drawWireFrame(MatrixStack matrix, IVertexBuilder builder, VoxelShape shape, float red, float green, float blue, float alpha) {
-        matrix.push();
-        Matrix4f matrix4f = matrix.getLast().getMatrix();
-        shape.forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> {
-            float bMinX = (float) minX;
-            float bMinY = (float) minY;
-            float bMinZ = (float) minZ;
-            float bMaxX = (float) maxX;
-            float bMaxY = (float) maxY;
-            float bMaxZ = (float) maxZ;
-            builder.pos(matrix4f, bMinX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMinX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMinX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMinX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMinX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMinX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMinX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMinX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMinX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMinX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMinY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMaxY, bMinZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMinX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMinX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMinY, bMaxZ).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, bMaxX, bMaxY, bMaxZ).color(red, green, blue, alpha).endVertex();
-        });
     }
 }

@@ -14,7 +14,7 @@ import net.minecraft.profiler.IProfiler;
 @ParametersAreNonnullByDefault
 public class RenderQuantumEntangloporter extends MekanismTileEntityRenderer<TileEntityQuantumEntangloporter> {
 
-    private ModelQuantumEntangloporter model = new ModelQuantumEntangloporter();
+    private final ModelQuantumEntangloporter model = new ModelQuantumEntangloporter();
 
     public RenderQuantumEntangloporter(TileEntityRendererDispatcher renderer) {
         super(renderer);

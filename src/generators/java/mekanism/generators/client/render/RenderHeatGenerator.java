@@ -15,7 +15,7 @@ import net.minecraft.profiler.IProfiler;
 @ParametersAreNonnullByDefault
 public class RenderHeatGenerator extends MekanismTileEntityRenderer<TileEntityHeatGenerator> {
 
-    private static final ModelHeatGenerator model = new ModelHeatGenerator();
+    private final ModelHeatGenerator model = new ModelHeatGenerator();
 
     public RenderHeatGenerator(TileEntityRendererDispatcher renderer) {
         super(renderer);

@@ -20,7 +20,7 @@ import net.minecraft.profiler.IProfiler;
 public class RenderReactor extends MekanismTileEntityRenderer<TileEntityReactorController> {
 
     private static final double SCALE = 100_000_000;
-    private ModelEnergyCore core = new ModelEnergyCore();
+    private final ModelEnergyCore core = new ModelEnergyCore();
 
     public RenderReactor(TileEntityRendererDispatcher renderer) {
         super(renderer);

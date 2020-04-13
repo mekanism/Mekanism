@@ -27,7 +27,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
 
     private static final Map<Direction, Int2ObjectMap<Model3D>> energyDisplays = new EnumMap<>(Direction.class);
     private static final int stages = 40;
-    private ModelBioGenerator model = new ModelBioGenerator();
+    private final ModelBioGenerator model = new ModelBioGenerator();
 
     public static void resetCachedModels() {
         energyDisplays.clear();

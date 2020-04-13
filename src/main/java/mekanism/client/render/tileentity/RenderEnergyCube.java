@@ -18,8 +18,8 @@ import net.minecraft.profiler.IProfiler;
 public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnergyCube> {
 
     public static final Vector3f coreVec = new Vector3f(0.0F, MekanismUtils.ONE_OVER_ROOT_TWO, MekanismUtils.ONE_OVER_ROOT_TWO);
-    private ModelEnergyCube model = new ModelEnergyCube();
-    private ModelEnergyCore core = new ModelEnergyCore();
+    private final ModelEnergyCube model = new ModelEnergyCube();
+    private final ModelEnergyCore core = new ModelEnergyCore();
 
     public RenderEnergyCube(TileEntityRendererDispatcher renderer) {
         super(renderer);

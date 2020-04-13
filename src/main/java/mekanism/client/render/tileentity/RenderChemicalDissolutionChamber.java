@@ -14,7 +14,7 @@ import net.minecraft.profiler.IProfiler;
 @ParametersAreNonnullByDefault
 public class RenderChemicalDissolutionChamber extends MekanismTileEntityRenderer<TileEntityChemicalDissolutionChamber> {
 
-    private ModelChemicalDissolutionChamber model = new ModelChemicalDissolutionChamber();
+    private final ModelChemicalDissolutionChamber model = new ModelChemicalDissolutionChamber();
 
     public RenderChemicalDissolutionChamber(TileEntityRendererDispatcher renderer) {
         super(renderer);
