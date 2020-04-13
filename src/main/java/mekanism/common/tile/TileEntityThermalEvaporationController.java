@@ -1,17 +1,16 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.FluidToFluidCachedRecipe;
@@ -241,7 +240,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                   // amount
                   if (active) {
                       if (tempMultiplier > 0 && tempMultiplier < 1) {
-                          lastGain = 1F / (int) Math.ceil(FloatingLong.ONE.divide(tempMultiplier).doubleValue());
+                          lastGain = 1F / (int) Math.ceil(1 / tempMultiplier);
                       } else {
                           lastGain = tempMultiplier;
                       }
@@ -249,8 +248,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                       lastGain = 0;
                   }
               })
-              .setRequiredTicks(() -> tempMultiplier > 0 && tempMultiplier < 1 ?
-                    (int) Math.ceil(FloatingLong.ONE.divide(tempMultiplier).doubleValue()) : 1)
+              .setRequiredTicks(() -> tempMultiplier > 0 && tempMultiplier < 1 ? (int) Math.ceil(1 / tempMultiplier) : 1)
               .setPostProcessOperations(currentMax -> {
                   if (currentMax <= 0) {
                       //Short circuit that if we already can't perform any outputs, just return
