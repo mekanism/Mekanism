@@ -1,0 +1,14 @@
+files:
+  - source: /src/datagen/generated/mekanism/assets/mekanism/lang/en_us.json
+    translation: /src/main/resources/assets/mekanism/lang/%locale_with_underscore%.json
+  - source: >-
+      /src/datagen/generated/mekanismadditions/assets/mekanismadditions/lang/en_us.json
+    translation: >-
+      /src/additions/resources/assets/mekanismadditions/lang/%locale_with_underscore%.json
+  - source: >-
+      /src/datagen/generated/mekanismgenerators/assets/mekanismgenerators/lang/en_us.json
+    translation: >-
+      /src/generators/resources/assets/mekanismgenerators/lang/%locale_with_underscore%,json
+  - source: /src/datagen/generated/mekanismtools/assets/mekanismtools/lang/en_us.json
+    translation: >-
+      /src/tools/resources/assets/mekanismtools/lang/%locale_with_underscore%.json
