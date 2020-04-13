@@ -74,7 +74,7 @@
   "reactor.mekanismgenerators.fuel.injection_rate": "合成レート: %s",
   "reactor.mekanismgenerators.heat": "熱",
   "reactor.mekanismgenerators.heat.case": "Case: %s",
-  "reactor.mekanismgenerators.heat.plasma": "Plasma: %s",
+  "reactor.mekanismgenerators.heat.plasma": "プラズマ: %s",
   "reactor.mekanismgenerators.logic.active_cooling": "冷却尺度",
   "reactor.mekanismgenerators.logic.capacity": "熱が飽和した時",
   "reactor.mekanismgenerators.logic.depleted": "燃料不足時",
