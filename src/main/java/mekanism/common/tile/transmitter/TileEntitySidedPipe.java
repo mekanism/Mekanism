@@ -42,16 +42,14 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntitySidedPipe extends TileEntityUpdateable implements IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
-
-    public int delayTicks;
 
     public byte currentAcceptorConnections = 0x00;
     public byte currentTransmitterConnections = 0x00;
@@ -193,17 +191,22 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
 
     public abstract boolean isValidTransmitter(TileEntity tile);
 
-    public List<AxisAlignedBB> getCollisionBoxes() {
-        List<AxisAlignedBB> list = new ArrayList<>();
+    public List<VoxelShape> getCollisionBoxes() {
+        List<VoxelShape> list = new ArrayList<>();
         byte connections = getAllCurrentConnections();
-        AxisAlignedBB[] sides = getTransmitterType().getSize() == Size.SMALL ? BlockSmallTransmitter.smallSides : BlockLargeTransmitter.largeSides;
+        boolean isSmall = getTransmitterType().getSize() == Size.SMALL;
         for (Direction side : EnumUtils.DIRECTIONS) {
-            if (connectionMapContainsSide(connections, side)) {
-                list.add(sides[side.ordinal()]);
+            ConnectionType connectionType = getConnectionType(side, connections, currentTransmitterConnections, connectionTypes);
+            if (connectionType != ConnectionType.NONE) {
+                if (isSmall) {
+                    list.add(BlockSmallTransmitter.getSideForType(connectionType, side));
+                } else {
+                    list.add(BlockLargeTransmitter.getSideForType(connectionType, side));
+                }
             }
         }
         //Center position
-        list.add(sides[6]);
+        list.add(isSmall ? BlockSmallTransmitter.center : BlockLargeTransmitter.center);
         return list;
     }
 

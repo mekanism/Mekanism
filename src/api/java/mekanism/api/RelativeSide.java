@@ -70,7 +70,6 @@ public enum RelativeSide {
      * @apiNote The calculations for what side is what when facing upwards or downwards, is done as if it was facing NORTH and rotated around the X-axis
      */
     public static RelativeSide fromDirections(@Nonnull Direction facing, @Nonnull Direction side) {
-        //TODO: See if this if statement block can be cleaned up given it looks somewhat messy
         if (side == facing) {
             return FRONT;
         } else if (side == facing.getOpposite()) {

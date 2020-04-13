@@ -62,7 +62,6 @@ public class TransmitterModelData implements IModelData {
         return direction;
     }
 
-    //TODO: Re-evaluate, currently used as a marker type
     public static class Diversion extends TransmitterModelData {
 
     }

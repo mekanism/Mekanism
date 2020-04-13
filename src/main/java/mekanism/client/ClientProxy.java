@@ -76,7 +76,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public boolean isPaused() {
         if (Minecraft.getInstance().isSingleplayer() && !Minecraft.getInstance().getIntegratedServer().getPublic()) {
-            //TODO: Make sure that gui's that pause game react to this properly
             return Minecraft.getInstance().isGamePaused();
         }
         return false;

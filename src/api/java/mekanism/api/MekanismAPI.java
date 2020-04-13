@@ -19,12 +19,10 @@ import org.apache.logging.log4j.Logger;
 @Mod.EventBusSubscriber(modid = MekanismAPI.MEKANISM_MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismAPI {
 
-    //TODO: Add back support for the other mods API as needed, ideally would be through gradle
-
     /**
      * The version of the api classes - may not always match the mod's version
      */
-    public static final String API_VERSION = "9.8.1";
+    public static final String API_VERSION = "9.10.0";
     public static final String MEKANISM_MODID = "mekanism";
 
     public static Logger logger = LogManager.getLogger(MEKANISM_MODID + "_api");

@@ -45,10 +45,9 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
             int elementCount = buffer.readVarInt();
             Builder<T> builder = Builder.create();
             for (int j = 0; j < elementCount; ++j) {
-                T value = this.registry.getValue(buffer.readResourceLocation());
+                T value = registry.getValue(buffer.readResourceLocation());
                 if (value != null) {
                     //Should never be null anyways
-                    //TODO: Should we throw a warning when it is
                     builder.add(value);
                 }
             }

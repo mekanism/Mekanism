@@ -5,8 +5,6 @@ import net.minecraftforge.client.model.data.ModelProperty;
 
 public class ModelProperties {
 
-    //TODO: Limit the different options that it can be?
-    // At the very least use this in the logistical transporters
     public static final ModelProperty<Boolean> COLOR = new ModelProperty<>();
 
     public static final ModelProperty<ConnectionType> DOWN_CONNECTION = new ModelProperty<>();

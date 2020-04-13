@@ -68,13 +68,11 @@ public class MekanismKeyHandler extends MekKeyHandler {
         } else if (kb == armorModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.CHEST)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.CHEST, player.isShiftKeyDown()));
-                //TODO: Decide if we want to do the sound on the server side (it wouldn't obey the client base volume then)
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         } else if (kb == freeRunnerModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.FEET)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.FEET, player.isShiftKeyDown()));
-                //TODO: Decide if we want to do the sound on the server side (it wouldn't obey the client base volume then)
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         }

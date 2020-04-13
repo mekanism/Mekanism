@@ -104,7 +104,6 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                             inv.set(i, remain);
                             bin.addTicks = 5;
                         }
-                        //TODO: Is this needed? Maybe it just updates the hotbar and stuff in which case it is needed
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     }
                 }
