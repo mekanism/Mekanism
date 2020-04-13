@@ -10,6 +10,7 @@ import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -44,7 +45,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
             } else {
                 //Otherwise shrink the size of the stack by one
                 if (shrinkStack(1, Action.EXECUTE) != 1) {
-                    //TODO: Print error that something went wrong
+                    MekanismUtils.logMismatchedStackSize();
                 }
             }
         }

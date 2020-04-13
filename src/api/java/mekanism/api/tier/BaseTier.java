@@ -1,6 +1,7 @@
 package mekanism.api.tier;
 
 import java.util.Locale;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import net.minecraft.util.IStringSerializable;
 
@@ -18,8 +19,8 @@ public enum BaseTier implements IStringSerializable {
 
     private static final BaseTier[] TIERS = values();
 
-    private String name;
-    private EnumColor color;
+    private final String name;
+    private final EnumColor color;
 
     BaseTier(String s, EnumColor c) {
         name = s;
@@ -49,7 +50,6 @@ public enum BaseTier implements IStringSerializable {
     }
 
     public static BaseTier byIndexStatic(int index) {
-        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-        return TIERS[Math.floorMod(index, TIERS.length)];
+        return MathUtils.getByIndexMod(TIERS, index);
     }
 }

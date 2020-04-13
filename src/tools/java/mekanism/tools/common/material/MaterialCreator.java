@@ -17,7 +17,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
 
     private final BaseMekanismMaterial fallBack;
 
-    //TODO: Limits
     private final CachedIntValue swordDamage;
     private final CachedFloatValue swordAtkSpeed;
     private final CachedFloatValue shovelDamage;
@@ -52,95 +51,64 @@ public class MaterialCreator extends BaseMekanismMaterial {
         fallBack = materialDefaults;
         String toolKey = materialDefaults.getRegistryPrefix();
         builder.comment(" Material Settings for " + toolKey).push(toolKey);
-        //TODO: Do we want to remove the requires world restart given they actually seem to sync properly and fine without
-        // a world restart. Though if other mods cache any values then they would not necessarily behave properly
         swordDamage = CachedIntValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " swords.")
-              .worldRestart()
-              .define(toolKey + "SwordDamage", materialDefaults.getSwordDamage()));
+              .defineInRange(toolKey + "SwordDamage", materialDefaults.getSwordDamage(), 0, Integer.MAX_VALUE));
         swordAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " swords.")
-              .worldRestart()
               .define(toolKey + "SwordAtkSpeed", (double) materialDefaults.getSwordAtkSpeed()));
         shovelDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " shovels.")
-              .worldRestart()
-              .define(toolKey + "ShovelDamage", (double) materialDefaults.getShovelDamage()));
+              .defineInRange(toolKey + "ShovelDamage", materialDefaults.getShovelDamage(), 0, Float.MAX_VALUE));
         shovelAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " shovels.")
-              .worldRestart()
               .define(toolKey + "ShovelAtkSpeed", (double) materialDefaults.getShovelAtkSpeed()));
         axeDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " axes.")
-              .worldRestart()
-              .define(toolKey + "AxeDamage", (double) materialDefaults.getAxeDamage()));
+              .defineInRange(toolKey + "AxeDamage", materialDefaults.getAxeDamage(), 0, Float.MAX_VALUE));
         axeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " axes.")
-              .worldRestart()
               .define(toolKey + "AxeAtkSpeed", (double) materialDefaults.getAxeAtkSpeed()));
         pickaxeDamage = CachedIntValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " pickaxes.")
-              .worldRestart()
-              .define(toolKey + "PickaxeDamage", materialDefaults.getPickaxeDamage()));
+              .defineInRange(toolKey + "PickaxeDamage", materialDefaults.getPickaxeDamage(), 0, Integer.MAX_VALUE));
         pickaxeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " pickaxes.")
-              .worldRestart()
               .define(toolKey + "PickaxeAtkSpeed", (double) materialDefaults.getPickaxeAtkSpeed()));
         hoeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " hoes.")
-              .worldRestart()
               .define(toolKey + "HoeAtkSpeed", (double) materialDefaults.getHoeAtkSpeed()));
         toolMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " tools.")
-              .worldRestart()
-              .define(toolKey + "ToolMaxUses", materialDefaults.getMaxUses()));
+              .defineInRange(toolKey + "ToolMaxUses", materialDefaults.getMaxUses(), 1, Integer.MAX_VALUE));
         efficiency = CachedFloatValue.wrap(config, builder.comment("Efficiency of " + toolKey + " tools.")
-              .worldRestart()
               .define(toolKey + "Efficiency", (double) materialDefaults.getEfficiency()));
         paxelHarvestLevel = CachedIntValue.wrap(config, builder.comment("Harvest level of " + toolKey + " paxels.")
-              .worldRestart()
-              .define(toolKey + "PaxelHarvestLevel", materialDefaults.getPaxelHarvestLevel()));
+              .defineInRange(toolKey + "PaxelHarvestLevel", materialDefaults.getPaxelHarvestLevel(), 0, Integer.MAX_VALUE));
         paxelDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " paxels.")
-              .worldRestart()
-              .define(toolKey + "PaxelDamage", (double) materialDefaults.getPaxelDamage()));
+              .defineInRange(toolKey + "PaxelDamage", materialDefaults.getPaxelDamage(), 0, Float.MAX_VALUE));
         paxelAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " paxels.")
-              .worldRestart()
               .define(toolKey + "PaxelAtkSpeed", (double) materialDefaults.getPaxelAtkSpeed()));
         paxelEfficiency = CachedFloatValue.wrap(config, builder.comment("Efficiency of " + toolKey + " paxels.")
-              .worldRestart()
               .define(toolKey + "PaxelEfficiency", (double) materialDefaults.getPaxelEfficiency()));
         paxelEnchantability = CachedIntValue.wrap(config, builder.comment("Natural enchantability factor of " + toolKey + " paxels.")
-              .worldRestart()
-              .define(toolKey + "PaxelEnchantability", materialDefaults.getPaxelEnchantability()));
+              .defineInRange(toolKey + "PaxelEnchantability", materialDefaults.getPaxelEnchantability(), 0, Integer.MAX_VALUE));
         paxelMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " paxels.")
-              .worldRestart()
-              .define(toolKey + "PaxelMaxUses", materialDefaults.getPaxelMaxUses()));
+              .defineInRange(toolKey + "PaxelMaxUses", materialDefaults.getPaxelMaxUses(), 1, Integer.MAX_VALUE));
         attackDamage = CachedFloatValue.wrap(config, builder.comment("Base attack damage of " + toolKey + " items.")
-              .worldRestart()
-              .define(toolKey + "AttackDamage", (double) materialDefaults.getAttackDamage()));
+              .defineInRange(toolKey + "AttackDamage", materialDefaults.getAttackDamage(), 0, Float.MAX_VALUE));
         harvestLevel = CachedIntValue.wrap(config, builder.comment("Harvest level of " + toolKey + " tools.")
-              .worldRestart()
-              .define(toolKey + "HarvestLevel", materialDefaults.getHarvestLevel()));
+              .defineInRange(toolKey + "HarvestLevel", materialDefaults.getHarvestLevel(), 0, Integer.MAX_VALUE));
         enchantability = CachedIntValue.wrap(config, builder.comment("Natural enchantability factor of " + toolKey + " items.")
-              .worldRestart()
-              .define(toolKey + "Enchantability", materialDefaults.getCommonEnchantability()));
+              .defineInRange(toolKey + "Enchantability", materialDefaults.getCommonEnchantability(), 0, Integer.MAX_VALUE));
         toughness = CachedFloatValue.wrap(config, builder.comment("Base armor toughness value of " + toolKey + " armor.")
-              .worldRestart()
-              .define(toolKey + "Toughness", (double) materialDefaults.getToughness()));
+              .defineInRange(toolKey + "Toughness", materialDefaults.getToughness(), 0, Float.MAX_VALUE));
         bootDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " boots.")
-              .worldRestart()
-              .define(toolKey + "BootDurability", materialDefaults.getDurability(EquipmentSlotType.FEET)));
+              .defineInRange(toolKey + "BootDurability", materialDefaults.getDurability(EquipmentSlotType.FEET), 1, Integer.MAX_VALUE));
         leggingDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " leggings.")
-              .worldRestart()
-              .define(toolKey + "LeggingDurability", materialDefaults.getDurability(EquipmentSlotType.LEGS)));
+              .defineInRange(toolKey + "LeggingDurability", materialDefaults.getDurability(EquipmentSlotType.LEGS), 1, Integer.MAX_VALUE));
         chestplateDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " chestplates.")
-              .worldRestart()
-              .define(toolKey + "ChestplateDurability", materialDefaults.getDurability(EquipmentSlotType.CHEST)));
+              .defineInRange(toolKey + "ChestplateDurability", materialDefaults.getDurability(EquipmentSlotType.CHEST), 1, Integer.MAX_VALUE));
         helmetDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " helmets.")
-              .worldRestart()
-              .define(toolKey + "HelmetDurability", materialDefaults.getDurability(EquipmentSlotType.HEAD)));
+              .defineInRange(toolKey + "HelmetDurability", materialDefaults.getDurability(EquipmentSlotType.HEAD), 1, Integer.MAX_VALUE));
         bootArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + toolKey + " boots.")
-              .worldRestart()
-              .define(toolKey + "BootArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.FEET)));
+              .defineInRange(toolKey + "BootArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.FEET), 0, Integer.MAX_VALUE));
         leggingArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + toolKey + " leggings.")
-              .worldRestart()
-              .define(toolKey + "LeggingArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.LEGS)));
+              .defineInRange(toolKey + "LeggingArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.LEGS), 0, Integer.MAX_VALUE));
         chestplateArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + toolKey + " chestplates.")
-              .worldRestart()
-              .define(toolKey + "ChestplateArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.CHEST)));
+              .defineInRange(toolKey + "ChestplateArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.CHEST), 0, Integer.MAX_VALUE));
         helmetArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + toolKey + " helmets.")
-              .worldRestart()
-              .define(toolKey + "HelmetArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.HEAD)));
+              .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.HEAD), 0, Integer.MAX_VALUE));
         builder.pop();
     }
 

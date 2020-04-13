@@ -105,6 +105,10 @@ public final class MekanismUtils {
 
     private static final List<UUID> warnedFails = new ArrayList<>();
 
+    public static void logMismatchedStackSize() {
+        Mekanism.logger.error("Stack size changed by a different amount than requested.", new Exception());
+    }
+
     /**
      * Retrieves an empty Gas Tank.
      *

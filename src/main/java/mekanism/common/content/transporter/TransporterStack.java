@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.common.base.ILogisticalTransporter;
@@ -277,8 +278,7 @@ public class TransporterStack {
         private static final Path[] PATHS = values();
 
         public static Path byIndexStatic(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return PATHS[Math.floorMod(index, PATHS.length)];
+            return MathUtils.getByIndexMod(PATHS, index);
         }
     }
 }

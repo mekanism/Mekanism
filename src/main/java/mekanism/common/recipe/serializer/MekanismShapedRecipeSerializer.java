@@ -22,7 +22,7 @@ public class MekanismShapedRecipeSerializer extends ForgeRegistryEntry<IRecipeSe
         try {
             return new MekanismShapedRecipe(IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, buffer));
         } catch (Exception e) {
-            Mekanism.logger.error("Error reading itemstack to itemstack recipe from packet.", e);
+            Mekanism.logger.error("Error reading mekanism shaped recipe from packet.", e);
             throw e;
         }
     }
@@ -32,7 +32,7 @@ public class MekanismShapedRecipeSerializer extends ForgeRegistryEntry<IRecipeSe
         try {
             IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe.getInternal());
         } catch (Exception e) {
-            Mekanism.logger.error("Error writing itemstack to itemstack recipe to packet.", e);
+            Mekanism.logger.error("Error writing mekanism shaped recipe to packet.", e);
             throw e;
         }
     }

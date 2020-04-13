@@ -63,7 +63,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
                 double proportion = stored / (double) structure.getSteamCapacity();
                 double origRate = rate;
-                //TODO: FloatingLong evaluate
                 rate = Math.min(Math.min(stored, rate), energyNeeded.divide(energyMultiplier).doubleValue()) * proportion;
 
                 flowRate = rate / origRate;

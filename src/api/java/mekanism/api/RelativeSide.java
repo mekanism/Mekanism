@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import javax.annotation.Nonnull;
+import mekanism.api.math.MathUtils;
 import net.minecraft.util.Direction;
 
 public enum RelativeSide {
@@ -14,8 +15,7 @@ public enum RelativeSide {
     private final static RelativeSide[] SIDES = values();
 
     public static RelativeSide byIndex(int index) {
-        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-        return SIDES[Math.floorMod(index, SIDES.length)];
+        return MathUtils.getByIndexMod(SIDES, index);
     }
 
     /**

@@ -332,7 +332,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
                             isDraining = true;
                             //Actually remove the fluid from our handler
                             if (fluidTank.shrinkStack(toDrain, Action.EXECUTE) != toDrain) {
-                                //TODO: Print warning/error
+                                MekanismUtils.logMismatchedStackSize();
                             }
                             return;
                         }
@@ -341,7 +341,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
                     if (moveItem(outputSlot, fluidHandlerItem.getContainer())) {
                         //Actually remove the fluid from our handler
                         if (fluidTank.shrinkStack(toDrain, Action.EXECUTE) != toDrain) {
-                            //TODO: Print warning/error
+                            MekanismUtils.logMismatchedStackSize();
                         }
                         //Mark we are no longer draining (as we have moved the item to the output slot)
                         isDraining = false;

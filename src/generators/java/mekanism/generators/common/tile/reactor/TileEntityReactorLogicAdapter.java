@@ -2,6 +2,7 @@ package mekanism.generators.common.tile.reactor;
 
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -133,8 +134,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         }
 
         public static ReactorLogic byIndexStatic(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return MODES[Math.floorMod(index, MODES.length)];
+            return MathUtils.getByIndexMod(MODES, index);
         }
     }
 }

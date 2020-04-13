@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
@@ -106,8 +107,7 @@ public final class HolidayManager {
         }
 
         public static Month byIndexStatic(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return MONTHS[Math.floorMod(index, MONTHS.length)];
+            return MathUtils.getByIndexMod(MONTHS, index);
         }
     }
 

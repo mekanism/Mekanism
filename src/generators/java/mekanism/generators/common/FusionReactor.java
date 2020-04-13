@@ -1,9 +1,9 @@
 package mekanism.generators.common;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.IChemicalTank;
@@ -150,10 +150,10 @@ public class FusionReactor {
         amountToInject -= amountToInject % 2;
         long injectingAmount = amountToInject / 2;
         if (getDeuteriumTank().shrinkStack(injectingAmount, Action.EXECUTE) != injectingAmount) {
-            //TODO: Print warning/error
+            MekanismUtils.logMismatchedStackSize();
         }
         if (getTritiumTank().shrinkStack(injectingAmount, Action.EXECUTE) != injectingAmount) {
-            //TODO: Print warning/error
+            MekanismUtils.logMismatchedStackSize();
         }
         getFuelTank().insert(GeneratorsGases.FUSION_FUEL.getGasStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
     }
@@ -161,7 +161,7 @@ public class FusionReactor {
     private long burnFuel() {
         long fuelBurned = (long) Math.min(getFuelTank().getStored(), Math.max(0, lastPlasmaTemperature - burnTemperature) * burnRatio);
         if (getFuelTank().shrinkStack(fuelBurned, Action.EXECUTE) != fuelBurned) {
-            //TODO: Print warning/error
+            MekanismUtils.logMismatchedStackSize();
         }
         setPlasmaTemp(getPlasmaTemp() + MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(fuelBurned).divide(plasmaHeatCapacity).doubleValue());
         return fuelBurned;
@@ -179,7 +179,7 @@ public class FusionReactor {
         waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), MathUtils.clampToInt(getSteamTank().getNeeded())));
         if (waterToVaporize > 0) {
             if (getWaterTank().shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
-                //TODO: Print warning/error
+                MekanismUtils.logMismatchedStackSize();
             }
             getSteamTank().insert(MekanismGases.STEAM.getGasStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
         }

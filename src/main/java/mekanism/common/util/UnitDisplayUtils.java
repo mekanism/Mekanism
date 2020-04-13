@@ -3,6 +3,7 @@ package mekanism.common.util;
 import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
@@ -289,8 +290,7 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
         @Nonnull
         @Override
         public EnergyType byIndex(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return TYPES[Math.floorMod(index, TYPES.length)];
+            return MathUtils.getByIndexMod(TYPES, index);
         }
     }
 
@@ -316,8 +316,7 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
         @Nonnull
         @Override
         public TempType byIndex(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return TYPES[Math.floorMod(index, TYPES.length)];
+            return MathUtils.getByIndexMod(TYPES, index);
         }
     }
 }

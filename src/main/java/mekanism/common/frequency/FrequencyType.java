@@ -1,5 +1,7 @@
 package mekanism.common.frequency;
 
+import mekanism.api.math.MathUtils;
+
 public enum FrequencyType {
     BASE,
     INVENTORY,
@@ -8,7 +10,6 @@ public enum FrequencyType {
     private static final FrequencyType[] TYPES = values();
 
     public static FrequencyType byIndexStatic(int index) {
-        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-        return TYPES[Math.floorMod(index, TYPES.length)];
+        return MathUtils.getByIndexMod(TYPES, index);
     }
 }

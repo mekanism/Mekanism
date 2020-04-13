@@ -198,7 +198,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                 } else {
                                     //Grow the stack
                                     if (fluidTank.growStack(fluidStack.getAmount(), Action.EXECUTE) != fluidStack.getAmount()) {
-                                        //TODO: Print warning/error
+                                        MekanismUtils.logMismatchedStackSize();
                                     }
                                 }
                                 return new ActionResult<>(ActionResultType.SUCCESS, stack);
@@ -214,7 +214,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         if (tryPlaceContainedLiquid(player, world, pos, fluidHandlerItem.getFluidInTank(0), result.getFace())) {
                             if (!player.isCreative()) {
                                 if (fluidTank.shrinkStack(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE) != FluidAttributes.BUCKET_VOLUME) {
-                                    //TODO: Print warning/error
+                                    MekanismUtils.logMismatchedStackSize();
                                 }
                             }
                             return new ActionResult<>(ActionResultType.SUCCESS, stack);

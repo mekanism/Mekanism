@@ -1,5 +1,7 @@
 package mekanism.common.item.gear;
 
+import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,14 +10,13 @@ import java.util.function.BooleanSupplier;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.render.item.ISTERProvider;
@@ -525,17 +526,15 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
          * Gets a Mode from its ordinal. NOTE: if this mode is not enabled then it will reset to NORMAL
          */
         public static DisassemblerMode byIndexStatic(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            DisassemblerMode mode = MODES[Math.floorMod(index, MODES.length)];
+            DisassemblerMode mode = MathUtils.getByIndexMod(MODES, index);
             return mode.isEnabled() ? mode : NORMAL;
         }
 
         @Nonnull
         @Override
         public DisassemblerMode byIndex(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             //Note: We can't just use byIndexStatic, as we want to be able to return disabled modes
-            return MODES[Math.floorMod(index, MODES.length)];
+            return MathUtils.getByIndexMod(MODES, index);
         }
 
         @Override

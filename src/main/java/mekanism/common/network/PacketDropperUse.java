@@ -187,7 +187,7 @@ public class PacketDropperUse {
                 if (!extractedChemical.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
                     if (!fillTank.insert(extractedChemical, Action.EXECUTE, AutomationType.MANUAL).isEmpty()) {
-                        //TODO: Print warning/error
+                        MekanismUtils.logMismatchedStackSize();
                     }
                     ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                 }
@@ -207,7 +207,7 @@ public class PacketDropperUse {
                 if (!extractedFluid.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
                     if (!fillTank.insert(extractedFluid, Action.EXECUTE, AutomationType.MANUAL).isEmpty()) {
-                        //TODO: Print warning/error
+                        MekanismUtils.logMismatchedStackSize();
                     }
                     ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                 }

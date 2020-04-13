@@ -393,7 +393,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                         if (formula.isIngredientInPos(world, stockStack, i)) {
                             recipeSlot.setStack(StackUtils.size(stockStack, 1));
                             if (stockSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                                //TODO: Print error that something went wrong
+                                MekanismUtils.logMismatchedStackSize();
                             }
                             markDirty(false);
                             found = true;

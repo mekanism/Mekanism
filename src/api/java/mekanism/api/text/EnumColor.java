@@ -1,5 +1,6 @@
 package mekanism.api.text;
 
+import mekanism.api.math.MathUtils;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
@@ -129,7 +130,6 @@ public enum EnumColor {//TODO: Maybe rename some of these or their lang keys
     }
 
     public static EnumColor byIndexStatic(int index) {
-        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-        return COLORS[Math.floorMod(index, COLORS.length)];
+        return MathUtils.getByIndexMod(COLORS, index);
     }
 }

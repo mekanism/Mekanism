@@ -17,6 +17,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -148,11 +149,11 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                     if (!output.isEmpty() && chemicalTank.insert(output, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
                         //If we can accept it all, then add it and decrease our input
                         if (!chemicalTank.insert(output, Action.EXECUTE, AutomationType.MANUAL).isEmpty()) {
-                            //TODO: Print warning/error
+                            MekanismUtils.logMismatchedStackSize();
                         }
                         int amountUsed = conversion.getFirst().getCount();
                         if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
-                            //TODO: Print warning/error
+                            MekanismUtils.logMismatchedStackSize();
                         }
                     }
                 }
@@ -193,7 +194,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                         if (!extractedChemical.isEmpty()) {
                             //If we were able to actually extract it from the item, then insert it into our chemical tank
                             if (!chemicalTank.insert(extractedChemical, Action.EXECUTE, AutomationType.INTERNAL).isEmpty()) {
-                                //TODO: Print warning/error
+                                MekanismUtils.logMismatchedStackSize();
                             }
                             //and mark that we were able to transfer at least some of it
                             didTransfer = true;
@@ -233,7 +234,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                     if (!extractedChemical.isEmpty()) {
                         //If we were able to actually extract it from our tank, then insert it into the item
                         if (!wrapper.insertChemical(extractedChemical, Action.EXECUTE).isEmpty()) {
-                            //TODO: Print warning/error
+                            MekanismUtils.logMismatchedStackSize();
                         }
                         onContentsChanged();
                     }

@@ -96,7 +96,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
             if (!extractedEnergy.isZero()) {
                 //If we were able to actually extract it from our energy container, then insert it into the item
                 if (!energyHandler.insertEnergy(extractedEnergy, Action.EXECUTE).isZero()) {
-                    //TODO: Print warning/error
+                    MekanismUtils.logMismatchedStackSize();
                 }
                 return true;
             }

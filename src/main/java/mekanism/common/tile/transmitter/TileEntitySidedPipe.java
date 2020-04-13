@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.transmitters.IBlockableConnection;
@@ -614,8 +615,7 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
         }
 
         public static ConnectionType byIndexStatic(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return TYPES[Math.floorMod(index, TYPES.length)];
+            return MathUtils.getByIndexMod(TYPES, index);
         }
     }
 }

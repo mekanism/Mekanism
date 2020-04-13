@@ -227,8 +227,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
 
     @Override
     public void setActive(boolean active) {
-        //TODO: Improve how we are handling the "active" state for this
-        // We currently call super just so that it updates the block state properly
         super.setActive(active);
         if (active == (getReactor() == null)) {
             setReactor(active ? new FusionReactor(this) : null);
