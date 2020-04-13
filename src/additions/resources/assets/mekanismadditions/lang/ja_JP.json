@@ -169,11 +169,11 @@
   "entity.mekanismadditions.baby_wither_skeleton": "子どもウィザースケルトン",
   "entity.mekanismadditions.balloon": "風船",
   "entity.mekanismadditions.obsidian_tnt": "黒曜石TNT",
-  "item.mekanismadditions.baby_creeper_spawn_egg": "Baby Creeper Spawn Egg",
-  "item.mekanismadditions.baby_enderman_spawn_egg": "Baby Enderman Spawn Egg",
+  "item.mekanismadditions.baby_creeper_spawn_egg": "子どもクリーパーのスポーンエッグ",
+  "item.mekanismadditions.baby_enderman_spawn_egg": "子どもエンダーマンのスポーンエッグ",
   "item.mekanismadditions.baby_skeleton_spawn_egg": "ベビースケルトン Spawn Egg",
-  "item.mekanismadditions.baby_stray_spawn_egg": "Baby Stray Spawn Egg",
-  "item.mekanismadditions.baby_wither_skeleton_spawn_egg": "Baby Wither Skeleton Spawn Egg",
+  "item.mekanismadditions.baby_stray_spawn_egg": "子どもストレイのスポーンエッグ",
+  "item.mekanismadditions.baby_wither_skeleton_spawn_egg": "子どもウィザースケルトンのスポーンエッグ",
   "item.mekanismadditions.black_balloon": "黒色 風船",
   "item.mekanismadditions.blue_balloon": "青色 風船",
   "item.mekanismadditions.brown_balloon": "茶色 風船",
@@ -193,6 +193,6 @@
   "item.mekanismadditions.yellow_balloon": "黄色 風船",
   "key.mekanismadditions.voice": "Voice",
   "walkie.mekanismadditions.channel": "チャンネル: %s",
-  "walkie.mekanismadditions.channel.change": "Channel changed to: %s",
+  "walkie.mekanismadditions.channel.change": "チャンネルを変更: %s",
   "walkie.mekanismadditions.disabled": "ボイスサーバーが無効です"
 }
