@@ -17,9 +17,11 @@ public final class MekanismHooks {
     public static final String TOP_MOD_ID = "theoneprobe";
     public static final String CRAFTTWEAKER_MOD_ID = "crafttweaker";
     public static final String PROJECTE_MOD_ID = "projecte";
+    public static final String FLUX_NETWORKS_MOD_ID = "flux-networks";
 
     public boolean CraftTweakerLoaded = false;
     public boolean IC2Loaded = false;
+    public boolean FluxNetworksLoaded = false;
     public boolean ProjectELoaded = false;
     public boolean TOPLoaded = false;
 
@@ -29,6 +31,7 @@ public final class MekanismHooks {
         IC2Loaded = modList.isLoaded(IC2_MOD_ID);
         ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
+        FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
     }
 
     public void sendIMCMessages(InterModEnqueueEvent event) {

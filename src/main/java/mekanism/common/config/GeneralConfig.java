@@ -49,6 +49,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue blacklistForge;
     public final CachedFloatingLongValue FROM_FORGE;
     public final CachedFloatingLongValue TO_FORGE;
+    public final CachedBooleanValue blacklistFluxNetworks;
     public final CachedFloatingLongValue FROM_H2;
     public final CachedIntValue ETHENE_BURN_TIME;
     public final CachedFloatingLongValue maxEnergyPerSteam;
@@ -122,6 +123,9 @@ public class GeneralConfig extends BaseMekanismConfig {
               "JoulesToForge", FloatingLong.createConst(2.5), CachedFloatingLongValue.POSITIVE);
         TO_FORGE = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Joules to Forge Energy (Joules * ForgeToJoules = FE)",
               "ForgeToJoules", FloatingLong.createConst(0.4), CachedFloatingLongValue.POSITIVE);
+        blacklistFluxNetworks = CachedBooleanValue.wrap(this, builder.comment("Disables Flux Networks higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
+              .worldRestart()
+              .define("blacklistFluxNetworks", false));
         FROM_H2 = CachedFloatingLongValue.define(this, builder, "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethylene burn rate and Gas generator energy capacity.",
               "HydrogenEnergyDensity", FloatingLong.createConst(200), CachedFloatingLongValue.POSITIVE);
         ETHENE_BURN_TIME = CachedIntValue.wrap(this, builder.comment("Burn time for Ethylene (1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus).")

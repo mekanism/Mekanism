@@ -285,6 +285,8 @@ dependencies {
     //compileOnly fg.deobf("curse.maven:projecte:${projecte_api_id}")
     //runtimeOnly fg.deobf("curse.maven:projecte:${projecte_id}")
 
+    compile fg.deobf("curse.maven:flux-networks:${flux_networks_id}")
+
     //compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
     //Dependencies for data generators for mod compat reference
@@ -564,6 +566,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "jei"
                     optionalDependency "ctm"
                     optionalDependency "biomes-o-plenty"
+                    optionalDependency "flux-networks"
                     optionalDependency "i-like-wood"
                     optionalDependency "projecte"
                     optionalDependency "the-one-probe"
