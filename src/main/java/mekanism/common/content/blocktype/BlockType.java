@@ -1,5 +1,6 @@
 package mekanism.common.content.blocktype;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -47,6 +48,10 @@ public class BlockType {
         for (Class<? extends Attribute> attr : attrs) {
             attributeMap.remove(attr);
         }
+    }
+
+    public Collection<Attribute> getAll() {
+        return attributeMap.values();
     }
 
     @Nonnull

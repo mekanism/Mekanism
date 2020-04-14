@@ -22,7 +22,6 @@ import mekanism.common.block.attribute.Attributes.AttributeNoMobSpawn;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
-import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.BlockShapes;
 import mekanism.common.content.blocktype.BlockType;
@@ -113,6 +112,7 @@ import mekanism.common.tile.laser.TileEntityLaserTractorBeam;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.state.properties.BlockStateProperties;
 
 public class MekanismBlockTypes {
 
@@ -318,13 +318,13 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityLaser> LASER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.LASER, MekanismLang.DESCRIPTION_LASER)
           .withEnergyConfig(MekanismConfig.usage.laser, MekanismConfig.storage.laser)
-          .withSound(MekanismSounds.LASER).with(new AttributeStateActive(), new AttributeStateFacing(BlockStateHelper.facingProperty))
+          .withSound(MekanismSounds.LASER).with(new AttributeStateActive(), new AttributeStateFacing(BlockStateProperties.FACING))
           .withCustomShape(BlockShapes.LASER)
           .build();
     // Laser Amplifier
     public static final BlockTypeTile<TileEntityLaserAmplifier> LASER_AMPLIFIER = BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.LASER_AMPLIFIER, MekanismLang.DESCRIPTION_LASER_AMPLIFIER)
           .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER).withEnergyConfig(null, () -> LARGE_LASER)
-          .with(new AttributeStateFacing(BlockStateHelper.facingProperty),
+          .with(new AttributeStateFacing(BlockStateProperties.FACING),
                 new AttributeRedstoneEmitter<>(TileEntityMekanism::getRedstoneLevel), new AttributeRedstone(), new AttributeComparator(), new AttributeSecurity())
           .withCustomShape(BlockShapes.LASER_AMPLIFIER).build();
     // Laser Tractor Beam
@@ -332,7 +332,7 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.LASER_TRACTOR_BEAM, MekanismLang.DESCRIPTION_LASER_TRACTOR_BEAM)
           .withGui(() -> MekanismContainerTypes.LASER_TRACTOR_BEAM)
           .withEnergyConfig(null, () -> LARGE_LASER)
-          .with(new AttributeStateFacing(BlockStateHelper.facingProperty), new AttributeComparator(), new AttributeSecurity(), new AttributeInventory())
+          .with(new AttributeStateFacing(BlockStateProperties.FACING), new AttributeComparator(), new AttributeSecurity(), new AttributeInventory())
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
           .build();
     // Resistive Heater
@@ -381,7 +381,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.QUANTUM_ENTANGLOPORTER)
           .withEnergyConfig(null, null)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
-          .with(new AttributeStateFacing(BlockStateHelper.facingProperty))
+          .with(new AttributeStateFacing(BlockStateProperties.FACING))
           .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeRedstone.class, AttributeComparator.class)
           .withCustomShape(BlockShapes.QUANTUM_ENTANGLOPORTER)
           .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, (TileEntityQuantumEntangloporter) tile)))
@@ -391,7 +391,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.LOGISTICAL_SORTER, MekanismLang.DESCRIPTION_LOGISTICAL_SORTER)
           .withGui(() -> MekanismContainerTypes.LOGISTICAL_SORTER)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
-          .with(new AttributeStateFacing(BlockStateHelper.facingProperty))
+          .with(new AttributeStateFacing(BlockStateProperties.FACING))
           .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.LOGISTICAL_SORTER, i, inv, tile)))
           .withCustomShape(BlockShapes.LOGISTICAL_SORTER)
           .withSound(MekanismSounds.LOGISTICAL_SORTER)
@@ -578,7 +578,7 @@ public class MekanismBlockTypes {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_ENERGY_CUBE)
               .withGui(() -> MekanismContainerTypes.ENERGY_CUBE)
               .withEnergyConfig(tier::getMaxEnergy)
-              .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock), new AttributeStateFacing(BlockStateHelper.facingProperty))
+              .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock), new AttributeStateFacing(BlockStateProperties.FACING))
               .without(AttributeParticleFX.class, AttributeStateActive.class, AttributeUpgradeSupport.class)
               .build();
     }

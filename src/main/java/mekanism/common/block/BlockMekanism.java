@@ -12,6 +12,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
@@ -203,21 +204,21 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation rotation) {
-        return BlockStateHelper.rotate(state, world, pos, rotation);
+        return AttributeStateFacing.rotate(state, world, pos, rotation);
     }
 
     @Nonnull
     @Override
     @Deprecated
     public BlockState rotate(@Nonnull BlockState state, Rotation rotation) {
-        return BlockStateHelper.rotate(state, rotation);
+        return AttributeStateFacing.rotate(state, rotation);
     }
 
     @Nonnull
     @Override
     @Deprecated
     public BlockState mirror(@Nonnull BlockState state, Mirror mirror) {
-        return BlockStateHelper.mirror(state, mirror);
+        return AttributeStateFacing.mirror(state, mirror);
     }
 
     @Override

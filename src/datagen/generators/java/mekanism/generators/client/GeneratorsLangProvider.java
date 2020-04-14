@@ -121,7 +121,12 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_MAX_PRODUCTION, "Max Production: %s");
         add(GeneratorsLang.TURBINE_STATS, "Turbine Statistics");
         add(GeneratorsLang.TURBINE_VENTS, "Vents: %s %s");
+        //Fission Reactor
         add(GeneratorsLang.FISSION_REACTOR, "Fission Reactor");
+        add(GeneratorsLang.FISSION_PORT_MODE_CHANGE, "Port mode changed to: %s");
+        add(GeneratorsLang.FISSION_PORT_MODE_INPUT, "input");
+        add(GeneratorsLang.FISSION_PORT_MODE_OUTPUT_WASTE, "output waste");
+        add(GeneratorsLang.FISSION_PORT_MODE_OUTPUT_STEAM, "output steam");
         //Descriptions
         add(GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, "The reactor's core heat capacity has been met");
         add(GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, "The reactor has insufficient fuel to sustain a reaction");

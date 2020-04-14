@@ -10,7 +10,6 @@ import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
 import mekanism.common.block.attribute.Attributes.AttributeNoMobSpawn;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.ITypeBlock;
-import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.blocktype.BlockType;
 import net.minecraft.block.Block;
@@ -19,6 +18,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.EntityType;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -74,7 +74,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         if (type.has(AttributeCustomShape.class)) {
             AttributeStateFacing attr = type.get(AttributeStateFacing.class);
-            int index = attr == null ? 0 : (attr.getDirection(state).ordinal() - (attr.getFacingProperty() == BlockStateHelper.facingProperty ? 0 : 2));
+            int index = attr == null ? 0 : (attr.getDirection(state).ordinal() - (attr.getFacingProperty() == BlockStateProperties.FACING ? 0 : 2));
             return type.get(AttributeCustomShape.class).getBounds()[index];
         }
         return super.getShape(state, world, pos, context);

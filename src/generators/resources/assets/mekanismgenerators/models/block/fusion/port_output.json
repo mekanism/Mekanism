@@ -1,5 +1,5 @@
 {
-  "parent": "mekanismgenerators:block/reactor/port",
+  "parent": "mekanismgenerators:block/fusion/port",
   "textures": {
     "all": "mekanismgenerators:block/reactor_port_output"
   }

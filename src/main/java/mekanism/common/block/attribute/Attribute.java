@@ -1,8 +1,10 @@
 package mekanism.common.block.attribute;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.Lists;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
@@ -25,6 +27,10 @@ public interface Attribute {
 
     static boolean has(Block block1, Block block2, Class<? extends Attribute> type) {
         return has(block1, type) && has(block2, type);
+    }
+
+    static Collection<Attribute> getAll(Block block) {
+        return block instanceof ITypeBlock ? ((ITypeBlock) block).getType().getAll() : Lists.newArrayList();
     }
 
     static <T extends Attribute> void ifHas(Block block, Class<T> type, Consumer<T> run) {

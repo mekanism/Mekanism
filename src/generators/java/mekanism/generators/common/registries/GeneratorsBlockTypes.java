@@ -15,6 +15,7 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.content.blocktype.BlockShapes;
 import mekanism.generators.common.content.blocktype.Generator;
 import mekanism.generators.common.content.blocktype.Generator.GeneratorBuilder;
@@ -146,6 +147,7 @@ public class GeneratorsBlockTypes {
     // Fission Reactor Port
     public static final BlockTypeTile<TileEntityFissionReactorPort> FISSION_REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_PORT)
+          .with(new AttributeStateFissionPortMode())
           .build();
     // Fission Reactor Logic Adapter
     public static final BlockTypeTile<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
@@ -157,8 +159,8 @@ public class GeneratorsBlockTypes {
           .build();
     // Control Rod Assembly
     public static final BlockTypeTile<TileEntityControlRodAssembly> CONTROL_ROD_ASSEMBLY = BlockTileBuilder
-        .createBlock(() -> GeneratorsTileEntityTypes.CONTROL_ROD_ASSEMBLY, GeneratorsLang.DESCRIPTION_CONTROL_ROD_ASSEMBLY)
-        .build();
+          .createBlock(() -> GeneratorsTileEntityTypes.CONTROL_ROD_ASSEMBLY, GeneratorsLang.DESCRIPTION_CONTROL_ROD_ASSEMBLY)
+          .build();
 
     // Fusion Reactor Controller
     public static final BlockTypeTile<TileEntityFusionReactorController> FUSION_REACTOR_CONTROLLER = BlockTileBuilder
