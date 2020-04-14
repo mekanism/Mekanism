@@ -1,6 +1,6 @@
 project_identifier: mekanism
 api_key_env: CROWDIN_API_KEY
-commit_message: [ci skip]
+commit_message: "[ci skip]"
 base_path: .
 languages_mapping: &langmap
   locale_with_underscore:
