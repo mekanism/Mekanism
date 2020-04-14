@@ -63,5 +63,6 @@
   "item.mekanismtools.steel_shovel": "鋼鉄のシャベル",
   "item.mekanismtools.steel_sword": "鋼鉄の剣",
   "item.mekanismtools.stone_paxel": "石のパクセル",
-  "item.mekanismtools.wood_paxel": "木のパクセル"
+  "item.mekanismtools.wood_paxel": "木のパクセル",
+  "tooltip.mekanismtools.hp": "HP: %s"
 }
