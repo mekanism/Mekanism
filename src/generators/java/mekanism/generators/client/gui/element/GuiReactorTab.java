@@ -11,17 +11,17 @@ import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress.ClickedGeneratorsTileButton;
-import mekanism.generators.common.tile.reactor.TileEntityReactorController;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController, ReactorTab> {
+public class GuiReactorTab extends GuiTabElementType<TileEntityFusionReactorController, ReactorTab> {
 
-    public GuiReactorTab(IGuiWrapper gui, TileEntityReactorController tile, ReactorTab type) {
+    public GuiReactorTab(IGuiWrapper gui, TileEntityFusionReactorController tile, ReactorTab type) {
         super(gui, tile, type);
     }
 
-    public enum ReactorTab implements TabType<TileEntityReactorController> {
+    public enum ReactorTab implements TabType<TileEntityFusionReactorController> {
         HEAT(MekanismUtils.getResource(ResourceType.GUI, "heat.png"), GeneratorsLang.HEAT_TAB, 6, ClickedGeneratorsTileButton.TAB_HEAT),
         FUEL(MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "fuel.png"), GeneratorsLang.FUEL_TAB, 34, ClickedGeneratorsTileButton.TAB_FUEL),
         STAT(MekanismUtils.getResource(ResourceType.GUI, "stats.png"), GeneratorsLang.STATS_TAB, 62, ClickedGeneratorsTileButton.TAB_STATS);
@@ -44,7 +44,7 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController
         }
 
         @Override
-        public void onClick(TileEntityReactorController tile) {
+        public void onClick(TileEntityFusionReactorController tile) {
             MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiButtonPress(button, tile.getPos()));
         }
 

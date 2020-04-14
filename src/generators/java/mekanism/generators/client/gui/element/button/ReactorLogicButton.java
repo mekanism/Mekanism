@@ -8,18 +8,18 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
-import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.ReactorLogic;
 import net.minecraft.util.ResourceLocation;
 
 public class ReactorLogicButton extends MekanismButton {
 
     private static final ResourceLocation TEXTURE = MekanismGenerators.rl(ResourceType.GUI_BUTTON.getPrefix() + "reactor_logic.png");
     @Nonnull
-    private final TileEntityReactorLogicAdapter tile;
+    private final TileEntityFusionReactorLogicAdapter tile;
     private final ReactorLogic type;
 
-    public ReactorLogicButton(IGuiWrapper gui, int x, int y, ReactorLogic type, @Nonnull TileEntityReactorLogicAdapter tile, Runnable onPress) {
+    public ReactorLogicButton(IGuiWrapper gui, int x, int y, ReactorLogic type, @Nonnull TileEntityFusionReactorLogicAdapter tile, Runnable onPress) {
         super(gui, x, y, 128, 22, "", onPress, (onHover, xAxis, yAxis) -> gui.displayTooltip(type.getDescription(), xAxis, yAxis));
         this.tile = tile;
         this.type = type;

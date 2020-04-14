@@ -10,11 +10,11 @@
       "tag": "forge:circuits/ultimate"
     },
     "F": {
-      "item": "mekanismgenerators:reactor_frame"
+      "item": "mekanismgenerators:fusion_reactor_frame"
     }
   },
   "result": {
-    "item": "mekanismgenerators:reactor_port",
+    "item": "mekanismgenerators:fusion_reactor_port",
     "count": 2
   }
 }

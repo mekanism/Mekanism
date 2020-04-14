@@ -79,12 +79,12 @@ public enum GeneratorsLang implements ILangEntry {
     DESCRIPTION_FISSION_REACTOR_CASING("description", "fission_reactor_casing"),
     DESCRIPTION_FISSION_FUEL_ASSEMBLY("description", "fission_fuel_assembly"),
 
-    DESCRIPTION_REACTOR_GLASS("description", "reactor_glass"),
-    DESCRIPTION_LASER_FOCUS_MATRIX("description", "laser_focus_matrix"),
-    DESCRIPTION_REACTOR_CONTROLLER("description", "reactor_controller"),
-    DESCRIPTION_REACTOR_FRAME("description", "reactor_frame"),
-    DESCRIPTION_REACTOR_PORT("description", "reactor_port"),
-    DESCRIPTION_REACTOR_LOGIC_ADAPTER("description", "reactor_logic_adapter");
+    DESCRIPTION_FUSION_REACTOR_GLASS("description", "fusion_reactor_glass"),
+    DESCRIPTION_FUSION_REACTOR_FRAME("description", "fusion_reactor_frame"),
+    DESCRIPTION_FUSION_REACTOR_PORT("description", "fusion_reactor_port"),
+    DESCRIPTION_FUSION_REACTOR_LOGIC_ADAPTER("description", "fusion_reactor_logic_adapter"),
+    DESCRIPTION_FUSION_REACTOR_CONTROLLER("description", "fusion_reactor_controller"),
+    DESCRIPTION_LASER_FOCUS_MATRIX("description", "laser_focus_matrix");
 
     private final String key;
 

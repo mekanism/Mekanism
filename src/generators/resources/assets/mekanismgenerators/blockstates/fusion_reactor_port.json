@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mekanismgenerators:block/fusion/port"
+    },
+    "active=true": {
+      "model": "mekanismgenerators:block/fusion/port_output"
+    }
+  }
+}

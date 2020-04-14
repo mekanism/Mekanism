@@ -7,13 +7,13 @@
   ],
   "key": {
     "F": {
-      "item": "mekanismgenerators:reactor_frame"
+      "item": "mekanismgenerators:fusion_reactor_frame"
     },
     "R": {
       "tag": "forge:dusts/redstone"
     }
   },
   "result": {
-    "item": "mekanismgenerators:reactor_logic_adapter"
+    "item": "mekanismgenerators:fusion_reactor_logic_adapter"
   }
 }

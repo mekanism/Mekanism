@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_reactor_frame": {
+    "has_fusion_reactor_frame": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "mekanismgenerators:reactor_frame"
+            "item": "mekanismgenerators:fusion_reactor_frame"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_reactor_frame",
+      "has_fusion_reactor_frame",
       "has_the_recipe"
     ]
   ]

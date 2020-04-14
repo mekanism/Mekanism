@@ -10,11 +10,11 @@ import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
 import mekanism.generators.client.gui.GuiIndustrialTurbine;
-import mekanism.generators.client.gui.GuiReactorController;
-import mekanism.generators.client.gui.GuiReactorFuel;
-import mekanism.generators.client.gui.GuiReactorHeat;
-import mekanism.generators.client.gui.GuiReactorLogicAdapter;
-import mekanism.generators.client.gui.GuiReactorStats;
+import mekanism.generators.client.gui.GuiFusionReactorController;
+import mekanism.generators.client.gui.GuiFusionReactorFuel;
+import mekanism.generators.client.gui.GuiFusionReactorHeat;
+import mekanism.generators.client.gui.GuiFusionReactorLogicAdapter;
+import mekanism.generators.client.gui.GuiFusionReactorStats;
 import mekanism.generators.client.gui.GuiSolarGenerator;
 import mekanism.generators.client.gui.GuiTurbineStats;
 import mekanism.generators.client.gui.GuiWindGenerator;
@@ -23,7 +23,7 @@ import mekanism.generators.client.render.RenderBioGenerator;
 import mekanism.generators.client.render.RenderGasGenerator;
 import mekanism.generators.client.render.RenderHeatGenerator;
 import mekanism.generators.client.render.RenderIndustrialTurbine;
-import mekanism.generators.client.render.RenderReactor;
+import mekanism.generators.client.render.RenderFusionReactor;
 import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindGenerator;
 import mekanism.generators.client.render.item.RenderAdvancedSolarGeneratorItem;
@@ -62,14 +62,14 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.BIO_GENERATOR, RenderBioGenerator::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR, RenderGasGenerator::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.HEAT_GENERATOR, RenderHeatGenerator::new);
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.REACTOR_CONTROLLER, RenderReactor::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.FUSION_REACTOR_CONTROLLER, RenderFusionReactor::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_CASING, RenderIndustrialTurbine::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_ROTOR, RenderTurbineRotor::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VALVE, RenderIndustrialTurbine::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VENT, RenderIndustrialTurbine::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.WIND_GENERATOR, RenderWindGenerator::new);
         //Block render layers
-        ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), GeneratorsBlocks.LASER_FOCUS_MATRIX, GeneratorsBlocks.REACTOR_GLASS);
+        ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), GeneratorsBlocks.LASER_FOCUS_MATRIX, GeneratorsBlocks.FUSION_REACTOR_GLASS);
         //Fluids (translucent)
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : GeneratorsFluids.FLUIDS.getAllFluids()) {
             ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
@@ -83,11 +83,11 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.GAS_BURNING_GENERATOR, GuiGasGenerator::new);
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.HEAT_GENERATOR, GuiHeatGenerator::new);
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.INDUSTRIAL_TURBINE, GuiIndustrialTurbine::new);
-        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.REACTOR_CONTROLLER, GuiReactorController::new);
-        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.REACTOR_FUEL, GuiReactorFuel::new);
-        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.REACTOR_HEAT, GuiReactorHeat::new);
-        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER, GuiReactorLogicAdapter::new);
-        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.REACTOR_STATS, GuiReactorStats::new);
+        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.FUSION_REACTOR_CONTROLLER, GuiFusionReactorController::new);
+        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.FUSION_REACTOR_FUEL, GuiFusionReactorFuel::new);
+        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.FUSION_REACTOR_HEAT, GuiFusionReactorHeat::new);
+        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER, GuiFusionReactorLogicAdapter::new);
+        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.FUSION_REACTOR_STATS, GuiFusionReactorStats::new);
         // for some reason java is unable to infer the types with this generics structure, so we include constructor signature ourselves
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.SOLAR_GENERATOR, (MekanismTileContainer<TileEntitySolarGenerator> container, PlayerInventory inv, ITextComponent title) -> new GuiSolarGenerator<>(container, inv, title));
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.ADVANCED_SOLAR_GENERATOR, (MekanismTileContainer<TileEntityAdvancedSolarGenerator> container, PlayerInventory inv, ITextComponent title) -> new GuiSolarGenerator<>(container, inv, title));

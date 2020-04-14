@@ -228,12 +228,12 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY),
                     TripleLine.of(GLASS_CHAR, Pattern.REDSTONE, GLASS_CHAR),
                     TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY))
-              ).key(GLASS_CHAR, GeneratorsBlocks.REACTOR_GLASS)
+              ).key(GLASS_CHAR, GeneratorsBlocks.FUSION_REACTOR_GLASS)
               .key(Pattern.REDSTONE, Tags.Items.STORAGE_BLOCKS_REDSTONE)
-              .addCriterion(Criterion.has(GeneratorsBlocks.REACTOR_GLASS))
+              .addCriterion(Criterion.has(GeneratorsBlocks.FUSION_REACTOR_GLASS))
               .build(consumer);
         //Frame
-        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.REACTOR_FRAME, 4)
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FUSION_REACTOR_FRAME, 4)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL_CASING, Pattern.EMPTY),
                     TripleLine.of(Pattern.STEEL_CASING, Pattern.ALLOY, Pattern.STEEL_CASING),
@@ -243,47 +243,47 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_ATOMIC_ALLOY)
               .addCriterion(Criterion.HAS_STEEL_CASING)
               .build(consumer, MekanismGenerators.rl("reactor/frame"));
-        RecipeCriterion hasFrame = Criterion.has(GeneratorsBlocks.REACTOR_FRAME);
+        RecipeCriterion hasFrame = Criterion.has(GeneratorsBlocks.FUSION_REACTOR_FRAME);
         //Glass
-        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.REACTOR_GLASS, 4)
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FUSION_REACTOR_GLASS, 4)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY),
                     TripleLine.of(FRAME_CHAR, GLASS_CHAR, FRAME_CHAR),
                     TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY))
               ).key(GLASS_CHAR, Tags.Items.GLASS)
-              .key(FRAME_CHAR, GeneratorsBlocks.REACTOR_FRAME)
+              .key(FRAME_CHAR, GeneratorsBlocks.FUSION_REACTOR_FRAME)
               .addCriterion(hasFrame)
               .build(consumer, MekanismGenerators.rl("reactor/glass"));
         //Port
-        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.REACTOR_PORT, 2)
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FUSION_REACTOR_PORT, 2)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY),
                     TripleLine.of(FRAME_CHAR, Pattern.CIRCUIT, FRAME_CHAR),
                     TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
-              .key(FRAME_CHAR, GeneratorsBlocks.REACTOR_FRAME)
+              .key(FRAME_CHAR, GeneratorsBlocks.FUSION_REACTOR_FRAME)
               .addCriterion(hasFrame)
               .addCriterion(Criterion.HAS_ULTIMATE_CIRCUIT)
               .build(consumer, MekanismGenerators.rl("reactor/port"));
         //Logic Adapter
-        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.REACTOR_LOGIC_ADAPTER)
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.REDSTONE, Pattern.EMPTY),
                     TripleLine.of(Pattern.REDSTONE, FRAME_CHAR, Pattern.REDSTONE),
                     TripleLine.of(Pattern.EMPTY, Pattern.REDSTONE, Pattern.EMPTY))
-              ).key(FRAME_CHAR, GeneratorsBlocks.REACTOR_FRAME)
+              ).key(FRAME_CHAR, GeneratorsBlocks.FUSION_REACTOR_FRAME)
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
               .addCriterion(hasFrame)
               .build(consumer, MekanismGenerators.rl("reactor/logic_adapter"));
         //Controller
-        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.REACTOR_CONTROLLER)
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CIRCUIT, GLASS_CHAR, Pattern.CIRCUIT),
                     TripleLine.of(FRAME_CHAR, Pattern.TANK, FRAME_CHAR),
                     TripleLine.of(FRAME_CHAR, FRAME_CHAR, FRAME_CHAR))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(GLASS_CHAR, Tags.Items.GLASS_PANES)
-              .key(FRAME_CHAR, GeneratorsBlocks.REACTOR_FRAME)
+              .key(FRAME_CHAR, GeneratorsBlocks.FUSION_REACTOR_FRAME)
               .key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
               .addCriterion(hasFrame)
               .build(consumer, MekanismGenerators.rl("reactor/controller"));

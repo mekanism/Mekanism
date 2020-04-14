@@ -13,13 +13,13 @@
       "tag": "forge:glass_panes"
     },
     "F": {
-      "item": "mekanismgenerators:reactor_frame"
+      "item": "mekanismgenerators:fusion_reactor_frame"
     },
     "T": {
       "item": "mekanism:basic_gas_tank"
     }
   },
   "result": {
-    "item": "mekanismgenerators:reactor_controller"
+    "item": "mekanismgenerators:fusion_reactor_controller"
   }
 }

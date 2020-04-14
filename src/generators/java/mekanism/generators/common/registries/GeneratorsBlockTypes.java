@@ -26,10 +26,10 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
-import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
-import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorFrame;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
@@ -45,7 +45,7 @@ public class GeneratorsBlockTypes {
     private static final FloatingLong STORAGE = FloatingLong.createConst(160_000);
     private static final FloatingLong STORAGE2 = FloatingLong.createConst(200_000);
     private static final FloatingLong SOLAR_STORAGE = FloatingLong.createConst(96_000);
-    private static final FloatingLong REACTOR_STORAGE = FloatingLong.createConst(1_000_000_000);
+    private static final FloatingLong FUSION_REACTOR_STORAGE = FloatingLong.createConst(1_000_000_000);
 
     // Heat Generator
     public static final Generator<TileEntityHeatGenerator> HEAT_GENERATOR = GeneratorBuilder
@@ -145,29 +145,29 @@ public class GeneratorsBlockTypes {
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_FUEL_ASSEMBLY, GeneratorsLang.DESCRIPTION_FISSION_FUEL_ASSEMBLY)
           .build();
 
-    // Reactor Controller
-    public static final BlockTypeTile<TileEntityReactorController> REACTOR_CONTROLLER = BlockTileBuilder
-          .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_CONTROLLER, GeneratorsLang.DESCRIPTION_REACTOR_CONTROLLER)
-          .withGui(() -> GeneratorsContainerTypes.REACTOR_CONTROLLER)
-          .withEnergyConfig(() -> REACTOR_STORAGE)
+    // Fusion Reactor Controller
+    public static final BlockTypeTile<TileEntityFusionReactorController> FUSION_REACTOR_CONTROLLER = BlockTileBuilder
+          .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_CONTROLLER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_CONTROLLER)
+          .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_CONTROLLER)
+          .withEnergyConfig(() -> FUSION_REACTOR_STORAGE)
           .withSound(GeneratorsSounds.FUSION_REACTOR)
           .with(new AttributeStateActive(), new AttributeInventory())
           .build();
-    // Reactor Port
-    public static final BlockTypeTile<TileEntityReactorPort> REACTOR_PORT = BlockTileBuilder
-          .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_PORT, GeneratorsLang.DESCRIPTION_REACTOR_PORT)
+    // Fusion Reactor Port
+    public static final BlockTypeTile<TileEntityFusionReactorPort> FUSION_REACTOR_PORT = BlockTileBuilder
+          .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_PORT)
           .with(new AttributeStateActive())
           .build();
-    // Reactor Frame
-    public static final BlockTypeTile<TileEntityReactorFrame> REACTOR_FRAME = BlockTileBuilder
-          .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_FRAME, GeneratorsLang.DESCRIPTION_REACTOR_FRAME)
+    // Fusion Reactor Frame
+    public static final BlockTypeTile<TileEntityFusionReactorFrame> FUSION_REACTOR_FRAME = BlockTileBuilder
+          .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_FRAME, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_FRAME)
           .withEnergyConfig(null, null)
           .build();
-    // Reactor Logic Adapter
-    public static final BlockTypeTile<TileEntityReactorLogicAdapter> REACTOR_LOGIC_ADAPTER = BlockTileBuilder
-          .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_REACTOR_LOGIC_ADAPTER)
-          .withGui(() -> GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER)
-          .with(new AttributeRedstoneEmitter<TileEntityReactorLogicAdapter>((tile) -> tile.checkMode() ? 15 : 0))
-          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER, i, inv, tile)))
+    // Fusion Reactor Logic Adapter
+    public static final BlockTypeTile<TileEntityFusionReactorLogicAdapter> FUSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
+          .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_LOGIC_ADAPTER)
+          .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
+          .with(new AttributeRedstoneEmitter<TileEntityFusionReactorLogicAdapter>((tile) -> tile.checkMode() ? 15 : 0))
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER, i, inv, tile)))
           .build();
 }

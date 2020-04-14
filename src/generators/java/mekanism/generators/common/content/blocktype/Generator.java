@@ -1,6 +1,5 @@
 package mekanism.generators.common.content.blocktype;
 
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.attribute.AttributeStateActive;
@@ -12,13 +11,8 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.generators.common.GeneratorsLang;
 
 public class Generator<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE> {
-
-    protected DoubleSupplier energyStorage;
-
-    protected GeneratorsLang description;
 
     public Generator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
         super(tileEntityRegistrar, description);

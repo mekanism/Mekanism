@@ -10,11 +10,11 @@
       "tag": "forge:glass"
     },
     "F": {
-      "item": "mekanismgenerators:reactor_frame"
+      "item": "mekanismgenerators:fusion_reactor_frame"
     }
   },
   "result": {
-    "item": "mekanismgenerators:reactor_glass",
+    "item": "mekanismgenerators:fusion_reactor_glass",
     "count": 4
   }
 }

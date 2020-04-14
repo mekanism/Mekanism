@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanismgenerators:block/reactor/laser_focus_matrix"
+      "model": "mekanismgenerators:block/fusion/laser_focus_matrix"
     }
   }
 }

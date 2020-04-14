@@ -12,8 +12,8 @@ import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.generators.client.render.item.GeneratorsISTERProvider;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.reactor.BlockLaserFocusMatrix;
-import mekanism.generators.common.block.reactor.BlockReactorGlass;
+import mekanism.generators.common.block.fusion.BlockFusionReactorGlass;
+import mekanism.generators.common.block.fusion.BlockLaserFocusMatrix;
 import mekanism.generators.common.block.turbine.BlockTurbineRotor;
 import mekanism.generators.common.content.blocktype.Generator;
 import mekanism.generators.common.item.generator.ItemBlockAdvancedSolarGenerator;
@@ -26,10 +26,10 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
-import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
-import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorFrame;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
@@ -60,11 +60,11 @@ public class GeneratorsBlocks {
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityFissionReactorCasing>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityFissionReactorCasing>>> FISSION_REACTOR_CASING = registerTooltipBlock("fission_reactor_casing", () -> new BlockBasicMultiblock<>(GeneratorsBlockTypes.FISSION_REACTOR_CASING));
     public static final BlockRegistryObject<BlockTileModel<TileEntityFissionFuelAssembly, BlockTypeTile<TileEntityFissionFuelAssembly>>, ItemBlockTooltip<BlockTileModel<TileEntityFissionFuelAssembly, BlockTypeTile<TileEntityFissionFuelAssembly>>>> FISSION_FUEL_ASSEMBLY = registerTooltipBlock("fission_fuel_assembly", () -> new BlockTileModel<>(GeneratorsBlockTypes.FISSION_FUEL_ASSEMBLY));
 
-    public static final BlockRegistryObject<BlockTile<TileEntityReactorController, BlockTypeTile<TileEntityReactorController>>, ItemBlockTooltip<BlockTile<TileEntityReactorController, BlockTypeTile<TileEntityReactorController>>>> REACTOR_CONTROLLER = registerTooltipBlock("reactor_controller", () -> new BlockTile<>(GeneratorsBlockTypes.REACTOR_CONTROLLER));
-    public static final BlockRegistryObject<BlockTile<TileEntityReactorFrame, BlockTypeTile<TileEntityReactorFrame>>, ItemBlockTooltip<BlockTile<TileEntityReactorFrame, BlockTypeTile<TileEntityReactorFrame>>>> REACTOR_FRAME = registerTooltipBlock("reactor_frame", () -> new BlockTile<>(GeneratorsBlockTypes.REACTOR_FRAME));
-    public static final BlockRegistryObject<BlockTile<TileEntityReactorPort, BlockTypeTile<TileEntityReactorPort>>, ItemBlockTooltip<BlockTile<TileEntityReactorPort, BlockTypeTile<TileEntityReactorPort>>>> REACTOR_PORT = registerTooltipBlock("reactor_port", () -> new BlockTile<>(GeneratorsBlockTypes.REACTOR_PORT));
-    public static final BlockRegistryObject<BlockTile<TileEntityReactorLogicAdapter, BlockTypeTile<TileEntityReactorLogicAdapter>>, ItemBlockTooltip<BlockTile<TileEntityReactorLogicAdapter, BlockTypeTile<TileEntityReactorLogicAdapter>>>> REACTOR_LOGIC_ADAPTER = registerTooltipBlock("reactor_logic_adapter", () -> new BlockTile<>(GeneratorsBlockTypes.REACTOR_LOGIC_ADAPTER));
-    public static final BlockRegistryObject<BlockReactorGlass, ItemBlockTooltip<BlockReactorGlass>> REACTOR_GLASS = registerTooltipBlock("reactor_glass", BlockReactorGlass::new);
+    public static final BlockRegistryObject<BlockTile<TileEntityFusionReactorController, BlockTypeTile<TileEntityFusionReactorController>>, ItemBlockTooltip<BlockTile<TileEntityFusionReactorController, BlockTypeTile<TileEntityFusionReactorController>>>> FUSION_REACTOR_CONTROLLER = registerTooltipBlock("fusion_reactor_controller", () -> new BlockTile<>(GeneratorsBlockTypes.FUSION_REACTOR_CONTROLLER));
+    public static final BlockRegistryObject<BlockTile<TileEntityFusionReactorFrame, BlockTypeTile<TileEntityFusionReactorFrame>>, ItemBlockTooltip<BlockTile<TileEntityFusionReactorFrame, BlockTypeTile<TileEntityFusionReactorFrame>>>> FUSION_REACTOR_FRAME = registerTooltipBlock("fusion_reactor_frame", () -> new BlockTile<>(GeneratorsBlockTypes.FUSION_REACTOR_FRAME));
+    public static final BlockRegistryObject<BlockTile<TileEntityFusionReactorPort, BlockTypeTile<TileEntityFusionReactorPort>>, ItemBlockTooltip<BlockTile<TileEntityFusionReactorPort, BlockTypeTile<TileEntityFusionReactorPort>>>> FUSION_REACTOR_PORT = registerTooltipBlock("fusion_reactor_port", () -> new BlockTile<>(GeneratorsBlockTypes.FUSION_REACTOR_PORT));
+    public static final BlockRegistryObject<BlockTile<TileEntityFusionReactorLogicAdapter, BlockTypeTile<TileEntityFusionReactorLogicAdapter>>, ItemBlockTooltip<BlockTile<TileEntityFusionReactorLogicAdapter, BlockTypeTile<TileEntityFusionReactorLogicAdapter>>>> FUSION_REACTOR_LOGIC_ADAPTER = registerTooltipBlock("fusion_reactor_logic_adapter", () -> new BlockTile<>(GeneratorsBlockTypes.FUSION_REACTOR_LOGIC_ADAPTER));
+    public static final BlockRegistryObject<BlockFusionReactorGlass, ItemBlockTooltip<BlockFusionReactorGlass>> FUSION_REACTOR_GLASS = registerTooltipBlock("fusion_reactor_glass", BlockFusionReactorGlass::new);
     public static final BlockRegistryObject<BlockLaserFocusMatrix, ItemBlockTooltip<BlockLaserFocusMatrix>> LASER_FOCUS_MATRIX = registerTooltipBlock("laser_focus_matrix", BlockLaserFocusMatrix::new);
 
     private static <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerTooltipBlock(String name, Supplier<BLOCK> blockCreator) {
