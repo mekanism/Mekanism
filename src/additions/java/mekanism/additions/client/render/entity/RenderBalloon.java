@@ -43,7 +43,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
     }
 
     @Override
-    protected int getBlockLight(EntityBalloon balloon, float partialTick) {
+    protected int getBlockLight(@Nonnull EntityBalloon balloon, float partialTick) {
         //We always want our balloon to have full brightness
         return 15;
     }

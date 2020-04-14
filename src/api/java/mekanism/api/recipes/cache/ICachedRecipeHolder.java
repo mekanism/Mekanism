@@ -24,11 +24,19 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
                 if (currentCache == null || cached != null) {
                     //Only override our cached recipe if we were able to find a recipe that matches, or we don't have a cached recipe.
                     // This way if we end up getting back to the same recipe we won't have to recalculate quite as much
+                    if (currentCache == null && cached != null) {
+                        //If we don't have a current cache try loading our operating ticks from the tile
+                        cached.loadSavedOperatingTicks(getSavedOperatingTicks(cacheIndex));
+                    }
                     return cached;
                 }
             }
         }
         return currentCache;
+    }
+
+    default int getSavedOperatingTicks(int cacheIndex) {
+        return 0;
     }
 
     @Nullable

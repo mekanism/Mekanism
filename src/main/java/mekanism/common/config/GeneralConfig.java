@@ -97,7 +97,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         allowChunkloading = CachedBooleanValue.wrap(this, builder.comment("Disable to make the anchor upgrade not do anything.")
               .define("allowChunkloading", true));
         blockDeactivationDelay = CachedIntValue.wrap(this, builder.comment("How many ticks must pass until a block's active state is synced with the client, if it has been rapidly changing.")
-              .define("blockDeactivationDelay", 100));
+              .define("blockDeactivationDelay", 60));
         cardboardModBlacklist = CachedConfigValue.wrap(this, builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box.")
               .define("cardboardModBlacklist", new ArrayList<>()));
         prefilledGasTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative gas tanks to creative/JEI.")

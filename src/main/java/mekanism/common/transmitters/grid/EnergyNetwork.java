@@ -25,7 +25,7 @@ import mekanism.common.distribution.target.EnergyAcceptorTarget;
 import mekanism.common.distribution.target.EnergyTransmitterSaveTarget;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
-import mekanism.common.integration.EnergyCompatUtils;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;

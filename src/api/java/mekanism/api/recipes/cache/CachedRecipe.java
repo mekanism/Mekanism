@@ -52,14 +52,9 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      * Ticks the machine has spent processing so far
      */
     private int operatingTicks;
-    //TODO: Use this throughout mekanism
     //Allows for cached recipe holders to have handling for when the operating ticks changed (this will be used for allowing the containers to sync the progress)
     private IntConsumer operatingTicksChanged = ticks -> {
     };
-    //TODO: We need to sync the operating ticks back to the machines
-    // Maybe we should also save/load cached recipes when a machine gets saved
-    // If we add a setter for the operating ticks, then this should be relatively simple to have it copy from one machine to the upgrades
-    // and also to load what state the recipe was at.
 
     protected CachedRecipe(RECIPE recipe) {
         this.recipe = recipe;
@@ -70,7 +65,6 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         return this;
     }
 
-    //TODO: Rename
     public CachedRecipe<RECIPE> setActive(BooleanConsumer setActive) {
         this.setActive = setActive;
         return this;
@@ -104,6 +98,12 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         return this;
     }
 
+    public void loadSavedOperatingTicks(int operatingTicks) {
+        if (operatingTicks > 0 && operatingTicks < getTicksRequired()) {
+            this.operatingTicks = operatingTicks;
+        }
+    }
+
     public void process() {
         //TODO: Given we are going to probably have ALL recipes check the getOperationsThisTick(), we are going to
         // want some way to check things so that by default it doesn't do the max operations and instead does a single
@@ -115,7 +115,8 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
             //Always use energy, as that is a constant thing we can check
             useEnergy(operations);
             operatingTicks++;
-            if (operatingTicks >= getTicksRequired()) {
+            int ticksRequired = getTicksRequired();
+            if (operatingTicks >= ticksRequired) {
                 operatingTicks = 0;
                 finishProcessing(operations);
                 onFinish.run();
@@ -123,12 +124,11 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
                 //If we still have ticks left required to operate, use the contents
                 useResources(operations);
             }
-            //TODO: Do we want to make it so if required ticks is 1, that this isn't fired as it will be ++ -> 1 then set to zero again
-            operatingTicksChanged.accept(operatingTicks);
+            if (ticksRequired > 1) {
+                //If no ticks are required don't bother marking it as changed as it resets itself back to the same value
+                operatingTicksChanged.accept(operatingTicks);
+            }
         } else {
-            //TODO: Check performance, previously this only would set it to inactive if the energy the machine had last tick is less than
-            // the energy we have now. Due to the performance improvements that were made to handling the active states, I believe that
-            // using the more accurate "disabling" of machines makes more sense
             setActive.accept(false);
             if (operations < 0) {
                 //Reset the progress

@@ -1,43 +1,43 @@
-package mekanism.common.integration.forgeenergy;
+package mekanism.common.integration.energy.fluxnetworks;
 
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.integration.EnergyCompatUtils.EnergyType;
-import net.minecraftforge.energy.IEnergyStorage;
+import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
+import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
 
-public class ForgeEnergyIntegration implements IEnergyStorage {
+public class FNIntegration implements IFNEnergyStorage {
 
     private final IStrictEnergyHandler handler;
 
-    public ForgeEnergyIntegration(IStrictEnergyHandler handler) {
+    public FNIntegration(IStrictEnergyHandler handler) {
         this.handler = handler;
     }
 
     @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
+    public long receiveEnergyL(long maxReceive, boolean simulate) {
         if (maxReceive <= 0) {
             return 0;
         }
         FloatingLong toInsert = EnergyType.FORGE.convertFrom(maxReceive);
-        return EnergyType.FORGE.convertToAsInt(toInsert.subtract(handler.insertEnergy(toInsert, Action.get(!simulate))));
+        return EnergyType.FORGE.convertToAsLong(toInsert.subtract(handler.insertEnergy(toInsert, Action.get(!simulate))));
     }
 
     @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        return maxExtract <= 0 ? 0 : EnergyType.FORGE.convertToAsInt(handler.extractEnergy(EnergyType.FORGE.convertFrom(maxExtract), Action.get(!simulate)));
+    public long extractEnergyL(long maxExtract, boolean simulate) {
+        return maxExtract <= 0 ? 0 : EnergyType.FORGE.convertToAsLong(handler.extractEnergy(EnergyType.FORGE.convertFrom(maxExtract), Action.get(!simulate)));
     }
 
     @Override
-    public int getEnergyStored() {
+    public long getEnergyStoredL() {
         int containers = handler.getEnergyContainerCount();
         if (containers > 0) {
-            int energy = 0;
+            long energy = 0;
             for (int container = 0; container < containers; container++) {
-                int total = EnergyType.FORGE.convertToAsInt(handler.getEnergy(container));
-                if (total > Integer.MAX_VALUE - energy) {
+                long total = EnergyType.FORGE.convertToAsLong(handler.getEnergy(container));
+                if (total > Long.MAX_VALUE - energy) {
                     //Ensure we don't overflow
-                    energy = Integer.MAX_VALUE;
+                    energy = Long.MAX_VALUE;
                     break;
                 } else {
                     energy += total;
@@ -49,15 +49,15 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
     }
 
     @Override
-    public int getMaxEnergyStored() {
+    public long getMaxEnergyStoredL() {
         int containers = handler.getEnergyContainerCount();
         if (containers > 0) {
-            int maxEnergy = 0;
+            long maxEnergy = 0;
             for (int container = 0; container < containers; container++) {
-                int max = EnergyType.FORGE.convertToAsInt(handler.getMaxEnergy(container));
-                if (max > Integer.MAX_VALUE - maxEnergy) {
+                long max = EnergyType.FORGE.convertToAsLong(handler.getMaxEnergy(container));
+                if (max > Long.MAX_VALUE - maxEnergy) {
                     //Ensure we don't overflow
-                    maxEnergy = Integer.MAX_VALUE;
+                    maxEnergy = Long.MAX_VALUE;
                     break;
                 } else {
                     maxEnergy += max;
@@ -69,12 +69,12 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
     }
 
     @Override
-    public boolean canExtract() {
+    public boolean canExtractL() {
         return !handler.extractEnergy(FloatingLong.ONE, Action.SIMULATE).isZero();
     }
 
     @Override
-    public boolean canReceive() {
+    public boolean canReceiveL() {
         return handler.insertEnergy(FloatingLong.ONE, Action.SIMULATE).smallerThan(FloatingLong.ONE);
     }
 }

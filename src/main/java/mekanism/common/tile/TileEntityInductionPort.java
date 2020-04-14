@@ -27,6 +27,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     public TileEntityInductionPort() {
         super(MekanismBlocks.INDUCTION_PORT);
+        delaySupplier = () -> 0;
     }
 
     @Nonnull

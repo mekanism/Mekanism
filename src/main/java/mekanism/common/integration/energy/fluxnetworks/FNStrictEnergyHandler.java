@@ -1,4 +1,4 @@
-package mekanism.common.integration.fluxnetworks.forgeenergy;
+package mekanism.common.integration.energy.fluxnetworks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -6,7 +6,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.integration.EnergyCompatUtils.EnergyType;
+import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
 
 @ParametersAreNonnullByDefault

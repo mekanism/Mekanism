@@ -31,7 +31,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.EnergyCompatUtils.EnergyType;
+import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.integration.GenericWrench;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;

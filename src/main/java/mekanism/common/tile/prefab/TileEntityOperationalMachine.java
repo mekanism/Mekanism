@@ -23,8 +23,7 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     public int BASE_TICKS_REQUIRED;
 
     public int ticksRequired;
-    //TODO: Protected?
-    public CachedRecipe<RECIPE> cachedRecipe = null;
+    protected CachedRecipe<RECIPE> cachedRecipe = null;
 
     protected TileEntityOperationalMachine(IBlockProvider blockProvider, int baseTicksRequired) {
         super(blockProvider);
@@ -32,7 +31,7 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     }
 
     public double getScaledProgress() {
-        return (double) getOperatingTicks() / (double) ticksRequired;
+        return getOperatingTicks() / (double) ticksRequired;
     }
 
     protected void setOperatingTicks(int ticks) {
@@ -40,21 +39,17 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     }
 
     public int getOperatingTicks() {
-        //TODO: Can this just be return operatingTicks;
-        // Most likely yes as we have the cached recipe update our operating ticks value
-        if (isRemote()) {
-            return operatingTicks;
-        }
-        if (cachedRecipe == null) {
-            return 0;
-        }
-        return cachedRecipe.getOperatingTicks();
+        return operatingTicks;
+    }
+
+    @Override
+    public int getSavedOperatingTicks(int cacheIndex) {
+        return getOperatingTicks();
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
     }
 
@@ -62,7 +57,6 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
         return nbtTags;
     }

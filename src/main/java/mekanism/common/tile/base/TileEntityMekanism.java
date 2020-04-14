@@ -75,7 +75,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
-import mekanism.common.integration.EnergyCompatUtils;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -1177,7 +1177,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (isActivatable()) {
             BlockState state = getBlockState();
             Block block = state.getBlock();
-            if (Attribute.has(block, AttributeStateActive.class)) {
+            if (active != currentActive && Attribute.has(block, AttributeStateActive.class)) {
                 currentActive = active;
                 if (getClientActive() != active) {
                     if (active) {
