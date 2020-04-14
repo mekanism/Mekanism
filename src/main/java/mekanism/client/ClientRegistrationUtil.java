@@ -122,7 +122,6 @@ public class ClientRegistrationUtil {
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidROs) {
             RenderTypeLookup.setRenderLayer(fluidRO.getStillFluid(), type);
             RenderTypeLookup.setRenderLayer(fluidRO.getFlowingFluid(), type);
-            //TODO: Do we need to set the block as well?
         }
     }
 
@@ -130,7 +129,6 @@ public class ClientRegistrationUtil {
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidROs) {
             RenderTypeLookup.setRenderLayer(fluidRO.getStillFluid(), predicate);
             RenderTypeLookup.setRenderLayer(fluidRO.getFlowingFluid(), predicate);
-            //TODO: Do we need to set the block as well?
         }
     }
 }

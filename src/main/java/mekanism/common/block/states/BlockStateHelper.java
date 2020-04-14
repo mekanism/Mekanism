@@ -29,7 +29,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
 import org.jetbrains.annotations.Contract;
 
-//TODO: Set default state for different blocks if the default is not ideal
 public class BlockStateHelper {
 
     public static final DirectionProperty facingProperty = BlockStateProperties.FACING;
@@ -125,17 +124,6 @@ public class BlockStateHelper {
             IFluidState fluidState = world.getFluidState(pos);
             state = state.with(FLUID_LOGGED, fluidState.getFluid() == Fluids.WATER);
         }
-        //TODO: I don't know if there is a tile entity yet so this stuff may not really matter
-        //TODO: Set the proper defaults for the below ones, maybe do it by setting property defaults of everything
-        // Also ensure that when the state changes from the tile the state is actually updated
-        /*if (block instanceof IStateActive) {
-            //TODO: False by default??
-            state = state.with(activeProperty, ((IStateActive) block).isActive(tile));
-        }
-        if (block instanceof IStateStorage) {
-            //TODO: Do this based on if something is getting boxed up
-            state = state.with(storageProperty, isStoring(tile));
-        }*/
         return state;
     }
 

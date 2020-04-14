@@ -73,7 +73,7 @@ public class MekanismGenerators implements IModule {
         //TODO: Move recipes to JSON
         //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
         FuelHandler.addGas(MekanismGases.ETHENE, MekanismConfig.general.ETHENE_BURN_TIME.get(),
-              MekanismConfig.general.FROM_H2.get().add(MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2 * MekanismConfig.general.ETHENE_BURN_TIME.get())));
+              MekanismConfig.general.FROM_H2.get().add(MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get())));
 
         MinecraftForge.EVENT_BUS.register(this);
 

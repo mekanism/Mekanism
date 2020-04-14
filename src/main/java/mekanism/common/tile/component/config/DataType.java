@@ -2,6 +2,7 @@ package mekanism.common.tile.component.config;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
@@ -41,7 +42,6 @@ public enum DataType implements IIncrementalEnum<DataType>, IHasTranslationKey {
     }
 
     public static DataType byIndexStatic(int index) {
-        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-        return TYPES[Math.floorMod(index, TYPES.length)];
+        return MathUtils.getByIndexMod(TYPES, index);
     }
 }

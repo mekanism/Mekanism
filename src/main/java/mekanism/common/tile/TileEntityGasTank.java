@@ -9,6 +9,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.IHasTextComponent;
@@ -273,8 +274,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
         }
 
         public static GasMode byIndexStatic(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return MODES[Math.floorMod(index, MODES.length)];
+            return MathUtils.getByIndexMod(MODES, index);
         }
     }
 }

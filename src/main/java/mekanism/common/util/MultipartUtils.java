@@ -1,16 +1,15 @@
 package mekanism.common.util;
 
 import java.util.Collection;
-import java.util.Collections;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import org.apache.commons.lang3.tuple.Pair;
 
 //TODO: How much of this ray trace stuff is even needed now that MC is smarter about ray tracing and using VoxelShapes
@@ -35,18 +34,22 @@ public final class MultipartUtils {
         return Pair.of(start, end);
     }
 
-    public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, Collection<AxisAlignedBB> boxes) {
+    public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, Collection<VoxelShape> boxes) {
         double minDistance = Double.POSITIVE_INFINITY;
         AdvancedRayTraceResult hit = null;
         int i = -1;
-
-        for (AxisAlignedBB aabb : boxes) {
-            AdvancedRayTraceResult result = aabb == null ? null : collisionRayTrace(pos, start, end, aabb, i, null);
-            if (result != null) {
-                double d = result.squareDistanceTo(start);
-                if (d < minDistance) {
-                    minDistance = d;
-                    hit = result;
+        for (VoxelShape shape : boxes) {
+            if (shape != null) {
+                BlockRayTraceResult result = shape.rayTrace(start, end, pos);
+                if (result != null) {
+                    result.subHit = i;
+                    result.hitInfo = null;
+                    AdvancedRayTraceResult advancedResult = new AdvancedRayTraceResult(result, shape);
+                    double d = advancedResult.squareDistanceTo(start);
+                    if (d < minDistance) {
+                        minDistance = d;
+                        hit = advancedResult;
+                    }
                 }
             }
             i++;
@@ -54,24 +57,14 @@ public final class MultipartUtils {
         return hit;
     }
 
-    public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, AxisAlignedBB bounds, int subHit, Object hitInfo) {
-        BlockRayTraceResult result = AxisAlignedBB.rayTrace(Collections.singleton(bounds), start, end, pos);
-        if (result == null) {
-            return null;
-        }
-        result.subHit = subHit;
-        result.hitInfo = hitInfo;
-        return new AdvancedRayTraceResult(result, bounds);
-    }
+    public static class AdvancedRayTraceResult {
 
-    private static class AdvancedRayTraceResultBase<T extends RayTraceResult> {
+        public final VoxelShape bounds;
+        public final RayTraceResult hit;
 
-        public final AxisAlignedBB bounds;
-        public final T hit;
-
-        public AdvancedRayTraceResultBase(T mop, AxisAlignedBB aabb) {
+        public AdvancedRayTraceResult(RayTraceResult mop, VoxelShape shape) {
             hit = mop;
-            bounds = aabb;
+            bounds = shape;
         }
 
         public boolean valid() {
@@ -80,13 +73,6 @@ public final class MultipartUtils {
 
         public double squareDistanceTo(Vec3d vec) {
             return hit.getHitVec().squareDistanceTo(vec);
-        }
-    }
-
-    public static class AdvancedRayTraceResult extends AdvancedRayTraceResultBase<RayTraceResult> {
-
-        public AdvancedRayTraceResult(RayTraceResult mop, AxisAlignedBB bounds) {
-            super(mop, bounds);
         }
     }
 }

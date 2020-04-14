@@ -19,6 +19,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
@@ -293,8 +294,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
         }
 
         public static ConfiguratorMode byIndexStatic(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return MODES[Math.floorMod(index, MODES.length)];
+            return MathUtils.getByIndexMod(MODES, index);
         }
     }
 }

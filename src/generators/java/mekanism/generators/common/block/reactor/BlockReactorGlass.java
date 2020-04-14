@@ -32,8 +32,7 @@ import net.minecraft.world.World;
 public class BlockReactorGlass extends BlockMekanism implements IHasTileEntity<TileEntityReactorGlass>, IHasDescription {
 
     public BlockReactorGlass() {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F).notSolid());
-        //TODO: Should the material be glass? check other materials of various blocks as well
+        super(Block.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 8F).notSolid());
     }
 
     @Override

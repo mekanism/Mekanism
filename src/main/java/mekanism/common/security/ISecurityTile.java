@@ -2,6 +2,7 @@ package mekanism.common.security;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
@@ -44,8 +45,7 @@ public interface ISecurityTile {
         }
 
         public static SecurityMode byIndexStatic(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return MODES[Math.floorMod(index, MODES.length)];
+            return MathUtils.getByIndexMod(MODES, index);
         }
     }
 }

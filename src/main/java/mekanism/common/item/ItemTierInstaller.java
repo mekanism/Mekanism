@@ -15,7 +15,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -30,7 +29,7 @@ public class ItemTierInstaller extends Item {
     private final BaseTier toTier;
 
     public ItemTierInstaller(@Nullable BaseTier fromTier, @Nonnull BaseTier toTier, Properties properties) {
-        super(properties.maxStackSize(1));
+        super(properties);
         this.fromTier = fromTier;
         this.toTier = toTier;
     }
@@ -83,15 +82,14 @@ public class ItemTierInstaller extends Item {
                             Mekanism.logger.warn("Error upgrading block at position: {} in {}.", pos, world);
                             return ActionResultType.FAIL;
                         } else {
-                            if (tile instanceof ITileDirectional) {
+                            if (tile instanceof ITileDirectional && ((ITileDirectional) tile).isDirectional()) {
                                 upgradedTile.setFacing(((ITileDirectional) tile).getDirection());
                             }
                             upgradedTile.parseUpgradeData(upgradeData);
                             upgradedTile.sendUpdatePacket();
                             upgradedTile.markDirty();
                             if (!player.isCreative()) {
-                                ItemStack stack = player.getHeldItem(context.getHand());
-                                stack.shrink(1);
+                                player.getHeldItem(context.getHand()).shrink(1);
                             }
                             return ActionResultType.SUCCESS;
                         }

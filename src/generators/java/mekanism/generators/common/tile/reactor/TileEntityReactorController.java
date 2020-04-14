@@ -55,7 +55,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityReactorController extends TileEntityReactorBlock {
 
     public static final int MAX_WATER = 100 * FluidAttributes.BUCKET_VOLUME;
-    public static final long MAX_STEAM = MAX_WATER * 100;
+    public static final long MAX_STEAM = MAX_WATER * 100L;
     public static final long MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
 
     public BasicEnergyContainer energyContainer;
@@ -227,8 +227,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
 
     @Override
     public void setActive(boolean active) {
-        //TODO: Improve how we are handling the "active" state for this
-        // We currently call super just so that it updates the block state properly
         super.setActive(active);
         if (active == (getReactor() == null)) {
             setReactor(active ? new FusionReactor(this) : null);

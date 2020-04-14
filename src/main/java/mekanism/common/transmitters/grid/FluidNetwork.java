@@ -101,7 +101,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 } else if (fluidTank.isFluidEqual(net.fluidTank.getFluid())) {
                     int amount = net.fluidTank.getFluidAmount();
                     if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
-                        //TODO: Print warning/error
+                        MekanismUtils.logMismatchedStackSize();
                     }
                 } else if (net.fluidTank.getFluidAmount() > fluidTank.getFluidAmount()) {
                     //TODO: Evaluate, realistically we should never be trying to merge two networks
@@ -137,7 +137,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             //TODO better multiple buffer impl
             int amount = fluid.getAmount();
             if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
-                //TODO: Print warning/error
+                MekanismUtils.logMismatchedStackSize();
             }
         }
     }
@@ -148,7 +148,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             int capacity = getCapacityAsInt();
             if (fluidTank.getFluidAmount() > capacity) {
                 if (fluidTank.setStackSize(capacity, Action.EXECUTE) != capacity) {
-                    //TODO: Print warning/error
+                    MekanismUtils.logMismatchedStackSize();
                 }
             }
         }
@@ -239,7 +239,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             } else {
                 prevTransferAmount = tickEmit(fluidTank.getFluid());
                 if (fluidTank.shrinkStack(prevTransferAmount, Action.EXECUTE) != prevTransferAmount) {
-                    //TODO: Print warning/error
+                    MekanismUtils.logMismatchedStackSize();
                 }
             }
         }

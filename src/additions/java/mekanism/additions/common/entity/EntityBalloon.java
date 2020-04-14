@@ -97,9 +97,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
         color = c;
         dataManager.set(IS_LATCHED, (byte) 1);
-        dataManager.set(LATCHED_X, latched == null ? 0 : latched.getX()); /* Latched X */
-        dataManager.set(LATCHED_Y, latched == null ? 0 : latched.getY()); /* Latched Y */
-        dataManager.set(LATCHED_Z, latched == null ? 0 : latched.getZ()); /* Latched Z */
+        dataManager.set(LATCHED_X, latched.getX());
+        dataManager.set(LATCHED_Y, latched.getY());
+        dataManager.set(LATCHED_Z, latched.getZ());
     }
 
     @Override

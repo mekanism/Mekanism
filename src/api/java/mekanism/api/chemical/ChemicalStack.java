@@ -139,6 +139,9 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     @Override
+    public abstract boolean equals(Object o);
+
+    @Override
     public String toString() {
         return "[" + getType() + ", " + amount + "]";
     }

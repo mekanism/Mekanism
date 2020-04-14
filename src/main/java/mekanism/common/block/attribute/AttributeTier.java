@@ -9,7 +9,7 @@ import mekanism.common.content.blocktype.BlockType.BlockTypeBuilder;
 
 public class AttributeTier<TIER extends ITier> implements Attribute {
 
-    private TIER tier;
+    private final TIER tier;
 
     public AttributeTier(TIER tier) {
         this.tier = tier;
@@ -20,7 +20,7 @@ public class AttributeTier<TIER extends ITier> implements Attribute {
     }
 
     // TODO remove this, eventually we'll natively use BlockType in transmitters
-    private static Map<ITier, BlockType> typeCache = new HashMap<>();
+    private static final Map<ITier, BlockType> typeCache = new HashMap<>();
 
     public static <T extends ITier> BlockType getPassthroughType(T tier) {
         if (typeCache.containsKey(tier)) {

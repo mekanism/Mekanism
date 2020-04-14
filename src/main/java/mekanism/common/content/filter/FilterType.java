@@ -1,5 +1,7 @@
 package mekanism.common.content.filter;
 
+import mekanism.api.math.MathUtils;
+
 public enum FilterType {
     MINER_ITEMSTACK_FILTER,
     MINER_MATERIAL_FILTER,
@@ -14,7 +16,6 @@ public enum FilterType {
     private static final FilterType[] FILTERS = values();
 
     public static FilterType byIndexStatic(int index) {
-        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-        return FILTERS[Math.floorMod(index, FILTERS.length)];
+        return MathUtils.getByIndexMod(FILTERS, index);
     }
 }

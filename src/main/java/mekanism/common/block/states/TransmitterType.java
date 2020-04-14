@@ -1,5 +1,6 @@
 package mekanism.common.block.states;
 
+import mekanism.api.math.MathUtils;
 import mekanism.api.transmitters.TransmissionType;
 
 public enum TransmitterType {
@@ -13,8 +14,8 @@ public enum TransmitterType {
 
     private static final TransmitterType[] TYPES = values();
 
-    private Size size;
-    private TransmissionType transmissionType;
+    private final Size size;
+    private final TransmissionType transmissionType;
 
     TransmitterType(Size size, TransmissionType type) {
         this.size = size;
@@ -30,8 +31,7 @@ public enum TransmitterType {
     }
 
     public static TransmitterType byIndexStatic(int index) {
-        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-        return TYPES[Math.floorMod(index, TYPES.length)];
+        return MathUtils.getByIndexMod(TYPES, index);
     }
 
     public enum Size {

@@ -75,7 +75,6 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         if (ingredient == null) {
             ingredient = getEmptyStack();
         }
-        //TODO: Do this without using toStringHelper
         ToStringHelper toStringHelper = MoreObjects.toStringHelper(GasStack.class);
         CHEMICAL chemical = ingredient.getType();
         toStringHelper.add(getType(), chemical.isEmptyType() ? "none" : TextComponentUtil.build(chemical).getFormattedText());

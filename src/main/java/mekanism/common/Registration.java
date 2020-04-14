@@ -8,7 +8,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 
 //TODO: We may want to just move this stuff into the main Mekanism class
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -26,10 +25,5 @@ public class Registration {
         //TODO: Register a custom shaped crafting recipe serializer if needed
 
         Mekanism.instance.setRecipeCacheManager(new RecipeCacheManager());
-    }
-
-    @SubscribeEvent
-    public static void onFileChange(ModConfig.Reloading configEvent) {
-        //TODO: Handle reloading
     }
 }

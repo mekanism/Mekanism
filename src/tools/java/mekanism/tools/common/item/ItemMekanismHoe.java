@@ -65,7 +65,6 @@ public class ItemMekanismHoe extends HoeItem implements IHasRepairType {
     public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot) {
         Multimap<String, AttributeModifier> attributes = HashMultimap.create();
         if (slot == EquipmentSlotType.MAINHAND) {
-            //TODO: Do we want to allow the attack damage to be set?
             attributes.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", 0, Operation.ADDITION));
             attributes.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", material.getHoeAtkSpeed(), Operation.ADDITION));
         }

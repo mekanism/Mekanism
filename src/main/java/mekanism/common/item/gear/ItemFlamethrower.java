@@ -14,6 +14,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.item.ISTERProvider;
@@ -178,8 +179,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
         }
 
         public static FlamethrowerMode byIndexStatic(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return MODES[Math.floorMod(index, MODES.length)];
+            return MathUtils.getByIndexMod(MODES, index);
         }
     }
 }

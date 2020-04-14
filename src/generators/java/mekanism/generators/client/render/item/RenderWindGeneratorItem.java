@@ -45,7 +45,6 @@ public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
         if (lastTicksUpdated != renderPartialTicks) {
             //Only update the angle if we are in a world and that world is not blacklisted
             if (Minecraft.getInstance().world != null) {
-                //TODO: Should this check to see if this can be cached somehow
                 List<ResourceLocation> blacklistedDimensions = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get();
                 if (blacklistedDimensions.isEmpty() || !blacklistedDimensions.contains(Minecraft.getInstance().world.getDimension().getType().getRegistryName())) {
                     angle = (angle + 2) % 360;

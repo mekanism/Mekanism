@@ -32,7 +32,7 @@ import net.minecraft.world.World;
 public class BlockLaserFocusMatrix extends BlockMekanism implements IHasTileEntity<TileEntityReactorLaserFocusMatrix>, IHasDescription {
 
     public BlockLaserFocusMatrix() {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F).notSolid());
+        super(Block.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 8F).notSolid());
     }
 
     @Override

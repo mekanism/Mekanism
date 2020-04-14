@@ -48,12 +48,12 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                     if (player.isShiftKeyDown()) {
                         stack = StackUtils.size(binSlot.getStack(), 1);
                         if (binSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                            //TODO: Print error that something went wrong??
+                            MekanismUtils.logMismatchedStackSize();
                         }
                     } else {
                         stack = binSlot.getBottomStack();
                         if (!stack.isEmpty() && binSlot.shrinkStack(stack.getCount(), Action.EXECUTE) != stack.getCount()) {
-                            //TODO: Print error that something went wrong??
+                            MekanismUtils.logMismatchedStackSize();
                         }
                     }
                     if (!player.inventory.addItemStackToInventory(stack)) {
@@ -104,7 +104,6 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                             inv.set(i, remain);
                             bin.addTicks = 5;
                         }
-                        //TODO: Is this needed? Maybe it just updates the hotbar and stuff in which case it is needed
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     }
                 }

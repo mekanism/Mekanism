@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import javax.annotation.Nonnull;
+import mekanism.api.math.MathUtils;
 import net.minecraft.util.Direction;
 
 public enum RelativeSide {
@@ -14,8 +15,7 @@ public enum RelativeSide {
     private final static RelativeSide[] SIDES = values();
 
     public static RelativeSide byIndex(int index) {
-        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-        return SIDES[Math.floorMod(index, SIDES.length)];
+        return MathUtils.getByIndexMod(SIDES, index);
     }
 
     /**
@@ -70,7 +70,6 @@ public enum RelativeSide {
      * @apiNote The calculations for what side is what when facing upwards or downwards, is done as if it was facing NORTH and rotated around the X-axis
      */
     public static RelativeSide fromDirections(@Nonnull Direction facing, @Nonnull Direction side) {
-        //TODO: See if this if statement block can be cleaned up given it looks somewhat messy
         if (side == facing) {
             return FRONT;
         } else if (side == facing.getOpposite()) {

@@ -81,7 +81,6 @@ public class ModelSolarNeutronActivator extends Model {
         panel3.setRotationPoint(-2.75F, -4.95F, 8F);
         panel3.setTextureSize(128, 64);
         panel3.mirror = true;
-        //TODO
         setRotation(panel3, -0.1082104F, 0.0279253F, 0.2617994F);
         port = new ExtendedModelRenderer(this, 0, 45);
         port.addBox(0F, 0F, 0F, 8, 8, 1, false);

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
@@ -92,8 +93,7 @@ public enum Upgrade implements IHasTranslationKey {
     }
 
     public static Upgrade byIndexStatic(int index) {
-        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-        return UPGRADES[Math.floorMod(index, UPGRADES.length)];
+        return MathUtils.getByIndexMod(UPGRADES, index);
     }
 
     public interface IUpgradeInfoHandler {

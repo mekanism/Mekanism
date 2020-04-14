@@ -6,6 +6,7 @@ import mekanism.api.Action;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -87,7 +88,7 @@ public class BinExtractRecipe extends BinRecipe {
                     break;
                 }
                 if (slot.shrinkStack(bottomStack.getCount(), Action.EXECUTE) != bottomStack.getCount()) {
-                    //TODO: Print error that something went wrong??
+                    MekanismUtils.logMismatchedStackSize();
                 }
                 remaining.set(i, binStack);
                 break;

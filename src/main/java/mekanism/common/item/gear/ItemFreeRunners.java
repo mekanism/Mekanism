@@ -7,6 +7,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.armor.CustomArmor;
@@ -154,8 +155,7 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
         }
 
         public static FreeRunnerMode byIndexStatic(int index) {
-            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
-            return MODES[Math.floorMod(index, MODES.length)];
+            return MathUtils.getByIndexMod(MODES, index);
         }
     }
 

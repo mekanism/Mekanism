@@ -35,7 +35,6 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         if (!world.isRemote && state.hasTileEntity() && state.getBlock() != newState.getBlock()) {
             TileEntityTurbineRotor tile = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
             if (tile != null) {
-                //TODO: Evaluate
                 int amount = tile.getHousedBlades();
                 if (amount > 0) {
                     spawnAsEntity(world, pos, GeneratorsItems.TURBINE_BLADE.getItemStack(amount));

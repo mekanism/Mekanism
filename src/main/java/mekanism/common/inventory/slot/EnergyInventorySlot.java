@@ -10,16 +10,17 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.common.integration.EnergyCompatUtils;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -147,11 +148,11 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                         if (!output.isZero() && energyContainer.insert(output, Action.SIMULATE, AutomationType.MANUAL).isZero()) {
                             //If we can accept it all, then add it and decrease our input
                             if (!energyContainer.insert(output, Action.EXECUTE, AutomationType.MANUAL).isZero()) {
-                                //TODO: Print warning/error
+                                MekanismUtils.logMismatchedStackSize();
                             }
                             int amountUsed = itemInput.getCount();
                             if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
-                                //TODO: Print warning/error
+                                MekanismUtils.logMismatchedStackSize();
                             }
                         }
                     }
@@ -190,7 +191,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                         if (!extractedEnergy.isZero()) {
                             //If we were able to actually extract it from the item, then insert it into our energy container
                             if (!energyContainer.insert(extractedEnergy, Action.EXECUTE, AutomationType.INTERNAL).isZero()) {
-                                //TODO: Print warning/error
+                                MekanismUtils.logMismatchedStackSize();
                             }
                             //and mark that we were able to transfer at least some of it
                             didTransfer = true;
@@ -227,7 +228,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                     if (!extractedEnergy.isZero()) {
                         //If we were able to actually extract it from our energy container, then insert it into the item
                         if (!itemHandler.insertEnergy(extractedEnergy, Action.EXECUTE).isZero()) {
-                            //TODO: Print warning/error
+                            MekanismUtils.logMismatchedStackSize();
                         }
                         onContentsChanged();
                     }
