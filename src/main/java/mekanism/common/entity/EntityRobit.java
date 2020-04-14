@@ -339,24 +339,21 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public double getScaledProgress() {
-        return (double) getOperatingTicks() / (double) ticksRequired;
+        return getOperatingTicks() / (double) ticksRequired;
     }
 
     public int getOperatingTicks() {
-        if (getEntityWorld().isRemote()) {
-            return progress;
-        }
-        if (cachedRecipe == null) {
-            return 0;
-        }
-        return cachedRecipe.getOperatingTicks();
+        return progress;
+    }
+
+    @Override
+    public int getSavedOperatingTicks(int cacheIndex) {
+        return getOperatingTicks();
     }
 
     @Override
     public void writeAdditional(CompoundNBT nbtTags) {
         super.writeAdditional(nbtTags);
-        //TODO: Is this necessary or is it handled by the main entity class
-        //nbtTags.putString(NBTConstants.NAME, getName());
         if (getOwnerUUID() != null) {
             nbtTags.putUniqueId(NBTConstants.OWNER_UUID, getOwnerUUID());
         }
@@ -367,19 +364,19 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         }
         nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeSlots(getInventorySlots(null)));
         nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
+        nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
     }
 
     @Override
     public void readAdditional(CompoundNBT nbtTags) {
         super.readAdditional(nbtTags);
-        //TODO: Is this necessary or is it handled by the main entity class
-        //setCustomNameTag(nbtTags.getString(NBTConstants.NAME));
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
         setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
         setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
         homeLocation = Coord4D.read(nbtTags);
         DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
         DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags.getList(NBTConstants.ENERGY_CONTAINERS, NBT.TAG_COMPOUND));
+        progress = nbtTags.getInt(NBTConstants.PROGRESS);
     }
 
     @Override

@@ -276,14 +276,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public abstract boolean isValidInputItem(@Nonnull ItemStack stack);
 
     public int getProgress(int cacheIndex) {
-        if (isRemote()) {
-            return progress[cacheIndex];
-        }
-        CachedRecipe<RECIPE> cachedRecipe = cachedRecipes[cacheIndex];
-        if (cachedRecipe == null) {
-            return 0;
-        }
-        return cachedRecipe.getOperatingTicks();
+        return progress[cacheIndex];
+    }
+
+    @Override
+    public int getSavedOperatingTicks(int cacheIndex) {
+        return getProgress(cacheIndex);
     }
 
     public double getScaledProgress(int i, int process) {
@@ -303,7 +301,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         sorting = nbtTags.getBoolean(NBTConstants.SORTING);
-        //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
             progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);
         }
@@ -314,7 +311,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.SORTING, isSorting());
-        //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
             nbtTags.putInt(NBTConstants.PROGRESS + i, getProgress(i));
         }
