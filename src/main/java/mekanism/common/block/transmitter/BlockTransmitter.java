@@ -147,14 +147,19 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
             //If we failed to get the tile, just give the center shape
             return getCenter();
         }
-        ConnectionInfo info = new ConnectionInfo(tile.getTransmitterType().getSize(), tile.getAllCurrentConnections(), tile.connectionTypes);
+        ConnectionType[] connectionTypes = new ConnectionType[tile.connectionTypes.length];
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            //Get the actual connection types
+            connectionTypes[i] = tile.getConnectionType(EnumUtils.DIRECTIONS[i]);
+        }
+        ConnectionInfo info = new ConnectionInfo(tile.getTransmitterType().getSize(), connectionTypes);
         if (cachedShapes.containsKey(info)) {
             return cachedShapes.get(info);
         }
         //If we don't have a cached version of our shape, then we need to calculate it
         List<VoxelShape> shapes = new ArrayList<>();
         for (Direction side : EnumUtils.DIRECTIONS) {
-            ConnectionType connectionType = tile.getConnectionType(side);
+            ConnectionType connectionType = connectionTypes[side.ordinal()];
             if (connectionType != ConnectionType.NONE) {
                 shapes.add(getSide(connectionType, side));
             }
@@ -173,13 +178,11 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     private static class ConnectionInfo {
 
         private final Size size;
-        private final byte connections;
         private final ConnectionType[] connectionTypes;
 
-        private ConnectionInfo(Size size, byte connections, ConnectionType[] connectionTypes) {
+        private ConnectionInfo(Size size, ConnectionType[] connectionTypes) {
             this.size = size;
-            this.connections = connections;
-            this.connectionTypes = Arrays.copyOf(connectionTypes, connectionTypes.length);
+            this.connectionTypes = connectionTypes;
         }
 
         @Override
@@ -189,14 +192,14 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
             }
             if (o instanceof ConnectionInfo) {
                 ConnectionInfo other = (ConnectionInfo) o;
-                return size == other.size && connections == other.connections && Arrays.equals(connectionTypes, other.connectionTypes);
+                return size == other.size && Arrays.equals(connectionTypes, other.connectionTypes);
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            int result = Objects.hash(connections, size);
+            int result = Objects.hash(size);
             result = 31 * result + Arrays.hashCode(connectionTypes);
             return result;
         }
