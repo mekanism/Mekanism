@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mekanismgenerators:block/fission/control_rod_assembly"
+    }
+  }
+}

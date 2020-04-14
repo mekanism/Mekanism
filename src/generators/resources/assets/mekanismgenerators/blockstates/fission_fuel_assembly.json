@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mekanismgenerators:block/fission/fuel_assembly"
+    }
+  }
+}

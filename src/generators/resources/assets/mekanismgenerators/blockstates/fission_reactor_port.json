@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "mode=input": {
+      "model": "mekanismgenerators:block/fission/port_input"
+    },
+    "mode=output_steam": {
+      "model": "mekanismgenerators:block/fission/port_output_steam"
+    },
+    "mode=output_waste": {
+      "model": "mekanismgenerators:block/fission/port_output_waste"
+    }
+  }
+}

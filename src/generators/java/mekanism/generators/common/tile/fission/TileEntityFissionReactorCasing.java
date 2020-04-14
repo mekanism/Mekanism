@@ -1,5 +1,6 @@
 package mekanism.generators.common.tile.fission;
 
+import mekanism.api.providers.IBlockProvider;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
@@ -14,6 +15,10 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
 
     public TileEntityFissionReactorCasing() {
         super(GeneratorsBlocks.FISSION_REACTOR_CASING);
+    }
+
+    public TileEntityFissionReactorCasing(IBlockProvider blockProvider) {
+        super(blockProvider);
     }
 
     @Override
