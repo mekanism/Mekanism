@@ -95,7 +95,7 @@ import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
-import mekanism.client.render.item.gear.RenderGasMask;
+import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
@@ -325,7 +325,7 @@ public class ClientRegistration {
         Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         registerItemStackModel(modelRegistry, "jetpack", model -> RenderJetpack.model = model);
         registerItemStackModel(modelRegistry, "jetpack_armored", model -> RenderArmoredJetpack.model = model);
-        registerItemStackModel(modelRegistry, "gas_mask", model -> RenderGasMask.model = model);
+        registerItemStackModel(modelRegistry, "scuba_mask", model -> RenderScubaMask.model = model);
         registerItemStackModel(modelRegistry, "scuba_tank", model -> RenderScubaTank.model = model);
         registerItemStackModel(modelRegistry, "free_runners", model -> RenderFreeRunners.model = model);
         registerItemStackModel(modelRegistry, "atomic_disassembler", model -> RenderAtomicDisassembler.model = model);

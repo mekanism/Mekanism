@@ -98,11 +98,11 @@ public class ClientTickHandler {
         return null;
     }
 
-    public static boolean isGasMaskOn(PlayerEntity player) {
+    public static boolean isScubaMaskOn(PlayerEntity player) {
         if (player != minecraft.player) {
-            return Mekanism.playerState.isGasmaskOn(player);
+            return Mekanism.playerState.isScubaMaskOn(player);
         }
-        return CommonPlayerTickHandler.isGasMaskOn(player);
+        return CommonPlayerTickHandler.isScubaMaskOn(player);
     }
 
     public static boolean isGravitationalModulationOn(PlayerEntity player) {
@@ -183,7 +183,7 @@ public class ClientTickHandler {
             // Update player's state for various items; this also automatically notifies server if something changed and
             // kicks off sounds as necessary
             Mekanism.playerState.setJetpackState(playerUUID, isJetpackActive(minecraft.player), true);
-            Mekanism.playerState.setGasmaskState(playerUUID, isGasMaskOn(minecraft.player), true);
+            Mekanism.playerState.setScubaMaskState(playerUUID, isScubaMaskOn(minecraft.player), true);
             Mekanism.playerState.setGravitationalModulationState(playerUUID, isGravitationalModulationOn(minecraft.player), true);
             Mekanism.playerState.setFlamethrowerState(playerUUID, hasFlamethrower(minecraft.player), isFlamethrowerOn(minecraft.player), true);
 
@@ -263,7 +263,7 @@ public class ClientTickHandler {
                 minecraft.player.abilities.isFlying = false;
             }
 
-            if (isGasMaskOn(minecraft.player)) {
+            if (isScubaMaskOn(minecraft.player)) {
                 ItemScubaTank tank = (ItemScubaTank) chestStack.getItem();
                 final int max = 300;
                 tank.useGas(chestStack, 1);

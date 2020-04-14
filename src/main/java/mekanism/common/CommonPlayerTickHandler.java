@@ -19,7 +19,7 @@ import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
-import mekanism.common.item.gear.ItemGasMask;
+import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -65,10 +65,10 @@ public class CommonPlayerTickHandler {
 
     }
 
-    public static boolean isGasMaskOn(PlayerEntity player) {
+    public static boolean isScubaMaskOn(PlayerEntity player) {
         ItemStack tank = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
         ItemStack mask = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
-        return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemGasMask && GasUtils.hasGas(tank) &&
+        return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemScubaMask && GasUtils.hasGas(tank) &&
                ((ItemScubaTank) tank.getItem()).getFlowing(tank);
     }
 
@@ -153,7 +153,7 @@ public class CommonPlayerTickHandler {
             }
         }
 
-        if (isGasMaskOn(player)) {
+        if (isScubaMaskOn(player)) {
             ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             ItemScubaTank tank = (ItemScubaTank) stack.getItem();
             final int max = 300;
@@ -238,7 +238,7 @@ public class CommonPlayerTickHandler {
         //Gas Mask checks
         if (event.getSource() == DamageSource.MAGIC) {
             ItemStack headStack = base.getItemStackFromSlot(EquipmentSlotType.HEAD);
-            if (!headStack.isEmpty() && headStack.getItem() instanceof ItemGasMask) {
+            if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
                 ItemStack chestStack = base.getItemStackFromSlot(EquipmentSlotType.CHEST);
                 if (!chestStack.isEmpty()) {
                     if (chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&

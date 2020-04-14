@@ -35,7 +35,7 @@ public final class MekanismSounds {
 
     public static final SoundEventRegistryObject<SoundEvent> FLAMETHROWER_IDLE = SOUND_EVENTS.register("item.flamethrower.idle");
     public static final SoundEventRegistryObject<SoundEvent> FLAMETHROWER_ACTIVE = SOUND_EVENTS.register("item.flamethrower.active");
-    public static final SoundEventRegistryObject<SoundEvent> GAS_MASK = SOUND_EVENTS.register("item.gas_mask");
+    public static final SoundEventRegistryObject<SoundEvent> SCUBA_MASK = SOUND_EVENTS.register("item.scuba_mask");
     public static final SoundEventRegistryObject<SoundEvent> JETPACK = SOUND_EVENTS.register("item.jetpack");
     public static final SoundEventRegistryObject<SoundEvent> HYDRAULIC = SOUND_EVENTS.register("item.hydraulic");
     public static final SoundEventRegistryObject<SoundEvent> GRAVITATIONAL_MODULATION_UNIT = SOUND_EVENTS.register("item.gravitational_modulation_unit");

@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "mekanism:gas_mask"
+      "mekanism:scuba_mask"
     ]
   },
   "criteria": {
@@ -29,7 +29,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "mekanism:gas_mask"
+        "recipe": "mekanism:scuba_mask"
       }
     }
   },

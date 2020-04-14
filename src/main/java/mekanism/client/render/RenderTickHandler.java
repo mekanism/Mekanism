@@ -209,9 +209,9 @@ public class RenderTickHandler {
                     world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
                 }
 
-                // Traverse a copy of gasmask state and do animations
+                // Traverse a copy of scuba mask state and do animations
                 if (world.getDayTime() % 4 == 0) {
-                    for (UUID uuid : Mekanism.playerState.getActiveGasmasks()) {
+                    for (UUID uuid : Mekanism.playerState.getActiveScubaMasks()) {
                         PlayerEntity p = world.getPlayerByUuid(uuid);
                         if (p == null || !p.isInWater()) {
                             continue;

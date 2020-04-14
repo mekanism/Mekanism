@@ -15,7 +15,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 public class PlayerState {
 
     private Set<UUID> activeJetpacks = new ObjectOpenHashSet<>();
-    private Set<UUID> activeGasmasks = new ObjectOpenHashSet<>();
+    private Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
     private Set<UUID> activeGravitationalModulators = new ObjectOpenHashSet<>();
     private Set<UUID> activeFlamethrowers = new ObjectOpenHashSet<>();
 
@@ -23,7 +23,7 @@ public class PlayerState {
 
     public void clear() {
         activeJetpacks.clear();
-        activeGasmasks.clear();
+        activeScubaMasks.clear();
         activeGravitationalModulators.clear();
         activeFlamethrowers.clear();
         if (FMLEnvironment.dist.isClient()) {
@@ -33,7 +33,7 @@ public class PlayerState {
 
     public void clearPlayer(UUID uuid) {
         activeJetpacks.remove(uuid);
-        activeGasmasks.remove(uuid);
+        activeScubaMasks.remove(uuid);
         activeGravitationalModulators.remove(uuid);
         activeFlamethrowers.remove(uuid);
         if (FMLEnvironment.dist.isClient()) {
@@ -87,39 +87,39 @@ public class PlayerState {
 
     // ----------------------
     //
-    // Gasmask state tracking
+    // Scuba Mask state tracking
     //
     // ----------------------
 
-    public void setGasmaskState(UUID uuid, boolean isActive, boolean isLocal) {
-        boolean alreadyActive = activeGasmasks.contains(uuid);
+    public void setScubaMaskState(UUID uuid, boolean isActive, boolean isLocal) {
+        boolean alreadyActive = activeScubaMasks.contains(uuid);
         boolean changed = alreadyActive != isActive;
         if (alreadyActive && !isActive) {
-            activeGasmasks.remove(uuid); // On -> off
+            activeScubaMasks.remove(uuid); // On -> off
         } else if (!alreadyActive && isActive) {
-            activeGasmasks.add(uuid); // Off -> on
+            activeScubaMasks.add(uuid); // Off -> on
         }
 
         // If something changed and we're in a remote world, take appropriate action
         if (changed && world.isRemote()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler.sendToServer(new PacketGearStateUpdate(GearType.GAS_MASK, uuid, isActive));
+                Mekanism.packetHandler.sendToServer(new PacketGearStateUpdate(GearType.SCUBA_MASK, uuid, isActive));
             }
 
-            // Start a sound playing if the person is now using a gasmask
+            // Start a sound playing if the person is now using a scuba mask
             if (isActive && MekanismConfig.client.enablePlayerSounds.get()) {
-                SoundHandler.startSound(world, uuid, SoundType.GAS_MASK);
+                SoundHandler.startSound(world, uuid, SoundType.SCUBA_MASK);
             }
         }
     }
 
-    public boolean isGasmaskOn(PlayerEntity p) {
-        return activeGasmasks.contains(p.getUniqueID());
+    public boolean isScubaMaskOn(PlayerEntity p) {
+        return activeScubaMasks.contains(p.getUniqueID());
     }
 
-    public Set<UUID> getActiveGasmasks() {
-        return activeGasmasks;
+    public Set<UUID> getActiveScubaMasks() {
+        return activeScubaMasks;
     }
 
     // ----------------------
@@ -144,7 +144,7 @@ public class PlayerState {
                 Mekanism.packetHandler.sendToServer(new PacketGearStateUpdate(GearType.GRAVITATIONAL_MODULATOR, uuid, isActive));
             }
 
-            // Start a sound playing if the person is now using a gasmask
+            // Start a sound playing if the person is now using a gravitational modulator
             if (isActive && MekanismConfig.client.enablePlayerSounds.get()) {
                 SoundHandler.startSound(world, uuid, SoundType.GRAVITATIONAL_MODULATOR);
             }

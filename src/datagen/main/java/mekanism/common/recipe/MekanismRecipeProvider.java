@@ -2606,7 +2606,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_STEEL_CASING)
               .build(consumer);
         //Gas mask
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.GAS_MASK)
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SCUBA_MASK)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR),

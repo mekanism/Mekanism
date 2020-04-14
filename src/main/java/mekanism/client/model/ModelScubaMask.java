@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelGasMask extends Model {
+public class ModelScubaMask extends Model {
 
     private static final ResourceLocation MASK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
     private static final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(MASK_TEXTURE);
@@ -49,7 +49,7 @@ public class ModelGasMask extends Model {
     private final ModelRenderer lightL;
     private final ModelRenderer lightR;
 
-    public ModelGasMask() {
+    public ModelScubaMask() {
         super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;

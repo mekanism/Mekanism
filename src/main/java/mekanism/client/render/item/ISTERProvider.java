@@ -15,7 +15,7 @@ import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
-import mekanism.client.render.item.gear.RenderGasMask;
+import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
@@ -79,8 +79,8 @@ public class ISTERProvider {
         return RenderFreeRunners::new;
     }
 
-    public static Callable<ItemStackTileEntityRenderer> gasMask() {
-        return RenderGasMask::new;
+    public static Callable<ItemStackTileEntityRenderer> scubaMask() {
+        return RenderScubaMask::new;
     }
 
     public static Callable<ItemStackTileEntityRenderer> jetpack() {

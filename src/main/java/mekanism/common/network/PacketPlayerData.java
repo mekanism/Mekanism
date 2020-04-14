@@ -11,27 +11,27 @@ public class PacketPlayerData {
     private final UUID uuid;
     private final boolean activeFlamethrower;
     private final boolean activeJetpack;
-    private final boolean activeGasMask;
+    private final boolean activeScubaMask;
 
     public PacketPlayerData(UUID uuid) {
         this.uuid = uuid;
         this.activeFlamethrower = Mekanism.playerState.getActiveFlamethrowers().contains(uuid);
         this.activeJetpack = Mekanism.playerState.getActiveJetpacks().contains(uuid);
-        this.activeGasMask = Mekanism.playerState.getActiveGasmasks().contains(uuid);
+        this.activeScubaMask = Mekanism.playerState.getActiveScubaMasks().contains(uuid);
     }
 
     private PacketPlayerData(UUID uuid, boolean activeFlamethrower, boolean activeJetpack, boolean activeGasMask) {
         this.uuid = uuid;
         this.activeFlamethrower = activeFlamethrower;
         this.activeJetpack = activeJetpack;
-        this.activeGasMask = activeGasMask;
+        this.activeScubaMask = activeGasMask;
     }
 
     public static void handle(PacketPlayerData message, Supplier<Context> context) {
         context.get().enqueueWork(() -> {
             Mekanism.playerState.setFlamethrowerState(message.uuid, message.activeFlamethrower, false);
             Mekanism.playerState.setJetpackState(message.uuid, message.activeJetpack, false);
-            Mekanism.playerState.setGasmaskState(message.uuid, message.activeGasMask, false);
+            Mekanism.playerState.setScubaMaskState(message.uuid, message.activeScubaMask, false);
         });
         context.get().setPacketHandled(true);
     }
@@ -40,7 +40,7 @@ public class PacketPlayerData {
         buf.writeUniqueId(pkt.uuid);
         buf.writeBoolean(pkt.activeFlamethrower);
         buf.writeBoolean(pkt.activeJetpack);
-        buf.writeBoolean(pkt.activeGasMask);
+        buf.writeBoolean(pkt.activeScubaMask);
     }
 
     public static PacketPlayerData decode(PacketBuffer buf) {

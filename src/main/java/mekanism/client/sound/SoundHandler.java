@@ -55,7 +55,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class SoundHandler {
 
     private static Set<UUID> jetpackSounds = new ObjectOpenHashSet<>();
-    private static Set<UUID> gasmaskSounds = new ObjectOpenHashSet<>();
+    private static Set<UUID> scubaMaskSounds = new ObjectOpenHashSet<>();
     private static Set<UUID> flamethrowerSounds = new ObjectOpenHashSet<>();
     private static Set<UUID> gravitationalModulationSounds = new ObjectOpenHashSet<>();
 
@@ -65,14 +65,14 @@ public class SoundHandler {
 
     public static void clearPlayerSounds() {
         jetpackSounds.clear();
-        gasmaskSounds.clear();
+        scubaMaskSounds.clear();
         flamethrowerSounds.clear();
         gravitationalModulationSounds.clear();
     }
 
     public static void clearPlayerSounds(UUID uuid) {
         jetpackSounds.remove(uuid);
-        gasmaskSounds.remove(uuid);
+        scubaMaskSounds.remove(uuid);
         flamethrowerSounds.remove(uuid);
         gravitationalModulationSounds.remove(uuid);
     }
@@ -88,12 +88,12 @@ public class SoundHandler {
                     }
                 }
                 break;
-            case GAS_MASK:
-                if (!gasmaskSounds.contains(uuid)) {
+            case SCUBA_MASK:
+                if (!scubaMaskSounds.contains(uuid)) {
                     PlayerEntity player = world.getPlayerByUuid(uuid);
                     if (player != null) {
-                        gasmaskSounds.add(uuid);
-                        playSound(new GasMaskSound(player));
+                        scubaMaskSounds.add(uuid);
+                        playSound(new ScubaMaskSound(player));
                     }
                 }
                 break;

@@ -70,7 +70,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.PORTABLE_TELEPORTER, "Portable Teleporter");
         add(MekanismItems.ELECTRIC_BOW, "Electric Bow");
         add(MekanismItems.ATOMIC_DISASSEMBLER, "Atomic Disassembler");
-        add(MekanismItems.GAS_MASK, "Gas Mask");
+        add(MekanismItems.SCUBA_MASK, "Scuba Mask");
         add(MekanismItems.SCUBA_TANK, "Scuba Tank");
         add(MekanismItems.FLAMETHROWER, "Flamethrower");
         add(MekanismItems.FREE_RUNNERS, "Free Runners");

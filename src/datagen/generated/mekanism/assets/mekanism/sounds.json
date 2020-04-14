@@ -4,11 +4,6 @@
       "mekanism:item/jetpack"
     ]
   },
-  "item.gas_mask": {
-    "sounds": [
-      "mekanism:item/gas_mask"
-    ]
-  },
   "tile.machine.laser": {
     "sounds": [
       "mekanism:tile/laser"
@@ -199,6 +194,11 @@
   "tile.machine.chemical_oxidizer": {
     "sounds": [
       "mekanism:tile/chemical_oxidizer"
+    ]
+  },
+  "item.scuba_mask": {
+    "sounds": [
+      "mekanism:item/scuba_mask"
     ]
   }
 }

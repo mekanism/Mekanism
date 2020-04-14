@@ -30,8 +30,8 @@ public class PacketGearStateUpdate {
                 Mekanism.playerState.setFlamethrowerState(message.uuid, message.state, false);
             } else if (message.gearType == GearType.JETPACK) {
                 Mekanism.playerState.setJetpackState(message.uuid, message.state, false);
-            } else if (message.gearType == GearType.GAS_MASK) {
-                Mekanism.playerState.setGasmaskState(message.uuid, message.state, false);
+            } else if (message.gearType == GearType.SCUBA_MASK) {
+                Mekanism.playerState.setScubaMaskState(message.uuid, message.state, false);
             } else if (message.gearType == GearType.GRAVITATIONAL_MODULATOR) {
                 Mekanism.playerState.setGravitationalModulationState(message.uuid, message.state, false);
             }
@@ -58,7 +58,7 @@ public class PacketGearStateUpdate {
     public enum GearType {
         FLAMETHROWER,
         JETPACK,
-        GAS_MASK,
+        SCUBA_MASK,
         GRAVITATIONAL_MODULATOR
     }
 }

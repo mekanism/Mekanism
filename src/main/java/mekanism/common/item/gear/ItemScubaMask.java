@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.client.render.armor.CustomArmor;
-import mekanism.client.render.armor.GasMaskArmor;
+import mekanism.client.render.armor.ScubaMaskArmor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
 import net.minecraft.entity.Entity;
@@ -17,12 +17,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemGasMask extends ArmorItem implements ISpecialGear {
+public class ItemScubaMask extends ArmorItem implements ISpecialGear {
 
-    private static final GasMaskMaterial GAS_MASK_MATERIAL = new GasMaskMaterial();
+    private static final ScubaMaskMaterial SCUBA_MASK_MATERIAL = new ScubaMaskMaterial();
 
-    public ItemGasMask(Properties properties) {
-        super(GAS_MASK_MATERIAL, EquipmentSlotType.HEAD, properties.setNoRepair().setISTER(ISTERProvider::gasMask));
+    public ItemScubaMask(Properties properties) {
+        super(SCUBA_MASK_MATERIAL, EquipmentSlotType.HEAD, properties.setNoRepair().setISTER(ISTERProvider::scubaMask));
     }
 
     @Override
@@ -43,12 +43,12 @@ public class ItemGasMask extends ArmorItem implements ISpecialGear {
     @Override
     @OnlyIn(Dist.CLIENT)
     public CustomArmor getGearModel() {
-        return GasMaskArmor.GAS_MASK;
+        return ScubaMaskArmor.SCUBA_MASK;
     }
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    protected static class GasMaskMaterial extends BaseSpecialArmorMaterial {
+    protected static class ScubaMaskMaterial extends BaseSpecialArmorMaterial {
 
         @Override
         public int getDamageReductionAmount(EquipmentSlotType slotType) {
@@ -57,7 +57,7 @@ public class ItemGasMask extends ArmorItem implements ISpecialGear {
 
         @Override
         public String getName() {
-            return Mekanism.MODID + ":gas_mask";
+            return Mekanism.MODID + ":scuba_mask";
         }
 
         @Override
