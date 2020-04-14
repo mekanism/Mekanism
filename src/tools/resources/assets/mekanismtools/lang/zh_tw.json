@@ -63,5 +63,6 @@
   "item.mekanismtools.steel_shovel": "鋼鏟子",
   "item.mekanismtools.steel_sword": "鋼劍",
   "item.mekanismtools.stone_paxel": "石鎬尖斧",
-  "item.mekanismtools.wood_paxel": "木鎬尖斧"
+  "item.mekanismtools.wood_paxel": "木鎬尖斧",
+  "tooltip.mekanismtools.hp": "HP: %s"
 }

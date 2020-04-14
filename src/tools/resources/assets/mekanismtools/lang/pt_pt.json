@@ -63,5 +63,6 @@
   "item.mekanismtools.steel_shovel": "Pá de Aço",
   "item.mekanismtools.steel_sword": "Espada de Aço",
   "item.mekanismtools.stone_paxel": "Pacachado de Pedra",
-  "item.mekanismtools.wood_paxel": "Pacachado de Madeira"
+  "item.mekanismtools.wood_paxel": "Pacachado de Madeira",
+  "tooltip.mekanismtools.hp": "HP: %s"
 }

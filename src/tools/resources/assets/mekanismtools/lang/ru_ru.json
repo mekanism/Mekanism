@@ -63,5 +63,6 @@
   "item.mekanismtools.steel_shovel": "Стальная лопата",
   "item.mekanismtools.steel_sword": "Стальной меч",
   "item.mekanismtools.stone_paxel": "Каменный мульти-инcтрумент",
-  "item.mekanismtools.wood_paxel": "Деревянный мульти-инcтрумент"
+  "item.mekanismtools.wood_paxel": "Деревянный мульти-инcтрумент",
+  "tooltip.mekanismtools.hp": "HP: %s"
 }

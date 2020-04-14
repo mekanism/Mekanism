@@ -9,6 +9,8 @@ import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.fluxnetworks.forgeenergy.FNIntegration;
+import mekanism.common.integration.fluxnetworks.forgeenergy.FNStrictEnergyHandler;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.forgeenergy.ForgeStrictEnergyHandler;
 import mekanism.common.util.CapabilityUtils;
@@ -21,17 +23,24 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import sonar.fluxnetworks.api.energy.FNEnergyCapability;
+import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
 
 public class EnergyCompatUtils {
 
     /**
      * Checks if it is a known and enabled energy capability
      */
-    public static boolean isEnergyCapability(@Nonnull Capability<?> capability) {
-        if (capability == Capabilities.STRICT_ENERGY_CAPABILITY) {
+    public static boolean isEnergyCapability(Capability<?> capability) {
+        if (capability == null) {
+            //Should never be the case, but is when a capability does not exist due to a mod not being loaded
+            return false;
+        } else if (capability == Capabilities.STRICT_ENERGY_CAPABILITY) {
             return true;
         } else if (capability == CapabilityEnergy.ENERGY) {
             return useForge();
+        } else if (isFluxNetworksCapability(capability)) {
+            return useFluxNetworks();
         }
         return false;
     }
@@ -54,6 +63,11 @@ public class EnergyCompatUtils {
                 return true;
             }
         }
+        if (useFluxNetworks()) {
+            if (CapabilityUtils.getCapability(provider, FNEnergyCapability.FN_ENERGY_STORAGE, side).isPresent()) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -73,6 +87,13 @@ public class EnergyCompatUtils {
         if (energyCap.isPresent()) {
             return energyCap.get();
         }
+        if (useFluxNetworks()) {
+            //Note: We check the FN capability above Forge's so that we allow it to use the higher throughput amount than FN
+            Optional<IFNEnergyStorage> fnEnergyCap = MekanismUtils.toOptional(CapabilityUtils.getCapability(provider, FNEnergyCapability.FN_ENERGY_STORAGE, side));
+            if (fnEnergyCap.isPresent()) {
+                return new FNStrictEnergyHandler(fnEnergyCap.get());
+            }
+        }
         if (useForge()) {
             Optional<IEnergyStorage> forgeEnergyCap = MekanismUtils.toOptional(CapabilityUtils.getCapability(provider, CapabilityEnergy.ENERGY, side));
             if (forgeEnergyCap.isPresent()) {
@@ -86,13 +107,17 @@ public class EnergyCompatUtils {
      * @apiNote It is expected that isEnergyCapability is called before calling this method
      */
     @Nonnull
-    public static <T> LazyOptional<T> getEnergyCapability(@Nonnull Capability<T> capability, @Nonnull IStrictEnergyHandler handler) {
-        //TODO: Cache the lazy optionals
-        if (capability == Capabilities.STRICT_ENERGY_CAPABILITY) {
+    public static <T> LazyOptional<T> getEnergyCapability(Capability<T> capability, @Nonnull IStrictEnergyHandler handler) {
+        //TODO: Cache the lazy optionals, and the wrapper objects
+        if (capability == null) {
+            //Should never be the case, but is when a capability does not exist due to a mod not being loaded
+            return LazyOptional.empty();
+        } else if (capability == Capabilities.STRICT_ENERGY_CAPABILITY) {
             return Capabilities.STRICT_ENERGY_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> handler));
-        } else if (capability == CapabilityEnergy.ENERGY) {
-            //TODO: Cache the ForgeEnergyIntegration object
+        } else if (useForge() && capability == CapabilityEnergy.ENERGY) {
             return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> new ForgeEnergyIntegration(handler)));
+        } else if (useFluxNetworks() && isFluxNetworksCapability(capability)) {
+            return getAsFluxNetworks(handler).cast();
         }
         return LazyOptional.empty();
     }
@@ -104,6 +129,32 @@ public class EnergyCompatUtils {
      */
     private static boolean useForge() {
         return !MekanismConfig.general.blacklistForge.get();
+    }
+
+    /**
+     * Whether or not Flux Networks long integration should be used.
+     *
+     * @return if Flux Networks long integration should be used
+     */
+    private static boolean useFluxNetworks() {
+        return useForge() && Mekanism.hooks.FluxNetworksLoaded && !MekanismConfig.general.blacklistFluxNetworks.get();
+    }
+
+    /**
+     * Checks if flux networks is loaded and if it is, then checks if the capability matches. This is to ensure we don't have any class loading issues
+     */
+    private static boolean isFluxNetworksCapability(Capability<?> capability) {
+        if (Mekanism.hooks.FluxNetworksLoaded) {
+            //Ensure we check that Flux networks is loaded before attempting to access their capability
+            return capability == FNEnergyCapability.FN_ENERGY_STORAGE;
+        }
+        return false;
+    }
+
+    private static LazyOptional<?> getAsFluxNetworks(@Nonnull IStrictEnergyHandler handler) {
+        //Note: This is a little ugly but this extra method is necessary to ensure the supplier's type
+        // does not get resolved unless flux networks is present
+        return LazyOptional.of(() -> new FNIntegration(handler));
     }
 
     /**
@@ -128,7 +179,7 @@ public class EnergyCompatUtils {
             this.toSupplier = toSupplier;
         }
 
-        public FloatingLong convertFrom(int energy) {
+        public FloatingLong convertFrom(long energy) {
             return fromSupplier.get().multiply(energy);
         }
 
@@ -138,6 +189,10 @@ public class EnergyCompatUtils {
 
         public int convertToAsInt(FloatingLong joules) {
             return convertToAsFloatingLong(joules).intValue();
+        }
+
+        public long convertToAsLong(FloatingLong joules) {
+            return convertToAsFloatingLong(joules).longValue();
         }
 
         public FloatingLong convertToAsFloatingLong(FloatingLong joules) {

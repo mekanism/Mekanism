@@ -63,5 +63,6 @@
   "item.mekanismtools.steel_shovel": "Ocelová Lopata",
   "item.mekanismtools.steel_sword": "Ocelové Meč",
   "item.mekanismtools.stone_paxel": "Kamenný Sekrumpáč",
-  "item.mekanismtools.wood_paxel": "Dřevěný Sekrumpáč"
+  "item.mekanismtools.wood_paxel": "Dřevěný Sekrumpáč",
+  "tooltip.mekanismtools.hp": "HP: %s"
 }

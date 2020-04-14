@@ -63,5 +63,6 @@
   "item.mekanismtools.steel_shovel": "강철 삽",
   "item.mekanismtools.steel_sword": "강철 검",
   "item.mekanismtools.stone_paxel": "돌 팩셀",
-  "item.mekanismtools.wood_paxel": "나무 팩셀"
+  "item.mekanismtools.wood_paxel": "나무 팩셀",
+  "tooltip.mekanismtools.hp": "HP: %s"
 }
