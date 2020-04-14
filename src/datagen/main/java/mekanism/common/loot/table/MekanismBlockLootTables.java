@@ -2,6 +2,7 @@ package mekanism.common.loot.table;
 
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.resource.OreType;
 import net.minecraft.world.storage.loot.ConstantRange;
 import net.minecraft.world.storage.loot.RandomValueRange;
 
@@ -11,7 +12,7 @@ public class MekanismBlockLootTables extends BaseBlockLootTables {
     protected void addTables() {
         skip(MekanismBlocks.BOUNDING_BLOCK, MekanismBlocks.ADVANCED_BOUNDING_BLOCK);
         registerLootTable(block -> droppingWithSilkTouchOrRandomly(block, MekanismItems.SALT, ConstantRange.of(4)), MekanismBlocks.SALT_BLOCK);
-        registerLootTable(block -> droppingWithSilkTouchOrRandomly(block, MekanismItems.FLUORITE_GEM, RandomValueRange.of(2, 4)), MekanismBlocks.FLUORITE_ORE);
+        registerLootTable(block -> droppingWithSilkTouchOrRandomly(block, MekanismItems.FLUORITE_GEM, RandomValueRange.of(2, 4)), MekanismBlocks.ORES.get(OreType.FLUORITE));
         //Register the remaining blocks as dropping themselves with any contents they may have stored
         registerDropSelfWithContentsLootTable(MekanismBlocks.BLOCKS.getAllBlocks());
     }

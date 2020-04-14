@@ -6,6 +6,19 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "GasTanks",
+                  "target": "mekData.GasTanks",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
           "name": "mekanism:radioactive_waste_barrel"
         }
       ],

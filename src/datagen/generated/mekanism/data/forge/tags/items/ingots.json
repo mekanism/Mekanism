@@ -1,11 +1,12 @@
 {
   "values": [
+    "mekanism:ingot_osmium",
+    "mekanism:ingot_copper",
+    "mekanism:ingot_tin",
+    "mekanism:ingot_lead",
     "#forge:ingots/bronze",
-    "#forge:ingots/copper",
-    "#forge:ingots/osmium",
     "#forge:ingots/refined_glowstone",
     "#forge:ingots/refined_obsidian",
-    "#forge:ingots/steel",
-    "#forge:ingots/tin"
+    "#forge:ingots/steel"
   ]
 }

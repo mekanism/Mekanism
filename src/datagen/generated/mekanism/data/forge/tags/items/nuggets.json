@@ -1,11 +1,12 @@
 {
   "values": [
+    "mekanism:nugget_osmium",
+    "mekanism:nugget_copper",
+    "mekanism:nugget_tin",
+    "mekanism:nugget_lead",
     "#forge:nuggets/bronze",
-    "#forge:nuggets/copper",
-    "#forge:nuggets/osmium",
     "#forge:nuggets/refined_glowstone",
     "#forge:nuggets/refined_obsidian",
-    "#forge:nuggets/steel",
-    "#forge:nuggets/tin"
+    "#forge:nuggets/steel"
   ]
 }

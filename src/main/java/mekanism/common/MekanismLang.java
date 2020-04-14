@@ -570,11 +570,6 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_GAS_TANK("description", "gas_tank"),
     DESCRIPTION_DIVERSION("description", "diversion"),
     DESCRIPTION_RESTRICTIVE("description", "restrictive"),
-    DESCRIPTION_OSMIUM_ORE("description", "osmium_ore"),
-    DESCRIPTION_COPPER_ORE("description", "copper_ore"),
-    DESCRIPTION_TIN_ORE("description", "tin_ore"),
-    DESCRIPTION_FLUORITE_ORE("description", "fluorite_ore"),
-    DESCRIPTION_URANIUM_ORE("description", "uranium_ore"),
     //Factory Type
     SMELTING("factory", "smelting"),
     ENRICHING("factory", "enriching"),

@@ -1,9 +1,10 @@
 package mekanism.common.resource;
 
-public enum BlockResourceInfo implements INamedResource {
+public enum BlockResourceInfo implements IResource {
     OSMIUM("osmium", 7.5F, 20.0F, 1),
     TIN("tin", 5.0F, 10.0F, 1),
     COPPER("copper", 5.0F, 10.0F, 1),
+    LEAD("lead", 5.0F, 10.0F, 1),
     CHARCOAL("charcoal", 5.0F, 10.0F, 0, 0, false),
     BRONZE("bronze", 5.0F, 15.0F, 1),
     STEEL("steel", 5.0F, 15.0F, 1),

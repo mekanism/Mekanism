@@ -26,6 +26,8 @@ import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
@@ -123,7 +125,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.REDSTONE, Pattern.ALLOY, Pattern.REDSTONE),
                     TripleLine.of(Pattern.OSMIUM, Pattern.OSMIUM, Pattern.OSMIUM))
               ).key(GLASS_CHAR, Tags.Items.GLASS_PANES)
-              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .addCriterion(Criterion.HAS_INFUSED_ALLOY)
@@ -138,7 +140,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .addCriterion(Criterion.has(GeneratorsItems.SOLAR_PANEL))
               .build(consumer, MekanismGenerators.rl("generator/solar"));
         //Advanced Solar Generator
@@ -175,7 +177,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               ).key(ELECTROLYTIC_CORE_CHAR, MekanismItems.ELECTROLYTIC_CORE)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
-              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .addCriterion(Criterion.HAS_ELECTROLYTIC_CORE)
               .addCriterion(Criterion.HAS_STEEL_CASING)
               .addCriterion(Criterion.HAS_INFUSED_ALLOY)
@@ -188,11 +190,11 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(COPPER_CHAR, FURNACE_CHAR, COPPER_CHAR))
               ).key(Pattern.WOOD, ItemTags.PLANKS)
               .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
-              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
-              .key(COPPER_CHAR, MekanismTags.Items.INGOTS_COPPER)
+              .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .key(COPPER_CHAR, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER))
               .key(FURNACE_CHAR, Items.FURNACE)
-              .addCriterion(Criterion.HAS_OSMIUM)
-              .addCriterion(Criterion.HAS_COPPER)
+              .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.OSMIUM))
+              .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.COPPER))
               .addCriterion(Criterion.has(Items.FURNACE))
               .build(consumer, MekanismGenerators.rl("generator/heat"));
         //Wind
@@ -204,18 +206,18 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .addCriterion(Criterion.HAS_ENERGY_TABLET)
               .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
               .addCriterion(Criterion.HAS_INFUSED_ALLOY)
-              .addCriterion(Criterion.HAS_OSMIUM)
+              .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.OSMIUM))
               .build(consumer, MekanismGenerators.rl("generator/wind"));
     }
 
     private void addReactorRecipes(Consumer<IFinishedRecipe> consumer) {
         //Hohlraum
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
-              ItemStackIngredient.from(MekanismTags.Items.DUSTS_GOLD, 4),
+              ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 4),
               InfusionIngredient.from(MekanismTags.InfuseTypes.CARBON, 10),
               GeneratorsItems.HOHLRAUM.getItemStack()
         ).addCriterion(Criterion.HAS_METALLURGIC_INFUSER)
@@ -320,10 +322,10 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.BUCKET, Pattern.INGOT),
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
               ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_TIN)
+              .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
               .key(Pattern.BUCKET, Items.BUCKET)
               .addCriterion(Criterion.HAS_STEEL)
-              .addCriterion(Criterion.HAS_TIN)
+              .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.TIN))
               .build(consumer);
         //Blade
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsItems.TURBINE_BLADE)
@@ -353,10 +355,10 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.STEEL, Pattern.OSMIUM, Pattern.STEEL),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
-              ).key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              ).key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .addCriterion(Criterion.HAS_STEEL)
-              .addCriterion(Criterion.HAS_OSMIUM)
+              .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.OSMIUM))
               .build(consumer, MekanismGenerators.rl("turbine/casing"));
         RecipeCriterion hasCasing = Criterion.has(GeneratorsBlocks.TURBINE_CASING);
         //Valve

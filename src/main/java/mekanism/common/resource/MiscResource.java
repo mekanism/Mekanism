@@ -1,6 +1,6 @@
 package mekanism.common.resource;
 
-public enum MiscResource implements INamedResource {
+public enum MiscResource implements IResource {
     BRONZE("bronze"),
     CARBON("carbon"),
     CHARCOAL("charcoal"),

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/tin/storage_blocks/from_ingots"
+    ]
+  },
+  "criteria": {
+    "has_tin": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/tin"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:processing/tin/storage_blocks/from_ingots"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_tin",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,7 +1,10 @@
 package mekanism.common.config;
 
+import java.util.Map;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.resource.OreType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -10,11 +13,8 @@ public class WorldConfig extends BaseMekanismConfig {
     private final ForgeConfigSpec configSpec;
     public final CachedBooleanValue enableRegeneration;
     public final CachedIntValue userGenVersion;
-    public final OreConfig copper;
-    public final OreConfig osmium;
-    public final OreConfig tin;
-    public final OreConfig uranium;
-    public final OreConfig fluorite;
+
+    public final Map<OreType, OreConfig> ores = new Object2ObjectOpenHashMap<>();
     public final SaltConfig salt;
 
     WorldConfig() {
@@ -25,11 +25,10 @@ public class WorldConfig extends BaseMekanismConfig {
               .define("enableRegeneration", false));
         userGenVersion = CachedIntValue.wrap(this, builder.comment("Change this value to cause Mekanism to regen its ore in all loaded chunks.")
               .defineInRange("userWorldGenVersion", 0, 0, Integer.MAX_VALUE));
-        copper = new OreConfig(this, builder, "copper", true, 16, 8, 0, 0, 60);
-        osmium = new OreConfig(this, builder, "osmium", true, 12, 8, 0, 0, 60);
-        tin = new OreConfig(this, builder, "tin", true, 14, 8, 0, 0, 60);
-        uranium = new OreConfig(this, builder, "uranium", true, 8, 8, 0, 0, 60);
-        fluorite = new OreConfig(this, builder, "fluorite", true, 6, 12, 0, 0, 32);
+        for (OreType ore : OreType.values()) {
+            ores.put(ore, new OreConfig(this, builder, ore.getResource().getRegistrySuffix(), true, ore.getPerChunk(), ore.getMaxVeinSize(), ore.getBottomOffset(),
+                  ore.getTopOffset(), ore.getMaxHeight()));
+        }
         salt = new SaltConfig(this, builder, true, 2, 6, 1);
         builder.pop();
         configSpec = builder.build();

@@ -13,6 +13,8 @@ import mekanism.common.recipe.RecipePattern.DoubleLine;
 import mekanism.common.recipe.RecipePattern.TripleLine;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.data.DataGenerator;
@@ -80,7 +82,8 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               ToolsItems.LAPIS_LAZULI_HOE, ToolsItems.LAPIS_LAZULI_PAXEL, Tags.Items.GEMS_LAPIS, Tags.Items.RODS_WOODEN, Criterion.HAS_LAPIS_LAZULI, null);
         registerRecipeSet(consumer, "osmium", ToolsItems.OSMIUM_HELMET, ToolsItems.OSMIUM_CHESTPLATE, ToolsItems.OSMIUM_LEGGINGS, ToolsItems.OSMIUM_BOOTS,
               ToolsItems.OSMIUM_SWORD, ToolsItems.OSMIUM_PICKAXE, ToolsItems.OSMIUM_AXE, ToolsItems.OSMIUM_SHOVEL, ToolsItems.OSMIUM_HOE, ToolsItems.OSMIUM_PAXEL,
-              MekanismTags.Items.INGOTS_OSMIUM, Tags.Items.RODS_WOODEN, Criterion.HAS_OSMIUM, MekanismItems.OSMIUM_NUGGET);
+              MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM), Tags.Items.RODS_WOODEN, Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.OSMIUM),
+              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, PrimaryResource.OSMIUM));
         registerRecipeSet(consumer, "refined_glowstone", ToolsItems.REFINED_GLOWSTONE_HELMET, ToolsItems.REFINED_GLOWSTONE_CHESTPLATE,
               ToolsItems.REFINED_GLOWSTONE_LEGGINGS, ToolsItems.REFINED_GLOWSTONE_BOOTS, ToolsItems.REFINED_GLOWSTONE_SWORD, ToolsItems.REFINED_GLOWSTONE_PICKAXE,
               ToolsItems.REFINED_GLOWSTONE_AXE, ToolsItems.REFINED_GLOWSTONE_SHOVEL, ToolsItems.REFINED_GLOWSTONE_HOE, ToolsItems.REFINED_GLOWSTONE_PAXEL,

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "tag": "forge:ingots/lead"
+    }
+  },
+  "output": {
+    "item": "mekanism:dust_lead"
+  }
+}

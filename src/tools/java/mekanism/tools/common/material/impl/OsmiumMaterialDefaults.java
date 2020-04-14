@@ -2,6 +2,8 @@ package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.ResourceType;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.crafting.Ingredient;
@@ -120,6 +122,6 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     @Nonnull
     @Override
     public Ingredient getCommonRepairMaterial() {
-        return Ingredient.fromItems(MekanismItems.OSMIUM_INGOT);
+        return Ingredient.fromItems(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
     }
 }

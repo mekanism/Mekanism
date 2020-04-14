@@ -1,10 +1,17 @@
 package mekanism.common.tags;
 
+import java.util.Map;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasTags;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfuseTypeTags;
 import mekanism.common.Mekanism;
+import mekanism.common.resource.OreType;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -19,6 +26,28 @@ import net.minecraft.util.ResourceLocation;
 public class MekanismTags {
 
     public static class Items {
+
+        public static final Table<ResourceType, PrimaryResource, Tag<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
+        public static final Map<PrimaryResource, Tag<Item>> PROCESSED_RESOURCE_BLOCKS = new Object2ObjectOpenHashMap<>();
+        public static final Map<OreType, Tag<Item>> ORES = new Object2ObjectOpenHashMap<>();
+
+        static {
+            for (PrimaryResource resource : PrimaryResource.values()) {
+                for (ResourceType type : ResourceType.values()) {
+                    if (type == ResourceType.INGOT || type == ResourceType.NUGGET || type == ResourceType.DUST) {
+                        PROCESSED_RESOURCES.put(type, resource, forgeTag(type.getRegistryPrefix() + "s/" + resource.getName()));
+                    } else {
+                        PROCESSED_RESOURCES.put(type, resource, tag(type.getRegistryPrefix() + "s/" + resource.getName()));
+                    }
+                }
+                if (!resource.isVanilla()) {
+                    PROCESSED_RESOURCE_BLOCKS.put(resource, forgeTag("storage_blocks/" + resource.getName()));
+                }
+            }
+            for (OreType ore : OreType.values()) {
+                ORES.put(ore, forgeTag("ores/" + ore.getResource().getRegistrySuffix()));
+            }
+        }
 
         public static final Tag<Item> WRENCHES = forgeTag("wrenches");
 
@@ -44,54 +73,34 @@ public class MekanismTags {
         public static final Tag<Item> DUSTS_BRONZE = forgeTag("dusts/bronze");
         public static final Tag<Item> DUSTS_CHARCOAL = forgeTag("dusts/charcoal");
         public static final Tag<Item> DUSTS_COAL = forgeTag("dusts/coal");
-        public static final Tag<Item> DUSTS_COPPER = forgeTag("dusts/copper");
         public static final Tag<Item> DUSTS_DIAMOND = forgeTag("dusts/diamond");
         public static final Tag<Item> DUSTS_EMERALD = forgeTag("dusts/emerald");
-        public static final Tag<Item> DUSTS_GOLD = forgeTag("dusts/gold");
-        public static final Tag<Item> DUSTS_IRON = forgeTag("dusts/iron");
         public static final Tag<Item> DUSTS_LAPIS_LAZULI = forgeTag("dusts/lapis_lazuli");
         public static final Tag<Item> DUSTS_LITHIUM = forgeTag("dusts/lithium");
         public static final Tag<Item> DUSTS_OBSIDIAN = forgeTag("dusts/obsidian");
-        public static final Tag<Item> DUSTS_OSMIUM = forgeTag("dusts/osmium");
         public static final Tag<Item> DUSTS_QUARTZ = forgeTag("dusts/quartz");
         public static final Tag<Item> DUSTS_REFINED_OBSIDIAN = forgeTag("dusts/refined_obsidian");
         public static final Tag<Item> DUSTS_SALT = forgeTag("dusts/salt");
         public static final Tag<Item> DUSTS_STEEL = forgeTag("dusts/steel");
         public static final Tag<Item> DUSTS_SULFUR = forgeTag("dusts/sulfur");
-        public static final Tag<Item> DUSTS_TIN = forgeTag("dusts/tin");
         public static final Tag<Item> DUSTS_WOOD = forgeTag("dusts/wood");
         public static final Tag<Item> DUSTS_FLUORITE = forgeTag("dusts/fluorite");
 
         public static final Tag<Item> NUGGETS_BRONZE = forgeTag("nuggets/bronze");
-        public static final Tag<Item> NUGGETS_COPPER = forgeTag("nuggets/copper");
-        public static final Tag<Item> NUGGETS_OSMIUM = forgeTag("nuggets/osmium");
         public static final Tag<Item> NUGGETS_REFINED_GLOWSTONE = forgeTag("nuggets/refined_glowstone");
         public static final Tag<Item> NUGGETS_REFINED_OBSIDIAN = forgeTag("nuggets/refined_obsidian");
         public static final Tag<Item> NUGGETS_STEEL = forgeTag("nuggets/steel");
-        public static final Tag<Item> NUGGETS_TIN = forgeTag("nuggets/tin");
 
         public static final Tag<Item> INGOTS_BRONZE = forgeTag("ingots/bronze");
-        public static final Tag<Item> INGOTS_COPPER = forgeTag("ingots/copper");
-        public static final Tag<Item> INGOTS_OSMIUM = forgeTag("ingots/osmium");
         public static final Tag<Item> INGOTS_REFINED_GLOWSTONE = forgeTag("ingots/refined_glowstone");
         public static final Tag<Item> INGOTS_REFINED_OBSIDIAN = forgeTag("ingots/refined_obsidian");
         public static final Tag<Item> INGOTS_STEEL = forgeTag("ingots/steel");
-        public static final Tag<Item> INGOTS_TIN = forgeTag("ingots/tin");
-
-        public static final Tag<Item> ORES_COPPER = forgeTag("ores/copper");
-        public static final Tag<Item> ORES_OSMIUM = forgeTag("ores/osmium");
-        public static final Tag<Item> ORES_TIN = forgeTag("ores/tin");
-        public static final Tag<Item> ORES_FLUORITE = forgeTag("ores/fluorite");
-        public static final Tag<Item> ORES_URANIUM = forgeTag("ores/uranium");
 
         public static final Tag<Item> STORAGE_BLOCKS_BRONZE = forgeTag("storage_blocks/bronze");
         public static final Tag<Item> STORAGE_BLOCKS_CHARCOAL = forgeTag("storage_blocks/charcoal");
-        public static final Tag<Item> STORAGE_BLOCKS_COPPER = forgeTag("storage_blocks/copper");
-        public static final Tag<Item> STORAGE_BLOCKS_OSMIUM = forgeTag("storage_blocks/osmium");
         public static final Tag<Item> STORAGE_BLOCKS_REFINED_GLOWSTONE = forgeTag("storage_blocks/refined_glowstone");
         public static final Tag<Item> STORAGE_BLOCKS_REFINED_OBSIDIAN = forgeTag("storage_blocks/refined_obsidian");
         public static final Tag<Item> STORAGE_BLOCKS_STEEL = forgeTag("storage_blocks/steel");
-        public static final Tag<Item> STORAGE_BLOCKS_TIN = forgeTag("storage_blocks/tin");
 
         public static final Tag<Item> CIRCUITS = forgeTag("circuits");
         public static final Tag<Item> CIRCUITS_BASIC = forgeTag("circuits/basic");
@@ -118,32 +127,9 @@ public class MekanismTags {
         public static final Tag<Item> ENRICHED_TIN = tag("enriched/tin");
 
         public static final Tag<Item> DIRTY_DUSTS = tag("dirty_dusts");
-        public static final Tag<Item> DIRTY_DUSTS_COPPER = tag("dirty_dusts/copper");
-        public static final Tag<Item> DIRTY_DUSTS_GOLD = tag("dirty_dusts/gold");
-        public static final Tag<Item> DIRTY_DUSTS_IRON = tag("dirty_dusts/iron");
-        public static final Tag<Item> DIRTY_DUSTS_OSMIUM = tag("dirty_dusts/osmium");
-        public static final Tag<Item> DIRTY_DUSTS_TIN = tag("dirty_dusts/tin");
-
         public static final Tag<Item> CLUMPS = tag("clumps");
-        public static final Tag<Item> CLUMPS_COPPER = tag("clumps/copper");
-        public static final Tag<Item> CLUMPS_GOLD = tag("clumps/gold");
-        public static final Tag<Item> CLUMPS_IRON = tag("clumps/iron");
-        public static final Tag<Item> CLUMPS_OSMIUM = tag("clumps/osmium");
-        public static final Tag<Item> CLUMPS_TIN = tag("clumps/tin");
-
         public static final Tag<Item> SHARDS = tag("shards");
-        public static final Tag<Item> SHARDS_COPPER = tag("shards/copper");
-        public static final Tag<Item> SHARDS_GOLD = tag("shards/gold");
-        public static final Tag<Item> SHARDS_IRON = tag("shards/iron");
-        public static final Tag<Item> SHARDS_OSMIUM = tag("shards/osmium");
-        public static final Tag<Item> SHARDS_TIN = tag("shards/tin");
-
         public static final Tag<Item> CRYSTALS = tag("crystals");
-        public static final Tag<Item> CRYSTALS_COPPER = tag("crystals/copper");
-        public static final Tag<Item> CRYSTALS_GOLD = tag("crystals/gold");
-        public static final Tag<Item> CRYSTALS_IRON = tag("crystals/iron");
-        public static final Tag<Item> CRYSTALS_OSMIUM = tag("crystals/osmium");
-        public static final Tag<Item> CRYSTALS_TIN = tag("crystals/tin");
 
         public static final Tag<Item> GEMS_FLUORITE = forgeTag("gems/fluorite");
 
@@ -158,26 +144,31 @@ public class MekanismTags {
 
     public static class Blocks {
 
+        public static final Map<PrimaryResource, Tag<Block>> RESOURCE_STORAGE_BLOCKS = new Object2ObjectOpenHashMap<>();
+        public static final Map<OreType, Tag<Block>> ORES = new Object2ObjectOpenHashMap<>();
+
+        static {
+            for (PrimaryResource resource : PrimaryResource.values()) {
+                if (!resource.isVanilla()) {
+                    RESOURCE_STORAGE_BLOCKS.put(resource, forgeTag("storage_blocks/" + resource.getName()));
+                }
+            }
+            for (OreType ore : OreType.values()) {
+                ORES.put(ore, forgeTag("ores/" + ore.getResource().getRegistrySuffix()));
+            }
+        }
+
         public static final Tag<Block> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
         public static final Tag<Block> ATOMIC_DISASSEMBLER_ORE = tag("atomic_disassembler_ore");
 
         public static final Tag<Block> CHESTS_ELECTRIC = forgeTag("chests/electric");
         public static final Tag<Block> CHESTS_PERSONAL = forgeTag("chests/personal");
 
-        public static final Tag<Block> ORES_COPPER = forgeTag("ores/copper");
-        public static final Tag<Block> ORES_OSMIUM = forgeTag("ores/osmium");
-        public static final Tag<Block> ORES_TIN = forgeTag("ores/tin");
-        public static final Tag<Block> ORES_URANIUM = forgeTag("ores/uranium");
-        public static final Tag<Block> ORES_FLUORITE = forgeTag("ores/fluorite");
-
         public static final Tag<Block> STORAGE_BLOCKS_BRONZE = forgeTag("storage_blocks/bronze");
         public static final Tag<Block> STORAGE_BLOCKS_CHARCOAL = forgeTag("storage_blocks/charcoal");
-        public static final Tag<Block> STORAGE_BLOCKS_COPPER = forgeTag("storage_blocks/copper");
-        public static final Tag<Block> STORAGE_BLOCKS_OSMIUM = forgeTag("storage_blocks/osmium");
         public static final Tag<Block> STORAGE_BLOCKS_REFINED_GLOWSTONE = forgeTag("storage_blocks/refined_glowstone");
         public static final Tag<Block> STORAGE_BLOCKS_REFINED_OBSIDIAN = forgeTag("storage_blocks/refined_obsidian");
         public static final Tag<Block> STORAGE_BLOCKS_STEEL = forgeTag("storage_blocks/steel");
-        public static final Tag<Block> STORAGE_BLOCKS_TIN = forgeTag("storage_blocks/tin");
 
         private static Tag<Block> forgeTag(String name) {
             return new BlockTags.Wrapper(new ResourceLocation("forge", name));

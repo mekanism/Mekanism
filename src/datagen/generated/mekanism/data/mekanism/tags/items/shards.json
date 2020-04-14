@@ -1,9 +1,10 @@
 {
   "values": [
-    "#mekanism:shards/copper",
-    "#mekanism:shards/gold",
-    "#mekanism:shards/iron",
-    "#mekanism:shards/osmium",
-    "#mekanism:shards/tin"
+    "mekanism:shard_iron",
+    "mekanism:shard_gold",
+    "mekanism:shard_osmium",
+    "mekanism:shard_copper",
+    "mekanism:shard_tin",
+    "mekanism:shard_lead"
   ]
 }

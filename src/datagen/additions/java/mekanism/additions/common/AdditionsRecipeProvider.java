@@ -21,6 +21,8 @@ import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
@@ -101,11 +103,11 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.EMPTY, Pattern.OSMIUM),
                     TripleLine.of(Pattern.STEEL, Pattern.CIRCUIT, Pattern.STEEL),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
-              ).key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              ).key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
-              .addCriterion(Criterion.HAS_OSMIUM)
+              .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.OSMIUM))
               .addCriterion(Criterion.HAS_STEEL)
               .build(consumer);
         ExtendedShapedRecipeBuilder.shapedRecipe(AdditionsBlocks.OBSIDIAN_TNT)
@@ -356,7 +358,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         String colorString = color.getRegistryPrefix();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(REINFORCED_PLASTIC)
-              .key(Pattern.OSMIUM, MekanismTags.Items.DUSTS_OSMIUM)
+              .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.OSMIUM))
               .key(Pattern.CONSTANT, plastic)
               .addCriterion(Criterion.has(plastic))
               .build(consumer, MekanismAdditions.rl(basePath + colorString));

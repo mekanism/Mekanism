@@ -1,9 +1,10 @@
 {
   "values": [
-    "#mekanism:crystals/copper",
-    "#mekanism:crystals/gold",
-    "#mekanism:crystals/iron",
-    "#mekanism:crystals/osmium",
-    "#mekanism:crystals/tin"
+    "mekanism:crystal_iron",
+    "mekanism:crystal_gold",
+    "mekanism:crystal_osmium",
+    "mekanism:crystal_copper",
+    "mekanism:crystal_tin",
+    "mekanism:crystal_lead"
   ]
 }

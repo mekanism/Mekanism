@@ -2,11 +2,12 @@ package mekanism.common.registries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import mekanism.api.Upgrade;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
-import mekanism.common.Resource;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.Modules;
@@ -23,6 +24,7 @@ import mekanism.common.item.ItemGeigerCounter;
 import mekanism.common.item.ItemModule;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.item.ItemProcessedResource;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemTierInstaller;
@@ -41,8 +43,9 @@ import mekanism.common.item.gear.ItemMekaTool;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import mekanism.common.resource.INamedResource;
+import mekanism.common.resource.IResource;
 import mekanism.common.resource.MiscResource;
+import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -50,6 +53,7 @@ import net.minecraft.item.Item;
 public class MekanismItems {
 
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(Mekanism.MODID);
+    public static final Table<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> PROCESSED_RESOURCES = HashBasedTable.create();
 
     public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.register("electric_bow", ItemElectricBow::new);
     public static final ItemRegistryObject<ItemRobit> ROBIT = ITEMS.register("robit", ItemRobit::new);
@@ -93,7 +97,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> ENRICHED_REDSTONE = registerResource(ResourceType.ENRICHED, MiscResource.REDSTONE);
     public static final ItemRegistryObject<Item> ENRICHED_DIAMOND = registerResource(ResourceType.ENRICHED, MiscResource.DIAMOND);
     public static final ItemRegistryObject<Item> ENRICHED_OBSIDIAN = registerResource(ResourceType.ENRICHED, MiscResource.REFINED_OBSIDIAN);
-    public static final ItemRegistryObject<Item> ENRICHED_TIN = registerResource(ResourceType.ENRICHED, Resource.TIN);
+    public static final ItemRegistryObject<Item> ENRICHED_TIN = registerResource(ResourceType.ENRICHED, PrimaryResource.TIN);
 
     public static final ItemRegistryObject<ItemUpgrade> SPEED_UPGRADE = registerUpgrade(Upgrade.SPEED);
     public static final ItemRegistryObject<ItemUpgrade> ENERGY_UPGRADE = registerUpgrade(Upgrade.ENERGY);
@@ -159,36 +163,6 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemTierInstaller> ELITE_TIER_INSTALLER = registerInstaller(BaseTier.ADVANCED, BaseTier.ELITE);
     public static final ItemRegistryObject<ItemTierInstaller> ULTIMATE_TIER_INSTALLER = registerInstaller(BaseTier.ELITE, BaseTier.ULTIMATE);
 
-    public static final ItemRegistryObject<Item> IRON_CRYSTAL = registerResource(ResourceType.CRYSTAL, Resource.IRON);
-    public static final ItemRegistryObject<Item> GOLD_CRYSTAL = registerResource(ResourceType.CRYSTAL, Resource.GOLD);
-    public static final ItemRegistryObject<Item> OSMIUM_CRYSTAL = registerResource(ResourceType.CRYSTAL, Resource.OSMIUM);
-    public static final ItemRegistryObject<Item> COPPER_CRYSTAL = registerResource(ResourceType.CRYSTAL, Resource.COPPER);
-    public static final ItemRegistryObject<Item> TIN_CRYSTAL = registerResource(ResourceType.CRYSTAL, Resource.TIN);
-
-    public static final ItemRegistryObject<Item> IRON_SHARD = registerResource(ResourceType.SHARD, Resource.IRON);
-    public static final ItemRegistryObject<Item> GOLD_SHARD = registerResource(ResourceType.SHARD, Resource.GOLD);
-    public static final ItemRegistryObject<Item> OSMIUM_SHARD = registerResource(ResourceType.SHARD, Resource.OSMIUM);
-    public static final ItemRegistryObject<Item> COPPER_SHARD = registerResource(ResourceType.SHARD, Resource.COPPER);
-    public static final ItemRegistryObject<Item> TIN_SHARD = registerResource(ResourceType.SHARD, Resource.TIN);
-
-    public static final ItemRegistryObject<Item> IRON_CLUMP = registerResource(ResourceType.CLUMP, Resource.IRON);
-    public static final ItemRegistryObject<Item> GOLD_CLUMP = registerResource(ResourceType.CLUMP, Resource.GOLD);
-    public static final ItemRegistryObject<Item> OSMIUM_CLUMP = registerResource(ResourceType.CLUMP, Resource.OSMIUM);
-    public static final ItemRegistryObject<Item> COPPER_CLUMP = registerResource(ResourceType.CLUMP, Resource.COPPER);
-    public static final ItemRegistryObject<Item> TIN_CLUMP = registerResource(ResourceType.CLUMP, Resource.TIN);
-
-    public static final ItemRegistryObject<Item> DIRTY_IRON_DUST = registerResource(ResourceType.DIRTY_DUST, Resource.IRON);
-    public static final ItemRegistryObject<Item> DIRTY_GOLD_DUST = registerResource(ResourceType.DIRTY_DUST, Resource.GOLD);
-    public static final ItemRegistryObject<Item> DIRTY_OSMIUM_DUST = registerResource(ResourceType.DIRTY_DUST, Resource.OSMIUM);
-    public static final ItemRegistryObject<Item> DIRTY_COPPER_DUST = registerResource(ResourceType.DIRTY_DUST, Resource.COPPER);
-    public static final ItemRegistryObject<Item> DIRTY_TIN_DUST = registerResource(ResourceType.DIRTY_DUST, Resource.TIN);
-
-    public static final ItemRegistryObject<Item> IRON_DUST = registerResource(ResourceType.DUST, Resource.IRON);
-    public static final ItemRegistryObject<Item> GOLD_DUST = registerResource(ResourceType.DUST, Resource.GOLD);
-    public static final ItemRegistryObject<Item> OSMIUM_DUST = registerResource(ResourceType.DUST, Resource.OSMIUM);
-    public static final ItemRegistryObject<Item> COPPER_DUST = registerResource(ResourceType.DUST, Resource.COPPER);
-    public static final ItemRegistryObject<Item> TIN_DUST = registerResource(ResourceType.DUST, Resource.TIN);
-
     public static final ItemRegistryObject<Item> BRONZE_DUST = registerResource(ResourceType.DUST, MiscResource.BRONZE);
     public static final ItemRegistryObject<Item> LAPIS_LAZULI_DUST = registerResource(ResourceType.DUST, MiscResource.LAPIS_LAZULI);
     public static final ItemRegistryObject<Item> COAL_DUST = registerResource(ResourceType.DUST, MiscResource.COAL);
@@ -204,22 +178,26 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> FLUORITE_DUST = registerResource(ResourceType.DUST, MiscResource.FLUORITE);
 
     public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_INGOT = registerResource(ResourceType.INGOT, MiscResource.REFINED_OBSIDIAN);
-    public static final ItemRegistryObject<Item> OSMIUM_INGOT = registerResource(ResourceType.INGOT, Resource.OSMIUM);
     public static final ItemRegistryObject<Item> BRONZE_INGOT = registerResource(ResourceType.INGOT, MiscResource.BRONZE);
     public static final ItemRegistryObject<Item> REFINED_GLOWSTONE_INGOT = registerResource(ResourceType.INGOT, MiscResource.REFINED_GLOWSTONE);
     public static final ItemRegistryObject<Item> STEEL_INGOT = registerResource(ResourceType.INGOT, MiscResource.STEEL);
-    public static final ItemRegistryObject<Item> COPPER_INGOT = registerResource(ResourceType.INGOT, Resource.COPPER);
-    public static final ItemRegistryObject<Item> TIN_INGOT = registerResource(ResourceType.INGOT, Resource.TIN);
 
     public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.REFINED_OBSIDIAN);
-    public static final ItemRegistryObject<Item> OSMIUM_NUGGET = registerResource(ResourceType.NUGGET, Resource.OSMIUM);
     public static final ItemRegistryObject<Item> BRONZE_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.BRONZE);
     public static final ItemRegistryObject<Item> REFINED_GLOWSTONE_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.REFINED_GLOWSTONE);
     public static final ItemRegistryObject<Item> STEEL_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.STEEL);
-    public static final ItemRegistryObject<Item> COPPER_NUGGET = registerResource(ResourceType.NUGGET, Resource.COPPER);
-    public static final ItemRegistryObject<Item> TIN_NUGGET = registerResource(ResourceType.NUGGET, Resource.TIN);
 
-    private static ItemRegistryObject<Item> registerResource(ResourceType type, INamedResource resource) {
+    static {
+        for (ResourceType type : ResourceType.values()) {
+            for (PrimaryResource resource : PrimaryResource.values()) {
+                if (resource.has(type)) {
+                    PROCESSED_RESOURCES.put(type, resource, ITEMS.register(type.getRegistryPrefix() + "_" + resource.getName(), props -> new ItemProcessedResource(props, type, resource)));
+                }
+            }
+        }
+    }
+
+    private static ItemRegistryObject<Item> registerResource(ResourceType type, IResource resource) {
         return ITEMS.register(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix());
     }
 

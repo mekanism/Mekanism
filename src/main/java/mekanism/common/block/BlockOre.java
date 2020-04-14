@@ -1,44 +1,25 @@
 package mekanism.common.block;
 
 import javax.annotation.Nonnull;
-import mekanism.common.MekanismLang;
-import mekanism.common.Resource;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.interfaces.IHasDescription;
+import mekanism.common.resource.OreType;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.common.ToolType;
 
-/**
- * Block class for handling multiple ore block IDs. 0: Osmium Ore 1: Copper Ore 2: Tin Ore
- *
- * @author AidanBrady
- */
 public class BlockOre extends Block implements IHasDescription {
 
-    private final Resource resource;
+    private final OreType ore;
 
-    public BlockOre(Resource resource) {
+    public BlockOre(OreType ore) {
         super(Block.Properties.create(Material.ROCK).hardnessAndResistance(3F, 5F).harvestTool(ToolType.PICKAXE).harvestLevel(1));
-        this.resource = resource;
+        this.ore = ore;
     }
 
     @Nonnull
     @Override
     public ILangEntry getDescription() {
-        switch (resource) {
-            case OSMIUM:
-                return MekanismLang.DESCRIPTION_OSMIUM_ORE;
-            case COPPER:
-                return MekanismLang.DESCRIPTION_COPPER_ORE;
-            case TIN:
-                return MekanismLang.DESCRIPTION_TIN_ORE;
-            case FLUORITE:
-                return MekanismLang.DESCRIPTION_FLUORITE_ORE;
-            case URANIUM:
-                return MekanismLang.DESCRIPTION_URANIUM_ORE;
-            default:
-                return MekanismLang.INVALID;
-        }
+        return () -> "description.mekanism." + ore.getResource().getRegistrySuffix() + "_ore";
     }
 }

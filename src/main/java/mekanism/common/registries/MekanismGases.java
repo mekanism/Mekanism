@@ -1,20 +1,25 @@
 package mekanism.common.registries;
 
+import java.util.Map;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.Slurry;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
-import mekanism.common.Resource;
 import mekanism.common.registration.impl.GasDeferredRegister;
 import mekanism.common.registration.impl.GasRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.SecondaryResource;
 
 public class MekanismGases {
 
     //TODO: Pass something like FluidAttributes
     public static final GasDeferredRegister GASES = new GasDeferredRegister(Mekanism.MODID);
+
+    public static final Map<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> PROCESSED_RESOURCE_SLURRIES = new Object2ObjectOpenHashMap<>();
 
     public static final GasRegistryObject<Gas> HYDROGEN = GASES.register(ChemicalConstants.HYDROGEN);
     public static final GasRegistryObject<Gas> OXYGEN = GASES.register(ChemicalConstants.OXYGEN);
@@ -43,10 +48,11 @@ public class MekanismGases {
     public static final GasRegistryObject<Gas> ANTIMATTER = GASES.register("antimatter", 0x7A91A1);
     public static final GasRegistryObject<Gas> NUTRITIONAL_PASTE = GASES.register("nutritional_paste", 0XEB6CA3);
 
-    public static final SlurryRegistryObject<Slurry, Slurry> IRON_SLURRY = GASES.registerSlurry(Resource.IRON);
-    public static final SlurryRegistryObject<Slurry, Slurry> GOLD_SLURRY = GASES.registerSlurry(Resource.GOLD);
-    public static final SlurryRegistryObject<Slurry, Slurry> OSMIUM_SLURRY = GASES.registerSlurry(Resource.OSMIUM);
-    public static final SlurryRegistryObject<Slurry, Slurry> COPPER_SLURRY = GASES.registerSlurry(Resource.COPPER);
-    public static final SlurryRegistryObject<Slurry, Slurry> TIN_SLURRY = GASES.registerSlurry(Resource.TIN);
-    public static final SlurryRegistryObject<Slurry, Slurry> URANIUM_SLURRY = GASES.registerSlurry(Resource.URANIUM);
+    public static final SlurryRegistryObject<Slurry, Slurry> URANIUM_SLURRY = GASES.registerSlurry(SecondaryResource.URANIUM);
+
+    static {
+        for (PrimaryResource resource : PrimaryResource.values()) {
+            PROCESSED_RESOURCE_SLURRIES.put(resource, GASES.registerSlurry(resource));
+        }
+    }
 }

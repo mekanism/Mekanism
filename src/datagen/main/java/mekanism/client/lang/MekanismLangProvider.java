@@ -1,5 +1,7 @@
 package mekanism.client.lang;
 
+import java.util.Map;
+import com.google.common.collect.Table.Cell;
 import mekanism.api.chemical.gas.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.APILang;
@@ -7,7 +9,10 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.FactoryType;
+import mekanism.common.item.ItemProcessedResource;
 import mekanism.common.radiation.RadiationManager;
+import mekanism.common.registration.impl.BlockRegistryObject;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -15,6 +20,9 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.resource.OreType;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.data.DataGenerator;
 
@@ -104,20 +112,14 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.ATOMIC_ALLOY, "Atomic Alloy");
         //Ingots
         add(MekanismItems.REFINED_OBSIDIAN_INGOT, "Refined Obsidian Ingot");
-        add(MekanismItems.OSMIUM_INGOT, "Osmium Ingot");
         add(MekanismItems.BRONZE_INGOT, "Bronze Ingot");
         add(MekanismItems.REFINED_GLOWSTONE_INGOT, "Refined Glowstone Ingot");
         add(MekanismItems.STEEL_INGOT, "Steel Ingot");
-        add(MekanismItems.COPPER_INGOT, "Copper Ingot");
-        add(MekanismItems.TIN_INGOT, "Tin Ingot");
         //Nuggets
         add(MekanismItems.REFINED_OBSIDIAN_NUGGET, "Refined Obsidian Nugget");
-        add(MekanismItems.OSMIUM_NUGGET, "Osmium Nugget");
         add(MekanismItems.BRONZE_NUGGET, "Bronze Nugget");
         add(MekanismItems.REFINED_GLOWSTONE_NUGGET, "Refined Glowstone Nugget");
         add(MekanismItems.STEEL_NUGGET, "Steel Nugget");
-        add(MekanismItems.COPPER_NUGGET, "Copper Nugget");
-        add(MekanismItems.TIN_NUGGET, "Tin Nugget");
         //Dusts
         add(MekanismItems.BRONZE_DUST, "Bronze Dust");
         add(MekanismItems.LAPIS_LAZULI_DUST, "Lapis Lazuli Dust");
@@ -135,12 +137,35 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Tiered stuff
         addTiered(MekanismItems.BASIC_CONTROL_CIRCUIT, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismItems.ELITE_CONTROL_CIRCUIT, MekanismItems.ULTIMATE_CONTROL_CIRCUIT, "Control Circuit");
         addTiered(MekanismItems.BASIC_TIER_INSTALLER, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismItems.ELITE_TIER_INSTALLER, MekanismItems.ULTIMATE_TIER_INSTALLER, "Tier Installer");
-        //Ore processing parts
-        addOreProcessingNames(MekanismItems.IRON_CRYSTAL, MekanismItems.IRON_SHARD, MekanismItems.IRON_CLUMP, MekanismItems.DIRTY_IRON_DUST, MekanismItems.IRON_DUST, "Iron");
-        addOreProcessingNames(MekanismItems.GOLD_CRYSTAL, MekanismItems.GOLD_SHARD, MekanismItems.GOLD_CLUMP, MekanismItems.DIRTY_GOLD_DUST, MekanismItems.GOLD_DUST, "Gold");
-        addOreProcessingNames(MekanismItems.OSMIUM_CRYSTAL, MekanismItems.OSMIUM_SHARD, MekanismItems.OSMIUM_CLUMP, MekanismItems.DIRTY_OSMIUM_DUST, MekanismItems.OSMIUM_DUST, "Osmium");
-        addOreProcessingNames(MekanismItems.COPPER_CRYSTAL, MekanismItems.COPPER_SHARD, MekanismItems.COPPER_CLUMP, MekanismItems.DIRTY_COPPER_DUST, MekanismItems.COPPER_DUST, "Copper");
-        addOreProcessingNames(MekanismItems.TIN_CRYSTAL, MekanismItems.TIN_SHARD, MekanismItems.TIN_CLUMP, MekanismItems.DIRTY_TIN_DUST, MekanismItems.TIN_DUST, "Tin");
+
+        for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
+            String resourceName = formatAndCapitalize(item.getColumnKey().getName());
+            switch (item.getRowKey()) {
+                case SHARD: add(item.getValue(), resourceName + " Shard"); break;
+                case CRYSTAL: add(item.getValue(), resourceName + " Crystal"); break;
+                case DUST: add(item.getValue(), resourceName + " Dust"); break;
+                case DIRTY_DUST: add(item.getValue(), "Dirty " + resourceName + " Dust"); break;
+                case CLUMP: add(item.getValue(), resourceName + " Clump"); break;
+                case INGOT: add(item.getValue(), resourceName + " Ingot"); break;
+                case NUGGET: add(item.getValue(), resourceName + " Nugget"); break;
+                default: break;
+            }
+        }
+    }
+
+    private static String formatAndCapitalize(String s) {
+        boolean isFirst = true;
+        StringBuilder ret = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            if (c == '_') {
+                isFirst = true;
+                ret.append(' ');
+            } else {
+                ret.append(isFirst ? Character.toUpperCase(c) : c);
+                isFirst = false;
+            }
+        }
+        return ret.toString();
     }
 
     private void addBlocks() {
@@ -203,20 +228,20 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         add(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, "Advanced Bounding Block");
         //Ores
-        add(MekanismBlocks.OSMIUM_ORE, "Osmium Ore");
-        add(MekanismBlocks.COPPER_ORE, "Copper Ore");
-        add(MekanismBlocks.TIN_ORE, "Tin Ore");
-        add(MekanismBlocks.FLUORITE_ORE, "Fluorite Ore");
-        add(MekanismBlocks.URANIUM_ORE, "Uranium Ore");
+        for (OreType ore : OreType.values()) {
+            add(MekanismBlocks.ORES.get(ore), formatAndCapitalize(ore.getResource().getRegistrySuffix()) + " Ore");
+        }
         //Storage blocks
-        add(MekanismBlocks.OSMIUM_BLOCK, "Osmium Block");
         add(MekanismBlocks.BRONZE_BLOCK, "Bronze Block");
         add(MekanismBlocks.REFINED_OBSIDIAN_BLOCK, "Refined Obsidian");
         add(MekanismBlocks.CHARCOAL_BLOCK, "Charcoal Block");
         add(MekanismBlocks.REFINED_GLOWSTONE_BLOCK, "Refined Glowstone");
         add(MekanismBlocks.STEEL_BLOCK, "Steel Block");
-        add(MekanismBlocks.COPPER_BLOCK, "Copper Block");
-        add(MekanismBlocks.TIN_BLOCK, "Tin Block");
+        //Dynamic storage blocks
+        for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+            add(entry.getValue(), formatAndCapitalize(entry.getKey().getName()) + " Block");
+        }
+
         //Tiered things
         addTiered(MekanismBlocks.BASIC_INDUCTION_CELL, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_INDUCTION_CELL, "Induction Cell");
         addTiered(MekanismBlocks.BASIC_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, "Induction Provider");
@@ -288,12 +313,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismGases.POLONIUM, "Polonium");
         add(MekanismGases.NUTRITIONAL_PASTE, "Nutritional Paste");
         //Slurry
-        addSlurry(MekanismGases.IRON_SLURRY, "Iron");
-        addSlurry(MekanismGases.GOLD_SLURRY, "Gold");
-        addSlurry(MekanismGases.OSMIUM_SLURRY, "Osmium");
-        addSlurry(MekanismGases.COPPER_SLURRY, "Copper");
-        addSlurry(MekanismGases.TIN_SLURRY, "Tin");
         addSlurry(MekanismGases.URANIUM_SLURRY, "Uranium");
+
+        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> entry : MekanismGases.PROCESSED_RESOURCE_SLURRIES.entrySet()) {
+            addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getName()));
+        }
     }
 
     private void addInfusionTypes() {
@@ -899,11 +923,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_GAS_TANK, "A portable tank that lets you carry gas wherever you please.");
         add(MekanismLang.DESCRIPTION_DIVERSION, "- Controllable by redstone");
         add(MekanismLang.DESCRIPTION_RESTRICTIVE, "- Only used if no other paths available");
-        add(MekanismLang.DESCRIPTION_OSMIUM_ORE, "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
-        add(MekanismLang.DESCRIPTION_COPPER_ORE, "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");
-        add(MekanismLang.DESCRIPTION_TIN_ORE, "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
-        add(MekanismLang.DESCRIPTION_FLUORITE_ORE, "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
-        add(MekanismLang.DESCRIPTION_URANIUM_ORE, "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occuring form, it is not radioactive enough to cause harm.");
         // Modules
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");
@@ -974,6 +993,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, "Allows the user to both step and jump higher.");
 
         add("death.attack." + RadiationManager.RADIATION_DAMAGE.getDamageType(), "%1$s was killed by radiation poisoning.");
+
+        add("description.mekanism.osmium_ore", "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
+        add("description.mekanism.copper_ore", "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");
+        add("description.mekanism.tin_ore", "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
+        add("description.mekanism.fluorite_ore", "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
+        add("description.mekanism.uranium_ore", "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occuring form, it is not radioactive enough to cause harm.");
+        add("description.mekanism.lead_ore", "A somewhat rare metal that is excellent at resisting radioactive particles, spawning slightly less frequently than iron.");
     }
 
     private void addOreProcessingNames(IItemProvider crystal, IItemProvider shard, IItemProvider clump, IItemProvider dirtyDust, IItemProvider dust, String resourceName) {

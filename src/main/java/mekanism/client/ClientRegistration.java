@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
+import com.google.common.collect.Table.Cell;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
@@ -120,13 +121,19 @@ import mekanism.client.render.transmitter.RenderPressurizedTube;
 import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.Mekanism;
+import mekanism.common.item.ItemProcessedResource;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.ResourceType;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -393,6 +400,23 @@ public class ClientRegistration {
                   return -1;
               }, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
+
+        for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
+            if (item.getColumnKey().hasTextureOverride())
+                continue;
+            event.getItemColors().register((stack, index) -> {
+                return index == 0 || index == 2 ? item.getColumnKey().getTint() : 0xFFFFFFFF;
+            }, item.getValue());
+        }
+        for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+            if (entry.getKey().hasTextureOverride())
+                continue;
+            ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, world, pos, index) -> {
+                return entry.getKey().getTint();
+            }, (stack, index) -> {
+                return entry.getKey().getTint();
+            }, entry.getValue());
+        }
     }
 
     @SubscribeEvent
