@@ -41,7 +41,6 @@ public final class MultipartUtils {
         for (VoxelShape shape : boxes) {
             if (shape != null) {
                 BlockRayTraceResult result = shape.rayTrace(start, end, pos);
-                //BlockRayTraceResult result = AxisAlignedBB.rayTrace(Collections.singleton(bounds), start, end, pos);
                 if (result != null) {
                     result.subHit = i;
                     result.hitInfo = null;
