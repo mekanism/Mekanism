@@ -45,7 +45,7 @@ public class CommonPlayerTracker {
             Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketMekanismTags(Mekanism.instance.getTagManager()), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketClearRecipeCache(), (ServerPlayerEntity) event.getPlayer());
-            event.getPlayer().sendMessage(ALPHA_WARNING);
+            //event.getPlayer().sendMessage(ALPHA_WARNING);
         }
     }
 
