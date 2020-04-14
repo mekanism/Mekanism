@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
@@ -54,6 +55,12 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
 
         public T withEnergyConfig(FloatingLongSupplier energyStorage) {
             return with(new AttributeEnergy(null, energyStorage));
+        }
+
+        @SafeVarargs
+        public final T with(TileAttribute<TILE>... attrs) {
+            holder.add(attrs);
+            return getThis();
         }
 
         public T withCustomContainer(Function<TileEntityMekanism, INamedContainerProvider> customContainerSupplier) {

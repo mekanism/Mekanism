@@ -6,11 +6,14 @@ import javax.annotation.Nullable;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 
 public interface Attribute {
+
+    public interface TileAttribute<TILE extends TileEntityMekanism> extends Attribute {}
 
     static boolean has(Block block, Class<? extends Attribute> type) {
         return block instanceof ITypeBlock && ((ITypeBlock) block).getType().has(type);

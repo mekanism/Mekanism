@@ -86,7 +86,7 @@ public class BlockType {
             return (T) this;
         }
 
-        public T with(Attribute... attrs) {
+        public final T with(Attribute... attrs) {
             holder.add(attrs);
             return getThis();
         }

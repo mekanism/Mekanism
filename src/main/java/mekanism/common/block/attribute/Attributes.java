@@ -1,6 +1,7 @@
 package mekanism.common.block.attribute;
 
 import java.util.function.Function;
+import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.tile.base.TileEntityMekanism;
 
 public class Attributes {
@@ -24,7 +25,7 @@ public class Attributes {
     public static class AttributeCustomSelectionBox implements Attribute {}
 
     /** If a block can emit redstone. */
-    public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements Attribute {
+    public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements TileAttribute<TILE> {
 
         private Function<TILE, Integer> redstoneFunction;
 

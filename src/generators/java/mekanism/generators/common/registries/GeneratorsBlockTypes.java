@@ -167,7 +167,7 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityFusionReactorLogicAdapter> FUSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_LOGIC_ADAPTER)
           .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
-          .with(new AttributeRedstoneEmitter<TileEntityFusionReactorLogicAdapter>((tile) -> tile.checkMode() ? 15 : 0))
+          .with(new AttributeRedstoneEmitter<>((tile) -> tile.checkMode() ? 15 : 0))
           .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER, i, inv, tile)))
           .build();
 }
