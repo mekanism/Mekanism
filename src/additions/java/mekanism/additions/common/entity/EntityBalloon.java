@@ -9,9 +9,11 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -22,9 +24,11 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -35,6 +39,8 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     private static final DataParameter<Integer> LATCHED_Y = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> LATCHED_Z = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final double OFFSET = 0.15;
+
     public EnumColor color = EnumColor.DARK_BLUE;
     private BlockPos latched;
     public LivingEntity latchedEntity;
@@ -126,7 +132,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
             }
         } else {
             if (hasCachedEntity) {
-                findCachedEntity();
+                if (world instanceof ServerWorld) {
+                    Entity entity = ((ServerWorld) world).getEntityByUuid(cachedEntityUUID);
+                    if (entity instanceof LivingEntity) {
+                        latchedEntity = (LivingEntity) entity;
+                    }
+                }
                 cachedEntityUUID = null;
                 hasCachedEntity = false;
             }
@@ -152,8 +163,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
                 latched = null;
                 dataManager.set(IS_LATCHED, (byte) 0);
             }
-            //TODO: Get nearby entities
-            if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || !latchedEntity.isAlive()/* || !world.loadedEntityList.contains(latchedEntity)*/)) {
+            if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || !latchedEntity.isAlive() || !world.getChunkProvider().isChunkLoaded(latchedEntity))) {
                 latchedEntity = null;
                 dataManager.set(IS_LATCHED, (byte) 0);
             }
@@ -205,34 +215,16 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         return -1;
     }
 
-    private void findCachedEntity() {
-        //TODO: Get nearby entities
-        /*for (Object obj : world.loadedEntityList) {
-            if (obj instanceof LivingEntity) {
-                LivingEntity entity = (LivingEntity) obj;
-                if (entity.getUniqueID().equals(cachedEntityUUID)) {
-                    latchedEntity = entity;
-                }
-            }
-        }*/
-    }
-
     private void pop() {
         playSound(AdditionsSounds.POP.getSoundEvent(), 1, 1);
         if (world.isRemote) {
+            RedstoneParticleData redstoneParticleData = new RedstoneParticleData(color.getColor(0), color.getColor(1), color.getColor(2), 1.0F);
             for (int i = 0; i < 10; i++) {
-                try {
-                    doParticle();
-                } catch (Throwable ignored) {
-                }
+                world.addParticle(redstoneParticleData, getPosX() + 0.6 * rand.nextFloat() - 0.3, getPosY() + 0.6 * rand.nextFloat() - 0.3,
+                      getPosZ() + 0.6 * rand.nextFloat() - 0.3, 0, 0, 0);
             }
         }
         remove();
-    }
-
-    private void doParticle() {
-        world.addParticle(new RedstoneParticleData(color.getColor(0), color.getColor(1), color.getColor(2), 1.0F),
-              getPosX() + (rand.nextFloat() * 0.6 - 0.3), getPosY() + (rand.nextFloat() * 0.6 - 0.3), getPosZ() + (rand.nextFloat() * 0.6 - 0.3), 0, 0, 0);
     }
 
     @Override
@@ -276,7 +268,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public boolean hitByEntity(Entity entity) {
+    public boolean hitByEntity(@Nonnull Entity entity) {
         pop();
         return true;
     }
@@ -333,7 +325,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public boolean isInRangeToRender3d(double p_145770_1_, double p_145770_3_, double p_145770_5_) {
+    public boolean isInRangeToRender3d(double x, double y, double z) {
         return true;
     }
 
@@ -341,24 +333,65 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     public boolean attackEntityFrom(@Nonnull DamageSource dmgSource, float damage) {
         if (isInvulnerableTo(dmgSource)) {
             return false;
-        } else {
-            markVelocityChanged();
-            if (dmgSource != DamageSource.MAGIC && dmgSource != DamageSource.DROWN && dmgSource != DamageSource.FALL) {
-                pop();
-                return true;
-            }
-            return false;
         }
+        markVelocityChanged();
+        if (dmgSource != DamageSource.MAGIC && dmgSource != DamageSource.DROWN && dmgSource != DamageSource.FALL) {
+            pop();
+            return true;
+        }
+        return false;
     }
 
     public boolean isLatched() {
-        if (!world.isRemote) {
-            return latched != null || latchedEntity != null;
+        if (world.isRemote) {
+            return dataManager.get(IS_LATCHED) > 0;
         }
-        return dataManager.get(IS_LATCHED) > 0;
+        return latched != null || latchedEntity != null;
     }
 
     public boolean isLatchedToEntity() {
         return dataManager.get(IS_LATCHED) == 2 && latchedEntity != null;
+    }
+
+    //Adjust various bounding boxes/eye height so that the balloon gets interacted with properly
+    @Override
+    protected float getEyeHeight(@Nonnull Pose pose, @Nonnull EntitySize size) {
+        return (float) (size.height - OFFSET);
+    }
+
+    @Nonnull
+    @Override
+    protected AxisAlignedBB getBoundingBox(@Nonnull Pose pose) {
+        return getBoundingBox(getSize(pose), getPosX(), getPosY(), getPosZ());
+    }
+
+    @Override
+    public void setPosition(double x, double y, double z) {
+        setRawPosition(x, y, z);
+        if (isAddedToWorld() && !this.world.isRemote && world instanceof ServerWorld) {
+            ((ServerWorld) this.world).chunkCheck(this); // Forge - Process chunk registration after moving.
+        }
+        setBoundingBox(getBoundingBox(getSize(Pose.STANDING), x, y, z));
+    }
+
+    private AxisAlignedBB getBoundingBox(EntitySize size, double x, double y, double z) {
+        float f = size.width / 2F;
+        double posY = y - OFFSET;
+        return new AxisAlignedBB(new Vec3d(x - f, posY, z - f), new Vec3d(x + f, posY + size.height, z + f));
+    }
+
+    @Override
+    public void recalculateSize() {
+        //NO-OP don't allow size to change
+    }
+
+    @Override
+    public void resetPositionToBB() {
+        AxisAlignedBB axisalignedbb = getBoundingBox();
+        //Offset the y value upwards to match where it actually should be relative to the bounding box
+        setRawPosition((axisalignedbb.minX + axisalignedbb.maxX) / 2D, axisalignedbb.minY + OFFSET, (axisalignedbb.minZ + axisalignedbb.maxZ) / 2D);
+        if (isAddedToWorld() && !this.world.isRemote && world instanceof ServerWorld) {
+            ((ServerWorld) this.world).chunkCheck(this); // Forge - Process chunk registration after moving.
+        }
     }
 }
