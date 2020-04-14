@@ -37,6 +37,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements ICo
 
     public TileEntityReactorPort() {
         super(GeneratorsBlocks.REACTOR_PORT);
+        delaySupplier = () -> 0;
     }
 
     @Nonnull

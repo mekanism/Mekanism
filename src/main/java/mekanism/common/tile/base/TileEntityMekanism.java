@@ -1177,7 +1177,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (isActivatable()) {
             BlockState state = getBlockState();
             Block block = state.getBlock();
-            if (Attribute.has(block, AttributeStateActive.class)) {
+            if (active != currentActive && Attribute.has(block, AttributeStateActive.class)) {
                 currentActive = active;
                 if (getClientActive() != active) {
                     if (active) {
