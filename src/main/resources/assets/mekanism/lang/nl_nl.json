@@ -280,6 +280,7 @@
   "constants.mekanism.mod_name": "Maekanisme",
   "crafting_formula.mekanism.encoded": "(Ingecodeerd)",
   "crafting_formula.mekanism.ingredients": "Ingrediënten:",
+  "death.attack.laser": "%s was incinerated.",
   "description.mekanism.bin": "Een blok gebruikt om grote hoeveelheden van één type item op te slaan.",
   "description.mekanism.boiler_casing": "Een drukbestendige, dichte behuizing gebruikt bij het maken van een Thermoelektrische ketel multiblok.",
   "description.mekanism.boiler_valve": "Een kraan die op een Thermo-elektrische ketel multiblock kan worden geplaatst, het mogelijk maken dat energie en water in combinatie met de winning van geproduceerde stoom worden ingestoken.",
