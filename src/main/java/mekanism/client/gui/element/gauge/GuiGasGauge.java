@@ -18,6 +18,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>> {
 
+    private ITextComponent label;
+
     public GuiGasGauge(IGasInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y, handler, TankType.GAS_TANK);
     }
@@ -45,6 +47,11 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>>
         return gauge;
     }
 
+    public GuiGasGauge setLabel(ITextComponent label) {
+        this.label = label;
+        return this;
+    }
+
     @Override
     public TransmissionType getTransmission() {
         return TransmissionType.GAS;
@@ -70,6 +77,11 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>>
             return MekanismRenderer.getChemicalTexture(dummyType);
         }
         return infoHandler.getTank() == null || infoHandler.getTank().isEmpty() ? null : MekanismRenderer.getChemicalTexture(infoHandler.getTank().getType());
+    }
+
+    @Override
+    public ITextComponent getLabel() {
+        return label;
     }
 
     @Override

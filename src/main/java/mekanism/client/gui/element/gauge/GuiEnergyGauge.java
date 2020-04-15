@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.gauge;
 
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
@@ -49,6 +49,11 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
     @Override
     public TextureAtlasSprite getIcon() {
         return MekanismRenderer.energyIcon;
+    }
+
+    @Override
+    public ITextComponent getLabel() {
+        return null;
     }
 
     @Override

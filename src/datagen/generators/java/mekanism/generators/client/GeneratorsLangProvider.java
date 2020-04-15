@@ -126,6 +126,10 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.FISSION_ACTIVATE, "Activate");
         add(GeneratorsLang.FISSION_SCRAM, "SCRAM");
         add(GeneratorsLang.FISSION_DAMAGE, "Damage: %s");
+        add(GeneratorsLang.FISSION_WATER_TANK, "Water Tank");
+        add(GeneratorsLang.FISSION_FUEL_TANK, "Fuel Tank");
+        add(GeneratorsLang.FISSION_STEAM_TANK, "Steam Tank");
+        add(GeneratorsLang.FISSION_WASTE_TANK, "Waste Tank");
         add(GeneratorsLang.FISSION_HEAT_GRAPH, "Heat Graph:");
         add(GeneratorsLang.FISSION_PORT_MODE_CHANGE, "Port mode changed to: %s");
         add(GeneratorsLang.FISSION_PORT_MODE_INPUT, "input only");

@@ -68,10 +68,10 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
     private List<IHeatCapacitor> heatCapacitors;
 
     private static double steamTransferEfficiency = 0.2;
-    private static double waterConductivity = 0.3;
+    private static double waterConductivity = 0.9;
 
     public double lastEnvironmentLoss = 0, lastTransferLoss = 0;
-    public long lastBoilRate;
+    public long lastBoilRate = 0, lastBurnRate = 0;
 
     public double reactorDamage = 0;
     public boolean active;
@@ -102,7 +102,7 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
             double damageRate = Math.min(temp, MAX_DAMAGE_TEMPERATURE) / (MIN_DAMAGE_TEMPERATURE * 10);
             reactorDamage += damageRate;
         } else {
-            double repairRate = (MIN_DAMAGE_TEMPERATURE - temp) / (MIN_DAMAGE_TEMPERATURE * 20);
+            double repairRate = (MIN_DAMAGE_TEMPERATURE - temp) / (MIN_DAMAGE_TEMPERATURE * 100);
             reactorDamage = Math.max(0, reactorDamage - repairRate);
         }
 
@@ -140,6 +140,7 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
             double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();
             Mekanism.radiationManager.radiate(getCenter(), leftoverWaste * radioactivity);
         }
+        lastBurnRate = toBurn;
     }
 
     public Coord4D getCenter() {

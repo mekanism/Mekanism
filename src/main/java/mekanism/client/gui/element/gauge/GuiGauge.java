@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.gauge;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
@@ -31,6 +33,8 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
     public abstract int getScaledLevel();
 
     public abstract TextureAtlasSprite getIcon();
+
+    public abstract ITextComponent getLabel();
 
     public abstract ITextComponent getTooltipText();
 
@@ -82,7 +86,12 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                 }
             }
         } else {
-            guiObj.displayTooltip(getTooltipText(), mouseX, mouseY);
+            List<ITextComponent> list = new ArrayList<>();
+            if (getLabel() != null) {
+                list.add(getLabel());
+            }
+            list.add(getTooltipText());
+            guiObj.displayTooltips(list, mouseX, mouseY);
         }
     }
 

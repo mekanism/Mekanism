@@ -17,6 +17,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> {
 
+    private ITextComponent label;
+
     public GuiFluidGauge(IFluidInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y, handler, TankType.FLUID_TANK);
         //Ensure it isn't null
@@ -37,6 +39,11 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
                 return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
             }
         }, type, gui, x, y);
+    }
+
+    public GuiFluidGauge setLabel(ITextComponent label) {
+        this.label = label;
+        return this;
     }
 
     public static GuiFluidGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
@@ -73,6 +80,11 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
         }
         FluidStack fluid = infoHandler.getTank().getFluid();
         return MekanismRenderer.getFluidTexture(fluid.isEmpty() ? dummyType : fluid, FluidType.STILL);
+    }
+
+    @Override
+    public ITextComponent getLabel() {
+        return label;
     }
 
     @Override

@@ -1,5 +1,9 @@
 package mekanism.generators.common.content.fission;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import mekanism.api.Coord4D;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.multiblock.MultiblockManager;
@@ -36,6 +40,46 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
 
     @Override
     protected boolean canForm(SynchronizedFissionReactorData structure) {
+        Map<AssemblyPos, FuelAssembly> map = new HashMap<>();
+        int assemblyCount = 0;
+
+        for (Coord4D coord : innerNodes) {
+            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
+            AssemblyPos pos = new AssemblyPos(coord.x, coord.z);
+            FuelAssembly assembly = map.get(pos);
+
+            if (tile instanceof TileEntityFissionFuelAssembly) {
+                if (assembly == null) {
+                    map.put(pos, new FuelAssembly(coord, false));
+                } else {
+                    assembly.fuelAssemblies.add(coord);
+                }
+                assemblyCount++;
+            } else if (tile instanceof TileEntityControlRodAssembly) {
+                if (assembly == null) {
+                    map.put(pos, new FuelAssembly(coord, true));
+                } else if (assembly.controlRodAssembly != null) {
+                    // only one control rod per assembly
+                    return false;
+                } else {
+                    assembly.controlRodAssembly = coord;
+                }
+            }
+        }
+
+        // require at least one fuel assembly
+        if (map.isEmpty()) {
+            return false;
+        }
+
+        for (FuelAssembly assembly : map.values()) {
+            if (!assembly.validate()) {
+                return false;
+            }
+        }
+
+        structure.fuelAssemblies = assemblyCount;
+
         return true;
     }
 
@@ -50,6 +94,56 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
             if (MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos()) instanceof TileEntityFissionReactorPort) {
                 structure.portLocations.add(obj);
             }
+        }
+    }
+
+    public static class FuelAssembly {
+        public Set<Coord4D> fuelAssemblies = new TreeSet<>((pos1, pos2) -> pos1.y - pos2.y);
+        public Coord4D controlRodAssembly;
+
+        public FuelAssembly(Coord4D start, boolean isControlRod) {
+            if (isControlRod) {
+                controlRodAssembly = start;
+            } else {
+                fuelAssemblies.add(start);
+            }
+        }
+
+        public boolean validate() {
+            if (fuelAssemblies.isEmpty() || controlRodAssembly == null) {
+                return false;
+            }
+            int prevY = -1;
+            for (Coord4D coord : fuelAssemblies) {
+                if (prevY != -1 && coord.y != prevY + 1) {
+                    return false;
+                }
+                prevY = coord.y;
+            }
+            return controlRodAssembly.y == prevY + 1;
+        }
+    }
+
+    public static class AssemblyPos {
+        int x, z;
+
+        public AssemblyPos(int x, int z) {
+            this.x = x;
+            this.z = z;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + x;
+            result = prime * result + z;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof AssemblyPos && ((AssemblyPos) obj).x == x && ((AssemblyPos) obj).z == z;
         }
     }
 }

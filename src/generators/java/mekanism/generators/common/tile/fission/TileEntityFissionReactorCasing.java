@@ -91,7 +91,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
 
     public String getDamageString() {
         if (structure == null) return "0%";
-        return (Math.round((structure.reactorDamage / SynchronizedFissionReactorData.MAX_DAMAGE) * 100) / 100) + "%";
+        return (Math.round(structure.reactorDamage / SynchronizedFissionReactorData.MAX_DAMAGE) * 100) + "%";
     }
     public EnumColor getDamageColor() {
         if (structure == null) return EnumColor.BRIGHT_GREEN;
@@ -131,8 +131,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             updateTag.putInt(NBTConstants.VOLUME, structure.getVolume());
             updateTag.put(NBTConstants.FLUID_STORED, structure.waterTank.getFluid().writeToNBT(new CompoundNBT()));
             updateTag.put(NBTConstants.GAS_STORED, structure.fuelTank.getStack().write(new CompoundNBT()));
-            updateTag.put(NBTConstants.GAS_STORED_ALT, structure.fuelTank.getStack().write(new CompoundNBT()));
-            updateTag.put(NBTConstants.GAS_STORED_ALT_2, structure.fuelTank.getStack().write(new CompoundNBT()));
+            updateTag.put(NBTConstants.GAS_STORED_ALT, structure.steamTank.getStack().write(new CompoundNBT()));
+            updateTag.put(NBTConstants.GAS_STORED_ALT_2, structure.wasteTank.getStack().write(new CompoundNBT()));
         }
         return updateTag;
     }
@@ -185,6 +185,9 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
         }));
         container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.reactorDamage, value -> {
             if (structure != null) structure.reactorDamage = value;
+        }));
+        container.track(SyncableLong.create(() -> structure == null ? 0 : structure.lastBurnRate, value -> {
+            if (structure != null) structure.lastBurnRate = value;
         }));
     }
 }

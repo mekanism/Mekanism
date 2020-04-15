@@ -30,10 +30,14 @@ public class GuiNumberGauge extends GuiGauge<Void> {
     }
 
     @Override
+    public ITextComponent getLabel() {
+        return null;
+    }
+
+    @Override
     public ITextComponent getTooltipText() {
         return infoHandler.getText();
     }
-
 
     public interface INumberInfoHandler {
 

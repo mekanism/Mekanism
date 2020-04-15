@@ -35,6 +35,10 @@ public class GuiGraph extends GuiTexturedElement {
         currentScale = scale;
     }
 
+    public void setMinScale(long minScale) {
+        currentScale = minScale;
+    }
+
     public void addData(long data) {
         if (graphData.size() == width) {
             graphData.removeLong(0);

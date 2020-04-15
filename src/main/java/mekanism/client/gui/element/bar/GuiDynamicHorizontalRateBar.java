@@ -22,7 +22,7 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
         int displayInt = (int) (getHandler().getLevel() * (width - 2));
         for (int i = 0; i < displayInt; i++) {
             float level = (float) i / (float) (width - 2);
-            float r = Math.max(200, 400 * level), g = Math.max(0, 200 - Math.max(0, -200 + 400 * level)), b = 0;
+            float r = Math.min(200, 400 * level), g = Math.max(0, 200 - Math.max(0, -200 + 400 * level)), b = 0;
             RenderSystem.color4f(r / 255F, g / 255F, b / 255F, 1);
             if (i == 0) {
                 blit(x + 1, y + 1, 0, 0, 1, texHeight, texWidth, texHeight);
