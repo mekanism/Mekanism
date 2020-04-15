@@ -19,6 +19,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     private static final String WIND_CATEGORY = "wind_generator";
     private static final String HEAT_CATEGORY = "heat_generator";
     private static final String HOHLRAUM_CATEGORY = "hohlraum";
+    private static final String FISSION_CATEGORY = "fission_reactor";
 
     private final ForgeConfigSpec configSpec;
 
@@ -38,6 +39,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedIntValue windGenerationMinY;
     public final CachedIntValue windGenerationMaxY;
     public final CachedResourceLocationListValue windGenerationDimBlacklist;
+    public final CachedFloatingLongValue energyPerFissionFuel;
 
     public final CachedLongValue hohlraumMaxGas;
     public final CachedLongValue hohlraumFillRate;
@@ -109,6 +111,11 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("maxGas", 10, 1, Long.MAX_VALUE));
         hohlraumFillRate = CachedLongValue.wrap(this, builder.comment("Amount of DT-Fuel Hohlraum can accept per tick.")
               .defineInRange("fillRate", 1, 1, Long.MAX_VALUE));
+        builder.pop();
+
+        builder.comment("Fission Reactor Settings").push(FISSION_CATEGORY);
+        energyPerFissionFuel = CachedFloatingLongValue.define(this, builder, "Amount of energy created (in heat) from each mB of fission fuel.",
+            "energyPerFissionFuel", FloatingLong.createConst(250_000));
         builder.pop();
 
         builder.pop();

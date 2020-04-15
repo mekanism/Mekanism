@@ -28,7 +28,7 @@ import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityBoilerCasing;
-import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.common.util.HeatUtils;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 
@@ -39,7 +39,6 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public static final double CASING_HEAT_CAPACITY = 5;
     public static final double CASING_INVERSE_INSULATION_COEFFICIENT = 10;
     public static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
-    public static final double BASE_BOIL_TEMP = TemperatureUnit.CELSIUS.zeroOffset + 100;
 
     public static final int WATER_PER_VOLUME = 16_000;
     public static final long STEAM_PER_VOLUME = 160_000;
@@ -89,7 +88,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     }
 
     public double getHeatAvailable() {
-        double heatAvailable = (heatCapacitor.getTemperature() - BASE_BOIL_TEMP) * (heatCapacitor.getHeatCapacity() * MekanismConfig.general.boilerWaterConductivity.get());
+        double heatAvailable = (heatCapacitor.getTemperature() - HeatUtils.BASE_BOIL_TEMP) * (heatCapacitor.getHeatCapacity() * MekanismConfig.general.boilerWaterConductivity.get());
         return Math.min(heatAvailable, MekanismConfig.general.superheatingHeatTransfer.get() * superheatingElements);
     }
 

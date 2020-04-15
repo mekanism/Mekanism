@@ -1,9 +1,9 @@
 package mekanism.generators.common.content.fusion;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.IChemicalTank;
@@ -174,7 +174,7 @@ public class FusionReactor {
         getHeatCapacitor().handleHeat(plasmaCaseHeat);
 
         //Transfer from casing to water if necessary
-        double caseWaterHeat = caseWaterConductivity * (lastCaseTemperature -  HeatAPI.AMBIENT_TEMP);
+        double caseWaterHeat = caseWaterConductivity * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
         int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / HeatUtils.getVaporizationEnthalpy());
         waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), MathUtils.clampToInt(getSteamTank().getNeeded())));
         if (waterToVaporize > 0) {
@@ -182,10 +182,9 @@ public class FusionReactor {
                 MekanismUtils.logMismatchedStackSize();
             }
             getSteamTank().insert(MekanismGases.STEAM.getGasStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
+            caseWaterHeat = waterToVaporize * HeatUtils.getVaporizationEnthalpy() / steamTransferEfficiency;
+            getHeatCapacitor().handleHeat(-caseWaterHeat);
         }
-
-        caseWaterHeat = waterToVaporize * HeatUtils.getVaporizationEnthalpy() / steamTransferEfficiency;
-        getHeatCapacitor().handleHeat(-caseWaterHeat);
 
         for (ITileHeatHandler source : heatHandlers) {
             source.simulate();

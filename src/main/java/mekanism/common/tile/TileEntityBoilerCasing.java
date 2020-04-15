@@ -82,7 +82,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 data.prevActive = data.activeTicks > 0;
             }
 
-            boolean newHot = structure.getTotalTemperature() >= SynchronizedBoilerData.BASE_BOIL_TEMP - 0.01;
+            boolean newHot = structure.getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP - 0.01;
             if (newHot != structure.clientHot) {
                 needsPacket = true;
                 structure.clientHot = newHot;
@@ -93,7 +93,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             // update temperature
             structure.update(null);
             structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer();
-            if (structure.getTotalTemperature() >= SynchronizedBoilerData.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
+            if (structure.getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
                 double heatAvailable = structure.getHeatAvailable();
                 structure.lastMaxBoil = (int) Math.floor(heatAvailable / HeatUtils.getVaporizationEnthalpy());
 

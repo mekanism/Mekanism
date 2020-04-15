@@ -37,6 +37,7 @@ import mekanism.common.util.StorageUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -347,6 +348,36 @@ public abstract class ModuleMekaSuit extends Module {
             if (cap != null) {
                 list.add(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(cap.getRadiation()),
                     UnitDisplayUtils.getDisplayShort(cap.getRadiation(), RadiationUnit.SV, 3)));
+            }
+        }
+    }
+
+    public static class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
+        @Override
+        public void tickClient(PlayerEntity player) {
+            super.tickClient(player);
+            suckItems(player);
+        }
+        @Override
+        public void tickServer(PlayerEntity player) {
+            super.tickServer(player);
+            suckItems(player);
+        }
+        private void suckItems(PlayerEntity player) {
+            int size = 4 + 2 * getInstalledCount();
+            List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(size, size, size));
+            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get();
+            for (ItemEntity item : items) {
+                if (!getContainerEnergy().greaterOrEqual(usage)) {
+                    break;
+                }
+                if (item.getDistance(player) > 1.5) {
+                    useEnergy(player, usage);
+                    Vec3d diff = player.getPositionVec().subtract(item.getPositionVec());
+                    Vec3d motionNeeded = new Vec3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
+                    Vec3d motionDiff = motionNeeded.subtract(player.getMotion());
+                    item.setMotion(motionDiff.scale(0.2));
+                }
             }
         }
     }

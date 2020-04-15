@@ -28,7 +28,8 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     public GuiModuleTweaker(ModuleTweakerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        xSize = 247;
+        xSize = 248;
+        ySize += 20;
     }
 
     @Override
@@ -78,11 +79,11 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 }
             }
 
-            if (key == GLFW.GLFW_KEY_UP) {
+            if (key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_LEFT) {
                 curIndex = curIndex == 0 ? curIndex + selectable.size() - 1 : curIndex - 1;
                 select(selectable.get(curIndex % selectable.size()));
                 return true;
-            } else if (key == GLFW.GLFW_KEY_DOWN) {
+            } else if (key == GLFW.GLFW_KEY_DOWN || key == GLFW.GLFW_KEY_RIGHT) {
                 select(selectable.get((curIndex + 1) % selectable.size()));
                 return true;
             }

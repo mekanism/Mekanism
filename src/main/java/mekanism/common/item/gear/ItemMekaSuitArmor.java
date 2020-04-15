@@ -85,7 +85,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
             Modules.setSupported(this, Modules.LOCOMOTIVE_BOOSTING_UNIT);
             absorption = 0.3F;
         } else if (slot == EquipmentSlotType.FEET) {
-            Modules.setSupported(this, Modules.HYDRAULIC_PROPULSION_UNIT);
+            Modules.setSupported(this, Modules.HYDRAULIC_PROPULSION_UNIT, Modules.MAGNETIC_ATTRACTION_UNIT);
             absorption = 0.15F;
         }
     }
@@ -235,7 +235,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         // don't handle magic as it's handled by inhalation purification
         // don't handle starving as player should have nutritional injection
         // don't handle out of world (ever)
-        if (!ALWAYS_SUPPORTED_SOURCES.contains(source)) {
+        if (!ALWAYS_SUPPORTED_SOURCES.contains(source) && source.isUnblockable()) {
             return 0;
         }
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);

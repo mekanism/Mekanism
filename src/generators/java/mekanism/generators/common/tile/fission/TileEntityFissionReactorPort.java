@@ -12,11 +12,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.util.CableUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
@@ -41,10 +39,6 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         if (structure != null) {
             FissionPortMode mode = getMode();
 
-            if (mode != FissionPortMode.INPUT) {
-                CableUtils.emit(structure.energyContainer, this);
-            }
-
             if (mode == FissionPortMode.OUTPUT_STEAM) {
                 GasUtils.emit(structure.steamTank, this);
             } else if (mode == FissionPortMode.OUTPUT_WASTE) {
@@ -57,7 +51,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     @Override
     public IHeatHandler getAdjacent(Direction side) {
         IHeatHandler handler = super.getAdjacent(side);
-        if (super.getAdjacent(side) != null) {
+        if (handler != null) {
             if (MekanismUtils.getTileEntity(getWorld(), getPos().offset(side)) instanceof TileEntityFissionReactorPort) {
                 return null;
             }
@@ -79,19 +73,13 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
-        return side -> structure == null ? Collections.emptyList() : structure.getEnergyContainers(side);
-    }
-
-    @Nonnull
-    @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
         return side -> structure == null ? Collections.emptyList() : structure.getHeatCapacitors(side);
     }
 
     @Override
     public boolean persists(SubstanceType type) {
-        if (type == SubstanceType.HEAT || type == SubstanceType.GAS || type == SubstanceType.FLUID || type == SubstanceType.ENERGY) {
+        if (type == SubstanceType.HEAT || type == SubstanceType.GAS || type == SubstanceType.FLUID) {
             return false;
         }
         return super.persists(type);

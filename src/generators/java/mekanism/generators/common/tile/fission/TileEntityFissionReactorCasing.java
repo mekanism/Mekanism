@@ -14,6 +14,9 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<SynchronizedFissionReactorData> {
 
+    public float prevWaterScale;
+    public float prevSteamScale;
+
     public TileEntityFissionReactorCasing() {
         super(GeneratorsBlocks.FISSION_REACTOR_CASING);
     }
@@ -26,6 +29,13 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null && isRendering) {
+            boolean needsPacket = false;
+            // burn reactor fuel, create energy
+            if (structure.active) {
+                structure.burnFuel();
+            }
+            // handle coolant heating (water -> steam)
+            structure.handleCoolant();
             // external heat dissipation
             structure.lastEnvironmentLoss = structure.simulateEnvironment();
             // adjacent heat transfer
@@ -38,9 +48,11 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             }
             // update temperature
             structure.update(null);
+            structure.handleDamage();
 
-            // continue reactor logic
-
+            if (needsPacket) {
+                sendUpdatePacket();
+            }
             markDirty(false);
         }
     }

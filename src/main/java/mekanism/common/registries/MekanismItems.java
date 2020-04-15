@@ -1,9 +1,11 @@
 package mekanism.common.registries;
 
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Upgrade;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -54,6 +56,7 @@ public class MekanismItems {
 
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(Mekanism.MODID);
     public static final Table<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> PROCESSED_RESOURCES = HashBasedTable.create();
+    public static final Map<ModuleData<?>, ItemRegistryObject<? extends ItemModule>> MODULES = new Object2ObjectOpenHashMap<>();
 
     public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.register("electric_bow", ItemElectricBow::new);
     public static final ItemRegistryObject<ItemRobit> ROBIT = ITEMS.register("robit", ItemRobit::new);
@@ -104,30 +107,6 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemUpgrade> MUFFLING_UPGRADE = registerUpgrade(Upgrade.MUFFLING);
     public static final ItemRegistryObject<ItemUpgrade> GAS_UPGRADE = registerUpgrade(Upgrade.GAS);
     public static final ItemRegistryObject<ItemUpgrade> ANCHOR_UPGRADE = registerUpgrade(Upgrade.ANCHOR);
-
-    public static final ItemRegistryObject<ItemModule> ENERGY_UNIT = registerModule(Modules.ENERGY_UNIT);
-
-    public static final ItemRegistryObject<ItemModule> EXCAVATION_ESCALATION_UNIT = registerModule(Modules.EXCAVATION_ESCALATION_UNIT);
-    public static final ItemRegistryObject<ItemModule> ATTACK_AMPLIFICATION_UNIT = registerModule(Modules.ATTACK_AMPLIFICATION_UNIT);
-    public static final ItemRegistryObject<ItemModule> SILK_TOUCH_UNIT = registerModule(Modules.SILK_TOUCH_UNIT);
-    public static final ItemRegistryObject<ItemModule> VEIN_MINING_UNIT = registerModule(Modules.VEIN_MINING_UNIT);
-    public static final ItemRegistryObject<ItemModule> FARMING_UNIT = registerModule(Modules.FARMING_UNIT);
-    public static final ItemRegistryObject<ItemModule> TELEPORTATION_UNIT = registerModule(Modules.TELEPORTATION_UNIT);
-
-    public static final ItemRegistryObject<ItemModule> ELECTROLYTIC_BREATHING_UNIT = registerModule(Modules.ELECTROLYTIC_BREATHING_UNIT);
-    public static final ItemRegistryObject<ItemModule> INHALATION_PURIFICATION_UNIT = registerModule(Modules.INHALATION_PURIFICATION_UNIT);
-    public static final ItemRegistryObject<ItemModule> VISION_ENHANCEMENT_UNIT = registerModule(Modules.VISION_ENHANCEMENT_UNIT);
-    public static final ItemRegistryObject<ItemModule> SOLAR_RECHARGING_UNIT = registerModule(Modules.SOLAR_RECHARGING_UNIT);
-    public static final ItemRegistryObject<ItemModule> NUTRITIONAL_INJECTION_UNIT = registerModule(Modules.NUTRITIONAL_INJECTION_UNIT);
-    public static final ItemRegistryObject<ItemModule> RADIATION_SHIELDING_UNIT = registerModule(Modules.RADIATION_SHIELDING_UNIT);
-    public static final ItemRegistryObject<ItemModule> JETPACK_UNIT = registerModule(Modules.JETPACK_UNIT);
-    public static final ItemRegistryObject<ItemModule> GRAVITATIONAL_MODULATING_UNIT = registerModule(Modules.GRAVITATIONAL_MODULATING_UNIT);
-    public static final ItemRegistryObject<ItemModule> CHARGE_DISTRIBUTION_UNIT = registerModule(Modules.CHARGE_DISTRIBUTION_UNIT);
-    public static final ItemRegistryObject<ItemModule> DOSIMETER_UNIT = registerModule(Modules.DOSIMETER_UNIT);
-
-    public static final ItemRegistryObject<ItemModule> LOCOMOTIVE_BOOSTING_UNIT = registerModule(Modules.LOCOMOTIVE_BOOSTING_UNIT);
-
-    public static final ItemRegistryObject<ItemModule> HYDRAULIC_PROPULSION_UNIT = registerModule(Modules.HYDRAULIC_PROPULSION_UNIT);
 
     //Alloy names are alloy_type for purposes of tab complete
     public static final ItemRegistryObject<ItemAlloy> INFUSED_ALLOY = registerAlloy(AlloyTier.INFUSED);
@@ -194,6 +173,9 @@ public class MekanismItems {
                 }
             }
         }
+        for (ModuleData<?> module : Modules.getAll()) {
+            MODULES.put(module, ITEMS.register("module_" + module.getName(), properties -> new ItemModule(module, properties)));
+        }
     }
 
     private static ItemRegistryObject<Item> registerResource(ResourceType type, IResource resource) {
@@ -216,9 +198,5 @@ public class MekanismItems {
 
     private static ItemRegistryObject<ItemUpgrade> registerUpgrade(Upgrade type) {
         return ITEMS.register("upgrade_" + type.getRawName(), properties -> new ItemUpgrade(type, properties));
-    }
-
-    private static ItemRegistryObject<ItemModule> registerModule(ModuleData<?> type) {
-        return ITEMS.register("module_" + type.getName(), properties -> new ItemModule(type, properties));
     }
 }

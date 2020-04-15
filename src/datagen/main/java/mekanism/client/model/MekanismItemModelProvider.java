@@ -1,7 +1,10 @@
 package mekanism.client.model;
 
+import java.util.Map;
 import com.google.common.collect.Table.Cell;
 import mekanism.common.Mekanism;
+import mekanism.common.content.gear.Modules.ModuleData;
+import mekanism.common.item.ItemModule;
 import mekanism.common.item.ItemProcessedResource;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismFluids;
@@ -28,6 +31,10 @@ public class MekanismItemModelProvider extends BaseItemModelProvider {
             } else {
                 generated(item.getValue());
             }
+        }
+
+        for (Map.Entry<ModuleData<?>, ItemRegistryObject<? extends ItemModule>> entry : MekanismItems.MODULES.entrySet()) {
+            generated(entry.getValue());
         }
     }
 }

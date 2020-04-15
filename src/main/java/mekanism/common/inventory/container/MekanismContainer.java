@@ -15,6 +15,7 @@ import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.IInsertableSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
+import mekanism.common.inventory.container.slot.OffhandSlot;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -56,6 +57,7 @@ public abstract class MekanismContainer extends Container {
     protected final List<ArmorSlot> armorSlots = new ArrayList<>();
     protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
     protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
+    protected final List<OffhandSlot> offhandSlots = new ArrayList<>();
     private final List<ISyncableData> trackedData = new ArrayList<>();
 
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv) {
@@ -75,6 +77,8 @@ public abstract class MekanismContainer extends Container {
             mainInventorySlots.add((MainInventorySlot) slot);
         } else if (slot instanceof HotBarSlot) {
             hotBarSlots.add((HotBarSlot) slot);
+        } else if (slot instanceof OffhandSlot) {
+            offhandSlots.add((OffhandSlot) slot);
         }
         //TODO: Should we add a warning if it is not one of the above. Would currently get thrown by personal chest item
         return slot;
@@ -172,7 +176,7 @@ public abstract class MekanismContainer extends Container {
                 stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, false);
                 if (slotStack.getCount() == stackToInsert.getCount()) {
                     //Else if we failed to do that also, try transferring to armor inventory, main inventory or the hot bar, depending which one we currently are in
-                    if (currentSlot instanceof ArmorSlot) {
+                    if (currentSlot instanceof ArmorSlot || currentSlot instanceof OffhandSlot) {
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, true);
                         stackToInsert = insertItem(mainInventorySlots, stackToInsert, true);
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, false);

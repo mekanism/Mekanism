@@ -968,6 +968,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_DOSIMETER_UNIT, "Dosimeter Unit");
         add(MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, "Locomotive Boosting Unit");
         add(MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit");
+        add(MekanismLang.MODULE_MAGNETIC_ATTRACTION_UNIT, "Magnetic Attraction Unit");
 
         add(MekanismLang.DESCRIPTION_ENERGY_UNIT, "Increases maximum energy capacity.");
 
@@ -990,6 +991,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_DOSIMETER_UNIT, "Displays the user's current radiation dose in the HUD.");
         add(MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, "Increases the user's sprinting speed (and jumping distance).");
         add(MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, "Allows the user to both step and jump higher.");
+        add(MekanismLang.DESCRIPTION_MAGNETIC_ATTRACTION_UNIT, "Uses powerful magnets to draw distant items towards the player. Install multiple for a greater range.");
 
         add("death.attack." + RadiationManager.RADIATION_DAMAGE.getDamageType(), "%1$s was killed by radiation poisoning.");
 
@@ -999,14 +1001,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add("description.mekanism.fluorite_ore", "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
         add("description.mekanism.uranium_ore", "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occuring form, it is not radioactive enough to cause harm.");
         add("description.mekanism.lead_ore", "A somewhat rare metal that is excellent at resisting radioactive particles, spawning slightly less frequently than iron.");
-    }
-
-    private void addOreProcessingNames(IItemProvider crystal, IItemProvider shard, IItemProvider clump, IItemProvider dirtyDust, IItemProvider dust, String resourceName) {
-        add(crystal, resourceName + " Crystal");
-        add(shard, resourceName + " Shard");
-        add(clump, resourceName + " Clump");
-        add(dirtyDust, "Dirty " + resourceName + " Dust");
-        add(dust, resourceName + " Dust");
     }
 
     private void addTiered(IItemProvider basic, IItemProvider advanced, IItemProvider elite, IItemProvider ultimate, String name) {

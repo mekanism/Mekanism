@@ -624,6 +624,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_DOSIMETER_UNIT("module", "dosimeter_unit"),
     MODULE_LOCOMOTIVE_BOOSTING_UNIT("module", "locomotive_boosting_unit"),
     MODULE_HYDRAULIC_PROPULSION_UNIT("module", "hydraulic_propulsion_unit"),
+    MODULE_MAGNETIC_ATTRACTION_UNIT("module", "magnetic_attraction_unit"),
 
     DESCRIPTION_ENERGY_UNIT("description", "energy_unit"),
     DESCRIPTION_EXCAVATION_ESCALATION_UNIT("description", "excavation_escalation_unit"),
@@ -643,7 +644,8 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_CHARGE_DISTRIBUTION_UNIT("description", "charge_distribution_unit"),
     DESCRIPTION_DOSIMETER_UNIT("description", "dosimeter_unit"),
     DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT("description", "locomotive_boosting_unit"),
-    DESCRIPTION_HYDRAULIC_PROPULSION_UNIT("description", "hydraulic_propulsion_unit");
+    DESCRIPTION_HYDRAULIC_PROPULSION_UNIT("description", "hydraulic_propulsion_unit"),
+    DESCRIPTION_MAGNETIC_ATTRACTION_UNIT("description", "magnetic_attraction_unit");
 
     private final String key;
 

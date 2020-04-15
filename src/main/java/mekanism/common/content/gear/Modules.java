@@ -1,6 +1,7 @@
 package mekanism.common.content.gear;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalM
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleMagneticAttractionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleNutritionalInjectionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleRadiationShieldingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleSolarRechargingUnit;
@@ -103,6 +105,8 @@ public class Modules {
     // Boots
     public static final ModuleData<ModuleHydraulicPropulsionUnit> HYDRAULIC_PROPULSION_UNIT = register("hydraulic_propulsion_unit",
         MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, () -> new ModuleHydraulicPropulsionUnit());
+    public static final ModuleData<ModuleMagneticAttractionUnit> MAGNETIC_ATTRACTION_UNIT = register("magnetic_attraction_unit",
+        MekanismLang.MODULE_MAGNETIC_ATTRACTION_UNIT, MekanismLang.DESCRIPTION_MAGNETIC_ATTRACTION_UNIT, () -> new ModuleMagneticAttractionUnit(), 4);
 
     public static void setSupported(Item containerItem, ModuleData<?>... types) {
         for (ModuleData<?> module : types) {
@@ -162,6 +166,10 @@ public class Modules {
         ModuleData<M> data = new ModuleData<M>(name, langEntry, description, moduleSupplier, maxStackSize);
         MODULES.put(name, data);
         return data;
+    }
+
+    public static Collection<ModuleData<?>> getAll() {
+        return MODULES.values();
     }
 
     public static void processSupportedContainers() {

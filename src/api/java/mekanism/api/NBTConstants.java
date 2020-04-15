@@ -129,6 +129,7 @@ public final class NBTConstants {
     public static final String RADIATION = "radiation";
     public static final String RADIATION_LIST = "radList";
     public static final String RADIUS = "radius";
+    public static final String REACTOR_DAMAGE = "reactorDamage";
     public static final String RECEIVED_COORDS = "receivedCoords";
     public static final String RECURRING_NODES = "recurringNodes";
     public static final String REDSTONE = "redstone";

@@ -2,7 +2,8 @@ package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.slot.ArmorSlot;
-import mekanism.common.inventory.container.slot.InsertableSlot;
+import mekanism.common.inventory.container.slot.HotBarSlot;
+import mekanism.common.inventory.container.slot.OffhandSlot;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -37,18 +38,20 @@ public class ModuleTweakerContainer extends MekanismContainer {
                 }
             });
         }
-        addSlot(new InsertableSlot(inv, inv.currentItem, 8, 12 + 18 * 4) {
-            @Override
-            public boolean canTakeStack(PlayerEntity player) {
-                return false;
-            }
+        for (int slotY = 0; slotY < 9; slotY++) {
+            addSlot(new HotBarSlot(inv, slotY, 43 + slotY * 18, 161) {
+                @Override
+                public boolean canTakeStack(PlayerEntity player) {
+                    return false;
+                }
 
-            @Override
-            public boolean isItemValid(ItemStack stack) {
-                return false;
-            }
-        });
-        addSlot(new InsertableSlot(inv, 40, 8, 14 + 18 * 5) {
+                @Override
+                public boolean isItemValid(ItemStack stack) {
+                    return false;
+                }
+            });
+        }
+        addSlot(new OffhandSlot(inv, 40, 8, 16 + 18 * 4) {
             @Override
             public boolean canTakeStack(PlayerEntity player) {
                 return false;

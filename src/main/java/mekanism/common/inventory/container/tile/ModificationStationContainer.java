@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.slot.ArmorSlot;
-import mekanism.common.inventory.container.slot.InsertableSlot;
+import mekanism.common.inventory.container.slot.OffhandSlot;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityModificationStation;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,8 +27,8 @@ public class ModificationStationContainer extends MekanismTileContainer<TileEnti
             final EquipmentSlotType slotType = EquipmentSlotType.values()[2 + inv.armorInventory.size() - index - 1];
             addSlot(new ArmorSlot(inv, 36 + inv.armorInventory.size() - index - 1, 8, 8 + index * 18, slotType));
         }
-        addSlot(new InsertableSlot(inv, inv.currentItem, 8, 12 + 18 * 4));
-        addSlot(new InsertableSlot(inv, 40, 8, 14 + 18 * 5));
+        // offhand
+        addSlot(new OffhandSlot(inv, 40, 8, 16 + 18 * 4));
     }
 
     @Override

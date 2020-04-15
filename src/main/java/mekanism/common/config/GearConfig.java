@@ -108,6 +108,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitEnergyUsageVisionEnhancement;
     public final CachedFloatingLongValue mekaSuitEnergyUsageNutritionalInjection;
     public final CachedFloatingLongValue mekaSuitEnergyUsageDamage;
+    public final CachedFloatingLongValue mekaSuitEnergyUsageItemAttraction;
 
     GearConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -283,6 +284,8 @@ public class GearConfig extends BaseMekanismConfig {
             "energyUsageNutritionalInjection", FloatingLong.createConst(500));
         mekaSuitEnergyUsageDamage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per unit of damage applied.",
             "energyUsageDamage", FloatingLong.createConst(10_000));
+        mekaSuitEnergyUsageItemAttraction = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of attracting a single item.",
+            "energyUsageDamage", FloatingLong.createConst(50));
         builder.pop();
 
         builder.pop();
