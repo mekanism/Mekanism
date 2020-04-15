@@ -41,6 +41,9 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
     public static final double BASE_BOIL_TEMP = TemperatureUnit.CELSIUS.zeroOffset + 100;
 
+    public static final int WATER_PER_VOLUME = 16_000;
+    public static final long STEAM_PER_VOLUME = 160_000;
+
     public BoilerTank waterTank;
     public MultiblockGasTank<TileEntityBoilerCasing> steamTank;
     public MultiblockHeatCapacitor<TileEntityBoilerCasing> heatCapacitor;
@@ -113,7 +116,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public void setWaterVolume(int volume) {
         waterVolume = volume;
-        waterTankCapacity = getWaterVolume() * BoilerUpdateProtocol.WATER_PER_TANK;
+        waterTankCapacity = getWaterVolume() * SynchronizedBoilerData.WATER_PER_VOLUME;
     }
 
     public long getSteamVolume() {
@@ -122,7 +125,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public void setSteamVolume(long volume) {
         steamVolume = volume;
-        steamTankCapacity = getSteamVolume() * BoilerUpdateProtocol.STEAM_PER_TANK;
+        steamTankCapacity = getSteamVolume() * SynchronizedBoilerData.STEAM_PER_VOLUME;
     }
 
     @Nonnull

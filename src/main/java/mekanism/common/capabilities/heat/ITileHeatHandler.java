@@ -43,8 +43,25 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
      * Simulate heat transfers
      */
     default HeatTransfer simulate() {
-        double adjacentTransfer = 0, environmentTransfer = 0;
+        return new HeatTransfer(simulateEnvironment(), simulateAdjacent());
+    }
 
+    default double simulateEnvironment() {
+        double environmentTransfer = 0;
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            double heatCapacity = getTotalHeatCapacity(side);
+            //transfer to air otherwise
+            double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + getTotalInverseInsulation(side) + getTotalInverseConductionCoefficient(side);
+            //transfer heat difference based on environment temperature (ambient)
+            double tempToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
+            handleHeat(-tempToTransfer * heatCapacity, side);
+            environmentTransfer += tempToTransfer;
+        }
+        return environmentTransfer;
+    }
+
+    default double simulateAdjacent() {
+        double adjacentTransfer = 0;
         for (Direction side : EnumUtils.DIRECTIONS) {
             IHeatHandler sink = getAdjacent(side);
             //we use the same heat capacity for all further calculations
@@ -60,13 +77,8 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
                 }
                 continue;
             }
-            //transfer to air otherwise
-            double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + getTotalInverseInsulation(side) + getTotalInverseConductionCoefficient(side);
-            //transfer heat difference based on environment temperature (ambient)
-            double tempToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
-            handleHeat(-tempToTransfer * heatCapacity, side);
-            environmentTransfer += tempToTransfer;
+
         }
-        return new HeatTransfer(adjacentTransfer, environmentTransfer);
+        return adjacentTransfer;
     }
 }

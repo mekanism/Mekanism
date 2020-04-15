@@ -25,6 +25,7 @@ import mekanism.common.item.IModeItem;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketPortableTeleporterGui;
@@ -33,6 +34,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -43,6 +45,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -323,6 +326,16 @@ public class ClientTickHandler {
             }
             RenderSystem.fogDensity(fog);
             RenderSystem.fogMode(GlStateManager.FogMode.EXP2);
+        }
+    }
+
+    @SubscribeEvent
+    public void renderPlayer(RenderLivingEvent.Pre<PlayerEntity, PlayerModel<PlayerEntity>> evt) {
+        if (evt.getEntity() instanceof PlayerEntity) {
+            PlayerEntity entity = (PlayerEntity) evt.getEntity();
+            if (entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
+                ((PlayerModel<?>) evt.getRenderer().getEntityModel()).bipedHead.showModel = false;
+            }
         }
     }
 

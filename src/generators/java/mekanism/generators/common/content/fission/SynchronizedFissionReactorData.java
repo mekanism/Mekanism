@@ -12,11 +12,16 @@ import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
@@ -26,7 +31,8 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 
-public class SynchronizedFissionReactorData extends SynchronizedData<SynchronizedFissionReactorData> implements IMekanismFluidHandler, IMekanismGasHandler, ITileHeatHandler {
+public class SynchronizedFissionReactorData extends SynchronizedData<SynchronizedFissionReactorData> implements IMekanismFluidHandler, IMekanismGasHandler, IMekanismStrictEnergyHandler,
+      ITileHeatHandler {
 
     public static final double CASING_HEAT_CAPACITY = 5;
 
@@ -36,8 +42,12 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
     public static final int WATER_PER_VOLUME = 100_000;
     public static final long STEAM_PER_VOLUME = 1_000_000;
 
+    public static final FloatingLong MAX_ENERGY = FloatingLong.create(1_000_000_000);
+
     public List<Coord4D> portLocations = new ArrayList<>();
     public int fuelAssemblies;
+
+    public double lastEnvironmentLoss = 0, lastAdjacentLoss = 0;
 
     public MultiblockFluidTank<TileEntityFissionReactorCasing> waterTank;
     public MultiblockGasTank<TileEntityFissionReactorCasing> fuelTank;
@@ -46,8 +56,11 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
     public MultiblockGasTank<TileEntityFissionReactorCasing> wasteTank;
     public MultiblockHeatCapacitor<TileEntityFissionReactorCasing> heatCapacitor;
 
+    public IEnergyContainer energyContainer;
+
     private List<IExtendedFluidTank> fluidTanks;
     private List<IChemicalTank<Gas, GasStack>> gasTanks;
+    private List<IEnergyContainer> energyContainers;
     private List<IHeatCapacitor> heatCapacitors;
 
     public SynchronizedFissionReactorData(TileEntityFissionReactorCasing tile) {
@@ -63,11 +76,20 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
             (stack, automationType) -> tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
             gas -> gas == MekanismGases.NUCLEAR_WASTE.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
         gasTanks = Arrays.asList(fuelTank, steamTank, wasteTank);
+        energyContainer = VariableCapacityEnergyContainer.create(() -> tile.structure == null ? FloatingLong.ZERO : MAX_ENERGY,
+            automationType -> automationType != AutomationType.EXTERNAL || tile.structure != null, BasicEnergyContainer.internalOnly, null);
+        energyContainers = Collections.singletonList(energyContainer);
         heatCapacitor = MultiblockHeatCapacitor.create(tile,
             CASING_HEAT_CAPACITY,
             () -> INVERSE_INSULATION_COEFFICIENT,
             () -> INVERSE_INSULATION_COEFFICIENT);
         heatCapacitors = Collections.singletonList(heatCapacitor);
+    }
+
+    @Override
+    public void onCreated() {
+        // update the heat capacity now that we've read
+        heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY * locations.size(), true);
     }
 
     @Nonnull
@@ -80,6 +102,12 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
     @Override
     public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
         return gasTanks;
+    }
+
+    @Nonnull
+    @Override
+    public List<IEnergyContainer> getEnergyContainers(Direction side) {
+        return energyContainers;
     }
 
     @Nonnull
