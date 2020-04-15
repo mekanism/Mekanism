@@ -16,11 +16,11 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
-import mekanism.common.LaserManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -321,7 +321,8 @@ public class FusionReactor {
         BlockPos centerPos = center.getPos();
         for (int[] coords : positions) {
             TileEntity tile = MekanismUtils.getTileEntity(controller.getWorld(), centerPos.add(coords[0], coords[1], coords[2]));
-            if (LaserManager.isReceptor(tile, null) && !(coords[1] == 0 && (coords[0] == 0 || coords[2] == 0))) {
+            if (CapabilityUtils.getCapability(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, null).isPresent() &&
+                !(coords[1] == 0 && (coords[0] == 0 || coords[2] == 0))) {
                 return false;
             }
             if (tile instanceof TileEntityReactorBlock) {

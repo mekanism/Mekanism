@@ -3,8 +3,8 @@ package mekanism.common.registration.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
-import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IChemicalConstant;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
@@ -41,7 +41,7 @@ public class FluidDeferredRegister {
         itemRegister = new DeferredRegister<>(ForgeRegistries.ITEMS, modid);
     }
 
-    public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(ChemicalConstants constants) {
+    public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(IChemicalConstant constants) {
         int color = constants.getColor();
         int temperature = Math.round(constants.getTemperature());
         int density = Math.round(constants.getDensity());

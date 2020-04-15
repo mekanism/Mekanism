@@ -245,7 +245,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         if (getTransmitter().hasTransmitterNetwork()) {
-            //TODO: Do we want this to fallback to local if the one on the network is empty?
             return getTransmitter().getTransmitterNetwork().getFluidTanks(side);
         }
         return tanks;

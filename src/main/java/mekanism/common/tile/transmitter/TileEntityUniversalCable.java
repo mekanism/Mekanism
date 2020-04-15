@@ -90,7 +90,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         if (getTransmitter().hasTransmitterNetwork()) {
-            //TODO: Do we want this to fallback to local if the one on the network is empty?
             return getTransmitter().getTransmitterNetwork().getEnergyContainers(side);
         }
         return energyContainers;

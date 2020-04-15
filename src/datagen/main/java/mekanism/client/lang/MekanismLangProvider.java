@@ -9,6 +9,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
@@ -31,6 +32,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addEntities();
         addGases();
         addInfusionTypes();
+        addDamageSources();
         addMisc();
     }
 
@@ -266,6 +268,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismInfuseTypes.TIN, "Tin");
         add(MekanismInfuseTypes.FUNGI, "Fungi");
         add(MekanismInfuseTypes.BIO, "Biomass");
+    }
+
+    private void addDamageSources() {
+        add(MekanismDamageSource.LASER, "%s was incinerated.");
     }
 
     private void addMisc() {

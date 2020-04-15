@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.generators.common;
 
 import mekanism.common.base.IChemicalConstant;
 
@@ -8,21 +8,8 @@ import mekanism.common.base.IChemicalConstant;
  * @implNote This is used os that we can then have them get rounded for purposes of use in things like FluidAttributes, but so that we have accurate data if at some point
  * they start supporting more accurate data, without us having to look any of the data back up.
  */
-public enum ChemicalConstants implements IChemicalConstant {
-    HYDROGEN("hydrogen", 0xFFFFFFFF, 20.28F, 70.85F),
-    OXYGEN("oxygen", 0xFF6CE2FF, 90.19F, 1141),
-    CHLORINE("chlorine", 0xFFCFE800, 207.15F, 1422.92F),
-    SULFUR_DIOXIDE("sulfur_dioxide", 0xFFA99D90, 263.05F, 1400),
-    SULFUR_TRIOXIDE("sulfur_trioxide", 0xFFCE6C6C, 318, 1920),
-    //Note: We use 300 for the temperature given that is what water is set to by forge for "room temperature"
-    // Sulfuric acid is a liquid at room temperature
-    SULFURIC_ACID("sulfuric_acid", 0xFF82802B, 300, 1840),
-    HYDROGEN_CHLORIDE("hydrogen_chloride", 0xFFA8F1E9, 188.1F, 821.43F),
-    ETHENE("ethene", 0xFFEACCF9, 169.45F, 577),
-    //Note: it is a solid at room temperature
-    SODIUM("sodium", 0xFFE9FEF4, 370.944F, 927),
-    //Note: it is a solid at room temperature
-    LITHIUM("lithium", 0xFFEBA400, 453.65F, 512);
+public enum GeneratorsChemicalConstants implements IChemicalConstant {
+    DEUTERIUM("deuterium", 0xFFFF3232, 23.7F, 162.4F);
 
     private final String name;
     private final int color;
@@ -35,7 +22,7 @@ public enum ChemicalConstants implements IChemicalConstant {
      * @param temperature Temperature in Kelvin that the chemical exists as a liquid
      * @param density     Density as a liquid in kg/m^3
      */
-    ChemicalConstants(String name, int color, float temperature, float density) {
+    GeneratorsChemicalConstants(String name, int color, float temperature, float density) {
         this.name = name;
         this.color = color;
         this.temperature = temperature;

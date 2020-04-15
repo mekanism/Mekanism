@@ -62,6 +62,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue aestheticWorldDamage;
     public final CachedIntValue laserRange;
     public final CachedFloatingLongValue laserEnergyNeededPerHardness;
+    public final CachedFloatingLongValue laserEnergyPerDamage;
     //Pump
     public final CachedIntValue maxPumpRange;
     public final CachedBooleanValue pumpWaterSources;
@@ -152,6 +153,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("range", 64));
         laserEnergyNeededPerHardness = CachedFloatingLongValue.define(this, builder, "Energy needed to destroy or attract blocks with a Laser (per block hardness level).",
               "energyNeededPerHardness", FloatingLong.createConst(100_000));
+        laserEnergyPerDamage = CachedFloatingLongValue.define(this, builder, "Energy used per half heart of damage being transferred to entities.",
+              "energyPerDamage", FloatingLong.createConst(2_500), CachedFloatingLongValue.POSITIVE);
         builder.pop();
 
         builder.comment("Pump Settings").push(PUMP_CATEGORY);

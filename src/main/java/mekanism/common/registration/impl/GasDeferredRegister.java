@@ -6,8 +6,8 @@ import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.Slurry;
-import mekanism.common.ChemicalConstants;
 import mekanism.common.Resource;
+import mekanism.common.base.IChemicalConstant;
 import mekanism.common.registration.WrappedDeferredRegister;
 
 public class GasDeferredRegister extends WrappedDeferredRegister<Gas> {
@@ -16,8 +16,7 @@ public class GasDeferredRegister extends WrappedDeferredRegister<Gas> {
         super(modid, MekanismAPI.GAS_REGISTRY);
     }
 
-    public GasRegistryObject<Gas> register(ChemicalConstants constants) {
-        //TODO: Double check if it matters that we are giving an ARGB color instead of an RGB color
+    public GasRegistryObject<Gas> register(IChemicalConstant constants) {
         return register(constants.getName(), constants.getColor());
     }
 

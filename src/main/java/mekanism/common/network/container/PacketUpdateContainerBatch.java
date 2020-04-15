@@ -3,8 +3,8 @@ package mekanism.common.network.container;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.container.property.PropertyData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -24,7 +24,7 @@ public class PacketUpdateContainerBatch {
     public static void handle(PacketUpdateContainerBatch message, Supplier<Context> context) {
         Context ctx = context.get();
         ctx.enqueueWork(() -> {
-            PlayerEntity player = Mekanism.proxy.getPlayer(context);
+            PlayerEntity player = BasePacketHandler.getPlayer(context);
             //Ensure that the container is one of ours and that the window id is the same as we expect it to be
             if (player.openContainer instanceof MekanismContainer && player.openContainer.windowId == message.windowId) {
                 //If so then handle the packet
