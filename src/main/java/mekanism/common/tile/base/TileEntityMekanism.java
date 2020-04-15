@@ -278,9 +278,9 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (canHandleHeat()) {
             heatHandlers = new EnumMap<>(Direction.class);
         }
+        slotHolder = getInitialInventory();
         if (hasInventory()) {
             itemHandlers = new EnumMap<>(Direction.class);
-            slotHolder = getInitialInventory();
         }
         if (supportsUpgrades()) {
             upgradeComponent = new TileComponentUpgrade(this, UpgradeInventorySlot.of(this, getSupportedUpgrade()));
@@ -382,7 +382,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Override
     public final boolean hasInventory() {
-        return hasInventory;
+        return hasInventory || slotHolder != null;
     }
 
     @Override

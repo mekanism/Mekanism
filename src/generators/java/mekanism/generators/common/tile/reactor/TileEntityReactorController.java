@@ -8,7 +8,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
@@ -33,7 +32,6 @@ import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.NBTUtils;
@@ -41,6 +39,7 @@ import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.slot.ReactorInventorySlot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
@@ -71,7 +70,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     private double clientTemp = HeatAPI.AMBIENT_TEMP;
     private boolean clientBurning = false;
 
-    private IInventorySlot reactorSlot;
+    private ReactorInventorySlot reactorSlot;
 
     private int localMaxWater = MAX_WATER;
     private long localMaxSteam = MAX_STEAM;
@@ -119,8 +118,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        //TODO: FIXME, make the slot only "exist" or at least be accessible when the reactor is formed
-        builder.addSlot(reactorSlot = BasicInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, this, 80, 39));
+        builder.addSlot(reactorSlot = ReactorInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, this, 80, 39));
         return builder.build();
     }
 
@@ -132,7 +130,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         return super.handles(type);
     }
 
-    public IInventorySlot getReactorSlot() {
+    public ReactorInventorySlot getReactorSlot() {
         return reactorSlot;
     }
 
