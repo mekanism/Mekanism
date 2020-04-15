@@ -280,6 +280,7 @@
   "constants.mekanism.mod_name": "Меканізм",
   "crafting_formula.mekanism.encoded": "(Кодування)",
   "crafting_formula.mekanism.ingredients": "Інгредієнти:",
+  "death.attack.laser": "%s was incinerated.",
   "description.mekanism.bin": "Блок, який використовується для зберігання великих кількостей одного типу.",
   "description.mekanism.boiler_casing": "Натискна стійкість до тиску, яка використовується при створенні термоелектричного котелера.",
   "description.mekanism.boiler_valve": "Клапан, який можна розмістити на термоелектричному котелері, допускати вставки енергії та води разом з видобутком пари.",
