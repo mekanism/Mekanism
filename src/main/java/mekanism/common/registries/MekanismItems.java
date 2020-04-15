@@ -1,11 +1,11 @@
 package mekanism.common.registries;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Upgrade;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -56,7 +56,7 @@ public class MekanismItems {
 
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(Mekanism.MODID);
     public static final Table<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> PROCESSED_RESOURCES = HashBasedTable.create();
-    public static final Map<ModuleData<?>, ItemRegistryObject<? extends ItemModule>> MODULES = new Object2ObjectOpenHashMap<>();
+    public static final Map<ModuleData<?>, ItemRegistryObject<? extends ItemModule>> MODULES = new LinkedHashMap<>();
 
     public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.register("electric_bow", ItemElectricBow::new);
     public static final ItemRegistryObject<ItemRobit> ROBIT = ITEMS.register("robit", ItemRobit::new);

@@ -85,4 +85,24 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
             return value ? MekanismLang.INPUT : MekanismLang.OUTPUT;
         }
     }
+
+    public static class ActiveDisabled extends BooleanStateDisplay {
+
+        private ActiveDisabled(boolean value, boolean colored) {
+            super(value, colored);
+        }
+
+        public static ActiveDisabled of(boolean value) {
+            return of(value, false);
+        }
+
+        public static ActiveDisabled of(boolean value, boolean colored) {
+            return new ActiveDisabled(value, colored);
+        }
+
+        @Override
+        protected ILangEntry getLangEntry() {
+            return value ? MekanismLang.ACTIVE: MekanismLang.DISABLED;
+        }
+    }
 }

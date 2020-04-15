@@ -542,6 +542,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.OFF, "off");
         add(MekanismLang.INPUT, "Input");
         add(MekanismLang.OUTPUT, "Output");
+        add(MekanismLang.ACTIVE, "Active");
+        add(MekanismLang.DISABLED, "Disabled");
         //Capacity
         add(MekanismLang.CAPACITY, "Capacity: %s");
         add(MekanismLang.CAPACITY_ITEMS, "Capacity: %s Items");
@@ -761,6 +763,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MAX_BOIL_RATE, "Max Boil: %s mB/t");
         //Temperature
         add(MekanismLang.TEMPERATURE, "Temp: %s");
+        add(MekanismLang.TEMPERATURE_LONG, "Temperature: %s");
         add(MekanismLang.TEMPERATURE_KELVIN, "Kelvin");
         add(MekanismLang.TEMPERATURE_KELVIN_SHORT, "K");
         add(MekanismLang.TEMPERATURE_CELSIUS, "Celsius");

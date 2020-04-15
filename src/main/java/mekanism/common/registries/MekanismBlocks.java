@@ -1,12 +1,12 @@
 package mekanism.common.registries;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.tier.ITier;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
@@ -152,8 +152,8 @@ public class MekanismBlocks {
 
     public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(Mekanism.MODID);
 
-    public static final Map<PrimaryResource, BlockRegistryObject<?, ?>> PROCESSED_RESOURCE_BLOCKS = new Object2ObjectOpenHashMap<>();
-    public static final Map<OreType, BlockRegistryObject<?, ?>> ORES = new Object2ObjectOpenHashMap<>();
+    public static final Map<PrimaryResource, BlockRegistryObject<?, ?>> PROCESSED_RESOURCE_BLOCKS = new LinkedHashMap<>();
+    public static final Map<OreType, BlockRegistryObject<?, ?>> ORES = new LinkedHashMap<>();
 
     private static final Table<FactoryTier, FactoryType, BlockRegistryObject<BlockFactory<?>, ItemBlockFactory>> FACTORIES = HashBasedTable.create();
 

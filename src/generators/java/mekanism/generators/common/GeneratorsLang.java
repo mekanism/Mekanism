@@ -58,6 +58,10 @@ public enum GeneratorsLang implements ILangEntry {
     TURBINE_PRODUCTION("turbine", "stats.production"),
 
     FISSION_REACTOR("fission", "fission_reactor"),
+    FISSION_ACTIVATE("fission", "activate"),
+    FISSION_SCRAM("fission", "scram"),
+    FISSION_DAMAGE("fission", "damage"),
+    FISSION_HEAT_GRAPH("fission", "heat_graph"),
     FISSION_PORT_MODE_CHANGE("fission", "port_mode_change"),
     FISSION_PORT_MODE_INPUT("fission", "port_mode_input"),
     FISSION_PORT_MODE_OUTPUT_WASTE("fission", "port_mode_output_waste"),

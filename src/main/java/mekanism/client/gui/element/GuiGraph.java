@@ -14,8 +14,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiGraph extends GuiTexturedElement {
 
-    private static int textureWidth = 2;
-    private static int textureHeight = 10;
+    private static int textureWidth = 3;
+    private static int textureHeight = 2;
 
     private final GuiInnerScreen innerScreen;
     private final LongList graphData = new LongArrayList();
@@ -62,18 +62,22 @@ public class GuiGraph extends GuiTexturedElement {
             int relativeHeight = (int) (data * height / (double) currentScale);
             blit(x + i, y + height - relativeHeight, 0, 0, 1, 1, textureWidth, textureHeight);
 
-            int relativeModulo = (relativeHeight - 1) % 10;
-            int displays = (relativeHeight - 1) / 10 + (relativeModulo > 0 ? 1 : 0);
-
             RenderSystem.shadeModel(GL11.GL_SMOOTH);
             RenderSystem.disableAlphaTest();
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+
             RenderSystem.color4f(1, 1, 1, 0.2F + 0.8F * i / size);
-            for (int iter = 0; iter < displays; iter++) {
-                int heightComponent = relativeModulo > 0 && iter == displays - 1 ? relativeModulo : 10;
-                blit(x + i, y + height - heightComponent - 10 * iter, 11, 0, 1, heightComponent, textureWidth, textureHeight);
+            blit(x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, textureWidth, textureHeight);
+
+            int hoverIndex = mouseX - getButtonX();
+            if (hoverIndex == i && mouseY >= getButtonY() && mouseY < getButtonY() + height) {
+                RenderSystem.color4f(1, 1, 1, 0.5F);
+                blit(x + i, y, 2, 0, 1, height, textureWidth, textureHeight);
+                MekanismRenderer.resetColor();
+                blit(x + i, y + height - relativeHeight, 0, 1, 1, 1, textureWidth, textureHeight);
             }
+
             MekanismRenderer.resetColor();
             RenderSystem.disableBlend();
             RenderSystem.enableAlphaTest();
@@ -82,10 +86,10 @@ public class GuiGraph extends GuiTexturedElement {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        //TODO: Check
-        int heightCalculated = height - (mouseY - guiObj.getTop() - y);
-        long scaled = (long) (heightCalculated * currentScale / (double) height);
-        displayTooltip(dataHandler.getDataDisplay(scaled), mouseX, mouseY);
+        int hoverIndex = mouseX - relativeX;
+        if (hoverIndex >= 0 && hoverIndex < graphData.size()) {
+            displayTooltip(dataHandler.getDataDisplay(graphData.getLong(hoverIndex)), mouseX, mouseY);
+        }
     }
 
     public interface GraphDataHandler {

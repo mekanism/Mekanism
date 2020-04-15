@@ -1,7 +1,7 @@
 package mekanism.common.registries;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.Slurry;
@@ -19,7 +19,7 @@ public class MekanismGases {
     //TODO: Pass something like FluidAttributes
     public static final GasDeferredRegister GASES = new GasDeferredRegister(Mekanism.MODID);
 
-    public static final Map<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> PROCESSED_RESOURCE_SLURRIES = new Object2ObjectOpenHashMap<>();
+    public static final Map<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> PROCESSED_RESOURCE_SLURRIES = new LinkedHashMap<>();
 
     public static final GasRegistryObject<Gas> HYDROGEN = GASES.register(ChemicalConstants.HYDROGEN);
     public static final GasRegistryObject<Gas> OXYGEN = GASES.register(ChemicalConstants.OXYGEN);

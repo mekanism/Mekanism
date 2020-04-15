@@ -143,11 +143,13 @@ public class GeneratorsBlockTypes {
     // Fission Reactor Casing
     public static final BlockTypeTile<TileEntityFissionReactorCasing> FISSION_REACTOR_CASING = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_CASING, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_CASING)
+          .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
           .build();
     // Fission Reactor Port
     public static final BlockTypeTile<TileEntityFissionReactorPort> FISSION_REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_PORT)
           .with(new AttributeStateFissionPortMode())
+          .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
           .build();
     // Fission Reactor Logic Adapter
     public static final BlockTypeTile<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder

@@ -32,6 +32,8 @@ public final class NBTConstants {
     public static final String ROTATION = "rotation";
     public static final String SCALE = "scale";
     public static final String SCALE_ALT = "scaleAlt";
+    public static final String SCALE_ALT_2 = "scale2";
+    public static final String SCALE_ALT_3 = "scale3";
     public static final String SOUND_SCALE = "soundScale";
     public static final String VALVE = "valve";
     public static final String VOLUME = "volume";
@@ -85,6 +87,8 @@ public final class NBTConstants {
     public static final String FUZZY_MODE = "fuzzyMode";
     public static final String GAS_NAME = "gasName";
     public static final String GAS_STORED = "gas";
+    public static final String GAS_STORED_ALT = "gas1";
+    public static final String GAS_STORED_ALT_2 = "gas2";
     public static final String GAS_TANKS = "GasTanks";
     public static final String HEAT_CAPACITORS = "HeatCapacitors";
     public static final String HEAT_CAPACITY = "heatCapacity";

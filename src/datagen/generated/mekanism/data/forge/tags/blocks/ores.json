@@ -1,9 +1,9 @@
 {
   "values": [
-    "#forge:ores/uranium",
-    "#forge:ores/tin",
     "#forge:ores/copper",
+    "#forge:ores/tin",
     "#forge:ores/osmium",
+    "#forge:ores/uranium",
     "#forge:ores/fluorite",
     "#forge:ores/lead"
   ]

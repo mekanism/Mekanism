@@ -70,7 +70,8 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
     private static double steamTransferEfficiency = 0.2;
     private static double waterConductivity = 0.3;
 
-    public double lastEnvironmentLoss = 0, lastAdjacentLoss = 0;
+    public double lastEnvironmentLoss = 0, lastTransferLoss = 0;
+    public long lastBoilRate;
 
     public double reactorDamage = 0;
     public boolean active;
@@ -114,7 +115,7 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
         double temp = heatCapacitor.getTemperature();
         double caseWaterHeat = waterConductivity * (temp - HeatUtils.BASE_BOIL_TEMP) * heatCapacitor.getHeatCapacity();
         int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / HeatUtils.getVaporizationEnthalpy());
-        waterToVaporize = Math.min(waterToVaporize, waterTank.getFluidAmount());
+        waterToVaporize = Math.max(0, Math.min(waterToVaporize, waterTank.getFluidAmount()));
         if (waterToVaporize > 0) {
             if (waterTank.shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
                 MekanismUtils.logMismatchedStackSize();
@@ -124,6 +125,7 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
             caseWaterHeat = waterToVaporize * HeatUtils.getVaporizationEnthalpy() / steamTransferEfficiency;
             heatCapacitor.handleHeat(-caseWaterHeat);
         }
+        lastBoilRate = waterToVaporize;
     }
 
     public void burnFuel() {

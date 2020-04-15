@@ -199,6 +199,8 @@ public enum MekanismLang implements ILangEntry {
     OFF("boolean", "off"),
     INPUT("boolean", "input"),
     OUTPUT("boolean", "output"),
+    ACTIVE("boolean", "active"),
+    DISABLED("boolean", "disabled"),
     //Capacity
     CAPACITY("capacity", "generic"),
     CAPACITY_ITEMS("capacity", "items"),
@@ -409,6 +411,7 @@ public enum MekanismLang implements ILangEntry {
     MAX_BOIL_RATE("boiler", "max_boil"),
     //Temperature
     TEMPERATURE("temperature", "short"),
+    TEMPERATURE_LONG("temperature", "long"),
     TEMPERATURE_KELVIN("temperature", "kelvin"),
     TEMPERATURE_KELVIN_SHORT("temperature", "kelvin.short"),
     TEMPERATURE_CELSIUS("temperature", "celsius"),

@@ -5,6 +5,7 @@ import mekanism.api.functions.TriConsumer;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.ReactorLogic;
@@ -74,6 +75,11 @@ public class PacketGeneratorsGuiInteract {
         LOGIC_TYPE((tile, player, extra) -> {
             if (tile instanceof TileEntityFusionReactorLogicAdapter) {
                 ((TileEntityFusionReactorLogicAdapter) tile).setLogicTypeFromPacket(ReactorLogic.byIndexStatic(extra));
+            }
+        }),
+        FISSION_ACTIVE((tile, player, extra) -> {
+            if (tile instanceof TileEntityFissionReactorCasing) {
+                ((TileEntityFissionReactorCasing) tile).setReactorActive(extra == 1);
             }
         });
 
