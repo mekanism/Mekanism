@@ -280,6 +280,7 @@
   "constants.mekanism.mod_name": "Mekanism",
   "crafting_formula.mekanism.encoded": "(登録済み)",
   "crafting_formula.mekanism.ingredients": "素材:",
+  "death.attack.laser": "%s was incinerated.",
   "description.mekanism.bin": "1種類のアイテムを大量に溜め込むことができます。",
   "description.mekanism.boiler_casing": "熱電ボイラーのマルチブロックの構成に用いられる、耐圧性のある堅牢なケーシングです。",
   "description.mekanism.boiler_valve": "熱電ボイラーのマルチブロックに使用できるバルブです。 生成された蒸気の搬出と、エネルギー及び水の搬入を行うことができます。",
