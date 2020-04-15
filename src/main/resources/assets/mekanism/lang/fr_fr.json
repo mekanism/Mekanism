@@ -280,6 +280,7 @@
   "constants.mekanism.mod_name": "Mekanism",
   "crafting_formula.mekanism.encoded": "(Encodé)",
   "crafting_formula.mekanism.ingredients": "Ingrédients:",
+  "death.attack.laser": "%s was incinerated.",
   "description.mekanism.bin": "Un bloc utilisé pour stocker de grandes quantités d'un seul objet.",
   "description.mekanism.boiler_casing": "Un bloc dense et résistant à la pression utilisé dans la création d'un multibloc de Chaudière Thermoélectrique.",
   "description.mekanism.boiler_valve": "Une valve qui peut être placée sur un multibloc de Chaudière Thermoélectrique, permettant l'insertion d'énergie et d'eau ainsi que l'extraction de la vapeur produite.",
