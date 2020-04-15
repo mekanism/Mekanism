@@ -68,7 +68,7 @@
   "item.mekanismgenerators.solar_panel": "Güneş Paneli",
   "item.mekanismgenerators.tritium_bucket": "Sıvı Trityum Kovası",
   "item.mekanismgenerators.turbine_blade": "Türbine Bıçağı",
-  "reactor.mekanismgenerators.configurator.port_eject": "Toggled Reactor Port eject mode to: %s.",
+  "reactor.mekanismgenerators.configurator.port_eject": "Reaktör Bağlantı Noktası enjeksiyon modu değiştirildi: %s.",
   "reactor.mekanismgenerators.fuel": "Yakıt",
   "reactor.mekanismgenerators.fuel.edit_rate": "Düzenleme Hızı:",
   "reactor.mekanismgenerators.fuel.injection_rate": "Enjeksiyon Hızı: %s",
