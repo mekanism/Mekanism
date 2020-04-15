@@ -57,7 +57,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.BIO_FUEL, "Bio Fuel");
         add(MekanismItems.FLUORITE_GEM, "Fluorite");
         add(MekanismItems.YELLOW_CAKE_URANIUM, "Yellow Cake Uranium");
-        add(MekanismItems.FISSILE_FUEL_PELLET, "Fissile Fuel Pellet");
         add(MekanismItems.ANTIMATTER_PELLET, "Antimatter Pellet");
         add(MekanismItems.PLUTONIUM_PELLET, "Plutonium Pellet");
         add(MekanismItems.POLONIUM_PELLET, "Polonium Pellet");

@@ -87,7 +87,6 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> BIO_FUEL = ITEMS.register("bio_fuel");
     public static final ItemRegistryObject<Item> FLUORITE_GEM = ITEMS.register("fluorite_gem");
     public static final ItemRegistryObject<Item> YELLOW_CAKE_URANIUM = ITEMS.register("yellow_cake_uranium");
-    public static final ItemRegistryObject<Item> FISSILE_FUEL_PELLET = ITEMS.register("pellet_fissile_fuel");
     public static final ItemRegistryObject<Item> ANTIMATTER_PELLET = ITEMS.register("pellet_antimatter");
     public static final ItemRegistryObject<Item> PLUTONIUM_PELLET = ITEMS.register("pellet_plutonium");
     public static final ItemRegistryObject<Item> POLONIUM_PELLET = ITEMS.register("pellet_polonium");

@@ -1,14 +1,11 @@
 package mekanism.common.content.boiler;
 
-import java.util.List;
 import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
-import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
@@ -17,8 +14,6 @@ import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
@@ -150,38 +145,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     }
 
     @Override
-    protected BoilerCache getNewCache() {
-        return new BoilerCache();
-    }
-
-    @Override
-    protected SynchronizedBoilerData getNewStructure() {
-        return new SynchronizedBoilerData((TileEntityBoilerCasing) pointer);
-    }
-
-    @Override
     protected MultiblockManager<SynchronizedBoilerData> getManager() {
         return Mekanism.boilerManager;
-    }
-
-    @Override
-    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedBoilerData> cache, MultiblockCache<SynchronizedBoilerData> merge) {
-        BoilerCache boilerCache = (BoilerCache) cache;
-        BoilerCache mergeCache = (BoilerCache) merge;
-        StorageUtils.mergeTanks(boilerCache.getFluidTanks(null).get(0), mergeCache.getFluidTanks(null).get(0));
-        StorageUtils.mergeTanks(boilerCache.getGasTanks(null).get(0), mergeCache.getGasTanks(null).get(0));
-        StorageUtils.mergeContainers(boilerCache.getHeatCapacitors(null).get(0), mergeCache.getHeatCapacitors(null).get(0));
-    }
-
-    @Override
-    protected void onFormed() {
-        super.onFormed();
-        if (!structureFound.waterTank.isEmpty()) {
-            structureFound.waterTank.setStackSize(Math.min(structureFound.waterTank.getFluidAmount(), structureFound.getWaterTankCapacity()), Action.EXECUTE);
-        }
-        if (!structureFound.steamTank.isEmpty()) {
-            structureFound.steamTank.setStackSize(Math.min(structureFound.steamTank.getStored(), structureFound.getSteamTankCapacity()), Action.EXECUTE);
-        }
     }
 
     @Override

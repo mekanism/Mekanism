@@ -57,7 +57,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     /**
      * This multiblock segment's cached data
      */
-    public MultiblockCache<T> cachedData = getNewCache();
+    public MultiblockCache<T> cachedData = getManager().getNewCache();
 
     /**
      * This multiblock segment's cached inventory ID
@@ -151,9 +151,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     }
 
     @Nonnull
-    protected abstract T getNewStructure();
-
-    public abstract MultiblockCache<T> getNewCache();
+    public abstract T getNewStructure();
 
     protected abstract UpdateProtocol<T> getProtocol();
 

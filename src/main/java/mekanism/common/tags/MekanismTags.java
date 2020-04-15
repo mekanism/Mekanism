@@ -65,7 +65,6 @@ public class MekanismTags {
         public static final Tag<Item> SAWDUST = forgeTag("sawdust");
         public static final Tag<Item> YELLOW_CAKE_URANIUM = forgeTag("yellow_cake_uranium");
 
-        public static final Tag<Item> PELLETS_FISSILE_FUEL = forgeTag("pellets/fissile_fuel");
         public static final Tag<Item> PELLETS_ANTIMATTER = forgeTag("pellets/antimatter");
         public static final Tag<Item> PELLETS_PLUTONIUM = forgeTag("pellets/plutonium");
         public static final Tag<Item> PELLETS_POLONIUM = forgeTag("pellets/polonium");

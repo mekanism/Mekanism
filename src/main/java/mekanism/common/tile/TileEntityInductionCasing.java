@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -51,13 +50,8 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
     @Nonnull
     @Override
-    protected SynchronizedMatrixData getNewStructure() {
+    public SynchronizedMatrixData getNewStructure() {
         return new SynchronizedMatrixData(this);
-    }
-
-    @Override
-    public MatrixCache getNewCache() {
-        return new MatrixCache();
     }
 
     @Override

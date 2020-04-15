@@ -1,12 +1,12 @@
 package mekanism.common.content.tank;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -50,24 +50,6 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return inventorySlots;
-    }
-
-    public void setInventoryData(@Nonnull List<IInventorySlot> toCopy) {
-        for (int i = 0; i < toCopy.size(); i++) {
-            if (i < inventorySlots.size()) {
-                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
-                inventorySlots.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
-            }
-        }
-    }
-
-    public void setTankData(@Nonnull List<IExtendedFluidTank> toCopy) {
-        for (int i = 0; i < toCopy.size(); i++) {
-            if (i < fluidTanks.size()) {
-                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
-                fluidTanks.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
-            }
-        }
     }
 
     public int getTankCapacity() {

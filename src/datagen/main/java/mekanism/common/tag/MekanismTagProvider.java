@@ -240,7 +240,6 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addPellets() {
-        addToTag(MekanismTags.Items.PELLETS_FISSILE_FUEL, MekanismItems.FISSILE_FUEL_PELLET);
         addToTag(MekanismTags.Items.PELLETS_ANTIMATTER, MekanismItems.ANTIMATTER_PELLET);
         addToTag(MekanismTags.Items.PELLETS_PLUTONIUM, MekanismItems.PLUTONIUM_PELLET);
         addToTag(MekanismTags.Items.PELLETS_POLONIUM, MekanismItems.POLONIUM_PELLET);

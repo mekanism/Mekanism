@@ -1,10 +1,8 @@
 package mekanism.common.content.matrix;
 
-import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
@@ -12,8 +10,6 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
@@ -38,29 +34,8 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     }
 
     @Override
-    protected MatrixCache getNewCache() {
-        return new MatrixCache();
-    }
-
-    @Override
-    protected SynchronizedMatrixData getNewStructure() {
-        return new SynchronizedMatrixData((TileEntityInductionCasing) pointer);
-    }
-
-    @Override
     protected MultiblockManager<SynchronizedMatrixData> getManager() {
         return Mekanism.matrixManager;
-    }
-
-    @Override
-    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedMatrixData> cache, MultiblockCache<SynchronizedMatrixData> merge) {
-        MatrixCache matrixCache = (MatrixCache) cache;
-        MatrixCache mergeCache = (MatrixCache) merge;
-        List<ItemStack> rejects = StackUtils.getMergeRejects(matrixCache.getInventorySlots(null), mergeCache.getInventorySlots(null));
-        if (!rejects.isEmpty()) {
-            rejectedItems.addAll(rejects);
-        }
-        StackUtils.merge(matrixCache.getInventorySlots(null), mergeCache.getInventorySlots(null));
     }
 
     @Override

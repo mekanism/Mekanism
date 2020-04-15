@@ -17,11 +17,10 @@ import net.minecraft.util.Direction;
 public abstract class SynchronizedData<T extends SynchronizedData<T>> implements IMekanismInventory {
 
     public Set<Coord4D> locations = new ObjectOpenHashSet<>();
+    public Set<Coord4D> internalLocations = new ObjectOpenHashSet<>();
 
     public int volLength;
-
     public int volWidth;
-
     public int volHeight;
 
     private int volume;
@@ -39,8 +38,6 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
     public Coord4D maxLocation;
 
     public boolean destroyed;
-
-    public Set<Coord4D> internalLocations = new ObjectOpenHashSet<>();
 
     @Nonnull
     @Override
@@ -61,8 +58,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
     }
 
     @Override
-    public void onContentsChanged() {
-    }
+    public void onContentsChanged() {}
 
     @Override
     public int hashCode() {

@@ -1,14 +1,14 @@
 package mekanism.generators.common.content.fission;
 
-import java.util.List;
+import mekanism.api.Coord4D;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import net.minecraft.item.ItemStack;
+import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.util.math.BlockPos;
 
 public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFissionReactorData> {
@@ -23,22 +23,16 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
     }
 
     @Override
-    protected MultiblockCache<SynchronizedFissionReactorData> getNewCache() {
-        return new FissionReactorCache();
-    }
-
-    @Override
-    protected SynchronizedFissionReactorData getNewStructure() {
-        return new SynchronizedFissionReactorData((TileEntityFissionReactorCasing) pointer);
-    }
-
-    @Override
     protected MultiblockManager<SynchronizedFissionReactorData> getManager() {
         return MekanismGenerators.fissionReactorManager;
     }
 
     @Override
-    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedFissionReactorData> cache, MultiblockCache<SynchronizedFissionReactorData> merge) {
-
+    protected void onStructureCreated(SynchronizedFissionReactorData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
+        for (Coord4D obj : structure.locations) {
+            if (MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos()) instanceof TileEntityFissionReactorPort) {
+                structure.portLocations.add(obj);
+            }
+        }
     }
 }

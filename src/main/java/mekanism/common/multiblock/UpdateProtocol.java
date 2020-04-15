@@ -7,7 +7,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -280,13 +289,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
      */
     protected abstract boolean isValidFrame(int x, int y, int z);
 
-    protected abstract MultiblockCache<T> getNewCache();
-
-    protected abstract T getNewStructure();
-
     protected abstract MultiblockManager<T> getManager();
 
-    protected abstract void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<T> cache, MultiblockCache<T> merge);
+    protected T getNewStructure() {
+        return pointer.getNewStructure();
+    }
 
     protected void onFormed() {
         for (Coord4D coord : structureFound.internalLocations) {
@@ -295,10 +302,25 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                 tile.setMultiblock(structureFound.inventoryID);
             }
         }
+
+        if (structureFound instanceof IMekanismFluidHandler) {
+            for (IExtendedFluidTank tank : ((IMekanismFluidHandler) structureFound).getFluidTanks(null)) {
+                tank.setStackSize(Math.min(tank.getFluidAmount(), tank.getCapacity()), Action.EXECUTE);
+            }
+        }
+        if (structureFound instanceof IMekanismGasHandler) {
+            for (IChemicalTank<Gas, GasStack> tank : ((IMekanismGasHandler) structureFound).getGasTanks(null)) {
+                tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
+            }
+        }
+        if (structureFound instanceof IMekanismStrictEnergyHandler) {
+            for (IEnergyContainer container : ((IMekanismStrictEnergyHandler) structureFound).getEnergyContainers(null)) {
+                container.setEnergy(container.getEnergy().min(container.getMaxEnergy()));
+            }
+        }
     }
 
-    protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
-    }
+    protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
 
     protected void onStructureDestroyed(T structure) {
         for (Coord4D coord : structure.internalLocations) {
@@ -352,7 +374,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                 }
             }
 
-            MultiblockCache<T> cache = getNewCache();
+            MultiblockCache<T> cache = getManager().getNewCache();
             MultiblockManager<T> manager = getManager();
             UUID idToUse = null;
             if (idsFound.isEmpty()) {
@@ -361,11 +383,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                 List<ItemStack> rejectedItems = new ArrayList<>();
                 for (UUID id : idsFound) {
                     if (manager.inventories.get(id) != null) {
-                        if (cache == null) {
-                            cache = manager.pullInventory(pointer.getWorld(), id);
-                        } else {
-                            mergeCaches(rejectedItems, cache, manager.pullInventory(pointer.getWorld(), id));
-                        }
+                        cache.merge(manager.pullInventory(pointer.getWorld(), id), rejectedItems);
                         idToUse = id;
                     }
                 }
@@ -376,9 +394,6 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
             cache.apply(structureFound);
             structureFound.inventoryID = idToUse;
-            structureFound.onCreated();
-
-            onFormed();
 
             List<IStructuralMultiblock> structures = new ArrayList<>();
             Coord4D toUse = null;
@@ -394,6 +409,9 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                     structures.add((IStructuralMultiblock) tile);
                 }
             }
+
+            structureFound.onCreated();
+            onFormed();
 
             //Remove all structural multiblocks from locations, set controllers
             for (IStructuralMultiblock node : structures) {
@@ -448,7 +466,6 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
             for (Direction side : EnumUtils.DIRECTIONS) {
                 Coord4D coord = pos.offset(side);
-
                 if (!iterated.contains(coord) && checker.isValid(coord)) {
                     loop(coord);
                 }

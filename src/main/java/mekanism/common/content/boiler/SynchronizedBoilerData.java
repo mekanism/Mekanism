@@ -85,33 +85,6 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
         heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY * locations.size(), true);
     }
 
-    public void setFluidTankData(@Nonnull List<IExtendedFluidTank> toCopy) {
-        for (int i = 0; i < toCopy.size(); i++) {
-            if (i < fluidTanks.size()) {
-                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
-                fluidTanks.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
-            }
-        }
-    }
-
-    public void setGasTankData(@Nonnull List<IChemicalTank<Gas, GasStack>> toCopy) {
-        for (int i = 0; i < toCopy.size(); i++) {
-            if (i < gasTanks.size()) {
-                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
-                gasTanks.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
-            }
-        }
-    }
-
-    public void setHeatCapacitorData(@Nonnull List<IHeatCapacitor> toCopy) {
-        for (int i = 0; i < toCopy.size(); i++) {
-            if (i < heatCapacitors.size()) {
-                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
-                heatCapacitors.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
-            }
-        }
-    }
-
     public double getHeatAvailable() {
         double heatAvailable = (heatCapacitor.getTemperature() - BASE_BOIL_TEMP) * (heatCapacitor.getHeatCapacity() * MekanismConfig.general.boilerWaterConductivity.get());
         return Math.min(heatAvailable, MekanismConfig.general.superheatingHeatTransfer.get() * superheatingElements);

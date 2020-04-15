@@ -15,7 +15,6 @@ import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
-import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
@@ -26,7 +25,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
-import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.fluid.Fluids;
@@ -109,13 +107,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
     @Nonnull
     @Override
-    protected SynchronizedTurbineData getNewStructure() {
+    public SynchronizedTurbineData getNewStructure() {
         return new SynchronizedTurbineData(this);
-    }
-
-    @Override
-    public MultiblockCache<SynchronizedTurbineData> getNewCache() {
-        return new TurbineCache();
     }
 
     @Override

@@ -6,10 +6,10 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.multiblock.SynchronizedData;
@@ -56,15 +56,6 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return inventorySlots;
-    }
-
-    public void setInventoryData(@Nonnull List<IInventorySlot> toCopy) {
-        for (int i = 0; i < toCopy.size(); i++) {
-            if (i < inventorySlots.size()) {
-                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
-                inventorySlots.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
-            }
-        }
     }
 
     public void addCell(Coord4D coord, TileEntityInductionCell cell) {

@@ -25,7 +25,7 @@ import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.distribution.target.EnergySaveTarget;
-import mekanism.common.integration.EnergyCompatUtils;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.gear.ItemCanteen;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.radiation.RadiationManager.RadiationScale;

@@ -1,10 +1,10 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -15,7 +15,6 @@ import mekanism.common.base.ContainerEditMode;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
-import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -116,13 +115,8 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
     @Nonnull
     @Override
-    protected SynchronizedTankData getNewStructure() {
+    public SynchronizedTankData getNewStructure() {
         return new SynchronizedTankData(this);
-    }
-
-    @Override
-    public TankCache getNewCache() {
-        return new TankCache();
     }
 
     @Override

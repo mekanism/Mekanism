@@ -13,7 +13,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
-import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
@@ -134,13 +133,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
     @Nonnull
     @Override
-    protected SynchronizedBoilerData getNewStructure() {
+    public SynchronizedBoilerData getNewStructure() {
         return new SynchronizedBoilerData(this);
-    }
-
-    @Override
-    public BoilerCache getNewCache() {
-        return new BoilerCache();
     }
 
     @Override

@@ -27,12 +27,14 @@ import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.content.tank.SynchronizedTankData;
+import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketHandler;
 import mekanism.common.network.PacketTransmitterUpdate;
@@ -125,9 +127,9 @@ public class Mekanism {
     /**
      * MultiblockManagers for various structrures
      */
-    public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<>("dynamicTank");
-    public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<>("inductionMatrix");
-    public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<>("thermoelectricBoiler");
+    public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<>("dynamicTank", () -> new TankCache());
+    public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<>("inductionMatrix", () -> new MultiblockCache<SynchronizedMatrixData>());
+    public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<>("thermoelectricBoiler", () -> new MultiblockCache<SynchronizedBoilerData>());
     /**
      * RadiationManager for handling radiation across all dimensions
      */

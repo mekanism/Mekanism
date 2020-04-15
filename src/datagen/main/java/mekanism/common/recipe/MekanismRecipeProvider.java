@@ -3092,18 +3092,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               MekanismGases.FISSILE_FUEL.getGasStack(1)
         ).addCriterion(Criterion.HAS_ISOTOPIC_CENTRIFUGE)
               .build(consumer, Mekanism.rl(basePath + "fissile_fuel"));
-        //fissile fuel pellet
-        GasToItemStackRecipeBuilder.crystallizing(
-              GasStackIngredient.from(MekanismGases.FISSILE_FUEL, 100),
-              MekanismItems.FISSILE_FUEL_PELLET.getItemStack()
-        ).addCriterion(Criterion.HAS_CHEMICAL_CRYSTALLIZER)
-              .build(consumer, Mekanism.rl(basePath + "fissile_fuel_pellet/from_uranium_hexafluoride"));
-        //back to fissile fuel
-        ItemStackToGasRecipeBuilder.oxidizing(
-            ItemStackIngredient.from(MekanismTags.Items.PELLETS_FISSILE_FUEL),
-            MekanismGases.FISSILE_FUEL.getGasStack(100)
-        ).addCriterion(Criterion.HAS_CHEMICAL_OXIDIZER)
-              .build(consumer, Mekanism.rl(basePath + "fissile_fuel/from_pellet"));
     }
 
     private void addLateGameRecipes(Consumer<IFinishedRecipe> consumer) {

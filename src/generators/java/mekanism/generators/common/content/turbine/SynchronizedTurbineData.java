@@ -73,24 +73,6 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
         energyContainers = Collections.singletonList(energyContainer);
     }
 
-    public void setTankData(@Nonnull List<IChemicalTank<Gas, GasStack>> toCopy) {
-        for (int i = 0; i < toCopy.size(); i++) {
-            if (i < gasTanks.size()) {
-                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
-                gasTanks.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
-            }
-        }
-    }
-
-    public void setContainerData(@Nonnull List<IEnergyContainer> toCopy) {
-        for (int i = 0; i < toCopy.size(); i++) {
-            if (i < energyContainers.size()) {
-                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
-                energyContainers.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
-            }
-        }
-    }
-
     public int getDispersers() {
         return (volLength - 2) * (volWidth - 2) - 1;
     }

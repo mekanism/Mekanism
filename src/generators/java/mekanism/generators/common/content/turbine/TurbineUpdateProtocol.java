@@ -1,18 +1,14 @@
 package mekanism.generators.common.content.turbine;
 
-import java.util.List;
 import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
@@ -21,7 +17,6 @@ import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -175,37 +170,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     }
 
     @Override
-    protected MultiblockCache<SynchronizedTurbineData> getNewCache() {
-        return new TurbineCache();
-    }
-
-    @Override
-    protected SynchronizedTurbineData getNewStructure() {
-        return new SynchronizedTurbineData((TileEntityTurbineCasing) pointer);
-    }
-
-    @Override
     protected MultiblockManager<SynchronizedTurbineData> getManager() {
         return MekanismGenerators.turbineManager;
-    }
-
-    @Override
-    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTurbineData> cache, MultiblockCache<SynchronizedTurbineData> merge) {
-        TurbineCache turbineCache = (TurbineCache) cache;
-        TurbineCache mergeCache = (TurbineCache) merge;
-        StorageUtils.mergeTanks(turbineCache.getGasTanks(null).get(0), mergeCache.getGasTanks(null).get(0));
-        StorageUtils.mergeContainers(turbineCache.getEnergyContainers(null).get(0), mergeCache.getEnergyContainers(null).get(0));
-        turbineCache.dumpMode = mergeCache.dumpMode;
-    }
-
-    @Override
-    protected void onFormed() {
-        super.onFormed();
-        if (!structureFound.gasTank.isEmpty()) {
-            structureFound.gasTank.setStackSize(Math.min(structureFound.gasTank.getStored(), structureFound.getSteamCapacity()), Action.EXECUTE);
-        }
-        if (!structureFound.energyContainer.isEmpty()) {
-            structureFound.energyContainer.setEnergy(structureFound.energyContainer.getEnergy().min(structureFound.getEnergyCapacity()));
-        }
     }
 }

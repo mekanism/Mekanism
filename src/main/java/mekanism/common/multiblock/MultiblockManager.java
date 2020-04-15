@@ -1,7 +1,5 @@
 package mekanism.common.multiblock;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +7,10 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
@@ -21,14 +22,16 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
     private static Set<MultiblockManager<?>> managers = new ObjectOpenHashSet<>();
 
     public String name;
+    private Supplier<MultiblockCache<T>> cacheSupplier;
 
     /**
      * A map containing references to all multiblock inventory caches.
      */
     public Map<UUID, MultiblockCache<T>> inventories = new Object2ObjectOpenHashMap<>();
 
-    public MultiblockManager(String s) {
-        name = s;
+    public MultiblockManager(String name, Supplier<MultiblockCache<T>> cacheSupplier) {
+        this.name = name;
+        this.cacheSupplier = cacheSupplier;
         managers.add(this);
     }
 
@@ -36,6 +39,10 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
         for (MultiblockManager<?> manager : managers) {
             manager.tickSelf(world);
         }
+    }
+
+    public MultiblockCache<T> getNewCache() {
+        return cacheSupplier.get();
     }
 
     @Nullable
@@ -67,9 +74,9 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
     public MultiblockCache<T> pullInventory(World world, UUID id) {
         MultiblockCache<T> toReturn = inventories.get(id);
         for (Coord4D obj : toReturn.locations) {
-            TileEntityMultiblock<T> tile = (TileEntityMultiblock<T>) MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, obj.getPos());
+            TileEntityMultiblock<T> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, obj.getPos());
             if (tile != null) {
-                tile.cachedData = tile.getNewCache();
+                tile.cachedData = getNewCache();
                 tile.cachedID = null;
             }
         }
