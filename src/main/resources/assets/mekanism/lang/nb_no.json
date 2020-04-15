@@ -280,6 +280,7 @@
   "constants.mekanism.mod_name": "Mekanisme",
   "crafting_formula.mekanism.encoded": "(Enkodet)",
   "crafting_formula.mekanism.ingredients": "Ingrediens:",
+  "death.attack.laser": "%s was incinerated.",
   "description.mekanism.bin": "En blokk brukes til å lagre store mengder av en enkelt type element.",
   "description.mekanism.boiler_casing": "En trykkbestandig, tett fôringsrør som brukes til å lage en termoelektrisk kjel-flerblokk.",
   "description.mekanism.boiler_valve": "En ventil som kan plasseres på en termoelektrisk blokk tillate innsetting av energi og vann sammen med uttrekking av produsert damp.",
