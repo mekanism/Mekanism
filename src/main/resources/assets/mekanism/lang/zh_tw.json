@@ -280,6 +280,7 @@
   "constants.mekanism.mod_name": "Mekanism",
   "crafting_formula.mekanism.encoded": "(已編碼)",
   "crafting_formula.mekanism.ingredients": "原料:",
+  "death.attack.laser": "%s was incinerated.",
   "description.mekanism.bin": "一個能存儲大量單種物品的箱櫃.",
   "description.mekanism.boiler_casing": "一種耐壓方塊,用於製作鍋爐的外殼.",
   "description.mekanism.boiler_valve": "用於鍋爐的閥門,能讓水進入鍋爐並輸出蒸汽",
