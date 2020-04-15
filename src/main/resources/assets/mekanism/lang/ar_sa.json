@@ -280,6 +280,7 @@
   "constants.mekanism.mod_name": "الميكانية",
   "crafting_formula.mekanism.encoded": "(مشفرة)",
   "crafting_formula.mekanism.ingredients": "المكونات:",
+  "death.attack.laser": "%s was incinerated.",
   "description.mekanism.bin": "كتلة تستخدم لتخزين كميات كبيرة من نوع واحد من الأصناف.",
   "description.mekanism.boiler_casing": "غلاف كثيف مقاوم للضغط، يستخدم في إنشاء كتلة متعددة البويليرات الحرارية.",
   "description.mekanism.boiler_valve": "صمام يمكن وضعه على كتلة متعددة كهربائية حرارية، • السماح بإدخال الطاقة والمياه إلى جانب استخراج البخار المنتج.",
