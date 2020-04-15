@@ -280,6 +280,7 @@
   "constants.mekanism.mod_name": "Mekanismo",
   "crafting_formula.mekanism.encoded": "(codificado)",
   "crafting_formula.mekanism.ingredients": "Ingredientes",
+  "death.attack.laser": "%s was incinerated.",
   "description.mekanism.bin": "Um bloco usado para armazenar grandes quantidades de um único tipo de item.",
   "description.mekanism.boiler_casing": "Um revestimento denso, resistente às pressões, usado na criação de um bloco multieléctrico da caldeira.",
   "description.mekanism.boiler_valve": "Uma válvula que pode ser colocada em um bloco multiplo de caldeira, permitindo a inserção de energia e água juntamente com a extração do vapor produzido.",
