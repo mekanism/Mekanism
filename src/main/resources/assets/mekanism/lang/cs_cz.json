@@ -280,6 +280,7 @@
   "constants.mekanism.mod_name": "Mekanism",
   "crafting_formula.mekanism.encoded": "(Encoded)",
   "crafting_formula.mekanism.ingredients": "Ingredients:",
+  "death.attack.laser": "%s was incinerated.",
   "description.mekanism.bin": "A block used to store large quantities of a single type of item.",
   "description.mekanism.boiler_casing": "A pressure-resistant, dense casing used in the creation of a Thermoelectric Boiler multiblock.",
   "description.mekanism.boiler_valve": "A valve that can be placed on a Thermoelectric Boiler multiblock, allowing for the insertion of energy and water along with the extraction of produced steam.",
