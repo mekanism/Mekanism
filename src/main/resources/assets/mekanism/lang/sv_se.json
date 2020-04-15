@@ -280,6 +280,7 @@
   "constants.mekanism.mod_name": "Mekanism",
   "crafting_formula.mekanism.encoded": "(Kodad)",
   "crafting_formula.mekanism.ingredients": "Ingredienser:",
+  "death.attack.laser": "%s was incinerated.",
   "description.mekanism.bin": "Ett block som används för att lagra stora mängder av en enda typ av objekt.",
   "description.mekanism.boiler_casing": "Ett tryckbeständigt, tätt hölje som används vid skapandet av en termoelektrisk pannmultiblock.",
   "description.mekanism.boiler_valve": "En ventil som kan placeras på en termoelektrisk panna multiblock, möjliggör införande av energi och vatten tillsammans med utvinning av producerad ånga.",
