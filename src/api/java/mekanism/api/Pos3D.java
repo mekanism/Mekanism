@@ -197,6 +197,18 @@ public class Pos3D extends Vec3d {
     }
 
     /**
+     * Adjusts the position for the given direction to match that as the entity
+     */
+    public Pos3D adjustPosition(Direction direction, Entity entity) {
+        if (direction.getAxis() == Axis.X) {
+            return new Pos3D(entity.getPosX(), y, z);
+        } else if (direction.getAxis() == Axis.Y) {
+            return new Pos3D(x, entity.getPosY(), z);
+        } else //Axis.Z
+        return new Pos3D(x, y, entity.getPosZ());
+    }
+
+    /**
      * Returns the distance between this and the defined Pos3D.
      *
      * @param pos - the Pos3D to find the distance to

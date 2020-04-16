@@ -20,8 +20,6 @@ import net.minecraft.util.math.BlockPos;
  */
 public class TileEntityBoundingBlock extends TileEntityUpdateable {
 
-    //TODO: Do we just want to promote the bounding block to being "advanced" in terms of how things are proxied to the main block, rather than
-    // have the extra stuff only happen with the advanced variant. Or do we want to at least move support for the offset capability stuff. to here
     private BlockPos mainPos = BlockPos.ZERO;
 
     public boolean receivedCoords;

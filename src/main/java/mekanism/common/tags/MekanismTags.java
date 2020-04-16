@@ -21,8 +21,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
-//TODO: Should this be moved to the API package, Especially if the tag files don't need to exist for these to be valid
-// Probably doesn't matter
 public class MekanismTags {
 
     public static class Items {

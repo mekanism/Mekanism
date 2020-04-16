@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
  * Interface for enum's to make them easily incremental, while allowing for disabling various elements
  */
 public interface IDisableableEnum<TYPE extends Enum<TYPE> & IDisableableEnum<TYPE>> extends IIncrementalEnum<TYPE> {
-    //TODO: Use this class in more places
 
     /**
      * Used to check if a given element is enabled.

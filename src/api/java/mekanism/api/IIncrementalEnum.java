@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
  * Interface for enum's to make them easily incremental
  */
 public interface IIncrementalEnum<TYPE extends Enum<TYPE> & IIncrementalEnum<TYPE>> {
-    //TODO: Use this class in more places
 
     /**
      * Gets the next "valid" element

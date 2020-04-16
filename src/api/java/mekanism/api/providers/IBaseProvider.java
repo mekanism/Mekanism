@@ -6,7 +6,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-//TODO: Do we want an "implementation" of IRegistryObjectProvider
 public interface IBaseProvider extends IHasTextComponent, IHasTranslationKey {
 
     ResourceLocation getRegistryName();

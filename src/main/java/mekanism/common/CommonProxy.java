@@ -3,13 +3,11 @@ package mekanism.common;
 import java.lang.ref.WeakReference;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
@@ -40,12 +38,6 @@ public class CommonProxy {
      */
     public boolean isPaused() {
         return false;
-    }
-
-    /**
-     * Adds block hit effects on the client side.
-     */
-    public void addHitEffects(Coord4D coord, BlockRayTraceResult mop) {
     }
 
     /**

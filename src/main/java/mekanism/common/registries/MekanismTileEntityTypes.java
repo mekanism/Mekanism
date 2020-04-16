@@ -101,7 +101,6 @@ public class MekanismTileEntityTypes {
         }
     }
 
-    //TODO: Tile types that need to be evaluated further
     public static final TileEntityTypeRegistryObject<TileEntityBoundingBlock> BOUNDING_BLOCK = TILE_ENTITY_TYPES.register(MekanismBlocks.BOUNDING_BLOCK, TileEntityBoundingBlock::new);
     public static final TileEntityTypeRegistryObject<TileEntityBoundingBlock> ADVANCED_BOUNDING_BLOCK = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, TileEntityAdvancedBoundingBlock::new);
 

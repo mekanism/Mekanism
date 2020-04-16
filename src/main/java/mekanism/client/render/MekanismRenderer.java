@@ -125,7 +125,6 @@ public class MekanismRenderer {
 
     //Color
     public static void resetColor() {
-        //TODO: Should this be RenderSystem.clearColor
         RenderSystem.color4f(1, 1, 1, 1);
     }
 
@@ -231,7 +230,6 @@ public class MekanismRenderer {
         return argb;
     }
 
-    //TODO: Use these calculateGlowLight after rewriting the renderResizableCuboid?
     public static int calculateGlowLight(int light, @Nonnull FluidStack fluid) {
         return fluid.isEmpty() ? light : calculateGlowLight(light, fluid.getFluid().getAttributes().getLuminosity(fluid));
     }

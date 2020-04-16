@@ -31,14 +31,12 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     @Nonnull
     protected abstract IRegistryDelegate<CHEMICAL> getDelegate(CHEMICAL chemical);
 
-    //TODO: Is there a better way to make this super class know about the empty chemical instance and empty stack?
     @Nonnull
     protected abstract CHEMICAL getEmptyChemical();
 
     @Nonnull
     public abstract ChemicalStack<CHEMICAL> copy();
 
-    //TODO: decide on a good name, or maybe just make it be .get()
     @Nonnull
     public final CHEMICAL getType() {
         return isEmpty ? getEmptyChemical() : getRaw();

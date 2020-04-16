@@ -11,8 +11,6 @@ import net.minecraft.network.PacketBuffer;
 public abstract class PropertyData {
 
     private final PropertyType type;
-    //TODO: Debate passing this over the network as an unsigned byte as this is value is bounded by
-    // our max number of properties in a single container which I don't think will ever be super high
     private final short property;
 
     protected PropertyData(PropertyType type, short property) {

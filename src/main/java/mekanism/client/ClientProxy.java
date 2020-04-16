@@ -2,7 +2,6 @@ package mekanism.client;
 
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.render.RenderTickHandler;
@@ -16,7 +15,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -27,13 +25,6 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
  * @author AidanBrady
  */
 public class ClientProxy extends CommonProxy {
-
-    @Override
-    public void addHitEffects(Coord4D coord, BlockRayTraceResult mop) {
-        if (Minecraft.getInstance().world != null) {
-            Minecraft.getInstance().particles.addBlockHitEffects(coord.getPos(), mop);
-        }
-    }
 
     private void doSparkle(TileEntity tile, SparkleAnimation anim) {
         ClientPlayerEntity player = Minecraft.getInstance().player;

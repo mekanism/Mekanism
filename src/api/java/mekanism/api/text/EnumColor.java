@@ -15,12 +15,11 @@ import net.minecraftforge.common.Tags;
  *
  * @author AidanBrady
  */
-public enum EnumColor {//TODO: Maybe rename some of these or their lang keys
+public enum EnumColor {
     BLACK("\u00a70", APILang.COLOR_BLACK, "Black", "Black", "black", new int[]{0, 0, 0}, TextFormatting.BLACK, DyeColor.BLACK),
     DARK_BLUE("\u00a71", APILang.COLOR_DARK_BLUE, "Blue", "Blue", "blue", new int[]{0, 0, 170}, TextFormatting.DARK_BLUE, DyeColor.BLUE),
     DARK_GREEN("\u00a72", APILang.COLOR_DARK_GREEN, "Green", "Green", "green", new int[]{0, 170, 0}, TextFormatting.DARK_GREEN, DyeColor.GREEN),
     DARK_AQUA("\u00a73", APILang.COLOR_DARK_AQUA, "Cyan", "Cyan", "cyan", new int[]{0, 255, 255}, TextFormatting.DARK_AQUA, DyeColor.CYAN),
-    //TODO: Better dye tag?
     DARK_RED("\u00a74", APILang.COLOR_DARK_RED, "Dark Red", null, "dark_red", new int[]{170, 0, 0}, TextFormatting.DARK_RED,
           MaterialColor.NETHERRACK, Tags.Items.DYES_RED),
     PURPLE("\u00a75", APILang.COLOR_PURPLE, "Purple", "Purple", "purple", new int[]{170, 0, 170}, TextFormatting.DARK_PURPLE, DyeColor.PURPLE),
@@ -29,7 +28,6 @@ public enum EnumColor {//TODO: Maybe rename some of these or their lang keys
     DARK_GRAY("\u00a78", APILang.COLOR_DARK_GRAY, "Gray", "Gray", "gray", new int[]{85, 85, 85}, TextFormatting.DARK_GRAY, DyeColor.GRAY),
     INDIGO("\u00a79", APILang.COLOR_INDIGO, "Light Blue", "LightBlue", "light_blue", new int[]{85, 85, 255}, TextFormatting.BLUE, DyeColor.LIGHT_BLUE),
     BRIGHT_GREEN("\u00a7a", APILang.COLOR_BRIGHT_GREEN, "Lime", "Lime", "lime", new int[]{85, 255, 85}, TextFormatting.GREEN, DyeColor.LIME),
-    //TODO: Better dye tag?
     AQUA("\u00a7b", APILang.COLOR_AQUA, "Aqua", null, "aqua", new int[]{85, 255, 255}, TextFormatting.AQUA, MaterialColor.LIGHT_BLUE, Tags.Items.DYES_LIGHT_BLUE),
     RED("\u00a7c", APILang.COLOR_RED, "Red", "Red", "red", new int[]{255, 0, 0}, TextFormatting.RED, DyeColor.RED),
     PINK("\u00a7d", APILang.COLOR_PINK, "Magenta", "Magenta", "magenta", new int[]{255, 85, 255}, TextFormatting.LIGHT_PURPLE, DyeColor.MAGENTA),

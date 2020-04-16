@@ -31,17 +31,12 @@ public enum BaseTier implements IStringSerializable {
         return name;
     }
 
-    //TODO: Maybe come up with a better method name for this
     public String getLowerName() {
         return getSimpleName().toLowerCase(Locale.ROOT);
     }
 
     public EnumColor getColor() {
         return color;
-    }
-
-    public boolean isObtainable() {
-        return this != CREATIVE;
     }
 
     @Override

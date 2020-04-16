@@ -3,8 +3,6 @@ package mekanism.client.particle;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.api.Pos3D;
-import mekanism.api.math.FloatingLong;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
@@ -26,14 +24,14 @@ public class LaserParticle extends SpriteTexturedParticle {
     private final Direction direction;
     private final float halfLength;
 
-    private LaserParticle(World world, Pos3D start, Pos3D end, Direction dir, FloatingLong energy) {
+    private LaserParticle(World world, Pos3D start, Pos3D end, Direction dir, float energyScale) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
         maxAge = 5;
         particleRed = 1;
         particleGreen = 0;
         particleBlue = 0;
         particleAlpha = 0.1F;
-        particleScale = (float) Math.min(energy.divide(MekanismConfig.usage.laser.get().multiply(10)).doubleValue(), 0.6);
+        particleScale = energyScale;
         halfLength = (float) (end.distance(start) / 2);
         direction = dir;
     }
@@ -97,7 +95,7 @@ public class LaserParticle extends SpriteTexturedParticle {
         public LaserParticle makeParticle(LaserParticleData data, @Nonnull World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             Pos3D start = new Pos3D(x, y, z);
             Pos3D end = start.translate(data.direction, data.distance);
-            LaserParticle particleLaser = new LaserParticle(world, start, end, data.direction, data.energy);
+            LaserParticle particleLaser = new LaserParticle(world, start, end, data.direction, data.energyScale);
             particleLaser.selectSpriteRandomly(this.spriteSet);
             return particleLaser;
         }

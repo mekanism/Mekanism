@@ -3,10 +3,8 @@ package mekanism.common.tile.laser;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.LaserManager;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -15,8 +13,12 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 
 public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
 
@@ -44,9 +46,9 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
     }
 
     @Override
-    protected void handleBreakBlock(Coord4D coord) {
-        List<ItemStack> drops = LaserManager.breakBlock(coord, false, world, pos);
-        if (drops != null) {
+    protected void handleBreakBlock(BlockState state, BlockPos hitPos) {
+        List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, hitPos, MekanismUtils.getTileEntity(world, hitPos));
+        if (!drops.isEmpty()) {
             List<IInventorySlot> inventorySlots = getInventorySlots(null);
             for (ItemStack drop : drops) {
                 for (IInventorySlot slot : inventorySlots) {
@@ -58,7 +60,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
                 }
                 if (!drop.isEmpty()) {
                     //If we have some drop left over that we couldn't fit, then spawn it into the world
-                    Block.spawnAsEntity(getWorld(), pos, drop);
+                    Block.spawnAsEntity(world, pos, drop);
                 }
             }
         }

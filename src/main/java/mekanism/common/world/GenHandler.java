@@ -65,8 +65,7 @@ public class GenHandler {
     }
 
     private static boolean isValidBiome(Biome biome) {
-        //TODO: Decide if we want to stop the generation when the category is Category.NONE as well
-        // we probably do not so that in case mods do not categorize their biome, we can still add our ore
+        //If this does weird things to unclassified biomes (Category.NONE), then we should also mark that biome as invalid
         return biome.getCategory() != Category.THEEND && biome.getCategory() != Category.NETHER;
     }
 

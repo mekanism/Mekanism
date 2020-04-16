@@ -20,7 +20,6 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
         super(modid, ForgeRegistries.BLOCKS, ForgeRegistries.ITEMS);
     }
 
-    //TODO: Create a helper wrapper that just takes a block properties??
     public <BLOCK extends Block> BlockRegistryObject<BLOCK, BlockItem> register(String name, Supplier<? extends BLOCK> blockSupplier) {
         return registerDefaultProperties(name, blockSupplier, BlockItem::new);
     }
@@ -32,7 +31,6 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
     public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Supplier<? extends BLOCK> blockSupplier,
           Function<BLOCK, ITEM> itemCreator) {
-        //TODO: Make sure it sets the creative tab
         BlockRegistryObject<BLOCK, ITEM> registeredBlock = register(name, blockSupplier, itemCreator, BlockRegistryObject::new);
         allBlocks.add(registeredBlock);
         return registeredBlock;

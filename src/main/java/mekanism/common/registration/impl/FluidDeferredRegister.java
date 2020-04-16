@@ -3,8 +3,8 @@ package mekanism.common.registration.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
-import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IChemicalConstant;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
@@ -41,12 +41,15 @@ public class FluidDeferredRegister {
         itemRegister = new DeferredRegister<>(ForgeRegistries.ITEMS, modid);
     }
 
-    public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(ChemicalConstants constants) {
-        int color = constants.getColor();
-        int temperature = Math.round(constants.getTemperature());
+    public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(IChemicalConstant constants) {
         int density = Math.round(constants.getDensity());
-        //TODO: Support for luminosity?
-        return register(constants.getName(), fluidAttributes -> fluidAttributes.color(color).temperature(temperature).density(density).viscosity(density).gaseous());
+        return register(constants.getName(), fluidAttributes -> fluidAttributes
+              .color(constants.getColor())
+              .temperature(Math.round(constants.getTemperature()))
+              .density(density)
+              .viscosity(density)
+              .luminosity(constants.getLuminosity())
+              .gaseous());
     }
 
     public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> register(String name, UnaryOperator<Builder> fluidAttributes) {
@@ -69,7 +72,6 @@ public class FluidDeferredRegister {
         fluidRegistryObject.updateFlowing(fluidRegister.register(flowingName, () -> new Flowing(properties)));
         fluidRegistryObject.updateBucket(itemRegister.register(bucketName, () -> new BucketItem(fluidRegistryObject::getStillFluid,
               ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).containerItem(Items.BUCKET))));
-        //TODO: Allow setting custom block properties?
         //Note: The block properties used here is a copy of the ones for water
         fluidRegistryObject.updateBlock(blockRegister.register(name, () -> new FlowingFluidBlock(fluidRegistryObject::getStillFluid,
               Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops())));

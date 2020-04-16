@@ -95,8 +95,6 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             @Nullable
             TileEntity tile = null;
             if (block instanceof IHasTileEntity<?>) {
-                //TODO: Ideally at some point we will end up moving some of the stuff up to TileEntityMekanism anyways
-                // so then we can just remove having to create a tile to check if it implements specific things
                 tile = ((IHasTileEntity<?>) block).getTileType().create();
             }
             if (Attribute.has(block, AttributeSecurity.class)) {
@@ -130,8 +128,6 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             }
             if (tile instanceof TileEntityMekanism) {
                 TileEntityMekanism tileEntity = (TileEntityMekanism) tile;
-                //TODO: Evaluate a way of doing this that doesn't force TileEntityMekanism
-                //TODO: Do we care that technically breaking the reactor controller makes it grab the tanks?
                 for (SubstanceType type : SubstanceType.values()) {
                     if (tileEntity.handles(type)) {
                         List<? extends INBTSerializable<CompoundNBT>> list = type.getContainers(tileEntity);
@@ -142,8 +138,6 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                     }
                 }
             }
-            //TODO: If anything for inventories doesn't work we may have to check if the tile is an ISustainedInventory
-            // I don't believe it is directly needed anymore for this due to IHasInventory
             if (Attribute.has(block, AttributeInventory.class)) {
                 //If the block has an inventory, copy the inventory slots,
                 // but if it is an IItemHandler, which for most cases of ours it will be,

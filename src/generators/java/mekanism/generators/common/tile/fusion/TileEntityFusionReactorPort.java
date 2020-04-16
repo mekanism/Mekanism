@@ -3,7 +3,6 @@ package mekanism.generators.common.tile.fusion;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -12,10 +11,14 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.chemical.ProxiedChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
+import mekanism.common.capabilities.holder.fluid.ProxiedFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
+import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.capabilities.holder.slot.ProxiedInventorySlotHolder;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -32,7 +35,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-//TODO: Allow reactor controller inventory slot to be interacted with via the port again
 public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock implements IConfigurable {
 
     public TileEntityFusionReactorPort() {
@@ -43,14 +45,16 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     @Nonnull
     @Override
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
-        //Note: We don't use a ProxiedGasTankHolder, as we need to check tank index as well for our limiting insert/output
-        return side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getGasTanks(side);
+        //Note: We can just use a proxied holder as the input/output restrictions are done in the tanks themselves
+        return ProxiedChemicalTankHolder.create(side -> true, side -> getActive(),
+              side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getGasTanks(side));
     }
 
     @Nonnull
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
-        return side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getFluidTanks(side);
+        return ProxiedFluidTankHolder.create(side -> true, side -> getActive(),
+              side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getFluidTanks(side));
     }
 
     @Nonnull
@@ -66,12 +70,24 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
         return side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getHeatCapacitors(side);
     }
 
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        return ProxiedInventorySlotHolder.create(side -> true, side -> getActive(),
+              side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getInventorySlots(side));
+    }
+
     @Override
     public boolean persists(SubstanceType type) {
         if (type == SubstanceType.GAS || type == SubstanceType.FLUID || type == SubstanceType.ENERGY || type == SubstanceType.HEAT) {
             return false;
         }
         return super.persists(type);
+    }
+
+    @Override
+    public boolean persistInventory() {
+        return false;
     }
 
     @Override
@@ -132,27 +148,5 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         return ActionResultType.PASS;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack insertGas(int tank, @Nonnull GasStack stack, @Nullable Direction side, @Nonnull Action action) {
-        //TODO: Do this better so there is no magic numbers
-        if (tank < 3 && getActive()) {
-            //Don't allow inserting into the fuel tanks, if we are on output mode
-            return stack;
-        }
-        return super.insertGas(tank, stack, side, action);
-    }
-
-    @Nonnull
-    @Override
-    public GasStack extractGas(int tank, long amount, @Nullable Direction side, @Nonnull Action action) {
-        //TODO: Do this better so there is no magic numbers
-        if (tank == 3 && !getActive()) {
-            //Don't allow extracting from the steam tank, if we are on input mode
-            return GasStack.EMPTY;
-        }
-        return super.extractGas(tank, amount, side, action);
     }
 }

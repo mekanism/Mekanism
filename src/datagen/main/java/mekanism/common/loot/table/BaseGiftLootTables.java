@@ -6,7 +6,6 @@ import net.minecraft.data.loot.GiftLootTables;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTable.Builder;
 
-//TODO: Implement/improve this when needed
 public abstract class BaseGiftLootTables extends GiftLootTables {
 
     @Override

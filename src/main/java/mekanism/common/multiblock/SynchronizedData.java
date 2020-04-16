@@ -46,8 +46,6 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
     }
 
     public Set<Direction> getDirectionsToEmit(Coord4D coord) {
-        //TODO: Decide if we want to cache this at some point for the different ports/valves
-        // and then have it update on neighbor update
         Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
         for (Direction direction : EnumUtils.DIRECTIONS) {
             if (!locations.contains(coord.offset(direction))) {

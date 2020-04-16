@@ -68,7 +68,6 @@ public final class HolidayManager {
     }
 
     private static String getThemedLines(EnumColor[] colors, int amount) {
-        //TODO: Should this use text components?
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < amount; i++) {
             builder.append(colors[i % colors.length]).append("-");

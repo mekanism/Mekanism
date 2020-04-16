@@ -7,7 +7,7 @@ import net.minecraft.nbt.ListNBT;
  *
  * @author AidanBrady
  */
-public interface ISustainedInventory {//TODO: Figure out what this is used by and if we can remove it
+public interface ISustainedInventory {
 
     /**
      * Sets the inventory tag list to a new value.

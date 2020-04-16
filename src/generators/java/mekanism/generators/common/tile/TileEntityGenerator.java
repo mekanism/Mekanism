@@ -44,7 +44,6 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     @Override
     protected void onUpdateServer() {
         if (MekanismUtils.canFunction(this)) {
-            //TODO: Do we want to cache this direction
             CableUtils.emit(EnumSet.of(getEnergySide().getDirection(getDirection())), energyContainer, this, getMaxOutput());
         }
     }

@@ -287,8 +287,6 @@ dependencies {
 
     compile fg.deobf("curse.maven:flux-networks:${flux_networks_id}")
 
-    //compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
-
     //Dependencies for data generators for mod compat reference
     //TODO: Switch to the compile and runtime variants for compiling the data gen vs running the data gen
     // See above comment for why we cannot do this yet

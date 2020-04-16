@@ -4,6 +4,7 @@ import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
+import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.EnumUtils;
@@ -31,6 +32,12 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         return side -> getController() == null ? Collections.emptyList() : getController().getHeatCapacitors(side);
     }
 
+    @Nonnull
+    @Override
+    protected IInventorySlotHolder getInitialInventory() {
+        return side -> getController() == null ? Collections.emptyList() : getController().getInventorySlots(side);
+    }
+
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
@@ -52,6 +59,11 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
             return false;
         }
         return super.persists(type);
+    }
+
+    @Override
+    public boolean persistInventory() {
+        return false;
     }
 
     @Override

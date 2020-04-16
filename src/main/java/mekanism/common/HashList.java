@@ -37,7 +37,6 @@ public class HashList<T> extends AbstractList<T> {
         return list.get(index);
     }
 
-    //TODO: Evaluate usages of this, and maybe switch some to using the normal get method
     public T getOrNull(int index) {
         return index >= 0 && index < size() ? get(index) : null;
     }

@@ -14,8 +14,6 @@ import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-//TODO: Refactor what packages various things are in
-// Also move more things from main mekanism package to here, for example tier information and stuff
 @Mod.EventBusSubscriber(modid = MekanismAPI.MEKANISM_MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismAPI {
 

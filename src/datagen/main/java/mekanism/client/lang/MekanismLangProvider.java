@@ -10,11 +10,11 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemProcessedResource;
-import mekanism.common.radiation.RadiationManager;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
@@ -40,6 +40,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addEntities();
         addGases();
         addInfusionTypes();
+        addDamageSources();
         addMisc();
     }
 
@@ -327,6 +328,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismInfuseTypes.TIN, "Tin");
         add(MekanismInfuseTypes.FUNGI, "Fungi");
         add(MekanismInfuseTypes.BIO, "Biomass");
+    }
+
+    private void addDamageSources() {
+        add(MekanismDamageSource.LASER, "%s was incinerated.");
+        add(MekanismDamageSource.RADIATION_DAMAGE, "%1$s was killed by radiation poisoning.");
     }
 
     private void addMisc() {
@@ -996,8 +1002,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, "Increases the user's sprinting speed (and jumping distance).");
         add(MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, "Allows the user to both step and jump higher.");
         add(MekanismLang.DESCRIPTION_MAGNETIC_ATTRACTION_UNIT, "Uses powerful magnets to draw distant items towards the player. Install multiple for a greater range.");
-
-        add("death.attack." + RadiationManager.RADIATION_DAMAGE.getDamageType(), "%1$s was killed by radiation poisoning.");
 
         add("description.mekanism.osmium_ore", "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
         add("description.mekanism.copper_ore", "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");

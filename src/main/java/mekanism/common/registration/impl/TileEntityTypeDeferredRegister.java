@@ -13,9 +13,7 @@ public class TileEntityTypeDeferredRegister extends WrappedDeferredRegister<Tile
     }
 
     public <TILE extends TileEntity> TileEntityTypeRegistryObject<TILE> register(BlockRegistryObject<?, ?> block, Supplier<? extends TILE> factory) {
-        //fixerType = DataFixesManager.getDataFixer().getSchema(DataFixUtils.makeKey(SharedConstants.getVersion().getWorldVersion())).getChoiceType(TypeReferences.BLOCK_ENTITY, registryName.getPath());
-        //TODO: I don't believe we have a data fixer type for our stuff so it is technically null not the above thing which is taken from TileEntityTypes#register
-        // Note: If above is needed, we should add the try catch that TileEntityTypes#register includes
+        //Note: There is no data fixer type as forge does not currently have a way exposing data fixers to mods yet
         return register(block.getInternalRegistryName(), () -> TileEntityType.Builder.<TILE>create(factory, block.getBlock()).build(null), TileEntityTypeRegistryObject::new);
     }
 }

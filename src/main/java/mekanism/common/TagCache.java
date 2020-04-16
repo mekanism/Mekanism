@@ -18,12 +18,11 @@ import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
-//TODO: Rewrite this entire class to be more of a tag helper class than a caching class
 public final class TagCache {
 
-    public static Map<String, List<ItemStack>> blockTagStacks = new Object2ObjectOpenHashMap<>();
-    public static Map<String, List<ItemStack>> itemTagStacks = new Object2ObjectOpenHashMap<>();
-    public static Map<String, List<ItemStack>> modIDStacks = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, List<ItemStack>> blockTagStacks = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, List<ItemStack>> itemTagStacks = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, List<ItemStack>> modIDStacks = new Object2ObjectOpenHashMap<>();
 
     public static List<String> getItemTags(ItemStack check) {
         if (check == null) {

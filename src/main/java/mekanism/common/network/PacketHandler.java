@@ -59,6 +59,7 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
         registerServerToClient(PacketTransporterUpdate.class, PacketTransporterUpdate::encode, PacketTransporterUpdate::decode, PacketTransporterUpdate::handle);
         registerServerToClient(PacketPortalFX.class, PacketPortalFX::encode, PacketPortalFX::decode, PacketPortalFX::handle);
+        registerServerToClient(PacketLaserHitBlock.class, PacketLaserHitBlock::encode, PacketLaserHitBlock::decode, PacketLaserHitBlock::handle);
         registerServerToClient(PacketUpdateTile.class, PacketUpdateTile::encode, PacketUpdateTile::decode, PacketUpdateTile::handle);
         registerServerToClient(PacketPlayerData.class, PacketPlayerData::encode, PacketPlayerData::decode, PacketPlayerData::handle);
         registerServerToClient(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);

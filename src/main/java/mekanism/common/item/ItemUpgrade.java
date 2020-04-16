@@ -25,7 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemUpgrade extends Item implements IUpgradeItem {
 
-    private Upgrade upgrade;
+    private final Upgrade upgrade;
 
     public ItemUpgrade(Upgrade type, Properties properties) {
         super(properties.maxStackSize(type.getMax()));

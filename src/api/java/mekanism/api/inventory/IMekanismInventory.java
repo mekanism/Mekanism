@@ -26,11 +26,6 @@ public interface IMekanismInventory extends ISidedItemHandler {
         return true;
     }
 
-    //TODO: Use this for generating the container code. Should even be able to make the shift click code be based off of the logic in the individual inventory slots
-    // Note: for generating container code this should pass null as the side to get all the information
-    //TODO: We should have our inventories cache the list of slots for the different sides, as this method may be called a decent amount for things such as getSlots
-    //TODO: Would it make sense to inline some calculations for mekanism inventories rather then getting the specific slot in an index
-
     /**
      * Returns the list of IInventorySlots that this inventory exposes on the given side.
      *
@@ -88,7 +83,6 @@ public interface IMekanismInventory extends ISidedItemHandler {
         if (inventorySlot == null) {
             return stack;
         }
-        //TODO: Evaluate if we should make this always be external
         return inventorySlot.insertItem(stack, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }
 
@@ -98,7 +92,6 @@ public interface IMekanismInventory extends ISidedItemHandler {
         if (inventorySlot == null) {
             return ItemStack.EMPTY;
         }
-        //TODO: Evaluate if we should make this always be external
         return inventorySlot.extractItem(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }
 

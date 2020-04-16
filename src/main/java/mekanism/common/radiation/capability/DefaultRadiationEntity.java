@@ -9,6 +9,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketRadiationData;
 import mekanism.common.radiation.RadiationManager;
 import mekanism.common.radiation.RadiationManager.RadiationScale;
+import mekanism.common.registries.MekanismDamageSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -53,7 +54,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             // Hurt player randomly
             chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
             if (severityScale > chance && rand.nextInt() % 3 == 0) {
-                player.attackEntityFrom(RadiationManager.RADIATION_DAMAGE, 1);
+                player.attackEntityFrom(MekanismDamageSource.RADIATION_DAMAGE, 1);
             }
         }
     }

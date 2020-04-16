@@ -70,8 +70,6 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         BlockPos pos = transporter.getPos();
         if (!inTransit.isEmpty()) {
             matrix.push();
-            //TODO: Do we have to make a new entity item each time we render
-            //entityItem.hoverStart = 0;
             entityItem.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
             entityItem.world = transporter.getWorld();
 

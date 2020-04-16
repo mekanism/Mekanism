@@ -118,7 +118,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        //TODO: Make the inventory be accessible via the valves instead
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(inputInputSlot = FluidInventorySlot.fill(inputTank, this, 28, 20));
         builder.addSlot(outputInputSlot = OutputInventorySlot.at(this, 28, 51));
@@ -498,11 +497,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        //TODO: Should this be disabled via the inventory slots instead. (Then we can't access the items when opening the controller)
-        if (!getActive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
-            //Never allow the fluid handler cap to be enabled here even though internally we handle fluid
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == Capabilities.HEAT_HANDLER_CAPABILITY ||
+                   capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            //Never allow capabilities we handle internally but access through the valve to be accessed from the controller
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
