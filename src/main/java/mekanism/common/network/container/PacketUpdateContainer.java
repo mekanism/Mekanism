@@ -11,8 +11,6 @@ public abstract class PacketUpdateContainer<PACKET extends PacketUpdateContainer
 
     //Note: windowId gets transferred over the network as an unsigned byte
     protected final short windowId;
-    //TODO: Debate passing this over the network as an unsigned byte as this is value is bounded by
-    // our max number of properties in a single container which I don't think will ever be super high
     protected final short property;
 
     protected PacketUpdateContainer(short windowId, short property) {

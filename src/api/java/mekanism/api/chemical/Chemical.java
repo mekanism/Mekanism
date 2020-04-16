@@ -81,7 +81,6 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
 
     protected abstract String getDefaultTranslationKey();
 
-    //TODO: Make sure we use getTextComponent where we can instead of the translation key (might already be done)
     @Override
     public ITextComponent getTextComponent() {
         return new TranslationTextComponent(getTranslationKey());

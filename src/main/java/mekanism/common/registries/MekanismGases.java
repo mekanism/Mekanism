@@ -12,12 +12,10 @@ import mekanism.common.registration.impl.SlurryRegistryObject;
 
 public class MekanismGases {
 
-    //TODO: Pass something like FluidAttributes
     public static final GasDeferredRegister GASES = new GasDeferredRegister(Mekanism.MODID);
 
     public static final GasRegistryObject<Gas> HYDROGEN = GASES.register(ChemicalConstants.HYDROGEN);
     public static final GasRegistryObject<Gas> OXYGEN = GASES.register(ChemicalConstants.OXYGEN);
-    //TODO: Figure out how we want to handle the existence of steam and water vapor
     public static final GasRegistryObject<Gas> STEAM = GASES.register("steam", () -> new Gas(GasBuilder.builder(Mekanism.rl("block/liquid/liquid_steam"))));
     public static final GasRegistryObject<Gas> WATER_VAPOR = GASES.register("water_vapor", () -> new Gas(GasBuilder.builder(Mekanism.rl("block/liquid/liquid_steam"))));
     public static final GasRegistryObject<Gas> CHLORINE = GASES.register(ChemicalConstants.CHLORINE);

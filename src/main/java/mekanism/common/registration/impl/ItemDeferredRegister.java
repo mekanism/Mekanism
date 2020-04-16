@@ -18,7 +18,6 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         super(modid, ForgeRegistries.ITEMS);
     }
 
-    //TODO: Move this somewhere else? At least add a secondary one for unstackable
     public static Item.Properties getMekBaseProperties() {
         return new Item.Properties().group(Mekanism.tabMekanism);
     }
@@ -31,7 +30,6 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         return register(name, () -> sup.apply(getMekBaseProperties()));
     }
 
-    //TODO: Do we want this or do we want to make all of them require the above register method??
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Supplier<? extends ITEM> sup) {
         ItemRegistryObject<ITEM> registeredItem = register(name, sup, ItemRegistryObject::new);
         allItems.add(registeredItem);

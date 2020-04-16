@@ -81,7 +81,6 @@ import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.laser.TileEntityLaserTractorBeam;
 
-//TODO: Go through each container and double check no copy paste error was made with what ContainerType the container is using
 public class MekanismContainerTypes {
 
     public static final ContainerTypeDeferredRegister CONTAINER_TYPES = new ContainerTypeDeferredRegister(Mekanism.MODID);
@@ -94,7 +93,6 @@ public class MekanismContainerTypes {
     //Entity
     public static final ContainerTypeRegistryObject<MainRobitContainer> MAIN_ROBIT = CONTAINER_TYPES.register("main_robit", MainRobitContainer::new);
     public static final ContainerTypeRegistryObject<InventoryRobitContainer> INVENTORY_ROBIT = CONTAINER_TYPES.register("inventory_robit", InventoryRobitContainer::new);
-    //TODO: Should this be like Crafting/Repair except with FurnaceContainer??
     public static final ContainerTypeRegistryObject<SmeltingRobitContainer> SMELTING_ROBIT = CONTAINER_TYPES.register("smelting_robit", SmeltingRobitContainer::new);
     public static final ContainerTypeRegistryObject<CraftingRobitContainer> CRAFTING_ROBIT = CONTAINER_TYPES.register("crafting_robit", CraftingRobitContainer::new);
     public static final ContainerTypeRegistryObject<RepairRobitContainer> REPAIR_ROBIT = CONTAINER_TYPES.register("repair_robit", RepairRobitContainer::new);
@@ -134,7 +132,6 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityTeleporter>> TELEPORTER = CONTAINER_TYPES.register(MekanismBlocks.TELEPORTER, TeleporterContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityThermalEvaporationController>> THERMAL_EVAPORATION_CONTROLLER = CONTAINER_TYPES.register(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, TileEntityThermalEvaporationController.class);
 
-    //TODO: Decide if tiered ones should be done differently/evaluate how their container name is done
     //Named
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFactory<?>>> FACTORY = CONTAINER_TYPES.register("factory", FactoryContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityGasTank>> GAS_TANK = CONTAINER_TYPES.register("gas_tank", TileEntityGasTank.class);

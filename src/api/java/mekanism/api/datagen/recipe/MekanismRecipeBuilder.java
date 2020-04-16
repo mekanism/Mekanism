@@ -94,7 +94,6 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         @Nonnull
         @Override
         public IRecipeSerializer<?> getSerializer() {
-            //TODO: Do we want to improve how this is done
             //Note: This may be null if something is screwed up but this method isn't actually used so it shouldn't matter
             // and in fact it will probably be null if only the API is included. But again, as we manually just use
             // the serializer's name this should not effect us

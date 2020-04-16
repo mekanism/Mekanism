@@ -42,11 +42,14 @@ public class FluidDeferredRegister {
     }
 
     public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(IChemicalConstant constants) {
-        int color = constants.getColor();
-        int temperature = Math.round(constants.getTemperature());
         int density = Math.round(constants.getDensity());
-        //TODO: Support for luminosity?
-        return register(constants.getName(), fluidAttributes -> fluidAttributes.color(color).temperature(temperature).density(density).viscosity(density).gaseous());
+        return register(constants.getName(), fluidAttributes -> fluidAttributes
+              .color(constants.getColor())
+              .temperature(Math.round(constants.getTemperature()))
+              .density(density)
+              .viscosity(density)
+              .luminosity(constants.getLuminosity())
+              .gaseous());
     }
 
     public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> register(String name, UnaryOperator<Builder> fluidAttributes) {
@@ -69,7 +72,6 @@ public class FluidDeferredRegister {
         fluidRegistryObject.updateFlowing(fluidRegister.register(flowingName, () -> new Flowing(properties)));
         fluidRegistryObject.updateBucket(itemRegister.register(bucketName, () -> new BucketItem(fluidRegistryObject::getStillFluid,
               ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).containerItem(Items.BUCKET))));
-        //TODO: Allow setting custom block properties?
         //Note: The block properties used here is a copy of the ones for water
         fluidRegistryObject.updateBlock(blockRegister.register(name, () -> new FlowingFluidBlock(fluidRegistryObject::getStillFluid,
               Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops())));

@@ -65,10 +65,6 @@ import mekanism.common.registration.impl.IRecipeSerializerDeferredRegister;
 import mekanism.common.registration.impl.IRecipeSerializerRegistryObject;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 
-//TODO: Should this and the serializer implementations be moved to API package? Probably at least the declarations should be moved
-// Ideally we would not have to have a separate class for each one that is basically just a factory for setting the:
-// serializer, recipe type, group, and icon.
-// Is there some way we could declare those statically for each of the things
 public class MekanismRecipeSerializers {
 
     public static final IRecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new IRecipeSerializerDeferredRegister(Mekanism.MODID);

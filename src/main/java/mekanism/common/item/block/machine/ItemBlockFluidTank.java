@@ -146,7 +146,6 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                     }
                     IFluidHandlerItem fluidHandlerItem = capability.get();
                     if (!(fluidHandlerItem instanceof IMekanismFluidHandler)) {
-                        //TODO: Decide if we want to support someone replacing our fluid handler with another?
                         //If it isn't one of our fluid handlers fail
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }

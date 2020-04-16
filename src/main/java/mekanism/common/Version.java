@@ -7,7 +7,6 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
  *
  * @author AidanBrady
  */
-//TODO: Do we even want to use this or just switch to using ArtifactVersion
 public class Version {
 
     /**

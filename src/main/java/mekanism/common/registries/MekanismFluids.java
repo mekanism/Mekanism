@@ -29,7 +29,6 @@ public class MekanismFluids {
           fluidAttributes -> fluidAttributes.gaseous().color(0xFFFEEF9C));
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> LITHIUM = FLUIDS.registerLiquidChemical(ChemicalConstants.LITHIUM);
 
-    //TODO: Why do we have a liquid steam anyways really
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> STEAM = FLUIDS.register("steam",
           FluidAttributes.builder(Mekanism.rl("block/liquid/liquid_steam"), Mekanism.rl("block/liquid/liquid_steam_flow")).gaseous().temperature(373));
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> HEAVY_WATER = FLUIDS.register("heavy_water",

@@ -9,22 +9,25 @@ import mekanism.common.base.IChemicalConstant;
  * they start supporting more accurate data, without us having to look any of the data back up.
  */
 public enum GeneratorsChemicalConstants implements IChemicalConstant {
-    DEUTERIUM("deuterium", 0xFFFF3232, 23.7F, 162.4F);
+    DEUTERIUM("deuterium", 0xFFFF3232, 0, 23.7F, 162.4F);
 
     private final String name;
     private final int color;
+    private final int luminosity;
     private final float temperature;
     private final float density;
 
     /**
      * @param name        The name of the chemical
      * @param color       Visual color in ARGB format
+     * @param luminosity  Luminosity
      * @param temperature Temperature in Kelvin that the chemical exists as a liquid
      * @param density     Density as a liquid in kg/m^3
      */
-    GeneratorsChemicalConstants(String name, int color, float temperature, float density) {
+    GeneratorsChemicalConstants(String name, int color, int luminosity, float temperature, float density) {
         this.name = name;
         this.color = color;
+        this.luminosity = luminosity;
         this.temperature = temperature;
         this.density = density;
     }
@@ -47,5 +50,10 @@ public enum GeneratorsChemicalConstants implements IChemicalConstant {
     @Override
     public float getDensity() {
         return density;
+    }
+
+    @Override
+    public int getLuminosity() {
+        return luminosity;
     }
 }

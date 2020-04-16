@@ -136,7 +136,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public boolean isRemote() {
-        //TODO: See if there is anyway to improve this so we don't have to call EffectiveSide.get
         return world == null ? EffectiveSide.get().isClient() : world.isRemote;
     }
 

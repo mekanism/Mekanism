@@ -21,4 +21,9 @@ public interface IChemicalConstant {
      * @return Density as a liquid in kg/m^3
      */
     float getDensity();
+
+    /**
+     * @return Brightness
+     */
+    int getLuminosity();
 }

@@ -42,8 +42,11 @@ public abstract class BasePacketHandler {
         return Mekanism.instance == null ? "999.999.999" : Mekanism.instance.versionNumber.toString();
     }
 
+    /**
+     * Helper for reading strings to make sure we don't accidentally call PacketBuffer#readString on the server
+     */
     public static String readString(PacketBuffer buffer) {
-        //TODO: Re-evaluate, this method is currently used because buffer.readString() is clientside only, so it mimics its behaviour so that servers don't crash
+        //TODO: Evaluate usages and potentially move some things to more strict string length checks
         return buffer.readString(Short.MAX_VALUE);
     }
 

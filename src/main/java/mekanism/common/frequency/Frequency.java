@@ -28,7 +28,6 @@ public class Frequency {
 
     public Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
 
-    //TODO: Decide if we want to use the type in the hashcode and equals implementation
     private final FrequencyType frequencyType;
 
     public Frequency(String name, UUID uuid) {

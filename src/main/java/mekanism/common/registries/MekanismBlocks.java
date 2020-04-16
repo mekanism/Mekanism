@@ -139,7 +139,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 
-//TODO: Ensure all IBlockMekanism's set the required information
 public class MekanismBlocks {
 
     public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(Mekanism.MODID);

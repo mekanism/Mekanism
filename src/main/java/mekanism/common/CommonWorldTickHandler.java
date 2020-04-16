@@ -24,7 +24,6 @@ public class CommonWorldTickHandler {
 
     private static final long maximumDeltaTimeNanoSecs = 16_000_000; // 16 milliseconds
 
-    //TODO: Check for concurrent modification issues? As addRegenChunk gets called from ChunkDataEvent.Load which is now fired from the async thread
     private Map<ResourceLocation, Queue<ChunkPos>> chunkRegenMap;
 
     public void addRegenChunk(DimensionType dimension, ChunkPos chunkCoord) {

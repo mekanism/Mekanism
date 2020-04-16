@@ -58,7 +58,6 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemFlamethrower> FLAMETHROWER = ITEMS.register("flamethrower", ItemFlamethrower::new);
     public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.register("gauge_dropper", ItemGaugeDropper::new);
     public static final ItemRegistryObject<Item> TELEPORTATION_CORE = ITEMS.register("teleportation_core");
-    //TODO: Rename enriched iron?
     public static final ItemRegistryObject<Item> ENRICHED_IRON = ITEMS.register("enriched_iron");
     public static final ItemRegistryObject<Item> ELECTROLYTIC_CORE = ITEMS.register("electrolytic_core");
     //TODO: pulps/wood? Doesn't really make sense so not adding it unless it is one of the standards
@@ -68,7 +67,6 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> SUBSTRATE = ITEMS.register("substrate");
     public static final ItemRegistryObject<Item> BIO_FUEL = ITEMS.register("bio_fuel");
 
-    //TODO: Should we make an enriched type for each infusion type
     public static final ItemRegistryObject<Item> ENRICHED_CARBON = registerResource(ResourceType.ENRICHED, MiscResource.CARBON);
     public static final ItemRegistryObject<Item> ENRICHED_REDSTONE = registerResource(ResourceType.ENRICHED, MiscResource.REDSTONE);
     public static final ItemRegistryObject<Item> ENRICHED_DIAMOND = registerResource(ResourceType.ENRICHED, MiscResource.DIAMOND);

@@ -22,8 +22,6 @@ public class Registration {
     @SubscribeEvent
     public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         MekanismRecipeType.registerRecipeTypes(event.getRegistry());
-        //TODO: Register a custom shaped crafting recipe serializer if needed
-
         Mekanism.instance.setRecipeCacheManager(new RecipeCacheManager());
     }
 }
