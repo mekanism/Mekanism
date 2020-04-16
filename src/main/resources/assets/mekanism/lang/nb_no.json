@@ -323,7 +323,7 @@
   "description.mekanism.osmium_ore": "Et sterkt mineralfunn som kan finnes i nesten enhver høyde i verden. Det er kjent at det har mange bruksområder i konstruksjonen av maskiner.",
   "description.mekanism.personal_chest": "En 54-slot kiste som kan åpnes hvor som helst, selv fra ditt eget inventar.",
   "description.mekanism.precision_sawmill": "En maskin som brukes til å behandle logger og andre trebaserte enheter mer effektivt, samt til å oppnå sagflyte.",
-  "description.mekanism.pressure_disperser": "En blokk som brukes fordelingsdamp gjennom en multiblokkstruktur. Disse skal danne et gapløst horisontalt plan for å kontrollere dampflyten på en forsvarlig måte.",
+  "description.mekanism.pressure_disperser": "A block used to disperse steam throughout a multiblock structure. These should form a gapless, horizontal plane in order to properly control steam flow.",
   "description.mekanism.pressurized_reaction_chamber": "En avansert maskin som behandler en fast og flytende og gassrik blanding, som både danner et gassformet og fast produkt.",
   "description.mekanism.purification_chamber": "En avansert maskin som klarer å prosessere malm i tre klumper, og fungerer som første trinn i 300% malmbehandling.",
   "description.mekanism.quantum_entangloporter": "En svært avansert blokk som kan overføre enhver praktisk ressurs på tvers av lange avstander og dimensjoner.",
