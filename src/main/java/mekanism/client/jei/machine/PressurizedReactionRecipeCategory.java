@@ -31,8 +31,9 @@ import org.apache.commons.lang3.tuple.Pair;
 public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<PressurizedReactionRecipe> {
 
     public PressurizedReactionRecipeCategory(IGuiHelper helper) {
-        //TODO: Had a lang key for shorter name
         super(helper, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 3, 11, 170, 68);
+        //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations
+        // we will eventually instead just make the text scale
     }
 
     @Override

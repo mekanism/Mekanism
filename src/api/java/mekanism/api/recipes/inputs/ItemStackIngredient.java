@@ -21,7 +21,6 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.NBTIngredient;
 
-//TODO: Allow for empty item stacks?
 public abstract class ItemStackIngredient implements InputIngredient<@NonNull ItemStack> {
 
     public static ItemStackIngredient from(@Nonnull ItemStack stack) {
@@ -32,7 +31,6 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         //Support NBT that is on the stack in case it matters
         //It is a protected constructor so pretend we are extending it and implementing it via the {}
         // Note: Only bother making it an NBT ingredient if the stack has NBT, otherwise there is no point in doing the extra checks
-        //TODO: Figure out if this note is correct on what we should do
         Ingredient ingredient = stack.hasTag() ? new NBTIngredient(stack) {} : Ingredient.fromStacks(stack);
         return from(ingredient, amount);
     }
@@ -70,7 +68,6 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         return Multi.read(buffer);
     }
 
-    //TODO: Should we not let this be null?
     public static ItemStackIngredient deserialize(@Nullable JsonElement json) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Ingredient cannot be null");
@@ -204,9 +201,6 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         }
     }
 
-    //TODO: Maybe name this better, at the very least make it easier/possible to create new instances of this
-    // Also cleanup the javadoc comment about this, and try to make the helpers that create a new instance
-    // return a normal ItemStackIngredient (Single), if we only have a singular one
     public static class Multi extends ItemStackIngredient {
 
         private final ItemStackIngredient[] ingredients;
@@ -267,7 +261,6 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         }
 
         public static ItemStackIngredient read(PacketBuffer buffer) {
-            //TODO: Verify this works
             ItemStackIngredient[] ingredients = new ItemStackIngredient[buffer.readVarInt()];
             for (int i = 0; i < ingredients.length; i++) {
                 ingredients[i] = ItemStackIngredient.read(buffer);

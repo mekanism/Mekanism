@@ -30,7 +30,6 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -39,9 +38,8 @@ import org.lwjgl.glfw.GLFW;
 
 public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContainer> {
 
-    private Hand currentHand;
-    private ItemStack itemStack;
-    private PlayerEntity player;
+    private final Hand currentHand;
+    private final ItemStack itemStack;
     private MekanismButton publicButton;
     private MekanismButton privateButton;
     private MekanismButton setButton;
@@ -58,10 +56,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     public GuiPortableTeleporter(PortableTeleporterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        //TODO: Can the hand/stack stuff be partially removed?? There is not much reason to contain the hand
         currentHand = container.getHand();
         itemStack = container.getStack();
-        player = inv.player;
         ySize = 175;
         ItemPortableTeleporter item = (ItemPortableTeleporter) itemStack.getItem();
         if (item.getFrequency(itemStack) != null) {
@@ -124,7 +120,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }));
         addButton(teleportButton = new TranslationButton(this, getGuiLeft() + 42, getGuiTop() + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
             if (clientFreq != null && clientStatus == 1) {
-                ClientTickHandler.portableTeleport(player, currentHand, clientFreq);
+                ClientTickHandler.portableTeleport(minecraft.player, currentHand, clientFreq);
                 minecraft.player.closeScreen();
             }
             updateButtons();

@@ -28,7 +28,6 @@ public class FluidToFluidCachedRecipe extends CachedRecipe<FluidToFluidRecipe> {
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        //TODO: This input getting, is only really needed for getting the output
         FluidStack recipeFluid = inputHandler.getRecipeInput(recipe.getInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
         if (recipeFluid.isEmpty()) {
@@ -51,7 +50,7 @@ public class FluidToFluidCachedRecipe extends CachedRecipe<FluidToFluidRecipe> {
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO: Cache this stuff from when getOperationsThisTick was called?
+        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
         FluidStack recipeFluid = inputHandler.getRecipeInput(recipe.getInput());
         if (recipeFluid.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing

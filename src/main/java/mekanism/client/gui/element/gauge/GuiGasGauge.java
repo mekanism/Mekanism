@@ -55,7 +55,6 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>>
         if (dummy) {
             return height - 2;
         }
-        //TODO: Can capacity ever be zero when tank is not empty?
         IChemicalTank<Gas, GasStack> tank = infoHandler.getTank();
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;

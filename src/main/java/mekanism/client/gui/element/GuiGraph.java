@@ -82,7 +82,6 @@ public class GuiGraph extends GuiTexturedElement {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        //TODO: Check
         int heightCalculated = height - (mouseY - guiObj.getTop() - y);
         int scaled = (int) (heightCalculated * currentScale / (double) height);
         displayTooltip(dataHandler.getDataDisplay(scaled), mouseX, mouseY);

@@ -126,9 +126,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
         FluidStack fluid = transmitter.getBuffer();
-        if (fluid == null || fluid.isEmpty()) {
-            //Note: We support null given technically the API says it is nullable, so if someone makes a custom IGridTransmitter
-            // with it being null would have issues
+        if (fluid.isEmpty()) {
             return;
         }
         if (fluidTank.isEmpty()) {

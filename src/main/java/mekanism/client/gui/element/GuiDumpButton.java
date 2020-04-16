@@ -9,7 +9,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
 
-//TODO: Should this extend MekanismImageButton
+//TODO: Potentially make this extend MekanismImageButton
 public class GuiDumpButton<TILE extends TileEntity & IHasDumpButton> extends GuiTexturedElement {
 
     protected final TILE tile;

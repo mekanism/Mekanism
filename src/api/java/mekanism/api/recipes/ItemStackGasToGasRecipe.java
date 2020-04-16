@@ -16,12 +16,12 @@ import net.minecraft.util.ResourceLocation;
  * Inputs: ItemStack + GasStack Output: GasStack
  *
  * Chemical Dissolution Chamber
+ *
+ * @apiNote The gas input is a base value, and will still be multiplied by a per tick usage
  */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-//TODO: Make a note of the fact this recipe uses the size of the gas input as a base, but still for the most part will end up multiplying it
-// by a per tick usage
 public abstract class ItemStackGasToGasRecipe extends MekanismRecipe implements BiPredicate<@NonNull ItemStack, @NonNull GasStack> {
 
     private final ItemStackIngredient itemInput;

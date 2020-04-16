@@ -31,7 +31,6 @@ public class CombinerCachedRecipe extends CachedRecipe<CombinerRecipe> {
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        //TODO: This input getting, is only really needed for getting the output
         ItemStack recipeMain = inputHandler.getRecipeInput(recipe.getMainInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
         if (recipeMain.isEmpty()) {

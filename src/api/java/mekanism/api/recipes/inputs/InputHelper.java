@@ -81,7 +81,6 @@ public class InputHelper {
             @Override
             public STACK getRecipeInput(InputIngredient<@NonNull STACK> recipeIngredient) {
                 STACK input = getInput();
-                //TODO: Make this be an is empty check, and return empty instead of null
                 if (input.isEmpty()) {
                     //All recipes currently require that we have an input. If we don't then return that we failed
                     return tank.getEmptyStack();

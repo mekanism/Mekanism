@@ -23,9 +23,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 //TODO: Try to get rid of the need for using a proxy system
 public class CommonProxy {
 
-    protected final String[] API_PRESENT_MESSAGE = {"Mekanism API jar detected (Mekanism-<version>-api.jar),",
-                                                    "please delete it from your mods folder and restart the game."};
-
     /**
      * Set up and load the utilities this mod uses.
      */
@@ -79,9 +76,5 @@ public class CommonProxy {
     @Nullable
     public World tryGetMainWorld() {
         return ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD);
-    }
-
-    public void throwApiPresentException() {
-        throw new RuntimeException(String.join(" ", API_PRESENT_MESSAGE));
     }
 }

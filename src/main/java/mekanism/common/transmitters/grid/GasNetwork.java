@@ -132,9 +132,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
         GasStack gas = transmitter.getBuffer();
-        if (gas == null || gas.isEmpty()) {
-            //Note: We support null given technically the API says it is nullable, so if someone makes a custom IGridTransmitter
-            // with it being null would have issues
+        if (gas.isEmpty()) {
             return;
         }
         if (gasTank.isEmpty()) {

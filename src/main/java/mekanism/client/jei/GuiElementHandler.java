@@ -29,13 +29,12 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
 
     @Override
     public Object getIngredientUnderMouse(GuiMekanism gui, double mouseX, double mouseY) {
-        //TODO: ??
         return null;
     }
 
     @Override
     public Collection<IGuiClickableArea> getGuiClickableAreas(GuiMekanism gui) {
-        //TODO: If we can offload this to the elements get it from there that would be ideal
+        //TODO: Evaluate, maybe we want to make this be all GuiProgress elements
         return Collections.emptyList();
     }
 }

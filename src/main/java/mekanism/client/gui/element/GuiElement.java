@@ -45,7 +45,6 @@ public abstract class GuiElement extends Widget {
     }
 
     public int drawString(ITextComponent component, int x, int y, int color) {
-        //TODO: Check if color actually does anything
         return drawString(component.getFormattedText(), x, y, color);
     }
 

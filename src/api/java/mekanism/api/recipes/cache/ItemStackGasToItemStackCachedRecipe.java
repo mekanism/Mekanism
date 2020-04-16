@@ -40,7 +40,6 @@ public class ItemStackGasToItemStackCachedRecipe extends CachedRecipe<ItemStackG
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        //TODO: This input getting, is only really needed for getting the output
         ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
         if (recipeItem.isEmpty()) {
@@ -96,8 +95,9 @@ public class ItemStackGasToItemStackCachedRecipe extends CachedRecipe<ItemStackG
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO: Cache this stuff from when getOperationsThisTick was called? This is especially important as due to the useResources
-        // our gas gets used each tick so we might have finished using it all and won't be able to reference it for our getOutput call
+        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
+        // This is especially important as due to the useResources our gas gets used each tick so we might have finished using
+        // it all and won't be able to reference it for our getOutput call
         ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
         if (recipeItem.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing

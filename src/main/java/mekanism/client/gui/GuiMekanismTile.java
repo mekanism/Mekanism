@@ -20,7 +20,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanism<CONTAINER> {
 
-    //TODO: Potentially replace usages of this with getTileEntity() and make getTileEntity return container.getTileEntity()
     protected final TILE tile;
 
     protected GuiMekanismTile(CONTAINER container, PlayerInventory inv, ITextComponent title) {

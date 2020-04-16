@@ -248,9 +248,6 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         }
     }
 
-    //TODO: Maybe name this better, at the very least make it easier/possible to create new instances of this
-    // Also cleanup the javadoc comment about this, and try to make the helpers that create a new instance
-    // return a normal InfusionIngredient (Single), if we only have a singular one
     public static class Multi extends InfusionIngredient {
 
         private final InfusionIngredient[] ingredients;
@@ -316,7 +313,6 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         }
 
         public static InfusionIngredient read(PacketBuffer buffer) {
-            //TODO: Verify this works
             InfusionIngredient[] ingredients = new InfusionIngredient[buffer.readVarInt()];
             for (int i = 0; i < ingredients.length; i++) {
                 ingredients[i] = InfusionIngredient.read(buffer);

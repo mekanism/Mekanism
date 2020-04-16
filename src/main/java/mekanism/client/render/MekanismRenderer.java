@@ -311,6 +311,7 @@ public class MekanismRenderer {
         ModelRenderer.resetCachedModels();
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
+        RenderMechanicalPipe.onStitch();
         RenderTickHandler.resetCachedOverlays();
         MinerVisualRenderer.resetCachedVisuals();
         RenderTeleporter.resetCachedModels();
@@ -330,9 +331,8 @@ public class MekanismRenderer {
         energyIcon = map.getSprite(Mekanism.rl("liquid/energy"));
         heatIcon = map.getSprite(Mekanism.rl("liquid/heat"));
 
-        //TODO: Why are these reset in post and the rest reset in Pre?
+        //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
         RenderLogisticalTransporter.onStitch(map);
-        RenderMechanicalPipe.onStitch();
         RenderTransmitterBase.onStitch();
     }
 

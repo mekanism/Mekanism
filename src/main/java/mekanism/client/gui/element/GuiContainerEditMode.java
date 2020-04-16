@@ -14,7 +14,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiContainerEditMode<TILE extends TileEntityMekanism & IFluidContainerManager> extends GuiInsetElement<TILE> {
 
-    //TODO: Can we generate the overlay dynamically
     private static final ResourceLocation BOTH = MekanismUtils.getResource(ResourceType.GUI, "gun_powder.png");
     private static final ResourceLocation FILL = MekanismUtils.getResource(ResourceType.GUI, "container_edit_mode_fill.png");
     private static final ResourceLocation EMPTY = MekanismUtils.getResource(ResourceType.GUI, "container_edit_mode_empty.png");

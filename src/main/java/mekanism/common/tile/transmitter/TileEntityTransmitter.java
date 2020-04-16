@@ -324,7 +324,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     public abstract long getCapacity();
 
-    @Nullable
     public abstract BUFFER getBuffer();
 
     /**

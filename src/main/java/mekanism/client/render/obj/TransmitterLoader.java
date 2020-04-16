@@ -19,8 +19,9 @@ public class TransmitterLoader implements IModelLoader<TransmitterModel> {
 
     @Override
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
-        //TODO: Check if we need to clear the cache, given each is cached in their own model,
-        // and when it reloads it should theoretically allow GC to then clear those instances
+        //I believe given each cache is in the individual models when the manager reloads it allows GC to clear
+        // the individual caches due to the models themselves no longer being referenced.
+        // If this ends up not being the case then we will need to clear the caches from here
     }
 
     @Nonnull

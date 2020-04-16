@@ -14,8 +14,8 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiUtils {
 
+    //Note: Does not validate that the passed in dimensions are valid
     public static void renderExtendedTexture(ResourceLocation resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
-        //TODO: Do we want to add in some validation here about dimensions
         int textureWidth = 2 * sideWidth + 1;
         int textureHeight = 2 * sideHeight + 1;
         int centerWidth = width - 2 * sideWidth;

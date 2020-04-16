@@ -85,10 +85,4 @@ public class ClientProxy extends CommonProxy {
     public World tryGetMainWorld() {
         return Minecraft.getInstance().world;
     }
-
-    //TODO
-    /*@Override
-    public void throwApiPresentException() {
-        throw new ApiJarPresentException(API_PRESENT_MESSAGE);
-    }*/
 }

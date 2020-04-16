@@ -37,8 +37,6 @@ public class ChemicalInfuserCachedRecipe extends CachedRecipe<ChemicalInfuserRec
         if (rightInputGas.isEmpty()) {
             return null;
         }
-
-        //TODO: Convert this stuff to using the leftInputHandler and rightInputHandler
         GasStackIngredient leftInput = recipe.getLeftInput();
         GasStackIngredient rightInput = recipe.getRightInput();
         if (!leftInput.test(leftInputGas) || !rightInput.test(rightInputGas)) {
@@ -91,7 +89,7 @@ public class ChemicalInfuserCachedRecipe extends CachedRecipe<ChemicalInfuserRec
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO: Cache this stuff from when getOperationsThisTick was called?
+        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
         Pair<GasStackIngredient, GasStackIngredient> ingredients = getIngredients();
         if (ingredients == null) {
             //Something went wrong, this if should never really be true if we got to finishProcessing

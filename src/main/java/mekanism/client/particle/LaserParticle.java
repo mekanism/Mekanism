@@ -37,7 +37,7 @@ public class LaserParticle extends SpriteTexturedParticle {
     }
 
     @Override
-    public void renderParticle(IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void renderParticle(@Nonnull IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
         Vec3d view = renderInfo.getProjectedView();
         float newX = (float) (MathHelper.lerp(partialTicks, prevPosX, posX) - view.getX());
         float newY = (float) (MathHelper.lerp(partialTicks, prevPosY, posY) - view.getY());
@@ -46,8 +46,6 @@ public class LaserParticle extends SpriteTexturedParticle {
         float uMax = getMaxU();
         float vMin = getMinV();
         float vMax = getMaxV();
-        //TODO: Do we need to disable cull, we previously had it disabled, was that for purposes of rendering when underwater
-        // if it even showed under water before or what
         Quaternion quaternion = direction.getRotation();
         quaternion.multiply(Vector3f.YP.rotation(RADIAN_45));
         drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ), uMin, uMax, vMin, vMax);

@@ -67,7 +67,6 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Em
         List<TransmissionType> transmissions = getTile().getConfig().getTransmissions();
         for (int i = 0; i < transmissions.size(); i++) {
             TransmissionType type = transmissions.get(i);
-            //TODO: Figure out if there is a simpler way to do y
             GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, i < 3 ? -26 : 176, 2 + 28 * (i % 3));
             addButton(tab);
             configTabs.add(tab);
@@ -107,7 +106,6 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Em
     }
 
     public void updateTabs() {
-        //TODO: Is there a reason to not have them just always all be visible?
         for (GuiConfigTypeTab tab : configTabs) {
             tab.visible = currentType != tab.getTransmissionType();
         }
