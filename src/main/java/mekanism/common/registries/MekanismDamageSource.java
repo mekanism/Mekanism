@@ -12,7 +12,7 @@ import net.minecraft.util.math.Vec3d;
 public class MekanismDamageSource extends DamageSource implements IHasTranslationKey {
 
     public static final MekanismDamageSource LASER = new MekanismDamageSource("laser");
-    public static final MekanismDamageSource RADIATION_DAMAGE = new MekanismDamageSource("radiation").setDamageBypassesArmor();
+    public static final MekanismDamageSource RADIATION = new MekanismDamageSource("radiation").setDamageBypassesArmor();
 
     private final String translationKey;
 

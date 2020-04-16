@@ -7,16 +7,13 @@ import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.blocktype.BlockTypeTile.BlockTileBuilder;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.EmptyTileContainer;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
-import mekanism.generators.common.container.FissionReactorContainer;
 import mekanism.generators.common.content.blocktype.BlockShapes;
 import mekanism.generators.common.content.blocktype.Generator;
 import mekanism.generators.common.content.blocktype.Generator.GeneratorBuilder;
@@ -30,6 +27,7 @@ import mekanism.generators.common.tile.fission.TileEntityControlRodAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
+import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.RedstoneStatus;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorFrame;
@@ -145,18 +143,22 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityFissionReactorCasing> FISSION_REACTOR_CASING = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_CASING, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_CASING)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
-          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new FissionReactorContainer(i, inv, (TileEntityFissionReactorCasing) tile)))
+          .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR)
           .build();
     // Fission Reactor Port
     public static final BlockTypeTile<TileEntityFissionReactorPort> FISSION_REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_PORT)
           .with(new AttributeStateFissionPortMode())
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
-          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new FissionReactorContainer(i, inv, (TileEntityFissionReactorCasing) tile)))
+          .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR)
           .build();
     // Fission Reactor Logic Adapter
     public static final BlockTypeTile<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_LOGIC_ADAPTER)
+          .with(new AttributeRedstoneEmitter<>((tile) -> tile.getStatus() == RedstoneStatus.OUTPUTTING ? 15 : 0))
+          .with(new AttributeRedstone())
+          .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
+          .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
           .build();
     // Fission Fuel Assembly
     public static final BlockTypeTile<TileEntityFissionFuelAssembly> FISSION_FUEL_ASSEMBLY = BlockTileBuilder
@@ -191,6 +193,6 @@ public class GeneratorsBlockTypes {
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_LOGIC_ADAPTER)
           .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
           .with(new AttributeRedstoneEmitter<>((tile) -> tile.checkMode() ? 15 : 0))
-          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER, i, inv, tile)))
+          .withEmptyContainer(GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
           .build();
 }

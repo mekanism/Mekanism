@@ -6,6 +6,19 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "controlType",
+                  "target": "mekData.controlType",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
           "name": "mekanismgenerators:fission_reactor_logic_adapter"
         }
       ],

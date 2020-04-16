@@ -3,6 +3,7 @@ package mekanism.generators.common.tile.fusion;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -11,16 +12,19 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.base.IReactorLogic;
+import mekanism.generators.common.base.IReactorLogicMode;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactorBlock implements IHasMode {
+public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactorBlock implements IReactorLogic<FusionReactorLogic>, IHasMode {
 
-    public ReactorLogic logicType = ReactorLogic.DISABLED;
+    public FusionReactorLogic logicType = FusionReactorLogic.DISABLED;
     public boolean activeCooled;
     private boolean prevOutputting;
 
@@ -70,7 +74,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.LOGIC_TYPE, ReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.LOGIC_TYPE, FusionReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
         activeCooled = nbtTags.getBoolean(NBTConstants.ACTIVE_COOLED);
     }
 
@@ -89,7 +93,12 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         markDirty(false);
     }
 
-    public void setLogicTypeFromPacket(ReactorLogic logicType) {
+    @Override
+    public FusionReactorLogic getMode() {
+        return logicType;
+    }
+
+    public void setLogicTypeFromPacket(FusionReactorLogic logicType) {
         this.logicType = logicType;
         markDirty(false);
     }
@@ -97,29 +106,30 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableEnum.create(ReactorLogic::byIndexStatic, ReactorLogic.DISABLED, () -> logicType, value -> logicType = value));
+        container.track(SyncableEnum.create(FusionReactorLogic::byIndexStatic, FusionReactorLogic.DISABLED, () -> logicType, value -> logicType = value));
         container.track(SyncableBoolean.create(() -> activeCooled, value -> activeCooled = value));
         container.track(SyncableBoolean.create(() -> prevOutputting, value -> prevOutputting = value));
     }
 
-    public enum ReactorLogic implements IHasTranslationKey {
+    public enum FusionReactorLogic implements IReactorLogicMode, IHasTranslationKey {
         DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, new ItemStack(Items.GUNPOWDER)),
         READY(GeneratorsLang.REACTOR_LOGIC_READY, GeneratorsLang.DESCRIPTION_REACTOR_READY, new ItemStack(Items.REDSTONE)),
         CAPACITY(GeneratorsLang.REACTOR_LOGIC_CAPACITY, GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, new ItemStack(Items.REDSTONE)),
         DEPLETED(GeneratorsLang.REACTOR_LOGIC_DEPLETED, GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, new ItemStack(Items.REDSTONE));
 
-        private static final ReactorLogic[] MODES = values();
+        private static final FusionReactorLogic[] MODES = values();
 
         private final ILangEntry name;
         private final ILangEntry description;
         private final ItemStack renderStack;
 
-        ReactorLogic(ILangEntry name, ILangEntry description, ItemStack stack) {
+        FusionReactorLogic(ILangEntry name, ILangEntry description, ItemStack stack) {
             this.name = name;
             this.description = description;
             renderStack = stack;
         }
 
+        @Override
         public ItemStack getRenderStack() {
             return renderStack;
         }
@@ -129,11 +139,17 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
             return name.getTranslationKey();
         }
 
+        @Override
         public ITextComponent getDescription() {
             return description.translate();
         }
 
-        public static ReactorLogic byIndexStatic(int index) {
+        @Override
+        public EnumColor getColor() {
+            return EnumColor.RED;
+        }
+
+        public static FusionReactorLogic byIndexStatic(int index) {
             return MathUtils.getByIndexMod(MODES, index);
         }
     }

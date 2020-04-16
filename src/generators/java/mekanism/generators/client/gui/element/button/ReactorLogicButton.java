@@ -8,18 +8,18 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
-import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.ReactorLogic;
+import mekanism.generators.common.base.IReactorLogic;
+import mekanism.generators.common.base.IReactorLogicMode;
 import net.minecraft.util.ResourceLocation;
 
-public class ReactorLogicButton extends MekanismButton {
+public class ReactorLogicButton<TYPE extends Enum<?> & IReactorLogicMode> extends MekanismButton {
 
     private static final ResourceLocation TEXTURE = MekanismGenerators.rl(ResourceType.GUI_BUTTON.getPrefix() + "reactor_logic.png");
     @Nonnull
-    private final TileEntityFusionReactorLogicAdapter tile;
-    private final ReactorLogic type;
+    private final IReactorLogic<TYPE> tile;
+    private final TYPE type;
 
-    public ReactorLogicButton(IGuiWrapper gui, int x, int y, ReactorLogic type, @Nonnull TileEntityFusionReactorLogicAdapter tile, Runnable onPress) {
+    public ReactorLogicButton(IGuiWrapper gui, int x, int y, TYPE type, @Nonnull IReactorLogic<TYPE> tile, Runnable onPress) {
         super(gui, x, y, 128, 22, "", onPress, (onHover, xAxis, yAxis) -> gui.displayTooltip(type.getDescription(), xAxis, yAxis));
         this.tile = tile;
         this.type = type;
@@ -28,12 +28,12 @@ public class ReactorLogicButton extends MekanismButton {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         MekanismRenderer.bindTexture(TEXTURE);
-        MekanismRenderer.color(EnumColor.RED);
-        blit(this.x, this.y, 0, type == tile.logicType ? 22 : 0, this.width, this.height, 128, 44);
+        MekanismRenderer.color(type.getColor());
+        blit(this.x, this.y, 0, type == tile.getMode() ? 22 : 0, this.width, this.height, 128, 44);
         MekanismRenderer.resetColor();
     }
 
-    public ReactorLogic getType() {
+    public IReactorLogicMode getType() {
         return this.type;
     }
 

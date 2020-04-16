@@ -295,6 +295,7 @@
   "constants.mekanism.mod_name": "Mekanism",
   "crafting_formula.mekanism.encoded": "(Encoded)",
   "crafting_formula.mekanism.ingredients": "Ingredients:",
+  "death.attack.laser": "%s was incinerated.",
   "death.attack.radiation": "%1$s was killed by radiation poisoning.",
   "description.mekanism.attack_amplification_unit": "Amplifies melee attacks on players or mobs.",
   "description.mekanism.bin": "A block used to store large quantities of a single type of item.",

@@ -3062,7 +3062,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "slurry/clean"));
         //yellow cake
         GasToItemStackRecipeBuilder.crystallizing(
-              GasStackIngredient.from(MekanismGases.URANIUM_SLURRY.getCleanSlurry(), 250),
+              GasStackIngredient.from(MekanismGases.URANIUM_SLURRY.getCleanSlurry(), 100),
               MekanismItems.YELLOW_CAKE_URANIUM.getItemStack()
         ).addCriterion(Criterion.HAS_CHEMICAL_CRYSTALLIZER)
               .build(consumer, Mekanism.rl(basePath + "yellow_cake_uranium/from_slurry"));
@@ -3083,7 +3083,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ChemicalInfuserRecipeBuilder.chemicalInfusing(
               GasStackIngredient.from(MekanismGases.HYDROFLUORIC_ACID, 1),
               GasStackIngredient.from(MekanismGases.URANIUM_OXIDE, 1),
-              MekanismGases.URANIUM_HEXAFLUORIDE.getGasStack(1)
+              MekanismGases.URANIUM_HEXAFLUORIDE.getGasStack(2)
         ).addCriterion(Criterion.HAS_CHEMICAL_INFUSER)
               .build(consumer, Mekanism.rl(basePath + "sulfuric_acid"));
         //fissile fuel

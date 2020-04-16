@@ -9,11 +9,15 @@ import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
+import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.text.TextComponentUtil;
+import net.minecraft.inventory.container.IContainerProvider;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundEvent;
@@ -63,12 +67,20 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
             return getThis();
         }
 
-        public T withCustomContainer(Function<TileEntityMekanism, INamedContainerProvider> customContainerSupplier) {
+        public T withNamedContainerProvider(Function<TileEntityMekanism, INamedContainerProvider> customContainerSupplier) {
             if (!holder.has(AttributeGui.class)) {
                 Mekanism.logger.error("Attempted to set a custom container on a block type without a GUI attribute.");
             }
             holder.get(AttributeGui.class).setCustomContainer(customContainerSupplier);
             return getThis();
+        }
+
+        public T withCustomContainerProvider(Function<TileEntityMekanism, IContainerProvider> providerFunction) {
+            return withNamedContainerProvider((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), providerFunction.apply(tile)));
+        }
+
+        public T withEmptyContainer(ContainerTypeRegistryObject<?> container) {
+            return withCustomContainerProvider((tile) -> ((i, inv, player) -> new EmptyTileContainer<>(container, i, inv, tile)));
         }
     }
 }

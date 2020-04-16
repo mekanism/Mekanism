@@ -81,6 +81,9 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_MAX_WATER_OUTPUT, "Max Water Output: %s mB/t");
         add(GeneratorsLang.NO_WIND, "No wind");
         add(GeneratorsLang.REACTOR_LOGIC_OUTPUTTING, "Outputting");
+        add(GeneratorsLang.REACTOR_LOGIC_ACTIVATION, "Activation");
+        add(GeneratorsLang.REACTOR_LOGIC_EXCESS_WASTE, "Excess Waste");
+        add(GeneratorsLang.REACTOR_LOGIC_POWERED, "Powered");
         add(GeneratorsLang.OUTPUT_RATE_SHORT, "Out: %s/t");
         add(GeneratorsLang.POWER, "Power: %s");
         add(GeneratorsLang.PRODUCING_AMOUNT, "Producing: %s/t");
@@ -104,7 +107,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.REACTOR_LOGIC_READY, "Ready for Ignition");
         add(GeneratorsLang.REACTOR_STEAM_PRODUCTION, "Steam Production: %s mB/t");
         add(GeneratorsLang.READY_FOR_REACTION, "Ready for Reaction!");
-        add(GeneratorsLang.REACTOR_LOGIC_REDSTONE_OUTPUT_MODE, "Redstone mode: %s");
+        add(GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE, "Redstone mode: %s");
         add(GeneratorsLang.SKY_BLOCKED, "Sky blocked");
         add(GeneratorsLang.TURBINE_STEAM_FLOW, "Steam Flow");
         add(GeneratorsLang.TURBINE_STEAM_INPUT_RATE, "Steam Input: %s mB/t");
@@ -136,10 +139,12 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.FISSION_PORT_MODE_OUTPUT_WASTE, "output waste");
         add(GeneratorsLang.FISSION_PORT_MODE_OUTPUT_STEAM, "output steam");
         //Descriptions
-        add(GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, "The reactor's core heat capacity has been met");
-        add(GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, "The reactor has insufficient fuel to sustain a reaction");
-        add(GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, "Will not emit a redstone signal");
-        add(GeneratorsLang.DESCRIPTION_REACTOR_READY, "Reactor has reached the required heat level to ignite");
+        add(GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, "Output when the reactor's core heat capacity has been met");
+        add(GeneratorsLang.DESCRIPTION_REACTOR_ACTIVATION, "Activate the reactor when powered, and deactivate when unpowered");
+        add(GeneratorsLang.DESCRIPTION_REACTOR_EXCESS_WASTE, "Output when the reactor has excess waste");
+        add(GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, "Output when the reactor has insufficient fuel to sustain a reaction");
+        add(GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, "Will not handle redstone");
+        add(GeneratorsLang.DESCRIPTION_REACTOR_READY, "Output when the reactor has reached the required heat level to ignite");
         //Generators
         add(GeneratorsLang.DESCRIPTION_ADVANCED_SOLAR_GENERATOR, "An advanced generator that directly absorbs the sun's rays with little loss to produce energy.");
         add(GeneratorsLang.DESCRIPTION_BIO_GENERATOR, "A generator that burns organic materials of the world to produce energy.");

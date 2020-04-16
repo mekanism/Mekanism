@@ -332,7 +332,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addDamageSources() {
         add(MekanismDamageSource.LASER, "%s was incinerated.");
-        add(MekanismDamageSource.RADIATION_DAMAGE, "%1$s was killed by radiation poisoning.");
+        add(MekanismDamageSource.RADIATION, "%1$s was killed by radiation poisoning.");
     }
 
     private void addMisc() {

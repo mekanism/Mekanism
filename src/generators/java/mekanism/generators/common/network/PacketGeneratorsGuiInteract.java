@@ -6,9 +6,11 @@ import mekanism.common.network.BasePacketHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
+import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
+import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
-import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.ReactorLogic;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -72,9 +74,14 @@ public class PacketGeneratorsGuiInteract {
                 ((TileEntityFusionReactorController) tile).setInjectionRateFromPacket(extra);
             }
         }),
-        LOGIC_TYPE((tile, player, extra) -> {
+        FISSION_LOGIC_TYPE((tile, player, extra) -> {
+            if (tile instanceof TileEntityFissionReactorLogicAdapter) {
+                ((TileEntityFissionReactorLogicAdapter) tile).setLogicTypeFromPacket(FissionReactorLogic.byIndexStatic(extra));
+            }
+        }),
+        FUSION_LOGIC_TYPE((tile, player, extra) -> {
             if (tile instanceof TileEntityFusionReactorLogicAdapter) {
-                ((TileEntityFusionReactorLogicAdapter) tile).setLogicTypeFromPacket(ReactorLogic.byIndexStatic(extra));
+                ((TileEntityFusionReactorLogicAdapter) tile).setLogicTypeFromPacket(FusionReactorLogic.byIndexStatic(extra));
             }
         }),
         FISSION_ACTIVE((tile, player, extra) -> {

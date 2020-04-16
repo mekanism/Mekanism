@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -114,10 +114,16 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
+        // first render general foregrounds
         for (Widget widget : this.buttons) {
             if (widget instanceof GuiElement) {
-                //We let our gui element handle drawing any tooltip it may have when it is drawing the foreground
                 ((GuiElement) widget).renderForeground(mouseX, mouseY, xAxis, yAxis);
+            }
+        }
+        // then render tooltips, so there's no clashing
+        for (Widget widget : this.buttons) {
+            if (widget instanceof GuiElement && widget.isMouseOver(mouseX, mouseY)) {
+                ((GuiElement) widget).renderToolTip(xAxis, yAxis);
             }
         }
     }

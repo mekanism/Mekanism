@@ -16,7 +16,7 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
-import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.ReactorLogic;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -32,10 +32,10 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
         addButton(new GuiElementHolder(this, 23, 31, 130, 90));
         addButton(new MekanismImageButton(this, getGuiLeft() + 23, getGuiTop() + 19, 11, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING)));
-        for (ReactorLogic type : ReactorLogic.values()) {
+        for (FusionReactorLogic type : FusionReactorLogic.values()) {
             int typeShift = 22 * type.ordinal();
-            addButton(new ReactorLogicButton(this, getGuiLeft() + 24, getGuiTop() + 32 + typeShift, type, tile,
-                  () -> MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.LOGIC_TYPE, tile, type.ordinal()))));
+            addButton(new ReactorLogicButton<>(this, getGuiLeft() + 24, getGuiTop() + 32 + typeShift, type, tile,
+                  () -> MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FUSION_LOGIC_TYPE, tile, type.ordinal()))));
         }
     }
 
@@ -43,7 +43,7 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         renderScaledText(GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING.translate(EnumColor.RED, OnOff.of(tile.activeCooled)), 36, 20, 0x404040, 117);
-        renderScaledText(GeneratorsLang.REACTOR_LOGIC_REDSTONE_OUTPUT_MODE.translate(EnumColor.RED, tile.logicType), 23, 123, 0x404040, 130);
+        renderScaledText(GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(EnumColor.RED, tile.logicType), 23, 123, 0x404040, 130);
         drawCenteredText(MekanismLang.STATUS.translate(EnumColor.RED, tile.checkMode() ? GeneratorsLang.REACTOR_LOGIC_OUTPUTTING : MekanismLang.IDLE),
               0, getXSize(), 136, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

@@ -54,7 +54,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             // Hurt player randomly
             chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
             if (severityScale > chance && rand.nextInt() % 3 == 0) {
-                player.attackEntityFrom(MekanismDamageSource.RADIATION_DAMAGE, 1);
+                player.attackEntityFrom(MekanismDamageSource.RADIATION, 1);
             }
         }
     }

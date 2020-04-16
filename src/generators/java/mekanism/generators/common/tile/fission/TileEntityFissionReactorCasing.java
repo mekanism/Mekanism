@@ -19,7 +19,6 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
-import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -195,7 +194,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
                     data.location = Coord4D.read(valveNBT);
                     data.side = Direction.byIndex(valveNBT.getInt(NBTConstants.SIDE));
                     valveViewing.add(data);
-                    TileEntityBoilerCasing tile = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
+                    TileEntityFissionReactorCasing tile = MekanismUtils.getTileEntity(TileEntityFissionReactorCasing.class, getWorld(), data.location.getPos());
                     if (tile != null) {
                         tile.clientHasStructure = true;
                     }
