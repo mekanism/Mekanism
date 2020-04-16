@@ -323,7 +323,7 @@
   "description.mekanism.osmium_ore": "Ett starkt mineral som finns på nästan vilken höjd som helst i världen. Det är känt att ha många användningsområden vid konstruktion av maskiner.",
   "description.mekanism.personal_chest": "En 54-slot kista som kan öppnas var som helst- även från ditt eget förråd.",
   "description.mekanism.precision_sawmill": "En maskin som används för att bearbeta stockar och andra träbaserade föremål effektivare, samt för att erhålla sågspån.",
-  "description.mekanism.pressure_disperser": "Ett block som används för att sprida ånga genom en flerblocksstruktur. Dessa bör bilda ett gapless horisontellt plan för att korrekt kontrollera ångflödet.",
+  "description.mekanism.pressure_disperser": "A block used to disperse steam throughout a multiblock structure. These should form a gapless, horizontal plane in order to properly control steam flow.",
   "description.mekanism.pressurized_reaction_chamber": "En avancerad maskin som bearbetar en fast, flytande och gasformig blandning och skapar både en gasformig och fast produkt.",
   "description.mekanism.purification_chamber": "En avancerad maskin som kan bearbeta malmer i tre klumpar och fungera som det första steget av 300 % malmbearbetning.",
   "description.mekanism.quantum_entangloporter": "Ett mycket avancerat block som kan överföra alla praktiska resurser över långa avstånd och dimensioner.",
