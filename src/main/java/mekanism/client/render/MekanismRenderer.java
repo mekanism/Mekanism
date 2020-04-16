@@ -350,15 +350,6 @@ public class MekanismRenderer {
 
         public boolean[] renderSides = new boolean[]{true, true, true, true, true, true, false};
 
-        public final void setBlockBounds(double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos) {
-            minX = xNeg;
-            minY = yNeg;
-            minZ = zNeg;
-            maxX = xPos;
-            maxY = yPos;
-            maxZ = zPos;
-        }
-
         public double sizeX() {
             return maxX - minX;
         }
