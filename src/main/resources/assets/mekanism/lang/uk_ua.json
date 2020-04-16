@@ -323,7 +323,7 @@
   "description.mekanism.osmium_ore": "Сильний мінерал, який можна знайти майже на будь-якому рівні у світі. Відомо, що в будівництві техніки багато використають.",
   "description.mekanism.personal_chest": "54-слотна скриня для відкриття будь-де - навіть з вашого власного інвентарю.",
   "description.mekanism.precision_sawmill": "Машина використовується для обробки журналів та інших елементів на основі дерева більш ефективно, а також для отримання пилки.",
-  "description.mekanism.pressure_disperser": "Блок використовується для розсіювання пар в структурі з мультиблоком. Вони мають формувати безрозривний горизонтальний літак, щоб належним чином контролювати потік пари.",
+  "description.mekanism.pressure_disperser": "A block used to disperse steam throughout a multiblock structure. These should form a gapless, horizontal plane in order to properly control steam flow.",
   "description.mekanism.pressurized_reaction_chamber": "Покращена машина, що обробляє тверду, рідку та газоподібну суміш і створює бензиновий та міцний продукт.",
   "description.mekanism.purification_chamber": "Просунутий засіб, що обробляє руди на три скляночки, слугує початковим етапом обробки руди.",
   "description.mekanism.quantum_entangloporter": "Покращено блок, здатний передавати будь-який практичний ресурс на великі відстані та розміри.",
