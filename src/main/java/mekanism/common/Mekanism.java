@@ -164,7 +164,6 @@ public class Mekanism {
         logger.debug("Mekanism Debug mode: {}", MekanismAPI.debug ? "enabled" : "disabled");
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        //TODO: Figure out the proper event bus to register things on
         MinecraftForge.EVENT_BUS.addListener(this::onEnergyTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onGasTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onLiquidTransferred);
@@ -177,7 +176,6 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
-        //TODO: Register other listeners and various stuff that is needed
 
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::serverAboutToStartLowest);
@@ -261,7 +259,6 @@ public class Mekanism {
 
     private void serverStarting(FMLServerStartingEvent event) {
         event.getCommandDispatcher().register(CommandMek.register());
-        //TODO: Do we care about the alternates of mtp, and mtpop
     }
 
     private void serverStopped(FMLServerStoppedEvent event) {
@@ -285,29 +282,11 @@ public class Mekanism {
         hooks.sendIMCMessages(event);
     }
 
-    public void preInit() {
-        //TODO: Find proper stage for this
-        //sanity check the api location if not deobf
-        //TODO: Check API
-        /*if (!FMLLoader.getNameFunction("srg").isPresent()) {
-            String apiLocation = MekanismAPI.class.getProtectionDomain().getCodeSource().getLocation().toString();
-            if (apiLocation.toLowerCase(Locale.ROOT).contains("-api.jar")) {
-                proxy.throwApiPresentException();
-            }
-        }*/
-
-        hooks.hookPreInit();
-
-        Capabilities.registerCapabilities();
-    }
-
     private void commonSetup(FMLCommonSetupEvent event) {
-        //TODO: Figure out where preinit stuff should be, potentially also move it directly into this method
-        preInit();
+        hooks.hookCommonSetup();
+        Capabilities.registerCapabilities();
 
         //TODO: Make recipes be done from JSON
-        //TODO: Bin recipe
-        //event.getRegistry().register(new BinRecipe());
         //Fuel Gases
         FuelHandler.addGas(MekanismGases.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
 
@@ -344,8 +323,6 @@ public class Mekanism {
 
         //Success message
         logger.info("Mod loaded.");
-
-        //TODO: Use FMLDedicatedServerSetupEvent and FMLClientSetupEvent
     }
 
     private void onEnergyTransferred(EnergyTransferEvent event) {

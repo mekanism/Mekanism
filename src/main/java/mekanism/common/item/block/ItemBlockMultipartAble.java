@@ -10,8 +10,6 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -19,7 +17,7 @@ import net.minecraft.world.World;
 /**
  * Created by Thiakil on 19/11/2017.
  */
-//TODO: Cleanup/rename this class
+//TODO: Re-evaluate this class
 public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBlockMekanism<BLOCK> {
 
     public ItemBlockMultipartAble(BLOCK block) {
@@ -36,28 +34,25 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
         if (player == null) {
             return ActionResultType.PASS;
         }
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Hand hand = context.getHand();
-        ItemStack stack = player.getHeldItem(hand);
+        ItemStack stack = player.getHeldItem(context.getHand());
         if (stack.isEmpty()) {
             return ActionResultType.FAIL;//WTF
         }
-        Direction side = context.getFace();
-        BlockItemUseContext blockItemUseContext = new BlockItemUseContext(context);
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
         if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
-            pos = pos.offset(side);
+            pos = pos.offset(context.getFace());
         }
-        if (player.canPlayerEdit(pos, side, stack)) {
-            BlockState iblockstate1 = getStateForPlacement(blockItemUseContext);
-            if (iblockstate1 == null) {
+        if (player.canPlayerEdit(pos, context.getFace(), stack)) {
+            BlockItemUseContext blockItemUseContext = new BlockItemUseContext(context);
+            BlockState state = getStateForPlacement(blockItemUseContext);
+            if (state == null) {
                 return ActionResultType.FAIL;
             }
-            boolean flag = placeBlock(blockItemUseContext, iblockstate1);
-            if (flag) {
-                iblockstate1 = world.getBlockState(pos);
-                SoundType soundtype = iblockstate1.getBlock().getSoundType(iblockstate1, world, pos, player);
-                world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+            if (placeBlock(blockItemUseContext, state)) {
+                state = world.getBlockState(pos);
+                SoundType soundtype = state.getSoundType(world, pos, player);
+                world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1) / 2F, soundtype.getPitch() * 0.8F);
                 stack.shrink(1);
             }
             return ActionResultType.SUCCESS;
@@ -67,9 +62,9 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        if (!MekanismUtils.isValidReplaceableBlock(context.getWorld(), context.getPos())) {
-            return false;
+        if (MekanismUtils.isValidReplaceableBlock(context.getWorld(), context.getPos())) {
+            return super.placeBlock(context, state);
         }
-        return super.placeBlock(context, state);
+        return false;
     }
 }

@@ -38,7 +38,7 @@ public class ItemDictionary extends Item {
             Block block = state.getBlock();
             if (world.isRemote) {
                 ItemStack testStack = new ItemStack(block);
-                //TODO: Also list block tags/fluid tags it the item is of that type
+                //TODO - V10: List block tags/fluid tags it the item is of that type
                 Set<ResourceLocation> tags = testStack.getItem().getTags();
                 if (!tags.isEmpty()) {
                     player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_KEYS_FOUND.translateColored(EnumColor.GRAY)));

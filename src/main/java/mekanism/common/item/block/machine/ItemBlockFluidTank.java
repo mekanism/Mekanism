@@ -162,8 +162,6 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         if (!fluidState.isEmpty() && fluidState.isSource()) {
                             //Just in case someone does weird things and has a fluid state that is empty and a source
                             // only allow collecting from non empty sources
-                            //TODO: Move some of this back into a util method in MekanismUtils?
-                            // This is semi similar to the code in TileEntityElectricPump
                             Fluid fluid = fluidState.getFluid();
                             FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
                             //Note: we get the block state from the world and not the fluid state

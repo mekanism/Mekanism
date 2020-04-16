@@ -12,10 +12,9 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 //Like net.minecraftforge.items.SlotItemHandler, except directly interacts with the IInventorySlot instead
-//TODO: Override other methods to pass them directly to our IInventorySlot
 public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
-    private static IInventory emptyInventory = new Inventory(0);
+    private static final IInventory emptyInventory = new Inventory(0);
     private final ContainerSlotType slotType;
     private final IInventorySlot slot;
     @Nullable

@@ -22,8 +22,8 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
 
     public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> containingTile;
 
-    public TransmitterImpl(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> multiPart) {
-        setTileEntity(multiPart);
+    public TransmitterImpl(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
+        setTileEntity(transmitter);
     }
 
     @Nonnull

@@ -31,8 +31,6 @@ public class InputInventorySlot extends BasicInventorySlot {
 
     protected InputInventorySlot(Predicate<@NonNull ItemStack> insertPredicate, Predicate<@NonNull ItemStack> isItemValid, @Nullable IMekanismInventory inventory, int x,
           int y) {
-        //TODO: Instead of always being false, should we make it be isItemValid.negate(), just to allow for extracting if something went wrong
-        //TODO: Re-evaluate the insertion predicate
         super(notExternal, (stack, automationType) -> insertPredicate.test(stack), isItemValid, inventory, x, y);
         setSlotType(ContainerSlotType.INPUT);
     }

@@ -27,8 +27,6 @@ public class CommandMek {
     private static Map<UUID, Stack<BlockPos>> tpStack = new Object2ObjectOpenHashMap<>();
 
     public static LiteralArgumentBuilder<CommandSource> register() {
-        //TODO: Check permission levels for everything, also see if this is proper way to ensure only players use it and if so should all of the commands be like this
-        // or should we allow some to be used from console
         return Commands.literal("mek")
               .requires(cs -> cs.getEntity() instanceof ServerPlayerEntity)
               .then(DebugCommand.register())

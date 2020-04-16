@@ -41,7 +41,6 @@ public class SyncableItemStack implements ISyncableData {
         ItemStack stack = get();
         if (!stack.isEmpty()) {
             //Double check it is not empty
-            //TODO: We may want to eventually allow a way to then use the setter when we are just changing the size?
             stack.setCount(amount);
         }
     }

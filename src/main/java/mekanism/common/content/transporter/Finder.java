@@ -34,7 +34,6 @@ public abstract class Finder {
                 return false;
             }
             for (ResourceLocation tag : tags) {
-                //TODO: How should we handle #
                 String tagAsString = tag.toString();
                 if (tagName.equals(tagAsString) || tagName.equals("*")) {
                     return true;

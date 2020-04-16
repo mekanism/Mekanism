@@ -60,7 +60,6 @@ public abstract class BlockMekanism extends Block {
         if (tile == null) {
             return itemStack;
         }
-        //TODO: If crashes happen here because of lack of NBT make things use ItemDataUtils
         Item item = itemStack.getItem();
         if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
@@ -143,8 +142,6 @@ public abstract class BlockMekanism extends Block {
         if (tile == null) {
             return;
         }
-        //TODO: Remove most implementations of ItemBlock#placeBlockAt and use this method instead
-        //TODO: Should this just be TileEntity and then check instance of and abstract things further
         if (tile.supportsRedstone()) {
             tile.redstone = world.isBlockPowered(pos);
         }
@@ -197,7 +194,7 @@ public abstract class BlockMekanism extends Block {
         }
     }
 
-    //TODO: Method to override for setting some simple tile specific stuff
+    //Method to override for setting some simple tile specific stuff
     public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
     }
 

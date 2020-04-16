@@ -5,8 +5,6 @@ import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
-//TODO: InventoryTweaks
-//@ChestContainer(isLargeChest = true)
 public class PersonalChestTileContainer extends MekanismTileContainer<TileEntityPersonalChest> {
 
     public PersonalChestTileContainer(int id, PlayerInventory inv, TileEntityPersonalChest tile) {

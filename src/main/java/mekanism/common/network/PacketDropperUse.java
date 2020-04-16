@@ -121,7 +121,6 @@ public class PacketDropperUse {
             Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
             if (capability.isPresent()) {
                 IGasHandler gasHandlerItem = capability.get();
-                //TODO: Decide if we want to support other implementations of our gas handler
                 if (gasHandlerItem instanceof IMekanismGasHandler) {
                     itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
                 }
@@ -130,7 +129,6 @@ public class PacketDropperUse {
             Optional<IInfusionHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
             if (capability.isPresent()) {
                 IInfusionHandler infusionHandler = capability.get();
-                //TODO: Decide if we want to support other implementations of our infusion handler
                 if (infusionHandler instanceof IMekanismInfusionHandler) {
                     itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismInfusionHandler) infusionHandler).getInfusionTank(0, null);
                 }
@@ -158,7 +156,6 @@ public class PacketDropperUse {
         Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
         if (capability.isPresent()) {
             IFluidHandlerItem fluidHandlerItem = capability.get();
-            //TODO: Decide if we want to support someone replacing our fluid handler with another?
             if (fluidHandlerItem instanceof IMekanismFluidHandler) {
                 IExtendedFluidTank itemFluidTank = ((IMekanismFluidHandler) fluidHandlerItem).getFluidTank(0, null);
                 if (itemFluidTank != null) {

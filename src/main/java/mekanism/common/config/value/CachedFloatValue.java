@@ -24,7 +24,6 @@ public class CachedFloatValue extends CachedPrimitiveValue<Double> implements Fl
             //Note: For now we have to get it out of a double as there is no FloatValue config type
             Double val = internal.get();
             if (val == null) {
-                //TODO: Should we throw an error here or what should we return
                 cachedValue = 0;
             } else if (val > Float.MAX_VALUE) {
                 cachedValue = Float.MAX_VALUE;

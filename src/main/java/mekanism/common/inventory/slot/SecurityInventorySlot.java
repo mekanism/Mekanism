@@ -12,7 +12,6 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.security.IOwnerItem;
 import net.minecraft.item.ItemStack;
 
-//TODO: Switch IOwnerItem to being a capability
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SecurityInventorySlot extends BasicInventorySlot {

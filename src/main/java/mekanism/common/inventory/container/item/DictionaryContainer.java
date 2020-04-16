@@ -20,11 +20,10 @@ public class DictionaryContainer extends MekanismItemContainer {
         this(id, inv, buf.readEnumValue(Hand.class), getStackFromBuffer(buf, ItemDictionary.class));
     }
 
-    //TODO: Should this use the super transfer stack in slot? OR just return the stack in the current slot in general???
     @Nonnull
     @Override
     public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
         Slot slot = inventorySlots.get(slotID);
-        return slot != null ? slot.getStack() : ItemStack.EMPTY;
+        return slot == null ? ItemStack.EMPTY : slot.getStack();
     }
 }

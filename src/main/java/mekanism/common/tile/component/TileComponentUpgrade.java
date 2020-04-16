@@ -16,6 +16,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -64,7 +65,7 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
                         upgradeTicks = 0;
                         addUpgrade(type);
                         if (upgradeSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                            //TODO: Print warning about failing to shrink size of stack
+                            MekanismUtils.logMismatchedStackSize();
                         }
                         if (type == Upgrade.MUFFLING) {
                             //Send an update packet to the client to update the number of muffling upgrades installed

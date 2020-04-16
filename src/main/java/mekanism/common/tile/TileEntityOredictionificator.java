@@ -45,11 +45,13 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+//TODO - V10: Make this support other tag types, such as fluids
 public class TileEntityOredictionificator extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<OredictionificatorFilter> {
 
     public static final Map<String, List<String>> possibleFilters = new Object2ObjectOpenHashMap<>();
 
     static {
+        //TODO: Make this configurable
         possibleFilters.put("forge", Arrays.asList("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/"));
     }
 

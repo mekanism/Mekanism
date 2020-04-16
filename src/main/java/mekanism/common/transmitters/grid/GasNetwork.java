@@ -109,10 +109,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                     if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
                         MekanismUtils.logMismatchedStackSize();
                     }
-                } else if (net.gasTank.getStored() > gasTank.getStored()) {
-                    //TODO: Evaluate, realistically we should never be trying to merge two networks
-                    // if they have conflicting types
-                    gasTank.setStack(net.getBuffer());
                 }
                 net.gasTank.setEmpty();
             }
@@ -138,7 +134,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         if (gasTank.isEmpty()) {
             gasTank.setStack(gas.copy());
         } else if (gas.isTypeEqual(gasTank.getType())) {
-            //TODO: better multiple buffer impl
             long amount = gas.getAmount();
             if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
                 MekanismUtils.logMismatchedStackSize();

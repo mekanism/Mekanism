@@ -381,7 +381,6 @@ public class FluidInventorySlot extends BasicInventorySlot {
         FluidStack drained = fluidHandlerItem.drain(new FluidStack(fluidToTransfer, toTransfer - remainder), FluidAction.EXECUTE);
         if (drained.isEmpty()) {
             //If we cannot actually drain from the item then just exit early
-            //TODO: Verify this is true, because the filling doesn't bother exiting early maybe we want to make it do so though
             return false;
         }
         if (getCount() == 1) {
@@ -424,12 +423,12 @@ public class FluidInventorySlot extends BasicInventorySlot {
                 return false;
             }
             if (outputSlot.growStack(1, Action.EXECUTE) != 1) {
-                //TODO: Print warning about failing to increase size of stack
+                MekanismUtils.logMismatchedStackSize();
             }
         }
         //Note: We do not need to call onContentsChanged, because it will be done due to the stack changing from calling shrinkStack
         if (shrinkStack(1, Action.EXECUTE) != 1) {
-            //TODO: Print warning about failing to shrink size of stack
+            MekanismUtils.logMismatchedStackSize();
         }
         return true;
     }

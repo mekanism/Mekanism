@@ -23,7 +23,6 @@ public class RobitAIPickup extends RobitAIBase {
         if (!theRobit.getDropPickup()) {
             return false;
         }
-        //TODO: Check if pathing is correct and what the param is for
         if (closest != null && closest.getDistanceSq(closest) > 100 && thePathfinder.getPathToEntity(closest, 0) != null) {
             return true;
         }
@@ -33,13 +32,11 @@ public class RobitAIPickup extends RobitAIBase {
         Iterator<ItemEntity> iter = items.iterator();
         //Cached for slight performance
         double closestDistance = -1;
-
         while (iter.hasNext()) {
             ItemEntity entity = iter.next();
             double distance = theRobit.getDistance(entity);
             if (distance <= 10) {
                 if (closestDistance == -1 || distance < closestDistance) {
-                    //TODO: Check if pathing is correct and what the param is for
                     if (thePathfinder.getPathToEntity(entity, 0) != null) {
                         closest = entity;
                         closestDistance = distance;

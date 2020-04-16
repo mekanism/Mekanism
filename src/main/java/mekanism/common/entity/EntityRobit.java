@@ -129,7 +129,6 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         setCustomNameVisible(true);
         energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ENERGY, this));
 
-        //TODO: Go through all this and clean it up properly
         inventorySlots = new ArrayList<>();
         inventoryContainerSlots = new ArrayList<>();
         for (int slotY = 0; slotY < 3; slotY++) {
@@ -142,7 +141,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         inventorySlots.add(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getEntityWorld, this, 153, 17));
         inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 51, 35));
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
-        // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes?
+        // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes? V10
         inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(this, 116, 35));
 
         mainContainerSlots = Collections.singletonList(energySlot);

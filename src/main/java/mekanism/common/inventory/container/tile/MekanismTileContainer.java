@@ -62,7 +62,6 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         if (tile == null) {
             return true;
         }
-        //TODO: Double check this, it used to check to see if it had an inventory.
         if (tile.hasGui() && !tile.isRemoved()) {
             //prevent Containers from remaining valid after the chunk has unloaded;
             World world = tile.getWorld();

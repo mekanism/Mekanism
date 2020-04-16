@@ -52,7 +52,6 @@ public class Capabilities {
     @CapabilityInject(IBlockableConnection.class)
     public static Capability<IBlockableConnection> BLOCKABLE_CONNECTION_CAPABILITY = null;
 
-    //TODO: Re-evaluate having this be IGridTransmitter<?, ?, ?> instead of just IGridTransmitter for the capability
     @CapabilityInject(IGridTransmitter.class)
     public static Capability<IGridTransmitter<?, ?, ?>> GRID_TRANSMITTER_CAPABILITY = null;
 

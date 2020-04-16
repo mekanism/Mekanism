@@ -78,7 +78,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
-//TODO: Figure out what we want to do with compat recipes
 //TODO: Clean this up some to use methods in places that the code is just copy pasted, example: circuits
 // and some of the different ore processing code
 @ParametersAreNonnullByDefault

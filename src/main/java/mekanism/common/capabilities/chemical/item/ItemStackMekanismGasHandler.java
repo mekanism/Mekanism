@@ -20,7 +20,6 @@ import net.minecraftforge.common.capabilities.Capability;
 /**
  * Helper class for implementing gas handlers for items
  */
-//TODO: Evaluate if this should be moved into the API package
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ItemStackMekanismGasHandler extends ItemStackMekanismChemicalHandler<Gas, GasStack> implements IMekanismGasHandler {

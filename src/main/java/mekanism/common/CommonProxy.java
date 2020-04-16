@@ -20,7 +20,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
  *
  * @author AidanBrady
  */
-//TODO: Try to get rid of the need for using a proxy system
 public class CommonProxy {
 
     /**
@@ -68,7 +67,6 @@ public class CommonProxy {
         return getDummyPlayer(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
-    //TODO: Evaluate if there is even a reason to have this
     public PlayerEntity getPlayer(Supplier<Context> context) {
         return context.get().getSender();
     }
