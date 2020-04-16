@@ -323,7 +323,7 @@
   "description.mekanism.osmium_ore": "一种牢固的材料，它能够在这个世界任何高度被发现。它因经常用于机器建造而闻名。",
   "description.mekanism.personal_chest": "一个54槽的箱子，可以从任何地方打开，甚至可以从您自己的物品栏中打开。",
   "description.mekanism.precision_sawmill": "一台更有效地处理原木和木制品的机器，同时也能获得锯屑。",
-  "description.mekanism.pressure_disperser": "一种能保证蒸汽充满整个多方块结构，这应该会形成一个无间隙水平平面来正确地控制蒸汽流。",
+  "description.mekanism.pressure_disperser": "A block used to disperse steam throughout a multiblock structure. These should form a gapless, horizontal plane in order to properly control steam flow.",
   "description.mekanism.pressurized_reaction_chamber": "一台能够处理固体，液体和气体混合物，并且能产生气态和固态产物的高级机器。",
   "description.mekanism.purification_chamber": "一台能够将矿石加工成三块矿石碎块的高级设备，能够提供300%的矿物产出。",
   "description.mekanism.quantum_entangloporter": "一台可以长距离跨维度传输物品的高级机器",
