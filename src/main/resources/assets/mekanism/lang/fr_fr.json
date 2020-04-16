@@ -323,7 +323,7 @@
   "description.mekanism.osmium_ore": "Un minéral solide qui peut être trouvé à presque n'importe quelle hauteur dans le monde. Il est connu pour avoir de nombreuses utilisations dans la construction de machines.",
   "description.mekanism.personal_chest": "Un coffre de 54 places qui peut être ouvert n'importe où - même à partir de votre propre inventaire.",
   "description.mekanism.precision_sawmill": "Une machine utilisée pour traiter plus efficacement les bûches et autres objets à base de bois, ainsi que pour obtenir de la sciure.",
-  "description.mekanism.pressure_disperser": "Un bloc utilisé pour disperser la vapeur dans une structure multibloc. Ces derniers doivent former un plan horizontal sans interstices afin de bien contrôler le flux de vapeur.",
+  "description.mekanism.pressure_disperser": "A block used to disperse steam throughout a multiblock structure. These should form a gapless, horizontal plane in order to properly control steam flow.",
   "description.mekanism.pressurized_reaction_chamber": "Une machine avancée qui traite un mélange solide, liquide et gazeux et qui crée un produit à la fois gazeux et solide.",
   "description.mekanism.purification_chamber": "Une machine avancée capable de traiter les minerais en trois amas, servant d'étape initiale au triplage du minerai.",
   "description.mekanism.quantum_entangloporter": "Un bloc très avancé capable de transmettre n'importe quelle ressource pratique sur de longues distances et à travers les dimensions.",
