@@ -83,7 +83,7 @@
   "reactor.mekanismgenerators.logic.ready": "起動準備完了時",
   "reactor.mekanismgenerators.logic.redstone_output_mode": "出力モード: %s",
   "reactor.mekanismgenerators.logic.toggle_cooling": "値の尺度を切り替える",
-  "reactor.mekanismgenerators.stats": "Stats",
+  "reactor.mekanismgenerators.stats": "核融合炉の状態",
   "reactor.mekanismgenerators.stats.active": "水冷",
   "reactor.mekanismgenerators.stats.ignition": "最低点火温度: %s",
   "reactor.mekanismgenerators.stats.max_casing": "最高炉内温度: %s",
