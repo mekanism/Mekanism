@@ -154,7 +154,6 @@ public class SoundHandler {
         if (soundEngine == null) {
             //Note: We include a null check as the constructor for SoundEngine is public and calls this event
             // And we do not want to end up grabbing a modders variant of this
-            //TODO: Look into if this causes issues and we have to go back to an AT, if someone is say replacing the sound engine entirely
             soundEngine = event.getManager();
         }
     }

@@ -6,7 +6,6 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -38,7 +37,7 @@ public class RecipeRegistryHelper {
         IBlockProvider mekanismBlock = MekanismBlocks.ENERGIZED_SMELTER;
         //TODO: Add all smelting recipes
         //registry.addRecipes(Collections.singleton(SmeltingRecipe.class), mekanismBlock.getJEICategory());
-        if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
+        /*if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
             registry.addRecipes(MekanismRecipeType.SMELTING.getRecipes(getWorld()), mekanismBlock.getRegistryName());
         } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
             //TODO: Fix this
@@ -51,7 +50,7 @@ public class RecipeRegistryHelper {
                 }
             }
             registry.addRecipes(smeltingWrapper, mekanismBlock.getJEICategory());*/
-        }
+        //}
     }
 
     public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, IBlockProvider mekanismBlock, MekanismRecipeType<RECIPE> type) {

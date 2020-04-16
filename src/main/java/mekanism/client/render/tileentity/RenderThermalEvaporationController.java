@@ -28,7 +28,6 @@ public class RenderThermalEvaporationController extends MekanismTileEntityRender
             FluidRenderData data = new FluidRenderData();
             data.location = new Coord4D(tile.getRenderLocation(), tile.getWorld());
             data.height = tile.height - 2;
-            //TODO: If we ever allow different width for the evap controller then update this length and width
             data.length = 2;
             data.width = 2;
             data.fluidType = tile.inputTank.getFluid();

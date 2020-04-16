@@ -17,7 +17,6 @@ public class FluidRenderMap<V> extends Object2ObjectOpenCustomHashMap<FluidStack
     /**
      * Implements equals & hashCode that ignore FluidStack#amount
      */
-    //TODO: should fluidstacks be nonnull here
     public static class FluidHashStrategy implements Hash.Strategy<FluidStack> {
 
         public static FluidHashStrategy INSTANCE = new FluidHashStrategy();

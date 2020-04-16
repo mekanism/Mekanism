@@ -9,7 +9,6 @@ import mekanism.client.gui.GuiAdvancedElectricMachine;
 import mekanism.client.gui.GuiElectricMachine;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import mekanism.common.tile.TileEntityCrusher;
@@ -56,15 +55,15 @@ public class GuiHandlerRegistryHelper {
                     categories.add(MekanismBlocks.ENRICHMENT_CHAMBER.getRegistryName());
                 } else if (tile instanceof TileEntityEnergizedSmelter) {
                     IBlockProvider mekanismBlock = MekanismBlocks.ENERGIZED_SMELTER;
-                    if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
+                    /*if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
                         categories.add(mekanismBlock.getRegistryName());
                     } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
                         categories.add(VanillaRecipeCategoryUid.FURNACE);
                         categories.add(mekanismBlock.getRegistryName());
-                    } else {
+                    } else {*/
                         //Only use furnace list, so no extra registration.
                         categories.add(VanillaRecipeCategoryUid.FURNACE);
-                    }
+                    //}
                 }
                 return Collections.singleton(IGuiClickableArea.createBasic(79, 40, 24, 7, categories.toArray(new ResourceLocation[0])));
             }

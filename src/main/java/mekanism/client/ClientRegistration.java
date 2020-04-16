@@ -202,7 +202,6 @@ public class ClientRegistration {
               MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK,
               //Transmitters
-              //TODO: Look into make it so we can see the back edges of the transmitters when looking through them
               //Restrictive Transporter
               MekanismBlocks.RESTRICTIVE_TRANSPORTER,
               //Mechanical Pipes
