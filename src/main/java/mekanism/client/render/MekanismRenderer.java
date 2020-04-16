@@ -297,8 +297,8 @@ public class MekanismRenderer {
         }
 
         event.addSprite(Mekanism.rl("block/overlay/overlay_white"));
-        event.addSprite(Mekanism.rl("block/liquid/liquid_energy"));
-        event.addSprite(Mekanism.rl("block/liquid/liquid_heat"));
+        event.addSprite(Mekanism.rl("liquid/energy"));
+        event.addSprite(Mekanism.rl("liquid/heat"));
 
         for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
             event.addSprite(gas.getIcon());
@@ -327,8 +327,8 @@ public class MekanismRenderer {
         }
 
         whiteIcon = map.getSprite(Mekanism.rl("block/overlay/overlay_white"));
-        energyIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_energy"));
-        heatIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_heat"));
+        energyIcon = map.getSprite(Mekanism.rl("liquid/energy"));
+        heatIcon = map.getSprite(Mekanism.rl("liquid/heat"));
 
         //TODO: Why are these reset in post and the rest reset in Pre?
         RenderLogisticalTransporter.onStitch(map);

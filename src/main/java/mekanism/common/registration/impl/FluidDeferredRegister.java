@@ -53,7 +53,7 @@ public class FluidDeferredRegister {
     }
 
     public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> register(String name, UnaryOperator<Builder> fluidAttributes) {
-        return register(name, fluidAttributes.apply(FluidAttributes.builder(Mekanism.rl("block/liquid/liquid"), Mekanism.rl("block/liquid/liquid_flow"))));
+        return register(name, fluidAttributes.apply(FluidAttributes.builder(Mekanism.rl("liquid/liquid"), Mekanism.rl("liquid/liquid_flow"))));
     }
 
     public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> register(String name, FluidAttributes.Builder builder) {

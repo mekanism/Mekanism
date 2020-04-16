@@ -9,9 +9,8 @@ import net.minecraft.util.ResourceLocation;
 //TODO - V10: Make this directly be a "chemical" instead of a "gas"
 public class Slurry extends Gas {
 
-    //TODO: Rename texture paths
-    private static final ResourceLocation CLEAN_LOCATION = new ResourceLocation(MekanismAPI.MEKANISM_MODID, "block/liquid/liquid_clean_ore");
-    private static final ResourceLocation DIRTY_LOCATION = new ResourceLocation(MekanismAPI.MEKANISM_MODID, "block/liquid/liquid_ore");
+    private static final ResourceLocation CLEAN_LOCATION = new ResourceLocation(MekanismAPI.MEKANISM_MODID, "liquid/clean_ore");
+    private static final ResourceLocation DIRTY_LOCATION = new ResourceLocation(MekanismAPI.MEKANISM_MODID, "liquid/ore");
 
     private final Tag<Item> oreTag;
 

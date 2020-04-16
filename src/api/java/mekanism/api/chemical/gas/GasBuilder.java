@@ -19,8 +19,7 @@ public class GasBuilder extends ChemicalBuilder<Gas, GasBuilder> {
     }
 
     public static GasBuilder builder() {
-        //TODO: Rename the texture this points at
-        return builder(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "block/liquid/liquid"));
+        return builder(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "liquid/liquid"));
     }
 
     public static GasBuilder builder(ResourceLocation texture) {

@@ -1,5 +1,5 @@
 {
   "textures": {
-    "particle": "mekanism:block/liquid/liquid"
+    "particle": "mekanism:liquid/liquid"
   }
 }
