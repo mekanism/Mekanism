@@ -50,7 +50,7 @@ public abstract class ItemStackGasToItemStackRecipe extends MekanismRecipe imple
     }
 
     @Override
-    public boolean test(@NonNull ItemStack itemStack, @NonNull GasStack gasStack) {
+    public boolean test(ItemStack itemStack, GasStack gasStack) {
         return itemInput.test(itemStack) && gasInput.test(gasStack);
     }
 

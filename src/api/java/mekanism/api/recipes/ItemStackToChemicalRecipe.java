@@ -27,7 +27,7 @@ public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMIC
     }
 
     @Override
-    public boolean test(@NonNull ItemStack itemStack) {
+    public boolean test(ItemStack itemStack) {
         return input.test(itemStack);
     }
 

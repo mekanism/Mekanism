@@ -12,7 +12,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-//TODO: Should we add a way to read contents to/from network so that things like the bin does not have issues due to it being too large
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public interface IInventorySlot extends INBTSerializable<CompoundNBT> {

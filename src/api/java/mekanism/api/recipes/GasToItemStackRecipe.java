@@ -16,9 +16,9 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Created by Thiakil on 14/07/2019.
  */
+@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@FieldsAreNonnullByDefault
 public abstract class GasToItemStackRecipe extends MekanismRecipe implements Predicate<@NonNull GasStack> {
 
     private final GasStackIngredient input;
@@ -39,7 +39,7 @@ public abstract class GasToItemStackRecipe extends MekanismRecipe implements Pre
     }
 
     @Override
-    public boolean test(@NonNull GasStack gasStack) {
+    public boolean test(GasStack gasStack) {
         return input.test(gasStack);
     }
 

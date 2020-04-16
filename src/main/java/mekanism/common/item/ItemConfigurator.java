@@ -226,9 +226,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
         return getState(stack).getTextComponent();
     }
 
+    @FieldsAreNonnullByDefault
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    @FieldsAreNonnullByDefault
     public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasTextComponent {
         CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true),
         CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true),

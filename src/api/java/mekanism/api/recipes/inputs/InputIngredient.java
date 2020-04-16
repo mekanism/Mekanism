@@ -4,10 +4,8 @@ import com.google.gson.JsonElement;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import net.minecraft.network.PacketBuffer;
 
-//TODO: Make implementations override equals and hashcode?
 public interface InputIngredient<TYPE> extends Predicate<TYPE> {
 
     /**
@@ -17,7 +15,7 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      */
-    boolean testType(@NonNull TYPE type);
+    boolean testType(@Nonnull TYPE type);
 
     TYPE getMatchingInstance(TYPE type);
 
@@ -25,10 +23,11 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      * Primarily for JEI, a list of valid instances of the type
      *
      * @return List (empty means no valid registrations found and recipe is to be hidden)
+     *
+     * @apiNote Do not modify any of the values returned by the representations
      */
-    //TODO: Make a note after checking some stuff but this should either allow them to be mutable or specifically say
-    // not to attempt to mutate them
-    @NonNull List<TYPE> getRepresentations();
+    @Nonnull
+    List<TYPE> getRepresentations();
 
     /**
      * Writes this ingredient to a PacketBuffer.

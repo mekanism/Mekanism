@@ -53,11 +53,11 @@ public class ItemGaugeDropper extends Item {
         //TODO: Technically doesn't support things where the color is part of the texture such as lava
         GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
         if (!gasStack.isEmpty()) {
-            return gasStack.getType().getTint();
+            return gasStack.getChemicalTint();
         }
         InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
         if (!infusionStack.isEmpty()) {
-            return infusionStack.getType().getTint();
+            return infusionStack.getChemicalTint();
         }
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluidStack.isEmpty()) {

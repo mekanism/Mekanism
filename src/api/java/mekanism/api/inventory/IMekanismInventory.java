@@ -8,7 +8,6 @@ import mekanism.api.Action;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 
-//TODO: Move all secondary slot calculations like gas/fluid/energy input/output to the slots so that they can mutate the stack properly instead of breaking API
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public interface IMekanismInventory extends ISidedItemHandler {

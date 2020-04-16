@@ -3,6 +3,7 @@ package mekanism.api.recipes;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiPredicate;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -15,14 +16,14 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Inputs: ItemStack (main item) + ItemStack (material to combine with) Output: ItemStack (combined)
  */
+@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@FieldsAreNonnullByDefault
 public abstract class CombinerRecipe extends MekanismRecipe implements BiPredicate<@NonNull ItemStack, @NonNull ItemStack> {
 
     private final ItemStackIngredient mainInput;
     private final ItemStackIngredient extraInput;
-    private ItemStack output;
+    private final ItemStack output;
 
     public CombinerRecipe(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output) {
         super(id);
@@ -32,7 +33,7 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
     }
 
     @Override
-    public boolean test(@NonNull ItemStack input, @NonNull ItemStack extra) {
+    public boolean test(@Nonnull ItemStack input, @Nonnull ItemStack extra) {
         return mainInput.test(input) && extraInput.test(extra);
     }
 
@@ -44,7 +45,7 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
         return extraInput;
     }
 
-    public ItemStack getOutput(@NonNull ItemStack input, @NonNull ItemStack extra) {
+    public ItemStack getOutput(@Nonnull ItemStack input, @Nonnull ItemStack extra) {
         return output.copy();
     }
 

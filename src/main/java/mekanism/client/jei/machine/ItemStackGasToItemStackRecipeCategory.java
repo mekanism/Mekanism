@@ -57,7 +57,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
     @Override
     public void setIngredients(ItemStackGasToItemStackRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
-        @NonNull List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
+        List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
         long scale = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, scale)).collect(Collectors.toList());
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(scaledGases));
@@ -74,7 +74,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         itemStacks.set(1, recipe.getOutputDefinition());
         GasStackIngredient gasInput = recipe.getGasInput();
         List<ItemStack> gasItemProviders = new ArrayList<>();
-        @NonNull List<@NonNull GasStack> gasInputs = gasInput.getRepresentations();
+        List<@NonNull GasStack> gasInputs = gasInput.getRepresentations();
         List<GasStack> scaledGases = new ArrayList<>();
         long scale = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
         for (GasStack gas : gasInputs) {

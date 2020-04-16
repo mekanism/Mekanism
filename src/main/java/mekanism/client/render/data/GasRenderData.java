@@ -28,7 +28,7 @@ public class GasRenderData extends RenderData {
     @Override
     public int hashCode() {
         int code = super.hashCode();
-        code = 31 * code + gasType.getType().getRegistryName().hashCode();
+        code = 31 * code + gasType.getTypeRegistryName().hashCode();
         return code;
     }
 

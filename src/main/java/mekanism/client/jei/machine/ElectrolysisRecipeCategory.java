@@ -3,7 +3,6 @@ package mekanism.client.jei.machine;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -59,7 +58,7 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, ElectrolysisRecipe recipe, IIngredients ingredients) {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        @NonNull List<FluidStack> fluidInputs = recipe.getInput().getRepresentations();
+        List<FluidStack> fluidInputs = recipe.getInput().getRepresentations();
         int max = fluidInputs.stream().mapToInt(FluidStack::getAmount).filter(input -> input >= 0).max().orElse(0);
         fluidStacks.init(0, true, 2, 2, 16, 58, max, false, fluidOverlayLarge);
         fluidStacks.set(0, fluidInputs);

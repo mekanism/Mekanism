@@ -15,9 +15,9 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Created by Thiakil on 13/07/2019.
  */
+@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@FieldsAreNonnullByDefault
 public abstract class ChemicalInfuserRecipe extends MekanismRecipe implements BiPredicate<@NonNull GasStack, @NonNull GasStack> {
 
     private final GasStackIngredient leftInput;

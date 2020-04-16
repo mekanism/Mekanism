@@ -71,14 +71,8 @@ public class BasicEnergyContainer implements IEnergyContainer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @apiNote We return a cached value from this that if modified won't actually end up having any information about the container get changed.
-     */
     @Override
     public FloatingLong getEnergy() {
-        //TODO: Debate doing what the JavaDoc says. See BasicInventorySlot#getStack for details
         return stored;
     }
 
@@ -142,7 +136,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our amount in {@link #getEnergy()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
      */
     @Override
     public boolean isEmpty() {
@@ -157,7 +151,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getEnergy()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
      */
     @Override
     public CompoundNBT serializeNBT() {

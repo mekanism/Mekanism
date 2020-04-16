@@ -14,9 +14,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
+@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@FieldsAreNonnullByDefault
 public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<@NonNull ItemStack> {
 
     protected static final Random RANDOM = new Random();
@@ -35,7 +35,7 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     }
 
     @Override
-    public boolean test(@NonNull ItemStack stack) {
+    public boolean test(ItemStack stack) {
         return this.input.test(stack);
     }
 

@@ -120,14 +120,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @apiNote We return a cached value from this that if modified won't actually end up having any information about the tank get changed.
-     */
     @Override
     public FluidStack getFluid() {
-        //TODO: Debate doing what the JavaDoc says. See BasicInventorySlot#getStack for details
         return stored;
     }
 
@@ -230,8 +224,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying, and can also
+     * directly modify our stack instead of having to make a copy.
      */
     @Override
     public int setStackSize(int amount, Action action) {
@@ -263,10 +257,6 @@ public class BasicFluidTank implements IExtendedFluidTank {
      */
     @Override
     public int growStack(int amount, Action action) {
-        //TODO: We should go through all the places we have TODOs about errors/warnings, and debate removing them/add
-        // some form of graceful handling as it is valid they may not grow the full amount due to rate limiting
-        // Though I believe most places we manually call it we have already done a simulation, which should really
-        // have caught any rate limit issues
         int current = getFluidAmount();
         if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
@@ -281,7 +271,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
      */
     @Override
     public boolean isEmpty() {
@@ -291,7 +281,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
      */
     @Override
     public boolean isFluidEqual(FluidStack other) {
@@ -301,7 +291,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
      */
     @Override
     public int getFluidAmount() {
@@ -316,7 +306,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
      */
     @Override
     public CompoundNBT serializeNBT() {

@@ -18,9 +18,9 @@ import net.minecraftforge.common.util.TriPredicate;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
+@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@FieldsAreNonnullByDefault
 public abstract class PressurizedReactionRecipe extends MekanismRecipe implements TriPredicate<@NonNull ItemStack, @NonNull FluidStack, @NonNull GasStack> {
 
     private final ItemStackIngredient inputSolid;
@@ -68,14 +68,14 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
         return this.inputSolid.test(solid) && this.inputFluid.test(liquid) && this.inputGas.test(gas);
     }
 
-    public @NonNull Pair<List<@NonNull ItemStack>, @NonNull GasStack> getOutputDefinition() {
+    public Pair<List<@NonNull ItemStack>, @NonNull GasStack> getOutputDefinition() {
         if (outputItem.isEmpty()) {
             return Pair.of(Collections.emptyList(), this.outputGas);
         }
         return Pair.of(Collections.singletonList(this.outputItem), this.outputGas);
     }
 
-    public @NonNull Pair<@NonNull ItemStack, @NonNull GasStack> getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
+    public Pair<@NonNull ItemStack, @NonNull GasStack> getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
         return Pair.of(this.outputItem.copy(), this.outputGas.copy());
     }
 

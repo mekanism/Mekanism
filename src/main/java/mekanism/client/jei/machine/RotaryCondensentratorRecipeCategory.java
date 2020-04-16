@@ -2,7 +2,6 @@ package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.gui.element.GuiDownArrow;
@@ -98,7 +97,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
         } else if (recipe.hasFluidToGas()) {
             //Setup fluid
             IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-            @NonNull List<FluidStack> fluidInputs = recipe.getFluidInput().getRepresentations();
+            List<FluidStack> fluidInputs = recipe.getFluidInput().getRepresentations();
             int max = fluidInputs.stream().mapToInt(FluidStack::getAmount).filter(input -> input >= 0).max().orElse(0);
             fluidStacks.init(0, false, 134 - xOffset, 14 - yOffset, 16, 58, max, false, fluidOverlayLarge);
             fluidStacks.set(0, fluidInputs);

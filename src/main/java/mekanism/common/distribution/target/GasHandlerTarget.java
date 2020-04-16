@@ -1,5 +1,6 @@
 package mekanism.common.distribution.target;
 
+import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
@@ -8,7 +9,7 @@ import mekanism.common.distribution.SplitInfo;
 
 public class GasHandlerTarget extends Target<IGasHandler, Long, @NonNull GasStack> {
 
-    public GasHandlerTarget(@NonNull GasStack type) {
+    public GasHandlerTarget(@Nonnull GasStack type) {
         this.extra = type;
     }
 
@@ -18,7 +19,7 @@ public class GasHandlerTarget extends Target<IGasHandler, Long, @NonNull GasStac
     }
 
     @Override
-    protected Long simulate(IGasHandler handler, @NonNull GasStack gasStack) {
+    protected Long simulate(IGasHandler handler, @Nonnull GasStack gasStack) {
         return gasStack.getAmount() - handler.insertGas(gasStack, Action.SIMULATE).getAmount();
     }
 }

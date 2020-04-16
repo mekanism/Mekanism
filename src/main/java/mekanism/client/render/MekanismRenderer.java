@@ -205,7 +205,7 @@ public class MekanismRenderer {
         if (stack.isEmpty()) {
             return -1;
         }
-        int color = stack.getType().getTint();
+        int color = stack.getChemicalTint();
         return getColorARGB(getRed(color), getGreen(color), getBlue(color), Math.min(1, scale + 0.2F));
     }
 

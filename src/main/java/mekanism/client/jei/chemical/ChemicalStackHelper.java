@@ -37,7 +37,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public String getUniqueId(STACK ingredient) {
-        return getType().toLowerCase(Locale.ROOT) + ":" + ingredient.getType().getRegistryName();
+        return getType().toLowerCase(Locale.ROOT) + ":" + ingredient.getTypeRegistryName();
     }
 
     @Override
@@ -47,7 +47,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public String getModId(STACK ingredient) {
-        return ingredient.getType().getRegistryName().getNamespace();
+        return ingredient.getTypeRegistryName().getNamespace();
     }
 
     /*@Override
@@ -62,7 +62,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public String getResourceId(STACK ingredient) {
-        return ingredient.getType().getRegistryName().getPath();
+        return ingredient.getTypeRegistryName().getPath();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mekanism.common.distribution.target;
 
+import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.math.MathUtils;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -17,7 +18,7 @@ public class FluidTransmitterSaveTarget extends Target<IGridTransmitter<IFluidHa
 
     private FluidStack currentStored = FluidStack.EMPTY;
 
-    public FluidTransmitterSaveTarget(@NonNull FluidStack type) {
+    public FluidTransmitterSaveTarget(@Nonnull FluidStack type) {
         this.extra = type;
     }
 
@@ -34,7 +35,7 @@ public class FluidTransmitterSaveTarget extends Target<IGridTransmitter<IFluidHa
     }
 
     @Override
-    protected Integer simulate(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter, @NonNull FluidStack fluidStack) {
+    protected Integer simulate(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter, @Nonnull FluidStack fluidStack) {
         if (!currentStored.isEmpty() && !currentStored.isFluidEqual(fluidStack)) {
             return 0;
         }

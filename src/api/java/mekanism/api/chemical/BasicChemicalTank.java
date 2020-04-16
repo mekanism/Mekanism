@@ -31,7 +31,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     protected STACK stored;
 
     protected BasicChemicalTank(long capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert,
-        Predicate<@NonNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator) {
+          Predicate<@NonNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator) {
         this.capacity = capacity;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -40,14 +40,8 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
         stored = getEmptyStack();
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @apiNote We return a cached value from this that if modified won't actually end up having any information about the tank get changed.
-     */
     @Override
     public STACK getStack() {
-        //TODO: Debate doing what the JavaDoc says. See BasicInventorySlot#getStack for details
         return stored;
     }
 
@@ -150,8 +144,8 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying, and can also
+     * directly modify our stack instead of having to make a copy.
      */
     @Override
     public long setStackSize(long amount, Action action) {
@@ -183,10 +177,6 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      */
     @Override
     public long growStack(long amount, Action action) {
-        //TODO: We should go through all the places we have TODOs about errors/warnings, and debate removing them/add
-        // some form of graceful handling as it is valid they may not grow the full amount due to rate limiting
-        // Though I believe most places we manually call it we have already done a simulation, which should really
-        // have caught any rate limit issues
         long current = getStored();
         if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk long overflow
@@ -201,7 +191,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
     public boolean isEmpty() {
@@ -211,7 +201,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
     public long getStored() {
@@ -221,7 +211,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
     public CHEMICAL getType() {
@@ -231,7 +221,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
     public boolean isTypeEqual(STACK other) {
@@ -241,7 +231,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
     public boolean isTypeEqual(CHEMICAL other) {
@@ -261,7 +251,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
     public CompoundNBT serializeNBT() {
