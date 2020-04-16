@@ -323,7 +323,7 @@
   "description.mekanism.osmium_ore": "معدن قوي يمكن العثور عليه في أي ارتفاع تقريبا في العالم. ومن المعروف أن لها استخدامات عديدة في بناء الآلات.",
   "description.mekanism.personal_chest": "صندوق فتحة 54 يمكن فتحه في أي مكان - حتى من المخزون الخاص بك.",
   "description.mekanism.precision_sawmill": "آلة تستخدم لمعالجة الجذوع وغيرها من الأصناف الخشبية بكفاءة أكبر، وكذلك للحصول على المنشورات.",
-  "description.mekanism.pressure_disperser": "تستخدم القطعة البخارية المشتتة عبر بنية متعددة القطع. وينبغي أن تشكل هذه القطع سطح أفقي متقطع من أجل التحكم بشكل صحيح في تدفق البخار.",
+  "description.mekanism.pressure_disperser": "A block used to disperse steam throughout a multiblock structure. These should form a gapless, horizontal plane in order to properly control steam flow.",
   "description.mekanism.pressurized_reaction_chamber": "آلة متقدمة تقوم بمعالجة خليط صلب وسائل وغازي وتنتج منتج غازي وصلب على حد سواء.",
   "description.mekanism.purification_chamber": "آلة متقدمة قادرة على معالجة الخامات في ثلاث كتلات تعمل كمرحلة أولية من معالجة الركاز بنسبة 300 في المائة.",
   "description.mekanism.quantum_entangloporter": "كتلة متقدمة للغاية قادرة على نقل أي مورد عملي عبر مسافات وأبعاد طويلة.",
