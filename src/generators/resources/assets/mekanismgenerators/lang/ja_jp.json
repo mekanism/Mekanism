@@ -73,7 +73,7 @@
   "reactor.mekanismgenerators.fuel.edit_rate": "レートを編集: ",
   "reactor.mekanismgenerators.fuel.injection_rate": "合成レート: %s",
   "reactor.mekanismgenerators.heat": "熱",
-  "reactor.mekanismgenerators.heat.case": "Case: %s",
+  "reactor.mekanismgenerators.heat.case": "ケース熱: %s",
   "reactor.mekanismgenerators.heat.plasma": "プラズマ: %s",
   "reactor.mekanismgenerators.logic.active_cooling": "冷却尺度",
   "reactor.mekanismgenerators.logic.capacity": "熱が飽和した時",
