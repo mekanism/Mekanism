@@ -11,8 +11,8 @@ import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -33,7 +33,11 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -44,18 +48,18 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IConfigurable {
 
-    private static EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
-    private Set<BlockPos> activeNodes = new ObjectLinkedOpenHashSet<>();
-    private Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();
-    public boolean finishedCalc;
-    public BasicFluidTank fluidTank;
+    private static final EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
     /**
      * How many ticks it takes to run an operation.
      */
-    public int BASE_TICKS_REQUIRED = 20;
+    public static final int BASE_TICKS_REQUIRED = 20;
+    private final Set<BlockPos> activeNodes = new ObjectLinkedOpenHashSet<>();
+    private final Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();
+    public boolean finishedCalc;
     public int ticksRequired = BASE_TICKS_REQUIRED;
     /**
      * How many ticks this machine has been operating for.
@@ -63,6 +67,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public int operatingTicks;
 
     private MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer;
+    public BasicFluidTank fluidTank;
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
@@ -75,9 +80,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        //TODO: Is there a better position to use, should it maybe get the default fluid state
-        builder.addTank(fluidTank = BasicFluidTank.input(10_000,
-              fluid -> fluid.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluid), this), RelativeSide.TOP);
+        builder.addTank(fluidTank = BasicFluidTank.input(10_000, this::isValidFluid, this), RelativeSide.TOP);
         return builder.build();
     }
 
@@ -99,12 +102,15 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         return builder.build();
     }
 
+    private boolean isValidFluid(@Nonnull FluidStack stack) {
+        return stack.getFluid().getAttributes().canBePlacedInWorld(getWorld(), pos.down(), stack);
+    }
+
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.fillTank(outputSlot);
-
         if (MekanismUtils.canFunction(this) && !fluidTank.isEmpty()) {
             FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
@@ -115,14 +121,11 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                 if (operatingTicks >= ticksRequired) {
                     operatingTicks = 0;
                     if (finishedCalc) {
-                        BlockPos below = getPos().offset(Direction.DOWN);
-                        if (canReplace(below, false, false) && fluidTank.getFluidAmount() >= FluidAttributes.BUCKET_VOLUME) {
-                            if (fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, below, fluidTank.getFluid())) {
-                                //TODO: Set fluid state??
-                                world.setBlockState(below, MekanismUtils.getFlowingBlockState(fluidTank.getFluid()));
-                                energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                                fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
-                            }
+                        BlockPos below = getPos().down();
+                        if (canReplace(below, false, false) && canExtractBucket() &&
+                            MekanismUtils.tryPlaceContainedLiquid(null, world, below, fluidTank.getFluid(), null)) {
+                            energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                            fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                         }
                     } else {
                         doPlenish();
@@ -132,6 +135,10 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         }
     }
 
+    private boolean canExtractBucket() {
+        return fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.SIMULATE, AutomationType.INTERNAL).getAmount() == FluidAttributes.BUCKET_VOLUME;
+    }
+
     private void doPlenish() {
         if (usedNodes.size() >= MekanismConfig.general.maxPlenisherNodes.get()) {
             finishedCalc = true;
@@ -139,7 +146,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         }
         if (activeNodes.isEmpty()) {
             if (usedNodes.isEmpty()) {
-                BlockPos below = getPos().offset(Direction.DOWN);
+                BlockPos below = getPos().down();
                 if (!canReplace(below, true, true)) {
                     finishedCalc = true;
                     return;
@@ -150,42 +157,59 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                 return;
             }
         }
-
         Set<BlockPos> toRemove = new ObjectOpenHashSet<>();
-        for (BlockPos coordPos : activeNodes) {
-            if (MekanismUtils.isBlockLoaded(world, coordPos)) {
-                if (canReplace(coordPos, true, false) && !fluidTank.isEmpty()) {
-                    world.setBlockState(coordPos, MekanismUtils.getFlowingBlockState(fluidTank.getFluid()));
+        for (BlockPos nodePos : activeNodes) {
+            if (MekanismUtils.isBlockLoaded(world, nodePos)) {
+                if (canReplace(nodePos, true, false) && canExtractBucket() &&
+                    MekanismUtils.tryPlaceContainedLiquid(null, world, nodePos, fluidTank.getFluid(), null)) {
                     fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                 }
-
                 for (Direction dir : dirs) {
-                    BlockPos sidePos = coordPos.offset(dir);
+                    BlockPos sidePos = nodePos.offset(dir);
                     if (MekanismUtils.isBlockLoaded(world, sidePos) && canReplace(sidePos, true, true)) {
                         activeNodes.add(sidePos);
                     }
                 }
-                toRemove.add(coordPos);
+                toRemove.add(nodePos);
                 break;
             } else {
-                toRemove.add(coordPos);
+                toRemove.add(nodePos);
             }
         }
         usedNodes.addAll(toRemove);
         activeNodes.removeAll(toRemove);
     }
 
-    public boolean canReplace(BlockPos pos, boolean checkNodes, boolean isPathfinding) {
+    private boolean canReplace(BlockPos pos, boolean checkNodes, boolean isPathfinding) {
         if (checkNodes && usedNodes.contains(pos)) {
             return false;
         }
-        if (world.isAirBlock(pos) || MekanismUtils.isDeadFluid(world, pos)) {
+        if (world.isAirBlock(pos)) {
             return true;
         }
-        if (MekanismUtils.isFluid(world, pos)) {
-            return isPathfinding;
+        IFluidState currentFluidState = world.getFluidState(pos);
+        if (!currentFluidState.isEmpty()) {
+            //There is currently a fluid in the spot
+            if (currentFluidState.isSource()) {
+                //If it is a source return based on if we are path finding
+                return isPathfinding;
+            }
+            //Always return true if it is not a source block
+            return true;
         }
-        return MekanismUtils.isValidReplaceableBlock(world, pos);
+        BlockState state = world.getBlockState(pos);
+        FluidStack stack = fluidTank.getFluid();
+        if (stack.isEmpty()) {
+            //If we are empty, base it off of if it is replaceable in general or if it is a liquid container
+            return MekanismUtils.isValidReplaceableBlock(world, pos) || state.getBlock() instanceof ILiquidContainer;
+        }
+        Fluid fluid = stack.getFluid();
+        if (state.isReplaceable(fluid)) {
+            //If we can replace the block then return so
+            return true;
+        }
+        //Otherwise just return if it is a liquid container that can support the type of fluid we are offering
+        return state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
     }
 
     @Nonnull
@@ -194,20 +218,18 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         nbtTags.putBoolean(NBTConstants.FINISHED, finishedCalc);
-
-        ListNBT activeList = new ListNBT();
-        for (BlockPos wrapper : activeNodes) {
-            activeList.add(NBTUtil.writeBlockPos(wrapper));
-        }
-        if (!activeList.isEmpty()) {
+        if (!activeNodes.isEmpty()) {
+            ListNBT activeList = new ListNBT();
+            for (BlockPos wrapper : activeNodes) {
+                activeList.add(NBTUtil.writeBlockPos(wrapper));
+            }
             nbtTags.put(NBTConstants.ACTIVE_NODES, activeList);
         }
-
-        ListNBT usedList = new ListNBT();
-        for (BlockPos obj : usedNodes) {
-            activeList.add(NBTUtil.writeBlockPos(obj));
-        }
-        if (!activeList.isEmpty()) {
+        if (!usedNodes.isEmpty()) {
+            ListNBT usedList = new ListNBT();
+            for (BlockPos obj : usedNodes) {
+                usedList.add(NBTUtil.writeBlockPos(obj));
+            }
             nbtTags.put(NBTConstants.USED_NODES, usedList);
         }
         return nbtTags;
@@ -218,7 +240,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         super.read(nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
         finishedCalc = nbtTags.getBoolean(NBTConstants.FINISHED);
-
         if (nbtTags.contains(NBTConstants.ACTIVE_NODES, NBT.TAG_LIST)) {
             ListNBT tagList = nbtTags.getList(NBTConstants.ACTIVE_NODES, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {

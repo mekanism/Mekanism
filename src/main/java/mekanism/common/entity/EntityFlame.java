@@ -8,7 +8,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.registries.MekanismEntityTypes;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
@@ -144,8 +143,8 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         } else if (blockRayTrace.getType() != Type.MISS) {
             BlockPos hitPos = blockRayTrace.getPos();
             Direction hitSide = blockRayTrace.getFace();
-            boolean fluid = MekanismUtils.isFluid(world, hitPos) || MekanismUtils.isDeadFluid(world, hitPos);
-            if (!world.isRemote && MekanismConfig.general.aestheticWorldDamage.get() && !fluid) {
+            boolean hitFluid = !world.getFluidState(hitPos).isEmpty();
+            if (!world.isRemote && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
                 if (mode == FlamethrowerMode.HEAT) {
                     smeltBlock(hitPos);
                 } else if (mode == FlamethrowerMode.INFERNO) {
@@ -153,11 +152,10 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     BlockPos sidePos = hitPos.offset(hitSide);
                     BlockState sideState = world.getBlockState(sidePos);
                     PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
-
                     if (FlintAndSteelItem.canSetFire(sideState, world, sidePos)) {
                         world.setBlockState(sidePos, Blocks.FIRE.getDefaultState());
                     } else if (FlintAndSteelItem.isUnlitCampfire(hitState)) {
-                        world.setBlockState(hitPos, hitState.with(BlockStateProperties.LIT, Boolean.valueOf(true)));
+                        world.setBlockState(hitPos, hitState.with(BlockStateProperties.LIT, true));
                     } else if (hitState.isFlammable(world, hitPos, hitSide)) {
                         hitState.catchFire(world, hitPos, hitSide, shooter);
                         if (hitState.getBlock() instanceof TNTBlock) {
@@ -166,7 +164,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     }
                 }
             }
-            if (fluid) {
+            if (hitFluid) {
                 spawnParticlesAt(getPosition());
                 playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
             }

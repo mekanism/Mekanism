@@ -439,13 +439,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         renderLocation = new BlockPos(renderLocation.getX(), renderY, renderLocation.getZ());
         switch (getDirection()) {
             case SOUTH:
-                renderLocation = renderLocation.offset(Direction.NORTH).offset(Direction.WEST);
+                renderLocation = renderLocation.north().west();
                 break;
             case WEST:
-                renderLocation = renderLocation.offset(Direction.NORTH);
+                renderLocation = renderLocation.north();
                 break;
             case EAST:
-                renderLocation = renderLocation.offset(Direction.WEST);
+                renderLocation = renderLocation.west();
                 break;
         }
         return renderLocation;

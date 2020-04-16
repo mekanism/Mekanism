@@ -3,7 +3,6 @@ package mekanism.common.item.block.machine;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -33,36 +32,26 @@ import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
-import net.minecraft.block.ILiquidContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -208,7 +197,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                             || !player.canPlayerEdit(pos.offset(result.getFace()), result.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
-                        if (tryPlaceContainedLiquid(player, world, pos, fluidHandlerItem.getFluidInTank(0), result.getFace())) {
+                        if (MekanismUtils.tryPlaceContainedLiquid(player, world, pos, fluidHandlerItem.getFluidInTank(0), result.getFace())) {
                             if (!player.isCreative()) {
                                 if (fluidTank.shrinkStack(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE) != FluidAttributes.BUCKET_VOLUME) {
                                     MekanismUtils.logMismatchedStackSize();
@@ -223,45 +212,6 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
             }
         }
         return new ActionResult<>(ActionResultType.PASS, stack);
-    }
-
-    private boolean tryPlaceContainedLiquid(@Nullable PlayerEntity player, World world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable Direction side) {
-        Fluid fluid = fluidStack.getFluid();
-        if (!fluid.getAttributes().canBePlacedInWorld(world, pos, fluidStack)) {
-            //If there is no fluid or it cannot be placed in the world just
-            return false;
-        }
-        BlockState state = world.getBlockState(pos);
-        boolean isReplaceable = state.isReplaceable(fluid);
-        boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
-        if (world.isAirBlock(pos) || isReplaceable || canContainFluid) {
-            if (world.getDimension().doesWaterVaporize() && fluid.isIn(FluidTags.WATER)) {
-                world.playSound(player, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
-                for (int l = 0; l < 8; l++) {
-                    world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0, 0, 0);
-                }
-            } else if (canContainFluid) {
-                if (((ILiquidContainer) state.getBlock()).receiveFluid(world, pos, state, ((FlowingFluid) fluid).getStillFluidState(false))) {
-                    playEmptySound(player, world, pos, fluidStack);
-                }
-            } else {
-                if (!world.isRemote && isReplaceable && !state.getMaterial().isLiquid()) {
-                    world.destroyBlock(pos, true);
-                }
-                playEmptySound(player, world, pos, fluidStack);
-                world.setBlockState(pos, fluid.getDefaultState().getBlockState(), BlockFlags.DEFAULT_AND_RERENDER);
-            }
-            return true;
-        }
-        return side != null && tryPlaceContainedLiquid(player, world, pos.offset(side), fluidStack, null);
-    }
-
-    private void playEmptySound(@Nullable PlayerEntity player, IWorld worldIn, BlockPos pos, @Nonnull FluidStack fluidStack) {
-        SoundEvent soundevent = fluidStack.getFluid().getAttributes().getEmptySound();
-        if (soundevent == null) {
-            soundevent = fluidStack.getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY;
-        }
-        worldIn.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
 
     private boolean validFluid(@Nonnull IExtendedFluidTank fluidTank, @Nonnull FluidStack fluidStack) {

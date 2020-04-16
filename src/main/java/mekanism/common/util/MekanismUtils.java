@@ -33,7 +33,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.GenericWrench;
 import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
@@ -43,12 +42,12 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -56,11 +55,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.ChunkPos;
@@ -82,10 +85,7 @@ import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Contract;
@@ -499,84 +499,40 @@ public final class MekanismUtils {
         world.getLightManager().checkBlock(pos);
     }
 
-    /**
-     * Whether or not a certain block is considered a fluid.
-     *
-     * @param world - world the block is in
-     * @param pos   - coordinates
-     *
-     * @return if the block is a fluid
-     */
-    public static boolean isFluid(World world, BlockPos pos) {
-        return !getFluid(world, pos, false).isEmpty();
-    }
-
-    /**
-     * Gets a fluid from a certain location.
-     *
-     * @param world - world the block is in
-     * @param pos   - location of the block
-     *
-     * @return the fluid at the certain location, null if it doesn't exist
-     */
-    @Nonnull
-    public static FluidStack getFluid(World world, BlockPos pos, boolean filter) {
-        BlockState state = world.getBlockState(pos);
-        Block block = state.getBlock();
-        if (block == Blocks.WATER && state.get(FlowingFluidBlock.LEVEL) == 0) {
-            if (!filter) {
-                return new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
-            }
-            return MekanismFluids.HEAVY_WATER.getFluidStack(10);
-        } else if (block == Blocks.LAVA && state.get(FlowingFluidBlock.LEVEL) == 0) {
-            return new FluidStack(Fluids.LAVA, FluidAttributes.BUCKET_VOLUME);
-        } else if (block instanceof IFluidBlock) {
-            IFluidBlock fluid = (IFluidBlock) block;
-            if (state.getProperties().contains(FlowingFluidBlock.LEVEL) && state.get(FlowingFluidBlock.LEVEL) == 0) {
-                return fluid.drain(world, pos, FluidAction.SIMULATE);
-            }
-        }
-        return FluidStack.EMPTY;
-    }
-
-    /**
-     * Whether or not a block is a dead fluid.
-     *
-     * @param world - world the block is in
-     * @param pos   - coordinates
-     *
-     * @return if the block is a dead fluid
-     */
-    public static boolean isDeadFluid(World world, BlockPos pos) {
-        Block block = world.getBlockState(pos).getBlock();
-        return block instanceof FlowingFluidBlock || block instanceof IFluidBlock;
-
-    }
-
-    /**
-     * Gets the flowing block type from a Forge-based fluid. Incorporates the MC system of fliuds as well.
-     *
-     * @param fluidStack - the fluid type
-     *
-     * @return the block corresponding to the given fluid
-     */
-    public static BlockState getFlowingBlockState(@Nonnull FluidStack fluidStack) {
-        if (fluidStack.isEmpty()) {
-            return Blocks.AIR.getDefaultState();
-        }
+    public static boolean tryPlaceContainedLiquid(@Nullable PlayerEntity player, World world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable Direction side) {
         Fluid fluid = fluidStack.getFluid();
-        if (fluid == Fluids.WATER) {
-            //TODO: Is this needed
-            return Blocks.WATER.getDefaultState();
-        } else if (fluid == Fluids.LAVA) {
-            //TODO: Is this needed
-            return Blocks.LAVA.getDefaultState();
+        if (!fluid.getAttributes().canBePlacedInWorld(world, pos, fluidStack)) {
+            //If there is no fluid or it cannot be placed in the world just
+            return false;
         }
-        //TODO: Do we want to check the flowing one
-        /*if (fluid instanceof FlowingFluid) {
-            fluid = ((FlowingFluid) fluid).getFlowingFluid();
-        }*/
-        return fluid.getDefaultState().getBlockState();
+        BlockState state = world.getBlockState(pos);
+        boolean isReplaceable = state.isReplaceable(fluid);
+        boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
+        if (world.isAirBlock(pos) || isReplaceable || canContainFluid) {
+            if (world.getDimension().doesWaterVaporize() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
+                fluid.getAttributes().vaporize(player, world, pos, fluidStack);
+            } else if (canContainFluid) {
+                if (((ILiquidContainer) state.getBlock()).receiveFluid(world, pos, state, ((FlowingFluid) fluid).getStillFluidState(false))) {
+                    playEmptySound(player, world, pos, fluidStack);
+                }
+            } else {
+                if (!world.isRemote() && isReplaceable && !state.getMaterial().isLiquid()) {
+                    world.destroyBlock(pos, true);
+                }
+                playEmptySound(player, world, pos, fluidStack);
+                world.setBlockState(pos, fluid.getDefaultState().getBlockState(), BlockFlags.DEFAULT_AND_RERENDER);
+            }
+            return true;
+        }
+        return side != null && tryPlaceContainedLiquid(player, world, pos.offset(side), fluidStack, null);
+    }
+
+    private static void playEmptySound(@Nullable PlayerEntity player, IWorld world, BlockPos pos, @Nonnull FluidStack fluidStack) {
+        SoundEvent soundevent = fluidStack.getFluid().getAttributes().getEmptySound(world, pos);
+        if (soundevent == null) {
+            soundevent = fluidStack.getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY;
+        }
+        world.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
 
     /**
