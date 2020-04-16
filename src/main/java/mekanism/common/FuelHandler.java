@@ -9,6 +9,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IGasProvider;
 import net.minecraft.tags.Tag;
 
+//TODO - V10: Rewrite the gas -> fuel system into its own recipe
 public class FuelHandler {
 
     public static final FuelGas EMPTY_FUEL = new FuelGas(0, FloatingLong.ZERO);

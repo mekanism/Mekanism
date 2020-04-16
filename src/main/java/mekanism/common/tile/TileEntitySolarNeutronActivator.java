@@ -129,7 +129,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     private boolean canFunction(BlockPos positionAbove) {
-        // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
+        //TODO - V10: Ideally the neutron activator should use the sky brightness to determine throughput; but
         // changing this would dramatically affect a lot of setups with Fusion reactors which can take
         // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
         // rain checks.

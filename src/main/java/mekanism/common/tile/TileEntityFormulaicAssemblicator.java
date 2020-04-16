@@ -150,7 +150,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                             int filled = 0;
                             for (IInventorySlot stockSlot : inputSlots) {
                                 if (!stockSlot.isEmpty()) {
-                                    //TODO: Does this need to copy the stack?
+                                    //Note: If odd things start happening due to a recipe modifying things improperly
+                                    // then copy the stack before calling the parameter
                                     if (formula.isIngredientInPos(world, stockSlot.getStack(), indices.getInt(0))) {
                                         filled++;
                                     }
@@ -348,7 +349,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             for (IInventorySlot craftingSlot : craftingGridSlots) {
                 if (!craftingSlot.isEmpty()) {
                     if (craftingSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                        //TODO: Print error/warning
+                        MekanismUtils.logMismatchedStackSize();
                     }
                 }
             }
@@ -483,11 +484,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                             int newCount = compareStack.getCount() + stockStack.getCount();
                             int newCompareSize = Math.min(maxCompareSize, newCount);
                             if (compareSlot.setStackSize(newCompareSize, Action.EXECUTE) != newCompareSize) {
-                                //TODO: Print error
+                                MekanismUtils.logMismatchedStackSize();
                             }
                             int newStockSize = Math.max(0, newCount - maxCompareSize);
                             if (stockSlot.setStackSize(newStockSize, Action.EXECUTE) != newStockSize) {
-                                //TODO: Print error
+                                MekanismUtils.logMismatchedStackSize();
                             }
                             markDirty(false);
                             return;

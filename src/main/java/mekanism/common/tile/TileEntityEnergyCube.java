@@ -41,7 +41,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     /**
      * This Energy Cube's tier.
      */
-    public EnergyCubeTier tier;//TODO: Make this private
+    private EnergyCubeTier tier;
     private float prevScale;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
@@ -105,6 +105,10 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         dischargeSlot.setSlotOverlay(SlotOverlay.MINUS);
         chargeSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
+    }
+
+    public EnergyCubeTier getTier() {
+        return tier;
     }
 
     @Override

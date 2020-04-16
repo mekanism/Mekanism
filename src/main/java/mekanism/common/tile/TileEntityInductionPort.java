@@ -95,8 +95,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             return super.getInventorySlots(null);
         }
         if (!hasInventory() || structure == null) {
-            //TODO: Previously we had a check like !isRemote() ? structure == null : !clientHasStructure
-            // Do we still need this if we ever actually needed it?
             //If we don't have a structure then return that we have no slots accessible
             return Collections.emptyList();
         }

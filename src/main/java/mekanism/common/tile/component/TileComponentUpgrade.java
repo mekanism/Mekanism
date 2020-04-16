@@ -28,7 +28,7 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
     /**
      * How long it takes this machine to install an upgrade.
      */
-    private static int UPGRADE_TICKS_REQUIRED = 40;
+    private static final int UPGRADE_TICKS_REQUIRED = 40;
     /**
      * How many upgrade ticks have progressed.
      */
@@ -36,9 +36,9 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
     /**
      * TileEntity implementing this component.
      */
-    private TileEntityMekanism tile;
+    private final TileEntityMekanism tile;
     private Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
-    private Set<Upgrade> supported = EnumSet.noneOf(Upgrade.class);
+    private final Set<Upgrade> supported = EnumSet.noneOf(Upgrade.class);
     /**
      * The inventory slot the upgrade slot of this component occupies.
      */

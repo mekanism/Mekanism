@@ -1,5 +1,8 @@
 package mekanism.common.util;
 
+import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +11,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.annotations.Contract;
-import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
@@ -31,8 +30,8 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.integration.GenericWrench;
+import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
@@ -89,6 +88,7 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -190,7 +190,6 @@ public final class MekanismUtils {
         return 0;
     }
 
-    //TODO: Use these methods in various places
     public static float getScale(float prevScale, IExtendedFluidTank tank) {
         return getScale(prevScale, tank.getFluidAmount(), tank.getCapacity(), tank.isEmpty());
     }
@@ -215,7 +214,6 @@ public final class MekanismUtils {
             targetScale = 0;
         } else {
             FloatingLong scale = container.getEnergy().divide(maxEnergy);
-            //TODO: FloatingLong check if this has any overflow issues
             targetScale = scale.floatValue();
         }
         return getScale(prevScale, targetScale, container.isEmpty());
@@ -324,8 +322,7 @@ public final class MekanismUtils {
     public static boolean isGettingPowered(World world, BlockPos pos) {
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos offset = pos.offset(side);
-            //TODO: Why does it offset twice
-            if (isBlockLoaded(world, pos) && isBlockLoaded(world, pos.offset(side))) {
+            if (isBlockLoaded(world, pos) && isBlockLoaded(world, offset)) {
                 BlockState blockState = world.getBlockState(offset);
                 boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
                 if (weakPower && isDirectlyGettingPowered(world, offset)) {
@@ -403,7 +400,6 @@ public final class MekanismUtils {
     public static void notifyNeighborofChange(World world, BlockPos pos, BlockPos fromPos) {
         BlockState state = world.getBlockState(pos);
         state.getBlock().onNeighborChange(state, world, pos, fromPos);
-        //TODO: Check if this should be true for moving
         state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
     }
 
@@ -418,7 +414,6 @@ public final class MekanismUtils {
         BlockPos neighbor = fromPos.offset(neighborSide);
         BlockState state = world.getBlockState(neighbor);
         state.getBlock().onNeighborChange(state, world, neighbor, fromPos);
-        //TODO: Check if this should be true for moving
         state.neighborChanged(world, neighbor, world.getBlockState(fromPos).getBlock(), fromPos, false);
     }
 
@@ -579,7 +574,6 @@ public final class MekanismUtils {
         }
         //TODO: Do we want to check the flowing one
         /*if (fluid instanceof FlowingFluid) {
-            //TODO: Is this correct
             fluid = ((FlowingFluid) fluid).getFlowingFluid();
         }*/
         return fluid.getDefaultState().getBlockState();
@@ -759,7 +753,6 @@ public final class MekanismUtils {
     }
 
     public static CraftingInventory getDummyCraftingInv() {
-        //TODO: is this fine for the id
         Container tempContainer = new Container(ContainerType.CRAFTING, 1) {
             @Override
             public boolean canInteractWith(@Nonnull PlayerEntity player) {
@@ -829,42 +822,11 @@ public final class MekanismUtils {
      * @return if the player has operator privileges
      */
     public static boolean isOp(PlayerEntity p) {
-        if (!(p instanceof ServerPlayerEntity)) {
-            return false;
+        if (p instanceof ServerPlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity) p;
+            return MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().canSendCommands(player.getGameProfile());
         }
-        ServerPlayerEntity player = (ServerPlayerEntity) p;
-        return MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().canSendCommands(player.getGameProfile());
-    }
-
-    /**
-     * Gets the item ID from a given ItemStack
-     *
-     * @param itemStack - ItemStack to check
-     *
-     * @return item ID of the ItemStack
-     */
-    public static int getID(ItemStack itemStack) {
-        if (itemStack.isEmpty()) {
-            return -1;
-        }
-        return Item.getIdFromItem(itemStack.getItem());
-    }
-
-    @Deprecated//todo remove this
-    public static boolean existsAndInstance(Object obj, String className) {
-        Class<?> theClass;
-        if (classesFound.containsKey(className)) {
-            theClass = classesFound.get(className);
-        } else {
-            try {
-                theClass = Class.forName(className);
-                classesFound.put(className, theClass);
-            } catch (ClassNotFoundException e) {
-                classesFound.put(className, null);
-                return false;
-            }
-        }
-        return theClass != null && theClass.isInstance(obj);
+        return false;
     }
 
     /**
@@ -962,7 +924,6 @@ public final class MekanismUtils {
             //If the world is null or its a world reader and the block is not loaded, return null
             return null;
         }
-        //TODO: This causes freezes if being called from onLoad
         return world.getTileEntity(pos);
     }
 
@@ -978,7 +939,6 @@ public final class MekanismUtils {
     @Nullable
     @Contract("_, null, _ -> null")
     public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IBlockReader world, @Nonnull BlockPos pos) {
-        //TODO: Should we go through usages of this where TileEntityMekanism is used, and use a more restrictive tile type?
         return getTileEntity(clazz, world, pos, false);
     }
 
@@ -989,7 +949,6 @@ public final class MekanismUtils {
             //If the world is null or its a world reader and the block is not loaded, return null
             return null;
         }
-        //TODO: This causes freezes if being called from onLoad
         TileEntity tile = world.getTileEntity(pos);
         if (tile == null) {
             return null;
@@ -1020,7 +979,7 @@ public final class MekanismUtils {
             return ((IWorldReader) world).isBlockLoaded(pos);
         }
         return true;
-    }//TODO: Make a util method for checking if a block is air that also ensures it is loaded?
+    }
 
     /**
      * Dismantles a block, dropping it and removing it from the world.

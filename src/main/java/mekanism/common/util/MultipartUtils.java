@@ -12,7 +12,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import org.apache.commons.lang3.tuple.Pair;
 
-//TODO: How much of this ray trace stuff is even needed now that MC is smarter about ray tracing and using VoxelShapes
 public final class MultipartUtils {
 
     /* taken from MCMP */

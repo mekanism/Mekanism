@@ -3,6 +3,7 @@ package mekanism.api.recipes.inputs;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -45,7 +46,7 @@ public class InputHelper {
                 if (!recipeInput.isEmpty()) {
                     int amount = recipeInput.getCount() * operations;
                     if (inventorySlot.shrinkStack(amount, Action.EXECUTE) != amount) {
-                        //TODO: Print error/warning that something went wrong
+                        MekanismAPI.logger.error("Stack size changed by a different amount than requested.", new Exception());
                     }
                 }
             }
@@ -102,7 +103,7 @@ public class InputHelper {
                 if (!inputGas.isEmpty()) {
                     long amount = recipeInput.getAmount() * operations;
                     if (tank.shrinkStack(amount, Action.EXECUTE) != amount) {
-                        //TODO: Print error/warning that something went wrong
+                        MekanismAPI.logger.error("Stack size changed by a different amount than requested.", new Exception());
                     }
                 }
             }
@@ -159,7 +160,7 @@ public class InputHelper {
                 if (!inputFluid.isEmpty()) {
                     int amount = recipeInput.getAmount() * operations;
                     if (fluidTank.shrinkStack(amount, Action.EXECUTE) != amount) {
-                        //TODO: Print error/warning that something went wrong
+                        MekanismAPI.logger.error("Stack size changed by a different amount than requested.", new Exception());
                     }
                 }
             }

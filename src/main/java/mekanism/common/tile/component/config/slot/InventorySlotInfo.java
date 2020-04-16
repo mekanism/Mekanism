@@ -26,7 +26,6 @@ public class InventorySlotInfo extends BaseSlotInfo {
     }
 
     public boolean hasSlot(IInventorySlot slot) {
-        //TODO: Check if this even works
         return getSlots().contains(slot);
     }
 }

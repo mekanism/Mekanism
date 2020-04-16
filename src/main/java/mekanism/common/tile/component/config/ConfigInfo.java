@@ -13,10 +13,7 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 
-//TODO: Should machine config stuff be in the API package?
 public class ConfigInfo {
-
-    //TODO: The old side config was an observable but was never used, do we want to reimplement that
 
     private final Supplier<Direction> facingSupplier;
     //TODO: Ejecting/can eject, how do we want to use these

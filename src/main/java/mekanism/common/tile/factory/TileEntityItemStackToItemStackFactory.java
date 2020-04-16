@@ -39,9 +39,6 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
             return true;
         }
         //If there is no cached item input or it doesn't match our fallback then it is an out of date cache, so we ignore the fact that we have a cache
-        //TODO: Decide if recipe.getOutput *should* assume that it is given a valid input or not
-        // Here we are using it as if it is not assuming it, but that is in part because it currently does not care about the value passed
-        // and if something does have extra checking to check the input as long as it checks for invalid ones this should still work
         ItemStack output = outputSlot.getStack();
         ItemStackToItemStackRecipe foundRecipe = findFirstRecipe(
               recipe -> recipe.getInput().testType(fallbackInput) && ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput), output));
@@ -106,9 +103,8 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
             setControlType(data.controlType);
             getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             sorting = data.sorting;
-            //TODO: Transfer recipe ticks?
-            //TODO: Transfer operating ticks properly
             energySlot.setStack(data.energySlot.getStack());
+            System.arraycopy(data.progress, 0, progress, 0, data.progress.length);
             for (int i = 0; i < data.inputSlots.size(); i++) {
                 inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
             }

@@ -133,7 +133,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             //Set default config directions
             heatConfig.fill(DataType.INPUT);
             heatConfig.setCanEject(false);
-            // TODO look into allowing heat output config, modify getAdjacent as needed rather than just checking canInput
+            //TODO - V10: look into allowing heat output config, modify getAdjacent as needed rather than just checking canInput
         }
 
         ejectorComponent = new TileComponentEjector(this);

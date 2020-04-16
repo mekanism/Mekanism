@@ -15,7 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-//TODO: Try to move some of this logic to TileEntityMultiblock?
 public class TileEntityThermalEvaporationBlock extends TileEntityMekanism {
 
     public Coord4D master;

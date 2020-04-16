@@ -10,6 +10,9 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.security.IOwnerItem;
+import mekanism.common.security.ISecurityItem;
+import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.security.SecurityFrequency;
 import net.minecraft.item.ItemStack;
 
 @ParametersAreNonnullByDefault
@@ -33,5 +36,33 @@ public class SecurityInventorySlot extends BasicInventorySlot {
 
     private SecurityInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
+    }
+
+    public void unlock(UUID ownerUUID) {
+        if (!isEmpty() && current.getItem() instanceof IOwnerItem) {
+            IOwnerItem item = (IOwnerItem) current.getItem();
+            UUID stackOwner = item.getOwnerUUID(current);
+            if (stackOwner != null && stackOwner.equals(ownerUUID)) {
+                item.setOwnerUUID(current, null);
+                if (item instanceof ISecurityItem) {
+                    ((ISecurityItem) item).setSecurity(current, SecurityMode.PUBLIC);
+                }
+            }
+        }
+    }
+
+    public void lock(UUID ownerUUID, SecurityFrequency frequency) {
+        if (!isEmpty() && current.getItem() instanceof IOwnerItem) {
+            IOwnerItem item = (IOwnerItem) current.getItem();
+            UUID stackOwner = item.getOwnerUUID(current);
+            if (stackOwner == null) {
+                item.setOwnerUUID(current, stackOwner = ownerUUID);
+            }
+            if (stackOwner.equals(ownerUUID)) {
+                if (item instanceof ISecurityItem) {
+                    ((ISecurityItem) item).setSecurity(current, frequency.securityMode);
+                }
+            }
+        }
     }
 }
