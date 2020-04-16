@@ -323,7 +323,7 @@
   "description.mekanism.osmium_ore": "Un mineral puternic care poate fi găsit la aproape orice înălţime în lume. Se ştie că are multe utilizări în construcţia de maşini.",
   "description.mekanism.personal_chest": "Un cufăr de 54 de sloturi care poate fi deschis oriunde, chiar și din propriul tău inventar.",
   "description.mekanism.precision_sawmill": "O mașină folosită pentru procesarea mai eficientă a buștenilor și a altor obiecte din lemn, precum și pentru obținerea de praf de cherestea.",
-  "description.mekanism.pressure_disperser": "Un bloc folosit dispersa aburul de-a lungul unei structuri multibloc. Acestea ar trebui să formeze un plan orizontal, cu scopul de a controla în mod corespunzător fluxul aburului.",
+  "description.mekanism.pressure_disperser": "A block used to disperse steam throughout a multiblock structure. These should form a gapless, horizontal plane in order to properly control steam flow.",
   "description.mekanism.pressurized_reaction_chamber": "Un dispozitiv avansat care prelucrează un amestec solid, lichid și gazos și creează atât un produs gazos, cât și unul solid.",
   "description.mekanism.purification_chamber": "O maşină avansată capabilă să proceseze minereuri în trei aglomerări, ceea ce reprezintă etapa iniţială de procesare a minereurilor de 300%.",
   "description.mekanism.quantum_entangloporter": "Un bloc foarte avansat capabil să transmită orice resursă practică pe distanțe lungi și pe dimensiuni.",
