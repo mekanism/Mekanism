@@ -18,8 +18,8 @@ import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.generators.client.gui.element.GuiReactorTab;
-import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
+import mekanism.generators.client.gui.element.GuiFusionReactorTab;
+import mekanism.generators.client.gui.element.GuiFusionReactorTab.FusionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -90,8 +90,8 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
         addButton(new GuiFluidGauge(() -> tile.waterTank, () -> tile.getFluidTanks(null), GaugeType.SMALL, this, 115, 84));
         addButton(new GuiGasGauge(() -> tile.steamTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 151, 84));
         addButton(new GuiEnergyGauge(tile.energyContainer, GaugeType.SMALL, this, 115, 46));
-        addButton(new GuiReactorTab(this, tile, ReactorTab.FUEL));
-        addButton(new GuiReactorTab(this, tile, ReactorTab.STAT));
+        addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
+        addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
     }
 
     @Override

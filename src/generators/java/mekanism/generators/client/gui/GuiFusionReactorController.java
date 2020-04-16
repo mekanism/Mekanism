@@ -7,8 +7,8 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.generators.client.gui.element.GuiReactorTab;
-import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
+import mekanism.generators.client.gui.element.GuiFusionReactorTab;
+import mekanism.generators.client.gui.element.GuiFusionReactorTab.FusionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,9 +27,9 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
         if (tile.isFormed()) {
             addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.energyContainer.getEnergy(), tile.energyContainer.getMaxEnergy())),
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(), this));
-            addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT));
-            addButton(new GuiReactorTab(this, tile, ReactorTab.FUEL));
-            addButton(new GuiReactorTab(this, tile, ReactorTab.STAT));
+            addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
+            addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
+            addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
         }
     }
 

@@ -12,6 +12,7 @@ import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.container.FusionReactorFuelTabContainer;
 import mekanism.generators.common.container.FusionReactorHeatTabContainer;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
+import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerEntity;
@@ -79,6 +80,8 @@ public class PacketGeneratorsGuiButtonPress {
         TAB_MAIN((tile, extra) -> {
             if (tile instanceof TileEntityTurbineCasing) {
                 return new ContainerProvider(GeneratorsLang.TURBINE, (i, inv, player) -> new MekanismTileContainer<>(GeneratorsContainerTypes.INDUSTRIAL_TURBINE, i, inv, (TileEntityTurbineCasing) tile));
+            } else if (tile instanceof TileEntityFissionReactorCasing) {
+                return new ContainerProvider(GeneratorsLang.FISSION_REACTOR, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.FISSION_REACTOR, i, inv, (TileEntityFissionReactorCasing) tile));
             }
             return null;
         }),
@@ -99,6 +102,8 @@ public class PacketGeneratorsGuiButtonPress {
                 return new ContainerProvider(GeneratorsLang.TURBINE_STATS, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.TURBINE_STATS, i, inv, (TileEntityTurbineCasing) tile));
             } else if (tile instanceof TileEntityFusionReactorController) {
                 return new ContainerProvider(GeneratorsLang.STATS_TAB, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.FUSION_REACTOR_STATS, i, inv, (TileEntityFusionReactorController) tile));
+            } else if (tile instanceof TileEntityFissionReactorCasing) {
+                return new ContainerProvider(GeneratorsLang.STATS_TAB, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.FISSION_REACTOR_STATS, i, inv, (TileEntityFissionReactorCasing) tile));
             }
             return null;
         });

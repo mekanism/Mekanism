@@ -68,6 +68,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             // burn reactor fuel, create energy
             if (structure.active) {
                 structure.burnFuel();
+            } else {
+                structure.lastBurnRate = 0;
             }
             if ((structure.lastBurnRate > 0) != structure.clientBurning) {
                 needsPacket = true;
@@ -111,7 +113,13 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
     public double getLastEnvironmentLoss() { return structure != null ? structure.lastEnvironmentLoss : 0; }
     public double getLastTransferLoss() { return structure != null ? structure.lastTransferLoss : 0; }
     public double getTemperature() { return structure != null ? structure.heatCapacitor.getTemperature() : 0; }
+    public long getHeatCapacity() { return structure != null ? Math.round(structure.heatCapacitor.getHeatCapacity()) : 0; }
+    public long getSurfaceArea() { return structure != null ? structure.surfaceArea : 0; }
+    public double getBoilEfficiency() { return structure != null ? (double) Math.round(structure.getBoilEfficiency() * 1000) / 1000 : 0; }
     public long getLastBoilRate() { return structure != null ? structure.lastBoilRate : 0; }
+    public long getLastBurnRate() { return structure != null ? structure.lastBurnRate : 0; }
+    public long getMaxBurnRate() { return structure != null ? structure.fuelAssemblies * SynchronizedFissionReactorData.BURN_PER_ASSEMBLY : 1; }
+    public long getRateLimit() { return structure != null ? structure.rateLimit : 0; }
     public boolean isReactorActive() { return structure != null ? structure.active : false; }
     public void setReactorActive(boolean active) { if (structure != null) structure.active = active; }
 
@@ -128,6 +136,12 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
         double temp = getTemperature();
         return temp < 600 ? EnumColor.BRIGHT_GREEN : (temp < 1000 ? EnumColor.YELLOW :
               (temp < 1200 ? EnumColor.ORANGE : (temp < 1600 ? EnumColor.RED : EnumColor.DARK_RED)));
+    }
+
+    public void setRateLimitFromPacket(int rate) {
+        if (structure != null) {
+            structure.rateLimit = Math.min(getMaxBurnRate(), rate);
+        }
     }
 
     @Override
@@ -241,6 +255,12 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
         }));
         container.track(SyncableLong.create(() -> structure == null ? 0 : structure.lastBurnRate, value -> {
             if (structure != null) structure.lastBurnRate = value;
+        }));
+        container.track(SyncableLong.create(() -> structure == null ? 0 : structure.rateLimit, value -> {
+            if (structure != null) structure.rateLimit = value;
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.surfaceArea, value -> {
+            if (structure != null) structure.surfaceArea = value;
         }));
     }
 }

@@ -19,6 +19,8 @@ import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.BooleanStateDisplay.ActiveDisabled;
+import mekanism.generators.client.gui.element.GuiFissionReactorTab;
+import mekanism.generators.client.gui.element.GuiFissionReactorTab.FissionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fission.SynchronizedFissionReactorData;
@@ -44,6 +46,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     @Override
     public void init() {
         super.init();
+        addButton(new GuiFissionReactorTab(this, tile, FissionReactorTab.STAT));
         addButton(new GuiInnerScreen(this, 45, 17, 105, 56));
         addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.waterTank,
             () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13)
@@ -97,9 +100,10 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
         ITextComponent name = GeneratorsLang.FISSION_REACTOR.translate();
         drawString(name, (getXSize() / 2) - (getStringWidth(name) / 2), 5, 0x404040);
         renderScaledText(MekanismLang.STATUS.translate(tile.isReactorActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(tile.isReactorActive())), 48, 20, 0x00CD00, 100);
-        renderScaledText(MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()), 48, 29, 0x00CD00, 100);
-        renderScaledText(MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)), 48, 38, 0x00CD00, 100);
-        renderScaledText(GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString()), 48, 47, 0x00CD00, 100);
+        renderScaledText(GeneratorsLang.GAS_BURN_RATE.translate(tile.getLastBurnRate()), 48, 29, 0x00CD00, 100);
+        renderScaledText(MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()), 48, 38, 0x00CD00, 100);
+        renderScaledText(MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)), 48, 47, 0x00CD00, 100);
+        renderScaledText(GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString()), 48, 56, 0x00CD00, 100);
         drawString(MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, 0x404040);
         drawString(GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

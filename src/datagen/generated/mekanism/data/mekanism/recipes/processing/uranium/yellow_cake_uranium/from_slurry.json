@@ -1,7 +1,7 @@
 {
   "type": "mekanism:crystallizing",
   "input": {
-    "amount": 250,
+    "amount": 100,
     "gas": "mekanism:clean_uranium_slurry"
   },
   "output": {

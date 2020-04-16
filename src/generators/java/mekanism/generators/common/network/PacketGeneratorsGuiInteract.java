@@ -72,6 +72,8 @@ public class PacketGeneratorsGuiInteract {
         INJECTION_RATE((tile, player, extra) -> {
             if (tile instanceof TileEntityFusionReactorController) {
                 ((TileEntityFusionReactorController) tile).setInjectionRateFromPacket(extra);
+            } else if (tile instanceof TileEntityFissionReactorCasing) {
+                ((TileEntityFissionReactorCasing) tile).setRateLimitFromPacket(extra);
             }
         }),
         FISSION_LOGIC_TYPE((tile, player, extra) -> {

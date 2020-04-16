@@ -3,48 +3,46 @@ package mekanism.generators.client.gui.element;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiTabElementType;
 import mekanism.client.gui.element.tab.TabType;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
+import mekanism.generators.client.gui.element.GuiFissionReactorTab.FissionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress.ClickedGeneratorsTileButton;
-import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
+import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiReactorTab extends GuiTabElementType<TileEntityFusionReactorController, ReactorTab> {
+public class GuiFissionReactorTab extends GuiTabElementType<TileEntityFissionReactorCasing, FissionReactorTab> {
 
-    public GuiReactorTab(IGuiWrapper gui, TileEntityFusionReactorController tile, ReactorTab type) {
+    public GuiFissionReactorTab(IGuiWrapper gui, TileEntityFissionReactorCasing tile, FissionReactorTab type) {
         super(gui, tile, type);
     }
 
-    public enum ReactorTab implements TabType<TileEntityFusionReactorController> {
-        HEAT(MekanismUtils.getResource(ResourceType.GUI, "heat.png"), GeneratorsLang.HEAT_TAB, 6, ClickedGeneratorsTileButton.TAB_HEAT),
-        FUEL(MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "fuel.png"), GeneratorsLang.FUEL_TAB, 34, ClickedGeneratorsTileButton.TAB_FUEL),
-        STAT(MekanismUtils.getResource(ResourceType.GUI, "stats.png"), GeneratorsLang.STATS_TAB, 62, ClickedGeneratorsTileButton.TAB_STATS);
+    public enum FissionReactorTab implements TabType<TileEntityFissionReactorCasing> {
+        MAIN("radioactive.png", MekanismLang.MAIN_TAB, ClickedGeneratorsTileButton.TAB_MAIN),
+        STAT("stats.png", GeneratorsLang.STATS_TAB, ClickedGeneratorsTileButton.TAB_STATS);
 
         private final ClickedGeneratorsTileButton button;
         private final ILangEntry description;
-        private final ResourceLocation path;
-        private final int yPos;
+        private final String path;
 
-        ReactorTab(ResourceLocation path, ILangEntry description, int y, ClickedGeneratorsTileButton button) {
+        FissionReactorTab(String path, ILangEntry description, ClickedGeneratorsTileButton button) {
             this.path = path;
             this.description = description;
-            yPos = y;
             this.button = button;
         }
 
         @Override
         public ResourceLocation getResource() {
-            return path;
+            return MekanismUtils.getResource(ResourceType.GUI, path);
         }
 
         @Override
-        public void onClick(TileEntityFusionReactorController tile) {
+        public void onClick(TileEntityFissionReactorCasing tile) {
             MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiButtonPress(button, tile.getPos()));
         }
 
@@ -55,7 +53,7 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityFusionReactorCont
 
         @Override
         public int getYPos() {
-            return yPos;
+            return 6;
         }
     }
 }

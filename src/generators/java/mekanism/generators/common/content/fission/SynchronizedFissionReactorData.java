@@ -45,10 +45,14 @@ import net.minecraftforge.fluids.FluidStack;
 public class SynchronizedFissionReactorData extends SynchronizedData<SynchronizedFissionReactorData> implements IMekanismFluidHandler, IMekanismGasHandler,
       ITileHeatHandler {
 
-    public static final double CASING_HEAT_CAPACITY = 5;
+    public static final double CASING_HEAT_CAPACITY = 10;
 
     public static final double INVERSE_INSULATION_COEFFICIENT = 100_000;
     public static final double INVERSE_CONDUCTION_COEFFICIENT = 10;
+
+    private static double steamTransferEfficiency = 0.2;
+    private static double waterConductivity = 0.9;
+    private static double surfaceAreaTarget = 4;
 
     public static final int WATER_PER_VOLUME = 100_000;
     public static final long STEAM_PER_VOLUME = 1_000_000;
@@ -65,7 +69,7 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
     public static Object2BooleanMap<UUID> burningMap = new Object2BooleanOpenHashMap<>();
 
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
-    public int fuelAssemblies;
+    public int fuelAssemblies, surfaceArea;
 
     public MultiblockFluidTank<TileEntityFissionReactorCasing> waterTank;
     public MultiblockGasTank<TileEntityFissionReactorCasing> fuelTank;
@@ -78,14 +82,12 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
     private List<IChemicalTank<Gas, GasStack>> gasTanks;
     private List<IHeatCapacitor> heatCapacitors;
 
-    private static double steamTransferEfficiency = 0.2;
-    private static double waterConductivity = 0.9;
-
     public double lastEnvironmentLoss = 0, lastTransferLoss = 0;
     public long lastBoilRate = 0, lastBurnRate = 0;
     public boolean clientBurning;
 
     public double reactorDamage = 0;
+    public long rateLimit = 1;
     public boolean active;
 
     public SynchronizedFissionReactorData(TileEntityFissionReactorCasing tile) {
@@ -125,7 +127,7 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
 
     public void handleCoolant() {
         double temp = heatCapacitor.getTemperature();
-        double caseWaterHeat = waterConductivity * (temp - HeatUtils.BASE_BOIL_TEMP) * heatCapacitor.getHeatCapacity();
+        double caseWaterHeat = waterConductivity * getBoilEfficiency() * (temp - HeatUtils.BASE_BOIL_TEMP) * heatCapacitor.getHeatCapacity();
         int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / HeatUtils.getVaporizationEnthalpy());
         waterToVaporize = Math.max(0, Math.min(waterToVaporize, waterTank.getFluidAmount()));
         if (waterToVaporize > 0) {
@@ -140,8 +142,13 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
         lastBoilRate = waterToVaporize;
     }
 
+    public double getBoilEfficiency() {
+        double avgSurfaceArea = (double) surfaceArea / (double) fuelAssemblies;
+        return Math.min(1, avgSurfaceArea / surfaceAreaTarget);
+    }
+
     public void burnFuel() {
-        long toBurn = Math.min(fuelTank.getStored(), fuelAssemblies * BURN_PER_ASSEMBLY);
+        long toBurn = Math.min(Math.min(rateLimit, fuelTank.getStored()), fuelAssemblies * BURN_PER_ASSEMBLY);
         fuelTank.shrinkStack(toBurn, Action.EXECUTE);
         heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue());
         // handle waste

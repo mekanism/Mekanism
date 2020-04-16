@@ -1,6 +1,7 @@
 package mekanism.generators.common.content.fission;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -17,6 +18,7 @@ import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFissionReactorData> {
@@ -42,7 +44,8 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
     @Override
     protected boolean canForm(SynchronizedFissionReactorData structure) {
         Map<AssemblyPos, FuelAssembly> map = new HashMap<>();
-        int assemblyCount = 0;
+        Set<Coord4D> fuelAssemblyCoords = new HashSet<>();
+        int assemblyCount = 0, surfaceArea = 0;
 
         for (Coord4D coord : innerNodes) {
             TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
@@ -56,6 +59,14 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
                     assembly.fuelAssemblies.add(coord);
                 }
                 assemblyCount++;
+                // compute surface area
+                surfaceArea += 6;
+                for (Direction side : Direction.values()) {
+                    if (fuelAssemblyCoords.contains(coord.offset(side))) {
+                        surfaceArea -= 2;
+                    }
+                }
+                fuelAssemblyCoords.add(coord);
             } else if (tile instanceof TileEntityControlRodAssembly) {
                 if (assembly == null) {
                     map.put(pos, new FuelAssembly(coord, true));
@@ -80,6 +91,7 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
         }
 
         structure.fuelAssemblies = assemblyCount;
+        structure.surfaceArea = surfaceArea;
 
         return true;
     }

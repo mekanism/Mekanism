@@ -126,9 +126,19 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_VENTS, "Vents: %s %s");
         //Fission Reactor
         add(GeneratorsLang.FISSION_REACTOR, "Fission Reactor");
+        add(GeneratorsLang.FISSION_REACTOR_STATS, "Fission Reactor Statistics");
         add(GeneratorsLang.FISSION_ACTIVATE, "Activate");
         add(GeneratorsLang.FISSION_SCRAM, "SCRAM");
         add(GeneratorsLang.FISSION_DAMAGE, "Damage: %s");
+        add(GeneratorsLang.FISSION_HEAT_STATISTICS, "Heat Statistics");
+        add(GeneratorsLang.FISSION_FUEL_STATISTICS, "Fuel Statistics");
+        add(GeneratorsLang.FISSION_HEAT_CAPACITY, "Heat Capacity: %s J/K");
+        add(GeneratorsLang.FISSION_SURFACE_AREA, "Fuel Surface Area: %s m2");
+        add(GeneratorsLang.FISSION_BOIL_EFFICIENCY, "Boil Efficiency: %s");
+        add(GeneratorsLang.FISSION_MAX_BURN_RATE, "Max Burn Rate: %s mB/t");
+        add(GeneratorsLang.FISSION_RATE_LIMIT, "Rate Limit: %s mB/t");
+        add(GeneratorsLang.FISSION_CURRENT_BURN_RATE, "Current Burn Rate:");
+        add(GeneratorsLang.FISSION_SET_RATE_LIMIT, "Set Rate Limit:");
         add(GeneratorsLang.FISSION_WATER_TANK, "Water Tank");
         add(GeneratorsLang.FISSION_FUEL_TANK, "Fuel Tank");
         add(GeneratorsLang.FISSION_STEAM_TANK, "Steam Tank");
