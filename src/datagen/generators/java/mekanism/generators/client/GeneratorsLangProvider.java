@@ -133,8 +133,8 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.FISSION_HEAT_GRAPH, "Heat Graph:");
         add(GeneratorsLang.FISSION_PORT_MODE_CHANGE, "Port mode changed to: %s");
         add(GeneratorsLang.FISSION_PORT_MODE_INPUT, "input only");
-        add(GeneratorsLang.FISSION_PORT_MODE_OUTPUT_WASTE, "output waste + energy");
-        add(GeneratorsLang.FISSION_PORT_MODE_OUTPUT_STEAM, "output steam + energy");
+        add(GeneratorsLang.FISSION_PORT_MODE_OUTPUT_WASTE, "output waste");
+        add(GeneratorsLang.FISSION_PORT_MODE_OUTPUT_STEAM, "output steam");
         //Descriptions
         add(GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, "The reactor's core heat capacity has been met");
         add(GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, "The reactor has insufficient fuel to sustain a reaction");

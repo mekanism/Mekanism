@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mekanism:block/superheating_element"
+    },
+    "active=true": {
+      "model": "mekanism:block/superheating_element_active"
+    }
+  }
+}

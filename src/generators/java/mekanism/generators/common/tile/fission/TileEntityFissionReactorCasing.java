@@ -1,12 +1,15 @@
 package mekanism.generators.common.tile.fission;
 
+import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -16,6 +19,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
+import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -24,11 +28,15 @@ import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol;
 import mekanism.generators.common.content.fission.SynchronizedFissionReactorData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<SynchronizedFissionReactorData> {
 
+    public Set<ValveData> valveViewing = new ObjectOpenHashSet<>();
     public float prevWaterScale, prevFuelScale, prevSteamScale, prevWasteScale;
 
     public TileEntityFissionReactorCasing() {
@@ -40,6 +48,20 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
     }
 
     @Override
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        if (!clientHasStructure || !isRendering) {
+            for (ValveData data : valveViewing) {
+                TileEntityFissionReactorCasing tile = MekanismUtils.getTileEntity(TileEntityFissionReactorCasing.class, getWorld(), data.location.getPos());
+                if (tile != null) {
+                    tile.clientHasStructure = false;
+                }
+            }
+            valveViewing.clear();
+        }
+    }
+
+    @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null && isRendering) {
@@ -48,14 +70,19 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             if (structure.active) {
                 structure.burnFuel();
             }
+            if ((structure.lastBurnRate > 0) != structure.clientBurning) {
+                needsPacket = true;
+                structure.clientBurning = structure.lastBurnRate > 0;
+                SynchronizedFissionReactorData.burningMap.put(structure.inventoryID, structure.clientBurning);
+            }
             // handle coolant heating (water -> steam)
             structure.handleCoolant();
             // external heat dissipation
             structure.lastEnvironmentLoss = structure.simulateEnvironment();
             // adjacent heat transfer
             structure.lastTransferLoss = 0;
-            for (Coord4D coord : structure.portLocations) {
-                TileEntity tile = world.getTileEntity(coord.getPos());
+            for (ValveData valve : structure.valves) {
+                TileEntity tile = world.getTileEntity(valve.location.getPos());
                 if (tile instanceof ITileHeatHandler) {
                     structure.lastTransferLoss += ((ITileHeatHandler) tile).simulateAdjacent();
                 }
@@ -64,9 +91,6 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             structure.update(null);
             structure.handleDamage();
 
-            if (needsPacket) {
-                sendUpdatePacket();
-            }
             // update scales
             float waterScale = MekanismUtils.getScale(prevWaterScale, structure.waterTank), fuelScale = MekanismUtils.getScale(prevFuelScale, structure.fuelTank);
             float steamScale = MekanismUtils.getScale(prevSteamScale, structure.steamTank), wasteScale = MekanismUtils.getScale(prevWasteScale, structure.wasteTank);
@@ -76,6 +100,9 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
                 prevFuelScale = fuelScale;
                 prevSteamScale = steamScale;
                 prevWasteScale = wasteScale;
+            }
+            if (needsPacket) {
+                sendUpdatePacket();
             }
             // save changed data
             markDirty(false);
@@ -91,7 +118,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
 
     public String getDamageString() {
         if (structure == null) return "0%";
-        return (Math.round(structure.reactorDamage / SynchronizedFissionReactorData.MAX_DAMAGE) * 100) + "%";
+        return Math.round((structure.reactorDamage / SynchronizedFissionReactorData.MAX_DAMAGE) * 100) + "%";
     }
     public EnumColor getDamageColor() {
         if (structure == null) return EnumColor.BRIGHT_GREEN;
@@ -133,6 +160,15 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             updateTag.put(NBTConstants.GAS_STORED, structure.fuelTank.getStack().write(new CompoundNBT()));
             updateTag.put(NBTConstants.GAS_STORED_ALT, structure.steamTank.getStack().write(new CompoundNBT()));
             updateTag.put(NBTConstants.GAS_STORED_ALT_2, structure.wasteTank.getStack().write(new CompoundNBT()));
+            ListNBT valves = new ListNBT();
+            for (ValveData valveData : structure.valves) {
+                if (valveData.activeTicks > 0) {
+                    CompoundNBT valveNBT = new CompoundNBT();
+                    valveData.location.write(valveNBT);
+                    valveNBT.putInt(NBTConstants.SIDE, valveData.side.ordinal());
+                }
+            }
+            updateTag.put(NBTConstants.VALVE, valves);
         }
         return updateTag;
     }
@@ -150,6 +186,21 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.fuelTank.setStack(value));
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> structure.steamTank.setStack(value));
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> structure.wasteTank.setStack(value));
+            valveViewing.clear();
+            if (tag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
+                ListNBT valves = tag.getList(NBTConstants.VALVE, NBT.TAG_COMPOUND);
+                for (int i = 0; i < valves.size(); i++) {
+                    CompoundNBT valveNBT = valves.getCompound(i);
+                    ValveData data = new ValveData();
+                    data.location = Coord4D.read(valveNBT);
+                    data.side = Direction.byIndex(valveNBT.getInt(NBTConstants.SIDE));
+                    valveViewing.add(data);
+                    TileEntityBoilerCasing tile = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
+                    if (tile != null) {
+                        tile.clientHasStructure = true;
+                    }
+                }
+            }
         }
     }
 
@@ -185,6 +236,9 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
         }));
         container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.reactorDamage, value -> {
             if (structure != null) structure.reactorDamage = value;
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.fuelAssemblies, value -> {
+            if (structure != null) structure.fuelAssemblies = value;
         }));
         container.track(SyncableLong.create(() -> structure == null ? 0 : structure.lastBurnRate, value -> {
             if (structure != null) structure.lastBurnRate = value;

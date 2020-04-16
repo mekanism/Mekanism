@@ -100,11 +100,11 @@ public class Modules {
 
     // Pants
     public static final ModuleData<ModuleLocomotiveBoostingUnit> LOCOMOTIVE_BOOSTING_UNIT = register("locomotive_boosting_unit",
-        MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, () -> new ModuleLocomotiveBoostingUnit());
+        MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, () -> new ModuleLocomotiveBoostingUnit(), 4);
 
     // Boots
     public static final ModuleData<ModuleHydraulicPropulsionUnit> HYDRAULIC_PROPULSION_UNIT = register("hydraulic_propulsion_unit",
-        MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, () -> new ModuleHydraulicPropulsionUnit());
+        MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, () -> new ModuleHydraulicPropulsionUnit(), 4);
     public static final ModuleData<ModuleMagneticAttractionUnit> MAGNETIC_ATTRACTION_UNIT = register("magnetic_attraction_unit",
         MekanismLang.MODULE_MAGNETIC_ATTRACTION_UNIT, MekanismLang.DESCRIPTION_MAGNETIC_ATTRACTION_UNIT, () -> new ModuleMagneticAttractionUnit(), 4);
 

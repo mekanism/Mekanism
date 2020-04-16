@@ -1,6 +1,9 @@
 {
   "variants": {
-    "": {
+    "active=false": {
+      "model": "mekanismgenerators:block/fission/fuel_assembly"
+    },
+    "active=true": {
       "model": "mekanismgenerators:block/fission/fuel_assembly"
     }
   }

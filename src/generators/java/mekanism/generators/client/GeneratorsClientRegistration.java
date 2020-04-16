@@ -21,6 +21,7 @@ import mekanism.generators.client.gui.GuiTurbineStats;
 import mekanism.generators.client.gui.GuiWindGenerator;
 import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
+import mekanism.generators.client.render.RenderFissionFuelAssembly;
 import mekanism.generators.client.render.RenderFissionReactor;
 import mekanism.generators.client.render.RenderFusionReactor;
 import mekanism.generators.client.render.RenderGasGenerator;
@@ -68,6 +69,7 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.FISSION_REACTOR_CASING, RenderFissionReactor::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, RenderFissionReactor::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.FISSION_REACTOR_LOGIC_ADAPTER, RenderFissionReactor::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.FISSION_FUEL_ASSEMBLY, RenderFissionFuelAssembly::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_CASING, RenderIndustrialTurbine::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_ROTOR, RenderTurbineRotor::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VALVE, RenderIndustrialTurbine::new);

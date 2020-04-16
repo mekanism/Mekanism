@@ -16,6 +16,7 @@ import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
+import mekanism.generators.common.container.FissionReactorContainer;
 import mekanism.generators.common.content.blocktype.BlockShapes;
 import mekanism.generators.common.content.blocktype.Generator;
 import mekanism.generators.common.content.blocktype.Generator.GeneratorBuilder;
@@ -144,12 +145,14 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityFissionReactorCasing> FISSION_REACTOR_CASING = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_CASING, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_CASING)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new FissionReactorContainer(i, inv, (TileEntityFissionReactorCasing) tile)))
           .build();
     // Fission Reactor Port
     public static final BlockTypeTile<TileEntityFissionReactorPort> FISSION_REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_PORT)
           .with(new AttributeStateFissionPortMode())
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
+          .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new FissionReactorContainer(i, inv, (TileEntityFissionReactorCasing) tile)))
           .build();
     // Fission Reactor Logic Adapter
     public static final BlockTypeTile<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
@@ -158,6 +161,7 @@ public class GeneratorsBlockTypes {
     // Fission Fuel Assembly
     public static final BlockTypeTile<TileEntityFissionFuelAssembly> FISSION_FUEL_ASSEMBLY = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_FUEL_ASSEMBLY, GeneratorsLang.DESCRIPTION_FISSION_FUEL_ASSEMBLY)
+          .with(new AttributeStateActive())
           .build();
     // Control Rod Assembly
     public static final BlockTypeTile<TileEntityControlRodAssembly> CONTROL_ROD_ASSEMBLY = BlockTileBuilder

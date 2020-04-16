@@ -28,6 +28,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismGenerators.MODID)
@@ -56,6 +57,8 @@ public class MekanismGenerators implements IModule {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
 
+        MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
+
         GeneratorsItems.ITEMS.register(modEventBus);
         GeneratorsBlocks.BLOCKS.register(modEventBus);
         GeneratorsFluids.FLUIDS.register(modEventBus);
@@ -83,6 +86,10 @@ public class MekanismGenerators implements IModule {
 
         //Finalization
         Mekanism.logger.info("Loaded 'Mekanism Generators' module.");
+    }
+
+    private void serverStopped(FMLServerStoppedEvent event) {
+        SynchronizedFissionReactorData.burningMap.clear();
     }
 
     @Override

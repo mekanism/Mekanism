@@ -207,7 +207,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void init() {
             super.init();
-            addConfigItem(sprintBoost = new ModuleConfigItem<>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class).withScale(0.65F), SprintBoost.LOW));
+            addConfigItem(sprintBoost = new ModuleConfigItem<>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class, getInstalledCount()+1).withScale(0.65F), SprintBoost.LOW));
         }
 
         @Override
@@ -275,7 +275,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void init() {
             super.init();
-            addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class).withScale(0.8F), JumpBoost.LOW));
+            addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class, getInstalledCount()+1).withScale(0.8F), JumpBoost.LOW));
         }
 
         public float getBoost() {
@@ -353,6 +353,12 @@ public abstract class ModuleMekaSuit extends Module {
     }
 
     public static class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
+        private ModuleConfigItem<Range> range;
+        @Override
+        public void init() {
+            super.init();
+            addConfigItem(range = new ModuleConfigItem<>(this, "range", MekanismLang.MODULE_RANGE, new EnumData<>(Range.class, getInstalledCount()+1), Range.LOW));
+        }
         @Override
         public void tickClient(PlayerEntity player) {
             super.tickClient(player);
@@ -364,9 +370,12 @@ public abstract class ModuleMekaSuit extends Module {
             suckItems(player);
         }
         private void suckItems(PlayerEntity player) {
-            int size = 4 + 2 * getInstalledCount();
+            if (range.get() == Range.OFF) {
+                return;
+            }
+            float size = 4 + range.get().getRange();
             List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(size, size, size));
-            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get();
+            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get().multiply(range.get().getRange());
             for (ItemEntity item : items) {
                 if (!getContainerEnergy().greaterOrEqual(usage)) {
                     break;
@@ -378,6 +387,26 @@ public abstract class ModuleMekaSuit extends Module {
                     Vec3d motionDiff = motionNeeded.subtract(player.getMotion());
                     item.setMotion(motionDiff.scale(0.2));
                 }
+            }
+        }
+        public static enum Range implements IHasTextComponent {
+            OFF(0),
+            LOW(1F),
+            MED(3F),
+            HIGH(5),
+            ULTRA(10);
+            private float range;
+            private ITextComponent label;
+            private Range(float boost) {
+                this.range = boost;
+                this.label = new StringTextComponent(Float.toString(boost));
+            }
+            @Override
+            public ITextComponent getTextComponent() {
+                return label;
+            }
+            public float getRange() {
+                return range;
             }
         }
     }

@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import mekanism.api.Coord4D;
 import mekanism.common.content.blocktype.BlockTypeTile;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.util.MekanismUtils;
@@ -92,7 +93,10 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
     protected void onStructureCreated(SynchronizedFissionReactorData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
         for (Coord4D obj : structure.locations) {
             if (MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos()) instanceof TileEntityFissionReactorPort) {
-                structure.portLocations.add(obj);
+                ValveData data = new ValveData();
+                data.location = obj;
+                data.side = getSide(obj, origX + xmin, origX + xmax, origY + ymin, origY + ymax, origZ + zmin, origZ + zmax);
+                structure.valves.add(data);
             }
         }
     }
