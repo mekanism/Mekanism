@@ -24,13 +24,13 @@ public class PacketGeneratorsGuiInteract {
 
     private GeneratorsGuiInteraction interaction;
     private BlockPos tilePosition;
-    private int extra;
+    private double extra;
 
     public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, TileEntity tile) {
         this(interaction, tile.getPos());
     }
 
-    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, TileEntity tile, int extra) {
+    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, TileEntity tile, double extra) {
         this(interaction, tile.getPos(), extra);
     }
 
@@ -38,7 +38,7 @@ public class PacketGeneratorsGuiInteract {
         this(interaction, tilePosition, 0);
     }
 
-    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockPos tilePosition, int extra) {
+    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockPos tilePosition, double extra) {
         this.interaction = interaction;
         this.tilePosition = tilePosition;
         this.extra = extra;
@@ -61,44 +61,41 @@ public class PacketGeneratorsGuiInteract {
     public static void encode(PacketGeneratorsGuiInteract pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.interaction);
         buf.writeBlockPos(pkt.tilePosition);
-        buf.writeVarInt(pkt.extra);
+        buf.writeDouble(pkt.extra);
     }
 
     public static PacketGeneratorsGuiInteract decode(PacketBuffer buf) {
-        return new PacketGeneratorsGuiInteract(buf.readEnumValue(GeneratorsGuiInteraction.class), buf.readBlockPos(), buf.readVarInt());
+        return new PacketGeneratorsGuiInteract(buf.readEnumValue(GeneratorsGuiInteraction.class), buf.readBlockPos(), buf.readDouble());
     }
 
     public enum GeneratorsGuiInteraction {
         INJECTION_RATE((tile, player, extra) -> {
             if (tile instanceof TileEntityFusionReactorController) {
-                ((TileEntityFusionReactorController) tile).setInjectionRateFromPacket(extra);
+                ((TileEntityFusionReactorController) tile).setInjectionRateFromPacket((int) Math.round(extra));
             } else if (tile instanceof TileEntityFissionReactorCasing) {
                 ((TileEntityFissionReactorCasing) tile).setRateLimitFromPacket(extra);
             }
         }),
-        FISSION_LOGIC_TYPE((tile, player, extra) -> {
+        LOGIC_TYPE((tile, player, extra) -> {
             if (tile instanceof TileEntityFissionReactorLogicAdapter) {
-                ((TileEntityFissionReactorLogicAdapter) tile).setLogicTypeFromPacket(FissionReactorLogic.byIndexStatic(extra));
-            }
-        }),
-        FUSION_LOGIC_TYPE((tile, player, extra) -> {
-            if (tile instanceof TileEntityFusionReactorLogicAdapter) {
-                ((TileEntityFusionReactorLogicAdapter) tile).setLogicTypeFromPacket(FusionReactorLogic.byIndexStatic(extra));
+                ((TileEntityFissionReactorLogicAdapter) tile).setLogicTypeFromPacket(FissionReactorLogic.byIndexStatic((int) Math.round(extra)));
+            } else if (tile instanceof TileEntityFusionReactorLogicAdapter) {
+                ((TileEntityFusionReactorLogicAdapter) tile).setLogicTypeFromPacket(FusionReactorLogic.byIndexStatic((int) Math.round(extra)));
             }
         }),
         FISSION_ACTIVE((tile, player, extra) -> {
             if (tile instanceof TileEntityFissionReactorCasing) {
-                ((TileEntityFissionReactorCasing) tile).setReactorActive(extra == 1);
+                ((TileEntityFissionReactorCasing) tile).setReactorActive(Math.round(extra) == 1);
             }
         });
 
-        private TriConsumer<TileEntityMekanism, PlayerEntity, Integer> consumerForTile;
+        private TriConsumer<TileEntityMekanism, PlayerEntity, Double> consumerForTile;
 
-        GeneratorsGuiInteraction(TriConsumer<TileEntityMekanism, PlayerEntity, Integer> consumerForTile) {
+        GeneratorsGuiInteraction(TriConsumer<TileEntityMekanism, PlayerEntity, Double> consumerForTile) {
             this.consumerForTile = consumerForTile;
         }
 
-        public void consume(TileEntityMekanism tile, PlayerEntity player, int extra) {
+        public void consume(TileEntityMekanism tile, PlayerEntity player, double extra) {
             consumerForTile.accept(tile, player, extra);
         }
     }

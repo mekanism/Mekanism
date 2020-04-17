@@ -37,6 +37,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
 
     public Set<ValveData> valveViewing = new ObjectOpenHashSet<>();
     public float prevWaterScale, prevFuelScale, prevSteamScale, prevWasteScale;
+    private boolean handleSound;
 
     public TileEntityFissionReactorCasing() {
         super(GeneratorsBlocks.FISSION_REACTOR_CASING);
@@ -66,7 +67,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
         if (structure != null && isRendering) {
             boolean needsPacket = false;
             // burn reactor fuel, create energy
-            if (structure.active) {
+            if (structure.isActive()) {
                 structure.burnFuel();
             } else {
                 structure.lastBurnRate = 0;
@@ -117,11 +118,11 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
     public long getSurfaceArea() { return structure != null ? structure.surfaceArea : 0; }
     public double getBoilEfficiency() { return structure != null ? (double) Math.round(structure.getBoilEfficiency() * 1000) / 1000 : 0; }
     public long getLastBoilRate() { return structure != null ? structure.lastBoilRate : 0; }
-    public long getLastBurnRate() { return structure != null ? structure.lastBurnRate : 0; }
+    public double getLastBurnRate() { return structure != null ? structure.lastBurnRate : 0; }
     public long getMaxBurnRate() { return structure != null ? structure.fuelAssemblies * SynchronizedFissionReactorData.BURN_PER_ASSEMBLY : 1; }
-    public long getRateLimit() { return structure != null ? structure.rateLimit : 0; }
-    public boolean isReactorActive() { return structure != null ? structure.active : false; }
-    public void setReactorActive(boolean active) { if (structure != null) structure.active = active; }
+    public double getRateLimit() { return structure != null ? structure.rateLimit : 0; }
+    public boolean isReactorActive() { return structure != null ? structure.isActive() : false; }
+    public void setReactorActive(boolean active) { if (structure != null) structure.setActive(active); }
 
     public String getDamageString() {
         if (structure == null) return "0%";
@@ -138,7 +139,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
               (temp < 1200 ? EnumColor.ORANGE : (temp < 1600 ? EnumColor.RED : EnumColor.DARK_RED)));
     }
 
-    public void setRateLimitFromPacket(int rate) {
+    public void setRateLimitFromPacket(double rate) {
         if (structure != null) {
             structure.rateLimit = Math.min(getMaxBurnRate(), rate);
         }
@@ -159,6 +160,11 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
         return MekanismGenerators.fissionReactorManager;
     }
 
+    @Override
+    protected boolean canPlaySound() {
+        return structure != null && structure.isActive() && handleSound;
+    }
+
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
@@ -173,6 +179,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             updateTag.put(NBTConstants.GAS_STORED, structure.fuelTank.getStack().write(new CompoundNBT()));
             updateTag.put(NBTConstants.GAS_STORED_ALT, structure.steamTank.getStack().write(new CompoundNBT()));
             updateTag.put(NBTConstants.GAS_STORED_ALT_2, structure.wasteTank.getStack().write(new CompoundNBT()));
+            updateTag.putBoolean(NBTConstants.ACTIVE, structure.isActive());
+            updateTag.putBoolean(NBTConstants.HANDLE_SOUND, structure.handlesSound(this));
             ListNBT valves = new ListNBT();
             for (ValveData valveData : structure.valves) {
                 if (valveData.activeTicks > 0) {
@@ -199,6 +207,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.fuelTank.setStack(value));
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> structure.steamTank.setStack(value));
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> structure.wasteTank.setStack(value));
+            NBTUtils.setBooleanIfPresent(tag, NBTConstants.ACTIVE, value -> structure.setActive(value));
+            NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
             valveViewing.clear();
             if (tag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
                 ListNBT valves = tag.getList(NBTConstants.VALVE, NBT.TAG_COMPOUND);
@@ -245,7 +255,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             if (structure != null) structure.lastBoilRate = value;
         }));
         container.track(SyncableBoolean.create(this::isReactorActive, value -> {
-            if (structure != null) structure.active = value;
+            if (structure != null) structure.setActive(value);
         }));
         container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.reactorDamage, value -> {
             if (structure != null) structure.reactorDamage = value;
@@ -253,14 +263,20 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
         container.track(SyncableInt.create(() -> structure == null ? 0 : structure.fuelAssemblies, value -> {
             if (structure != null) structure.fuelAssemblies = value;
         }));
-        container.track(SyncableLong.create(() -> structure == null ? 0 : structure.lastBurnRate, value -> {
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.lastBurnRate, value -> {
             if (structure != null) structure.lastBurnRate = value;
         }));
-        container.track(SyncableLong.create(() -> structure == null ? 0 : structure.rateLimit, value -> {
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.rateLimit, value -> {
             if (structure != null) structure.rateLimit = value;
         }));
         container.track(SyncableInt.create(() -> structure == null ? 0 : structure.surfaceArea, value -> {
             if (structure != null) structure.surfaceArea = value;
+        }));
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.lastEnvironmentLoss, value -> {
+            if (structure != null) structure.lastEnvironmentLoss = value;
+        }));
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.lastTransferLoss, value -> {
+            if (structure != null) structure.lastTransferLoss = value;
         }));
     }
 }

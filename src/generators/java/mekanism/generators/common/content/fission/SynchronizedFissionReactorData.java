@@ -40,19 +40,17 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedFissionReactorData extends SynchronizedData<SynchronizedFissionReactorData> implements IMekanismFluidHandler, IMekanismGasHandler,
       ITileHeatHandler {
-
-    public static final double CASING_HEAT_CAPACITY = 10;
 
     public static final double INVERSE_INSULATION_COEFFICIENT = 100_000;
     public static final double INVERSE_CONDUCTION_COEFFICIENT = 10;
 
     private static double steamTransferEfficiency = 0.2;
     private static double waterConductivity = 0.9;
-    private static double surfaceAreaTarget = 4;
 
     public static final int WATER_PER_VOLUME = 100_000;
     public static final long STEAM_PER_VOLUME = 1_000_000;
@@ -83,12 +81,14 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
     private List<IHeatCapacitor> heatCapacitors;
 
     public double lastEnvironmentLoss = 0, lastTransferLoss = 0;
-    public long lastBoilRate = 0, lastBurnRate = 0;
+    public long lastBoilRate = 0;
+    public double lastBurnRate = 0;
     public boolean clientBurning;
 
     public double reactorDamage = 0;
-    public long rateLimit = 1;
-    public boolean active;
+    public double rateLimit = 0.1;
+    public double burnRemaining = 0, partialWaste = 0;
+    private boolean active;
 
     public SynchronizedFissionReactorData(TileEntityFissionReactorCasing tile) {
         waterTank = new FissionReactorFluidTank(tile, () -> tile.structure == null ? 0 : getVolume() * WATER_PER_VOLUME, fluid -> fluid.getFluid().isIn(FluidTags.WATER));
@@ -104,7 +104,7 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
             gas -> gas == MekanismGases.NUCLEAR_WASTE.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
         gasTanks = Arrays.asList(fuelTank, steamTank, wasteTank);
         heatCapacitor = MultiblockHeatCapacitor.create(tile,
-            CASING_HEAT_CAPACITY,
+            MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
             () -> INVERSE_INSULATION_COEFFICIENT,
             () -> INVERSE_INSULATION_COEFFICIENT);
         heatCapacitors = Collections.singletonList(heatCapacitor);
@@ -142,34 +142,66 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
         lastBoilRate = waterToVaporize;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean handlesSound(TileEntityFissionReactorCasing tile) {
+        BlockPos pos = tile.getPos();
+        return pos.getX() == minLocation.x && pos.getY() == minLocation.y ||
+               pos.getX() == minLocation.x && pos.getY() == maxLocation.y ||
+               pos.getX() == maxLocation.x && pos.getY() == minLocation.y ||
+               pos.getX() == maxLocation.x && pos.getY() == maxLocation.y ||
+               pos.getX() == minLocation.x && pos.getZ() == minLocation.z ||
+               pos.getX() == minLocation.x && pos.getZ() == maxLocation.z ||
+               pos.getY() == minLocation.y && pos.getZ() == minLocation.z;
+        // TODO finish
+
+    }
+
     public double getBoilEfficiency() {
         double avgSurfaceArea = (double) surfaceArea / (double) fuelAssemblies;
-        return Math.min(1, avgSurfaceArea / surfaceAreaTarget);
+        return Math.min(1, avgSurfaceArea / MekanismGeneratorsConfig.generators.fissionSurfaceAreaTarget.get());
     }
 
     public void burnFuel() {
-        long toBurn = Math.min(Math.min(rateLimit, fuelTank.getStored()), fuelAssemblies * BURN_PER_ASSEMBLY);
-        fuelTank.shrinkStack(toBurn, Action.EXECUTE);
+        double storedFuel = fuelTank.getStored() + burnRemaining;
+        double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * BURN_PER_ASSEMBLY);
+        storedFuel -= toBurn;
+        fuelTank.setStackSize((long) storedFuel, Action.EXECUTE);
+        burnRemaining = storedFuel % 1;
         heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue());
         // handle waste
-        long leftoverWaste = Math.max(0, toBurn - wasteTank.getNeeded());
-        GasStack wasteToAdd = MekanismGases.NUCLEAR_WASTE.getGasStack(toBurn);
-        wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
-        if (leftoverWaste > 0) {
-            double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();
-            Mekanism.radiationManager.radiate(getCenter(), leftoverWaste * radioactivity);
+        partialWaste += toBurn;
+        long newWaste = (long) Math.floor(partialWaste);
+        if (newWaste > 0) {
+            partialWaste %= 1;
+            long leftoverWaste = Math.max(0, newWaste - wasteTank.getNeeded());
+            GasStack wasteToAdd = MekanismGases.NUCLEAR_WASTE.getGasStack(newWaste);
+            wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
+            if (leftoverWaste > 0) {
+                double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();
+                Mekanism.radiationManager.radiate(getCenter(), leftoverWaste * radioactivity);
+            }
         }
+        // update previous burn
         lastBurnRate = toBurn;
     }
 
     public Coord4D getCenter() {
+        if (minLocation == null || maxLocation == null)
+            return null;
         return new Coord4D((minLocation.x + maxLocation.x) / 2, (minLocation.y + maxLocation.y) / 2, (minLocation.z + maxLocation.z) / 2, minLocation.dimension);
     }
 
     @Override
     public void onCreated() {
         // update the heat capacity now that we've read
-        heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY * locations.size(), true);
+        heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
     }
 
     @Nonnull

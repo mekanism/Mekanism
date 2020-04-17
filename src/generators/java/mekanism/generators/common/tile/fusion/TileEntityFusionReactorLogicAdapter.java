@@ -98,6 +98,11 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         return logicType;
     }
 
+    @Override
+    public FusionReactorLogic[] getModes() {
+        return FusionReactorLogic.values();
+    }
+
     public void setLogicTypeFromPacket(FusionReactorLogic logicType) {
         this.logicType = logicType;
         markDirty(false);

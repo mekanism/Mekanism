@@ -1,5 +1,8 @@
 package mekanism.generators.client.gui.element.button;
 
+import java.util.function.Consumer;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
@@ -17,31 +20,62 @@ public class ReactorLogicButton<TYPE extends Enum<?> & IReactorLogicMode> extend
     private static final ResourceLocation TEXTURE = MekanismGenerators.rl(ResourceType.GUI_BUTTON.getPrefix() + "reactor_logic.png");
     @Nonnull
     private final IReactorLogic<TYPE> tile;
-    private final TYPE type;
+    private int index;
+    private IntSupplier indexSupplier;
+    private Supplier<TYPE[]> modeList;
+    private Consumer<TYPE> onPress;
 
-    public ReactorLogicButton(IGuiWrapper gui, int x, int y, TYPE type, @Nonnull IReactorLogic<TYPE> tile, Runnable onPress) {
-        super(gui, x, y, 128, 22, "", onPress, (onHover, xAxis, yAxis) -> gui.displayTooltip(type.getDescription(), xAxis, yAxis));
+    public ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, @Nonnull IReactorLogic<TYPE> tile, IntSupplier indexSupplier,
+          Supplier<TYPE[]> listSupplier, Consumer<TYPE> onPress) {
+        super(gui, x, y, 128, 22, "", null, null);
+        this.index = index;
+        this.indexSupplier = indexSupplier;
+        this.modeList = listSupplier;
         this.tile = tile;
-        this.type = type;
+        this.onPress = onPress;
+    }
+
+    @Override
+    public void onClick(double mouseX, double mouseY) {
+        TYPE mode = getMode();
+        if (mode != null) {
+            onPress.accept(mode);
+        }
+    }
+
+    @Override
+    public void renderToolTip(int mouseX, int mouseY) {
+        TYPE mode = getMode();
+        if (mode == null) return;
+        guiObj.displayTooltip(mode.getDescription(), mouseX, mouseY);
     }
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        TYPE mode = getMode();
+        if (mode == null) return;
         MekanismRenderer.bindTexture(TEXTURE);
-        MekanismRenderer.color(type.getColor());
-        blit(this.x, this.y, 0, type == tile.getMode() ? 22 : 0, this.width, this.height, 128, 44);
+        MekanismRenderer.color(mode.getColor());
+        blit(x, y, 0, mode == tile.getMode() ? 22 : 0, width, height, 128, 44);
         MekanismRenderer.resetColor();
     }
 
+    private TYPE getMode() {
+        int i = indexSupplier.getAsInt() + index;
+        return i >= 0 && i < modeList.get().length ? modeList.get()[i] : null;
+    }
+
     public IReactorLogicMode getType() {
-        return this.type;
+        return getMode();
     }
 
     @Override
     public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
-        int typeOffset = 22 * type.ordinal();
-        guiObj.renderItem(type.getRenderStack(), 27, 35 + typeOffset);
-        drawString(TextComponentUtil.build(EnumColor.WHITE, type), 46, 34 + typeOffset, 0x404040);
+        TYPE mode = getMode();
+        if (mode == null) return;
+        int typeOffset = 22 * index;
+        guiObj.renderItem(mode.getRenderStack(), 20, 35 + typeOffset);
+        drawString(TextComponentUtil.build(EnumColor.WHITE, mode), 39, 34 + typeOffset, 0x404040);
         super.renderForeground(mouseX, mouseY, xAxis, yAxis);
     }
 }

@@ -90,6 +90,7 @@ public final class NBTConstants {
     public static final String GAS_STORED_ALT = "gas1";
     public static final String GAS_STORED_ALT_2 = "gas2";
     public static final String GAS_TANKS = "GasTanks";
+    public static final String HANDLE_SOUND = "handleSound";
     public static final String HEAT_CAPACITORS = "HeatCapacitors";
     public static final String HEAT_CAPACITY = "heatCapacity";
     public static final String HEAT_STORED = "heat";
@@ -122,6 +123,7 @@ public final class NBTConstants {
     public static final String OUTPUT_MODE = "outputMode";
     public static final String OVERRIDE = "override";
     public static final String OWNER_UUID = "owner";
+    public static final String PARTIAL_WASTE = "partialWaste";
     public static final String PATH_TYPE = "pathType";
     public static final String PICKUP_DROPS = "dropPickup";
     public static final String PLASMA_TEMP = "plasmaTemp";

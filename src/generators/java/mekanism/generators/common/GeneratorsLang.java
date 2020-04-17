@@ -34,6 +34,7 @@ public enum GeneratorsLang implements ILangEntry {
     REACTOR_LOGIC_REDSTONE_MODE("reactor", "logic.redstone_output_mode"),
     REACTOR_LOGIC_ACTIVE_COOLING("reactor", "logic.active_cooling"),
     REACTOR_LOGIC_ACTIVATION("reactor", "logic.activation"),
+    REACTOR_LOGIC_TEMPERATURE("reactor", "logic.temperature"),
     REACTOR_LOGIC_EXCESS_WASTE("reactor", "logic.excess_waste"),
     REACTOR_LOGIC_OUTPUTTING("reactor", "logic.outputting"),
     REACTOR_LOGIC_POWERED("reactor", "logic.powered"),
@@ -86,6 +87,7 @@ public enum GeneratorsLang implements ILangEntry {
     //Descriptions
     DESCRIPTION_REACTOR_DISABLED("description", "reactor.logic.disabled"),
     DESCRIPTION_REACTOR_ACTIVATION("description", "reactor.logic.activation"),
+    DESCRIPTION_REACTOR_TEMPERATURE("description", "reactor.logic.temperature"),
     DESCRIPTION_REACTOR_EXCESS_WASTE("description", "reactor.logic.excess_waste"),
     DESCRIPTION_REACTOR_READY("description", "reactor.logic.ready"),
     DESCRIPTION_REACTOR_CAPACITY("description", "reactor.logic.capacity"),

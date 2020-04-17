@@ -15,4 +15,5 @@ public class GeneratorsSounds {
     public static final SoundEventRegistryObject<SoundEvent> HEAT_GENERATOR = SOUND_EVENTS.register("tile.generator.heat");
     public static final SoundEventRegistryObject<SoundEvent> SOLAR_GENERATOR = SOUND_EVENTS.register("tile.generator.solar");
     public static final SoundEventRegistryObject<SoundEvent> WIND_GENERATOR = SOUND_EVENTS.register("tile.generator.wind");
+    public static final SoundEventRegistryObject<SoundEvent> FISSION_REACTOR = SOUND_EVENTS.register("tile.machine.fission_reactor");
 }

@@ -118,7 +118,11 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
-    @Deprecated
+    public boolean canProvidePower(BlockState state) {
+        return type.has(AttributeRedstoneEmitter.class);
+    }
+
+    @Override
     public int getWeakPower(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
         if (type.has(AttributeRedstoneEmitter.class)) {
             TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);

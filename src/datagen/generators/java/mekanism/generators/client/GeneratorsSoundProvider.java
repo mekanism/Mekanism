@@ -15,6 +15,7 @@ public class GeneratorsSoundProvider extends BaseSoundProvider {
     @Override
     protected void addSoundEvents() {
         addSoundEvent(GeneratorsSounds.FUSION_REACTOR, MekanismGenerators.rl("fusion_reactor"));
+        addSoundEvent(GeneratorsSounds.FISSION_REACTOR, MekanismGenerators.rl("fission_reactor"));
         addGeneratorSoundEvents();
     }
 

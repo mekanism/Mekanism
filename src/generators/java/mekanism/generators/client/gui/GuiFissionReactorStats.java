@@ -39,7 +39,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
 
             @Override
             public double getLevel() {
-                return Math.min(1, (double) tile.getLastBurnRate() / (double) tile.getMaxBurnRate());
+                return Math.min(1, tile.getLastBurnRate() / tile.getMaxBurnRate());
             }
         }, 5, 114, xSize - 12));
         addButton(new MekanismImageButton(this, getGuiLeft() + 114, getGuiTop() + 128, 11, 12, getButtonLocation("checkmark"), this::setRateLimit));
@@ -49,8 +49,15 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
 
     private void setRateLimit() {
         if (!rateLimitField.getText().isEmpty()) {
-            MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.INJECTION_RATE, tile, Integer.parseInt(rateLimitField.getText())));
-            rateLimitField.setText("");
+            try {
+                double limit = Double.parseDouble(rateLimitField.getText());
+                if (limit >= 0 && limit < 10_000) {
+                    // round to two decimals
+                    limit = (double) Math.round(limit * 100) / 100;
+                    MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.INJECTION_RATE, tile, limit));
+                    rateLimitField.setText("");
+                }
+            } catch(Exception e) {} // ignore NFE
         }
     }
 
@@ -65,8 +72,8 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         // fuel stats
         renderScaledText(GeneratorsLang.FISSION_FUEL_STATISTICS.translate(), 6, 68, 0x202020, xSize - 12);
         renderScaledText(GeneratorsLang.FISSION_MAX_BURN_RATE.translate(nf.format(tile.getMaxBurnRate())), 6, 80, 0x404040, xSize - 12);
-        renderScaledText(GeneratorsLang.FISSION_RATE_LIMIT.translate(nf.format(tile.getRateLimit())), 6, 90, 0x404040, xSize - 12);
-        renderScaledText(GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(nf.format(tile.getRateLimit())), 6, 104, 0x404040, xSize - 12);
+        renderScaledText(GeneratorsLang.FISSION_RATE_LIMIT.translate(tile.getRateLimit()), 6, 90, 0x404040, xSize - 12);
+        renderScaledText(GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 6, 104, 0x404040, xSize - 12);
         renderScaledText(GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 6, 130, 0x404040, 69);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -90,8 +97,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
     @Override
     public boolean charTyped(char c, int keyCode) {
         if (rateLimitField.canWrite()) {
-            if (Character.isDigit(c)) {
-                //Only allow a subset of characters to be entered into the frequency text box
+            if (Character.isDigit(c) || c == '.') {
                 return rateLimitField.charTyped(c, keyCode);
             }
             return false;

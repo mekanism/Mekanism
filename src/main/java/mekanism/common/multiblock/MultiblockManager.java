@@ -124,12 +124,18 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
         }
     }
 
-    public void updateCache(TileEntityMultiblock<T> tile) {
+    public void updateCache(TileEntityMultiblock<T> tile, boolean force) {
         if (!inventories.containsKey(tile.cachedID)) {
             tile.cachedData.locations.add(Coord4D.get(tile));
             inventories.put(tile.cachedID, tile.cachedData);
         } else {
-            inventories.get(tile.cachedID).locations.add(Coord4D.get(tile));
+            MultiblockCache<T> cache = inventories.get(tile.cachedID);
+            if (force) {
+                tile.cachedData.locations = cache.locations;
+                inventories.put(tile.cachedID, tile.cachedData);
+                cache = tile.cachedData;
+            }
+            cache.locations.add(Coord4D.get(tile));
         }
     }
 }

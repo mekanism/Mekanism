@@ -89,7 +89,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 }
             }
             if (cachedID != null) {
-                getManager().updateCache(this);
+                getManager().updateCache(this, false);
             }
             if (ticker == 5) {
                 doUpdate();
@@ -105,10 +105,10 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 prevStructure = true;
             }
             structure.didTick = false;
-            if (structure.inventoryID != null) {
+            if (isRendering && structure.inventoryID != null) {
                 cachedData.sync(structure);
                 cachedID = structure.inventoryID;
-                getManager().updateCache(this);
+                getManager().updateCache(this, false);
             }
         }
     }
@@ -135,6 +135,12 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Override
     public void doUpdate() {
         if (!isRemote() && (structure == null || !structure.didTick)) {
+            if (structure != null && structure.inventoryID != null) {
+                // update the cache before we destroy the multiblock
+                cachedData.sync(structure);
+                cachedID = structure.inventoryID;
+                getManager().updateCache(this, true);
+            }
             getProtocol().doUpdate();
             if (structure != null) {
                 structure.didTick = true;

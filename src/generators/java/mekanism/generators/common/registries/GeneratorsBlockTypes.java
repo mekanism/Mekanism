@@ -144,6 +144,7 @@ public class GeneratorsBlockTypes {
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_CASING, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_CASING)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
           .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR)
+          .withSound(GeneratorsSounds.FISSION_REACTOR)
           .build();
     // Fission Reactor Port
     public static final BlockTypeTile<TileEntityFissionReactorPort> FISSION_REACTOR_PORT = BlockTileBuilder
@@ -151,6 +152,7 @@ public class GeneratorsBlockTypes {
           .with(new AttributeStateFissionPortMode())
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
           .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR)
+          .withSound(GeneratorsSounds.FISSION_REACTOR)
           .build();
     // Fission Reactor Logic Adapter
     public static final BlockTypeTile<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
@@ -159,6 +161,7 @@ public class GeneratorsBlockTypes {
           .with(new AttributeRedstone())
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
           .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
+          .withSound(GeneratorsSounds.FISSION_REACTOR)
           .build();
     // Fission Fuel Assembly
     public static final BlockTypeTile<TileEntityFissionFuelAssembly> FISSION_FUEL_ASSEMBLY = BlockTileBuilder

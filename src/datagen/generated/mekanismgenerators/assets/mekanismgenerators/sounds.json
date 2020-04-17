@@ -24,6 +24,11 @@
       "mekanismgenerators:generator/wind"
     ]
   },
+  "tile.machine.fission_reactor": {
+    "sounds": [
+      "mekanismgenerators:fission_reactor"
+    ]
+  },
   "tile.machine.fusion_reactor": {
     "sounds": [
       "mekanismgenerators:fusion_reactor"
