@@ -9,7 +9,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.prefab.BlockTile;
+import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.security.ISecurityItem;

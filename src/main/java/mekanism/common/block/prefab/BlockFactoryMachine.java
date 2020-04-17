@@ -1,4 +1,4 @@
-package mekanism.common.block.machine.prefab;
+package mekanism.common.block.prefab;
 
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.blocktype.Factory;

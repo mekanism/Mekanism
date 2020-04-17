@@ -1,12 +1,12 @@
-package mekanism.common.block.machine.prefab;
+package mekanism.common.block.prefab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.multiblock.IMultiblock;
-import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

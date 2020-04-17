@@ -2,8 +2,8 @@ package mekanism.common.tile;
 
 import java.util.UUID;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
-import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 
 public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock {
 

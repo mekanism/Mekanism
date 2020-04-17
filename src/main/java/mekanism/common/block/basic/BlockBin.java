@@ -3,7 +3,7 @@ package mekanism.common.block.basic;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.block.machine.prefab.BlockTile;
+import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.tile.TileEntityBin;

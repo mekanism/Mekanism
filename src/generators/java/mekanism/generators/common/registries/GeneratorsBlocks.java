@@ -2,9 +2,9 @@ package mekanism.generators.common.registries;
 
 import java.util.function.Supplier;
 import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.block.machine.prefab.BlockBasicMultiblock;
-import mekanism.common.block.machine.prefab.BlockTile;
-import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
+import mekanism.common.block.prefab.BlockBasicMultiblock;
+import mekanism.common.block.prefab.BlockTile;
+import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.block.machine.ItemBlockMachine;

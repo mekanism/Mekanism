@@ -2,7 +2,7 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
+import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityLogisticalSorter;

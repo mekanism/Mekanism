@@ -1,7 +1,7 @@
 package mekanism.generators.common.tile.turbine;
 
 import java.util.UUID;
-import mekanism.common.multiblock.TileEntityInternalMultiblock;
+import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.registries.GeneratorsBlocks;

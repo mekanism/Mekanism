@@ -1,7 +1,7 @@
 package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
-import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
+import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;

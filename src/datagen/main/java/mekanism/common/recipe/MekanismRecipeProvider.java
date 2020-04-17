@@ -41,7 +41,7 @@ import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.block.basic.BlockResource;
 import mekanism.common.block.interfaces.ITypeBlock;
-import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
+import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;

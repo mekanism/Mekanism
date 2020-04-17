@@ -1,7 +1,7 @@
 package mekanism.generators.common.tile.fission;
 
 import java.util.UUID;
-import mekanism.common.multiblock.TileEntityInternalMultiblock;
+import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.generators.common.content.fission.SynchronizedFissionReactorData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 

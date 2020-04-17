@@ -4,7 +4,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.common.multiblock.TileEntityInternalMultiblock;
+import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;

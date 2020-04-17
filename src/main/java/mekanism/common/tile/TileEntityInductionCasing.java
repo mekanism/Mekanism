@@ -12,6 +12,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;

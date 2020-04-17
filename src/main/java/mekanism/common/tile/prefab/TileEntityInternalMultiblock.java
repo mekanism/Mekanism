@@ -1,4 +1,4 @@
-package mekanism.common.multiblock;
+package mekanism.common.tile.prefab;
 
 import java.util.UUID;
 import javax.annotation.Nonnull;

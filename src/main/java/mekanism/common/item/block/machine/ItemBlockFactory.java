@@ -10,7 +10,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
-import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
+import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;

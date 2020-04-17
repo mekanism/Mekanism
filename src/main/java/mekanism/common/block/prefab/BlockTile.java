@@ -1,4 +1,4 @@
-package mekanism.common.block.machine.prefab;
+package mekanism.common.block.prefab;
 
 import java.util.Random;
 import java.util.function.Function;

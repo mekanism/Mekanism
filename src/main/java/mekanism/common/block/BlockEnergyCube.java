@@ -7,7 +7,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateFacing;
-import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
+import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.tier.EnergyCubeTier;

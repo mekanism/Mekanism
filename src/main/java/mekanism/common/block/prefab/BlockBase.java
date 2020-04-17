@@ -1,4 +1,4 @@
-package mekanism.common.block.machine.prefab;
+package mekanism.common.block.prefab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

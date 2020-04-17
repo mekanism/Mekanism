@@ -7,7 +7,7 @@ import mekanism.api.block.IColoredBlock;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.machine.prefab.BlockTile.BlockTileModel;
+import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.tile.TileEntityFluidTank;

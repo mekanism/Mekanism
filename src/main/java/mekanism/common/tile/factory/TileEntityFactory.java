@@ -18,7 +18,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
-import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
+import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;

@@ -1,6 +1,6 @@
 package mekanism.generators.common.tile.fission;
 
-import mekanism.common.multiblock.TileEntityInternalMultiblock;
+import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 
 public class TileEntityControlRodAssembly extends TileEntityInternalMultiblock {

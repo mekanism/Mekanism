@@ -6,7 +6,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.heat.HeatAPI;
-import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.tile.prefab.TileEntityMultiblock;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
