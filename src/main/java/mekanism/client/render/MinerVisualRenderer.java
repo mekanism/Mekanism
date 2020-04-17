@@ -1,10 +1,7 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -13,44 +10,34 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 
 public final class MinerVisualRenderer {
 
-    private static Map<MinerRenderData, List<Model3D>> cachedVisuals = new Object2ObjectOpenHashMap<>();
+    private static final Map<MinerRenderData, Model3D> cachedVisuals = new Object2ObjectOpenHashMap<>();
 
     public static void resetCachedVisuals() {
         cachedVisuals.clear();
     }
 
     public static void render(@Nonnull TileEntityDigitalMiner miner, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer) {
-        List<Model3D> models = getModels(new MinerRenderData(miner));
-        IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
-        int argb = MekanismRenderer.getColorARGB(1, 1, 1, 0.8F);
-        //TODO: Rendering the visuals drops FPS by a good bit, can we at least batch getting the vertex builder
-        // Or maybe we should just make one large square?
-        for (Model3D model : models) {
-            MekanismRenderer.renderObject(model, matrix, buffer, argb, MekanismRenderer.FULL_LIGHT);
+        if (miner.getRadius() <= 64) {
+            //TODO: Eventually we may want to make it so that the model can support each face being a different
+            // color to make it easier to see the "depth"
+            MekanismRenderer.renderObject(getModel(new MinerRenderData(miner)), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
+                  MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT);
         }
     }
 
-    private static List<Model3D> getModels(MinerRenderData data) {
+    private static Model3D getModel(MinerRenderData data) {
         if (cachedVisuals.containsKey(data)) {
             return cachedVisuals.get(data);
         }
-        List<Model3D> models = new ArrayList<>();
-        cachedVisuals.put(data, models);
-        if (data.radius <= 64) {
-            for (int x = -data.radius; x <= data.radius; x++) {
-                for (int y = data.minY - data.yCoord; y <= data.maxY - data.yCoord; y++) {
-                    for (int z = -data.radius; z <= data.radius; z++) {
-                        if (x == -data.radius || x == data.radius || y == data.minY - data.yCoord || y == data.maxY - data.yCoord || z == -data.radius || z == data.radius) {
-                            Model3D model = new Model3D();
-                            model.setBlockBounds(x + 0.4, y + 0.4, z + 0.4, x + 0.6, y + 0.6, z + 0.6);
-                            model.setTexture(MekanismRenderer.whiteIcon);
-                            models.add(model);
-                        }
-                    }
-                }
-            }
-        }
-        return models;
+        Model3D model = new Model3D();
+        model.setTexture(MekanismRenderer.whiteIcon);
+        model.minX = -data.radius + 0.01;
+        model.minY = data.minY - data.yCoord + 0.01;
+        model.minZ = -data.radius + 0.01;
+        model.maxX = data.radius + 0.99;
+        model.maxY = data.maxY - data.yCoord - 0.01;
+        model.maxZ = data.radius + 0.99;
+        return model;
     }
 
     public static class MinerRenderData {

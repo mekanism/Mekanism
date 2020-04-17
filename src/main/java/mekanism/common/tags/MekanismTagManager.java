@@ -49,16 +49,16 @@ public class MekanismTagManager implements IFutureReloadListener {
     @Override
     public CompletableFuture<Void> reload(@Nonnull IStage stage, @Nonnull IResourceManager resourceManager, @Nonnull IProfiler preparationsProfiler,
           @Nonnull IProfiler reloadProfiler, @Nonnull Executor backgroundExecutor, @Nonnull Executor gameExecutor) {
-        //TODO: Support handling more of these
+        //TODO: Modify this in a way that makes it easy to add a new type without having to screw around with the completable future
         CompletableFuture<Map<ResourceLocation, Builder<Gas>>> gasReload = this.gases.reload(resourceManager, backgroundExecutor);
         CompletableFuture<Map<ResourceLocation, Builder<InfuseType>>> infuseTypeReload = this.infuseTypes.reload(resourceManager, backgroundExecutor);
-        return gasReload.thenCombine(infuseTypeReload, ReloadResults::new).thenCompose(stage::markCompleteAwaitingOthers)
+        return gasReload.thenCombine(infuseTypeReload, ReloadResults::new)
+              .thenCompose(stage::markCompleteAwaitingOthers)
               .thenAcceptAsync(reloadResults -> {
                   this.gases.registerAll(reloadResults.gases);
                   this.infuseTypes.registerAll(reloadResults.infuseTypes);
                   GasTags.setCollection(this.gases);
                   InfuseTypeTags.setCollection(this.infuseTypes);
-                  //TODO: Double check this is correct
                   Mekanism.packetHandler.sendToAll(new PacketMekanismTags(Mekanism.instance.getTagManager()));
               }, gameExecutor);
     }

@@ -8,7 +8,6 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.util.Direction;
 
-//TODO: Replace the builder with this and then have two IInventorySlotHolder implementations
 public class InventorySlotHelper {
 
     private final IInventorySlotHolder slotHolder;

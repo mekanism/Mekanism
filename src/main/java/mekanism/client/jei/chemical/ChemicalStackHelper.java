@@ -37,7 +37,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public String getUniqueId(STACK ingredient) {
-        return getType().toLowerCase(Locale.ROOT) + ":" + ingredient.getType().getRegistryName();
+        return getType().toLowerCase(Locale.ROOT) + ":" + ingredient.getTypeRegistryName();
     }
 
     @Override
@@ -47,7 +47,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public String getModId(STACK ingredient) {
-        return ingredient.getType().getRegistryName().getNamespace();
+        return ingredient.getTypeRegistryName().getNamespace();
     }
 
     /*@Override
@@ -55,14 +55,14 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         CHEMICAL chemical = ingredient.getType();
         TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(chemical.getIcon());
         int renderColor = chemical.getTint();
-        //TODO: Does tint need alpha applied
-        //TODO: https://github.com/mezz/JustEnoughItems/issues/1886
+        //TODO: Does tint need alpha applied/factored in to getting the color
+        // Either way this is waiting on https://github.com/mezz/JustEnoughItems/issues/1886
         return ColorGetter.getColors(sprite, renderColor, 1);
     }*/
 
     @Override
     public String getResourceId(STACK ingredient) {
-        return ingredient.getType().getRegistryName().getPath();
+        return ingredient.getTypeRegistryName().getPath();
     }
 
     @Override

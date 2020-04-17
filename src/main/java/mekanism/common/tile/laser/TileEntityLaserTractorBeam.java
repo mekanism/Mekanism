@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 
+//TODO: Make the tractor beam pull items when it hits them
 public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
 
     public TileEntityLaserTractorBeam() {

@@ -2,7 +2,6 @@ package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -55,7 +54,7 @@ public class FluidGasToGasRecipeCategory extends BaseRecipeCategory<FluidGasToGa
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, FluidGasToGasRecipe recipe, IIngredients ingredients) {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        @NonNull List<FluidStack> fluidInputs = recipe.getFluidInput().getRepresentations();
+        List<FluidStack> fluidInputs = recipe.getFluidInput().getRepresentations();
         int max = fluidInputs.stream().mapToInt(FluidStack::getAmount).filter(input -> input >= 0).max().orElse(0);
         fluidStacks.init(0, true, 6 - xOffset, 5 - yOffset, 16, 58, max, false, fluidOverlayLarge);
         fluidStacks.set(0, fluidInputs);

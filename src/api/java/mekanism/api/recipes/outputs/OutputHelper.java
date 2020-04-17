@@ -1,6 +1,7 @@
 package mekanism.api.recipes.outputs;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
@@ -17,59 +18,60 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
+@ParametersAreNonnullByDefault
 public class OutputHelper {
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> IOutputHandler<@NonNull STACK> getOutputHandler(
-          @Nonnull IChemicalTank<CHEMICAL, STACK> tank) {
+          IChemicalTank<CHEMICAL, STACK> tank) {
         return new IOutputHandler<@NonNull STACK>() {
 
             @Override
-            public void handleOutput(@NonNull STACK toOutput, int operations) {
+            public void handleOutput(@Nonnull STACK toOutput, int operations) {
                 OutputHelper.handleOutput(tank, toOutput, operations);
             }
 
             @Override
-            public int operationsRoomFor(@NonNull STACK toOutput, int currentMax) {
+            public int operationsRoomFor(@Nonnull STACK toOutput, int currentMax) {
                 return OutputHelper.operationsRoomFor(tank, toOutput, currentMax);
             }
         };
     }
 
-    public static IOutputHandler<@NonNull FluidStack> getOutputHandler(@Nonnull IExtendedFluidTank fluidTank) {
+    public static IOutputHandler<@NonNull FluidStack> getOutputHandler(IExtendedFluidTank fluidTank) {
         return new IOutputHandler<@NonNull FluidStack>() {
 
             @Override
-            public void handleOutput(@NonNull FluidStack toOutput, int operations) {
+            public void handleOutput(@Nonnull FluidStack toOutput, int operations) {
                 OutputHelper.handleOutput(fluidTank, toOutput, operations);
             }
 
             @Override
-            public int operationsRoomFor(@NonNull FluidStack toOutput, int currentMax) {
+            public int operationsRoomFor(@Nonnull FluidStack toOutput, int currentMax) {
                 return OutputHelper.operationsRoomFor(fluidTank, toOutput, currentMax);
             }
         };
     }
 
-    public static IOutputHandler<@NonNull ItemStack> getOutputHandler(@Nonnull IInventorySlot inventorySlot) {
+    public static IOutputHandler<@NonNull ItemStack> getOutputHandler(IInventorySlot inventorySlot) {
         return new IOutputHandler<@NonNull ItemStack>() {
 
             @Override
-            public void handleOutput(@NonNull ItemStack toOutput, int operations) {
+            public void handleOutput(@Nonnull ItemStack toOutput, int operations) {
                 OutputHelper.handleOutput(inventorySlot, toOutput, operations);
             }
 
             @Override
-            public int operationsRoomFor(@NonNull ItemStack toOutput, int currentMax) {
+            public int operationsRoomFor(@Nonnull ItemStack toOutput, int currentMax) {
                 return OutputHelper.operationsRoomFor(inventorySlot, toOutput, currentMax);
             }
         };
     }
 
-    public static IOutputHandler<@NonNull ChanceOutput> getOutputHandler(@Nonnull IInventorySlot mainSlot, @Nonnull IInventorySlot secondarySlot) {
+    public static IOutputHandler<@NonNull ChanceOutput> getOutputHandler(IInventorySlot mainSlot, IInventorySlot secondarySlot) {
         return new IOutputHandler<@NonNull ChanceOutput>() {
 
             @Override
-            public void handleOutput(@NonNull ChanceOutput toOutput, int operations) {
+            public void handleOutput(@Nonnull ChanceOutput toOutput, int operations) {
                 OutputHelper.handleOutput(mainSlot, toOutput.getMainOutput(), operations);
                 //TODO: Batch this into a single addition call, by looping over and calculating things?
                 ItemStack secondaryOutput = toOutput.getSecondaryOutput();
@@ -82,53 +84,50 @@ public class OutputHelper {
             }
 
             @Override
-            public int operationsRoomFor(@NonNull ChanceOutput toOutput, int currentMax) {
+            public int operationsRoomFor(@Nonnull ChanceOutput toOutput, int currentMax) {
                 currentMax = OutputHelper.operationsRoomFor(mainSlot, toOutput.getMainOutput(), currentMax);
                 return OutputHelper.operationsRoomFor(secondarySlot, toOutput.getMaxSecondaryOutput(), currentMax);
             }
         };
     }
 
-    public static IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> getOutputHandler(@Nonnull IChemicalTank<Gas, GasStack> gasTank,
-          @Nonnull IInventorySlot inventorySlot) {
+    public static IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> getOutputHandler(IChemicalTank<Gas, GasStack> gasTank, IInventorySlot inventorySlot) {
         return new IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>>() {
 
             @Override
-            public void handleOutput(@NonNull Pair<@NonNull ItemStack, @NonNull GasStack> toOutput, int operations) {
+            public void handleOutput(@Nonnull Pair<@NonNull ItemStack, @NonNull GasStack> toOutput, int operations) {
                 OutputHelper.handleOutput(inventorySlot, toOutput.getLeft(), operations);
                 OutputHelper.handleOutput(gasTank, toOutput.getRight(), operations);
             }
 
             @Override
-            public int operationsRoomFor(@NonNull Pair<@NonNull ItemStack, @NonNull GasStack> toOutput, int currentMax) {
+            public int operationsRoomFor(@Nonnull Pair<@NonNull ItemStack, @NonNull GasStack> toOutput, int currentMax) {
                 currentMax = OutputHelper.operationsRoomFor(inventorySlot, toOutput.getLeft(), currentMax);
                 return OutputHelper.operationsRoomFor(gasTank, toOutput.getRight(), currentMax);
             }
         };
     }
 
-    //TODO: IGasHandler??
-    public static IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>> getOutputHandler(@Nonnull IChemicalTank<Gas, GasStack> leftTank,
-          @Nonnull IChemicalTank<Gas, GasStack> rightTank) {
+    public static IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>> getOutputHandler(IChemicalTank<Gas, GasStack> leftTank,
+          IChemicalTank<Gas, GasStack> rightTank) {
         return new IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>>() {
 
             @Override
-            public void handleOutput(@NonNull Pair<@NonNull GasStack, @NonNull GasStack> toOutput, int operations) {
+            public void handleOutput(@Nonnull Pair<@NonNull GasStack, @NonNull GasStack> toOutput, int operations) {
                 OutputHelper.handleOutput(leftTank, toOutput.getLeft(), operations);
                 OutputHelper.handleOutput(rightTank, toOutput.getRight(), operations);
             }
 
             @Override
-            public int operationsRoomFor(@NonNull Pair<@NonNull GasStack, @NonNull GasStack> toOutput, int currentMax) {
+            public int operationsRoomFor(@Nonnull Pair<@NonNull GasStack, @NonNull GasStack> toOutput, int currentMax) {
                 currentMax = OutputHelper.operationsRoomFor(leftTank, toOutput.getLeft(), currentMax);
                 return OutputHelper.operationsRoomFor(rightTank, toOutput.getRight(), currentMax);
             }
         };
     }
 
-    //TODO: Should these be public
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleOutput(@Nonnull IChemicalTank<CHEMICAL, STACK> tank,
-          @NonNull STACK toOutput, int operations) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleOutput(IChemicalTank<CHEMICAL, STACK> tank, STACK toOutput,
+          int operations) {
         if (operations == 0) {
             //This should not happen
             return;
@@ -137,7 +136,7 @@ public class OutputHelper {
         tank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static void handleOutput(@Nonnull IExtendedFluidTank fluidTank, @NonNull FluidStack toOutput, int operations) {
+    private static void handleOutput(IExtendedFluidTank fluidTank, FluidStack toOutput, int operations) {
         if (operations == 0) {
             //This should not happen
             return;
@@ -145,7 +144,7 @@ public class OutputHelper {
         fluidTank.insert(new FluidStack(toOutput, toOutput.getAmount() * operations), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static void handleOutput(@Nonnull IInventorySlot inventorySlot, @NonNull ItemStack toOutput, int operations) {
+    private static void handleOutput(IInventorySlot inventorySlot, ItemStack toOutput, int operations) {
         if (operations == 0 || toOutput.isEmpty()) {
             return;
         }
@@ -158,8 +157,8 @@ public class OutputHelper {
         inventorySlot.insertItem(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> int operationsRoomFor(@Nonnull IChemicalTank<CHEMICAL, STACK> tank,
-          @NonNull STACK toOutput, int currentMax) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> int operationsRoomFor(IChemicalTank<CHEMICAL, STACK> tank, STACK toOutput,
+          int currentMax) {
         if (currentMax <= 0 || toOutput.isEmpty()) {
             //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;
@@ -173,7 +172,7 @@ public class OutputHelper {
         return Math.min(MathUtils.clampToInt(amountUsed / toOutput.getAmount()), currentMax);
     }
 
-    private static int operationsRoomFor(@Nonnull IExtendedFluidTank fluidTank, @NonNull FluidStack toOutput, int currentMax) {
+    private static int operationsRoomFor(IExtendedFluidTank fluidTank, FluidStack toOutput, int currentMax) {
         if (currentMax <= 0 || toOutput.isEmpty()) {
             //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;
@@ -187,7 +186,7 @@ public class OutputHelper {
         return Math.min(amountUsed / toOutput.getAmount(), currentMax);
     }
 
-    private static int operationsRoomFor(@Nonnull IInventorySlot inventorySlot, @NonNull ItemStack toOutput, int currentMax) {
+    private static int operationsRoomFor(IInventorySlot inventorySlot, ItemStack toOutput, int currentMax) {
         if (currentMax <= 0 || toOutput.isEmpty()) {
             //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;

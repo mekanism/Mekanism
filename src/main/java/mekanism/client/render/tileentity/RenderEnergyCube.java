@@ -46,7 +46,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
         }
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         profiler.startSection(ProfilerConstants.CORNERS);
-        model.render(matrix, renderer, light, overlayLight, tile.tier, false);
+        model.render(matrix, renderer, light, overlayLight, tile.getTier(), false);
         profiler.endStartSection(ProfilerConstants.SIDES);
         model.renderSidesBatched(tile, matrix, renderer, light, overlayLight);
         profiler.endSection();//End sides
@@ -63,7 +63,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
             float scaledTicks = 4 * ticks;
             matrix.rotate(Vector3f.YP.rotationDegrees(scaledTicks));
             matrix.rotate(coreVec.rotationDegrees(36F + scaledTicks));
-            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.tier.getBaseTier().getColor(), energyScale);
+            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.getTier().getBaseTier().getColor(), energyScale);
             matrix.pop();
         }
         profiler.endSection();

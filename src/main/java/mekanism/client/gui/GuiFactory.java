@@ -12,21 +12,14 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiSortingTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.client.sound.SoundHandler;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.item.ItemGaugeDropper;
-import mekanism.common.network.PacketGuiInteract;
-import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTileContainer<TileEntityFactory<?>>> {
@@ -83,25 +76,5 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
         drawString(MekanismLang.INVENTORY.translate(), tile.tier == FactoryTier.ULTIMATE ? 26 : 8,
               tile.hasSecondaryResourceBar() ? 85 : tile instanceof TileEntitySawingFactory ? 95 : 75, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (tile.hasSecondaryResourceBar()) {
-            if (button == 0 || hasShiftDown()) {
-                double xAxis = mouseX - getGuiLeft();
-                double yAxis = mouseY - getGuiTop();
-                //TODO: Hovering over the secondary bar??
-                if (xAxis > 8 && xAxis < 168 && yAxis > 78 && yAxis < 83) {
-                    ItemStack stack = minecraft.player.inventory.getItemStack();
-                    if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
-                        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.DUMP_BUTTON, tile));
-                        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        return true;
-                    }
-                }
-            }
-        }
-        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

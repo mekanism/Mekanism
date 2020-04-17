@@ -53,6 +53,11 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
     }
 
     @Override
+    public String toString() {
+        return "[InfuseType: " + getRegistryName() + "]";
+    }
+
+    @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         nbtTags.putString(NBTConstants.INFUSE_TYPE_NAME, getRegistryName().toString());
         return nbtTags;

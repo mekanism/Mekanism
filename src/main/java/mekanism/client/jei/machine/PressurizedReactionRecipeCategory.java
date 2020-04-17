@@ -31,8 +31,9 @@ import org.apache.commons.lang3.tuple.Pair;
 public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<PressurizedReactionRecipe> {
 
     public PressurizedReactionRecipeCategory(IGuiHelper helper) {
-        //TODO: Had a lang key for shorter name
         super(helper, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 3, 11, 170, 68);
+        //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations
+        // we will eventually instead just make the text scale
     }
 
     @Override
@@ -57,7 +58,7 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInputSolid().getRepresentations()));
         ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getInputFluid().getRepresentations()));
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getInputGas().getRepresentations()));
-        @NonNull Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = recipe.getOutputDefinition();
+        Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = recipe.getOutputDefinition();
         ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(outputDefinition.getLeft()));
         ingredients.setOutput(MekanismJEI.TYPE_GAS, outputDefinition.getRight());
     }
@@ -68,10 +69,10 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
         itemStacks.init(0, true, 53 - xOffset, 34 - yOffset);
         itemStacks.init(1, false, 115 - xOffset, 34 - yOffset);
         itemStacks.set(0, recipe.getInputSolid().getRepresentations());
-        @NonNull Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = recipe.getOutputDefinition();
+        Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = recipe.getOutputDefinition();
         itemStacks.set(1, outputDefinition.getLeft());
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        @NonNull List<FluidStack> fluidInputs = recipe.getInputFluid().getRepresentations();
+        List<FluidStack> fluidInputs = recipe.getInputFluid().getRepresentations();
         int max = fluidInputs.stream().mapToInt(FluidStack::getAmount).filter(input -> input >= 0).max().orElse(0);
         fluidStacks.init(0, true, 3, 0, 16, 58, max, false, fluidOverlayLarge);
         fluidStacks.set(0, fluidInputs);

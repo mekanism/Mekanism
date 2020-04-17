@@ -29,19 +29,19 @@ import net.minecraft.util.ResourceLocation;
  */
 public abstract class GasStackIngredient implements InputIngredient<@NonNull GasStack> {
 
-    public static GasStackIngredient from(@NonNull GasStack instance) {
+    public static GasStackIngredient from(@Nonnull GasStack instance) {
         return from(instance.getType(), instance.getAmount());
     }
 
-    public static GasStackIngredient from(@NonNull IGasProvider instance, long amount) {
-        return new Single(instance.getGas(), amount);
+    public static GasStackIngredient from(@Nonnull IGasProvider instance, long amount) {
+        return new Single(instance.getGasStack(amount));
     }
 
-    public static GasStackIngredient from(@NonNull Tag<Gas> gasTag, long amount) {
+    public static GasStackIngredient from(@Nonnull Tag<Gas> gasTag, long amount) {
         return new Tagged(gasTag, amount);
     }
 
-    public abstract boolean testType(@NonNull Gas gas);
+    public abstract boolean testType(@Nonnull Gas gas);
 
     public static GasStackIngredient read(PacketBuffer buffer) {
         //TODO: Allow supporting serialization of different types than just the ones we implement?
@@ -54,7 +54,6 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         return Multi.read(buffer);
     }
 
-    //TODO: Should we not let this be null?
     public static GasStackIngredient deserialize(@Nullable JsonElement json) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Ingredient cannot be null");
@@ -127,59 +126,57 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
 
     public static class Single extends GasStackIngredient {
 
-        //TODO: Convert this to storing a GasStack?
-        @NonNull
-        private final Gas gasInstance;
-        private final long amount;
+        @Nonnull
+        private final GasStack gasInstance;
 
-        protected Single(@NonNull Gas gasInstance, long amount) {
+        protected Single(@Nonnull GasStack gasInstance) {
             this.gasInstance = Objects.requireNonNull(gasInstance);
-            this.amount = amount;
         }
 
         @Override
-        public boolean test(@NonNull GasStack gasStack) {
-            return testType(gasStack) && gasStack.getAmount() >= amount;
+        public boolean test(@Nonnull GasStack gasStack) {
+            return testType(gasStack) && gasStack.getAmount() >= gasInstance.getAmount();
         }
 
         @Override
-        public boolean testType(@NonNull GasStack gasStack) {
-            return testType(Objects.requireNonNull(gasStack).getType());
+        public boolean testType(@Nonnull GasStack gasStack) {
+            return gasInstance.isTypeEqual(Objects.requireNonNull(gasStack));
         }
 
         @Override
-        public boolean testType(@NonNull Gas gas) {
-            return Objects.requireNonNull(gas) == gasInstance;
+        public boolean testType(@Nonnull Gas gas) {
+            return gasInstance.isTypeEqual(Objects.requireNonNull(gas));
         }
 
+        @Nonnull
         @Override
-        public @NonNull GasStack getMatchingInstance(@NonNull GasStack gasStack) {
-            return test(gasStack) ? new GasStack(gasInstance, amount) : GasStack.EMPTY;
+        public GasStack getMatchingInstance(@Nonnull GasStack gasStack) {
+            return test(gasStack) ? gasInstance.copy() : GasStack.EMPTY;
         }
 
+        @Nonnull
         @Override
-        public @NonNull List<@NonNull GasStack> getRepresentations() {
-            return Collections.singletonList(new GasStack(gasInstance, amount));
+        public List<@NonNull GasStack> getRepresentations() {
+            return Collections.singletonList(gasInstance);
         }
 
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.SINGLE);
-            buffer.writeRegistryId(gasInstance);
-            buffer.writeVarLong(amount);
+            gasInstance.writeToPacket(buffer);
         }
 
         @Nonnull
         @Override
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
-            json.addProperty(JsonConstants.AMOUNT, amount);
-            json.addProperty(JsonConstants.GAS, gasInstance.getRegistryName().toString());
+            json.addProperty(JsonConstants.AMOUNT, gasInstance.getAmount());
+            json.addProperty(JsonConstants.GAS, gasInstance.getTypeRegistryName().toString());
             return json;
         }
 
         public static Single read(PacketBuffer buffer) {
-            return new Single(buffer.readRegistryId(), buffer.readVarLong());
+            return new Single(GasStack.readFromPacket(buffer));
         }
     }
 
@@ -195,22 +192,23 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         }
 
         @Override
-        public boolean test(@NonNull GasStack gasStack) {
+        public boolean test(@Nonnull GasStack gasStack) {
             return testType(gasStack) && gasStack.getAmount() >= amount;
         }
 
         @Override
-        public boolean testType(@NonNull GasStack gasStack) {
+        public boolean testType(@Nonnull GasStack gasStack) {
             return testType(Objects.requireNonNull(gasStack).getType());
         }
 
         @Override
-        public boolean testType(@NonNull Gas gas) {
+        public boolean testType(@Nonnull Gas gas) {
             return Objects.requireNonNull(gas).isIn(tag);
         }
 
+        @Nonnull
         @Override
-        public @NonNull GasStack getMatchingInstance(@NonNull GasStack gasStack) {
+        public GasStack getMatchingInstance(@Nonnull GasStack gasStack) {
             if (test(gasStack)) {
                 //Our gas is in the tag so we make a new stack with the given amount
                 return new GasStack(gasStack, amount);
@@ -218,8 +216,8 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
             return GasStack.EMPTY;
         }
 
+        @Nonnull
         @Override
-        @NonNull
         public List<@NonNull GasStack> getRepresentations() {
             //TODO: Can this be cached some how
             List<@NonNull GasStack> representations = new ArrayList<>();
@@ -246,39 +244,36 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         }
 
         public static Tagged read(PacketBuffer buffer) {
-            //TODO: Should this only check already defined tags??
             return new Tagged(new GasTags.Wrapper(buffer.readResourceLocation()), buffer.readVarLong());
         }
     }
 
-    //TODO: Maybe name this better, at the very least make it easier/possible to create new instances of this
-    // Also cleanup the javadoc comment about this, and try to make the helpers that create a new instance
-    // return a normal GasStackIngredient (Single), if we only have a singular one
     public static class Multi extends GasStackIngredient {
 
         private final GasStackIngredient[] ingredients;
 
-        protected Multi(@NonNull GasStackIngredient... ingredients) {
+        protected Multi(@Nonnull GasStackIngredient... ingredients) {
             this.ingredients = ingredients;
         }
 
         @Override
-        public boolean test(@NonNull GasStack stack) {
+        public boolean test(@Nonnull GasStack stack) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.test(stack));
         }
 
         @Override
-        public boolean testType(@NonNull GasStack stack) {
+        public boolean testType(@Nonnull GasStack stack) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(stack));
         }
 
         @Override
-        public boolean testType(@NonNull Gas gas) {
+        public boolean testType(@Nonnull Gas gas) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(gas));
         }
 
+        @Nonnull
         @Override
-        public @NonNull GasStack getMatchingInstance(@NonNull GasStack stack) {
+        public GasStack getMatchingInstance(@Nonnull GasStack stack) {
             for (GasStackIngredient ingredient : ingredients) {
                 GasStack matchingInstance = ingredient.getMatchingInstance(stack);
                 if (!matchingInstance.isEmpty()) {
@@ -288,7 +283,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
             return GasStack.EMPTY;
         }
 
-        @NonNull
+        @Nonnull
         @Override
         public List<@NonNull GasStack> getRepresentations() {
             List<@NonNull GasStack> representations = new ArrayList<>();
@@ -318,7 +313,6 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         }
 
         public static GasStackIngredient read(PacketBuffer buffer) {
-            //TODO: Verify this works
             GasStackIngredient[] ingredients = new GasStackIngredient[buffer.readVarInt()];
             for (int i = 0; i < ingredients.length; i++) {
                 ingredients[i] = GasStackIngredient.read(buffer);

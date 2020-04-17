@@ -3,7 +3,6 @@ package mekanism.api.recipes;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
@@ -12,9 +11,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
+@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@FieldsAreNonnullByDefault
 public abstract class RotaryRecipe extends MekanismRecipe {
 
     private final static GasStackIngredient EMPTY_GAS_INPUT = GasStackIngredient.from(GasStack.EMPTY);
@@ -58,11 +57,11 @@ public abstract class RotaryRecipe extends MekanismRecipe {
         return hasFluidToGas;
     }
 
-    public boolean test(@NonNull FluidStack fluidStack) {
+    public boolean test(FluidStack fluidStack) {
         return hasFluidToGas() && fluidInput.test(fluidStack);
     }
 
-    public boolean test(@NonNull GasStack gasStack) {
+    public boolean test(GasStack gasStack) {
         return hasGasToFluid() && gasInput.test(gasStack);
     }
 

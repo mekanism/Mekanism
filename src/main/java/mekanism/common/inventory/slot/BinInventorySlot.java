@@ -71,7 +71,13 @@ public class BinInventorySlot extends BasicInventorySlot {
         return null;
     }
 
-    //TODO: JavaDoc that the returned stack can be modified
+    /**
+     * Gets the "bottom" stack for the bin, this is the stack that can be extracted/interacted with directly.
+     *
+     * @return The "bottom" stack for the bin
+     *
+     * @apiNote The returned stack can be safely modified.
+     */
     public ItemStack getBottomStack() {
         if (isEmpty()) {
             return ItemStack.EMPTY;

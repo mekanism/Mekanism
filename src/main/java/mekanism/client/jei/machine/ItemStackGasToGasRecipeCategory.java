@@ -27,8 +27,9 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStackGasToGasRecipe> {
 
     public ItemStackGasToGasRecipeCategory(IGuiHelper helper) {
-        //TODO: previously had a lang entry for a shorter path
         super(helper, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, 3, 3, 170, 79);
+        //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations
+        // we will eventually instead just make the text scale
     }
 
     @Override
@@ -50,8 +51,7 @@ public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStac
     @Override
     public void setIngredients(ItemStackGasToGasRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
-        @NonNull List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
-        //TODO: Should this be "generalized" to some values that are not stored in the chemical dissolution chamber class
+        List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
         int scale = TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, scale)).collect(Collectors.toList());
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(scaledGases));
@@ -64,8 +64,7 @@ public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStac
         itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
         itemStacks.set(0, recipe.getItemInput().getRepresentations());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        @NonNull List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
-        //TODO: Should this be "generalized" to some values that are not stored in the chemical dissolution chamber class
+        List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
         int scale = TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, scale)).collect(Collectors.toList());
         initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58, scaledGases, true);

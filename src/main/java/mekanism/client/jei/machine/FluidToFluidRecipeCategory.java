@@ -2,7 +2,6 @@ package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -54,7 +53,7 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, FluidToFluidRecipe recipe, IIngredients ingredients) {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        @NonNull List<FluidStack> fluidInputs = recipe.getInput().getRepresentations();
+        List<FluidStack> fluidInputs = recipe.getInput().getRepresentations();
         int max = fluidInputs.stream().mapToInt(FluidStack::getAmount).filter(input -> input >= 0).max().orElse(0);
         fluidStacks.init(0, true, 7 - xOffset, 14 - yOffset, 16, 58, max, false, fluidOverlayLarge);
         fluidStacks.init(1, false, 153 - xOffset, 14 - yOffset, 16, 58, recipe.getOutputRepresentation().getAmount(), false,

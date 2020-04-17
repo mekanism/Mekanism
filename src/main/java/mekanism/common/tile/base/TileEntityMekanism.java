@@ -134,8 +134,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
       ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler {
 
-    //TODO: Should the implementations of the various stuff be extracted into TileComponents?
-
     /**
      * The players currently using this block.
      */
@@ -144,7 +142,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     /**
      * A timer used to send packets to clients.
      */
-    //TODO: Evaluate this
     public int ticker;
 
     private List<ITileComponent> components = new ArrayList<>();
@@ -874,7 +871,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
-        //TODO: Defaults for each of the types based on what other things this machine supports??
         if (upgrade == Upgrade.SPEED) {
             for (IEnergyContainer energyContainer : getEnergyContainers(null)) {
                 if (energyContainer instanceof MachineEnergyContainer<?>) {
@@ -1104,7 +1100,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         return lastEnergyReceived;
     }
 
-    //TODO: Re-implement lastEnergyReceived for when we accept energy
     protected void setInputRate(FloatingLong inputRate) {
         this.lastEnergyReceived = inputRate;
     }

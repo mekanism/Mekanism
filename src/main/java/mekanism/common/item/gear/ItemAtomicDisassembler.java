@@ -56,7 +56,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IModeItem {
 
     public ItemAtomicDisassembler(Properties properties) {
-        //TODO: Set some tool types? What would we set the "harvest level to"
         super(MekanismConfig.gear.disassemblerChargeRate, MekanismConfig.gear.disassemblerMaxEnergy, properties.setNoRepair().setISTER(ISTERProvider::disassembler));
     }
 

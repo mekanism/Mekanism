@@ -209,7 +209,7 @@ public class MekanismRenderer {
         if (stack.isEmpty()) {
             return -1;
         }
-        int color = stack.getType().getTint();
+        int color = stack.getChemicalTint();
         return getColorARGB(getRed(color), getGreen(color), getBlue(color), Math.min(1, scale + 0.2F));
     }
 
@@ -325,8 +325,8 @@ public class MekanismRenderer {
         }
 
         event.addSprite(Mekanism.rl("block/overlay/overlay_white"));
-        event.addSprite(Mekanism.rl("block/liquid/liquid_energy"));
-        event.addSprite(Mekanism.rl("block/liquid/liquid_heat"));
+        event.addSprite(Mekanism.rl("liquid/energy"));
+        event.addSprite(Mekanism.rl("liquid/heat"));
 
         for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
             event.addSprite(gas.getIcon());
@@ -339,6 +339,7 @@ public class MekanismRenderer {
         ModelRenderer.resetCachedModels();
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
+        RenderMechanicalPipe.onStitch();
         RenderTickHandler.resetCachedOverlays();
         MinerVisualRenderer.resetCachedVisuals();
         RenderTeleporter.resetCachedModels();
@@ -355,12 +356,11 @@ public class MekanismRenderer {
         }
 
         whiteIcon = map.getSprite(Mekanism.rl("block/overlay/overlay_white"));
-        energyIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_energy"));
-        heatIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_heat"));
+        energyIcon = map.getSprite(Mekanism.rl("liquid/energy"));
+        heatIcon = map.getSprite(Mekanism.rl("liquid/heat"));
 
-        //TODO: Why are these reset in post and the rest reset in Pre?
+        //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
         RenderLogisticalTransporter.onStitch(map);
-        RenderMechanicalPipe.onStitch();
         RenderTransmitterBase.onStitch();
     }
 
@@ -377,15 +377,6 @@ public class MekanismRenderer {
         public TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
 
         public boolean[] renderSides = new boolean[]{true, true, true, true, true, true, false};
-
-        public final void setBlockBounds(double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos) {
-            minX = xNeg;
-            minY = yNeg;
-            minZ = zNeg;
-            maxX = xPos;
-            maxY = yPos;
-            maxZ = zPos;
-        }
 
         public double sizeX() {
             return maxX - minX;

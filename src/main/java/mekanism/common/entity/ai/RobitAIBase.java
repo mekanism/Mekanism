@@ -2,7 +2,6 @@ package mekanism.common.entity.ai;
 
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.pathfinding.GroundPathNavigator;
@@ -88,8 +87,7 @@ public abstract class RobitAIBase extends Goal {
     }
 
     private boolean isEmptyBlock(BlockPos pos) {
-        BlockState iblockstate = world.getBlockState(pos);
         //TODO: Check voxel shape
-        return world.isAirBlock(pos);// || !iblockstate.isFullCube();
+        return world.isAirBlock(pos);// || !world.getBlockState(pos).isFullCube();
     }
 }

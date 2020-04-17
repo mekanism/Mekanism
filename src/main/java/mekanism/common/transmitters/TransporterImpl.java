@@ -39,16 +39,13 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwork, Void> implements ILogisticalTransporter {
 
-    private Int2ObjectOpenHashMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
-
+    private final Int2ObjectOpenHashMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
+    private EnumColor color;
     private int nextId = 0;
 
-    private EnumColor color;
-
-    private Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
-
-    public TransporterImpl(TileEntityLogisticalTransporter multiPart) {
-        super(multiPart);
+    public TransporterImpl(TileEntityLogisticalTransporter transporter) {
+        super(transporter);
     }
 
     public Collection<TransporterStack> getTransit() {
@@ -147,8 +144,6 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                         }
 
                         Coord4D next = stack.getPath().get(currentIndex - 1);
-                        //TODO: Can next ever even be null? We moved this check out given theoretically both branches could maybe have it be null
-                        // if it can even be null. I did not bother looking into if the null check that already existed was valid or unneeded
                         if (next != null) {
                             if (!stack.isFinal(this)) {
                                 TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());

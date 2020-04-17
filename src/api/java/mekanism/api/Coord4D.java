@@ -19,7 +19,7 @@ import net.minecraft.world.dimension.DimensionType;
  *
  * @author aidancbrady
  */
-public class Coord4D {//TODO: Replace this with GlobalPos
+public class Coord4D {//TODO - V10: Continue working on replacing uses of this with BlockPos/GlobalPos where appropriate
 
     /**
      * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
@@ -130,6 +130,7 @@ public class Coord4D {//TODO: Replace this with GlobalPos
      * @param dataStream - the PacketBuffer to add the data to
      */
     public void write(PacketBuffer dataStream) {
+        //Note: We write the position as a block pos over the network so that it can be packed more efficiently
         dataStream.writeBlockPos(getPos());
         dataStream.writeResourceLocation(dimension.getRegistryName());
     }

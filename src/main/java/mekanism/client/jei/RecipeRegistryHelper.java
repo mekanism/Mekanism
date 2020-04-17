@@ -40,12 +40,12 @@ public class RecipeRegistryHelper {
 
     public static void registerSmelter(IRecipeRegistration registry) {
         IBlockProvider mekanismBlock = MekanismBlocks.ENERGIZED_SMELTER;
-        //TODO: Add all smelting recipes
+        //TODO: Re-evaluate all of this once we add back CraftTweaker integration
+        // Note: There is a possibility this currently is not adding any smelting recipes of ours that are not in the vanilla furnace as well
         //registry.addRecipes(Collections.singleton(SmeltingRecipe.class), mekanismBlock.getJEICategory());
         /*if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
             registry.addRecipes(MekanismRecipeType.SMELTING.getRecipes(getWorld()), mekanismBlock.getRegistryName());
         } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
-            //TODO: Fix this
             // Only add added recipes
             /*Map<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
             List<MachineRecipeWrapper> smeltingWrapper = new ArrayList<>();

@@ -21,13 +21,10 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public final class StackUtils {
 
     public static ItemStack size(ItemStack stack, int size) {
-        //TODO: We probably can replace this with: ItemHandlerHelper.copyStackWithSize(container, 1)
         if (size <= 0 || stack.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ItemStack ret = stack.copy();
-        ret.setCount(size);
-        return ret;
+        return ItemHandlerHelper.copyStackWithSize(stack, size);
     }
 
     public static List<ItemStack> getMergeRejects(@Nonnull List<IInventorySlot> orig, @Nonnull List<IInventorySlot> toAdd) {

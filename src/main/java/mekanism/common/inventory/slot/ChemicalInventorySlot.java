@@ -115,8 +115,6 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
         };
     }
 
-    //TODO: Do we want to make other things than just the conversion one have a world supplier?
-    // Currently it is the only one that actually needs it
     protected final Supplier<World> worldSupplier;
     protected final IChemicalTank<CHEMICAL, STACK> chemicalTank;
 

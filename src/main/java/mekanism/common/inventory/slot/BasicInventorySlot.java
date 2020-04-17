@@ -79,7 +79,6 @@ public class BasicInventorySlot implements IInventorySlot {
 
     protected BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator,
           @Nullable IMekanismInventory inventory, int x, int y) {
-        //TODO: Re-evaluate this
         this((stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack),
               validator, inventory, x, y);
     }
@@ -100,19 +99,8 @@ public class BasicInventorySlot implements IInventorySlot {
         this.y = y;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @apiNote We return a cached value from this that if modified won't actually end up having any information about the slot get changed.
-     */
     @Override
     public ItemStack getStack() {
-        //TODO: Should we return a copy to ensure that our stack is not modified, we could cache our copy and only update it at given times
-        //TODO: YES it will help expose bugs, and we need to make sure that we are not calling shrink/grow on anything we should not be
-        // Though it would be "cleaner" to not have to especially in terms of for finding bugs when API is being mistreated.
-        // Would be nice to extend ItemStack to have one that throws a warning/error on being modified
-        //TODO: If we do have a cached copy, then when this is called we may want to log a warning that something tried to modify the stack
-        // if the copy has different information/size than our actual stored stack?? Would need to make sure the cached version stays up to date
         return current;
     }
 
@@ -126,7 +114,6 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     private void setStack(ItemStack stack, boolean validateStack) {
-        //TODO: Decide if we want to limit this to the slots limit and maybe make a method for reading from file that lets it go past the limit??
         if (stack.isEmpty()) {
             current = ItemStack.EMPTY;
         } else if (!validateStack || isItemValid(stack)) {
@@ -196,11 +183,8 @@ public class BasicInventorySlot implements IInventorySlot {
         return toReturn;
     }
 
-    //TODO: Evaluate usages of this maybe some should be capped by the max size of the stack
-    // In fact most uses of this probably can instead use the insertItem method instead
     @Override
     public int getLimit(ItemStack stack) {
-        //TODO: is this a decent way to do this or do we want to set obeyStack limit some other way
         return obeyStackLimit && !stack.isEmpty() ? Math.min(limit, stack.getMaxStackSize()) : limit;
     }
 
@@ -216,7 +200,6 @@ public class BasicInventorySlot implements IInventorySlot {
         }
     }
 
-    //TODO: Should we move InventoryContainerSlot to the API and reference that instead
     @Nullable
     @Override
     public InventoryContainerSlot createContainerSlot() {
@@ -234,8 +217,8 @@ public class BasicInventorySlot implements IInventorySlot {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
-     * instead of having to make a copy.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying, and can also
+     * directly modify our stack instead of having to make a copy.
      */
     @Override
     public int setStackSize(int amount, Action action) {
@@ -263,7 +246,7 @@ public class BasicInventorySlot implements IInventorySlot {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
     public int growStack(int amount, Action action) {
@@ -279,7 +262,7 @@ public class BasicInventorySlot implements IInventorySlot {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
     public boolean isEmpty() {
@@ -289,7 +272,7 @@ public class BasicInventorySlot implements IInventorySlot {
     /**
      * {@inheritDoc}
      *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
     public int getCount() {

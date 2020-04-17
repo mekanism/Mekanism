@@ -105,7 +105,7 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO: Cache this stuff from when getOperationsThisTick was called?
+        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
         //Mode == true if fluid to gas
         if (modeSupplier.getAsBoolean()) {
             if (recipe.hasFluidToGas()) {

@@ -8,7 +8,6 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.item.ItemStack;
 
-//TODO: Look into making some things have a common super class, such as all the ones that have an ItemStack as an input
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ItemStackToItemStackCachedRecipe extends CachedRecipe<ItemStackToItemStackRecipe> {
@@ -30,7 +29,6 @@ public class ItemStackToItemStackCachedRecipe extends CachedRecipe<ItemStackToIt
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        //TODO: This input getting, is only really needed for getting the output
         ItemStack recipeItem = inputHandler.getRecipeInput(recipe.getInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
         if (recipeItem.isEmpty()) {
@@ -53,7 +51,7 @@ public class ItemStackToItemStackCachedRecipe extends CachedRecipe<ItemStackToIt
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO: Cache this stuff from when getOperationsThisTick was called?
+        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
         ItemStack recipeItem = inputHandler.getRecipeInput(recipe.getInput());
         if (recipeItem.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing

@@ -103,10 +103,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                     if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
                         MekanismUtils.logMismatchedStackSize();
                     }
-                } else if (net.fluidTank.getFluidAmount() > fluidTank.getFluidAmount()) {
-                    //TODO: Evaluate, realistically we should never be trying to merge two networks
-                    // if they have conflicting types
-                    fluidTank.setStack(net.getBuffer());
                 }
                 net.fluidTank.setEmpty();
             }
@@ -126,15 +122,12 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
         FluidStack fluid = transmitter.getBuffer();
-        if (fluid == null || fluid.isEmpty()) {
-            //Note: We support null given technically the API says it is nullable, so if someone makes a custom IGridTransmitter
-            // with it being null would have issues
+        if (fluid.isEmpty()) {
             return;
         }
         if (fluidTank.isEmpty()) {
             fluidTank.setStack(fluid.copy());
         } else if (fluidTank.isFluidEqual(fluid)) {
-            //TODO better multiple buffer impl
             int amount = fluid.getAmount();
             if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
                 MekanismUtils.logMismatchedStackSize();

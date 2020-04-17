@@ -17,7 +17,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 
-//TODO: Should this be extending TileEntityMekanism instead
 public class TileEntityStructuralGlass extends TileEntityUpdateable implements IStructuralMultiblock {
 
     public Coord4D master;

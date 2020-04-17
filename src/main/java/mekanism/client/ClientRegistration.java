@@ -95,8 +95,8 @@ import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
-import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderJetpack;
+import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.tileentity.RenderBin;
@@ -358,11 +358,11 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particles.registerFactory(MekanismParticleTypes.LASER.getParticleType(), LaserParticle.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(MekanismParticleTypes.JETPACK_FLAME.getParticleType(), JetpackFlameParticle.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), JetpackSmokeParticle.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), ScubaBubbleParticle.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(MekanismParticleTypes.RADIATION.getParticleType(), RadiationParticle.Factory::new);
+        ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.LASER, LaserParticle.Factory::new);
+        ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.JETPACK_FLAME, JetpackFlameParticle.Factory::new);
+        ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.JETPACK_SMOKE, JetpackSmokeParticle.Factory::new);
+        ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.SCUBA_BUBBLE, ScubaBubbleParticle.Factory::new);
+        ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.RADIATION, RadiationParticle.Factory::new);
     }
 
     @SubscribeEvent

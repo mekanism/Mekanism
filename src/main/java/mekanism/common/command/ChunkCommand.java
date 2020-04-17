@@ -79,7 +79,7 @@ public class ChunkCommand {
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("flush")
                   .requires(cs -> cs.hasPermissionLevel(4))
-                  .requires(cs -> !cs.getEntity().getEntityWorld().isRemote)//TODO: Is this the proper way to have this
+                  .requires(cs -> !cs.getEntity().getEntityWorld().isRemote())//TODO: Is this the proper way to have this
                   .executes(ctx -> {
                       CommandSource source = ctx.getSource();
                       Entity entity = source.getEntity();

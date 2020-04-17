@@ -14,9 +14,9 @@ import org.jetbrains.annotations.Contract;
 /**
  * Created by Thiakil on 21/07/2019.
  */
+@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@FieldsAreNonnullByDefault
 public abstract class GasToGasRecipe extends MekanismRecipe implements Predicate<@NonNull GasStack> {
 
     private final GasStackIngredient input;

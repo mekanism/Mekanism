@@ -26,7 +26,8 @@ public class RenderFissionFuelAssembly extends MekanismTileEntityRenderer<TileEn
     protected void render(TileEntityFissionFuelAssembly tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (glowModel == null) {
             glowModel = new Model3D();
-            glowModel.setBlockBounds(0.1, 0.01, 0.1, 0.9, 0.99, 0.9);
+            glowModel.minX = 0.1; glowModel.minY = 0.01; glowModel.minZ = 0.1;
+            glowModel.maxX = 0.9; glowModel.maxY = 0.99; glowModel.maxZ = 0.9;
             glowModel.setTexture(MekanismRenderer.whiteIcon);
         }
 

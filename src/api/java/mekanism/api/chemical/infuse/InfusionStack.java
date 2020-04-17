@@ -97,7 +97,6 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
      *
      * This is included for use in data structures.
      */
-    //TODO: Is this a problem that it does not check size
     @Override
     public final boolean equals(Object o) {
         if (o == this) {

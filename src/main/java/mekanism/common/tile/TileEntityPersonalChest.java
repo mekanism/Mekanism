@@ -36,12 +36,6 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
                 builder.addSlot(BasicInventorySlot.at(isPublic, isPublic, this, 8 + slotX * 18, 26 + slotY * 18));
             }
         }
-        //TODO: Update this comment it is from isCapabilityDisabled. We reimplemented HOW it acted above but it maybe should be done somewhat differently
-        //Still allow for the capability if it is not public. It just won't
-        // return any slots for the face. It doesn't properly sync when the state
-        // changes so the pipes stay connected/disconnected and have to be replaced.
-        // Leaving the slotsForFace to determine the ability to insert/extract in
-        // those cases fixes that issue.
         return builder.build();
     }
 

@@ -9,7 +9,6 @@ public interface IInputHandler<INPUT> {
 
     void use(INPUT recipeInput, int operations);
 
-    //TODO: Rename
     default int operationsCanSupport(InputIngredient<INPUT> recipeIngredient, int currentMax) {
         return operationsCanSupport(recipeIngredient, currentMax, 1);
     }

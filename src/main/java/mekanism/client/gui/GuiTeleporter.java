@@ -152,7 +152,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        //TODO: Move this upwards to GuiMekanism and if nothing happened from the click don't bother even calling updateButtons
         updateButtons();
         return super.mouseClicked(mouseX, mouseY, button);
     }

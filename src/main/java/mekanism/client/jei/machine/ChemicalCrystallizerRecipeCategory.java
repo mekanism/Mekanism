@@ -32,7 +32,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<GasTo
 
     @Override
     protected void addGuiElements() {
-        //TODO: Maybe make it so this can properly display at some point
+        //TODO: Eventually make this be able to display the proper ores cycling at some point
         guiElements.add(new GuiCrystallizerScreen(this, 27, 13, new IOreInfo() {
             @Nonnull
             @Override

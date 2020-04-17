@@ -29,19 +29,19 @@ import net.minecraft.util.ResourceLocation;
  */
 public abstract class InfusionIngredient implements InputIngredient<@NonNull InfusionStack> {
 
-    public static InfusionIngredient from(@NonNull InfusionStack instance) {
+    public static InfusionIngredient from(@Nonnull InfusionStack instance) {
         return from(instance.getType(), instance.getAmount());
     }
 
-    public static InfusionIngredient from(@NonNull IInfuseTypeProvider infuseType, long amount) {
-        return new Single(infuseType.getInfuseType(), amount);
+    public static InfusionIngredient from(@Nonnull IInfuseTypeProvider infuseType, long amount) {
+        return new Single(infuseType.getInfusionStack(amount));
     }
 
-    public static InfusionIngredient from(@NonNull Tag<InfuseType> infuseTypeTag, long amount) {
+    public static InfusionIngredient from(@Nonnull Tag<InfuseType> infuseTypeTag, long amount) {
         return new Tagged(infuseTypeTag, amount);
     }
 
-    public abstract boolean testType(@NonNull InfuseType infuseType);
+    public abstract boolean testType(@Nonnull InfuseType infuseType);
 
     public static InfusionIngredient read(PacketBuffer buffer) {
         //TODO: Allow supporting serialization of different types than just the ones we implement?
@@ -54,7 +54,6 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         return Multi.read(buffer);
     }
 
-    //TODO: Should we not let this be null?
     public static InfusionIngredient deserialize(@Nullable JsonElement json) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Ingredient cannot be null");
@@ -127,63 +126,57 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
 
     public static class Single extends InfusionIngredient {
 
-        @NonNull
-        private final InfuseType infuseType;
+        @Nonnull
+        private final InfusionStack infusionInstance;
 
-        private final long amount;
-        private final InfusionStack infuseObject;
-
-        public Single(@NonNull InfuseType infuseType, long amount) {
-            this.infuseType = infuseType;
-            this.amount = amount;
-            infuseObject = new InfusionStack(infuseType, amount);
+        public Single(@Nonnull InfusionStack infusionInstance) {
+            this.infusionInstance = infusionInstance;
         }
 
         @Override
-        public boolean test(@NonNull InfusionStack infuseObject) {
-            return testType(infuseObject) && infuseObject.getAmount() >= this.amount;
+        public boolean test(@Nonnull InfusionStack infuseObject) {
+            return testType(infuseObject) && infuseObject.getAmount() >= infusionInstance.getAmount();
         }
 
         @Override
-        public boolean testType(@NonNull InfusionStack infuseObject) {
-            return testType(Objects.requireNonNull(infuseObject).getType());
+        public boolean testType(@Nonnull InfusionStack infuseObject) {
+            return infusionInstance.isTypeEqual(Objects.requireNonNull(infuseObject));
         }
 
         @Override
-        public boolean testType(@NonNull InfuseType infuseType) {
-            return Objects.requireNonNull(infuseType) == this.infuseType;
+        public boolean testType(@Nonnull InfuseType infuseType) {
+            return infusionInstance.isTypeEqual(Objects.requireNonNull(infuseType));
         }
 
+        @Nonnull
         @Override
-        public @NonNull InfusionStack getMatchingInstance(@NonNull InfusionStack infuseObject) {
-            return test(infuseObject) ? this.infuseObject : InfusionStack.EMPTY;
+        public InfusionStack getMatchingInstance(@Nonnull InfusionStack infuseObject) {
+            return test(infuseObject) ? infusionInstance.copy() : InfusionStack.EMPTY;
         }
 
+        @Nonnull
         @Override
-        public @NonNull List<@NonNull InfusionStack> getRepresentations() {
-            return Collections.singletonList(infuseObject);
+        public List<@NonNull InfusionStack> getRepresentations() {
+            return Collections.singletonList(infusionInstance);
         }
-
-        //TODO: A InfuseType representations thing
 
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.SINGLE);
-            buffer.writeRegistryId(infuseType);
-            buffer.writeVarLong(amount);
+            infusionInstance.writeToPacket(buffer);
         }
 
         @Nonnull
         @Override
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
-            json.addProperty(JsonConstants.AMOUNT, amount);
-            json.addProperty(JsonConstants.INFUSE_TYPE, infuseType.getRegistryName().toString());
+            json.addProperty(JsonConstants.AMOUNT, infusionInstance.getAmount());
+            json.addProperty(JsonConstants.INFUSE_TYPE, infusionInstance.getTypeRegistryName().toString());
             return json;
         }
 
         public static Single read(PacketBuffer buffer) {
-            return new Single(buffer.readRegistryId(), buffer.readVarLong());
+            return new Single(InfusionStack.readFromPacket(buffer));
         }
     }
 
@@ -199,22 +192,23 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         }
 
         @Override
-        public boolean test(@NonNull InfusionStack infusionStack) {
+        public boolean test(@Nonnull InfusionStack infusionStack) {
             return testType(infusionStack) && infusionStack.getAmount() >= amount;
         }
 
         @Override
-        public boolean testType(@NonNull InfusionStack infusionStack) {
+        public boolean testType(@Nonnull InfusionStack infusionStack) {
             return testType(Objects.requireNonNull(infusionStack).getType());
         }
 
         @Override
-        public boolean testType(@NonNull InfuseType infuseType) {
+        public boolean testType(@Nonnull InfuseType infuseType) {
             return Objects.requireNonNull(infuseType).isIn(tag);
         }
 
+        @Nonnull
         @Override
-        public @NonNull InfusionStack getMatchingInstance(@NonNull InfusionStack infusionStack) {
+        public InfusionStack getMatchingInstance(@Nonnull InfusionStack infusionStack) {
             if (test(infusionStack)) {
                 //Our infusion type is in the tag so we make a new stack with the given amount
                 return new InfusionStack(infusionStack, amount);
@@ -222,8 +216,8 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
             return InfusionStack.EMPTY;
         }
 
+        @Nonnull
         @Override
-        @NonNull
         public List<@NonNull InfusionStack> getRepresentations() {
             //TODO: Can this be cached some how
             List<@NonNull InfusionStack> representations = new ArrayList<>();
@@ -254,34 +248,32 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         }
     }
 
-    //TODO: Maybe name this better, at the very least make it easier/possible to create new instances of this
-    // Also cleanup the javadoc comment about this, and try to make the helpers that create a new instance
-    // return a normal InfusionIngredient (Single), if we only have a singular one
     public static class Multi extends InfusionIngredient {
 
         private final InfusionIngredient[] ingredients;
 
-        protected Multi(@NonNull InfusionIngredient... ingredients) {
+        protected Multi(@Nonnull InfusionIngredient... ingredients) {
             this.ingredients = ingredients;
         }
 
         @Override
-        public boolean test(@NonNull InfusionStack stack) {
+        public boolean test(@Nonnull InfusionStack stack) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.test(stack));
         }
 
         @Override
-        public boolean testType(@NonNull InfusionStack stack) {
+        public boolean testType(@Nonnull InfusionStack stack) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(stack));
         }
 
         @Override
-        public boolean testType(@NonNull InfuseType infuseType) {
+        public boolean testType(@Nonnull InfuseType infuseType) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(infuseType));
         }
 
+        @Nonnull
         @Override
-        public @NonNull InfusionStack getMatchingInstance(@NonNull InfusionStack stack) {
+        public InfusionStack getMatchingInstance(@Nonnull InfusionStack stack) {
             for (InfusionIngredient ingredient : ingredients) {
                 InfusionStack matchingInstance = ingredient.getMatchingInstance(stack);
                 if (!matchingInstance.isEmpty()) {
@@ -291,7 +283,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
             return InfusionStack.EMPTY;
         }
 
-        @NonNull
+        @Nonnull
         @Override
         public List<@NonNull InfusionStack> getRepresentations() {
             List<@NonNull InfusionStack> representations = new ArrayList<>();
@@ -321,7 +313,6 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         }
 
         public static InfusionIngredient read(PacketBuffer buffer) {
-            //TODO: Verify this works
             InfusionIngredient[] ingredients = new InfusionIngredient[buffer.readVarInt()];
             for (int i = 0; i < ingredients.length; i++) {
                 ingredients[i] = InfusionIngredient.read(buffer);

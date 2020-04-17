@@ -38,7 +38,7 @@ public abstract class MetallurgicInfuserRecipe extends MekanismRecipe implements
         return infusionInput.test(infusionContainer) && itemInput.test(itemStack);
     }
 
-    public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
+    public List<@NonNull ItemStack> getOutputDefinition() {
         return output.isEmpty() ? Collections.emptyList() : Collections.singletonList(output);
     }
 

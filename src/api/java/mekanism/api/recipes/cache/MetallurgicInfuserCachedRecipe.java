@@ -32,7 +32,6 @@ public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfu
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        //TODO: This input getting, is only really needed for getting the output
         ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
         if (recipeItem.isEmpty()) {
@@ -62,7 +61,7 @@ public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfu
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO: Cache this stuff from when getOperationsThisTick was called?
+        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
         ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
         if (recipeItem.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
@@ -71,7 +70,6 @@ public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfu
 
         InfusionStack recipeInfuseObject = infusionInputHandler.getRecipeInput(recipe.getInfusionInput());
         if (recipeInfuseObject.isEmpty()) {
-            //TODO: 1.14 have there be an "EMPTY" object instance so that it can never be null
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }

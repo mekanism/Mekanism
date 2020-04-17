@@ -138,8 +138,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
 
     public BlockEnergyCube(Machine<TileEntityEnergyCube> type) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the energy cube
-        // this may change based on what sides are enabled
-        //TODO: We still need to fix trying to place things like torches on the side
+        // this may change based on what sides are enabled. Torches cannot be placed on the sides due to vanilla checking the incorrect shape
         super(type, Block.Properties.create(Material.IRON).hardnessAndResistance(2F, 4F).variableOpacity());
     }
 

@@ -9,6 +9,7 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.IRegistryDelegate;
 
@@ -49,13 +50,33 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      *
      * @return if the ChemicalStacks contain the same chemical type
      */
-    //TODO: Use this in places we compare manually
     public boolean isTypeEqual(@Nonnull ChemicalStack<CHEMICAL> stack) {
         return isTypeEqual(stack.getType());
     }
 
     public boolean isTypeEqual(@Nonnull CHEMICAL chemical) {
         return getType() == chemical;
+    }
+
+    /**
+     * Helper to retrieve the registry name of the stored chemical. This is equivalent to calling {@code getType().getRegistryName()}
+     *
+     * @return The registry name of the stored chemical.
+     */
+    @Nonnull
+    public ResourceLocation getTypeRegistryName() {
+        return getType().getRegistryName();
+    }
+
+    /**
+     * Helper to get the tint of the stored chemical. This is equivalent to calling {@code getType().getTint()}
+     *
+     * @return The tint of the stored chemical.
+     *
+     * @apiNote Does not have any special handling for when the stack is empty.
+     */
+    public int getChemicalTint() {
+        return getType().getTint();
     }
 
     @Nonnull
@@ -83,19 +104,35 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         updateEmpty();
     }
 
+    /**
+     * Grows this stack's amount by the given amount.
+     *
+     * @param amount The amount to grow this stack by.
+     *
+     * @apiNote Negative values are valid and will instead shrink the stack.
+     * @implNote No checks are made to ensure that the long does not overflow.
+     */
     public void grow(long amount) {
-        //TODO: Validate this doesn't overflow
         setAmount(this.amount + amount);
     }
 
+    /**
+     * Shrinks this stack's amount by the given amount.
+     *
+     * @param amount The amount to shrink this stack by.
+     *
+     * @apiNote Negative values are valid and will instead grow the stack.
+     * @implNote No checks are made to ensure that the long does not underflow.
+     */
     public void shrink(long amount) {
-        //TODO: Validate this doesn't underflow?
         setAmount(this.amount - amount);
     }
 
     /**
      * Whether this stack's chemical has an attribute of a certain type.
+     *
      * @param type attribute type to check
+     *
      * @return if this chemical has the attribute
      */
     public boolean has(Class<? extends ChemicalAttribute> type) {
@@ -104,7 +141,9 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
 
     /**
      * Gets the attribute instance of a certain type, or null if it doesn't exist.
+     *
      * @param type attribute type to get
+     *
      * @return attribute instance
      */
     @Nullable
@@ -114,6 +153,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
 
     /**
      * Gets all attribute instances associated with this chemical's type.
+     *
      * @return collection of attribute instances
      */
     public Collection<ChemicalAttribute> getAttributes() {
@@ -122,6 +162,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
 
     /**
      * Gets all attribute types associated with this chemical's type.
+     *
      * @return collection of attribute types
      */
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
@@ -150,7 +191,6 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return getType().getTextComponent();
     }
 
-    //TODO: Make sure we use getTextComponent where we can instead of the translation key (might already be done)
     @Override
     public String getTranslationKey() {
         //Wrapper to get translation key of the chemical type easier

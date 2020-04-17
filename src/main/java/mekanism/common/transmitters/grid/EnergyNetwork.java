@@ -100,7 +100,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     @Override
     public void absorbBuffer(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
         FloatingLong energy = transmitter.getBuffer();
-        if (energy != null && !energy.isZero()) {
+        if (!energy.isZero()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(energy));
         }
     }

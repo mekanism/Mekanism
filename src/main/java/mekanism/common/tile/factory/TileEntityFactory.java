@@ -131,7 +131,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
 
         progress = new int[tier.processes];
-        //TODO: Theoretically this should work as it initializes them all as null, but is there a better/proper way to do this
         cachedRecipes = new CachedRecipe[tier.processes];
         activeStates = new boolean[cachedRecipes.length];
     }
@@ -168,9 +167,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     protected void onUpdateServer() {
-        if (ticker == 1) {
-            world.notifyNeighborsOfStateChange(getPos(), getBlockType());
-        }
         energySlot.fillContainerOrConvert();
 
         handleSecondaryFuel();
@@ -183,8 +179,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 cachedRecipe.process();
             } else {
                 //If we don't have a recipe in that slot make sure that our active state for that position is false
-                //TODO: Check if this is needed, it probably is already the case that if the cached recipe is null then
-                // we should already have activeState as false
                 activeStates[i] = false;
             }
         }

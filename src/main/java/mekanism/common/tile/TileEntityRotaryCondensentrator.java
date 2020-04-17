@@ -127,7 +127,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        //TODO: Fix these, not only is the naming bad, but there is a dedicated drain and empty slot for gas unlike how the fluid is
         builder.addSlot(gasInputSlot = GasInventorySlot.rotary(gasTank, () -> mode, this, 5, 25), RelativeSide.LEFT);
         builder.addSlot(gasOutputSlot = GasInventorySlot.rotary(gasTank, () -> mode, this, 5, 56), RelativeSide.LEFT);
         builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, () -> mode, this, 155, 25), RelativeSide.RIGHT);

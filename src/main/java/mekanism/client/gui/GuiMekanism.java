@@ -30,7 +30,7 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper {
 
     private static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
-    //TODO: Either remove the need for this or at the very least default it to true
+    //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
 
     protected GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent title) {
@@ -62,22 +62,18 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     public int getStringWidth(ITextComponent component) {
-        //TODO: See if this should be calculated in a different way
         return getStringWidth(component.getFormattedText());
     }
 
     public int getStringWidth(String text) {
-        //TODO: Replace uses of this/the other getStringWidth with drawCenteredText where appropriate
         return font.getStringWidth(text);
     }
 
     public int drawString(ITextComponent component, int x, int y, int color) {
-        //TODO: Check if color actually does anything
         return drawString(component.getFormattedText(), x, y, color);
     }
 
     public int drawString(String text, int x, int y, int color) {
-        //TODO: Eventually make drawString(ITextComponent) be what gets used in places
         return font.drawString(text, x, y, color);
     }
 
@@ -128,9 +124,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
     }
 
+    /**
+     * @apiNote mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance.
+     */
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
-        //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         return getFocused() != null && isDragging() && button == 0 && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }

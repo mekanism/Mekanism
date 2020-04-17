@@ -20,6 +20,10 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
         super(modid, ForgeRegistries.BLOCKS, ForgeRegistries.ITEMS);
     }
 
+    public BlockRegistryObject<Block, BlockItem> register(String name, Block.Properties properties) {
+        return registerDefaultProperties(name, () -> new Block(properties), BlockItem::new);
+    }
+
     public <BLOCK extends Block> BlockRegistryObject<BLOCK, BlockItem> register(String name, Supplier<? extends BLOCK> blockSupplier) {
         return registerDefaultProperties(name, blockSupplier, BlockItem::new);
     }

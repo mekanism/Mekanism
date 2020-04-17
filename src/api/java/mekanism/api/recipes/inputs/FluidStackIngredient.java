@@ -28,15 +28,15 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public abstract class FluidStackIngredient implements InputIngredient<@NonNull FluidStack> {
 
-    public static FluidStackIngredient from(@NonNull Fluid instance, int amount) {
+    public static FluidStackIngredient from(@Nonnull Fluid instance, int amount) {
         return from(new FluidStack(instance, amount));
     }
 
-    public static FluidStackIngredient from(@NonNull FluidStack instance) {
+    public static FluidStackIngredient from(@Nonnull FluidStack instance) {
         return new Single(instance);
     }
 
-    public static FluidStackIngredient from(@NonNull Tag<Fluid> fluidTag, int minAmount) {
+    public static FluidStackIngredient from(@Nonnull Tag<Fluid> fluidTag, int minAmount) {
         return new Tagged(fluidTag, minAmount);
     }
 
@@ -51,7 +51,6 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         return Multi.read(buffer);
     }
 
-    //TODO: Should we not let this be null?
     public static FluidStackIngredient deserialize(@Nullable JsonElement json) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Ingredient cannot be null");
@@ -124,30 +123,31 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
 
     public static class Single extends FluidStackIngredient {
 
-        @NonNull
+        @Nonnull
         private final FluidStack fluidInstance;
 
-        public Single(@NonNull FluidStack fluidInstance) {
+        public Single(@Nonnull FluidStack fluidInstance) {
             this.fluidInstance = Objects.requireNonNull(fluidInstance);
         }
 
         @Override
-        public boolean test(@NonNull FluidStack fluidStack) {
+        public boolean test(@Nonnull FluidStack fluidStack) {
             return testType(fluidStack) && fluidStack.getAmount() >= fluidInstance.getAmount();
         }
 
         @Override
-        public boolean testType(@NonNull FluidStack fluidStack) {
+        public boolean testType(@Nonnull FluidStack fluidStack) {
             return Objects.requireNonNull(fluidStack).isFluidEqual(fluidInstance);
         }
 
+        @Nonnull
         @Override
-        public @NonNull FluidStack getMatchingInstance(@NonNull FluidStack fluidStack) {
+        public FluidStack getMatchingInstance(@Nonnull FluidStack fluidStack) {
             return test(fluidStack) ? fluidInstance : FluidStack.EMPTY;
         }
 
+        @Nonnull
         @Override
-        @NonNull
         public List<@NonNull FluidStack> getRepresentations() {
             return Collections.singletonList(fluidInstance);
         }
@@ -187,17 +187,18 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         }
 
         @Override
-        public boolean test(@NonNull FluidStack fluidStack) {
+        public boolean test(@Nonnull FluidStack fluidStack) {
             return testType(fluidStack) && fluidStack.getAmount() >= amount;
         }
 
         @Override
-        public boolean testType(@NonNull FluidStack fluidStack) {
+        public boolean testType(@Nonnull FluidStack fluidStack) {
             return Objects.requireNonNull(fluidStack).getFluid().isIn(tag);
         }
 
+        @Nonnull
         @Override
-        public @NonNull FluidStack getMatchingInstance(@NonNull FluidStack fluidStack) {
+        public FluidStack getMatchingInstance(@Nonnull FluidStack fluidStack) {
             if (test(fluidStack)) {
                 //Our fluid is in the tag so we make a new stack with the given amount
                 return new FluidStack(fluidStack, amount);
@@ -205,8 +206,8 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             return FluidStack.EMPTY;
         }
 
+        @Nonnull
         @Override
-        @NonNull
         public List<@NonNull FluidStack> getRepresentations() {
             //TODO: Can this be cached some how
             List<@NonNull FluidStack> representations = new ArrayList<>();
@@ -237,29 +238,27 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         }
     }
 
-    //TODO: Maybe name this better, at the very least make it easier/possible to create new instances of this
-    // Also cleanup the javadoc comment about this, and try to make the helpers that create a new instance
-    // return a normal FluidStackIngredient (Single), if we only have a singular one
     public static class Multi extends FluidStackIngredient {
 
         private final FluidStackIngredient[] ingredients;
 
-        protected Multi(@NonNull FluidStackIngredient... ingredients) {
+        protected Multi(@Nonnull FluidStackIngredient... ingredients) {
             this.ingredients = ingredients;
         }
 
         @Override
-        public boolean test(@NonNull FluidStack stack) {
+        public boolean test(@Nonnull FluidStack stack) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.test(stack));
         }
 
         @Override
-        public boolean testType(@NonNull FluidStack stack) {
+        public boolean testType(@Nonnull FluidStack stack) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(stack));
         }
 
+        @Nonnull
         @Override
-        public @NonNull FluidStack getMatchingInstance(@NonNull FluidStack stack) {
+        public FluidStack getMatchingInstance(@Nonnull FluidStack stack) {
             for (FluidStackIngredient ingredient : ingredients) {
                 FluidStack matchingInstance = ingredient.getMatchingInstance(stack);
                 if (!matchingInstance.isEmpty()) {
@@ -269,7 +268,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             return FluidStack.EMPTY;
         }
 
-        @NonNull
+        @Nonnull
         @Override
         public List<@NonNull FluidStack> getRepresentations() {
             List<@NonNull FluidStack> representations = new ArrayList<>();
@@ -299,7 +298,6 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         }
 
         public static FluidStackIngredient read(PacketBuffer buffer) {
-            //TODO: Verify this works
             FluidStackIngredient[] ingredients = new FluidStackIngredient[buffer.readVarInt()];
             for (int i = 0; i < ingredients.length; i++) {
                 ingredients[i] = FluidStackIngredient.read(buffer);

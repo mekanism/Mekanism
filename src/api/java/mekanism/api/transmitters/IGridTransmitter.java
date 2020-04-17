@@ -76,9 +76,9 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     /**
      * @return The transmitter's buffer.
+     *
+     * @apiNote Should only be {@code null}, if the buffer type supports null. So things like fluid's should use the empty variant.
      */
-    //TODO: Can we convert this to being nonnull
-    @Nullable
     BUFFER getBuffer();
 
     /**

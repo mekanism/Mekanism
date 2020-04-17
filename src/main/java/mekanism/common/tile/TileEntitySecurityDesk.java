@@ -18,13 +18,10 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.list.SyncableStringList;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.security.IOwnerItem;
-import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -61,37 +58,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (ownerUUID != null && frequency != null) {
-            //TODO: Move the locking unlocking logic into the SecurityInventorySlot
-            if (!unlockSlot.isEmpty()) {
-                ItemStack itemStack = unlockSlot.getStack();
-                if (itemStack.getItem() instanceof IOwnerItem) {
-                    IOwnerItem item = (IOwnerItem) itemStack.getItem();
-                    if (item.getOwnerUUID(itemStack) != null) {
-                        if (item.getOwnerUUID(itemStack).equals(ownerUUID)) {
-                            item.setOwnerUUID(itemStack, null);
-                            if (item instanceof ISecurityItem) {
-                                ((ISecurityItem) item).setSecurity(itemStack, SecurityMode.PUBLIC);
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (!lockSlot.isEmpty()) {
-                ItemStack stack = lockSlot.getStack();
-                if (stack.getItem() instanceof IOwnerItem) {
-                    IOwnerItem item = (IOwnerItem) stack.getItem();
-                    UUID stackOwner = item.getOwnerUUID(stack);
-                    if (stackOwner == null) {
-                        item.setOwnerUUID(stack, stackOwner = this.ownerUUID);
-                    }
-                    if (stackOwner.equals(this.ownerUUID)) {
-                        if (item instanceof ISecurityItem) {
-                            ((ISecurityItem) item).setSecurity(stack, frequency.securityMode);
-                        }
-                    }
-                }
-            }
+            unlockSlot.unlock(ownerUUID);
+            lockSlot.lock(ownerUUID, frequency);
         }
 
         if (frequency == null && ownerUUID != null) {

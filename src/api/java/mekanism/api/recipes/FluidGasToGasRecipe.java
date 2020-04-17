@@ -13,9 +13,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
+@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@FieldsAreNonnullByDefault
 public abstract class FluidGasToGasRecipe extends MekanismRecipe implements BiPredicate<@NonNull FluidStack, @NonNull GasStack> {
 
     private final GasStackIngredient gasInput;
@@ -30,7 +30,7 @@ public abstract class FluidGasToGasRecipe extends MekanismRecipe implements BiPr
     }
 
     @Override
-    public boolean test(@NonNull FluidStack fluidStack, @NonNull GasStack gasStack) {
+    public boolean test(FluidStack fluidStack, GasStack gasStack) {
         return fluidInput.test(fluidStack) && gasInput.test(gasStack);
     }
 

@@ -105,7 +105,7 @@ public class MekanismJEI implements IModPlugin {
             for (int tank = 0; tank < tanks; tank++) {
                 GasStack gas = gasHandlerItem.getGasInTank(tank);
                 if (!gas.isEmpty()) {
-                    component = addInterpretation(component, gas.getType().getRegistryName().toString());
+                    component = addInterpretation(component, gas.getTypeRegistryName().toString());
                 } else if (tanks > 1) {
                     component = addInterpretation(component, "empty");
                 }
@@ -124,7 +124,7 @@ public class MekanismJEI implements IModPlugin {
             for (int tank = 0; tank < tanks; tank++) {
                 InfusionStack infusionStack = infusionHandlerItem.getInfusionInTank(tank);
                 if (!infusionStack.isEmpty()) {
-                    component = addInterpretation(component, infusionStack.getType().getRegistryName().toString());
+                    component = addInterpretation(component, infusionStack.getTypeRegistryName().toString());
                 } else if (tanks > 1) {
                     component = addInterpretation(component, "empty");
                 }

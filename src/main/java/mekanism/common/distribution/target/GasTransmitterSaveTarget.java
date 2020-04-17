@@ -1,5 +1,6 @@
 package mekanism.common.distribution.target;
 
+import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -15,7 +16,7 @@ public class GasTransmitterSaveTarget extends Target<IGridTransmitter<IGasHandle
 
     private GasStack currentStored = GasStack.EMPTY;
 
-    public GasTransmitterSaveTarget(@NonNull GasStack type) {
+    public GasTransmitterSaveTarget(@Nonnull GasStack type) {
         this.extra = type;
     }
 
@@ -32,7 +33,7 @@ public class GasTransmitterSaveTarget extends Target<IGridTransmitter<IGasHandle
     }
 
     @Override
-    protected Long simulate(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter, @NonNull GasStack gasStack) {
+    protected Long simulate(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter, @Nonnull GasStack gasStack) {
         if (!currentStored.isEmpty() && !currentStored.isTypeEqual(gasStack)) {
             return 0L;
         }

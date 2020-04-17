@@ -22,7 +22,6 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         super.renderButton(mouseX, mouseY, partialTicks);
         drawString(OnOff.of(tile.isSorting()).getTextComponent(), x + 5, y + 24, 0x0404040);
-        //TODO: Check if needed
         MekanismRenderer.resetColor();
     }
 

@@ -20,7 +20,6 @@ public abstract class TileEntityLaserReceptor extends TileEntityBasicLaser imple
 
     @Override
     public void receiveLaserEnergy(@Nonnull FloatingLong energy, Direction side) {
-        //TODO: Do we care about checking the side
         energyContainer.insert(energy, Action.EXECUTE, AutomationType.INTERNAL);
     }
 

@@ -29,7 +29,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
 
-    //TODO: Evaluate making the params passed be configurable
     public ItemRobit(Properties properties) {
         super(() -> EntityRobit.MAX_ENERGY.multiply(0.005), () -> EntityRobit.MAX_ENERGY, properties);
     }

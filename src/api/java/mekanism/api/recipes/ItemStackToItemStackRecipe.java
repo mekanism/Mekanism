@@ -15,13 +15,13 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Inputs: ItemStack (item) Output: ItemStack (transformed)
  */
+@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@FieldsAreNonnullByDefault
 public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implements Predicate<@NonNull ItemStack> {
 
     private final ItemStackIngredient input;
-    private ItemStack output;
+    private final ItemStack output;
 
     public ItemStackToItemStackRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
         super(id);
@@ -30,7 +30,7 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
     }
 
     @Override
-    public boolean test(@NonNull ItemStack input) {
+    public boolean test(ItemStack input) {
         return this.input.test(input);
     }
 
@@ -38,7 +38,7 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
         return input;
     }
 
-    public ItemStack getOutput(@NonNull ItemStack input) {
+    public ItemStack getOutput(ItemStack input) {
         return output.copy();
     }
 

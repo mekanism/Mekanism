@@ -2,7 +2,6 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,7 +29,6 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
@@ -89,12 +87,6 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
 
     public void setMode(ItemStack stack, JetpackMode mode) {
         ItemDataUtils.setInt(stack, NBTConstants.MODE, mode.ordinal());
-    }
-
-    @Override
-    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
-        //TODO: Use this in various places??
-        return 0;
     }
 
     @Override

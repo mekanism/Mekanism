@@ -44,8 +44,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistry;
 
-//TODO: Should this be moved to API package?
-//TODO: Create a way to add/remove recipes via the API
 public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements IRecipeType<RECIPE_TYPE> {
 
     private static final List<MekanismRecipeType<? extends MekanismRecipe>> types = new ArrayList<>();

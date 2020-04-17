@@ -16,6 +16,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -27,7 +28,7 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
     /**
      * How long it takes this machine to install an upgrade.
      */
-    private static int UPGRADE_TICKS_REQUIRED = 40;
+    private static final int UPGRADE_TICKS_REQUIRED = 40;
     /**
      * How many upgrade ticks have progressed.
      */
@@ -35,9 +36,9 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
     /**
      * TileEntity implementing this component.
      */
-    private TileEntityMekanism tile;
+    private final TileEntityMekanism tile;
     private Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
-    private Set<Upgrade> supported = EnumSet.noneOf(Upgrade.class);
+    private final Set<Upgrade> supported = EnumSet.noneOf(Upgrade.class);
     /**
      * The inventory slot the upgrade slot of this component occupies.
      */
@@ -64,7 +65,7 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
                         upgradeTicks = 0;
                         addUpgrade(type);
                         if (upgradeSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                            //TODO: Print warning about failing to shrink size of stack
+                            MekanismUtils.logMismatchedStackSize();
                         }
                         if (type == Upgrade.MUFFLING) {
                             //Send an update packet to the client to update the number of muffling upgrades installed

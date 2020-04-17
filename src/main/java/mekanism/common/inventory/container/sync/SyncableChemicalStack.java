@@ -23,7 +23,6 @@ public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>,
         lastKnownValue = getEmptyStack();
     }
 
-    //TODO: Is there a better way to make this super class know about the empty stack?
     @Nonnull
     protected abstract STACK getEmptyStack();
 

@@ -87,8 +87,7 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
 
     @Override
     public String toString() {
-        //TODO: better to string representation
-        return "Gas: " + getRegistryName();
+        return "[Gas: " + getRegistryName() + "]";
     }
 
     @Override

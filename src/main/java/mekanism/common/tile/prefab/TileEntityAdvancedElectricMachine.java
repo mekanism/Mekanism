@@ -129,7 +129,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         energySlot.fillContainerOrConvert();
         secondarySlot.fillTankOrConvert();
         //TODO: Is there some better way to do this rather than storing it and then doing it like this?
-        // TODO: Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics
+        // Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics
         gasUsageThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(gasUsage) : MathUtils.clampToLong(Math.ceil(gasUsage));
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {

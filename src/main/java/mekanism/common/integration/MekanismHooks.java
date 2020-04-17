@@ -25,13 +25,19 @@ public final class MekanismHooks {
     public boolean ProjectELoaded = false;
     public boolean TOPLoaded = false;
 
-    public void hookPreInit() {
+    public void hookCommonSetup() {
         ModList modList = ModList.get();
         CraftTweakerLoaded = modList.isLoaded(CRAFTTWEAKER_MOD_ID);
         IC2Loaded = modList.isLoaded(IC2_MOD_ID);
         ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
+
+        if (CraftTweakerLoaded) {
+            //CraftTweaker must be ran after all other recipe changes
+            //CrafttweakerIntegration.registerCommands();
+            //CrafttweakerIntegration.applyRecipeChanges();
+        }
     }
 
     public void sendIMCMessages(InterModEnqueueEvent event) {
@@ -40,14 +46,6 @@ public final class MekanismHooks {
         }
         if (ProjectELoaded) {
             NSSHelper.init();
-        }
-    }
-
-    public void hookCommonSetup() {
-        if (CraftTweakerLoaded) {
-            //CraftTweaker must be ran after all other recipe changes
-            //CrafttweakerIntegration.registerCommands();
-            //CrafttweakerIntegration.applyRecipeChanges();
         }
     }
 }

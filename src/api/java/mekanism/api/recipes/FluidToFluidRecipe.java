@@ -26,7 +26,7 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predi
     }
 
     @Override
-    public boolean test(@NonNull FluidStack fluidStack) {
+    public boolean test(FluidStack fluidStack) {
         return this.input.test(fluidStack);
     }
 

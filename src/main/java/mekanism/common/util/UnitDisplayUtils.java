@@ -143,13 +143,12 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
 
     public enum TemperatureUnit implements Unit {
         KELVIN(MekanismLang.TEMPERATURE_KELVIN, "K", 0, 1),
-        CELSIUS(MekanismLang.TEMPERATURE_CELSIUS, "°C", 273.15, 1),
+        CELSIUS(MekanismLang.TEMPERATURE_CELSIUS, "\u00B0C", 273.15, 1),
         RANKINE(MekanismLang.TEMPERATURE_RANKINE, "R", 0, 1.8),
-        FAHRENHEIT(MekanismLang.TEMPERATURE_FAHRENHEIT, "°F", 459.67, 1.8),
+        FAHRENHEIT(MekanismLang.TEMPERATURE_FAHRENHEIT, "\u00B0F", 459.67, 1.8),
         AMBIENT(MekanismLang.TEMPERATURE_AMBIENT, "+STP", 300, 1);
 
         private final ILangEntry langEntry;
-        //TODO: Do we want to make the symbol be localized?
         private final String symbol;
         public final double zeroOffset;
         public final double intervalSize;

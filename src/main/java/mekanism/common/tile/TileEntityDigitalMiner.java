@@ -456,7 +456,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         for (IInventorySlot slot : mainSlots) {
             if (filter.replaceStackMatches(slot.getStack())) {
                 if (slot.shrinkStack(1, Action.EXECUTE) != 1) {
-                    //TODO: Print error/warning
+                    MekanismUtils.logMismatchedStackSize();
                 }
                 return StackUtils.size(filter.replaceStack, 1);
             }
@@ -672,7 +672,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public AxisAlignedBB getRenderBoundingBox() {
         if (clientRendering) {
             //TODO: Improve on this to use the max that we actually need to do the rendering
-            // holding off for now due to wanting to rewrite RenderResizableCuboid
             return INFINITE_EXTENT_AABB;
         }
         return new AxisAlignedBB(pos.add(-1, 0, -1), pos.add(2, 2, 2));

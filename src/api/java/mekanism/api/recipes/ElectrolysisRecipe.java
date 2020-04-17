@@ -1,6 +1,7 @@
 package mekanism.api.recipes;
 
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -16,9 +17,9 @@ import org.apache.commons.lang3.tuple.Pair;
 /**
  * Created by Thiakil on 15/07/2019.
  */
+@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@FieldsAreNonnullByDefault
 public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predicate<@NonNull FluidStack> {
 
     private final FluidStackIngredient input;
@@ -47,7 +48,7 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     }
 
     @Override
-    public boolean test(@NonNull FluidStack fluidStack) {
+    public boolean test(@Nonnull FluidStack fluidStack) {
         return this.input.test(fluidStack);
     }
 

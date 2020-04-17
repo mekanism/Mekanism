@@ -22,7 +22,6 @@ public class EnergyDisplay implements IHasTextComponent {
         this.max = max;
     }
 
-    //TODO: Wrapper for getting this from itemstack
     public static EnergyDisplay of(FloatingLong energy, FloatingLong max) {
         return new EnergyDisplay(energy, max);
     }

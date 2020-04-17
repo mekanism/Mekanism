@@ -13,7 +13,7 @@ public class ItemBlockResource extends ItemBlockMekanism<BlockResource> {
     @Override
     public int getBurnTime(ItemStack itemStack) {
         // If this is a block of charcoal, set burn time to 16000 ticks (per Minecraft standard)
-        //TODO: Move burn time into the resource info
+        //TODO - V10: Move burn time into the resource info
         if (getBlock().getResourceInfo() == BlockResourceInfo.CHARCOAL) {
             return 16000; // ticks
         }

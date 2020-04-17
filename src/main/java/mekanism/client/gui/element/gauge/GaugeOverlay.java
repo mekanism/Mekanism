@@ -28,7 +28,6 @@ public enum GaugeOverlay {
         return height;
     }
 
-    //TODO: Test/figure out proper numbers for JEI
     public ResourceLocation getBarOverlay() {
         return barOverlay;
     }

@@ -20,20 +20,13 @@ By the time you've been using Mekanism for a while, you'll have a near-instructi
 Armor, be obtaining four ingots for each ore you mine, have the ability to fly wherever you want with 
 the hydrogen-powered jetpacks, and have a cute robotic friend following you around while you mine. :)
 
-# Alpha Status #
-
-Mekanism for 1.15 is currently in an alpha state. The majority of basic features are working properly, while
-other things like inventories for multiblocks are in a more broken state. We are currently working on
-refactoring multiple large portions of the code to make Mekanism easier to maintain and add new features
-to. Because of this, the internals are in flux and may be changed greatly so we may also make breaking
-changes to our API while Mekanism is in alpha. We also are making sure to keep the “alpha” state during
-this time so that we don’t have to spend extra time worrying about if the world doesn’t lose any data
-from one commit to the next, and for this reason we do not recommend including Mekanism in any "large"
-packs that players may expect things to work properly/upgrade safely from one version to the next.
-
 # Discord #
 
 Mekanism has a [discord](https://discord.gg/nmSjMGc) where you can come chat with other Mekanism users and the developers. Join us!
+
+# Translating #
+
+If you would like to help translate Mekanism, you can do so via [Crowdin](https://crowdin.com/project/mekanism)
 
 # License #
 

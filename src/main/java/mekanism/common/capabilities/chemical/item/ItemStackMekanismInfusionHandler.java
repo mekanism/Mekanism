@@ -19,7 +19,6 @@ import net.minecraftforge.common.capabilities.Capability;
 /**
  * Helper class for implementing infusion handlers for items
  */
-//TODO: Evaluate if this should be moved into the API package
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanismChemicalHandler<InfuseType, InfusionStack> implements IMekanismInfusionHandler {

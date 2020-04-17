@@ -62,6 +62,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
 
     private MachineEnergyContainer<TileEntityChemicalWasher> energyContainer;
     private FluidInventorySlot fluidSlot;
+    private OutputInventorySlot fluidOutputSlot;
     private GasInventorySlot gasOutputSlot;
     private EnergyInventorySlot energySlot;
 
@@ -104,7 +105,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 180, 71), RelativeSide.LEFT);
         //Output slot for the fluid container that was used as an input
-        builder.addSlot(OutputInventorySlot.at(this, 180, 102), RelativeSide.TOP);
+        builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 180, 102), RelativeSide.TOP);
         builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.RIGHT);
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
         gasOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
@@ -116,8 +117,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        //TODO: Fix this not moving the item to the output slot
-        fluidSlot.fillTank();
+        fluidSlot.fillTank(fluidOutputSlot);
         gasOutputSlot.drainTank();
         FloatingLong prev = energyContainer.getEnergy().copyAsConst();
         cachedRecipe = getUpdatedCache(0);

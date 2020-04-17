@@ -111,10 +111,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                     if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
                         MekanismUtils.logMismatchedStackSize();
                     }
-                } else if (net.gasTank.getStored() > gasTank.getStored()) {
-                    //TODO: Evaluate, realistically we should never be trying to merge two networks
-                    // if they have conflicting types
-                    gasTank.setStack(net.getBuffer());
                 }
                 net.gasTank.setEmpty();
             }
@@ -134,15 +130,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
         GasStack gas = transmitter.getBuffer();
-        if (gas == null || gas.isEmpty()) {
-            //Note: We support null given technically the API says it is nullable, so if someone makes a custom IGridTransmitter
-            // with it being null would have issues
+        if (gas.isEmpty()) {
             return;
         }
         if (gasTank.isEmpty()) {
             gasTank.setStack(gas.copy());
         } else if (gas.isTypeEqual(gasTank.getType())) {
-            //TODO: better multiple buffer impl
             long amount = gas.getAmount();
             if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
                 MekanismUtils.logMismatchedStackSize();

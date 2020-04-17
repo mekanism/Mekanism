@@ -1,7 +1,9 @@
 package mekanism.api.recipes.inputs;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -12,18 +14,21 @@ import mekanism.api.math.MathUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+@ParametersAreNonnullByDefault
 public class InputHelper {
 
-    public static IInputHandler<@NonNull ItemStack> getInputHandler(@Nonnull IInventorySlot inventorySlot) {
+    public static IInputHandler<@NonNull ItemStack> getInputHandler(IInventorySlot inventorySlot) {
         return new IInputHandler<@NonNull ItemStack>() {
 
+            @Nonnull
             @Override
-            public @NonNull ItemStack getInput() {
+            public ItemStack getInput() {
                 return inventorySlot.getStack();
             }
 
+            @Nonnull
             @Override
-            public @NonNull ItemStack getRecipeInput(InputIngredient<@NonNull ItemStack> recipeIngredient) {
+            public ItemStack getRecipeInput(InputIngredient<@NonNull ItemStack> recipeIngredient) {
                 ItemStack input = getInput();
                 if (input.isEmpty()) {
                     //All recipes currently require that we have an input. If we don't then return that we failed
@@ -33,7 +38,7 @@ public class InputHelper {
             }
 
             @Override
-            public void use(@NonNull ItemStack recipeInput, int operations) {
+            public void use(@Nonnull ItemStack recipeInput, int operations) {
                 if (operations == 0) {
                     //Just exit if we are somehow here at zero operations
                     return;
@@ -41,7 +46,7 @@ public class InputHelper {
                 if (!recipeInput.isEmpty()) {
                     int amount = recipeInput.getCount() * operations;
                     if (inventorySlot.shrinkStack(amount, Action.EXECUTE) != amount) {
-                        //TODO: Print error/warning that something went wrong
+                        MekanismAPI.logger.error("Stack size changed by a different amount than requested.", new Exception());
                     }
                 }
             }
@@ -64,18 +69,19 @@ public class InputHelper {
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ILongInputHandler<@NonNull STACK> getInputHandler(
-          @Nonnull IChemicalTank<CHEMICAL, STACK> tank) {
+          IChemicalTank<CHEMICAL, STACK> tank) {
         return new ILongInputHandler<@NonNull STACK>() {
 
+            @Nonnull
             @Override
-            public @NonNull STACK getInput() {
+            public STACK getInput() {
                 return tank.getStack();
             }
 
+            @Nonnull
             @Override
-            public @NonNull STACK getRecipeInput(InputIngredient<@NonNull STACK> recipeIngredient) {
+            public STACK getRecipeInput(InputIngredient<@NonNull STACK> recipeIngredient) {
                 STACK input = getInput();
-                //TODO: Make this be an is empty check, and return empty instead of null
                 if (input.isEmpty()) {
                     //All recipes currently require that we have an input. If we don't then return that we failed
                     return tank.getEmptyStack();
@@ -84,7 +90,7 @@ public class InputHelper {
             }
 
             @Override
-            public void use(@NonNull STACK recipeInput, long operations) {
+            public void use(@Nonnull STACK recipeInput, long operations) {
                 if (operations == 0) {
                     //Just exit if we are somehow here at zero operations
                     return;
@@ -97,7 +103,7 @@ public class InputHelper {
                 if (!inputGas.isEmpty()) {
                     long amount = recipeInput.getAmount() * operations;
                     if (tank.shrinkStack(amount, Action.EXECUTE) != amount) {
-                        //TODO: Print error/warning that something went wrong
+                        MekanismAPI.logger.error("Stack size changed by a different amount than requested.", new Exception());
                     }
                 }
             }
@@ -120,16 +126,18 @@ public class InputHelper {
         };
     }
 
-    public static IInputHandler<@NonNull FluidStack> getInputHandler(@Nonnull IExtendedFluidTank fluidTank) {
+    public static IInputHandler<@NonNull FluidStack> getInputHandler(IExtendedFluidTank fluidTank) {
         return new IInputHandler<@NonNull FluidStack>() {
 
+            @Nonnull
             @Override
-            public @NonNull FluidStack getInput() {
+            public FluidStack getInput() {
                 return fluidTank.getFluid();
             }
 
+            @Nonnull
             @Override
-            public @NonNull FluidStack getRecipeInput(InputIngredient<@NonNull FluidStack> recipeIngredient) {
+            public FluidStack getRecipeInput(InputIngredient<@NonNull FluidStack> recipeIngredient) {
                 FluidStack input = getInput();
                 if (input.isEmpty()) {
                     //All recipes currently require that we have an input. If we don't then return that we failed
@@ -139,7 +147,7 @@ public class InputHelper {
             }
 
             @Override
-            public void use(@NonNull FluidStack recipeInput, int operations) {
+            public void use(@Nonnull FluidStack recipeInput, int operations) {
                 if (operations == 0) {
                     //Just exit if we are somehow here at zero operations
                     return;
@@ -152,7 +160,7 @@ public class InputHelper {
                 if (!inputFluid.isEmpty()) {
                     int amount = recipeInput.getAmount() * operations;
                     if (fluidTank.shrinkStack(amount, Action.EXECUTE) != amount) {
-                        //TODO: Print error/warning that something went wrong
+                        MekanismAPI.logger.error("Stack size changed by a different amount than requested.", new Exception());
                     }
                 }
             }

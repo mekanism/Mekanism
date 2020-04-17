@@ -51,7 +51,7 @@ import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.world.BlockEvent;
 
-//TODO: Make the laser "shrink" the further distance it goes, If above a certain energy level and in water makes it bubble
+//TODO - V10: Make the laser "shrink" the further distance it goes, If above a certain energy level and in water makes it make a bubble stream
 public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     protected LaserEnergyContainer energyContainer;

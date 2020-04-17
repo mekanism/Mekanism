@@ -100,7 +100,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockTileModel<TileEntity
     @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
         GasStack stored = StorageUtils.getStoredGasFromNBT(stack);
-        return stored.isEmpty() ? 0 : stored.getType().getTint();
+        return stored.isEmpty() ? 0 : stored.getChemicalTint();
     }
 
     @Override

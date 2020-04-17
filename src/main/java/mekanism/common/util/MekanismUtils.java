@@ -1,5 +1,8 @@
 package mekanism.common.util;
 
+import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +11,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.annotations.Contract;
-import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
@@ -31,10 +30,9 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.integration.GenericWrench;
+import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
@@ -44,12 +42,12 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -57,11 +55,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.ChunkPos;
@@ -83,12 +85,10 @@ import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -190,7 +190,6 @@ public final class MekanismUtils {
         return 0;
     }
 
-    //TODO: Use these methods in various places
     public static float getScale(float prevScale, IExtendedFluidTank tank) {
         return getScale(prevScale, tank.getFluidAmount(), tank.getCapacity(), tank.isEmpty());
     }
@@ -215,7 +214,6 @@ public final class MekanismUtils {
             targetScale = 0;
         } else {
             FloatingLong scale = container.getEnergy().divide(maxEnergy);
-            //TODO: FloatingLong check if this has any overflow issues
             targetScale = scale.floatValue();
         }
         return getScale(prevScale, targetScale, container.isEmpty());
@@ -324,8 +322,7 @@ public final class MekanismUtils {
     public static boolean isGettingPowered(World world, BlockPos pos) {
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos offset = pos.offset(side);
-            //TODO: Why does it offset twice
-            if (isBlockLoaded(world, pos) && isBlockLoaded(world, pos.offset(side))) {
+            if (isBlockLoaded(world, pos) && isBlockLoaded(world, offset)) {
                 BlockState blockState = world.getBlockState(offset);
                 boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
                 if (weakPower && isDirectlyGettingPowered(world, offset)) {
@@ -403,7 +400,6 @@ public final class MekanismUtils {
     public static void notifyNeighborofChange(World world, BlockPos pos, BlockPos fromPos) {
         BlockState state = world.getBlockState(pos);
         state.getBlock().onNeighborChange(state, world, pos, fromPos);
-        //TODO: Check if this should be true for moving
         state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
     }
 
@@ -418,7 +414,6 @@ public final class MekanismUtils {
         BlockPos neighbor = fromPos.offset(neighborSide);
         BlockState state = world.getBlockState(neighbor);
         state.getBlock().onNeighborChange(state, world, neighbor, fromPos);
-        //TODO: Check if this should be true for moving
         state.neighborChanged(world, neighbor, world.getBlockState(fromPos).getBlock(), fromPos, false);
     }
 
@@ -504,85 +499,40 @@ public final class MekanismUtils {
         world.getLightManager().checkBlock(pos);
     }
 
-    /**
-     * Whether or not a certain block is considered a fluid.
-     *
-     * @param world - world the block is in
-     * @param pos   - coordinates
-     *
-     * @return if the block is a fluid
-     */
-    public static boolean isFluid(World world, BlockPos pos) {
-        return !getFluid(world, pos, false).isEmpty();
-    }
-
-    /**
-     * Gets a fluid from a certain location.
-     *
-     * @param world - world the block is in
-     * @param pos   - location of the block
-     *
-     * @return the fluid at the certain location, null if it doesn't exist
-     */
-    @Nonnull
-    public static FluidStack getFluid(World world, BlockPos pos, boolean filter) {
-        BlockState state = world.getBlockState(pos);
-        Block block = state.getBlock();
-        if (block == Blocks.WATER && state.get(FlowingFluidBlock.LEVEL) == 0) {
-            if (!filter) {
-                return new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
-            }
-            return MekanismFluids.HEAVY_WATER.getFluidStack(10);
-        } else if (block == Blocks.LAVA && state.get(FlowingFluidBlock.LEVEL) == 0) {
-            return new FluidStack(Fluids.LAVA, FluidAttributes.BUCKET_VOLUME);
-        } else if (block instanceof IFluidBlock) {
-            IFluidBlock fluid = (IFluidBlock) block;
-            if (state.getProperties().contains(FlowingFluidBlock.LEVEL) && state.get(FlowingFluidBlock.LEVEL) == 0) {
-                return fluid.drain(world, pos, FluidAction.SIMULATE);
-            }
-        }
-        return FluidStack.EMPTY;
-    }
-
-    /**
-     * Whether or not a block is a dead fluid.
-     *
-     * @param world - world the block is in
-     * @param pos   - coordinates
-     *
-     * @return if the block is a dead fluid
-     */
-    public static boolean isDeadFluid(World world, BlockPos pos) {
-        Block block = world.getBlockState(pos).getBlock();
-        return block instanceof FlowingFluidBlock || block instanceof IFluidBlock;
-
-    }
-
-    /**
-     * Gets the flowing block type from a Forge-based fluid. Incorporates the MC system of fliuds as well.
-     *
-     * @param fluidStack - the fluid type
-     *
-     * @return the block corresponding to the given fluid
-     */
-    public static BlockState getFlowingBlockState(@Nonnull FluidStack fluidStack) {
-        if (fluidStack.isEmpty()) {
-            return Blocks.AIR.getDefaultState();
-        }
+    public static boolean tryPlaceContainedLiquid(@Nullable PlayerEntity player, World world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable Direction side) {
         Fluid fluid = fluidStack.getFluid();
-        if (fluid == Fluids.WATER) {
-            //TODO: Is this needed
-            return Blocks.WATER.getDefaultState();
-        } else if (fluid == Fluids.LAVA) {
-            //TODO: Is this needed
-            return Blocks.LAVA.getDefaultState();
+        if (!fluid.getAttributes().canBePlacedInWorld(world, pos, fluidStack)) {
+            //If there is no fluid or it cannot be placed in the world just
+            return false;
         }
-        //TODO: Do we want to check the flowing one
-        /*if (fluid instanceof FlowingFluid) {
-            //TODO: Is this correct
-            fluid = ((FlowingFluid) fluid).getFlowingFluid();
-        }*/
-        return fluid.getDefaultState().getBlockState();
+        BlockState state = world.getBlockState(pos);
+        boolean isReplaceable = state.isReplaceable(fluid);
+        boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
+        if (world.isAirBlock(pos) || isReplaceable || canContainFluid) {
+            if (world.getDimension().doesWaterVaporize() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
+                fluid.getAttributes().vaporize(player, world, pos, fluidStack);
+            } else if (canContainFluid) {
+                if (((ILiquidContainer) state.getBlock()).receiveFluid(world, pos, state, ((FlowingFluid) fluid).getStillFluidState(false))) {
+                    playEmptySound(player, world, pos, fluidStack);
+                }
+            } else {
+                if (!world.isRemote() && isReplaceable && !state.getMaterial().isLiquid()) {
+                    world.destroyBlock(pos, true);
+                }
+                playEmptySound(player, world, pos, fluidStack);
+                world.setBlockState(pos, fluid.getDefaultState().getBlockState(), BlockFlags.DEFAULT_AND_RERENDER);
+            }
+            return true;
+        }
+        return side != null && tryPlaceContainedLiquid(player, world, pos.offset(side), fluidStack, null);
+    }
+
+    private static void playEmptySound(@Nullable PlayerEntity player, IWorld world, BlockPos pos, @Nonnull FluidStack fluidStack) {
+        SoundEvent soundevent = fluidStack.getFluid().getAttributes().getEmptySound(world, pos);
+        if (soundevent == null) {
+            soundevent = fluidStack.getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY;
+        }
+        world.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
 
     /**
@@ -762,7 +712,6 @@ public final class MekanismUtils {
     }
 
     public static CraftingInventory getDummyCraftingInv() {
-        //TODO: is this fine for the id
         Container tempContainer = new Container(ContainerType.CRAFTING, 1) {
             @Override
             public boolean canInteractWith(@Nonnull PlayerEntity player) {
@@ -832,42 +781,11 @@ public final class MekanismUtils {
      * @return if the player has operator privileges
      */
     public static boolean isOp(PlayerEntity p) {
-        if (!(p instanceof ServerPlayerEntity)) {
-            return false;
+        if (p instanceof ServerPlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity) p;
+            return MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().canSendCommands(player.getGameProfile());
         }
-        ServerPlayerEntity player = (ServerPlayerEntity) p;
-        return MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().canSendCommands(player.getGameProfile());
-    }
-
-    /**
-     * Gets the item ID from a given ItemStack
-     *
-     * @param itemStack - ItemStack to check
-     *
-     * @return item ID of the ItemStack
-     */
-    public static int getID(ItemStack itemStack) {
-        if (itemStack.isEmpty()) {
-            return -1;
-        }
-        return Item.getIdFromItem(itemStack.getItem());
-    }
-
-    @Deprecated//todo remove this
-    public static boolean existsAndInstance(Object obj, String className) {
-        Class<?> theClass;
-        if (classesFound.containsKey(className)) {
-            theClass = classesFound.get(className);
-        } else {
-            try {
-                theClass = Class.forName(className);
-                classesFound.put(className, theClass);
-            } catch (ClassNotFoundException e) {
-                classesFound.put(className, null);
-                return false;
-            }
-        }
-        return theClass != null && theClass.isInstance(obj);
+        return false;
     }
 
     /**
@@ -965,7 +883,6 @@ public final class MekanismUtils {
             //If the world is null or its a world reader and the block is not loaded, return null
             return null;
         }
-        //TODO: This causes freezes if being called from onLoad
         return world.getTileEntity(pos);
     }
 
@@ -981,7 +898,6 @@ public final class MekanismUtils {
     @Nullable
     @Contract("_, null, _ -> null")
     public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IBlockReader world, @Nonnull BlockPos pos) {
-        //TODO: Should we go through usages of this where TileEntityMekanism is used, and use a more restrictive tile type?
         return getTileEntity(clazz, world, pos, false);
     }
 
@@ -992,7 +908,6 @@ public final class MekanismUtils {
             //If the world is null or its a world reader and the block is not loaded, return null
             return null;
         }
-        //TODO: This causes freezes if being called from onLoad
         TileEntity tile = world.getTileEntity(pos);
         if (tile == null) {
             return null;
@@ -1023,7 +938,7 @@ public final class MekanismUtils {
             return ((IWorldReader) world).isBlockLoaded(pos);
         }
         return true;
-    }//TODO: Make a util method for checking if a block is air that also ensures it is loaded?
+    }
 
     /**
      * Dismantles a block, dropping it and removing it from the world.

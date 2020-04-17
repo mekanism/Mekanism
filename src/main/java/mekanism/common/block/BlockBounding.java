@@ -66,6 +66,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     public BlockBounding(boolean advanced) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the bounding block
+        // Torches cannot be placed on the sides due to vanilla checking the incorrect shape
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F).variableOpacity());
         this.advanced = advanced;
         setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
@@ -188,14 +189,10 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return MekanismTileEntityTypes.BOUNDING_BLOCK.getTileEntityType();
     }
 
-    //TODO: If need be override: getCollisionShape, getRenderShape, getRaytraceShape to allow for
-    // the blocks to properly proxy that stuff, if they have overridden implementations of the methods
-    // rather than have them basically have the defaults which is just based off of getShape
     @Nonnull
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        //TODO: Fix not being able to place a torch on the back of the miner
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             //If we don't have a main pos, then act as if the block is empty so that we can move into it properly

@@ -21,43 +21,41 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.NBTIngredient;
 
-//TODO: Allow for empty item stacks?
 public abstract class ItemStackIngredient implements InputIngredient<@NonNull ItemStack> {
 
-    public static ItemStackIngredient from(@NonNull ItemStack stack) {
+    public static ItemStackIngredient from(@Nonnull ItemStack stack) {
         return from(stack, stack.getCount());
     }
 
-    public static ItemStackIngredient from(@NonNull ItemStack stack, int amount) {
+    public static ItemStackIngredient from(@Nonnull ItemStack stack, int amount) {
         //Support NBT that is on the stack in case it matters
         //It is a protected constructor so pretend we are extending it and implementing it via the {}
         // Note: Only bother making it an NBT ingredient if the stack has NBT, otherwise there is no point in doing the extra checks
-        //TODO: Figure out if this note is correct on what we should do
         Ingredient ingredient = stack.hasTag() ? new NBTIngredient(stack) {} : Ingredient.fromStacks(stack);
         return from(ingredient, amount);
     }
 
-    public static ItemStackIngredient from(@NonNull IItemProvider item) {
+    public static ItemStackIngredient from(@Nonnull IItemProvider item) {
         return from(item, 1);
     }
 
-    public static ItemStackIngredient from(@NonNull IItemProvider item, int amount) {
+    public static ItemStackIngredient from(@Nonnull IItemProvider item, int amount) {
         return from(new ItemStack(item), amount);
     }
 
-    public static ItemStackIngredient from(@NonNull Tag<Item> itemTag) {
+    public static ItemStackIngredient from(@Nonnull Tag<Item> itemTag) {
         return from(itemTag, 1);
     }
 
-    public static ItemStackIngredient from(@NonNull Tag<Item> itemTag, int amount) {
+    public static ItemStackIngredient from(@Nonnull Tag<Item> itemTag, int amount) {
         return from(Ingredient.fromTag(itemTag), amount);
     }
 
-    public static ItemStackIngredient from(@NonNull Ingredient ingredient) {
+    public static ItemStackIngredient from(@Nonnull Ingredient ingredient) {
         return from(ingredient, 1);
     }
 
-    public static ItemStackIngredient from(@NonNull Ingredient ingredient, int amount) {
+    public static ItemStackIngredient from(@Nonnull Ingredient ingredient, int amount) {
         return new Single(ingredient, amount);
     }
 
@@ -70,7 +68,6 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         return Multi.read(buffer);
     }
 
-    //TODO: Should we not let this be null?
     public static ItemStackIngredient deserialize(@Nullable JsonElement json) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Ingredient cannot be null");
@@ -134,28 +131,28 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
 
     public static class Single extends ItemStackIngredient {
 
-        @NonNull
+        @Nonnull
         private final Ingredient ingredient;
         private final int amount;
 
-        public Single(@NonNull Ingredient ingredient, int amount) {
+        public Single(@Nonnull Ingredient ingredient, int amount) {
             this.ingredient = Objects.requireNonNull(ingredient);
             this.amount = amount;
         }
 
         @Override
-        public boolean test(@NonNull ItemStack stack) {
+        public boolean test(@Nonnull ItemStack stack) {
             return testType(stack) && stack.getCount() >= amount;
         }
 
         @Override
-        public boolean testType(@NonNull ItemStack stack) {
-            //TODO: Should this fail on empty stacks
+        public boolean testType(@Nonnull ItemStack stack) {
             return ingredient.test(stack);
         }
 
+        @Nonnull
         @Override
-        public @NonNull ItemStack getMatchingInstance(@NonNull ItemStack stack) {
+        public ItemStack getMatchingInstance(@Nonnull ItemStack stack) {
             if (test(stack)) {
                 ItemStack matching = stack.copy();
                 matching.setCount(amount);
@@ -164,16 +161,19 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
             return ItemStack.EMPTY;
         }
 
-        @NonNull
+        @Nonnull
         @Override
         public List<@NonNull ItemStack> getRepresentations() {
             //TODO: Can this be cached some how
             List<@NonNull ItemStack> representations = new ArrayList<>();
             for (ItemStack stack : ingredient.getMatchingStacks()) {
-                //TODO: if there a cleaner way to do this that doesn't require copying at least when the size is the same
-                ItemStack copy = stack.copy();
-                copy.setCount(amount);
-                representations.add(copy);
+                if (stack.getCount() == amount) {
+                    representations.add(stack);
+                } else {
+                    ItemStack copy = stack.copy();
+                    copy.setCount(amount);
+                    representations.add(copy);
+                }
             }
             return representations;
         }
@@ -201,29 +201,27 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         }
     }
 
-    //TODO: Maybe name this better, at the very least make it easier/possible to create new instances of this
-    // Also cleanup the javadoc comment about this, and try to make the helpers that create a new instance
-    // return a normal ItemStackIngredient (Single), if we only have a singular one
     public static class Multi extends ItemStackIngredient {
 
         private final ItemStackIngredient[] ingredients;
 
-        protected Multi(@NonNull ItemStackIngredient... ingredients) {
+        protected Multi(@Nonnull ItemStackIngredient... ingredients) {
             this.ingredients = ingredients;
         }
 
         @Override
-        public boolean test(@NonNull ItemStack stack) {
+        public boolean test(@Nonnull ItemStack stack) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.test(stack));
         }
 
         @Override
-        public boolean testType(@NonNull ItemStack stack) {
+        public boolean testType(@Nonnull ItemStack stack) {
             return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(stack));
         }
 
+        @Nonnull
         @Override
-        public @NonNull ItemStack getMatchingInstance(@NonNull ItemStack stack) {
+        public ItemStack getMatchingInstance(@Nonnull ItemStack stack) {
             for (ItemStackIngredient ingredient : ingredients) {
                 ItemStack matchingInstance = ingredient.getMatchingInstance(stack);
                 if (!matchingInstance.isEmpty()) {
@@ -233,7 +231,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
             return ItemStack.EMPTY;
         }
 
-        @NonNull
+        @Nonnull
         @Override
         public List<@NonNull ItemStack> getRepresentations() {
             List<@NonNull ItemStack> representations = new ArrayList<>();
@@ -263,7 +261,6 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         }
 
         public static ItemStackIngredient read(PacketBuffer buffer) {
-            //TODO: Verify this works
             ItemStackIngredient[] ingredients = new ItemStackIngredient[buffer.readVarInt()];
             for (int i = 0; i < ingredients.length; i++) {
                 ingredients[i] = ItemStackIngredient.read(buffer);
