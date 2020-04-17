@@ -37,7 +37,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
 
     public Set<ValveData> valveViewing = new ObjectOpenHashSet<>();
     public float prevWaterScale, prevFuelScale, prevSteamScale, prevWasteScale;
-    private boolean handleSound;
+    private boolean handleSound, prevActive;
 
     public TileEntityFissionReactorCasing() {
         super(GeneratorsBlocks.FISSION_REACTOR_CASING);
@@ -64,8 +64,13 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
+        boolean needsPacket = false;
+        boolean active = structure != null && structure.handlesSound(this) && structure.isActive();
+        if (active != prevActive) {
+            needsPacket = true;
+            prevActive = active;
+        }
         if (structure != null && isRendering) {
-            boolean needsPacket = false;
             // burn reactor fuel, create energy
             if (structure.isActive()) {
                 structure.burnFuel();
@@ -103,11 +108,11 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
                 prevSteamScale = steamScale;
                 prevWasteScale = wasteScale;
             }
-            if (needsPacket) {
-                sendUpdatePacket();
-            }
             // save changed data
             markDirty(false);
+        }
+        if (needsPacket) {
+            sendUpdatePacket();
         }
     }
 
@@ -169,27 +174,29 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        if (structure != null && isRendering) {
-            updateTag.putFloat(NBTConstants.SCALE, prevWaterScale);
-            updateTag.putFloat(NBTConstants.SCALE_ALT, prevFuelScale);
-            updateTag.putFloat(NBTConstants.SCALE_ALT_2, prevSteamScale);
-            updateTag.putFloat(NBTConstants.SCALE_ALT_3, prevWasteScale);
-            updateTag.putInt(NBTConstants.VOLUME, structure.getVolume());
-            updateTag.put(NBTConstants.FLUID_STORED, structure.waterTank.getFluid().writeToNBT(new CompoundNBT()));
-            updateTag.put(NBTConstants.GAS_STORED, structure.fuelTank.getStack().write(new CompoundNBT()));
-            updateTag.put(NBTConstants.GAS_STORED_ALT, structure.steamTank.getStack().write(new CompoundNBT()));
-            updateTag.put(NBTConstants.GAS_STORED_ALT_2, structure.wasteTank.getStack().write(new CompoundNBT()));
+        updateTag.putBoolean(NBTConstants.HANDLE_SOUND, structure != null && structure.handlesSound(this));
+        if (structure != null) {
             updateTag.putBoolean(NBTConstants.ACTIVE, structure.isActive());
-            updateTag.putBoolean(NBTConstants.HANDLE_SOUND, structure.handlesSound(this));
-            ListNBT valves = new ListNBT();
-            for (ValveData valveData : structure.valves) {
-                if (valveData.activeTicks > 0) {
-                    CompoundNBT valveNBT = new CompoundNBT();
-                    valveData.location.write(valveNBT);
-                    valveNBT.putInt(NBTConstants.SIDE, valveData.side.ordinal());
+            if (isRendering) {
+                updateTag.putFloat(NBTConstants.SCALE, prevWaterScale);
+                updateTag.putFloat(NBTConstants.SCALE_ALT, prevFuelScale);
+                updateTag.putFloat(NBTConstants.SCALE_ALT_2, prevSteamScale);
+                updateTag.putFloat(NBTConstants.SCALE_ALT_3, prevWasteScale);
+                updateTag.putInt(NBTConstants.VOLUME, structure.getVolume());
+                updateTag.put(NBTConstants.FLUID_STORED, structure.waterTank.getFluid().writeToNBT(new CompoundNBT()));
+                updateTag.put(NBTConstants.GAS_STORED, structure.fuelTank.getStack().write(new CompoundNBT()));
+                updateTag.put(NBTConstants.GAS_STORED_ALT, structure.steamTank.getStack().write(new CompoundNBT()));
+                updateTag.put(NBTConstants.GAS_STORED_ALT_2, structure.wasteTank.getStack().write(new CompoundNBT()));
+                ListNBT valves = new ListNBT();
+                for (ValveData valveData : structure.valves) {
+                    if (valveData.activeTicks > 0) {
+                        CompoundNBT valveNBT = new CompoundNBT();
+                        valveData.location.write(valveNBT);
+                        valveNBT.putInt(NBTConstants.SIDE, valveData.side.ordinal());
+                    }
                 }
+                updateTag.put(NBTConstants.VALVE, valves);
             }
-            updateTag.put(NBTConstants.VALVE, valves);
         }
         return updateTag;
     }
@@ -197,30 +204,32 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        if (clientHasStructure && isRendering && structure != null) {
-            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
-            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevFuelScale = scale);
-            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_2, scale -> prevSteamScale = scale);
-            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
-            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.setVolume(value));
-            NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.waterTank.setStack(value));
-            NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.fuelTank.setStack(value));
-            NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> structure.steamTank.setStack(value));
-            NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> structure.wasteTank.setStack(value));
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
+        if (clientHasStructure && structure != null) {
             NBTUtils.setBooleanIfPresent(tag, NBTConstants.ACTIVE, value -> structure.setActive(value));
-            NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
-            valveViewing.clear();
-            if (tag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
-                ListNBT valves = tag.getList(NBTConstants.VALVE, NBT.TAG_COMPOUND);
-                for (int i = 0; i < valves.size(); i++) {
-                    CompoundNBT valveNBT = valves.getCompound(i);
-                    ValveData data = new ValveData();
-                    data.location = Coord4D.read(valveNBT);
-                    data.side = Direction.byIndex(valveNBT.getInt(NBTConstants.SIDE));
-                    valveViewing.add(data);
-                    TileEntityFissionReactorCasing tile = MekanismUtils.getTileEntity(TileEntityFissionReactorCasing.class, getWorld(), data.location.getPos());
-                    if (tile != null) {
-                        tile.clientHasStructure = true;
+            if (isRendering) {
+                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
+                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevFuelScale = scale);
+                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_2, scale -> prevSteamScale = scale);
+                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
+                NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.setVolume(value));
+                NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.waterTank.setStack(value));
+                NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.fuelTank.setStack(value));
+                NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> structure.steamTank.setStack(value));
+                NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> structure.wasteTank.setStack(value));
+                valveViewing.clear();
+                if (tag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
+                    ListNBT valves = tag.getList(NBTConstants.VALVE, NBT.TAG_COMPOUND);
+                    for (int i = 0; i < valves.size(); i++) {
+                        CompoundNBT valveNBT = valves.getCompound(i);
+                        ValveData data = new ValveData();
+                        data.location = Coord4D.read(valveNBT);
+                        data.side = Direction.byIndex(valveNBT.getInt(NBTConstants.SIDE));
+                        valveViewing.add(data);
+                        TileEntityFissionReactorCasing tile = MekanismUtils.getTileEntity(TileEntityFissionReactorCasing.class, getWorld(), data.location.getPos());
+                        if (tile != null) {
+                            tile.clientHasStructure = true;
+                        }
                     }
                 }
             }

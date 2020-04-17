@@ -117,7 +117,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
         builder.comment("Fission Reactor Settings").push(FISSION_CATEGORY);
         energyPerFissionFuel = CachedFloatingLongValue.define(this, builder, "Amount of energy created (in heat) from each whole mB of fission fuel.",
-            "energyPerFissionFuel", FloatingLong.createConst(500_000));
+            "energyPerFissionFuel", FloatingLong.createConst(1_000_000));
         fissionCasingHeatCapacity = CachedDoubleValue.wrap(this, builder.comment("The heat capacity added to a Fission Reactor by a single casing block. Increase to require more energy to raise the reactor temperature.")
             .define("casingHeatCapacity", 10D));
         fissionSurfaceAreaTarget = CachedDoubleValue.wrap(this, builder.comment("The average surface area of a Fission Reactor's fuel assemblies to reach 100% boil efficiency. Higher values make it harder to cool the reactor.")

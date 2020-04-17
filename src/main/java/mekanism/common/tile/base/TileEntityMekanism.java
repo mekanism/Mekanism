@@ -117,7 +117,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -1208,10 +1207,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         return getActive();
     }
 
-    protected BlockPos getSoundPos() {
-        return getPos();
-    }
-
     /**
      * Only call this from the client
      */
@@ -1231,13 +1226,13 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             // If this machine isn't fully muffled and we don't seem to be playing a sound for it, go ahead and
             // play it
             if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundHandler().isPlaying(activeSound))) {
-                activeSound = SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), getSoundPos());
+                activeSound = SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), getPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again
             playSoundCooldown = 20;
         } else if (activeSound != null) {
-            SoundHandler.stopTileSound(getSoundPos());
+            SoundHandler.stopTileSound(getPos());
             activeSound = null;
             playSoundCooldown = 0;
         }

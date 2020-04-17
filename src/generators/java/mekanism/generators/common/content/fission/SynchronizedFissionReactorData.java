@@ -25,7 +25,6 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
@@ -61,8 +60,6 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
     public static final double MAX_DAMAGE = 100;
 
     public static final long BURN_PER_ASSEMBLY = 1;
-
-    public static final FloatingLong MAX_ENERGY = FloatingLong.create(1_000_000_000);
 
     public static Object2BooleanMap<UUID> burningMap = new Object2BooleanOpenHashMap<>();
 
@@ -152,14 +149,9 @@ public class SynchronizedFissionReactorData extends SynchronizedData<Synchronize
 
     public boolean handlesSound(TileEntityFissionReactorCasing tile) {
         BlockPos pos = tile.getPos();
-        return pos.getX() == minLocation.x && pos.getY() == minLocation.y ||
-               pos.getX() == minLocation.x && pos.getY() == maxLocation.y ||
-               pos.getX() == maxLocation.x && pos.getY() == minLocation.y ||
-               pos.getX() == maxLocation.x && pos.getY() == maxLocation.y ||
-               pos.getX() == minLocation.x && pos.getZ() == minLocation.z ||
-               pos.getX() == minLocation.x && pos.getZ() == maxLocation.z ||
-               pos.getY() == minLocation.y && pos.getZ() == minLocation.z;
-        // TODO finish
+        return (pos.getX() == minLocation.x || pos.getX() == maxLocation.x) &&
+               (pos.getY() == minLocation.y || pos.getY() == maxLocation.y) &&
+               (pos.getZ() == minLocation.z || pos.getZ() == maxLocation.z);
 
     }
 
