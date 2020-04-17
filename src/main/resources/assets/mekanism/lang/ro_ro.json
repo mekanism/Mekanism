@@ -280,7 +280,7 @@
   "constants.mekanism.mod_name": "Mekanism",
   "crafting_formula.mekanism.encoded": "(Codificat)",
   "crafting_formula.mekanism.ingredients": "Ingrediente:",
-  "death.attack.laser": "%s was incinerated.",
+  "death.attack.laser": "%s era incinerat.",
   "description.mekanism.bin": "Un bloc folosit pentru a stoca mari cantitati de un singur tip de element.",
   "description.mekanism.boiler_casing": "Un carcasă densă rezistentă la presiune, utilizată pentru crearea unui bloc multiplu termoelectric de boiler.",
   "description.mekanism.boiler_valve": "O supapă care poate fi plasată pe un bloc multibloc termoelectric, permițând introducerea energiei și a apei, precum și extracția aburilor produse.",
