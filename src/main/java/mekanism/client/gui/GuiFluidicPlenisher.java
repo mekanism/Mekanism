@@ -1,6 +1,8 @@
 package mekanism.client.gui;
 
+import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -26,6 +28,8 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 48, 23, 80, 41));
+        addButton(new GuiDownArrow(this, 32, 39));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
         addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
