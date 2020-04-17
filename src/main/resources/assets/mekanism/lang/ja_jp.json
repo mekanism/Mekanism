@@ -323,7 +323,7 @@
   "description.mekanism.osmium_ore": "どんな高度でも見つかる頑健な鉱物です。 機械の中心的な材料です。",
   "description.mekanism.personal_chest": "54スロットを有し、いたるところで開けられるあなただけのチェストです。",
   "description.mekanism.precision_sawmill": "原木や木材由来のものを効率的に処理する機械です。 おがくずもでてきます。",
-  "description.mekanism.pressure_disperser": "A block used to disperse steam throughout a multiblock structure. These should form a gapless, horizontal plane in order to properly control steam flow.",
+  "description.mekanism.pressure_disperser": "蒸気を分散させるためのマルチブロックの部品です。 蒸気の流れを適切に制御するために、隙間なく水平に置く必要があります。",
   "description.mekanism.pressurized_reaction_chamber": "素材・流体・ガスを混ぜ込み、アイテムとガスを作成する先進的な機械です。",
   "description.mekanism.purification_chamber": "金属を3つの塊に出来る発展的な機械です。 鉱石3倍加の初期段階として機能します。",
   "description.mekanism.quantum_entangloporter": "あらゆるリソースを距離・次元をも超越して転送することが可能な、非常に発展的な機械です。",
