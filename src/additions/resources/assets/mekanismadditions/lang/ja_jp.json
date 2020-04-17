@@ -191,7 +191,7 @@
   "item.mekanismadditions.walkie_talkie": "トランシーバー",
   "item.mekanismadditions.white_balloon": "白色 風船",
   "item.mekanismadditions.yellow_balloon": "黄色 風船",
-  "key.mekanismadditions.voice": "Voice",
+  "key.mekanismadditions.voice": "音声",
   "walkie.mekanismadditions.channel": "チャンネル: %s",
   "walkie.mekanismadditions.channel.change": "チャンネルを変更: %s",
   "walkie.mekanismadditions.disabled": "ボイスサーバーが無効です"
