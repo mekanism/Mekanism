@@ -107,10 +107,10 @@
   "turbine.mekanismgenerators.stats.max_production": "Produzione massima: %s",
   "turbine.mekanismgenerators.stats.max_water_output": "Max uscita acqua: %s mB/t",
   "turbine.mekanismgenerators.stats.production": "Produzione",
-  "turbine.mekanismgenerators.stats.steam_flow": "Steam Flow",
+  "turbine.mekanismgenerators.stats.steam_flow": "Flusso Vapore",
   "turbine.mekanismgenerators.stats.tank_volume": "Volume serbatoio: %s",
   "turbine.mekanismgenerators.stats.vents": "Vents: %s %s",
-  "turbine.mekanismgenerators.steam_input": "Steam Input: %s mB/t",
+  "turbine.mekanismgenerators.steam_input": "Tasso d'ingresso vapore: %s mB/t",
   "wind_generator.mekanismgenerators.no_wind": "Assenza di vento",
   "wind_generator.mekanismgenerators.sky_blocked": "Cielo bloccato"
 }
