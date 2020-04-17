@@ -191,8 +191,8 @@
   "item.mekanismadditions.walkie_talkie": "Переносная рация",
   "item.mekanismadditions.white_balloon": "Белый Воздушный шар",
   "item.mekanismadditions.yellow_balloon": "Желтый Воздушный шар",
-  "key.mekanismadditions.voice": "Voice",
+  "key.mekanismadditions.voice": "Голос",
   "walkie.mekanismadditions.channel": "Канал: %s",
   "walkie.mekanismadditions.channel.change": "Канал изменен на: %s",
-  "walkie.mekanismadditions.disabled": "Voice server disabled."
+  "walkie.mekanismadditions.disabled": "Голосовой сервер отключен."
 }
