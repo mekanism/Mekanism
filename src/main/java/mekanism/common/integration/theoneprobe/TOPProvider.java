@@ -31,7 +31,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.multiblock.IStructuralMultiblock;
-import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.CapabilityUtils;
@@ -75,7 +75,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     public void addProbeInfo(ProbeMode mode, IProbeInfo info, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
         TileEntity tile = MekanismUtils.getTileEntity(world, data.getPos());
         if (tile != null) {
-            SynchronizedData<?> structure = getStructure(tile);
+            MultiblockData<?> structure = getStructure(tile);
             Optional<IStrictEnergyHandler> energyCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null));
             if (energyCapability.isPresent()) {
                 displayEnergy(info, energyCapability.get());
@@ -120,7 +120,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     }
 
     @Nullable
-    private SynchronizedData<?> getStructure(@Nonnull TileEntity tile) {
+    private MultiblockData<?> getStructure(@Nonnull TileEntity tile) {
         if (tile instanceof TileEntityMultiblock<?>) {
             return ((TileEntityMultiblock<?>) tile).structure;
         } else if (tile instanceof IStructuralMultiblock) {

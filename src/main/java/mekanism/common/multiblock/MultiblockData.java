@@ -13,8 +13,9 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 
-public abstract class SynchronizedData<T extends SynchronizedData<T>> implements IMekanismInventory {
+public abstract class MultiblockData<T extends MultiblockData<T>> implements IMekanismInventory {
 
     public Set<Coord4D> locations = new ObjectOpenHashSet<>();
     public Set<Coord4D> internalLocations = new ObjectOpenHashSet<>();
@@ -74,7 +75,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
         if (obj == null || obj.getClass() != getClass()) {
             return false;
         }
-        SynchronizedData<T> data = (SynchronizedData<T>) obj;
+        MultiblockData<T> data = (MultiblockData<T>) obj;
         if (!data.locations.equals(locations)) {
             return false;
         }
@@ -82,6 +83,19 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
             return false;
         }
         return data.getVolume() == getVolume();
+    }
+
+    public BlockLocation getBlockLocation(BlockPos pos) {
+        if (pos.getX() > minLocation.x && pos.getX() < maxLocation.x &&
+            pos.getY() > minLocation.y && pos.getY() < maxLocation.y &&
+            pos.getZ() > minLocation.z && pos.getZ() < maxLocation.z) {
+            return BlockLocation.INSIDE;
+        } else if (pos.getX() < minLocation.x || pos.getX() > maxLocation.x ||
+                   pos.getY() < minLocation.y || pos.getY() > maxLocation.y ||
+                   pos.getZ() < minLocation.z || pos.getZ() > maxLocation.z) {
+            return BlockLocation.OUTSIDE;
+        }
+        return BlockLocation.WALLS;
     }
 
     public int getVolume() {
@@ -93,4 +107,10 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
     }
 
     public void onCreated() {}
+
+    public enum BlockLocation {
+        INSIDE,
+        OUTSIDE,
+        WALLS;
+    }
 }

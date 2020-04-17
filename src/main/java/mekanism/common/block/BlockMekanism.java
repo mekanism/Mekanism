@@ -16,7 +16,6 @@ import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.base.SubstanceType;
@@ -150,13 +149,10 @@ public abstract class BlockMekanism extends Block {
         if (tile instanceof IBoundingBlock) {
             ((IBoundingBlock) tile).onPlace();
         }
-        if (!world.isRemote()) {
-            if (tile instanceof IMultiblock) {
-                ((IMultiblock<?>) tile).doUpdate();
-            }
-            if (tile instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) tile).doUpdate();
-            }
+        tile.onPlace();
+
+        if (tile instanceof IStructuralMultiblock) {
+            ((IStructuralMultiblock) tile).onPlace();
         }
 
         //Handle item

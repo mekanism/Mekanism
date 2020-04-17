@@ -19,7 +19,7 @@ import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.ItemGaugeDropper;
-import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
@@ -58,7 +58,7 @@ public class PacketDropperUse {
                 TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.pos);
                 if (tile != null) {
                     if (tile instanceof TileEntityMultiblock<?>) {
-                        SynchronizedData<?> structure = ((TileEntityMultiblock<?>) tile).structure;
+                        MultiblockData<?> structure = ((TileEntityMultiblock<?>) tile).structure;
                         if (message.tankType == TankType.GAS_TANK && structure instanceof IMekanismGasHandler) {
                             IChemicalTank<Gas, GasStack> tank = ((IMekanismGasHandler) structure).getGasTank(message.tankId, null);
                             if (tank != null) {

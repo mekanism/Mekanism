@@ -6,7 +6,11 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.attribute.Attributes.AttributeMultiblock;
 import mekanism.common.block.interfaces.IHasDescription;
+import mekanism.common.block.interfaces.ITypeBlock;
+import mekanism.common.content.blocktype.BlockType;
+import mekanism.common.content.blocktype.BlockType.BlockTypeBuilder;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityStructuralGlass;
@@ -30,10 +34,21 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
 
-public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntity<TileEntityStructuralGlass>, IHasDescription {
+public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntity<TileEntityStructuralGlass>, IHasDescription, ITypeBlock {
+
+    // TODO: clean this up at some point
+    private static BlockType type;
 
     public BlockStructuralGlass() {
         super(Block.Properties.create(Material.GLASS).hardnessAndResistance(5F, 10F).notSolid());
+    }
+
+    @Override
+    public BlockType getType() {
+        if (type == null) {
+            type = BlockTypeBuilder.createBlock(MekanismLang.EMPTY).with(new AttributeMultiblock()).build();
+        }
+        return type;
     }
 
     @Override
@@ -45,7 +60,7 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntit
                 ((TileEntityMekanism) tile).onNeighborChange(neighborBlock);
             }
             if (tile instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) tile).doUpdate();
+                ((IStructuralMultiblock) tile).doUpdate(neighborPos);
             }
         }
     }

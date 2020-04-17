@@ -31,7 +31,7 @@ public class ClientProxy extends CommonProxy {
         //If player is within 20 blocks (400 = 20^2), show the status message/sparkles
         if (tile.getPos().distanceSq(player.getPosition()) <= 400) {
             if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
-                anim.run();
+                anim.start();
             } else {
                 player.sendStatusMessage(MekanismLang.MULTIBLOCK_FORMED_CHAT.translateColored(EnumColor.INDIGO), true);
             }

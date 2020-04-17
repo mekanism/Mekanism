@@ -22,14 +22,14 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
-import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 
-public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbineData> implements IMekanismGasHandler, IMekanismStrictEnergyHandler {
+public class SynchronizedTurbineData extends MultiblockData<SynchronizedTurbineData> implements IMekanismGasHandler, IMekanismStrictEnergyHandler {
 
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();

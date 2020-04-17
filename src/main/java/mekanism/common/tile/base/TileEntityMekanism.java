@@ -558,6 +558,9 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     protected void onUpdateServer() {
     }
 
+    public void onPlace() {
+    }
+
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);

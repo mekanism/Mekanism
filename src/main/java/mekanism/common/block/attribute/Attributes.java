@@ -24,6 +24,9 @@ public class Attributes {
     /** If we should draw a custom selection box for the block. */
     public static class AttributeCustomSelectionBox implements Attribute {}
 
+    /** If this block is a part of a multiblock. */
+    public static class AttributeMultiblock implements Attribute {}
+
     /** If a block can emit redstone. */
     public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements TileAttribute<TILE> {
 

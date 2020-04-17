@@ -17,7 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class MultiblockManager<T extends SynchronizedData<T>> {
+public class MultiblockManager<T extends MultiblockData<T>> {
 
     private static Set<MultiblockManager<?>> managers = new ObjectOpenHashSet<>();
 
@@ -47,12 +47,17 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
 
     @Nullable
     public static UUID getStructureId(TileEntityMultiblock<?> tile) {
-        return tile.structure == null ? null : tile.getSynchronizedData().inventoryID;
+        return tile.structure == null ? null : tile.getMultiblockData().inventoryID;
     }
 
-    public static boolean areEqual(TileEntity tile1, TileEntity tile2) {
+    public static boolean areCompatible(TileEntity tile1, TileEntity tile2, boolean markUpdated) {
         if (tile1 instanceof TileEntityMultiblock && tile2 instanceof TileEntityMultiblock) {
-            return ((TileEntityMultiblock<?>) tile1).getManager() == ((TileEntityMultiblock<?>) tile2).getManager();
+            boolean valid = ((TileEntityMultiblock<?>) tile1).getManager() == ((TileEntityMultiblock<?>) tile2).getManager();
+            if (valid && markUpdated) {
+                ((TileEntityMultiblock<?>) tile1).markUpdated();
+                ((TileEntityMultiblock<?>) tile2).markUpdated();
+            }
+            return valid;
         }
         return false;
     }

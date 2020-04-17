@@ -10,7 +10,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class SparkleAnimation {
+public class SparkleAnimation extends Thread {
 
     private TileEntity tile;
     private BlockPos corner1;
@@ -29,7 +29,7 @@ public class SparkleAnimation {
               new BlockPos(renderLoc.getX() + length, renderLoc.getY() + height - 2, renderLoc.getZ() + width - 1), checker);
     }
 
-
+    @Override
     public void run() {
         if (MekanismConfig.client.dynamicTankEasterEgg.get()) {
             tile.getWorld().playSound(null, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), MekanismSounds.CJ_EASTER_EGG.getSoundEvent(), SoundCategory.BLOCKS, 1F, 1F);

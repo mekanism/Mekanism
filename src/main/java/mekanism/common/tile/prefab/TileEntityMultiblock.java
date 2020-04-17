@@ -1,7 +1,9 @@
 package mekanism.common.tile.prefab;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,13 +16,14 @@ import mekanism.common.Mekanism;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
+import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,7 +34,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
-public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extends TileEntityMekanism implements IMultiblock<T> {
+public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends TileEntityMekanism implements IMultiblock<T> {
 
     /**
      * The multiblock data for this structure.
@@ -65,6 +68,11 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Nullable
     public UUID cachedID = null;
 
+    private boolean protocolUpdateThisTick;
+    private boolean initialUpdate = false;
+
+    private Map<BlockPos, BlockState> cachedNeighbors = new HashMap<>();
+
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
     }
@@ -82,6 +90,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
+        if (ticker == 1 && cachedNeighbors.isEmpty()) {
+            createNeighborCache();
+        }
         if (structure == null) {
             if (!playersUsing.isEmpty()) {
                 for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
@@ -91,8 +102,8 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             if (cachedID != null) {
                 getManager().updateCache(this, false);
             }
-            if (ticker == 5) {
-                doUpdate();
+            if (ticker == 5 && !initialUpdate) {
+                doUpdate(null);
             }
             if (prevStructure) {
                 structureChanged();
@@ -111,6 +122,8 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 getManager().updateCache(this, false);
             }
         }
+
+        protocolUpdateThisTick = false;
     }
 
     private void structureChanged() {
@@ -133,8 +146,22 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     }
 
     @Override
-    public void doUpdate() {
-        if (!isRemote() && (structure == null || !structure.didTick)) {
+    public void onPlace() {
+        super.onPlace();
+        if (!world.isRemote()) {
+            doUpdate(null);
+            initialUpdate = true;
+        }
+    }
+
+    @Override
+    public void markUpdated() {
+        protocolUpdateThisTick = true;
+    }
+
+    @Override
+    public void doUpdate(BlockPos neighborPos) {
+        if (!isRemote() && shouldUpdate(neighborPos) && !protocolUpdateThisTick && (structure == null || !structure.didTick)) {
             if (structure != null && structure.inventoryID != null) {
                 // update the cache before we destroy the multiblock
                 cachedData.sync(structure);
@@ -142,10 +169,16 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 getManager().updateCache(this, true);
             }
             getProtocol().doUpdate();
+
             if (structure != null) {
                 structure.didTick = true;
             }
         }
+    }
+
+    @Override
+    public Map<BlockPos, BlockState> getNeighborCache() {
+        return cachedNeighbors;
     }
 
     @Override
@@ -204,7 +237,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 }
                 if (structure.renderLocation != null && !prevStructure) {
                     Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength, structure.volWidth, structure.volHeight,
-                          tile -> MultiblockManager.areEqual(this, tile));
+                          tile -> MultiblockManager.areCompatible(this, tile, false));
                 }
             } else {
                 // this will consecutively be set on the server
@@ -257,7 +290,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     }
 
     @Override
-    public T getSynchronizedData() {
+    public T getMultiblockData() {
         return structure;
     }
 

@@ -40,7 +40,7 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
         if (!world.isRemote) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof IMultiblock) {
-                ((IMultiblock<?>) tile).doUpdate();
+                ((IMultiblock<?>) tile).doUpdate(neighborPos);
             }
             if (tile instanceof TileEntityMekanism) {
                 ((TileEntityMekanism) tile).onNeighborChange(neighborBlock);

@@ -37,7 +37,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
 // need to clean this up eventually
-public class MultiblockCache<T extends SynchronizedData<T>> implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler,
+public class MultiblockCache<T extends MultiblockData<T>> implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler,
       IMekanismStrictEnergyHandler, IMekanismHeatHandler {
 
     private List<IInventorySlot> inventorySlots = new ArrayList<>();
@@ -134,7 +134,7 @@ public class MultiblockCache<T extends SynchronizedData<T>> implements IMekanism
         }
     }
 
-    public void syncInventoryData(SynchronizedData<T> data) {
+    public void syncInventoryData(MultiblockData<T> data) {
         if (data instanceof IMekanismInventory) {
             List<IInventorySlot> slotsToCopy = data.getInventorySlots(null);
             if (inventorySlots.isEmpty()) prefabItems(slotsToCopy.size());
@@ -148,7 +148,7 @@ public class MultiblockCache<T extends SynchronizedData<T>> implements IMekanism
         }
     }
 
-    public void syncFluidData(SynchronizedData<T> data) {
+    public void syncFluidData(MultiblockData<T> data) {
         if (data instanceof IMekanismFluidHandler) {
             List<IExtendedFluidTank> fluidTanksToCopy = ((IMekanismFluidHandler) data).getFluidTanks(null);
             if (fluidTanks.isEmpty()) prefabFluid(fluidTanksToCopy.size());
@@ -162,7 +162,7 @@ public class MultiblockCache<T extends SynchronizedData<T>> implements IMekanism
         }
     }
 
-    public void syncGasData(SynchronizedData<T> data) {
+    public void syncGasData(MultiblockData<T> data) {
         if (data instanceof IMekanismGasHandler) {
             List<? extends IChemicalTank<Gas, GasStack>> gasTanksToCopy = ((IMekanismGasHandler) data).getGasTanks(null);
             if (gasTanks.isEmpty()) prefabGas(gasTanksToCopy.size());
@@ -176,7 +176,7 @@ public class MultiblockCache<T extends SynchronizedData<T>> implements IMekanism
         }
     }
 
-    public void syncEnergyData(SynchronizedData<T> data) {
+    public void syncEnergyData(MultiblockData<T> data) {
         if (data instanceof IMekanismStrictEnergyHandler) {
             List<IEnergyContainer> containersToCopy = ((IMekanismStrictEnergyHandler) data).getEnergyContainers(null);
             if (energyContainers.isEmpty()) prefabEnergy(containersToCopy.size());
@@ -190,7 +190,7 @@ public class MultiblockCache<T extends SynchronizedData<T>> implements IMekanism
         }
     }
 
-    public void syncHeatData(SynchronizedData<T> data) {
+    public void syncHeatData(MultiblockData<T> data) {
         if (data instanceof IMekanismHeatHandler) {
             List<IHeatCapacitor> heatCapacitorsToCopy = ((IMekanismHeatHandler) data).getHeatCapacitors(null);
             if (heatCapacitors.isEmpty()) prefabHeat(heatCapacitorsToCopy.size());
@@ -207,7 +207,7 @@ public class MultiblockCache<T extends SynchronizedData<T>> implements IMekanism
         }
     }
 
-    public void applyInventoryData(SynchronizedData<T> data) {
+    public void applyInventoryData(MultiblockData<T> data) {
         if (data instanceof IMekanismInventory) {
             List<IInventorySlot> inventorySlots = ((IMekanismInventory) data).getInventorySlots(null);
             List<IInventorySlot> cacheSlots = getInventorySlots(null);
@@ -220,7 +220,7 @@ public class MultiblockCache<T extends SynchronizedData<T>> implements IMekanism
         }
     }
 
-    public void applyFluidData(SynchronizedData<T> data) {
+    public void applyFluidData(MultiblockData<T> data) {
         if (data instanceof IMekanismFluidHandler) {
             List<IExtendedFluidTank> fluidTanks = ((IMekanismFluidHandler) data).getFluidTanks(null);
             List<IExtendedFluidTank> cacheTanks = getFluidTanks(null);
@@ -233,7 +233,7 @@ public class MultiblockCache<T extends SynchronizedData<T>> implements IMekanism
         }
     }
 
-    public void applyGasData(SynchronizedData<T> data) {
+    public void applyGasData(MultiblockData<T> data) {
         if (data instanceof IMekanismGasHandler) {
             List<? extends IChemicalTank<Gas, GasStack>> gasTanks = ((IMekanismGasHandler) data).getGasTanks(null);
             List<? extends IChemicalTank<Gas, GasStack>> cacheTanks = getGasTanks(null);
@@ -246,7 +246,7 @@ public class MultiblockCache<T extends SynchronizedData<T>> implements IMekanism
         }
     }
 
-    public void applyEnergyData(SynchronizedData<T> data) {
+    public void applyEnergyData(MultiblockData<T> data) {
         if (data instanceof IMekanismStrictEnergyHandler) {
             List<IEnergyContainer> energyContainers = ((IMekanismStrictEnergyHandler) data).getEnergyContainers(null);
             List<IEnergyContainer> cacheContainers = getEnergyContainers(null);
@@ -259,7 +259,7 @@ public class MultiblockCache<T extends SynchronizedData<T>> implements IMekanism
         }
     }
 
-    public void applyHeatData(SynchronizedData<T> data) {
+    public void applyHeatData(MultiblockData<T> data) {
         if (data instanceof IMekanismHeatHandler) {
             List<IHeatCapacitor> heatCapacitors = ((IMekanismHeatHandler) data).getHeatCapacitors(null);
             List<IHeatCapacitor> cacheCapacitors = getHeatCapacitors(null);

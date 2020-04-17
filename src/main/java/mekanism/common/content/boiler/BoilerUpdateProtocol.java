@@ -99,7 +99,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         for (int x = structure.renderLocation.x; x < structure.renderLocation.x + structure.volLength; x++) {
             for (int y = structure.renderLocation.y; y < initDisperser.y; y++) {
                 for (int z = structure.renderLocation.z; z < structure.renderLocation.z + structure.volWidth; z++) {
-                    if (pointer.getWorld().isAirBlock(new BlockPos(x, y, z)) || isViableNode(x, y, z)) {
+                    if (pointer.getWorld().isAirBlock(new BlockPos(x, y, z)) || checkNode(x, y, z)) {
                         initAir = new Coord4D(x, y, z, pointer.getWorld().getDimension().getType());
                         totalAir++;
                     }
@@ -126,7 +126,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
                 return y >= renderLocation.y - 1 && y < initDisperser.y &&
                        x >= renderLocation.x && x < renderLocation.x + volLength &&
                        z >= renderLocation.z && z < renderLocation.z + volWidth &&
-                       (pointer.getWorld().isAirBlock(coordPos) || isViableNode(coordPos));
+                       (pointer.getWorld().isAirBlock(coordPos) || checkNode(coordPos));
             }
         }).calculate(initAir));
 

@@ -12,13 +12,13 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import net.minecraft.util.Direction;
 
-public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixData> implements IMekanismStrictEnergyHandler {
+public class SynchronizedMatrixData extends MultiblockData<SynchronizedMatrixData> implements IMekanismStrictEnergyHandler {
 
     @Nonnull
     private final List<IEnergyContainer> energyContainers;

@@ -15,11 +15,11 @@ import mekanism.common.base.ContainerEditMode;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.util.Direction;
 
-public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData> implements IMekanismFluidHandler {
+public class SynchronizedTankData extends MultiblockData<SynchronizedTankData> implements IMekanismFluidHandler {
 
     public DynamicFluidTank fluidTank;
 

@@ -53,7 +53,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         bioGeneration = CachedFloatingLongValue.define(this, builder, "Amount of energy in Joules the Bio Generator produces per tick.",
               "bioGeneration", FloatingLong.createConst(350));
         energyPerFusionFuel = CachedFloatingLongValue.define(this, builder, "Affects the Injection Rate, Max Temp, and Ignition Temp.",
-              "energyPerFusionFuel", FloatingLong.createConst(5_000_000));
+              "energyPerFusionFuel", FloatingLong.createConst(10_000_000));
         solarGeneration = CachedFloatingLongValue.define(this, builder, "Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.",
               "solarGeneration", FloatingLong.createConst(50));
         advancedSolarGeneration = CachedFloatingLongValue.define(this, builder, "Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.",

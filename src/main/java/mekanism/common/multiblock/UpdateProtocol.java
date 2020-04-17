@@ -26,7 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
+public abstract class UpdateProtocol<T extends MultiblockData<T>> {
 
     /**
      * The multiblock nodes that have already been iterated over.
@@ -59,17 +59,17 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
         int origX = coord.x, origY = coord.y, origZ = coord.z;
         if (isCorner(origX, origY, origZ)) {
             int xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
-            if (isViableNode(origX + 1, origY, origZ)) {
+            if (checkNode(origX + 1, origY, origZ)) {
                 xmax = findViableNode(coord, 1, 0, 0);
             } else {
                 xmin = findViableNode(coord, -1, 0, 0);
             }
-            if (isViableNode(origX, origY + 1, origZ)) {
+            if (checkNode(origX, origY + 1, origZ)) {
                 ymax = findViableNode(coord, 0, 1, 0);
             } else {
                 ymin = findViableNode(coord, 0, -1, 0);
             }
-            if (isViableNode(origX, origY, origZ + 1)) {
+            if (checkNode(origX, origY, origZ + 1)) {
                 zmax = findViableNode(coord, 0, 0, 1);
             } else {
                 zmin = findViableNode(coord, 0, 0, -1);
@@ -91,7 +91,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                     for (int z = zmin; z <= zmax; z++) {
                         int zPos = origZ + z;
                         if (x == xmin || x == xmax || y == ymin || y == ymax || z == zmin || z == zmax) {
-                            if (!isViableNode(xPos, yPos, zPos) || isFrame(coord.translate(x, y, z), minX, maxX, minY, maxY, minZ, maxZ) && !isValidFrame(xPos, yPos, zPos)) {
+                            if (!checkNode(xPos, yPos, zPos) || isFrame(coord.translate(x, y, z), minX, maxX, minY, maxY, minZ, maxZ) && !isValidFrame(xPos, yPos, zPos)) {
                                 //If it is not a valid node or if it is supposed to be a frame but is invalid
                                 // then we are not valid over all
                                 isValid = false;
@@ -153,7 +153,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
         for (Direction side : EnumUtils.DIRECTIONS) {
             Coord4D sideCoord = coord.offset(side);
-            if (isViableNode(sideCoord.getPos()) && !iteratedNodes.contains(sideCoord)) {
+            if (checkNode(sideCoord.getPos()) && !iteratedNodes.contains(sideCoord)) {
                 queue.addLast(sideCoord);
             }
         }
@@ -212,7 +212,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
         int x = xShift == 1 ? 1 : 0;
         int y = yShift == 1 ? 1 : 0;
         int z = zShift == 1 ? 1 : 0;
-        while (isViableNode(orig.x + x + xShift, orig.y + y + yShift, orig.z + z + zShift)) {
+        while (checkNode(orig.x + x + xShift, orig.y + y + yShift, orig.z + z + zShift)) {
             x += xShift;
             y += yShift;
             z += zShift;
@@ -221,9 +221,9 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
     }
 
     private boolean isCorner(int x, int y, int z) {
-        return (!isViableNode(x + 1, y, z) || !isViableNode(x - 1, y, z)) &&
-               (!isViableNode(x, y + 1, z) || !isViableNode(x, y - 1, z)) &&
-               (!isViableNode(x, y, z + 1) || !isViableNode(x, y, z - 1));
+        return (!checkNode(x + 1, y, z) || !checkNode(x - 1, y, z)) &&
+               (!checkNode(x, y + 1, z) || !checkNode(x, y - 1, z)) &&
+               (!checkNode(x, y, z + 1) || !checkNode(x, y, z - 1));
     }
 
     /**
@@ -233,12 +233,12 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
      *
      * @return Whether or not the block at the specified location is a viable node for a multiblock structure.
      */
-    public boolean isViableNode(int x, int y, int z) {
+    public boolean checkNode(int x, int y, int z) {
         TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), new BlockPos(x, y, z));
         if (tile instanceof IStructuralMultiblock && ((IStructuralMultiblock) tile).canInterface(pointer)) {
             return true;
         }
-        return MultiblockManager.areEqual(tile, pointer);
+        return MultiblockManager.areCompatible(tile, pointer, true);
 
     }
 
@@ -247,8 +247,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
      *
      * @return Whether or not the block at the specified location is a viable node for a multiblock structure.
      */
-    public boolean isViableNode(BlockPos pos) {
-        return isViableNode(pos.getX(), pos.getY(), pos.getZ());
+    public boolean checkNode(BlockPos pos) {
+        return checkNode(pos.getX(), pos.getY(), pos.getZ());
     }
 
     /**
