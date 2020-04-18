@@ -125,7 +125,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.DESCRIPTION_ADVANCED_SOLAR_GENERATOR, "An advanced generator that directly absorbs the sun's rays with little loss to produce energy.");
         add(GeneratorsLang.DESCRIPTION_BIO_GENERATOR, "A generator that burns organic materials of the world to produce energy.");
         add(GeneratorsLang.DESCRIPTION_ELECTROMAGNETIC_COIL, "A block that converts kinetic energy from a Rotational Complex into usable electricity. These can be placed in any arrangement above your Rotational Complex, as long as they are all touching each other and the complex itself.");
-        add(GeneratorsLang.DESCRIPTION_GAS_BURNING_GENERATOR, "A generator that harnesses the molecular varying gases to produce energy.");
+        add(GeneratorsLang.DESCRIPTION_GAS_BURNING_GENERATOR, "A generator that harnesses the varying molecular gases to produce energy.");
         add(GeneratorsLang.DESCRIPTION_HEAT_GENERATOR, "A generator that uses the heat of lava or other burnable resources to produce energy.");
         add(GeneratorsLang.DESCRIPTION_LASER_FOCUS_MATRIX, "A panel of Reactor Glass that is capable of absorbing optical energy and thereby heating up the Fusion Reactor.");
         add(GeneratorsLang.DESCRIPTION_REACTOR_CONTROLLER, "The controlling block for the entire Fusion Reactor structure.");
