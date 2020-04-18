@@ -25,7 +25,7 @@
   "description.mekanismgenerators.advanced_solar_generator": "Zaawansowany generator, który za pomocą paneli pochłania promieniowanie słoneczne i przetwarza w energię.",
   "description.mekanismgenerators.bio_generator": "Generator spalający wszelkie materiały organiczne w celu produkcji energii.",
   "description.mekanismgenerators.electromagnetic_coil": "Blok, który przemienia energię kinetyczną z kompleksu turbin rotacyjnych na użyteczną elektryczność. Może być umieszczony w dowolnym układzie powyżej twojego kompleksu rotacyjnego, o ile każdy z nich dotyka siebie nawzajem i samego kompleksu.",
-  "description.mekanismgenerators.gas_burning_generator": "Generator, który wykorzystuje molekularne gazy przetwarzając je w celu wytworzenia energii.",
+  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the varying molecular gases to produce energy.",
   "description.mekanismgenerators.heat_generator": "Generator, który wykorzystuje ciepło lawy lub innych palnych zasobów do produkcji energii.",
   "description.mekanismgenerators.laser_focus_matrix": "Szklany element reaktora zdolny do pochłaniania energii nuklearnej i ogrzewania reaktora syntezy jądrowej.",
   "description.mekanismgenerators.reactor.logic.capacity": "Osiągnięto pojemność cieplną reaktora",
