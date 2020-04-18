@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:ultimate_induction_cell"
+  },
   "pattern": [
     "EPE",
     "P#P",
@@ -15,8 +18,5 @@
     "E": {
       "item": "mekanism:energy_tablet"
     }
-  },
-  "result": {
-    "item": "mekanism:ultimate_induction_cell"
   }
 }

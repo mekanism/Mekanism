@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:network_reader"
+  },
   "pattern": [
     " G ",
     "AEA",
@@ -18,8 +21,5 @@
     "E": {
       "item": "mekanism:energy_tablet"
     }
-  },
-  "result": {
-    "item": "mekanism:network_reader"
   }
 }

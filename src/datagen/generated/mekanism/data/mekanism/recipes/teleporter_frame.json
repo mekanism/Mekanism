@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:teleporter_frame",
+    "count": 9
+  },
   "pattern": [
     "III",
     "IGI",
@@ -12,9 +16,5 @@
     "I": {
       "tag": "forge:ingots/refined_obsidian"
     }
-  },
-  "result": {
-    "item": "mekanism:teleporter_frame",
-    "count": 9
   }
 }

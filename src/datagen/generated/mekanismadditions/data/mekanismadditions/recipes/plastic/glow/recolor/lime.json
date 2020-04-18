@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:lime_plastic_glow",
+    "count": 4
+  },
   "pattern": [
     " # ",
     "#D#",
@@ -12,9 +16,5 @@
     "D": {
       "tag": "forge:dyes/lime"
     }
-  },
-  "result": {
-    "item": "mekanismadditions:lime_plastic_glow",
-    "count": 4
   }
 }

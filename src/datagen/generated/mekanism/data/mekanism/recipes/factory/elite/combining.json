@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:elite_combining_factory"
+  },
   "pattern": [
     "ACA",
     "IPI",
@@ -18,8 +21,5 @@
     "A": {
       "tag": "mekanism:alloys/reinforced"
     }
-  },
-  "result": {
-    "item": "mekanism:elite_combining_factory"
   }
 }

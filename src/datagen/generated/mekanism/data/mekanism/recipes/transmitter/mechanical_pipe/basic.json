@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:basic_mechanical_pipe",
+    "count": 8
+  },
   "pattern": [
     "S#S"
   ],
@@ -10,9 +14,5 @@
     "#": {
       "item": "minecraft:bucket"
     }
-  },
-  "result": {
-    "item": "mekanism:basic_mechanical_pipe",
-    "count": 8
   }
 }

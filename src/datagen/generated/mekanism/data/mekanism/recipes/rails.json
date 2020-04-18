@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "minecraft:rail",
+    "count": 24
+  },
   "pattern": [
     "O O",
     "O#O",
@@ -12,9 +16,5 @@
     "O": {
       "tag": "forge:ingots/osmium"
     }
-  },
-  "result": {
-    "item": "minecraft:rail",
-    "count": 24
   }
 }

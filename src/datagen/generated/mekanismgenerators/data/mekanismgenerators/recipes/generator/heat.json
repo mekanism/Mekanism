@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:heat_generator"
+  },
   "pattern": [
     "III",
     "WOW",
@@ -21,8 +24,5 @@
     "F": {
       "item": "minecraft:furnace"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:heat_generator"
   }
 }

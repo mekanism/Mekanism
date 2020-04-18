@@ -1,12 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "mekanism:ingot_bronze",
+    "count": 9
+  },
   "ingredients": [
     {
       "tag": "forge:storage_blocks/bronze"
     }
-  ],
-  "result": {
-    "item": "mekanism:ingot_bronze",
-    "count": 9
-  }
+  ]
 }

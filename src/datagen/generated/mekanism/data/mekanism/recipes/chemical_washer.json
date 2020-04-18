@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:chemical_washer"
+  },
   "pattern": [
     "CBC",
     "AXA",
@@ -21,8 +24,5 @@
     "B": {
       "item": "minecraft:bucket"
     }
-  },
-  "result": {
-    "item": "mekanism:chemical_washer"
   }
 }

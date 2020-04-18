@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "mekanismadditions:yellow_balloon",
+    "count": 2
+  },
   "ingredients": [
     {
       "tag": "forge:leather"
@@ -10,9 +14,5 @@
     {
       "tag": "forge:dyes/yellow"
     }
-  ],
-  "result": {
-    "item": "mekanismadditions:yellow_balloon",
-    "count": 2
-  }
+  ]
 }

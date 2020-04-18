@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:block_refined_obsidian"
+  },
   "pattern": [
     "###",
     "###",
@@ -9,8 +12,5 @@
     "#": {
       "tag": "forge:ingots/refined_obsidian"
     }
-  },
-  "result": {
-    "item": "mekanism:block_refined_obsidian"
   }
 }

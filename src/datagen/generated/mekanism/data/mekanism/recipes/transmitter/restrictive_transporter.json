@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:restrictive_transporter",
+    "count": 2
+  },
   "pattern": [
     "S#S"
   ],
@@ -10,9 +14,5 @@
     "#": {
       "item": "minecraft:iron_bars"
     }
-  },
-  "result": {
-    "item": "mekanism:restrictive_transporter",
-    "count": 2
   }
 }

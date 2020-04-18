@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:reactor_frame",
+    "count": 4
+  },
   "pattern": [
     " X ",
     "XAX",
@@ -12,9 +16,5 @@
     "A": {
       "tag": "mekanism:alloys/atomic"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:reactor_frame",
-    "count": 4
   }
 }

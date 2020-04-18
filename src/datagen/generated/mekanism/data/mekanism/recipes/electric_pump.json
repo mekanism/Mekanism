@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:electric_pump"
+  },
   "pattern": [
     " B ",
     "AXA",
@@ -18,8 +21,5 @@
     "X": {
       "item": "mekanism:steel_casing"
     }
-  },
-  "result": {
-    "item": "mekanism:electric_pump"
   }
 }

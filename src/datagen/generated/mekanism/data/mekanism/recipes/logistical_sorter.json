@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:logistical_sorter"
+  },
   "pattern": [
     "I#I",
     "ICI",
@@ -15,8 +18,5 @@
     "#": {
       "item": "minecraft:piston"
     }
-  },
-  "result": {
-    "item": "mekanism:logistical_sorter"
   }
 }

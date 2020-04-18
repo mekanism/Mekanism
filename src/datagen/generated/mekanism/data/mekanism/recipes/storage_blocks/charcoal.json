@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:block_charcoal"
+  },
   "pattern": [
     "###",
     "###",
@@ -9,8 +12,5 @@
     "#": {
       "item": "minecraft:charcoal"
     }
-  },
-  "result": {
-    "item": "mekanism:block_charcoal"
   }
 }

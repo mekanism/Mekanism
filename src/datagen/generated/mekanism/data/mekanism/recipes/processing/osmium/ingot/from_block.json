@@ -1,12 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "mekanism:ingot_osmium",
+    "count": 9
+  },
   "ingredients": [
     {
       "tag": "forge:storage_blocks/osmium"
     }
-  ],
-  "result": {
-    "item": "mekanism:ingot_osmium",
-    "count": 9
-  }
+  ]
 }

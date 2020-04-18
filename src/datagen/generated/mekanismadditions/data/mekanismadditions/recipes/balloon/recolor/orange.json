@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "mekanismadditions:orange_balloon"
+  },
   "ingredients": [
     {
       "tag": "mekanismadditions:balloons"
@@ -7,8 +10,5 @@
     {
       "tag": "forge:dyes/orange"
     }
-  ],
-  "result": {
-    "item": "mekanismadditions:orange_balloon"
-  }
+  ]
 }

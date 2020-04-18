@@ -3,10 +3,8 @@ package mekanism.tools.common;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.recipe.BaseRecipeProvider;
-import mekanism.common.recipe.Criterion;
 import mekanism.common.recipe.Pattern;
 import mekanism.common.recipe.RecipePattern;
 import mekanism.common.recipe.RecipePattern.DoubleLine;
@@ -74,61 +72,53 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
         registerRecipeSet(consumer, "bronze", ToolsItems.BRONZE_HELMET, ToolsItems.BRONZE_CHESTPLATE, ToolsItems.BRONZE_LEGGINGS, ToolsItems.BRONZE_BOOTS,
               ToolsItems.BRONZE_SWORD, ToolsItems.BRONZE_PICKAXE, ToolsItems.BRONZE_AXE, ToolsItems.BRONZE_SHOVEL, ToolsItems.BRONZE_HOE, ToolsItems.BRONZE_PAXEL,
-              MekanismTags.Items.INGOTS_BRONZE, Tags.Items.RODS_WOODEN, Criterion.HAS_BRONZE, MekanismItems.BRONZE_NUGGET);
+              MekanismTags.Items.INGOTS_BRONZE, Tags.Items.RODS_WOODEN, MekanismItems.BRONZE_NUGGET);
         registerRecipeSet(consumer, "lapis_lazuli", ToolsItems.LAPIS_LAZULI_HELMET, ToolsItems.LAPIS_LAZULI_CHESTPLATE, ToolsItems.LAPIS_LAZULI_LEGGINGS,
               ToolsItems.LAPIS_LAZULI_BOOTS, ToolsItems.LAPIS_LAZULI_SWORD, ToolsItems.LAPIS_LAZULI_PICKAXE, ToolsItems.LAPIS_LAZULI_AXE, ToolsItems.LAPIS_LAZULI_SHOVEL,
-              ToolsItems.LAPIS_LAZULI_HOE, ToolsItems.LAPIS_LAZULI_PAXEL, Tags.Items.GEMS_LAPIS, Tags.Items.RODS_WOODEN, Criterion.HAS_LAPIS_LAZULI, null);
+              ToolsItems.LAPIS_LAZULI_HOE, ToolsItems.LAPIS_LAZULI_PAXEL, Tags.Items.GEMS_LAPIS, Tags.Items.RODS_WOODEN, null);
         registerRecipeSet(consumer, "osmium", ToolsItems.OSMIUM_HELMET, ToolsItems.OSMIUM_CHESTPLATE, ToolsItems.OSMIUM_LEGGINGS, ToolsItems.OSMIUM_BOOTS,
               ToolsItems.OSMIUM_SWORD, ToolsItems.OSMIUM_PICKAXE, ToolsItems.OSMIUM_AXE, ToolsItems.OSMIUM_SHOVEL, ToolsItems.OSMIUM_HOE, ToolsItems.OSMIUM_PAXEL,
-              MekanismTags.Items.INGOTS_OSMIUM, Tags.Items.RODS_WOODEN, Criterion.HAS_OSMIUM, MekanismItems.OSMIUM_NUGGET);
+              MekanismTags.Items.INGOTS_OSMIUM, Tags.Items.RODS_WOODEN, MekanismItems.OSMIUM_NUGGET);
         registerRecipeSet(consumer, "refined_glowstone", ToolsItems.REFINED_GLOWSTONE_HELMET, ToolsItems.REFINED_GLOWSTONE_CHESTPLATE,
               ToolsItems.REFINED_GLOWSTONE_LEGGINGS, ToolsItems.REFINED_GLOWSTONE_BOOTS, ToolsItems.REFINED_GLOWSTONE_SWORD, ToolsItems.REFINED_GLOWSTONE_PICKAXE,
               ToolsItems.REFINED_GLOWSTONE_AXE, ToolsItems.REFINED_GLOWSTONE_SHOVEL, ToolsItems.REFINED_GLOWSTONE_HOE, ToolsItems.REFINED_GLOWSTONE_PAXEL,
-              MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, Tags.Items.RODS_WOODEN, Criterion.HAS_REFINED_GLOWSTONE, MekanismItems.REFINED_GLOWSTONE_NUGGET);
+              MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, Tags.Items.RODS_WOODEN, MekanismItems.REFINED_GLOWSTONE_NUGGET);
         registerRecipeSet(consumer, "refined_obsidian", ToolsItems.REFINED_OBSIDIAN_HELMET, ToolsItems.REFINED_OBSIDIAN_CHESTPLATE,
               ToolsItems.REFINED_OBSIDIAN_LEGGINGS, ToolsItems.REFINED_OBSIDIAN_BOOTS, ToolsItems.REFINED_OBSIDIAN_SWORD, ToolsItems.REFINED_OBSIDIAN_PICKAXE,
               ToolsItems.REFINED_OBSIDIAN_AXE, ToolsItems.REFINED_OBSIDIAN_SHOVEL, ToolsItems.REFINED_OBSIDIAN_HOE, ToolsItems.REFINED_OBSIDIAN_PAXEL,
-              MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, Tags.Items.RODS_WOODEN, Criterion.HAS_REFINED_OBSIDIAN, MekanismItems.REFINED_OBSIDIAN_NUGGET);
+              MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, Tags.Items.RODS_WOODEN, MekanismItems.REFINED_OBSIDIAN_NUGGET);
         registerRecipeSet(consumer, "steel", ToolsItems.STEEL_HELMET, ToolsItems.STEEL_CHESTPLATE, ToolsItems.STEEL_LEGGINGS, ToolsItems.STEEL_BOOTS,
               ToolsItems.STEEL_SWORD, ToolsItems.STEEL_PICKAXE, ToolsItems.STEEL_AXE, ToolsItems.STEEL_SHOVEL, ToolsItems.STEEL_HOE, ToolsItems.STEEL_PAXEL,
-              MekanismTags.Items.INGOTS_STEEL, Tags.Items.INGOTS_IRON, Criterion.HAS_STEEL, MekanismItems.STEEL_NUGGET);
+              MekanismTags.Items.INGOTS_STEEL, Tags.Items.INGOTS_IRON, MekanismItems.STEEL_NUGGET);
         registerVanillaPaxels(consumer);
     }
 
     private void registerRecipeSet(Consumer<IFinishedRecipe> consumer, String name, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings,
           IItemProvider boots, IItemProvider sword, IItemProvider pickaxe, IItemProvider axe, IItemProvider shovel, IItemProvider hoe, IItemProvider paxel,
-          Tag<Item> ingot, Tag<Item> rod, RecipeCriterion criterion, @Nullable IItemProvider nugget) {
+          Tag<Item> ingot, Tag<Item> rod, @Nullable IItemProvider nugget) {
         String baseArmorPath = name + "/armor/";
-        armor(HELMET, helmet, ingot, criterion).build(consumer, MekanismTools.rl(baseArmorPath + "helmet"));
-        armor(CHESTPLATE, chestplate, ingot, criterion).build(consumer, MekanismTools.rl(baseArmorPath + "chestplate"));
-        armor(LEGGINGS, leggings, ingot, criterion).build(consumer, MekanismTools.rl(baseArmorPath + "leggings"));
-        armor(BOOTS, boots, ingot, criterion).build(consumer, MekanismTools.rl(baseArmorPath + "boots"));
+        armor(HELMET, helmet, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "helmet"));
+        armor(CHESTPLATE, chestplate, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "chestplate"));
+        armor(LEGGINGS, leggings, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "leggings"));
+        armor(BOOTS, boots, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "boots"));
         String baseToolsPath = name + "/tools/";
-        tool(SWORD, sword, ingot, rod, criterion).build(consumer, MekanismTools.rl(baseToolsPath + "sword"));
-        tool(PICKAXE, pickaxe, ingot, rod, criterion).build(consumer, MekanismTools.rl(baseToolsPath + "pickaxe"));
-        tool(AXE, axe, ingot, rod, criterion).build(consumer, MekanismTools.rl(baseToolsPath + "axe"));
-        tool(SHOVEL, shovel, ingot, rod, criterion).build(consumer, MekanismTools.rl(baseToolsPath + "shovel"));
-        tool(HOE, hoe, ingot, rod, criterion).build(consumer, MekanismTools.rl(baseToolsPath + "hoe"));
-        RecipeCriterion hasAxe = Criterion.has(axe);
-        RecipeCriterion hasPickaxe = Criterion.has(pickaxe);
-        RecipeCriterion hasShovel = Criterion.has(shovel);
+        tool(SWORD, sword, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "sword"));
+        tool(PICKAXE, pickaxe, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "pickaxe"));
+        tool(AXE, axe, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "axe"));
+        tool(SHOVEL, shovel, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "shovel"));
+        tool(HOE, hoe, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "hoe"));
         ExtendedShapedRecipeBuilder.shapedRecipe(paxel)
               .pattern(PAXEL)
               .key(AXE_CHAR, axe)
               .key(PICKAXE_CHAR, pickaxe)
               .key(SHOVEL_CHAR, shovel)
               .key(ROD_CHAR, rod)
-              .addCriterion(hasAxe)
-              .addCriterion(hasPickaxe)
-              .addCriterion(hasShovel)
               .build(consumer, MekanismTools.rl(baseToolsPath + "paxel"));
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = name + "/nugget_from_";
             addSmeltingBlastingRecipes(consumer, Ingredient.fromItems(helmet, chestplate, leggings, boots, sword, pickaxe, axe, shovel, hoe, paxel), nugget,
-                  0.1F, 200, MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"),
-                  Criterion.has(helmet), Criterion.has(chestplate), Criterion.has(leggings), Criterion.has(boots), Criterion.has(sword), hasAxe, hasPickaxe, hasShovel,
-                  Criterion.has(hoe), Criterion.has(paxel));
+                  0.1F, 200, MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }
 
@@ -147,30 +137,25 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .key(PICKAXE_CHAR, pickaxe)
               .key(SHOVEL_CHAR, shovel)
               .key(ROD_CHAR, Tags.Items.RODS_WOODEN)
-              .addCriterion(Criterion.has(axe))
-              .addCriterion(Criterion.has(pickaxe))
-              .addCriterion(Criterion.has(shovel))
               .build(consumer);
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = nugget.getRegistryName().getPath() + "_from_";
-            addSmeltingBlastingRecipes(consumer, Ingredient.fromItems(paxel), nugget, 0.1F, 200,
-                  MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"), Criterion.has(paxel));
+            addSmeltingBlastingRecipes(consumer, Ingredient.fromItems(paxel), nugget, 0.1F, 200, MekanismTools.rl(baseNuggetFrom + "blasting"),
+                  MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }
 
-    private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, IItemProvider armor, Tag<Item> ingot, RecipeCriterion criterion) {
+    private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, IItemProvider armor, Tag<Item> ingot) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(armor)
               .pattern(pattern)
-              .key(Pattern.INGOT, ingot)
-              .addCriterion(criterion);
+              .key(Pattern.INGOT, ingot);
     }
 
-    private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, IItemProvider tool, Tag<Item> ingot, Tag<Item> rod, RecipeCriterion criterion) {
+    private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, IItemProvider tool, Tag<Item> ingot, Tag<Item> rod) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(tool)
               .pattern(pattern)
               .key(Pattern.INGOT, ingot)
-              .key(ROD_CHAR, rod)
-              .addCriterion(criterion);
+              .key(ROD_CHAR, rod);
     }
 }

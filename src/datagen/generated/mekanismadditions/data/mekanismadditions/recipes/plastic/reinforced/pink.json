@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:pink_reinforced_plastic",
+    "count": 4
+  },
   "pattern": [
     " # ",
     "#O#",
@@ -12,9 +16,5 @@
     "#": {
       "item": "mekanismadditions:pink_plastic"
     }
-  },
-  "result": {
-    "item": "mekanismadditions:pink_reinforced_plastic",
-    "count": 4
   }
 }

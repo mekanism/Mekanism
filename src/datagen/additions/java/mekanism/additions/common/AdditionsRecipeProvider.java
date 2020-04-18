@@ -6,13 +6,11 @@ import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.block.IColoredBlock;
-import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.text.EnumColor;
 import mekanism.common.recipe.BaseRecipeProvider;
-import mekanism.common.recipe.Criterion;
 import mekanism.common.recipe.Pattern;
 import mekanism.common.recipe.RecipePattern;
 import mekanism.common.recipe.RecipePattern.TripleLine;
@@ -76,20 +74,6 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.EMPTY),
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
 
-    private static final RecipeCriterion HAS_HDPE_SHEET = Criterion.has(MekanismItems.HDPE_SHEET);
-    private static final RecipeCriterion HAS_LEATHER = Criterion.has("leather", Tags.Items.LEATHER);
-    private static final RecipeCriterion HAS_BALLOON = Criterion.has("balloon", AdditionsTags.Items.BALLOONS);
-    private static final RecipeCriterion HAS_GLOW_PANEL = Criterion.has("glow_panel", AdditionsTags.Items.GLOW_PANELS);
-    private static final RecipeCriterion HAS_PLASTIC_BLOCK = Criterion.has("plastic_block", AdditionsTags.Items.PLASTIC_BLOCKS_PLASTIC);
-    private static final RecipeCriterion HAS_PLASTIC_FENCE = Criterion.has("plastic_fence", AdditionsTags.Items.FENCES_PLASTIC);
-    private static final RecipeCriterion HAS_PLASTIC_FENCE_GATE = Criterion.has("plastic_fence_gate", AdditionsTags.Items.FENCE_GATES_PLASTIC);
-    private static final RecipeCriterion HAS_PLASTIC_GLOW = Criterion.has("plastic_glow", AdditionsTags.Items.PLASTIC_BLOCKS_GLOW);
-    private static final RecipeCriterion HAS_REINFORCED_PLASTIC = Criterion.has("reinforced_plastic", AdditionsTags.Items.PLASTIC_BLOCKS_REINFORCED);
-    private static final RecipeCriterion HAS_PLASTIC_ROAD = Criterion.has("plastic_road", AdditionsTags.Items.PLASTIC_BLOCKS_ROAD);
-    private static final RecipeCriterion HAS_PLASTIC_SLAB = Criterion.has("plastic_slab", AdditionsTags.Items.SLABS_PLASTIC);
-    private static final RecipeCriterion HAS_SLICK_PLASTIC = Criterion.has("slick_plastic", AdditionsTags.Items.PLASTIC_BLOCKS_SLICK);
-    private static final RecipeCriterion HAS_PLASTIC_STAIRS = Criterion.has("plastic_stairs", AdditionsTags.Items.STAIRS_PLASTIC);
-
     public AdditionsRecipeProvider(DataGenerator gen) {
         super(gen, MekanismAdditions.MODID);
     }
@@ -104,9 +88,6 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
-              .addCriterion(Criterion.HAS_OSMIUM)
-              .addCriterion(Criterion.HAS_STEEL)
               .build(consumer);
         ExtendedShapedRecipeBuilder.shapedRecipe(AdditionsBlocks.OBSIDIAN_TNT)
               .pattern(RecipePattern.createPattern(
@@ -115,8 +96,6 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR))
               ).key(OBSIDIAN_CHAR, Tags.Items.OBSIDIAN)
               .key(TNT_CHAR, Items.TNT)
-              .addCriterion(Criterion.has(Items.OBSIDIAN))
-              .addCriterion(Criterion.has(Items.TNT))
               .build(consumer);
         registerBalloons(consumer);
         registerGlowPanels(consumer);
@@ -159,12 +138,10 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               .addIngredient(Tags.Items.LEATHER)
               .addIngredient(Tags.Items.STRING)
               .addIngredient(dye)
-              .addCriterion(HAS_LEATHER)
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
         ExtendedShapelessRecipeBuilder.shapelessRecipe(result)
               .addIngredient(AdditionsTags.Items.BALLOONS)
               .addIngredient(dye)
-              .addCriterion(HAS_BALLOON)
               .build(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
     }
 
@@ -198,9 +175,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               .key(GLASS_PANES_CHAR, Tags.Items.GLASS_PANES)
               .key(Pattern.GLOWSTONE, Tags.Items.DUSTS_GLOWSTONE)
               .key(Pattern.DYE, dye)
-              .addCriterion(HAS_HDPE_SHEET)
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
-        registerRecolor(consumer, result, AdditionsTags.Items.GLOW_PANELS, dye, HAS_GLOW_PANEL, basePath + "recolor/" + colorString);
+        registerRecolor(consumer, result, AdditionsTags.Items.GLOW_PANELS, dye, basePath + "recolor/" + colorString);
     }
 
     private void registerPlasticBlocks(Consumer<IFinishedRecipe> consumer) {
@@ -231,9 +207,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               .pattern(PLASTIC)
               .key(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)
               .key(Pattern.DYE, dye)
-              .addCriterion(HAS_HDPE_SHEET)
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
-        registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_PLASTIC, dye, HAS_PLASTIC_BLOCK, basePath + "recolor/" + colorString);
+        registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_PLASTIC, dye, basePath + "recolor/" + colorString);
     }
 
     private void registerPlasticFences(Consumer<IFinishedRecipe> consumer) {
@@ -263,9 +238,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               .pattern(PLASTIC_FENCE)
               .key(PLASTIC_ROD_CHAR, MekanismTags.Items.RODS_PLASTIC)
               .key(Pattern.CONSTANT, plastic)
-              .addCriterion(Criterion.has(plastic))
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
-        registerRecolor(consumer, result, AdditionsTags.Items.FENCES_PLASTIC, color.getDyeTag(), HAS_PLASTIC_FENCE, basePath + "recolor/" + colorString);
+        registerRecolor(consumer, result, AdditionsTags.Items.FENCES_PLASTIC, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
     private void registerPlasticFenceGates(Consumer<IFinishedRecipe> consumer) {
@@ -295,9 +269,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               .pattern(PLASTIC_FENCE_GATE)
               .key(PLASTIC_ROD_CHAR, MekanismTags.Items.RODS_PLASTIC)
               .key(Pattern.CONSTANT, plastic)
-              .addCriterion(Criterion.has(plastic))
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
-        registerRecolor(consumer, result, AdditionsTags.Items.FENCE_GATES_PLASTIC, color.getDyeTag(), HAS_PLASTIC_FENCE_GATE, basePath + "recolor/" + colorString);
+        registerRecolor(consumer, result, AdditionsTags.Items.FENCE_GATES_PLASTIC, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
     private void registerPlasticGlow(Consumer<IFinishedRecipe> consumer) {
@@ -326,9 +299,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 3)
               .addIngredient(plastic, 3)
               .addIngredient(Tags.Items.DUSTS_GLOWSTONE)
-              .addCriterion(Criterion.has(plastic))
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
-        registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_GLOW, color.getDyeTag(), HAS_PLASTIC_GLOW, basePath + "recolor/" + colorString);
+        registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_GLOW, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
     private void registerReinforcedPlastic(Consumer<IFinishedRecipe> consumer) {
@@ -358,9 +330,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               .pattern(REINFORCED_PLASTIC)
               .key(Pattern.OSMIUM, MekanismTags.Items.DUSTS_OSMIUM)
               .key(Pattern.CONSTANT, plastic)
-              .addCriterion(Criterion.has(plastic))
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
-        registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_REINFORCED, color.getDyeTag(), HAS_REINFORCED_PLASTIC, basePath + "recolor/" + colorString);
+        registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_REINFORCED, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
     private void registerPlasticRoads(Consumer<IFinishedRecipe> consumer) {
@@ -390,9 +361,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               .pattern(PLASTIC_ROAD)
               .key(SAND_CHAR, Tags.Items.SAND)
               .key(Pattern.CONSTANT, slickPlastic)
-              .addCriterion(Criterion.has(slickPlastic))
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
-        registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_ROAD, color.getDyeTag(), HAS_PLASTIC_ROAD, basePath + "recolor/" + colorString);
+        registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_ROAD, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
     private void registerPlasticSlabs(Consumer<IFinishedRecipe> consumer) {
@@ -421,9 +391,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 6)
               .pattern(PLASTIC_SLAB)
               .key(Pattern.CONSTANT, plastic)
-              .addCriterion(Criterion.has(plastic))
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
-        registerRecolor(consumer, result, AdditionsTags.Items.SLABS_PLASTIC, color.getDyeTag(), HAS_PLASTIC_SLAB, basePath + "recolor/" + colorString);
+        registerRecolor(consumer, result, AdditionsTags.Items.SLABS_PLASTIC, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
     private void registerSlickPlastic(Consumer<IFinishedRecipe> consumer) {
@@ -449,21 +418,18 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     private void registerSlickPlastic(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
         EnumColor color = result.getBlock().getColor();
         String colorString = color.getRegistryPrefix();
-        RecipeCriterion hasPlastic = Criterion.has(plastic);
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(SLICK_PLASTIC)
               .key(Pattern.CONSTANT, plastic)
               .key(SLIME_CHAR, Tags.Items.SLIMEBALLS)
-              .addCriterion(hasPlastic)
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
         //Enriching recipes
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(plastic),
               result.getItemStack()
-        ).addCriterion(hasPlastic)
-              .build(consumer, MekanismAdditions.rl(basePath + "enriching/" + colorString));
+        ).build(consumer, MekanismAdditions.rl(basePath + "enriching/" + colorString));
         //Recolor recipes
-        registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, color.getDyeTag(), HAS_SLICK_PLASTIC, basePath + "recolor/" + colorString);
+        registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
     private void registerPlasticStairs(Consumer<IFinishedRecipe> consumer) {
@@ -492,17 +458,15 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(PLASTIC_STAIRS)
               .key(Pattern.CONSTANT, plastic)
-              .addCriterion(Criterion.has(plastic))
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
-        registerRecolor(consumer, result, AdditionsTags.Items.STAIRS_PLASTIC, color.getDyeTag(), HAS_PLASTIC_STAIRS, basePath + "recolor/" + colorString);
+        registerRecolor(consumer, result, AdditionsTags.Items.STAIRS_PLASTIC, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
-    private void registerRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, Tag<Item> blockType, Tag<Item> dye, RecipeCriterion criterion, String path) {
+    private void registerRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, Tag<Item> blockType, Tag<Item> dye, String path) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(BLOCK_RECOLOR)
               .key(Pattern.CONSTANT, blockType)
               .key(Pattern.DYE, dye)
-              .addCriterion(criterion)
               .build(consumer, MekanismAdditions.rl(path));
     }
 }

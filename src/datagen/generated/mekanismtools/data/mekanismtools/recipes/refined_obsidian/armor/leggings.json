@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismtools:refined_obsidian_leggings"
+  },
   "pattern": [
     "III",
     "I I",
@@ -9,8 +12,5 @@
     "I": {
       "tag": "forge:ingots/refined_obsidian"
     }
-  },
-  "result": {
-    "item": "mekanismtools:refined_obsidian_leggings"
   }
 }

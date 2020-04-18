@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:gas_mask"
+  },
   "pattern": [
     " S ",
     "GCG",
@@ -15,8 +18,5 @@
     "S": {
       "tag": "forge:ingots/steel"
     }
-  },
-  "result": {
-    "item": "mekanism:gas_mask"
   }
 }

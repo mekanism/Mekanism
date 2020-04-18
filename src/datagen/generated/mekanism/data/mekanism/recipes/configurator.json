@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:configurator"
+  },
   "pattern": [
     " I ",
     "AEA",
@@ -18,8 +21,5 @@
     "#": {
       "tag": "forge:rods/wooden"
     }
-  },
-  "result": {
-    "item": "mekanism:configurator"
   }
 }

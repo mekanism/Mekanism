@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
+  "result": "mekanism:ingot_tin",
   "ingredient": {
     "tag": "forge:dusts/tin"
   },
-  "result": "mekanism:ingot_tin",
-  "experience": 0.5,
-  "cookingtime": 100
+  "cookingtime": 100,
+  "experience": 0.5
 }

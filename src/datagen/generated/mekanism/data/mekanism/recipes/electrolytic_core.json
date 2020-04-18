@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:electrolytic_core"
+  },
   "pattern": [
     "AOA",
     "IA#",
@@ -18,8 +21,5 @@
     "I": {
       "tag": "forge:dusts/iron"
     }
-  },
-  "result": {
-    "item": "mekanism:electrolytic_core"
   }
 }

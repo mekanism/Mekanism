@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:security_desk"
+  },
   "pattern": [
     "SGS",
     "CXC",
@@ -21,8 +24,5 @@
     "T": {
       "item": "mekanism:teleportation_core"
     }
-  },
-  "result": {
-    "item": "mekanism:security_desk"
   }
 }

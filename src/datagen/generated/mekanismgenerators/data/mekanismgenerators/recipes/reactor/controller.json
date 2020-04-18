@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:reactor_controller"
+  },
   "pattern": [
     "CGC",
     "FTF",
@@ -18,8 +21,5 @@
     "T": {
       "item": "mekanism:basic_gas_tank"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:reactor_controller"
   }
 }

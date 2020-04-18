@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:robit"
+  },
   "pattern": [
     " S ",
     "EAE",
@@ -21,8 +24,5 @@
     "P": {
       "tag": "forge:chests/personal"
     }
-  },
-  "result": {
-    "item": "mekanism:robit"
   }
 }

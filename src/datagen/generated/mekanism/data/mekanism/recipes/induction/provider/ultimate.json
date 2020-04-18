@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:ultimate_induction_provider"
+  },
   "pattern": [
     "CPC",
     "P#P",
@@ -15,8 +18,5 @@
     "C": {
       "tag": "forge:circuits/ultimate"
     }
-  },
-  "result": {
-    "item": "mekanism:ultimate_induction_provider"
   }
 }

@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:electric_bow"
+  },
   "pattern": [
     "#A ",
     "# E",
@@ -15,8 +18,5 @@
     "A": {
       "tag": "mekanism:alloys/infused"
     }
-  },
-  "result": {
-    "item": "mekanism:electric_bow"
   }
 }

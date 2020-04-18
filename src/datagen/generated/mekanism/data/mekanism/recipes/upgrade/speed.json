@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:upgrade_speed"
+  },
   "pattern": [
     " G ",
     "A#A",
@@ -15,8 +18,5 @@
     "A": {
       "tag": "mekanism:alloys/infused"
     }
-  },
-  "result": {
-    "item": "mekanism:upgrade_speed"
   }
 }

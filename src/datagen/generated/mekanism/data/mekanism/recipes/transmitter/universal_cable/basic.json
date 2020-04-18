@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:basic_universal_cable",
+    "count": 8
+  },
   "pattern": [
     "S#S"
   ],
@@ -10,9 +14,5 @@
     "#": {
       "tag": "forge:dusts/redstone"
     }
-  },
-  "result": {
-    "item": "mekanism:basic_universal_cable",
-    "count": 8
   }
 }

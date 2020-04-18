@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:pressurized_reaction_chamber"
+  },
   "pattern": [
     "SAS",
     "CPC",
@@ -24,8 +27,5 @@
     "#": {
       "item": "mekanism:dynamic_tank"
     }
-  },
-  "result": {
-    "item": "mekanism:pressurized_reaction_chamber"
   }
 }

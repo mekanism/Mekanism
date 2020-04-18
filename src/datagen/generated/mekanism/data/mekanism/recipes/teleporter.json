@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:teleporter"
+  },
   "pattern": [
     "CXC",
     "XTX",
@@ -15,8 +18,5 @@
     "X": {
       "item": "mekanism:steel_casing"
     }
-  },
-  "result": {
-    "item": "mekanism:teleporter"
   }
 }

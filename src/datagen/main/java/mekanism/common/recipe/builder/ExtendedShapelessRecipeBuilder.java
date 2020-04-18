@@ -1,13 +1,14 @@
 package mekanism.common.recipe.builder;
 
-import java.util.function.Consumer;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.datagen.recipe.RecipeCriterion;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.ShapelessRecipeBuilder;
+import mekanism.common.DataGenJsonConstants;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
@@ -15,10 +16,12 @@ import net.minecraft.util.ResourceLocation;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ExtendedShapelessRecipeBuilder extends ShapelessRecipeBuilder {
+public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedShapelessRecipeBuilder> {
 
-    protected ExtendedShapelessRecipeBuilder(IItemProvider result, int count) {
-        super(result, count);
+    private final List<Ingredient> ingredients = new ArrayList<>();
+
+    private ExtendedShapelessRecipeBuilder(IItemProvider result, int count) {
+        super(IRecipeSerializer.CRAFTING_SHAPELESS, result, count);
     }
 
     public static ExtendedShapelessRecipeBuilder shapelessRecipe(IItemProvider result) {
@@ -29,61 +32,58 @@ public class ExtendedShapelessRecipeBuilder extends ShapelessRecipeBuilder {
         return new ExtendedShapelessRecipeBuilder(result, count);
     }
 
-    @Override
     public ExtendedShapelessRecipeBuilder addIngredient(Tag<Item> tag) {
-        super.addIngredient(tag);
-        return this;
+        return addIngredient(Ingredient.fromTag(tag));
     }
 
-    @Override
     public ExtendedShapelessRecipeBuilder addIngredient(IItemProvider item) {
-        super.addIngredient(item);
-        return this;
+        return addIngredient(item, 1);
     }
 
-    @Override
     public ExtendedShapelessRecipeBuilder addIngredient(IItemProvider item, int quantity) {
-        super.addIngredient(item, quantity);
+        for (int i = 0; i < quantity; ++i) {
+            addIngredient(Ingredient.fromItems(item));
+        }
         return this;
     }
 
-    @Override
     public ExtendedShapelessRecipeBuilder addIngredient(Ingredient ingredient) {
-        super.addIngredient(ingredient);
-        return this;
+        return addIngredient(ingredient, 1);
     }
 
-    @Override
     public ExtendedShapelessRecipeBuilder addIngredient(Ingredient ingredient, int quantity) {
-        super.addIngredient(ingredient, quantity);
+        for (int i = 0; i < quantity; ++i) {
+            ingredients.add(ingredient);
+        }
         return this;
     }
 
     @Override
-    public ExtendedShapelessRecipeBuilder addCriterion(String name, ICriterionInstance criterion) {
-        super.addCriterion(name, criterion);
-        return this;
-    }
-
-    public ExtendedShapelessRecipeBuilder addCriterion(RecipeCriterion criterion) {
-        return addCriterion(criterion.name, criterion.criterion);
+    protected void validate(ResourceLocation id) {
+        if (ingredients.isEmpty()) {
+            throw new IllegalStateException("Shapeless recipe '" + id + "' must have at least one ingredient!");
+        }
     }
 
     @Override
-    public ExtendedShapelessRecipeBuilder setGroup(String group) {
-        super.setGroup(group);
-        return this;
+    protected RecipeResult getResult(ResourceLocation id) {
+        return new Result(id);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated Deprecating this method to make it easier to see when it is accidentally called, as it is probably an accident and was an attempt to call {@link
-     * #build(Consumer, ResourceLocation)}
-     */
-    @Override
-    @Deprecated
-    public void build(Consumer<IFinishedRecipe> consumer, String save) {
-        super.build(consumer, save);
+    public class Result extends BaseRecipeResult {
+
+        public Result(ResourceLocation id) {
+            super(id);
+        }
+
+        @Override
+        public void serialize(JsonObject json) {
+            super.serialize(json);
+            JsonArray jsonIngredients = new JsonArray();
+            for (Ingredient ingredient : ingredients) {
+                jsonIngredients.add(ingredient.serialize());
+            }
+            json.add(DataGenJsonConstants.INGREDIENTS, jsonIngredients);
+        }
     }
 }

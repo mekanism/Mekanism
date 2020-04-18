@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:digital_miner"
+  },
   "pattern": [
     "ACA",
     "SRS",
@@ -24,8 +27,5 @@
     "R": {
       "item": "mekanism:robit"
     }
-  },
-  "result": {
-    "item": "mekanism:digital_miner"
   }
 }

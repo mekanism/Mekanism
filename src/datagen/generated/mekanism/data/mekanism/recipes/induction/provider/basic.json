@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:basic_induction_provider"
+  },
   "pattern": [
     "LCL",
     "C#C",
@@ -15,8 +18,5 @@
     "#": {
       "item": "mekanism:basic_energy_cube"
     }
-  },
-  "result": {
-    "item": "mekanism:basic_induction_provider"
   }
 }

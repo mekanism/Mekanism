@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:oredictionificator"
+  },
   "pattern": [
     "SGS",
     "CPC",
@@ -21,8 +24,5 @@
     "#": {
       "tag": "forge:chests/wooden"
     }
-  },
-  "result": {
-    "item": "mekanism:oredictionificator"
   }
 }

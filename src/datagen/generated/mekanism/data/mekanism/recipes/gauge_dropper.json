@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:gauge_dropper"
+  },
   "pattern": [
     " O ",
     "G G",
@@ -12,8 +15,5 @@
     "O": {
       "tag": "forge:ingots/osmium"
     }
-  },
-  "result": {
-    "item": "mekanism:gauge_dropper"
   }
 }

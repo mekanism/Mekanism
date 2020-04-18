@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:block_bronze"
+  },
   "pattern": [
     "###",
     "###",
@@ -9,8 +12,5 @@
     "#": {
       "tag": "forge:ingots/bronze"
     }
-  },
-  "result": {
-    "item": "mekanism:block_bronze"
   }
 }

@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:jetpack"
+  },
   "pattern": [
     "SCS",
     "ITI",
@@ -18,8 +21,5 @@
     "I": {
       "tag": "forge:ingots/tin"
     }
-  },
-  "result": {
-    "item": "mekanism:jetpack"
   }
 }

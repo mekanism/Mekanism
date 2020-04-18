@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:yellow_glow_panel",
+    "count": 2
+  },
   "pattern": [
     "PHP",
     "HDH",
@@ -18,9 +22,5 @@
     "D": {
       "tag": "forge:dyes/yellow"
     }
-  },
-  "result": {
-    "item": "mekanismadditions:yellow_glow_panel",
-    "count": 2
   }
 }

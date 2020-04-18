@@ -1,12 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "mekanism:nugget_tin",
+    "count": 9
+  },
   "ingredients": [
     {
       "tag": "forge:ingots/tin"
     }
-  ],
-  "result": {
-    "item": "mekanism:nugget_tin",
-    "count": 9
-  }
+  ]
 }

@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:solar_generator"
+  },
   "pattern": [
     "###",
     "AIA",
@@ -21,8 +24,5 @@
     "O": {
       "tag": "forge:ingots/osmium"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:solar_generator"
   }
 }

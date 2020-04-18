@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismtools:refined_glowstone_helmet"
+  },
   "pattern": [
     "III",
     "I I"
@@ -8,8 +11,5 @@
     "I": {
       "tag": "forge:ingots/refined_glowstone"
     }
-  },
-  "result": {
-    "item": "mekanismtools:refined_glowstone_helmet"
   }
 }

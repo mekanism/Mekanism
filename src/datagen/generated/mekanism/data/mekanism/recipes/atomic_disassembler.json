@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:atomic_disassembler"
+  },
   "pattern": [
     "AEA",
     "A#A",
@@ -18,8 +21,5 @@
     "#": {
       "tag": "mekanism:alloys/atomic"
     }
-  },
-  "result": {
-    "item": "mekanism:atomic_disassembler"
   }
 }

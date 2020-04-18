@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:basic_pressurized_tube",
+    "count": 8
+  },
   "pattern": [
     "S#S"
   ],
@@ -10,9 +14,5 @@
     "#": {
       "tag": "forge:glass"
     }
-  },
-  "result": {
-    "item": "mekanism:basic_pressurized_tube",
-    "count": 8
   }
 }

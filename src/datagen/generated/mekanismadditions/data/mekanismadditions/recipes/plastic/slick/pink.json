@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:pink_slick_plastic",
+    "count": 4
+  },
   "pattern": [
     " # ",
     "#S#",
@@ -12,9 +16,5 @@
     "S": {
       "tag": "forge:slimeballs"
     }
-  },
-  "result": {
-    "item": "mekanismadditions:pink_slick_plastic",
-    "count": 4
   }
 }

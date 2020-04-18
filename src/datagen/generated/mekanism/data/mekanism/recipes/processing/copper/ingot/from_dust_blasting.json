@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
+  "result": "mekanism:ingot_copper",
   "ingredient": {
     "tag": "forge:dusts/copper"
   },
-  "result": "mekanism:ingot_copper",
-  "experience": 0.5,
-  "cookingtime": 100
+  "cookingtime": 100,
+  "experience": 0.5
 }

@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:ultimate_control_circuit"
+  },
   "pattern": [
     "ACA"
   ],
@@ -10,8 +13,5 @@
     "A": {
       "tag": "mekanism:alloys/atomic"
     }
-  },
-  "result": {
-    "item": "mekanism:ultimate_control_circuit"
   }
 }

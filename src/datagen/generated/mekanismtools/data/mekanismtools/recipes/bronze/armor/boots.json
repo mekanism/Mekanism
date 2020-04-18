@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismtools:bronze_boots"
+  },
   "pattern": [
     "I I",
     "I I"
@@ -8,8 +11,5 @@
     "I": {
       "tag": "forge:ingots/bronze"
     }
-  },
-  "result": {
-    "item": "mekanismtools:bronze_boots"
   }
 }

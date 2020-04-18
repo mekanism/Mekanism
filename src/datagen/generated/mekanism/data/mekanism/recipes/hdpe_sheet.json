@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:hdpe_sheet"
+  },
   "pattern": [
     "###",
     "# #",
@@ -9,8 +12,5 @@
     "#": {
       "item": "mekanism:hdpe_pellet"
     }
-  },
-  "result": {
-    "item": "mekanism:hdpe_sheet"
   }
 }

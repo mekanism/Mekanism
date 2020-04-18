@@ -51,29 +51,31 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         return (BUILDER) this;
     }
 
+    protected boolean hasCriteria() {
+        return !advancementBuilder.getCriteria().isEmpty();
+    }
+
     protected abstract RecipeResult getResult(ResourceLocation id);
 
+    protected void validate(ResourceLocation id) {
+    }
+
     public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
-        //Validate that there is a way to "unlock" this recipe. Technically is not needed for reading the JSON
-        // but all the builders make sure to validate this, and then the recipes will show up as unlocked so
-        // might as well, even if currently we do not support the recipe book for our custom recipes
-        if (advancementBuilder.getCriteria().isEmpty()) {
-            //TODO: If there is a need/want we could technically make it so that we don't force having any criteria
-            throw new IllegalStateException("No way of obtaining recipe " + id);
+        validate(id);
+        if (hasCriteria()) {
+            //If there is a way to "unlock" this recipe then add an advancement with the criteria
+            advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(id))
+                  .withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
         }
-        advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(id))
-              .withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
         consumer.accept(getResult(id));
     }
 
     protected abstract class RecipeResult implements IFinishedRecipe {
 
         private final ResourceLocation id;
-        private final ResourceLocation advancementId;
 
         public RecipeResult(ResourceLocation id) {
             this.id = id;
-            this.advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath());
         }
 
         @Override
@@ -109,13 +111,13 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         @Nullable
         @Override
         public JsonObject getAdvancementJson() {
-            return advancementBuilder.serialize();
+            return hasCriteria() ? advancementBuilder.serialize() : null;
         }
 
         @Nullable
         @Override
         public ResourceLocation getAdvancementID() {
-            return this.advancementId;
+            return new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath());
         }
     }
 }

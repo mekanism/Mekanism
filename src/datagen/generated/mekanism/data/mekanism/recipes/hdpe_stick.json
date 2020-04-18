@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:hdpe_stick"
+  },
   "pattern": [
     "#",
     "#"
@@ -8,8 +11,5 @@
     "#": {
       "item": "mekanism:hdpe_rod"
     }
-  },
-  "result": {
-    "item": "mekanism:hdpe_stick"
   }
 }

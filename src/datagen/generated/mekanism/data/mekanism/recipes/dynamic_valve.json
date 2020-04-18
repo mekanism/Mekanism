@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:dynamic_valve",
+    "count": 2
+  },
   "pattern": [
     " # ",
     "#C#",
@@ -12,9 +16,5 @@
     "C": {
       "tag": "forge:circuits/basic"
     }
-  },
-  "result": {
-    "item": "mekanism:dynamic_valve",
-    "count": 2
   }
 }

@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:turbine_vent",
+    "count": 2
+  },
   "pattern": [
     " # ",
     "#B#",
@@ -12,9 +16,5 @@
     "B": {
       "item": "minecraft:iron_bars"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:turbine_vent",
-    "count": 2
   }
 }
