@@ -291,7 +291,7 @@
   "description.mekanism.chemical_injection_chamber": "一台能够将矿物处理成4个碎片的精英机器，是四倍产量的第一步。",
   "description.mekanism.chemical_oxidizer": "一台能够将固态材料氧化成气态产物的机器。",
   "description.mekanism.chemical_washer": "一台能够处理未经处理的浆液，为结晶作准备的终极机器。",
-  "description.mekanism.combiner": "一台用来将粉末与圆石融合为相应矿石的机器。",
+  "description.mekanism.combiner": "A machine used to combine items together. For example, dusts and cobblestone to form their ore counterparts.",
   "description.mekanism.copper_ore": "一种常见的导电材料，能够用于线缆的产出。 它耐高温的特性也使它成为生成高级机械的重要材料。",
   "description.mekanism.crusher": "一台用来将金属锭磨成相应粉末的机器，也可以进行一些其他操作。",
   "description.mekanism.digital_miner": "一台高度先进，以筛选为基础功能的自动采矿机，它可以挖掘/采集最大32格范围内的所有方块。",
