@@ -25,7 +25,7 @@
   "description.mekanismgenerators.advanced_solar_generator": "An advanced generator that directly absorbs th' sun's rays wit' wee loss t' produce energy.",
   "description.mekanismgenerators.bio_generator": "A generator that burns organic materials of the world to produce energy.",
   "description.mekanismgenerators.electromagnetic_coil": "A block that converts kinetic energy from a Rotational Complex into usable electricity. These can be placed in any arrangement above your Rotational Complex, as long as they are all touching each other and the complex itself.",
-  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the molecular varying gases to produce energy.",
+  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the varying molecular gases to produce energy.",
   "description.mekanismgenerators.heat_generator": "A generator that uses the heat of lava or other burnable resources to produce energy.",
   "description.mekanismgenerators.laser_focus_matrix": "A panel of Reactor Glass that is capable of absorbing optical energy and thereby heating up the Fusion Reactor.",
   "description.mekanismgenerators.reactor.logic.capacity": "The reactor's core heat capacity has been met",
