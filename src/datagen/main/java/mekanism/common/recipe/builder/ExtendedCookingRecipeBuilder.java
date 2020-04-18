@@ -33,6 +33,14 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
         return new ExtendedCookingRecipeBuilder(IRecipeSerializer.BLASTING, result, count, ingredient, cookingTime);
     }
 
+    public static ExtendedCookingRecipeBuilder campfire(IItemProvider result, Ingredient ingredient, int cookingTime) {
+        return campfire(result, 1, ingredient, cookingTime);
+    }
+
+    public static ExtendedCookingRecipeBuilder campfire(IItemProvider result, int count, Ingredient ingredient, int cookingTime) {
+        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.CAMPFIRE_COOKING, result, count, ingredient, cookingTime);
+    }
+
     public static ExtendedCookingRecipeBuilder smelting(IItemProvider result, Ingredient ingredient, int cookingTime) {
         return smelting(result, 1, ingredient, cookingTime);
     }
