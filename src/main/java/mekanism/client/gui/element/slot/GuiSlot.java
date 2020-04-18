@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.slot;
 
 import java.util.function.Supplier;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -95,9 +96,11 @@ public class GuiSlot extends GuiTexturedElement {
             MekanismRenderer.resetColor();
         }
         if (overlayColorSupplier != null) {
+            RenderSystem.translated(0, 0, 10);
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
             fill(xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.get());
+            RenderSystem.translated(0, 0, -10);
             MekanismRenderer.resetColor();
         }
         if (isHovered()) {

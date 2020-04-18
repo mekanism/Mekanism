@@ -91,8 +91,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             for (Module module : Modules.loadAll(stack)) {
                 ITextComponent component = module.getData().getLangEntry().translateColored(EnumColor.GRAY);
                 if (module.getInstalledCount() > 1) {
-                    String s = module.getInstalledCount() + "/" + module.getData().getMaxStackSize();
-                    component.appendSibling(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, "", s));
+                    ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, module.getInstalledCount(), module.getData().getMaxStackSize());
+                    component.appendSibling(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, "", t));
                 }
                 tooltip.add(component);
             }

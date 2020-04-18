@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.MekanismRenderer;
@@ -18,6 +19,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiModuleScrollList extends GuiScrollList {
 
@@ -120,7 +122,8 @@ public class GuiModuleScrollList extends GuiScrollList {
             Module instance = Modules.load(currentItem, module);
             int multipliedElement = elementHeight * i;
             if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
-                guiObj.displayTooltip(MekanismLang.MODULE_INSTALLED.translate(instance.getInstalledCount()), xAxis, yAxis, guiObj.getWidth());
+                ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
+                guiObj.displayTooltip(MekanismLang.MODULE_INSTALLED.translate(t), xAxis, yAxis, guiObj.getWidth());
             }
         }
     }
