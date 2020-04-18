@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.tile.base.SubstanceType;
@@ -20,7 +21,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         return side -> structure == null ? Collections.emptyList() : structure.getGasTanks(side);
     }
 

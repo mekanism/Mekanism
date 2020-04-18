@@ -1,16 +1,15 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
@@ -259,14 +258,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     @Nonnull
     @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        if (!hasInventory() || structure == null) {
-            //If we don't have a structure then return that we have no slots accessible
-            return Collections.emptyList();
-        }
-        //Otherwise we get the inventory slots for our structure.
-        // NOTE: Currently we have nothing that "cares" about facing/can give different output to different sides
-        // so we are just returning the list directly instead of dealing with the side
-        return structure.getInventorySlots(side);
+    protected IInventorySlotHolder getInitialInventory() {
+        return side -> structure == null ? Collections.emptyList() : structure.getInventorySlots(side);
     }
 }

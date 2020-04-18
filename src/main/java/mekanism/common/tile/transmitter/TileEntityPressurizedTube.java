@@ -9,12 +9,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
@@ -51,7 +51,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     public GasStack lastWrite = GasStack.EMPTY;
     private final ProxyGasHandler readOnlyHandler;
-    private final List<IChemicalTank<Gas, GasStack>> tanks;
+    private final List<IGasTank> tanks;
     public BasicGasTank buffer;
 
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
@@ -104,7 +104,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     @Override
     public GasStack insertGas(int tank, @Nonnull GasStack stack, @Nullable Direction side, @Nonnull Action action) {
-        IChemicalTank<Gas, GasStack> gasTank = getGasTank(tank, side);
+        IGasTank gasTank = getGasTank(tank, side);
         if (gasTank == null) {
             return stack;
         } else if (side == null) {
@@ -254,7 +254,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Nonnull
     @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
         if (getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().getGasTanks(side);
         }

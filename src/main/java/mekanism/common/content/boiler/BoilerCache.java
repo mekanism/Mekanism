@@ -6,10 +6,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -27,7 +25,7 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> impleme
 
     //Note: We don't care about any restrictions here as it is just for making it be persistent
     private final List<IExtendedFluidTank> fluidTanks = Collections.singletonList(BasicFluidTank.create(Integer.MAX_VALUE, this));
-    private final List<IChemicalTank<Gas, GasStack>> gasTanks = Collections.singletonList(BasicGasTank.create(Long.MAX_VALUE, this));
+    private final List<IGasTank> gasTanks = Collections.singletonList(BasicGasTank.create(Long.MAX_VALUE, this));
     public final List<IHeatCapacitor> heatCapacitors = Collections.singletonList(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, this));
 
     @Override
@@ -46,7 +44,7 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> impleme
                 fluidTanks.get(i).setStack(fluidTanksToCopy.get(i).getFluid());
             }
         }
-        List<? extends IChemicalTank<Gas, GasStack>> gasTanksToCopy = data.getGasTanks(null);
+        List<IGasTank> gasTanksToCopy = data.getGasTanks(null);
         for (int i = 0; i < gasTanksToCopy.size(); i++) {
             if (i < gasTanks.size()) {
                 //Just directly set it as we don't have any restrictions on our tanks here
@@ -87,7 +85,7 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> impleme
 
     @Nonnull
     @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 

@@ -1,16 +1,14 @@
 package mekanism.generators.common.content.turbine;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import mekanism.api.Coord4D;
-import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -35,7 +33,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     public static Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
 
     public final MultiblockGasTank<TileEntityTurbineCasing> gasTank;
-    private final List<IChemicalTank<Gas, GasStack>> gasTanks;
+    private final List<IGasTank> gasTanks;
 
     public IExtendedFluidTank ventTank;
     public List<IExtendedFluidTank> ventTanks;
@@ -73,7 +71,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
         energyContainers = Collections.singletonList(energyContainer);
     }
 
-    public void setTankData(@Nonnull List<IChemicalTank<Gas, GasStack>> toCopy) {
+    public void setTankData(@Nonnull List<IGasTank> toCopy) {
         for (int i = 0; i < toCopy.size(); i++) {
             if (i < gasTanks.size()) {
                 //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
@@ -111,7 +109,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 
     @Nonnull
     @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 

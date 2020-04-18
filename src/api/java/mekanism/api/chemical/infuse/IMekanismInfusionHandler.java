@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.util.Direction;
 
@@ -27,17 +26,17 @@ public interface IMekanismInfusionHandler extends ISidedInfusionHandler {
     }
 
     /**
-     * Returns the list of IChemicalTanks that this infusion handler exposes on the given side.
+     * Returns the list of IInfusionTanks that this infusion handler exposes on the given side.
      *
      * @param side The side we are interacting with the handler from (null for internal).
      *
-     * @return The list of all IChemicalTanks that this {@link IMekanismInfusionHandler} contains for the given side. If there are no tanks for the side or {@link
+     * @return The list of all IInfusionTanks that this {@link IMekanismInfusionHandler} contains for the given side. If there are no tanks for the side or {@link
      * #canHandleInfusion()} is false then it returns an empty list.
      *
      * @implNote When side is null (an internal request), this method <em>MUST</em> return all tanks in the handler. Additionally, if {@link #canHandleInfusion()} is
      * false, this <em>MUST</em> return an empty list.
      */
-    List<? extends IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side);
+    List<IInfusionTank> getInfusionTanks(@Nullable Direction side);
 
     /**
      * Called when the contents of this infusion handler change.
@@ -45,16 +44,16 @@ public interface IMekanismInfusionHandler extends ISidedInfusionHandler {
     void onContentsChanged();
 
     /**
-     * Returns the {@link IChemicalTank} that has the given index from the list of tanks on the given side.
+     * Returns the {@link IInfusionTank} that has the given index from the list of tanks on the given side.
      *
      * @param tank The index of the tank to retrieve.
      * @param side The side we are interacting with the handler from (null for internal).
      *
-     * @return The {@link IChemicalTank} that has the given index from the list of tanks on the given side.
+     * @return The {@link IInfusionTank} that has the given index from the list of tanks on the given side.
      */
     @Nullable
-    default IChemicalTank<InfuseType, InfusionStack> getInfusionTank(int tank, @Nullable Direction side) {
-        List<? extends IChemicalTank<InfuseType, InfusionStack>> tanks = getInfusionTanks(side);
+    default IInfusionTank getInfusionTank(int tank, @Nullable Direction side) {
+        List<IInfusionTank> tanks = getInfusionTanks(side);
         return tank >= 0 && tank < tanks.size() ? tanks.get(tank) : null;
     }
 
@@ -65,13 +64,13 @@ public interface IMekanismInfusionHandler extends ISidedInfusionHandler {
 
     @Override
     default InfusionStack getInfusionInTank(int tank, @Nullable Direction side) {
-        IChemicalTank<InfuseType, InfusionStack> infusionTank = getInfusionTank(tank, side);
+        IInfusionTank infusionTank = getInfusionTank(tank, side);
         return infusionTank == null ? InfusionStack.EMPTY : infusionTank.getStack();
     }
 
     @Override
     default void setInfusionInTank(int tank, InfusionStack stack, @Nullable Direction side) {
-        IChemicalTank<InfuseType, InfusionStack> infusionTank = getInfusionTank(tank, side);
+        IInfusionTank infusionTank = getInfusionTank(tank, side);
         if (infusionTank != null) {
             infusionTank.setStack(stack);
         }
@@ -79,25 +78,25 @@ public interface IMekanismInfusionHandler extends ISidedInfusionHandler {
 
     @Override
     default long getInfusionTankCapacity(int tank, @Nullable Direction side) {
-        IChemicalTank<InfuseType, InfusionStack> infusionTank = getInfusionTank(tank, side);
+        IInfusionTank infusionTank = getInfusionTank(tank, side);
         return infusionTank == null ? 0 : infusionTank.getCapacity();
     }
 
     @Override
     default boolean isInfusionValid(int tank, InfusionStack stack, @Nullable Direction side) {
-        IChemicalTank<InfuseType, InfusionStack> infusionTank = getInfusionTank(tank, side);
+        IInfusionTank infusionTank = getInfusionTank(tank, side);
         return infusionTank != null && infusionTank.isValid(stack);
     }
 
     @Override
     default InfusionStack insertInfusion(int tank, InfusionStack stack, @Nullable Direction side, Action action) {
-        IChemicalTank<InfuseType, InfusionStack> infusionTank = getInfusionTank(tank, side);
+        IInfusionTank infusionTank = getInfusionTank(tank, side);
         return infusionTank == null ? stack : infusionTank.insert(stack, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }
 
     @Override
     default InfusionStack extractInfusion(int tank, long amount, @Nullable Direction side, Action action) {
-        IChemicalTank<InfuseType, InfusionStack> infusionTank = getInfusionTank(tank, side);
+        IInfusionTank infusionTank = getInfusionTank(tank, side);
         return infusionTank == null ? InfusionStack.EMPTY : infusionTank.extract(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }
 }

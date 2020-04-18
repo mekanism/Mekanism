@@ -14,10 +14,11 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import net.minecraft.util.Direction;
 
-public class ChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IChemicalTankHolder<CHEMICAL, STACK> {
+public class ChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> implements
+      IChemicalTankHolder<CHEMICAL, STACK, TANK> {
 
-    private final Map<RelativeSide, List<IChemicalTank<CHEMICAL, STACK>>> directionalTanks = new EnumMap<>(RelativeSide.class);
-    private final List<IChemicalTank<CHEMICAL, STACK>> tanks = new ArrayList<>();
+    private final Map<RelativeSide, List<TANK>> directionalTanks = new EnumMap<>(RelativeSide.class);
+    private final List<TANK> tanks = new ArrayList<>();
     private final Supplier<Direction> facingSupplier;
     //TODO: Allow declaring that some sides will be the same, so can just be the same list in memory??
 
@@ -25,7 +26,7 @@ public class ChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         this.facingSupplier = facingSupplier;
     }
 
-    void addTank(@Nonnull IChemicalTank<CHEMICAL, STACK> tank, RelativeSide... sides) {
+    void addTank(@Nonnull TANK tank, RelativeSide... sides) {
         tanks.add(tank);
         for (RelativeSide side : sides) {
             directionalTanks.computeIfAbsent(side, k -> new ArrayList<>()).add(tank);
@@ -34,13 +35,13 @@ public class ChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
 
     @Nonnull
     @Override
-    public List<IChemicalTank<CHEMICAL, STACK>> getTanks(@Nullable Direction direction) {
+    public List<TANK> getTanks(@Nullable Direction direction) {
         if (direction == null || directionalTanks.isEmpty()) {
             //If we want the internal OR we have no side specification, give all of our tanks
             return tanks;
         }
         RelativeSide side = RelativeSide.fromDirections(facingSupplier.get(), direction);
-        List<IChemicalTank<CHEMICAL, STACK>> tanks = directionalTanks.get(side);
+        List<TANK> tanks = directionalTanks.get(side);
         if (tanks == null) {
             return Collections.emptyList();
         }

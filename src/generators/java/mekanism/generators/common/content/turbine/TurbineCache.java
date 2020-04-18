@@ -6,10 +6,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -25,7 +23,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> implements IMekanismGasHandler, IMekanismStrictEnergyHandler {
 
     //Note: We don't care about any restrictions here as it is just for making it be persistent
-    private final List<IChemicalTank<Gas, GasStack>> gasTanks = Collections.singletonList(BasicGasTank.create(Long.MAX_VALUE, this));
+    private final List<IGasTank> gasTanks = Collections.singletonList(BasicGasTank.create(Long.MAX_VALUE, this));
     private final List<IEnergyContainer> energyContainers = Collections.singletonList(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, this));
     public GasMode dumpMode = GasMode.IDLE;
 
@@ -38,7 +36,7 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> imple
 
     @Override
     public void sync(SynchronizedTurbineData data) {
-        List<? extends IChemicalTank<Gas, GasStack>> tanksToCopy = data.getGasTanks(null);
+        List<IGasTank> tanksToCopy = data.getGasTanks(null);
         for (int i = 0; i < tanksToCopy.size(); i++) {
             if (i < gasTanks.size()) {
                 //Just directly set it as we don't have any restrictions on our tanks here
@@ -71,7 +69,7 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> imple
 
     @Nonnull
     @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 

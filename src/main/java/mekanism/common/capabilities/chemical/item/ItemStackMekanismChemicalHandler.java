@@ -13,14 +13,15 @@ import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class ItemStackMekanismChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends ItemCapability {
+public abstract class ItemStackMekanismChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
+      TANK extends IChemicalTank<CHEMICAL, STACK>> extends ItemCapability {
 
-    protected List<? extends IChemicalTank<CHEMICAL, STACK>> tanks;
+    protected List<TANK> tanks;
 
     @Override
     protected void init() {
         this.tanks = getInitialTanks();
     }
 
-    protected abstract List<? extends IChemicalTank<CHEMICAL, STACK>> getInitialTanks();
+    protected abstract List<TANK> getInitialTanks();
 }

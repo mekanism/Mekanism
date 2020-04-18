@@ -14,11 +14,11 @@ import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.IChemicalHandlerWrapper;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasHandlerWrapper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.recipes.ItemStackToGasRecipe;
@@ -55,7 +55,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
     /**
      * Fills/Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
      */
-    public static GasInventorySlot rotary(IChemicalTank<Gas, GasStack> gasTank, BooleanSupplier modeSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static GasInventorySlot rotary(IGasTank gasTank, BooleanSupplier modeSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
         //TODO: Make there be a fill/drain version that just based on the mode doesn't allow inserting/extracting
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
@@ -86,7 +86,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
     /**
      * Fills the tank from this item OR converts the given item to a gas
      */
-    public static GasInventorySlot fillOrConvert(IChemicalTank<Gas, GasStack> gasTank, Supplier<World> worldSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static GasInventorySlot fillOrConvert(IGasTank gasTank, Supplier<World> worldSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         Function<ItemStack, GasStack> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
@@ -105,7 +105,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
     /**
      * Fills the tank from this item
      */
-    public static GasInventorySlot fill(IChemicalTank<Gas, GasStack> gasTank, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static GasInventorySlot fill(IGasTank gasTank, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         return new GasInventorySlot(gasTank, getFillExtractPredicate(gasTank, GasInventorySlot::getCapabilityWrapper),
               stack -> fillInsertCheck(gasTank, getCapabilityWrapper(stack)), stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), inventory, x, y);
@@ -116,18 +116,18 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
      *
      * Drains the tank into this item.
      */
-    public static GasInventorySlot drain(IChemicalTank<Gas, GasStack> gasTank, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static GasInventorySlot drain(IGasTank gasTank, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Predicate<@NonNull ItemStack> insertPredicate = getDrainInsertPredicate(gasTank, GasInventorySlot::getCapabilityWrapper);
         return new GasInventorySlot(gasTank, insertPredicate.negate(), insertPredicate, stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), inventory, x, y);
     }
 
-    private GasInventorySlot(IChemicalTank<Gas, GasStack> gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
+    private GasInventorySlot(IGasTank gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
           Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         this(gasTank, () -> null, canExtract, canInsert, validator, inventory, x, y);
     }
 
-    private GasInventorySlot(IChemicalTank<Gas, GasStack> gasTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
+    private GasInventorySlot(IGasTank gasTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
           Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(gasTank, worldSupplier, canExtract, canInsert, validator, inventory, x, y);
     }

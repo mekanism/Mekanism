@@ -4,9 +4,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.common.network.container.property.GasStackPropertyData;
 import mekanism.common.network.container.property.LongPropertyData;
 import mekanism.common.network.container.property.PropertyData;
@@ -16,7 +16,7 @@ import mekanism.common.network.container.property.PropertyData;
  */
 public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> {
 
-    public static SyncableGasStack create(IChemicalTank<Gas, GasStack> handler) {
+    public static SyncableGasStack create(IGasTank handler) {
         return new SyncableGasStack(handler::getStack, handler::setStack);
     }
 

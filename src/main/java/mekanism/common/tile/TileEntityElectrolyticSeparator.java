@@ -8,10 +8,10 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -110,8 +110,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
         builder.addTank(leftTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.LEFT);
         builder.addTank(rightTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.RIGHT);
         return builder.build();
@@ -165,7 +165,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         handleTank(rightTank, dumpRight, getRightSide(), dumpAmount);
     }
 
-    private void handleTank(IChemicalTank<Gas, GasStack> tank, GasMode mode, Direction side, long dumpAmount) {
+    private void handleTank(IGasTank tank, GasMode mode, Direction side, long dumpAmount) {
         if (!tank.isEmpty()) {
             if (mode == GasMode.DUMPING) {
                 tank.shrinkStack(dumpAmount, Action.EXECUTE);

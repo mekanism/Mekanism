@@ -9,15 +9,14 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
-import mekanism.common.distribution.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.distribution.target.GasHandlerTarget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -61,15 +60,15 @@ public final class GasUtils {
         return false;
     }
 
-    public static void emit(IChemicalTank<Gas, GasStack> tank, TileEntity from) {
+    public static void emit(IGasTank tank, TileEntity from) {
         emit(EnumSet.allOf(Direction.class), tank, from);
     }
 
-    public static void emit(Set<Direction> outputSides, IChemicalTank<Gas, GasStack> tank, TileEntity from) {
+    public static void emit(Set<Direction> outputSides, IGasTank tank, TileEntity from) {
         emit(outputSides, tank, from, tank.getCapacity());
     }
 
-    public static void emit(Set<Direction> outputSides, IChemicalTank<Gas, GasStack> tank, TileEntity from, long maxOutput) {
+    public static void emit(Set<Direction> outputSides, IGasTank tank, TileEntity from, long maxOutput) {
         if (!tank.isEmpty() && maxOutput > 0) {
             tank.extract(emit(outputSides, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
         }

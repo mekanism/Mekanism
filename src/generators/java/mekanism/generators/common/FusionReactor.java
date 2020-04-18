@@ -6,10 +6,8 @@ import java.util.Optional;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
-import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.inventory.AutomationType;
@@ -205,19 +203,19 @@ public class FusionReactor {
         return controller.waterTank;
     }
 
-    public IChemicalTank<Gas, GasStack> getSteamTank() {
+    public IGasTank getSteamTank() {
         return controller.steamTank;
     }
 
-    public IChemicalTank<Gas, GasStack> getDeuteriumTank() {
+    public IGasTank getDeuteriumTank() {
         return controller.deuteriumTank;
     }
 
-    public IChemicalTank<Gas, GasStack> getTritiumTank() {
+    public IGasTank getTritiumTank() {
         return controller.tritiumTank;
     }
 
-    public IChemicalTank<Gas, GasStack> getFuelTank() {
+    public IGasTank getFuelTank() {
         return controller.fuelTank;
     }
 

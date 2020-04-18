@@ -3,9 +3,8 @@ package mekanism.client.gui.element.gauge;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
@@ -16,24 +15,24 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>> {
+public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
 
     public GuiGasGauge(IGasInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y, handler, TankType.GAS_TANK);
     }
 
-    public GuiGasGauge(Supplier<IChemicalTank<Gas, GasStack>> tankSupplier, Supplier<List<? extends IChemicalTank<Gas, GasStack>>> tanksSupplier, GaugeType type,
+    public GuiGasGauge(Supplier<IGasTank> tankSupplier, Supplier<List<IGasTank>> tanksSupplier, GaugeType type,
           IGuiWrapper gui, int x, int y) {
         this(new IGasInfoHandler() {
             @Nullable
             @Override
-            public IChemicalTank<Gas, GasStack> getTank() {
+            public IGasTank getTank() {
                 return tankSupplier.get();
             }
 
             @Override
             public int getTankIndex() {
-                IChemicalTank<Gas, GasStack> tank = getTank();
+                IGasTank tank = getTank();
                 return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
             }
         }, type, gui, x, y);
@@ -55,7 +54,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>>
         if (dummy) {
             return height - 2;
         }
-        IChemicalTank<Gas, GasStack> tank = infoHandler.getTank();
+        IGasTank tank = infoHandler.getTank();
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
@@ -76,7 +75,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>>
         if (dummy) {
             return TextComponentUtil.build(dummyType);
         }
-        IChemicalTank<Gas, GasStack> tank = infoHandler.getTank();
+        IGasTank tank = infoHandler.getTank();
         if (tank == null || tank.isEmpty()) {
             return MekanismLang.EMPTY.translate();
         }
@@ -96,6 +95,6 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>>
         }
     }
 
-    public interface IGasInfoHandler extends ITankInfoHandler<IChemicalTank<Gas, GasStack>> {
+    public interface IGasInfoHandler extends ITankInfoHandler<IGasTank> {
     }
 }

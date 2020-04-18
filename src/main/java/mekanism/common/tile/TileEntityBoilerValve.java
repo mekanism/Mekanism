@@ -4,6 +4,7 @@ import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -23,7 +24,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         return side -> structure == null ? Collections.emptyList() : structure.getGasTanks(side);
     }
 

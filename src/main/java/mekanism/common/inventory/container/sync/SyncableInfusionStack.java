@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.network.container.property.InfusionStackPropertyData;
@@ -16,7 +16,7 @@ import mekanism.common.network.container.property.PropertyData;
  */
 public class SyncableInfusionStack extends SyncableChemicalStack<InfuseType, InfusionStack> {
 
-    public static SyncableInfusionStack create(IChemicalTank<InfuseType, InfusionStack> handler) {
+    public static SyncableInfusionStack create(IInfusionTank handler) {
         return new SyncableInfusionStack(handler::getStack, handler::setStack);
     }
 

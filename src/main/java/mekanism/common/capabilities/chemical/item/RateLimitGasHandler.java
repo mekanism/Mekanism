@@ -17,6 +17,7 @@ import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
@@ -50,14 +51,14 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         return new RateLimitGasHandler(handler -> new RateLimitGasTank(rate, capacity, canExtract, canInsert, isValid, attributeValidator, handler));
     }
 
-    private final IChemicalTank<Gas, GasStack> tank;
+    private final IGasTank tank;
 
-    private RateLimitGasHandler(Function<IMekanismGasHandler, IChemicalTank<Gas, GasStack>> tankProvider) {
+    private RateLimitGasHandler(Function<IMekanismGasHandler, IGasTank> tankProvider) {
         this.tank = tankProvider.apply(this);
     }
 
     @Override
-    protected List<? extends IChemicalTank<Gas, GasStack>> getInitialTanks() {
+    protected List<IGasTank> getInitialTanks() {
         return Collections.singletonList(tank);
     }
 

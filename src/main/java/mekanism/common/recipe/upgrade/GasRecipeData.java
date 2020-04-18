@@ -11,11 +11,10 @@ import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.SubstanceType;
@@ -34,7 +33,7 @@ import net.minecraft.util.Direction;
 @ParametersAreNonnullByDefault
 public class GasRecipeData implements RecipeUpgradeData<GasRecipeData> {
 
-    private final List<IChemicalTank<Gas, GasStack>> gasTanks;
+    private final List<IGasTank> gasTanks;
 
     GasRecipeData(ListNBT tanks) {
         int count = DataHandlerUtils.getMaxId(tanks, NBTConstants.TANK);
@@ -45,14 +44,14 @@ public class GasRecipeData implements RecipeUpgradeData<GasRecipeData> {
         DataHandlerUtils.readTanks(gasTanks, tanks);
     }
 
-    GasRecipeData(List<IChemicalTank<Gas, GasStack>> gasTanks) {
+    GasRecipeData(List<IGasTank> gasTanks) {
         this.gasTanks = gasTanks;
     }
 
     @Nullable
     @Override
     public GasRecipeData merge(GasRecipeData other) {
-        List<IChemicalTank<Gas, GasStack>> allTanks = new ArrayList<>(gasTanks.size() + other.gasTanks.size());
+        List<IGasTank> allTanks = new ArrayList<>(gasTanks.size() + other.gasTanks.size());
         allTanks.addAll(gasTanks);
         allTanks.addAll(other.gasTanks);
         return new GasRecipeData(allTanks);
@@ -65,7 +64,7 @@ public class GasRecipeData implements RecipeUpgradeData<GasRecipeData> {
         }
         Item item = stack.getItem();
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-        List<IChemicalTank<Gas, GasStack>> gasTanks = new ArrayList<>();
+        List<IGasTank> gasTanks = new ArrayList<>();
         if (capability.isPresent()) {
             IGasHandler gasHandler = capability.get();
             for (int i = 0; i < gasHandler.getGasTankCount(); i++) {
@@ -102,7 +101,7 @@ public class GasRecipeData implements RecipeUpgradeData<GasRecipeData> {
         IMekanismGasHandler outputHandler = new IMekanismGasHandler() {
             @Nonnull
             @Override
-            public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+            public List<IGasTank> getGasTanks(@Nullable Direction side) {
                 return gasTanks;
             }
 
@@ -111,7 +110,7 @@ public class GasRecipeData implements RecipeUpgradeData<GasRecipeData> {
             }
         };
         boolean hasData = false;
-        for (IChemicalTank<Gas, GasStack> gasTank : this.gasTanks) {
+        for (IGasTank gasTank : this.gasTanks) {
             if (!gasTank.isEmpty()) {
                 if (!outputHandler.insertGas(gasTank.getStack(), Action.EXECUTE).isEmpty()) {
                     //If we have a remainder something failed so bail

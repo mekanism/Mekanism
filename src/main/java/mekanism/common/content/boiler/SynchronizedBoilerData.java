@@ -1,18 +1,16 @@
 package mekanism.common.content.boiler;
 
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
-import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -61,9 +59,9 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public Coord4D upperRenderLocation;
 
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
-    private List<IExtendedFluidTank> fluidTanks;
-    private List<IChemicalTank<Gas, GasStack>> gasTanks;
-    private List<IHeatCapacitor> heatCapacitors;
+    private final List<IExtendedFluidTank> fluidTanks;
+    private final List<IGasTank> gasTanks;
+    private final List<IHeatCapacitor> heatCapacitors;
 
     public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
         waterTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
@@ -94,7 +92,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
         }
     }
 
-    public void setGasTankData(@Nonnull List<IChemicalTank<Gas, GasStack>> toCopy) {
+    public void setGasTankData(@Nonnull List<IGasTank> toCopy) {
         for (int i = 0; i < toCopy.size(); i++) {
             if (i < gasTanks.size()) {
                 //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
@@ -160,7 +158,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     @Nonnull
     @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 

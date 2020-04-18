@@ -17,7 +17,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IGasHandler {
+public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IGasHandler, IGasTank {
 
     public static final Predicate<@NonNull Gas> alwaysTrue = stack -> true;
     public static final Predicate<@NonNull Gas> alwaysFalse = stack -> false;
