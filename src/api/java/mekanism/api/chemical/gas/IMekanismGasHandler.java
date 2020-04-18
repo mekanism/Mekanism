@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.util.Direction;
 
@@ -27,17 +26,17 @@ public interface IMekanismGasHandler extends ISidedGasHandler {
     }
 
     /**
-     * Returns the list of IChemicalTanks that this gas handler exposes on the given side.
+     * Returns the list of IGasTanks that this gas handler exposes on the given side.
      *
      * @param side The side we are interacting with the handler from (null for internal).
      *
-     * @return The list of all IChemicalTanks that this {@link IMekanismGasHandler} contains for the given side. If there are no tanks for the side or {@link
+     * @return The list of all IGasTanks that this {@link IMekanismGasHandler} contains for the given side. If there are no tanks for the side or {@link
      * #canHandleGas()} is false then it returns an empty list.
      *
      * @implNote When side is null (an internal request), this method <em>MUST</em> return all tanks in the handler. Additionally, if {@link #canHandleGas()} is false,
      * this <em>MUST</em> return an empty list.
      */
-    List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side);
+    List<IGasTank> getGasTanks(@Nullable Direction side);
 
     /**
      * Called when the contents of this gas handler change.
@@ -45,16 +44,16 @@ public interface IMekanismGasHandler extends ISidedGasHandler {
     void onContentsChanged();
 
     /**
-     * Returns the {@link IChemicalTank} that has the given index from the list of tanks on the given side.
+     * Returns the {@link IGasTank} that has the given index from the list of tanks on the given side.
      *
      * @param tank The index of the tank to retrieve.
      * @param side The side we are interacting with the handler from (null for internal).
      *
-     * @return The {@link IChemicalTank} that has the given index from the list of tanks on the given side.
+     * @return The {@link IGasTank} that has the given index from the list of tanks on the given side.
      */
     @Nullable
-    default IChemicalTank<Gas, GasStack> getGasTank(int tank, @Nullable Direction side) {
-        List<? extends IChemicalTank<Gas, GasStack>> tanks = getGasTanks(side);
+    default IGasTank getGasTank(int tank, @Nullable Direction side) {
+        List<IGasTank> tanks = getGasTanks(side);
         return tank >= 0 && tank < tanks.size() ? tanks.get(tank) : null;
     }
 
@@ -65,13 +64,13 @@ public interface IMekanismGasHandler extends ISidedGasHandler {
 
     @Override
     default GasStack getGasInTank(int tank, @Nullable Direction side) {
-        IChemicalTank<Gas, GasStack> gasTank = getGasTank(tank, side);
+        IGasTank gasTank = getGasTank(tank, side);
         return gasTank == null ? GasStack.EMPTY : gasTank.getStack();
     }
 
     @Override
     default void setGasInTank(int tank, GasStack stack, @Nullable Direction side) {
-        IChemicalTank<Gas, GasStack> gasTank = getGasTank(tank, side);
+        IGasTank gasTank = getGasTank(tank, side);
         if (gasTank != null) {
             gasTank.setStack(stack);
         }
@@ -79,25 +78,25 @@ public interface IMekanismGasHandler extends ISidedGasHandler {
 
     @Override
     default long getGasTankCapacity(int tank, @Nullable Direction side) {
-        IChemicalTank<Gas, GasStack> gasTank = getGasTank(tank, side);
+        IGasTank gasTank = getGasTank(tank, side);
         return gasTank == null ? 0 : gasTank.getCapacity();
     }
 
     @Override
     default boolean isGasValid(int tank, GasStack stack, @Nullable Direction side) {
-        IChemicalTank<Gas, GasStack> gasTank = getGasTank(tank, side);
+        IGasTank gasTank = getGasTank(tank, side);
         return gasTank != null && gasTank.isValid(stack);
     }
 
     @Override
     default GasStack insertGas(int tank, GasStack stack, @Nullable Direction side, Action action) {
-        IChemicalTank<Gas, GasStack> gasTank = getGasTank(tank, side);
+        IGasTank gasTank = getGasTank(tank, side);
         return gasTank == null ? stack : gasTank.insert(stack, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }
 
     @Override
     default GasStack extractGas(int tank, long amount, @Nullable Direction side, Action action) {
-        IChemicalTank<Gas, GasStack> gasTank = getGasTank(tank, side);
+        IGasTank gasTank = getGasTank(tank, side);
         return gasTank == null ? GasStack.EMPTY : gasTank.extract(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }
 }

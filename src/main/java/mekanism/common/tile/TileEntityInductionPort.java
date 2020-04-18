@@ -1,12 +1,10 @@
 package mekanism.common.tile;
 
 import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -83,23 +81,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapabilityIfEnabled(capability, side);
-    }
-
-    @Nonnull
-    @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        if (side == null) {
-            //Allow internal queries to view/see both all slots, we only limit the slots that can be seen
-            // to either input or output if we are querying this with a specific side (as then we are
-            // in the world)
-            return super.getInventorySlots(null);
-        }
-        if (!hasInventory() || structure == null) {
-            //If we don't have a structure then return that we have no slots accessible
-            return Collections.emptyList();
-        }
-        //TODO: Cache this??
-        return Collections.singletonList(getActive() ? structure.energyInputSlot : structure.energyOutputSlot);
     }
 
     @Override

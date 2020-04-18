@@ -8,15 +8,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
@@ -46,12 +45,12 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
         return new GaugeDropperContentsHandler();
     }
 
-    private final IChemicalTank<InfuseType, InfusionStack> infusionTank;
-    private final IChemicalTank<Gas, GasStack> gasTank;
+    private final IInfusionTank infusionTank;
+    private final IGasTank gasTank;
     private final IExtendedFluidTank fluidTank;
 
-    private List<? extends IChemicalTank<InfuseType, InfusionStack>> infusionTanks;
-    private List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
+    private List<IInfusionTank> infusionTanks;
+    private List<IGasTank> gasTanks;
     private List<IExtendedFluidTank> fluidTanks;
 
     private GaugeDropperContentsHandler() {
@@ -96,12 +95,12 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
     }
 
     @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 
     @Override
-    public List<? extends IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side) {
+    public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
         return infusionTanks;
     }
 

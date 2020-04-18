@@ -2,10 +2,10 @@ package mekanism.generators.common.tile.fusion;
 
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.common.Mekanism;
@@ -60,10 +60,10 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
     public BasicEnergyContainer energyContainer;
     public BasicHeatCapacitor heatCapacitor;
     public IExtendedFluidTank waterTank;
-    public IChemicalTank<Gas, GasStack> steamTank;
-    public IChemicalTank<Gas, GasStack> deuteriumTank;
-    public IChemicalTank<Gas, GasStack> tritiumTank;
-    public IChemicalTank<Gas, GasStack> fuelTank;
+    public IGasTank steamTank;
+    public IGasTank deuteriumTank;
+    public IGasTank tritiumTank;
+    public IGasTank fuelTank;
     public double plasmaTemperature;
 
     private AxisAlignedBB box;
@@ -81,8 +81,8 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
         builder.addTank(deuteriumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.DEUTERIUM), this));
         builder.addTank(tritiumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.TRITIUM), this));
         builder.addTank(fuelTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL), this));

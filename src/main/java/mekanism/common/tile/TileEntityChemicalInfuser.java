@@ -6,10 +6,10 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -70,8 +70,8 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITi
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
         builder.addTank(leftTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, rightTank), this::isValidGas, this), RelativeSide.LEFT);
         builder.addTank(rightTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, leftTank), this::isValidGas, this), RelativeSide.RIGHT);
         builder.addTank(centerTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.FRONT);
@@ -82,7 +82,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITi
         return containsRecipe(recipe -> recipe.getLeftInput().testType(gas) || recipe.getRightInput().testType(gas));
     }
 
-    private boolean isValidGas(@Nonnull Gas gas, IChemicalTank<Gas, GasStack> otherTank) {
+    private boolean isValidGas(@Nonnull Gas gas, IGasTank otherTank) {
         if (otherTank.isEmpty()) {
             //If the other tank is empty, don't limit what can enter our tank based on it
             return true;

@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -44,7 +45,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         //Note: We can just use a proxied holder as the input/output restrictions are done in the tanks themselves
         return ProxiedChemicalTankHolder.create(side -> true, side -> getActive(),
               side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getGasTanks(side));

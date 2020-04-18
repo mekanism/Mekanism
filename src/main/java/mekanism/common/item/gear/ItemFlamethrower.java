@@ -7,11 +7,10 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.MathUtils;
@@ -64,7 +63,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IChemicalTank<Gas, GasStack> gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
+                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
                 if (gasTank != null) {
                     //Should always reach here
                     return gasTank.extract(amount, Action.EXECUTE, AutomationType.MANUAL);

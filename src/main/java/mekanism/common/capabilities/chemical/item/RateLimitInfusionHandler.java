@@ -13,6 +13,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -39,14 +40,14 @@ public class RateLimitInfusionHandler extends ItemStackMekanismInfusionHandler {
         return new RateLimitInfusionHandler(handler -> new RateLimitInfusionTank(rate, capacity, canExtract, canInsert, isValid, handler));
     }
 
-    private final IChemicalTank<InfuseType, InfusionStack> tank;
+    private final IInfusionTank tank;
 
-    private RateLimitInfusionHandler(Function<IMekanismInfusionHandler, IChemicalTank<InfuseType, InfusionStack>> tankProvider) {
+    private RateLimitInfusionHandler(Function<IMekanismInfusionHandler, IInfusionTank> tankProvider) {
         this.tank = tankProvider.apply(this);
     }
 
     @Override
-    protected List<? extends IChemicalTank<InfuseType, InfusionStack>> getInitialTanks() {
+    protected List<IInfusionTank> getInitialTanks() {
         return Collections.singletonList(tank);
     }
 

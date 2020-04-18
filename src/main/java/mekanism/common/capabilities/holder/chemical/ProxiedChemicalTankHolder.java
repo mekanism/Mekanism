@@ -11,26 +11,25 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.common.capabilities.holder.ProxiedHolder;
 import net.minecraft.util.Direction;
 
-public class ProxiedChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends ProxiedHolder implements
-      IChemicalTankHolder<CHEMICAL, STACK> {
+public class ProxiedChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
+      extends ProxiedHolder implements IChemicalTankHolder<CHEMICAL, STACK, TANK> {
 
-    private final Function<Direction, List<? extends IChemicalTank<CHEMICAL, STACK>>> tankFunction;
+    private final Function<Direction, List<TANK>> tankFunction;
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ProxiedChemicalTankHolder<CHEMICAL, STACK> create(
-          Predicate<Direction> insertPredicate, Predicate<Direction> extractPredicate,
-          Function<Direction, List<? extends IChemicalTank<CHEMICAL, STACK>>> tankFunction) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
+    ProxiedChemicalTankHolder<CHEMICAL, STACK, TANK> create(Predicate<Direction> insertPredicate, Predicate<Direction> extractPredicate,
+          Function<Direction, List<TANK>> tankFunction) {
         return new ProxiedChemicalTankHolder<>(insertPredicate, extractPredicate, tankFunction);
     }
 
-    private ProxiedChemicalTankHolder(Predicate<Direction> insertPredicate, Predicate<Direction> extractPredicate,
-          Function<Direction, List<? extends IChemicalTank<CHEMICAL, STACK>>> tankFunction) {
+    private ProxiedChemicalTankHolder(Predicate<Direction> insertPredicate, Predicate<Direction> extractPredicate, Function<Direction, List<TANK>> tankFunction) {
         super(insertPredicate, extractPredicate);
         this.tankFunction = tankFunction;
     }
 
     @Nonnull
     @Override
-    public List<? extends IChemicalTank<CHEMICAL, STACK>> getTanks(@Nullable Direction side) {
+    public List<TANK> getTanks(@Nullable Direction side) {
         return tankFunction.apply(side);
     }
 }

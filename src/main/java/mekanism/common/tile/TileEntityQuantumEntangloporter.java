@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,13 +10,12 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
@@ -108,7 +108,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
         if (gasConfig != null) {
-            Supplier<List<? extends IChemicalTank<Gas, GasStack>>> tankSupplier = () -> hasFrequency() ? frequency.getGasTanks(null) : Collections.emptyList();
+            Supplier<List<IGasTank>> tankSupplier = () -> hasFrequency() ? frequency.getGasTanks(null) : Collections.emptyList();
             gasConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Gas(true, false, tankSupplier));
             gasConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Gas(false, true, tankSupplier));
             //Set default config directions
@@ -146,7 +146,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         return new QuantumEntangloporterGasTankHolder(this);
     }
 

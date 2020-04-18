@@ -9,6 +9,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -75,8 +76,8 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
         builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this), RelativeSide.LEFT);
         builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.RIGHT);
         return builder.build();

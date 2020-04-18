@@ -8,6 +8,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.PressurizedReactionCachedRecipe;
@@ -117,8 +118,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(inputGasTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getInputGas().testType(gas)), this));
         builder.addTank(outputGasTank = BasicGasTank.output(MAX_GAS, this));
         return builder.build();

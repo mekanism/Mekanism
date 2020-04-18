@@ -17,7 +17,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionStack> implements IInfusionHandler {
+public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionStack> implements IInfusionHandler, IInfusionTank {
 
     public static final Predicate<@NonNull InfuseType> alwaysTrue = stack -> true;
     public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;

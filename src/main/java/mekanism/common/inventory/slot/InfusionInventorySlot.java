@@ -12,8 +12,8 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.IChemicalHandlerWrapper;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -52,7 +52,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
     /**
      * Fills the tank from this item OR converts the given item to an infusion type
      */
-    public static InfusionInventorySlot fillOrConvert(IChemicalTank<InfuseType, InfusionStack> infusionTank, Supplier<World> worldSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static InfusionInventorySlot fillOrConvert(IInfusionTank infusionTank, Supplier<World> worldSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         Function<ItemStack, InfusionStack> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
@@ -68,7 +68,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
         }, inventory, x, y);
     }
 
-    private InfusionInventorySlot(IChemicalTank<InfuseType, InfusionStack> infusionTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
+    private InfusionInventorySlot(IInfusionTank infusionTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
           Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(infusionTank, worldSupplier, canExtract, canInsert, validator, inventory, x, y);
     }

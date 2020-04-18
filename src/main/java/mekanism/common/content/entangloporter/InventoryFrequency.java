@@ -7,10 +7,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalUtils;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -43,7 +41,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     public BasicHeatCapacitor storedHeat;
 
     private List<IInventorySlot> inventorySlots;
-    private List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
+    private List<IGasTank> gasTanks;
     private List<IExtendedFluidTank> fluidTanks;
     private List<IEnergyContainer> energyContainers;
     private List<IHeatCapacitor> heatCapacitors;
@@ -124,7 +122,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     @Nonnull
     @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 
@@ -140,6 +138,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         return energyContainers;
     }
 
+    @Nonnull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return heatCapacitors;

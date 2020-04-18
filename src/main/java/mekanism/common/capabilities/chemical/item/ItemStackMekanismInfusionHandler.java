@@ -6,7 +6,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -21,7 +21,7 @@ import net.minecraftforge.common.capabilities.Capability;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanismChemicalHandler<InfuseType, InfusionStack> implements IMekanismInfusionHandler {
+public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanismChemicalHandler<InfuseType, InfusionStack, IInfusionTank> implements IMekanismInfusionHandler {
 
     @Override
     protected void load() {
@@ -32,7 +32,7 @@ public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanism
     }
 
     @Override
-    public List<? extends IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side) {
+    public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
         return tanks;
     }
 

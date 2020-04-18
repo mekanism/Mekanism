@@ -11,11 +11,10 @@ import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
-import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.SubstanceType;
@@ -34,7 +33,7 @@ import net.minecraft.util.Direction;
 @ParametersAreNonnullByDefault
 public class InfusionRecipeData implements RecipeUpgradeData<InfusionRecipeData> {
 
-    private final List<IChemicalTank<InfuseType, InfusionStack>> infusionTanks;
+    private final List<IInfusionTank> infusionTanks;
 
     InfusionRecipeData(ListNBT tanks) {
         int count = DataHandlerUtils.getMaxId(tanks, NBTConstants.TANK);
@@ -45,14 +44,14 @@ public class InfusionRecipeData implements RecipeUpgradeData<InfusionRecipeData>
         DataHandlerUtils.readTanks(infusionTanks, tanks);
     }
 
-    InfusionRecipeData(List<IChemicalTank<InfuseType, InfusionStack>> infusionTanks) {
+    InfusionRecipeData(List<IInfusionTank> infusionTanks) {
         this.infusionTanks = infusionTanks;
     }
 
     @Nullable
     @Override
     public InfusionRecipeData merge(InfusionRecipeData other) {
-        List<IChemicalTank<InfuseType, InfusionStack>> allTanks = new ArrayList<>(infusionTanks.size() + other.infusionTanks.size());
+        List<IInfusionTank> allTanks = new ArrayList<>(infusionTanks.size() + other.infusionTanks.size());
         allTanks.addAll(infusionTanks);
         allTanks.addAll(other.infusionTanks);
         return new InfusionRecipeData(allTanks);
@@ -65,7 +64,7 @@ public class InfusionRecipeData implements RecipeUpgradeData<InfusionRecipeData>
         }
         Item item = stack.getItem();
         Optional<IInfusionHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
-        List<IChemicalTank<InfuseType, InfusionStack>> infusionTanks = new ArrayList<>();
+        List<IInfusionTank> infusionTanks = new ArrayList<>();
         if (capability.isPresent()) {
             IInfusionHandler infusionHandler = capability.get();
             for (int i = 0; i < infusionHandler.getInfusionTankCount(); i++) {
@@ -103,7 +102,7 @@ public class InfusionRecipeData implements RecipeUpgradeData<InfusionRecipeData>
         IMekanismInfusionHandler outputHandler = new IMekanismInfusionHandler() {
             @Nonnull
             @Override
-            public List<? extends IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side) {
+            public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
                 return infusionTanks;
             }
 
@@ -112,7 +111,7 @@ public class InfusionRecipeData implements RecipeUpgradeData<InfusionRecipeData>
             }
         };
         boolean hasData = false;
-        for (IChemicalTank<InfuseType, InfusionStack> infusionTank : this.infusionTanks) {
+        for (IInfusionTank infusionTank : this.infusionTanks) {
             if (!infusionTank.isEmpty()) {
                 if (!outputHandler.insertInfusion(infusionTank.getStack(), Action.EXECUTE).isEmpty()) {
                     //If we have a remainder something failed so bail

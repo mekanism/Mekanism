@@ -1,35 +1,30 @@
 package mekanism.common.tile.base;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
-import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.IHeatCapacitor;
@@ -65,12 +60,12 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.proxy.ProxyFluidHandler;
-import mekanism.common.capabilities.proxy.ProxyGasHandler;
-import mekanism.common.capabilities.proxy.ProxyHeatHandler;
-import mekanism.common.capabilities.proxy.ProxyInfusionHandler;
-import mekanism.common.capabilities.proxy.ProxyItemHandler;
-import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
+import mekanism.common.capabilities.manager.EnergyHandlerManager;
+import mekanism.common.capabilities.manager.FluidHandlerManager;
+import mekanism.common.capabilities.manager.GasHandlerManager;
+import mekanism.common.capabilities.manager.HeatHandlerManager;
+import mekanism.common.capabilities.manager.InfusionHandlerManager;
+import mekanism.common.capabilities.manager.ItemHandlerManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -123,10 +118,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
@@ -179,54 +172,28 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //End variables ITileUpgradable
 
     //Variables for handling ITileContainer
-    @Nullable
-    private IInventorySlotHolder slotHolder;
-
-    private ProxyItemHandler readOnlyItemHandler;
-    private Map<Direction, ProxyItemHandler> itemHandlers;
+    protected final ItemHandlerManager itemHandlerManager;
     //End variables ITileContainer
 
     //Variables for handling IMekanismGasHandler
-    @Nullable
-    private IChemicalTankHolder<Gas, GasStack> gasTankHolder;
-
-    private ProxyGasHandler readOnlyGasHandler;
-    private Map<Direction, ProxyGasHandler> gasHandlers;
+    protected final GasHandlerManager gasHandlerManager;
     //End variables IMekanismGasHandler
 
     //Variables for handling IMekanismInfusionHandler
-    @Nullable
-    private IChemicalTankHolder<InfuseType, InfusionStack> infusionTankHolder;
-
-    private ProxyInfusionHandler readOnlyInfusionHandler;
-    private Map<Direction, ProxyInfusionHandler> infusionHandlers;
+    protected final InfusionHandlerManager infusionHandlerManager;
     //End variables IMekanismInfusionHandler
 
     //Variables for handling IMekanismFluidHandler
-    @Nullable
-    private IFluidTankHolder fluidTankHolder;
-
-    private ProxyFluidHandler readOnlyFluidHandler;
-    private Map<Direction, ProxyFluidHandler> fluidHandlers;
+    protected final FluidHandlerManager fluidHandlerManager;
     //End variables IMekanismFluidHandler
 
     //Variables for handling IMekanismStrictEnergyHandler
-    @Nullable
-    private IEnergyContainerHolder energyContainerHolder;
-
-    private ProxyStrictEnergyHandler readOnlyStrictEnergyHandler;
-    private Map<Direction, ProxyStrictEnergyHandler> strictEnergyHandlers;
-
+    protected final EnergyHandlerManager energyHandlerManager;
     private FloatingLong lastEnergyReceived = FloatingLong.ZERO;
     //End variables IMekanismStrictEnergyHandler
 
     //Variables for handling IMekanismHeatHandler
-    @Nullable
-    private IHeatCapacitorHolder heatCapacitorHolder;
-
-    private ProxyHeatHandler readOnlyHeatHandler;
-    private Map<Direction, ProxyHeatHandler> heatHandlers;
-
+    protected final HeatHandlerManager heatHandlerManager;
     //End variables for IMekanismHeatHandler
 
     //Variables for handling ITileSecurity
@@ -255,30 +222,12 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         this.blockProvider = blockProvider;
         setSupportedTypes(this.blockProvider.getBlock());
         presetVariables();
-        gasTankHolder = getInitialGasTanks();
-        if (canHandleGas()) {
-            gasHandlers = new EnumMap<>(Direction.class);
-        }
-        infusionTankHolder = getInitialInfusionTanks();
-        if (canHandleInfusion()) {
-            infusionHandlers = new EnumMap<>(Direction.class);
-        }
-        fluidTankHolder = getInitialFluidTanks();
-        if (canHandleFluid()) {
-            fluidHandlers = new EnumMap<>(Direction.class);
-        }
-        energyContainerHolder = getInitialEnergyContainers();
-        if (canHandleEnergy()) {
-            strictEnergyHandlers = new EnumMap<>(Direction.class);
-        }
-        heatCapacitorHolder = getInitialHeatCapacitors();
-        if (canHandleHeat()) {
-            heatHandlers = new EnumMap<>(Direction.class);
-        }
-        slotHolder = getInitialInventory();
-        if (hasInventory()) {
-            itemHandlers = new EnumMap<>(Direction.class);
-        }
+        gasHandlerManager = new GasHandlerManager(getInitialGasTanks(), this);
+        infusionHandlerManager = new InfusionHandlerManager(getInitialInfusionTanks(), this);
+        fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(), this);
+        energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(), this);
+        heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(), this);
+        itemHandlerManager = new ItemHandlerManager(getInitialInventory(), hasInventory, this);
         if (supportsUpgrades()) {
             upgradeComponent = new TileComponentUpgrade(this, UpgradeInventorySlot.of(this, getSupportedUpgrade()));
         }
@@ -379,32 +328,32 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Override
     public final boolean hasInventory() {
-        return hasInventory || slotHolder != null;
+        return itemHandlerManager.canHandle();
     }
 
     @Override
-    public boolean canHandleInfusion() {
-        return infusionTankHolder != null;
+    public final boolean canHandleInfusion() {
+        return infusionHandlerManager.canHandle();
     }
 
     @Override
-    public boolean canHandleFluid() {
-        return fluidTankHolder != null;
+    public final boolean canHandleFluid() {
+        return fluidHandlerManager.canHandle();
     }
 
     @Override
-    public boolean canHandleGas() {
-        return gasTankHolder != null;
+    public final boolean canHandleGas() {
+        return gasHandlerManager.canHandle();
     }
 
     @Override
-    public boolean canHandleEnergy() {
-        return energyContainerHolder != null;
+    public final boolean canHandleEnergy() {
+        return energyHandlerManager.canHandle();
     }
 
     @Override
-    public boolean canHandleHeat() {
-        return heatCapacitorHolder != null;
+    public final boolean canHandleHeat() {
+        return heatHandlerManager.canHandle();
     }
 
     public void addComponent(ITileComponent component) {
@@ -622,14 +571,14 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             container.track(SyncableEnum.create(RedstoneControl::byIndexStatic, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
         }
         if (canHandleGas() && handles(SubstanceType.GAS)) {
-            List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(null);
-            for (IChemicalTank<Gas, GasStack> gasTank : gasTanks) {
+            List<IGasTank> gasTanks = getGasTanks(null);
+            for (IGasTank gasTank : gasTanks) {
                 container.track(SyncableGasStack.create(gasTank));
             }
         }
         if (canHandleInfusion() && handles(SubstanceType.INFUSION)) {
-            List<? extends IChemicalTank<InfuseType, InfusionStack>> infusionTanks = getInfusionTanks(null);
-            for (IChemicalTank<InfuseType, InfusionStack> infusionTank : infusionTanks) {
+            List<IInfusionTank> infusionTanks = getInfusionTanks(null);
+            for (IInfusionTank infusionTank : infusionTanks) {
                 container.track(SyncableInfusionStack.create(infusionTank));
             }
         }
@@ -702,48 +651,33 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         //TODO: Cache the LazyOptional where possible as recommended in ICapabilityProvider
         if (hasInventory()) {
             if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-                List<IInventorySlot> inventorySlots = getInventorySlots(side);
-                //Don't return an item handler if we don't actually even have any slots for that side
-                LazyOptional<IItemHandler> lazyItemHandler = inventorySlots.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getItemHandler(side));
-                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, lazyItemHandler);
+                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, itemHandlerManager.getCapability(side));
             }
         }
         if (canHandleGas()) {
             if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-                List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(side);
-                //Don't return a gas handler if we don't actually even have any gas tanks for that side
-                LazyOptional<IGasHandler> lazyGasHandler = gasTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getGasHandler(side));
-                return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, lazyGasHandler);
+                return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, gasHandlerManager.getCapability(side));
             }
         }
         if (canHandleInfusion()) {
             if (capability == Capabilities.INFUSION_HANDLER_CAPABILITY) {
-                List<? extends IChemicalTank<InfuseType, InfusionStack>> infusionTanks = getInfusionTanks(side);
-                //Don't return an infusion handler if we don't actually even have any infusion tanks for that side
-                LazyOptional<IInfusionHandler> lazyInfusionHandler = infusionTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getInfusionHandler(side));
-                return Capabilities.INFUSION_HANDLER_CAPABILITY.orEmpty(capability, lazyInfusionHandler);
+                return Capabilities.INFUSION_HANDLER_CAPABILITY.orEmpty(capability, infusionHandlerManager.getCapability(side));
             }
         }
         if (canHandleFluid()) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-                List<IExtendedFluidTank> fluidTanks = getFluidTanks(side);
-                //Don't return a fluid handler if we don't actually even have any fluid tanks for that side
-                LazyOptional<IFluidHandler> lazyFluidHandler = fluidTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getFluidHandler(side));
-                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, lazyFluidHandler);
+                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, fluidHandlerManager.getCapability(side));
             }
         }
         if (canHandleHeat()) {
             if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
-                List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(side);
-                //Don't return a heat handler if we don't actually even have any heat capacitors for that side
-                LazyOptional<IHeatHandler> lazyHeatHandler = heatCapacitors.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getHeatHandler(side));
-                return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, lazyHeatHandler);
+                return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, heatHandlerManager.getCapability(side));
             }
         }
         if (canHandleEnergy() && EnergyCompatUtils.isEnergyCapability(capability)) {
             List<IEnergyContainer> energyContainers = getEnergyContainers(side);
             //Don't return a energy handler if we don't actually even have any energy containers for that side
-            return energyContainers.isEmpty() ? LazyOptional.empty() : EnergyCompatUtils.getEnergyCapability(capability, getEnergyHandler(side));
+            return energyContainers.isEmpty() ? LazyOptional.empty() : EnergyCompatUtils.getEnergyCapability(capability, energyHandlerManager.getHandler(side));
         }
         //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
         return super.getCapability(capability, side);
@@ -900,11 +834,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Nonnull
     @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        if (!hasInventory() || slotHolder == null) {
-            return Collections.emptyList();
-        }
-        return slotHolder.getInventorySlots(side);
+    public final List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+        return itemHandlerManager.getContainers(side);
     }
 
     @Override
@@ -930,91 +861,31 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     public boolean persistInventory() {
         return hasInventory();
     }
-
-    /**
-     * Lazily get and cache an ItemHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
-     */
-    protected IItemHandler getItemHandler(@Nullable Direction side) {
-        if (!hasInventory()) {
-            return null;
-        }
-        if (side == null) {
-            if (readOnlyItemHandler == null) {
-                readOnlyItemHandler = new ProxyItemHandler(this, null, slotHolder);
-            }
-            return readOnlyItemHandler;
-        }
-        ProxyItemHandler itemHandler = itemHandlers.get(side);
-        if (itemHandler == null) {
-            itemHandlers.put(side, itemHandler = new ProxyItemHandler(this, side, slotHolder));
-        }
-        return itemHandler;
-    }
     //End methods ITileContainer
 
     //Methods for implementing IMekanismGasHandler
     @Nullable
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         return null;
     }
 
     @Nonnull
     @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
-        return canHandleGas() && gasTankHolder != null ? gasTankHolder.getTanks(side) : Collections.emptyList();
-    }
-
-    /**
-     * Lazily get and cache an IGasHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
-     */
-    protected IGasHandler getGasHandler(@Nullable Direction side) {
-        if (!canHandleGas()) {
-            return null;
-        }
-        if (side == null) {
-            if (readOnlyGasHandler == null) {
-                readOnlyGasHandler = new ProxyGasHandler(this, null, gasTankHolder);
-            }
-            return readOnlyGasHandler;
-        }
-        ProxyGasHandler gasHandler = gasHandlers.get(side);
-        if (gasHandler == null) {
-            gasHandlers.put(side, gasHandler = new ProxyGasHandler(this, side, gasTankHolder));
-        }
-        return gasHandler;
+    public final List<IGasTank> getGasTanks(@Nullable Direction side) {
+        return gasHandlerManager.getContainers(side);
     }
     //End methods IMekanismGasHandler
 
     //Methods for implementing IMekanismInfusionHandler
     @Nullable
-    protected IChemicalTankHolder<InfuseType, InfusionStack> getInitialInfusionTanks() {
+    protected IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
         return null;
     }
 
     @Nonnull
     @Override
-    public List<? extends IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side) {
-        return canHandleInfusion() && infusionTankHolder != null ? infusionTankHolder.getTanks(side) : Collections.emptyList();
-    }
-
-    /**
-     * Lazily get and cache an IInfusionHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
-     */
-    protected IInfusionHandler getInfusionHandler(@Nullable Direction side) {
-        if (!canHandleInfusion()) {
-            return null;
-        }
-        if (side == null) {
-            if (readOnlyInfusionHandler == null) {
-                readOnlyInfusionHandler = new ProxyInfusionHandler(this, null, infusionTankHolder);
-            }
-            return readOnlyInfusionHandler;
-        }
-        ProxyInfusionHandler infusionHandler = infusionHandlers.get(side);
-        if (infusionHandler == null) {
-            infusionHandlers.put(side, infusionHandler = new ProxyInfusionHandler(this, side, infusionTankHolder));
-        }
-        return infusionHandler;
+    public final List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
+        return infusionHandlerManager.getContainers(side);
     }
     //End methods IMekanismInfusionHandler
 
@@ -1026,29 +897,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Nonnull
     @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return canHandleFluid() && fluidTankHolder != null ? fluidTankHolder.getTanks(side) : Collections.emptyList();
-    }
-
-    /**
-     * Lazily get and cache an IExtendedFluidHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null
-     * side
-     */
-    protected IExtendedFluidHandler getFluidHandler(@Nullable Direction side) {
-        if (!canHandleFluid()) {
-            return null;
-        }
-        if (side == null) {
-            if (readOnlyFluidHandler == null) {
-                readOnlyFluidHandler = new ProxyFluidHandler(this, null, fluidTankHolder);
-            }
-            return readOnlyFluidHandler;
-        }
-        ProxyFluidHandler fluidHandler = fluidHandlers.get(side);
-        if (fluidHandler == null) {
-            fluidHandlers.put(side, fluidHandler = new ProxyFluidHandler(this, side, fluidTankHolder));
-        }
-        return fluidHandler;
+    public final List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+        return fluidHandlerManager.getContainers(side);
     }
     //End methods IMekanismFluidHandler
 
@@ -1060,29 +910,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Nonnull
     @Override
-    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return canHandleEnergy() && energyContainerHolder != null ? energyContainerHolder.getEnergyContainers(side) : Collections.emptyList();
-    }
-
-    /**
-     * Lazily get and cache an IStrictEnergyHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null
-     * side
-     */
-    protected IStrictEnergyHandler getEnergyHandler(@Nullable Direction side) {
-        if (!canHandleEnergy()) {
-            return null;
-        }
-        if (side == null) {
-            if (readOnlyStrictEnergyHandler == null) {
-                readOnlyStrictEnergyHandler = new ProxyStrictEnergyHandler(this, null, energyContainerHolder);
-            }
-            return readOnlyStrictEnergyHandler;
-        }
-        ProxyStrictEnergyHandler energyHandler = strictEnergyHandlers.get(side);
-        if (energyHandler == null) {
-            strictEnergyHandlers.put(side, energyHandler = new ProxyStrictEnergyHandler(this, side, energyContainerHolder));
-        }
-        return energyHandler;
+    public final List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+        return energyHandlerManager.getContainers(side);
     }
 
     @Nonnull
@@ -1126,31 +955,9 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Nonnull
     @Override
-    public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
-        return canHandleHeat() && heatCapacitorHolder != null ? heatCapacitorHolder.getHeatCapacitors(side) : Collections.emptyList();
+    public final List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
+        return heatHandlerManager.getContainers(side);
     }
-
-    /**
-     * Lazily get and cache an IStrictEnergyHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null
-     * side
-     */
-    protected IHeatHandler getHeatHandler(@Nullable Direction side) {
-        if (!canHandleHeat()) {
-            return null;
-        }
-        if (side == null) {
-            if (readOnlyHeatHandler == null) {
-                readOnlyHeatHandler = new ProxyHeatHandler(this, null, heatCapacitorHolder);
-            }
-            return readOnlyHeatHandler;
-        }
-        ProxyHeatHandler heatHandler = heatHandlers.get(side);
-        if (heatHandler == null) {
-            heatHandlers.put(side, heatHandler = new ProxyHeatHandler(this, side, heatCapacitorHolder));
-        }
-        return heatHandler;
-    }
-
     //End methods for IInWorldHeatHandler
 
     //Methods for implementing ITileSecurity

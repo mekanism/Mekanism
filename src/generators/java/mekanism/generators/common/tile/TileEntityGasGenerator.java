@@ -7,9 +7,10 @@ import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -50,8 +51,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
         builder.addTank(fuelTank = new FuelTank(this), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }

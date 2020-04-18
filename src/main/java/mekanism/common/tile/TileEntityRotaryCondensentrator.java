@@ -10,6 +10,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
@@ -90,8 +91,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
         //Only allow extraction
         builder.addTank(gasTank = BasicGasTank.create(CAPACITY, (gas, automationType) -> automationType == AutomationType.MANUAL || mode,
               (gas, automationType) -> automationType == AutomationType.INTERNAL || !mode, this::isValidGas, this), RelativeSide.LEFT);

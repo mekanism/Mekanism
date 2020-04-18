@@ -9,6 +9,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedData;
@@ -107,8 +108,8 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(gasTank = GasTankGasTank.create(tier, this));
         return builder.build();
     }
