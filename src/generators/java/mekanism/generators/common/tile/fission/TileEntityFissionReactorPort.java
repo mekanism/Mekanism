@@ -7,6 +7,7 @@ import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -61,7 +62,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         return side -> structure == null ? Collections.emptyList() : structure.getGasTanks(side);
     }
 

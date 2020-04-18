@@ -5,11 +5,10 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
@@ -111,7 +110,7 @@ public class ItemCanteen extends Item {
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IChemicalTank<Gas, GasStack> gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
+                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
                 if (gasTank != null) {
                     return gasTank.extract(amount, Action.EXECUTE, AutomationType.MANUAL);
                 }
@@ -126,7 +125,7 @@ public class ItemCanteen extends Item {
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IChemicalTank<Gas, GasStack> gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
+                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
                 if (gasTank != null) {
                     return gasTank.getStack();
                 }

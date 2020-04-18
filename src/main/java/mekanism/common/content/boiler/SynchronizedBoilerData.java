@@ -1,18 +1,16 @@
 package mekanism.common.content.boiler;
 
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
-import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -64,7 +62,7 @@ public class SynchronizedBoilerData extends MultiblockData<SynchronizedBoilerDat
 
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
     private List<IExtendedFluidTank> fluidTanks;
-    private List<IChemicalTank<Gas, GasStack>> gasTanks;
+    private List<IGasTank> gasTanks;
     private List<IHeatCapacitor> heatCapacitors;
 
     public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
@@ -135,7 +133,7 @@ public class SynchronizedBoilerData extends MultiblockData<SynchronizedBoilerDat
 
     @Nonnull
     @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 

@@ -1,19 +1,17 @@
 package mekanism.common.multiblock;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -42,7 +40,7 @@ public class MultiblockCache<T extends MultiblockData<T>> implements IMekanismIn
 
     private List<IInventorySlot> inventorySlots = new ArrayList<>();
     private List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
-    private List<IChemicalTank<Gas, GasStack>> gasTanks = new ArrayList<>();
+    private List<IGasTank> gasTanks = new ArrayList<>();
     private List<IEnergyContainer> energyContainers = new ArrayList<>();
     private List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
@@ -116,7 +114,7 @@ public class MultiblockCache<T extends MultiblockData<T>> implements IMekanismIn
         }
         // Gas
         if (gasTanks.isEmpty()) prefabGas(mergeCache.gasTanks.size());
-        List<? extends IChemicalTank<Gas, GasStack>> cacheGasTanks = getGasTanks(null);
+        List<IGasTank> cacheGasTanks = getGasTanks(null);
         for (int i = 0; i < cacheGasTanks.size(); i++) {
             StorageUtils.mergeTanks(cacheGasTanks.get(i), mergeCache.getGasTanks(null).get(i));
         }
@@ -164,9 +162,9 @@ public class MultiblockCache<T extends MultiblockData<T>> implements IMekanismIn
 
     public void syncGasData(MultiblockData<T> data) {
         if (data instanceof IMekanismGasHandler) {
-            List<? extends IChemicalTank<Gas, GasStack>> gasTanksToCopy = ((IMekanismGasHandler) data).getGasTanks(null);
+            List<IGasTank> gasTanksToCopy = ((IMekanismGasHandler) data).getGasTanks(null);
             if (gasTanks.isEmpty()) prefabGas(gasTanksToCopy.size());
-            List<? extends IChemicalTank<Gas, GasStack>> cacheTanks = getGasTanks(null);
+            List<IGasTank> cacheTanks = getGasTanks(null);
             for (int i = 0; i < gasTanksToCopy.size(); i++) {
                 if (i < cacheTanks.size()) {
                     //Just directly set it as we don't have any restrictions on our tanks here
@@ -235,8 +233,8 @@ public class MultiblockCache<T extends MultiblockData<T>> implements IMekanismIn
 
     public void applyGasData(MultiblockData<T> data) {
         if (data instanceof IMekanismGasHandler) {
-            List<? extends IChemicalTank<Gas, GasStack>> gasTanks = ((IMekanismGasHandler) data).getGasTanks(null);
-            List<? extends IChemicalTank<Gas, GasStack>> cacheTanks = getGasTanks(null);
+            List<IGasTank> gasTanks = ((IMekanismGasHandler) data).getGasTanks(null);
+            List<IGasTank> cacheTanks = getGasTanks(null);
             for (int i = 0; i < cacheTanks.size(); i++) {
                 if (i < gasTanks.size()) {
                     //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
@@ -321,7 +319,7 @@ public class MultiblockCache<T extends MultiblockData<T>> implements IMekanismIn
 
     @Nonnull
     @Override
-    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 

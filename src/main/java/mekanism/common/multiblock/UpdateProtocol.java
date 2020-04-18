@@ -1,17 +1,15 @@
 package mekanism.common.multiblock;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
-import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -310,7 +308,7 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
             }
         }
         if (structureFound instanceof IMekanismGasHandler) {
-            for (IChemicalTank<Gas, GasStack> tank : ((IMekanismGasHandler) structureFound).getGasTanks(null)) {
+            for (IGasTank tank : ((IMekanismGasHandler) structureFound).getGasTanks(null)) {
                 tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
             }
         }

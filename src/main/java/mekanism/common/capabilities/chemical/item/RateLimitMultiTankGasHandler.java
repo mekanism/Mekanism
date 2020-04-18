@@ -10,10 +10,9 @@ import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler.RateLimitGasTank;
@@ -23,24 +22,24 @@ import mekanism.common.capabilities.chemical.item.RateLimitGasHandler.RateLimitG
 public class RateLimitMultiTankGasHandler extends ItemStackMekanismGasHandler {
 
     public static RateLimitMultiTankGasHandler create(@NonNull Collection<GasTankSpec> gasTanks) {
-        List<Function<IMekanismGasHandler, IChemicalTank<Gas, GasStack>>> tankProviders = new ArrayList<>();
+        List<Function<IMekanismGasHandler, IGasTank>> tankProviders = new ArrayList<>();
         for (GasTankSpec spec : gasTanks) {
             tankProviders.add(handler -> new RateLimitGasTank(spec.rate, spec.capacity, spec.canExtract, spec.canInsert, spec.isValid, null, handler));
         }
         return new RateLimitMultiTankGasHandler(tankProviders);
     }
 
-    private List<IChemicalTank<Gas, GasStack>> tanks;
+    private List<IGasTank> tanks;
 
-    private RateLimitMultiTankGasHandler(List<Function<IMekanismGasHandler, IChemicalTank<Gas, GasStack>>> tankProviders) {
+    private RateLimitMultiTankGasHandler(List<Function<IMekanismGasHandler, IGasTank>> tankProviders) {
         tanks = new ArrayList<>(tankProviders.size());
-        for (Function<IMekanismGasHandler, IChemicalTank<Gas, GasStack>> provider : tankProviders) {
+        for (Function<IMekanismGasHandler, IGasTank> provider : tankProviders) {
             tanks.add(provider.apply(this));
         }
     }
 
     @Override
-    protected List<? extends IChemicalTank<Gas, GasStack>> getInitialTanks() {
+    protected List<IGasTank> getInitialTanks() {
         return tanks;
     }
 
