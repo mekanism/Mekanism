@@ -291,7 +291,7 @@
   "description.mekanism.chemical_injection_chamber": "Елітний машин, що обробляє руди на чотири фрагменти, слугує початковим етапом 4% обробки руди.",
   "description.mekanism.chemical_oxidizer": "Машина для окислення твердих матеріалів у фазу газу.",
   "description.mekanism.chemical_washer": "Кінцева машина, яка очищає необроблену пульсу і готує її до кристалізації.",
-  "description.mekanism.combiner": "Машина використовується для спалювання пил і бруківки, щоб сформувати своїх колег з руди.",
+  "description.mekanism.combiner": "A machine used to combine items together. For example, dusts and cobblestone to form their ore counterparts.",
   "description.mekanism.copper_ore": "Загальний, провідний матеріал, який можна використати у виробництві дротів. Його здатність витримувати високі спеки також робить його важливим для вдосконаленого техніки.",
   "description.mekanism.crusher": "Машина використовується для розчавлення коріння в їх пилових колегах, а також виконання багатьох інших операцій.",
   "description.mekanism.digital_miner": "Високо розширений, фільтр-основий, автоматичний майнер для видобування будь-якого блоку, якому ви повідомляєте його в межах 32-го блоку (максимального) радіусу.",
