@@ -1503,7 +1503,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "to_dust"));
         //to ore
         CombinerRecipeBuilder.combining(
-              ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL, 3),
+              ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL, 8),
               ItemStackIngredient.from(Tags.Items.COBBLESTONE),
               new ItemStack(Items.COAL_ORE)
         ).addCriterion(Criterion.HAS_COMBINER)
