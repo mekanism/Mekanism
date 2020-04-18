@@ -25,7 +25,7 @@
   "description.mekanismgenerators.advanced_solar_generator": "一台直接吸收大部分太阳光产生能量的高级发电机。",
   "description.mekanismgenerators.bio_generator": "一台利用燃烧有机材料产生能量的发电机。",
   "description.mekanismgenerators.electromagnetic_coil": "一块类似磁铁的装置，能使得动能在其中转化为电磁能，它必须放置在旋钮装置的上方并保证它们是相连的。",
-  "description.mekanismgenerators.gas_burning_generator": "一台利用不同的气体供能的发电机。",
+  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the varying molecular gases to produce energy.",
   "description.mekanismgenerators.heat_generator": "一台使用岩浆热量或者其它可燃资源产生能量的发电机。",
   "description.mekanismgenerators.laser_focus_matrix": "一个可吸收光能并加热聚变反应堆的强化玻璃板。",
   "description.mekanismgenerators.reactor.logic.capacity": "反应堆温度已经趋于稳定",
