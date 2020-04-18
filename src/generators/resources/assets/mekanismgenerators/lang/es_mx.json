@@ -25,7 +25,7 @@
   "description.mekanismgenerators.advanced_solar_generator": "Un generador solar avanzado, que absorbe y transforma la energia de el sol, de manera mas eficiente.",
   "description.mekanismgenerators.bio_generator": "Un generador capaz de transformar material orgánico en energía.",
   "description.mekanismgenerators.electromagnetic_coil": "Un bloque que convierte la energía cinética de un Complejo de rotación en electricidad utilizable. Estos pueden colocarse en cualquier disposición por encima de su Complejo de rotación, siempre y cuando todos se toquen entre sí y con el complejo en sí.",
-  "description.mekanismgenerators.gas_burning_generator": "Un generador que quema las moléculas de varios gases para producir energía.",
+  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the varying molecular gases to produce energy.",
   "description.mekanismgenerators.heat_generator": "Un generador que convierte el calor en energía. (Lava, o materiales incendiables)",
   "description.mekanismgenerators.laser_focus_matrix": "Panel de vidrio de reactor que es capaz de absorber energía óptica y, por lo tanto, calentar el reactor de fusión.",
   "description.mekanismgenerators.reactor.logic.capacity": "El núcleo del reactor ha alcanzado su máxima capacidad.",
