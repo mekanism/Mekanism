@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ICI",
+    "SIS",
+    "SIS"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "I": {
+      "tag": "forge:ingots/lead"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "result": {
+    "item": "mekanismgenerators:control_rod_assembly"
+  }
+}

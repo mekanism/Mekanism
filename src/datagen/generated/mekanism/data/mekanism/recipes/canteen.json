@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    "I#I",
+    " I "
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/tin"
+    },
+    "#": {
+      "item": "minecraft:bowl"
+    }
+  },
+  "result": {
+    "item": "mekanism:canteen"
+  }
+}

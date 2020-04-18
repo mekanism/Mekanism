@@ -1,22 +1,22 @@
 {
   "type": "mekanism:mek_data",
   "pattern": [
-    "CTC",
-    "A#A",
-    "CTC"
+    "ITI",
+    "CXC",
+    "ITI"
   ],
   "key": {
     "T": {
       "item": "mekanism:basic_gas_tank"
     },
+    "I": {
+      "tag": "forge:ingots/refined_obsidian"
+    },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "forge:circuits/ultimate"
     },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "#": {
-      "tag": "mekanism:alloys/atomic"
+    "X": {
+      "item": "mekanism:steel_casing"
     }
   },
   "result": {

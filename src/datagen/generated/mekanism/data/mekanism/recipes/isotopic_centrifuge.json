@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:mek_data",
+  "pattern": [
+    "III",
+    "CTC",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/lead"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "T": {
+      "item": "mekanism:basic_gas_tank"
+    }
+  },
+  "result": {
+    "item": "mekanism:isotopic_centrifuge"
+  }
+}

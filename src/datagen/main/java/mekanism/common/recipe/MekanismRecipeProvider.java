@@ -2264,6 +2264,16 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
               .addCriterion(Criterion.has(MekanismBlocks.BOILER_CASING))
               .build(consumer);
+        //Canteen
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.CANTEEN)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
+              .key(Pattern.CONSTANT, Items.BOWL)
+              .addCriterion(Criterion.has("tin", MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)))
+              .build(consumer);
         //Cardboard box
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CARDBOARD_BOX)
               .pattern(RecipePattern.createPattern(
@@ -2290,28 +2300,26 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Chemical crystallizer
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_CRYSTALLIZER)
               .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT),
-                    TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
-                    TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT))
+                    TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT))
               ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
-              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
-              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
-              .addCriterion(Criterion.HAS_STEEL_CASING)
-              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .addCriterion(Criterion.HAS_ULTIMATE_CIRCUIT)
               .build(consumer);
         //Chemical dissolution chamber
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER)
               .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT),
-                    TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
-                    TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT))
+                    TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT))
               ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
-              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
-              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
-              .key(Pattern.CONSTANT, MekanismTags.Items.ALLOYS_ATOMIC)
-              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
-              .addCriterion(Criterion.HAS_INFUSED_ALLOY)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_ULTIMATE_CIRCUIT)
               .build(consumer);
         //Chemical infuser
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_INFUSER)
@@ -2355,14 +2363,14 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Chemical washer
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_WASHER)
               .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.CIRCUIT, Pattern.BUCKET, Pattern.CIRCUIT),
-                    TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
-                    TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT))
+                    TripleLine.of(Pattern.INGOT, Pattern.BUCKET, Pattern.INGOT),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT))
               ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
-              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
-              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
-              .key(Pattern.BUCKET, Items.BUCKET)
+              .key(Pattern.BUCKET, MekanismBlocks.BASIC_FLUID_TANK)
               .addCriterion(Criterion.HAS_STEEL_CASING)
               .build(consumer);
         //Combiner
@@ -2441,6 +2449,16 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(ROBIT_CHAR, MekanismItems.ROBIT)
               .addCriterion(Criterion.HAS_STEEL_CASING)
               .build(consumer);
+        //Dosimeter
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.DOSIMETER)
+            .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
+                  TripleLine.of(Pattern.INGOT, Pattern.REDSTONE, Pattern.INGOT),
+                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+            .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+            .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.LEAD))
+            .build(consumer);
         //Dynamic tank
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DYNAMIC_TANK, 4)
               .pattern(RecipePattern.createPattern(
@@ -2604,7 +2622,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, Items.FURNACE)
               .addCriterion(Criterion.HAS_STEEL_CASING)
               .build(consumer);
-        //Gas mask
+        //Scuba mask
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SCUBA_MASK)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
@@ -2626,8 +2644,56 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.OSMIUM))
               .build(consumer);
-        RecipeCriterion hasPellet = Criterion.has(MekanismItems.HDPE_PELLET);
+        //Geiger Counter
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.GEIGER_COUNTER)
+            .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
+                  TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT),
+                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+            .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+            .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.LEAD))
+            .build(consumer);
+        //Hazmat Mask
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_MASK)
+            .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT))
+            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+            .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+            .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.LEAD))
+            .build(consumer);
+        //Hazmat Gown
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_GOWN)
+            .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
+            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+            .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+            .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.LEAD))
+            .build(consumer);
+        //Hazmat Pants
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_PANTS)
+            .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT))
+            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+            .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+            .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.LEAD))
+            .build(consumer);
+        //Hazmat Boots
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_BOOTS)
+            .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT))
+            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+            .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+            .addCriterion(Criterion.HAS_RESOURCE_MAP.get(PrimaryResource.LEAD))
+            .build(consumer);
         //HDPE rod
+        RecipeCriterion hasPellet = Criterion.has(MekanismItems.HDPE_PELLET);
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_ROD)
               .pattern(RecipePattern.createPattern(
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT),
@@ -2651,6 +2717,17 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     Pattern.CONSTANT)
               ).key(Pattern.CONSTANT, MekanismItems.HDPE_ROD)
               .addCriterion(Criterion.has(MekanismItems.HDPE_ROD))
+              .build(consumer);
+        //Isotopic Centrifuge
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ISOTOPIC_CENTRIFUGE)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .addCriterion(Criterion.HAS_ULTIMATE_CIRCUIT)
               .build(consumer);
         //Jetpack
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.JETPACK)
@@ -3134,7 +3211,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ItemStackGasToGasRecipeBuilder.dissolution(
             ItemStackIngredient.from(MekanismTags.Items.PELLETS_PLUTONIUM),
             GasStackIngredient.from(MekanismGases.HYDROFLUORIC_ACID, 1),
-            MekanismGases.FISSILE_FUEL.getGasStack(100)
+            MekanismGases.FISSILE_FUEL.getGasStack(500)
         ).addCriterion(Criterion.HAS_CHEMICAL_DISSOLUTION_CHAMBER)
             .build(consumer, Mekanism.rl(basePath + "fissile_fuel/from_plutonium"));
 

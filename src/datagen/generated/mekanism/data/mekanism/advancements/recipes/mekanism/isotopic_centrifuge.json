@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "mekanism:chemical_crystallizer"
+      "mekanism:isotopic_centrifuge"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "mekanism:chemical_crystallizer"
+        "recipe": "mekanism:isotopic_centrifuge"
       }
     }
   },

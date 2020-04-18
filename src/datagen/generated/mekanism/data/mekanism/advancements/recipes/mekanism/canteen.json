@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "mekanism:chemical_crystallizer"
+      "mekanism:canteen"
     ]
   },
   "criteria": {
-    "has_ultimate_circuit": {
+    "has_tin": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:circuits/ultimate"
+            "tag": "forge:ingots/tin"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "mekanism:chemical_crystallizer"
+        "recipe": "mekanism:canteen"
       }
     }
   },
   "requirements": [
     [
-      "has_ultimate_circuit",
+      "has_tin",
       "has_the_recipe"
     ]
   ]

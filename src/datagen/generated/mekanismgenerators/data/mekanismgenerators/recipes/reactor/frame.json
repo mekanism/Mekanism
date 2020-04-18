@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " X ",
-    "XAX",
-    " X "
+    "A#A",
+    "#X#",
+    "A#A"
   ],
   "key": {
     "X": {
@@ -11,6 +11,9 @@
     },
     "A": {
       "tag": "mekanism:alloys/atomic"
+    },
+    "#": {
+      "tag": "forge:pellets/polonium"
     }
   },
   "result": {

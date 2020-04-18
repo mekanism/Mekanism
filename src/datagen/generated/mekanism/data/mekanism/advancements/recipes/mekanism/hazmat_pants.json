@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "mekanism:chemical_crystallizer"
+      "mekanism:hazmat_pants"
     ]
   },
   "criteria": {
-    "has_ultimate_circuit": {
+    "has_lead": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:circuits/ultimate"
+            "tag": "forge:ingots/lead"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "mekanism:chemical_crystallizer"
+        "recipe": "mekanism:hazmat_pants"
       }
     }
   },
   "requirements": [
     [
-      "has_ultimate_circuit",
+      "has_lead",
       "has_the_recipe"
     ]
   ]

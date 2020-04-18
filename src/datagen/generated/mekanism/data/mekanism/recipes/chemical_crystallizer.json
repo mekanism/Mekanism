@@ -1,19 +1,19 @@
 {
   "type": "mekanism:mek_data",
   "pattern": [
-    "CTC",
-    "AXA",
-    "CTC"
+    "ITI",
+    "CXC",
+    "ITI"
   ],
   "key": {
     "T": {
       "item": "mekanism:basic_gas_tank"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "forge:circuits/ultimate"
     },
-    "A": {
-      "tag": "mekanism:alloys/atomic"
+    "I": {
+      "tag": "forge:ingots/refined_obsidian"
     },
     "X": {
       "item": "mekanism:steel_casing"

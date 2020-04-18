@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " F ",
+    "FCF",
+    " F "
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "F": {
+      "item": "mekanismgenerators:fission_reactor_casing"
+    }
+  },
+  "result": {
+    "item": "mekanismgenerators:fission_reactor_port",
+    "count": 2
+  }
+}

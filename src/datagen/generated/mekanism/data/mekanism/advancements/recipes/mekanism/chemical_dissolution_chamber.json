@@ -6,22 +6,12 @@
     ]
   },
   "criteria": {
-    "has_basic_circuit": {
+    "has_ultimate_circuit": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:circuits/basic"
-          }
-        ]
-      }
-    },
-    "has_infused_alloy": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "mekanism:alloys/infused"
+            "tag": "forge:circuits/ultimate"
           }
         ]
       }
@@ -35,8 +25,7 @@
   },
   "requirements": [
     [
-      "has_basic_circuit",
-      "has_infused_alloy",
+      "has_ultimate_circuit",
       "has_the_recipe"
     ]
   ]

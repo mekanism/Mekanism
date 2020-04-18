@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "mekanism:chemical_crystallizer"
+      "mekanismgenerators:fission_reactor/control_rod_assembly"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "mekanism:chemical_crystallizer"
+        "recipe": "mekanismgenerators:fission_reactor/control_rod_assembly"
       }
     }
   },

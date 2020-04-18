@@ -1,25 +1,25 @@
 {
   "type": "mekanism:mek_data",
   "pattern": [
-    "CBC",
-    "AXA",
-    "CTC"
+    "IBI",
+    "CXC",
+    "ITI"
   ],
   "key": {
     "T": {
       "item": "mekanism:basic_gas_tank"
     },
-    "C": {
-      "tag": "forge:circuits/basic"
+    "I": {
+      "tag": "forge:ingots/refined_obsidian"
     },
-    "A": {
-      "tag": "mekanism:alloys/infused"
+    "C": {
+      "tag": "forge:circuits/ultimate"
     },
     "X": {
       "item": "mekanism:steel_casing"
     },
     "B": {
-      "item": "minecraft:bucket"
+      "item": "mekanism:basic_fluid_tank"
     }
   },
   "result": {

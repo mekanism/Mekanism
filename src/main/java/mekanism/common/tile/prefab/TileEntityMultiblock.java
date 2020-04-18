@@ -68,7 +68,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
     @Nullable
     public UUID cachedID = null;
 
+    /**
+     * If we've already run a protocol update that touches this block on this tick.
+     */
     private boolean protocolUpdateThisTick;
+
+    /**
+     * Whether we've run the initial multiblock protocol update; this will either happen when the block is placed, or a few ticks in on the server-side.
+     */
     private boolean initialUpdate = false;
 
     private Map<BlockPos, BlockState> cachedNeighbors = new HashMap<>();

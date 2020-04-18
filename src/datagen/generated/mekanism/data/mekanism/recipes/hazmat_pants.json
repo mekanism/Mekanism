@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "IDI",
+    "I I"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/lead"
+    },
+    "D": {
+      "tag": "forge:dyes/orange"
+    }
+  },
+  "result": {
+    "item": "mekanism:hazmat_pants"
+  }
+}

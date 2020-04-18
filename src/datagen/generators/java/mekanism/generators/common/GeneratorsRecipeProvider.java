@@ -59,7 +59,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
         addGeneratorRecipes(consumer);
-        addReactorRecipes(consumer);
+        addFissionReactorRecipes(consumer);
+        addFusionReactorRecipes(consumer);
         addTurbineRecipes(consumer);
         addChemicalInfuserRecipes(consumer);
         addElectrolyticSeparatorRecipes(consumer);
@@ -214,7 +215,63 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .build(consumer, MekanismGenerators.rl("generator/wind"));
     }
 
-    private void addReactorRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addFissionReactorRecipes(Consumer<IFinishedRecipe> consumer) {
+        // Casing
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FISSION_REACTOR_CASING, 4)
+            .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
+                  TripleLine.of(Pattern.INGOT, Pattern.STEEL_CASING, Pattern.INGOT),
+                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+            ).key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+            .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+            .addCriterion(Criterion.HAS_STEEL_CASING)
+            .build(consumer, MekanismGenerators.rl("fission_reactor/casing"));
+        RecipeCriterion hasFrame = Criterion.has(GeneratorsBlocks.FISSION_REACTOR_CASING);
+        // Port
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FISSION_REACTOR_PORT, 2)
+            .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY),
+                  TripleLine.of(FRAME_CHAR, Pattern.CIRCUIT, FRAME_CHAR),
+                  TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY))
+            ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+            .key(FRAME_CHAR, GeneratorsBlocks.FISSION_REACTOR_CASING)
+            .addCriterion(Criterion.HAS_ULTIMATE_CIRCUIT)
+            .build(consumer, MekanismGenerators.rl("fission_reactor/port"));
+        //Logic Adapter
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.REDSTONE, Pattern.EMPTY),
+                    TripleLine.of(Pattern.REDSTONE, FRAME_CHAR, Pattern.REDSTONE),
+                    TripleLine.of(Pattern.EMPTY, Pattern.REDSTONE, Pattern.EMPTY))
+              ).key(FRAME_CHAR, GeneratorsBlocks.FISSION_REACTOR_CASING)
+              .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .addCriterion(hasFrame)
+              .build(consumer, MekanismGenerators.rl("fission_reactor/logic_adapter"));
+        //Fission Fuel Assembly
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FISSION_FUEL_ASSEMBLY)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.STEEL, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.STEEL, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .addCriterion(Criterion.HAS_STEEL)
+              .build(consumer, MekanismGenerators.rl("fission_reactor/fuel_assembly"));
+        //Control Rod Assembly
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.CONTROL_ROD_ASSEMBLY)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT),
+                    TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
+                    TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .addCriterion(Criterion.HAS_ULTIMATE_CIRCUIT)
+              .build(consumer, MekanismGenerators.rl("fission_reactor/control_rod_assembly"));
+    }
+
+    private void addFusionReactorRecipes(Consumer<IFinishedRecipe> consumer) {
         //Hohlraum
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 4),
@@ -235,11 +292,12 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Frame
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FUSION_REACTOR_FRAME, 4)
               .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL_CASING, Pattern.EMPTY),
-                    TripleLine.of(Pattern.STEEL_CASING, Pattern.ALLOY, Pattern.STEEL_CASING),
-                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL_CASING, Pattern.EMPTY))
+                    TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.STEEL_CASING, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY))
               ).key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
+              .key(Pattern.CONSTANT, MekanismTags.Items.PELLETS_POLONIUM)
               .addCriterion(Criterion.HAS_ATOMIC_ALLOY)
               .addCriterion(Criterion.HAS_STEEL_CASING)
               .build(consumer, MekanismGenerators.rl("reactor/frame"));
