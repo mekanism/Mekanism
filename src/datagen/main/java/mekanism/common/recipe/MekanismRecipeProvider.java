@@ -293,7 +293,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         CombinerRecipeBuilder.combining(
               ItemStackIngredient.from(Tags.Items.DYES_BLUE),
               ItemStackIngredient.from(Tags.Items.DYES_WHITE),
-              new ItemStack(Items.LIGHT_GRAY_DYE, 4)
+              new ItemStack(Items.LIGHT_BLUE_DYE, 4)
         ).addCriterion(Criterion.HAS_COMBINER)
               .build(consumer, Mekanism.rl(basePath + "light_blue"));
         //Green + white -> lime

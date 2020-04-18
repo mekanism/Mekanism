@@ -309,7 +309,7 @@
   "description.mekanism.chemical_injection_chamber": "An elite machine capable of processing ores into four shards, serving as the initial stage of 400% ore processing.",
   "description.mekanism.chemical_oxidizer": "A machine capable of oxidizing solid materials into gas phase.",
   "description.mekanism.chemical_washer": "An ultimate machine that cleans unprocessed slurry and prepares it for crystallization.",
-  "description.mekanism.combiner": "A machine used to combine dusts and cobblestone to form their ore counterparts.",
+  "description.mekanism.combiner": "A machine used to combine items together. For example, dusts and cobblestone to form their ore counterparts.",
   "description.mekanism.copper_ore": "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.",
   "description.mekanism.crusher": "A machine used to crush ingots into their dust counterparts, as well as perform many other operations.",
   "description.mekanism.digital_miner": "A highly-advanced, filter-based, auto-miner that can mine whatever block you tell it to within a 32 block (max) radius.",
