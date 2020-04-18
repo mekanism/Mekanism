@@ -25,7 +25,7 @@
   "description.mekanismgenerators.advanced_solar_generator": "よりエネルギーの変換効率が良い、太陽光を直接的に吸収して発電する発電機です。",
   "description.mekanismgenerators.bio_generator": "世界中のオーガニックな素材から発電します。",
   "description.mekanismgenerators.electromagnetic_coil": "回転機構からの運動エネルギーを電力に変換するブロックです。 回転機構より上でなおかつ回転機構に一つでもつながっていれば、どんなふうにおいても大丈夫です。",
-  "description.mekanismgenerators.gas_burning_generator": "いろいろなガスで発電します。",
+  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the varying molecular gases to produce energy.",
   "description.mekanismgenerators.heat_generator": "熔岩からの熱や燃料で発電します。",
   "description.mekanismgenerators.laser_focus_matrix": "レーザー光を受け入れ、炉を加熱するための核融合炉窓のパネルです。",
   "description.mekanismgenerators.reactor.logic.capacity": "熱の値が更新した時",
