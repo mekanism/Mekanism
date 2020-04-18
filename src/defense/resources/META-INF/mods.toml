@@ -1,0 +1,18 @@
+modLoader="javafml"
+loaderVersion="[${loader_version},)"
+issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
+
+[[mods]]
+    modId="mekanismdefense"
+    version="${version}"
+    displayName="Mekanism: Defense"
+    displayURL="http://aidancbrady.com/mekanism/"
+    authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
+    credits="unpairedbracket, CyanideX and many others"
+    description='''Defense module for Mekanism'''
+
+[[dependencies.mekanismdefense]]
+    modId="mekanism"
+    mandatory=true
+    versionRange="[${version}]"
+    side="BOTH"

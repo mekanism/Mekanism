@@ -64,15 +64,17 @@ sourceSets {
     }
     additions { setupSourceSet(sourceSets.additions, 'additions') }
     generators { setupSourceSet(sourceSets.generators, 'generators') }
+    defense { setupSourceSet(sourceSets.defense, 'defense') }
     tools { setupSourceSet(sourceSets.tools, 'tools') }
     test {
-        compileClasspath += sourceSets.api.output + sourceSets.main.output + sourceSets.additions.output + sourceSets.generators.output + sourceSets.tools.output
-        runtimeClasspath += sourceSets.api.output + sourceSets.main.output + sourceSets.additions.output + sourceSets.generators.output + sourceSets.tools.output
+        compileClasspath += sourceSets.api.output + sourceSets.main.output + sourceSets.additions.output + sourceSets.generators.output + sourceSets.defense.output + sourceSets.tools.output
+        runtimeClasspath += sourceSets.api.output + sourceSets.main.output + sourceSets.additions.output + sourceSets.generators.output + sourceSets.defense.output + sourceSets.tools.output
     }
     //Data gen modules for the different modules
     datagenmain { setupDataGenSourceSet(sourceSets.datagenmain, null, 'main') }
     datagenadditions { setupDataGenSourceSet(sourceSets.datagenadditions, sourceSets.additions, 'additions') }
     datagengenerators { setupDataGenSourceSet(sourceSets.datagengenerators, sourceSets.generators, 'generators') }
+    datagendefense { setupDataGenSourceSet(sourceSets.datagendefense, sourceSets.defense, 'defense') }
     datagentools { setupDataGenSourceSet(sourceSets.datagentools, sourceSets.tools, 'tools') }
 }
 
@@ -111,12 +113,12 @@ def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, S
 configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
-    def compileExtenders = [apiCompile, additionsCompile, generatorsCompile, toolsCompile, testCompile,
-                            datagenmainCompile, datagenadditionsCompile, datagengeneratorsCompile, datagentoolsCompile]
-    def compileOnlyExtenders = [apiCompileOnly, additionsCompileOnly, generatorsCompileOnly, toolsCompileOnly, testCompileOnly,
-                                datagenmainCompileOnly, datagenadditionsCompileOnly, datagengeneratorsCompileOnly, datagentoolsCompileOnly]
-    def runtimeOnlyExtenders = [apiRuntimeOnly, additionsRuntimeOnly, generatorsRuntimeOnly, toolsRuntimeOnly,
-                                datagenmainRuntimeOnly, datagenadditionsRuntimeOnly, datagengeneratorsRuntimeOnly, datagentoolsRuntimeOnly]
+    def compileExtenders = [apiCompile, additionsCompile, generatorsCompile, defenseCompile, toolsCompile, testCompile,
+                            datagenmainCompile, datagenadditionsCompile, datagengeneratorsCompile, datagendefenseCompile, datagentoolsCompile]
+    def compileOnlyExtenders = [apiCompileOnly, additionsCompileOnly, generatorsCompileOnly, defenseCompileOnly, toolsCompileOnly, testCompileOnly,
+                                datagenmainCompileOnly, datagenadditionsCompileOnly, datagengeneratorsCompileOnly, datagendefenseCompileOnly, datagentoolsCompileOnly]
+    def runtimeOnlyExtenders = [apiRuntimeOnly, additionsRuntimeOnly, generatorsRuntimeOnly, defenseRuntimeOnly, toolsRuntimeOnly,
+                                datagenmainRuntimeOnly, datagenadditionsRuntimeOnly, datagengeneratorsRuntimeOnly, datagendefenseRuntimeOnly, datagentoolsRuntimeOnly]
     for (def compileExtender : compileExtenders) {
         compileExtender.extendsFrom(compile)
     }
@@ -199,6 +201,9 @@ minecraft {
                 mekanismgenerators {
                     source(sourceSets.generators)
                 }
+                mekanismdefense {
+                    source(sourceSets.defense)
+                }
                 mekanismtools {
                     source(sourceSets.tools)
                 }
@@ -218,6 +223,9 @@ minecraft {
                 mekanismgenerators {
                     source(sourceSets.generators)
                 }
+                mekanismdefense {
+                    source(sourceSets.defense)
+                }
                 mekanismtools {
                     source(sourceSets.tools)
                 }
@@ -236,6 +244,8 @@ minecraft {
                     '--existing', sourceSets.additions.resources.srcDirs[0],
                     '--mod', 'mekanismgenerators',
                     '--existing', sourceSets.generators.resources.srcDirs[0],
+                    '--mod', 'mekanismdefense',
+                    '--existing', sourceSets.defense.resources.srcDirs[0],
                     '--mod', 'mekanismtools',
                     '--existing', sourceSets.tools.resources.srcDirs[0]
 
@@ -248,6 +258,9 @@ minecraft {
                 }
                 mekanismgenerators {
                     sources(sourceSets.generators, sourceSets.datagengenerators)
+                }
+                mekanismdefense {
+                    sources(sourceSets.defense, sourceSets.datagendefense)
                 }
                 mekanismtools {
                     sources(sourceSets.tools, sourceSets.datagentools)
@@ -328,6 +341,15 @@ task replaceResourcesGenerators(type: Copy) {
     into "$buildDir/resources/generators/"
 }
 
+task replaceResourcesDefense(type: Copy) {
+    outputs.upToDateWhen { false }
+    from(sourceSets.defense.resources) {
+        include "META-INF/mods.toml"
+        expand version_properties
+    }
+    into "$buildDir/resources/defense/"
+}
+
 task replaceResourcesTools(type: Copy) {
     outputs.upToDateWhen { false }
     from(sourceSets.tools.resources) {
@@ -365,6 +387,18 @@ processGeneratorsResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
     finalizedBy(replaceResourcesGenerators)
+    //Minify json resources
+    doLast {
+        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+        }
+    }
+}
+
+processDefenseResources {
+    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
+    exclude 'META-INF/mods.toml'
+    finalizedBy(replaceResourcesDefense)
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
@@ -411,6 +445,11 @@ task generatorsJar(type: Jar) {
     from sourceSets.generators.output
 }
 
+task defenseJar(type: Jar) {
+    archiveName = "MekanismDefense-${project.version}.jar"
+    from sourceSets.defense.output
+}
+
 task toolsJar(type: Jar) {
     archiveName = "MekanismTools-${project.version}.jar"
     from sourceSets.tools.output
@@ -426,6 +465,7 @@ artifacts {
     archives coreJar
     archives additionsJar
     archives generatorsJar
+    archives defenseJar
     archives toolsJar
 }
 
@@ -434,6 +474,7 @@ reobf {
     coreJar { classpath = sourceSets.main.compileClasspath }
     additionsJar { classpath = sourceSets.additions.compileClasspath }
     generatorsJar { classpath = sourceSets.generators.compileClasspath }
+    defenseJar { classpath = sourceSets.defense.compileClasspath }
     toolsJar { classpath = sourceSets.tools.compileClasspath }
 }
 
@@ -448,7 +489,7 @@ task optimizePng {
     def pngPatterns = ["**/*.png"]
 
     doLast {
-        def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.generators, sourceSets.tools]
+        def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.generators, sourceSets.defense, sourceSets.tools]
         for (def sourceSet : sourceSets) {
             for (dir in sourceSet.resources.srcDirs) {
                 fileTree(dir: dir, includes: pngPatterns).each { File file ->
@@ -506,7 +547,7 @@ uploadArchives {
     }
 }
 
-tasks.curseforge.dependsOn coreJar, additionsJar, generatorsJar, toolsJar, apiJar
+tasks.curseforge.dependsOn coreJar, additionsJar, generatorsJar, defenseJar, toolsJar, apiJar
 
 if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
     println "Enabling Curseforge config"
@@ -595,6 +636,20 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             changelog = generatedChangelog
             releaseType = "${curse_release_type}"
             mainArtifact(generatorsJar) {
+                relations {
+                    requiredDependency "mekanism"
+                }
+            }
+            addGameVersion "${minecraft_version}"
+        }
+
+        //Defense
+        project {
+            id = '376939'
+            changelogType = "html"
+            changelog = generatedChangelog
+            releaseType = "${curse_release_type}"
+            mainArtifact(defenseJar) {
                 relations {
                     requiredDependency "mekanism"
                 }
