@@ -25,7 +25,7 @@
   "description.mekanismgenerators.advanced_solar_generator": "Продвинутый генератор, который напрямую поглощает солнечные лучи с небольшой потерей, для производства энергии.",
   "description.mekanismgenerators.bio_generator": "Генератор, который сжигает органические материалы мира для производства энергии.",
   "description.mekanismgenerators.electromagnetic_coil": "Блок, превращающий кинетическую энергию от вращательного комплекса в электроэнергию.",
-  "description.mekanismgenerators.gas_burning_generator": "Генератор, который использует молекулы различных газов для производства энергии.",
+  "description.mekanismgenerators.gas_burning_generator": "Генератор, который использует различные молекулярные газы для производства энергии.",
   "description.mekanismgenerators.heat_generator": "Генератор, который использует тепло лавы или другие горючие ресурсы для производства энергии. Также может работать от тепла.",
   "description.mekanismgenerators.laser_focus_matrix": "Панель из реакторного стекла, которая способна поглощать оптическую энергию, нагревая термоядерный реактор.",
   "description.mekanismgenerators.reactor.logic.capacity": "Ядро реактора перегрелось",
