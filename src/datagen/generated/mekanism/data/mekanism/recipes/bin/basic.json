@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:basic_bin"
+  },
   "pattern": [
     "_C_",
     "A A",
@@ -15,8 +18,5 @@
     "A": {
       "tag": "mekanism:alloys/basic"
     }
-  },
-  "result": {
-    "item": "mekanism:basic_bin"
   }
 }

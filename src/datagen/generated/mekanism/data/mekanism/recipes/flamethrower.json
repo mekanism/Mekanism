@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:flamethrower"
+  },
   "pattern": [
     "III",
     "ITS",
@@ -21,8 +24,5 @@
     "S": {
       "item": "minecraft:flint_and_steel"
     }
-  },
-  "result": {
-    "item": "mekanism:flamethrower"
   }
 }

@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismtools:bronze_pickaxe"
+  },
   "pattern": [
     "III",
     " R ",
@@ -12,8 +15,5 @@
     "R": {
       "tag": "forge:rods/wooden"
     }
-  },
-  "result": {
-    "item": "mekanismtools:bronze_pickaxe"
   }
 }

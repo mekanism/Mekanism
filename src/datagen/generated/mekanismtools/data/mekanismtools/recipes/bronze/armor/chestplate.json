@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismtools:bronze_chestplate"
+  },
   "pattern": [
     "I I",
     "III",
@@ -9,8 +12,5 @@
     "I": {
       "tag": "forge:ingots/bronze"
     }
-  },
-  "result": {
-    "item": "mekanismtools:bronze_chestplate"
   }
 }

@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:free_runners"
+  },
   "pattern": [
     "C C",
     "A A",
@@ -15,8 +18,5 @@
     "A": {
       "tag": "mekanism:alloys/infused"
     }
-  },
-  "result": {
-    "item": "mekanism:free_runners"
   }
 }

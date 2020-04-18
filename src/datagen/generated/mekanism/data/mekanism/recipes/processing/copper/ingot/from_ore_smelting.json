@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
+  "result": "mekanism:ingot_copper",
   "ingredient": {
     "tag": "forge:ores/copper"
   },
-  "result": "mekanism:ingot_copper",
-  "experience": 1.0,
-  "cookingtime": 200
+  "cookingtime": 200,
+  "experience": 1.0
 }

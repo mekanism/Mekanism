@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:personal_chest"
+  },
   "pattern": [
     "SGS",
     "PCP",
@@ -18,8 +21,5 @@
     "G": {
       "tag": "forge:glass"
     }
-  },
-  "result": {
-    "item": "mekanism:personal_chest"
   }
 }

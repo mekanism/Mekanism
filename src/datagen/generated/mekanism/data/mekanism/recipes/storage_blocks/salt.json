@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:block_salt"
+  },
   "pattern": [
     "##",
     "##"
@@ -8,8 +11,5 @@
     "#": {
       "tag": "forge:dusts/salt"
     }
-  },
-  "result": {
-    "item": "mekanism:block_salt"
   }
 }

@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismtools:steel_shovel"
+  },
   "pattern": [
     "I",
     "R",
@@ -12,8 +15,5 @@
     "R": {
       "tag": "forge:ingots/iron"
     }
-  },
-  "result": {
-    "item": "mekanismtools:steel_shovel"
   }
 }

@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:walkie_talkie"
+  },
   "pattern": [
     "  O",
     "SCS",
@@ -15,8 +18,5 @@
     "S": {
       "tag": "forge:ingots/steel"
     }
-  },
-  "result": {
-    "item": "mekanismadditions:walkie_talkie"
   }
 }

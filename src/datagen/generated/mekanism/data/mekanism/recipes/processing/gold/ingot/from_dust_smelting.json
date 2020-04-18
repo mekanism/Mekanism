@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
+  "result": "minecraft:gold_ingot",
   "ingredient": {
     "tag": "forge:dusts/gold"
   },
-  "result": "minecraft:gold_ingot",
-  "experience": 0.5,
-  "cookingtime": 200
+  "cookingtime": 200,
+  "experience": 0.5
 }

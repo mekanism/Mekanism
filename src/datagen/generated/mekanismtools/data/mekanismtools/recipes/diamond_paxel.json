@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismtools:diamond_paxel"
+  },
   "pattern": [
     "APS",
     " R ",
@@ -18,8 +21,5 @@
     "R": {
       "tag": "forge:rods/wooden"
     }
-  },
-  "result": {
-    "item": "mekanismtools:diamond_paxel"
   }
 }

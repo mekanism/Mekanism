@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:bio_generator"
+  },
   "pattern": [
     "RAR",
     "BCB",
@@ -21,8 +24,5 @@
     "B": {
       "tag": "forge:fuels/bio"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:bio_generator"
   }
 }

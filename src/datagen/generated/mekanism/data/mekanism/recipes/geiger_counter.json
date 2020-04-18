@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:geiger_counter"
+  },
   "pattern": [
     " I ",
     "ICI",
@@ -12,8 +15,5 @@
     "C": {
       "tag": "forge:circuits/basic"
     }
-  },
-  "result": {
-    "item": "mekanism:geiger_counter"
   }
 }

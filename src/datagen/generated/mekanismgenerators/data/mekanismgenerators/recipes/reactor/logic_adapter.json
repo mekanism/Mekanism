@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:fusion_reactor_logic_adapter"
+  },
   "pattern": [
     " R ",
     "RFR",
@@ -12,8 +15,5 @@
     "R": {
       "tag": "forge:dusts/redstone"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:fusion_reactor_logic_adapter"
   }
 }

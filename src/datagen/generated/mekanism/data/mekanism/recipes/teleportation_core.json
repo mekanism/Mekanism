@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:teleportation_core"
+  },
   "pattern": [
     "#A#",
     "IDI",
@@ -18,8 +21,5 @@
     "D": {
       "tag": "forge:gems/diamond"
     }
-  },
-  "result": {
-    "item": "mekanism:teleportation_core"
   }
 }

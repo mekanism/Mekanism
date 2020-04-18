@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:scuba_tank"
+  },
   "pattern": [
     " C ",
     "ATA",
@@ -18,8 +21,5 @@
     "S": {
       "tag": "forge:ingots/steel"
     }
-  },
-  "result": {
-    "item": "mekanism:scuba_tank"
   }
 }

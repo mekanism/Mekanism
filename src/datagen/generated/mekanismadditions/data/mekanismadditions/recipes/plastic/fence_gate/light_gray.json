@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:light_gray_plastic_fence_gate"
+  },
   "pattern": [
     "R#R",
     "R#R"
@@ -11,8 +14,5 @@
     "#": {
       "item": "mekanismadditions:light_gray_plastic"
     }
-  },
-  "result": {
-    "item": "mekanismadditions:light_gray_plastic_fence_gate"
   }
 }

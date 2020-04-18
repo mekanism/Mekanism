@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:fission_reactor_casing",
+    "count": 4
+  },
   "pattern": [
     " I ",
     "IXI",
@@ -12,9 +16,5 @@
     "I": {
       "tag": "forge:ingots/lead"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:fission_reactor_casing",
-    "count": 4
   }
 }

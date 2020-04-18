@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:isotopic_centrifuge"
+  },
   "pattern": [
     "III",
     "CTC",
@@ -15,8 +18,5 @@
     "T": {
       "item": "mekanism:basic_gas_tank"
     }
-  },
-  "result": {
-    "item": "mekanism:isotopic_centrifuge"
   }
 }

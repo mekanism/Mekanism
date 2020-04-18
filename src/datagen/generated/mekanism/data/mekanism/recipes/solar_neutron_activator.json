@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:solar_neutron_activator"
+  },
   "pattern": [
     "A#A",
     "CXC",
@@ -21,8 +24,5 @@
     "#": {
       "item": "mekanism:hdpe_sheet"
     }
-  },
-  "result": {
-    "item": "mekanism:solar_neutron_activator"
   }
 }

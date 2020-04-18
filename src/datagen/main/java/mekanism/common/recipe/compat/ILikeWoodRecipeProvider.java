@@ -5,7 +5,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.Criterion;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
@@ -41,8 +40,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectType.BARREL, woodType)),
               new ItemStack(planks, 7)
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL)
-              .addCondition(modLoaded)
+        ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "barrel/" + name));
         //Bookshelf
         SawmillRecipeBuilder.sawing(
@@ -50,29 +48,25 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               new ItemStack(planks, 6),
               new ItemStack(Items.BOOK, 3),
               1
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL)
-              .addCondition(modLoaded)
+        ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "bookshelf/" + name));
         //Chest
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectType.CHEST, woodType)),
               new ItemStack(planks, 8)
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL)
-              .addCondition(modLoaded)
+        ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "chest/" + name));
         //Crafting table
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectType.CRAFTING_TABLE, woodType)),
               new ItemStack(planks, 4)
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL)
-              .addCondition(modLoaded)
+        ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "crafting_table/" + name));
         //Ladder
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectType.LADDER, woodType), 3),
               new ItemStack(stick, 7)
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL)
-              .addCondition(modLoaded)
+        ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "ladder/" + name));
         //Lectern
         SawmillRecipeBuilder.sawing(
@@ -80,8 +74,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               new ItemStack(planks, 8),
               new ItemStack(Items.BOOK, 3),
               1
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL)
-              .addCondition(modLoaded)
+        ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "lectern/" + name));
         //Panels
         SawmillRecipeBuilder.sawing(
@@ -89,8 +82,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               new ItemStack(stick, 6),
               MekanismItems.SAWDUST.getItemStack(),
               0.25
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL)
-              .addCondition(modLoaded)
+        ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "panels/" + name));
         //Torch
         SawmillRecipeBuilder.sawing(
@@ -98,15 +90,13 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               new ItemStack(stick),
               new ItemStack(Items.COAL),
               1
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL)
-              .addCondition(modLoaded)
+        ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "torch/" + name));
         //Wall
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectType.WALL, woodType)),
               new ItemStack(log)
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL)
-              .addCondition(modLoaded)
+        ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "wall/" + name));
         //Beds
         addPrecisionSawmillBedRecipes(consumer, planks, basePath + name + "/");

@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismtools:refined_obsidian_sword"
+  },
   "pattern": [
     "I",
     "I",
@@ -12,8 +15,5 @@
     "R": {
       "tag": "forge:rods/wooden"
     }
-  },
-  "result": {
-    "item": "mekanismtools:refined_obsidian_sword"
   }
 }

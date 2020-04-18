@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:seismic_vibrator"
+  },
   "pattern": [
     "I#I",
     "CXC",
@@ -18,8 +21,5 @@
     "X": {
       "item": "mekanism:steel_casing"
     }
-  },
-  "result": {
-    "item": "mekanism:seismic_vibrator"
   }
 }

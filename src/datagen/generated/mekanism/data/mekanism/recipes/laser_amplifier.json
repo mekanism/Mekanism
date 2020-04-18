@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:laser_amplifier"
+  },
   "pattern": [
     "SSS",
     "SE#",
@@ -15,8 +18,5 @@
     "E": {
       "item": "mekanism:basic_energy_cube"
     }
-  },
-  "result": {
-    "item": "mekanism:laser_amplifier"
   }
 }

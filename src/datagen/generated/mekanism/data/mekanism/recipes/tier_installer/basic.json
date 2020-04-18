@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:basic_tier_installer"
+  },
   "pattern": [
     "ACA",
     "IPI",
@@ -18,8 +21,5 @@
     "A": {
       "tag": "mekanism:alloys/basic"
     }
-  },
-  "result": {
-    "item": "mekanism:basic_tier_installer"
   }
 }

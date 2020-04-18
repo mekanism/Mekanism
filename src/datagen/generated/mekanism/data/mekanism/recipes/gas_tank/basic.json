@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:basic_gas_tank"
+  },
   "pattern": [
     "AOA",
     "O O",
@@ -12,8 +15,5 @@
     "A": {
       "tag": "mekanism:alloys/basic"
     }
-  },
-  "result": {
-    "item": "mekanism:basic_gas_tank"
   }
 }

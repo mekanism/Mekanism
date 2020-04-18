@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "minecraft:paper",
+    "count": 6
+  },
   "pattern": [
     "###"
   ],
@@ -7,9 +11,5 @@
     "#": {
       "tag": "forge:sawdust"
     }
-  },
-  "result": {
-    "item": "minecraft:paper",
-    "count": 6
   }
 }

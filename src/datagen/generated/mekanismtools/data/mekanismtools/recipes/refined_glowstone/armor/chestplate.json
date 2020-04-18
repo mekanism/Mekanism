@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismtools:refined_glowstone_chestplate"
+  },
   "pattern": [
     "I I",
     "III",
@@ -9,8 +12,5 @@
     "I": {
       "tag": "forge:ingots/refined_glowstone"
     }
-  },
-  "result": {
-    "item": "mekanismtools:refined_glowstone_chestplate"
   }
 }

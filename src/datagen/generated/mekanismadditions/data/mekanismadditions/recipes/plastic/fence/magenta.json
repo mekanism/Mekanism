@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:magenta_plastic_fence",
+    "count": 3
+  },
   "pattern": [
     "#R#",
     "#R#"
@@ -11,9 +15,5 @@
     "#": {
       "item": "mekanismadditions:magenta_plastic"
     }
-  },
-  "result": {
-    "item": "mekanismadditions:magenta_plastic_fence",
-    "count": 3
   }
 }

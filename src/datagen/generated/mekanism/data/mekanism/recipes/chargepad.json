@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:chargepad"
+  },
   "pattern": [
     "###",
     "SES"
@@ -14,8 +17,5 @@
     "E": {
       "item": "mekanism:energy_tablet"
     }
-  },
-  "result": {
-    "item": "mekanism:chargepad"
   }
 }

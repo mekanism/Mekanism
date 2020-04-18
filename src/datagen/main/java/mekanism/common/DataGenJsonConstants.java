@@ -2,6 +2,14 @@ package mekanism.common;
 
 public class DataGenJsonConstants {
     //Vanilla constants used in data generators
+    //Recipes
+    public static final String COOKING_TIME = "cookingtime";
+    public static final String EXPERIENCE = "experience";
+    public static final String GROUP = "group";
+    public static final String INGREDIENTS = "ingredients";
+    public static final String KEY = "key";
+    public static final String PATTERN = "pattern";
+    public static final String RESULT = "result";
     //Sound Events
     public static final String REPLACE = "replace";//Note: Also used for tags
     public static final String SUBTITLE = "subtitle";

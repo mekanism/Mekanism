@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
+  "result": "minecraft:gold_nugget",
   "ingredient": {
     "item": "mekanismtools:gold_paxel"
   },
-  "result": "minecraft:gold_nugget",
-  "experience": 0.1,
-  "cookingtime": 100
+  "cookingtime": 100,
+  "experience": 0.1
 }

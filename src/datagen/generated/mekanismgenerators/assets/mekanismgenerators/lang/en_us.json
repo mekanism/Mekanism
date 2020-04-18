@@ -40,7 +40,7 @@
   "description.mekanismgenerators.fusion_reactor_glass": "Reinforced glass that can be used in the Fusion Reactor multiblock.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "A block that can be used to allow basic monitoring of a reactor using redstone.",
   "description.mekanismgenerators.fusion_reactor_port": "A block of reinforced framing that is capable of managing both the gas and energy transfer of the Fusion Reactor.",
-  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the molecular varying gases to produce energy.",
+  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the varying molecular gases to produce energy.",
   "description.mekanismgenerators.heat_generator": "A generator that uses the heat of lava or other burnable resources to produce energy.",
   "description.mekanismgenerators.laser_focus_matrix": "A panel of Fusion Reactor Glass that is capable of absorbing optical energy and thereby heating up the Fusion Reactor.",
   "description.mekanismgenerators.reactor.logic.activation": "Activate the reactor when powered, and deactivate when unpowered",

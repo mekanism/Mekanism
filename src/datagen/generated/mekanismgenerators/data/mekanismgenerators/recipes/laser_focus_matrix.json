@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:laser_focus_matrix",
+    "count": 2
+  },
   "pattern": [
     " G ",
     "GRG",
@@ -12,9 +16,5 @@
     "R": {
       "tag": "forge:storage_blocks/redstone"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:laser_focus_matrix",
-    "count": 2
   }
 }

@@ -32,36 +32,36 @@ public class RecipeProviderUtil {
         SawmillRecipeBuilder boatRecipeBuilder = SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(boat.asItem()),
               new ItemStack(planks, 5)
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL);
+        );
         //Door
         SawmillRecipeBuilder doorRecipeBuilder = SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(door.asItem()),
               new ItemStack(planks, 2)
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL);
+        );
         //Fence Gate
         SawmillRecipeBuilder fenceGateRecipeBuilder = SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(fenceGate.asItem()),
               new ItemStack(planks, 2),
               new ItemStack(Items.STICK, 4),
               1
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL);
+        );
         //Log
         SawmillRecipeBuilder logRecipeBuilder = SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(log),
               new ItemStack(planks, 6),
               MekanismItems.SAWDUST.getItemStack(),
               0.25
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL);
+        );
         //Pressure plate
         SawmillRecipeBuilder pressurePlateRecipeBuilder = SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(pressurePlate.asItem()),
               new ItemStack(planks, 2)
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL);
+        );
         //Trapdoor
         SawmillRecipeBuilder trapdoorRecipeBuilder = SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(trapdoor.asItem()),
               new ItemStack(planks, 3)
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL);
+        );
         if (condition != null) {
             //If there is a condition, add it to the various recipe builders
             boatRecipeBuilder.addCondition(condition);
@@ -91,7 +91,7 @@ public class RecipeProviderUtil {
               new ItemStack(planks, 3),
               new ItemStack(wool, 3),
               1
-        ).addCriterion(Criterion.HAS_PRECISION_SAWMILL);
+        );
         if (condition != null) {
             bedRecipeBuilder.addCondition(condition);
         }

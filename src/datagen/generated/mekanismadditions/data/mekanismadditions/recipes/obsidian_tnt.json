@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:obsidian_tnt"
+  },
   "pattern": [
     "OOO",
     "TTT",
@@ -12,8 +15,5 @@
     "T": {
       "item": "minecraft:tnt"
     }
-  },
-  "result": {
-    "item": "mekanismadditions:obsidian_tnt"
   }
 }

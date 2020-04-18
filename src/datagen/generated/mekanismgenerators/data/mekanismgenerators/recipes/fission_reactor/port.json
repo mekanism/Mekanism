@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:fission_reactor_port",
+    "count": 2
+  },
   "pattern": [
     " F ",
     "FCF",
@@ -12,9 +16,5 @@
     "F": {
       "item": "mekanismgenerators:fission_reactor_casing"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:fission_reactor_port",
-    "count": 2
   }
 }

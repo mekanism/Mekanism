@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
+  "result": "mekanism:ingot_steel",
   "ingredient": {
     "tag": "forge:dusts/steel"
   },
-  "result": "mekanism:ingot_steel",
-  "experience": 0.5,
-  "cookingtime": 100
+  "cookingtime": 100,
+  "experience": 0.5
 }

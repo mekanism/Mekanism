@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:metallurgic_infuser"
+  },
   "pattern": [
     "I#I",
     "ROR",
@@ -18,8 +21,5 @@
     "#": {
       "item": "minecraft:furnace"
     }
-  },
-  "result": {
-    "item": "mekanism:metallurgic_infuser"
   }
 }

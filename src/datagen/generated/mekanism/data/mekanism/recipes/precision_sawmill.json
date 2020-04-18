@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:precision_sawmill"
+  },
   "pattern": [
     "ICI",
     "AXA",
@@ -18,8 +21,5 @@
     "X": {
       "item": "mekanism:steel_casing"
     }
-  },
-  "result": {
-    "item": "mekanism:precision_sawmill"
   }
 }

@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:fusion_reactor_frame",
+    "count": 4
+  },
   "pattern": [
     "A#A",
     "#X#",
@@ -10,14 +14,10 @@
       "item": "mekanism:steel_casing"
     },
     "A": {
-      "tag": "mekanism:alloys/atomic"
+      "tag": "forge:alloys/ultimate"
     },
     "#": {
       "tag": "forge:pellets/polonium"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:fusion_reactor_frame",
-    "count": 4
   }
 }

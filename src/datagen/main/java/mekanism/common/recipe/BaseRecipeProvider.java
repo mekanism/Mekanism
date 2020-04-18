@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.datagen.recipe.RecipeCriterion;
-import net.minecraft.data.CookingRecipeBuilder;
+import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
@@ -33,11 +33,12 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
 
     protected void addSmeltingBlastingRecipes(Consumer<IFinishedRecipe> consumer, Ingredient smeltingInput, IItemProvider output, float experience, int smeltingTime,
           ResourceLocation blastingLocation, ResourceLocation smeltingLocation, RecipeCriterion... criteria) {
-        CookingRecipeBuilder blastingRecipe = CookingRecipeBuilder.blastingRecipe(smeltingInput, output, experience, smeltingTime / 2);
-        CookingRecipeBuilder smeltingRecipe = CookingRecipeBuilder.smeltingRecipe(smeltingInput, output, experience, smeltingTime);
+        ExtendedCookingRecipeBuilder blastingRecipe = ExtendedCookingRecipeBuilder.blasting(output, smeltingInput, smeltingTime / 2).experience(experience);
+        ExtendedCookingRecipeBuilder smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(output, smeltingInput, smeltingTime).experience(experience);
+        //If there are any criteria add them
         for (RecipeCriterion criterion : criteria) {
-            blastingRecipe.addCriterion(criterion.name, criterion.criterion);
-            smeltingRecipe.addCriterion(criterion.name, criterion.criterion);
+            blastingRecipe.addCriterion(criterion);
+            smeltingRecipe.addCriterion(criterion);
         }
         blastingRecipe.build(consumer, blastingLocation);
         smeltingRecipe.build(consumer, smeltingLocation);

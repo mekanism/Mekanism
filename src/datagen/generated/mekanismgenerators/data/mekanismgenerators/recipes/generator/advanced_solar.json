@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:advanced_solar_generator"
+  },
   "pattern": [
     "PAP",
     "PAP",
@@ -15,8 +18,5 @@
     "I": {
       "tag": "forge:ingots/iron"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:advanced_solar_generator"
   }
 }

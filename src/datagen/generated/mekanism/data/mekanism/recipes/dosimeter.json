@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:dosimeter"
+  },
   "pattern": [
     " I ",
     "IRI",
@@ -12,8 +15,5 @@
     "R": {
       "tag": "forge:dusts/redstone"
     }
-  },
-  "result": {
-    "item": "mekanism:dosimeter"
   }
 }

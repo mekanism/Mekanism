@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:quantum_entangloporter"
+  },
   "pattern": [
     "ICI",
     "ATA",
@@ -18,8 +21,5 @@
     "T": {
       "item": "mekanism:teleportation_core"
     }
-  },
-  "result": {
-    "item": "mekanism:quantum_entangloporter"
   }
 }

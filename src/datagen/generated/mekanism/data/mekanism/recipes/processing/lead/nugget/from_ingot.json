@@ -1,12 +1,12 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "mekanism:nugget_lead",
+    "count": 9
+  },
   "ingredients": [
     {
       "tag": "forge:ingots/lead"
     }
-  ],
-  "result": {
-    "item": "mekanism:nugget_lead",
-    "count": 9
-  }
+  ]
 }

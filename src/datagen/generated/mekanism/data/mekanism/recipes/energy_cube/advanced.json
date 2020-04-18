@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:advanced_energy_cube"
+  },
   "pattern": [
     "AEA",
     "IPI",
@@ -18,8 +21,5 @@
     "A": {
       "tag": "mekanism:alloys/infused"
     }
-  },
-  "result": {
-    "item": "mekanism:advanced_energy_cube"
   }
 }

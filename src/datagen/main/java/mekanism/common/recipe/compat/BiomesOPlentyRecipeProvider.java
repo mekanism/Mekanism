@@ -9,7 +9,6 @@ import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.Criterion;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismGases;
 import net.minecraft.data.IFinishedRecipe;
@@ -32,8 +31,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               ItemStackIngredient.from(BOPItems.mud_brick),
               GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
               new ItemStack(BOPItems.mud_ball)
-        ).addCriterion(Criterion.HAS_CHEMICAL_INJECTION_CHAMBER)
-              .addCondition(modLoaded)
+        ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "mud_brick_to_mud_ball"));
         //White Sandstone -> Sand
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -44,8 +42,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     ItemStackIngredient.from(BOPBlocks.smooth_white_sandstone)
               ),
               new ItemStack(BOPBlocks.white_sand, 2)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .addCondition(modLoaded)
+        ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "white_sandstone_to_sand"));
         //TODO: Bio-fuel recipes?
     }

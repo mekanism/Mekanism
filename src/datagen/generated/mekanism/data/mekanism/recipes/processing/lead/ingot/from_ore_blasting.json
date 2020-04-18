@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
+  "result": "mekanism:ingot_lead",
   "ingredient": {
     "tag": "forge:ores/lead"
   },
-  "result": "mekanism:ingot_lead",
-  "experience": 1.0,
-  "cookingtime": 100
+  "cookingtime": 100,
+  "experience": 1.0
 }

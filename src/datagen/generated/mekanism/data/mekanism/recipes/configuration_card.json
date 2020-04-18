@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:configuration_card"
+  },
   "pattern": [
     " A ",
     "ACA",
@@ -12,8 +15,5 @@
     "A": {
       "tag": "mekanism:alloys/infused"
     }
-  },
-  "result": {
-    "item": "mekanism:configuration_card"
   }
 }

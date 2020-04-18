@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:saturating_condenser"
+  },
   "pattern": [
     "SIS",
     "IBI",
@@ -15,8 +18,5 @@
     "B": {
       "item": "minecraft:bucket"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:saturating_condenser"
   }
 }

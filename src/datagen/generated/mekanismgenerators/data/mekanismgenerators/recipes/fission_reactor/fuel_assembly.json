@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:fission_fuel_assembly"
+  },
   "pattern": [
     "ISI",
     "ITI",
@@ -15,8 +18,5 @@
     "T": {
       "item": "mekanism:basic_gas_tank"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:fission_fuel_assembly"
   }
 }

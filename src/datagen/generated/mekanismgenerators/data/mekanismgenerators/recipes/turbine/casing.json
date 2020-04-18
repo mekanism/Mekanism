@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:turbine_casing",
+    "count": 4
+  },
   "pattern": [
     " S ",
     "SOS",
@@ -12,9 +16,5 @@
     "S": {
       "tag": "forge:ingots/steel"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:turbine_casing",
-    "count": 4
   }
 }

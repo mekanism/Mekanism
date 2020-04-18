@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:light_gray_plastic_road",
+    "count": 3
+  },
   "pattern": [
     "SSS",
     "###",
@@ -12,9 +16,5 @@
     "#": {
       "item": "mekanismadditions:light_gray_slick_plastic"
     }
-  },
-  "result": {
-    "item": "mekanismadditions:light_gray_plastic_road",
-    "count": 3
   }
 }

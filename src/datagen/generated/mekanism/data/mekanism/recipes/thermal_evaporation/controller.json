@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:thermal_evaporation_controller"
+  },
   "pattern": [
     "CGC",
     "#B#",
@@ -18,8 +21,5 @@
     "G": {
       "tag": "forge:glass_panes"
     }
-  },
-  "result": {
-    "item": "mekanism:thermal_evaporation_controller"
   }
 }

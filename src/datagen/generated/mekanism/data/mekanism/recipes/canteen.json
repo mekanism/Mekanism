@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:canteen"
+  },
   "pattern": [
     " I ",
     "I#I",
@@ -12,8 +15,5 @@
     "#": {
       "item": "minecraft:bowl"
     }
-  },
-  "result": {
-    "item": "mekanism:canteen"
   }
 }

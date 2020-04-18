@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:fuelwood_heater"
+  },
   "pattern": [
     "SCS",
     "#X#",
@@ -18,8 +21,5 @@
     "#": {
       "item": "minecraft:furnace"
     }
-  },
-  "result": {
-    "item": "mekanism:fuelwood_heater"
   }
 }

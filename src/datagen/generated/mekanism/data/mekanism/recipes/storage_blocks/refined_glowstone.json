@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:block_refined_glowstone"
+  },
   "pattern": [
     "###",
     "###",
@@ -9,8 +12,5 @@
     "#": {
       "tag": "forge:ingots/refined_glowstone"
     }
-  },
-  "result": {
-    "item": "mekanism:block_refined_glowstone"
   }
 }

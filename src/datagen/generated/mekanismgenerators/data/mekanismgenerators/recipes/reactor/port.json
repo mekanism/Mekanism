@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:fusion_reactor_port",
+    "count": 2
+  },
   "pattern": [
     " F ",
     "FCF",
@@ -12,9 +16,5 @@
     "F": {
       "item": "mekanismgenerators:fusion_reactor_frame"
     }
-  },
-  "result": {
-    "item": "mekanismgenerators:fusion_reactor_port",
-    "count": 2
   }
 }

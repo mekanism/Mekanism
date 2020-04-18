@@ -1,5 +1,6 @@
 {
   "type": "minecraft:smelting",
+  "result": "mekanism:nugget_refined_glowstone",
   "ingredient": [
     {
       "item": "mekanismtools:refined_glowstone_helmet"
@@ -32,7 +33,6 @@
       "item": "mekanismtools:refined_glowstone_paxel"
     }
   ],
-  "result": "mekanism:nugget_refined_glowstone",
-  "experience": 0.1,
-  "cookingtime": 200
+  "cookingtime": 200,
+  "experience": 0.1
 }

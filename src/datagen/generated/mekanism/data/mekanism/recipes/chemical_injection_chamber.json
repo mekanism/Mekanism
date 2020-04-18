@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:chemical_injection_chamber"
+  },
   "pattern": [
     "ACA",
     "I#I",
@@ -18,8 +21,5 @@
     "#": {
       "item": "mekanism:purification_chamber"
     }
-  },
-  "result": {
-    "item": "mekanism:chemical_injection_chamber"
   }
 }

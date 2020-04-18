@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:red_plastic_fence_gate",
+    "count": 4
+  },
   "pattern": [
     " # ",
     "#D#",
@@ -12,9 +16,5 @@
     "D": {
       "tag": "forge:dyes/red"
     }
-  },
-  "result": {
-    "item": "mekanismadditions:red_plastic_fence_gate",
-    "count": 4
   }
 }

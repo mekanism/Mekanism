@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:chemical_washer"
+  },
   "pattern": [
     "IBI",
     "CXC",
@@ -21,8 +24,5 @@
     "B": {
       "item": "mekanism:basic_fluid_tank"
     }
-  },
-  "result": {
-    "item": "mekanism:chemical_washer"
   }
 }

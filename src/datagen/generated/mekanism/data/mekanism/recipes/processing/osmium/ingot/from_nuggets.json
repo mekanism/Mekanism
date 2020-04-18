@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:ingot_osmium"
+  },
   "pattern": [
     "###",
     "###",
@@ -9,8 +12,5 @@
     "#": {
       "tag": "forge:nuggets/osmium"
     }
-  },
-  "result": {
-    "item": "mekanism:ingot_osmium"
   }
 }

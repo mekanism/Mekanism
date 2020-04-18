@@ -1,7 +1,7 @@
 {
   "type": "mekanism:combining",
   "mainInput": {
-    "amount": 3,
+    "amount": 8,
     "ingredient": {
       "tag": "forge:dusts/coal"
     }

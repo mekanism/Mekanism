@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:thermal_evaporation_valve"
+  },
   "pattern": [
     " # ",
     "#C#",
@@ -12,8 +15,5 @@
     "C": {
       "tag": "forge:circuits/advanced"
     }
-  },
-  "result": {
-    "item": "mekanism:thermal_evaporation_valve"
   }
 }

@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:advanced_mechanical_pipe",
+    "count": 8
+  },
   "pattern": [
     "PPP",
     "PAP",
@@ -12,9 +16,5 @@
     "A": {
       "tag": "mekanism:alloys/infused"
     }
-  },
-  "result": {
-    "item": "mekanism:advanced_mechanical_pipe",
-    "count": 8
   }
 }

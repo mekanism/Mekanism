@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:hazmat_gown"
+  },
   "pattern": [
     "IDI",
     "III",
@@ -12,8 +15,5 @@
     "D": {
       "tag": "forge:dyes/orange"
     }
-  },
-  "result": {
-    "item": "mekanism:hazmat_gown"
   }
 }

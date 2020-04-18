@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:diversion_transporter",
+    "count": 2
+  },
   "pattern": [
     "RRR",
     "S#S",
@@ -15,9 +19,5 @@
     "#": {
       "item": "minecraft:iron_bars"
     }
-  },
-  "result": {
-    "item": "mekanism:diversion_transporter",
-    "count": 2
   }
 }

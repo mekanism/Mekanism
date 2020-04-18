@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:fluidic_plenisher"
+  },
   "pattern": [
     "III",
     "CPC",
@@ -15,8 +18,5 @@
     "I": {
       "tag": "forge:ingots/tin"
     }
-  },
-  "result": {
-    "item": "mekanism:fluidic_plenisher"
   }
 }

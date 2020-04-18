@@ -1,5 +1,8 @@
 {
   "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:chemical_dissolution_chamber"
+  },
   "pattern": [
     "ITI",
     "CXC",
@@ -18,8 +21,5 @@
     "X": {
       "item": "mekanism:steel_casing"
     }
-  },
-  "result": {
-    "item": "mekanism:chemical_dissolution_chamber"
   }
 }
