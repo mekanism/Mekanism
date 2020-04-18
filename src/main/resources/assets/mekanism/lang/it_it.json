@@ -694,7 +694,7 @@
   "miner.mekanism.auto_pull": "Pull: %s",
   "miner.mekanism.buffer_free": "Buffer libero: %s",
   "miner.mekanism.config": "Digital Miner Config",
-  "miner.mekanism.energy_capacity": "Capacità Energetica： %s",
+  "miner.mekanism.energy_capacity": "Capacità Energetica: %s",
   "miner.mekanism.idle": "Non pronto",
   "miner.mekanism.insufficient_buffer": "Buffer di energia insufficiente!",
   "miner.mekanism.inverse": "Modalità inversa",
