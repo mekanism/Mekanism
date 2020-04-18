@@ -11,6 +11,6 @@
   },
   "output": {
     "gas": "mekanism:fissile_fuel",
-    "amount": 100
+    "amount": 500
   }
 }

@@ -32,7 +32,7 @@ import mekanism.common.content.gear.mekatool.ModuleFarmingUnit;
 import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleAttackAmplificationUnit;
 import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleSilkTouchUnit;
 import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleTeleportationUnit;
-import mekanism.common.content.gear.mekatool.ModuleMekaTool.ModuleVeinMiningUnit;
+import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.Item;
@@ -54,14 +54,14 @@ public class Modules {
 
     // Meka-Tool
     public static final ModuleData<ModuleExcavationEscalationUnit> EXCAVATION_ESCALATION_UNIT = register("excavation_escalation_unit",
-        MekanismLang.MODULE_EXCAVATION_ESCALATION_UNIT, MekanismLang.DESCRIPTION_EXCAVATION_ESCALATION_UNIT, () -> new ModuleExcavationEscalationUnit(), 3)
+        MekanismLang.MODULE_EXCAVATION_ESCALATION_UNIT, MekanismLang.DESCRIPTION_EXCAVATION_ESCALATION_UNIT, () -> new ModuleExcavationEscalationUnit(), 4)
         .setHandlesModeChange().setRendersHUD();
     public static final ModuleData<ModuleAttackAmplificationUnit> ATTACK_AMPLIFICATION_UNIT = register("attack_amplification_unit",
-        MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, () -> new ModuleAttackAmplificationUnit(), 3);
+        MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, () -> new ModuleAttackAmplificationUnit(), 4);
     public static final ModuleData<ModuleSilkTouchUnit> SILK_TOUCH_UNIT = register("silk_touch_unit",
         MekanismLang.MODULE_SILK_TOUCH_UNIT, MekanismLang.DESCRIPTION_SILK_TOUCH_UNIT, () -> new ModuleSilkTouchUnit());
     public static final ModuleData<ModuleVeinMiningUnit> VEIN_MINING_UNIT = register("vein_mining_unit",
-        MekanismLang.MODULE_VEIN_MINING_UNIT, MekanismLang.DESCRIPTION_VEIN_MINING_UNIT, () -> new ModuleVeinMiningUnit());
+        MekanismLang.MODULE_VEIN_MINING_UNIT, MekanismLang.DESCRIPTION_VEIN_MINING_UNIT, () -> new ModuleVeinMiningUnit(), 4);
     public static final ModuleData<ModuleFarmingUnit> FARMING_UNIT = register("farming_unit",
         MekanismLang.MODULE_FARMING_UNIT, MekanismLang.DESCRIPTION_FARMING_UNIT, () -> new ModuleFarmingUnit(), 4)
         .setExclusive();

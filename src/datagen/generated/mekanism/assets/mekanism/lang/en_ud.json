@@ -842,6 +842,7 @@
   "module.mekanism.jump_boost": "\u0287soo\u15FA d\u026Fn\u0550",
   "module.mekanism.locomotive_boosting_unit": "\u0287\u1D09u\u2229 \u1D77u\u1D09\u0287soo\u15FA \u01DD\u028C\u1D09\u0287o\u026Fo\u0254o\uA780",
   "module.mekanism.magnetic_attraction_unit": "\u0287\u1D09u\u2229 uo\u1D09\u0287\u0254\u0250\u0279\u0287\u0287\u2C6F \u0254\u1D09\u0287\u01DDu\u1D77\u0250W",
+  "module.mekanism.mining_range": "\u01DD\u1D77u\u0250\u1D1A uo\u1D09\u0287\u0250\u028C\u0250\u0254x\u018E",
   "module.mekanism.mode": "\u01DDpoW",
   "module.mekanism.mode_change": "%2$s :o\u0287 p\u01DDd\u026Fnq %1$s",
   "module.mekanism.module_tweaker": "\u0279\u01DD\u029E\u0250\u01DD\u028D\u27D8 \u01DD\uA781npoW",

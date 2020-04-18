@@ -600,6 +600,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_RANGE("module", "range"),
     MODULE_SPRINT_BOOST("module", "sprint_boost"),
     MODULE_EXTENDED_MODE("module", "extended_mode"),
+    MODULE_EXCAVATION_RANGE("module", "mining_range"),
     MODULE_EFFICIENCY("module", "efficiency"),
     MODULE_JETPACK_MODE("module", "jetpack_mode"),
     MODULE_GRAVITATIONAL_MODULATION("module", "gravitational_modulation"),

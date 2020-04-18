@@ -4,7 +4,6 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
-import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
@@ -35,6 +34,7 @@ public class ModuleMekaTool extends Module {
             LOW(4),
             MED(8),
             HIGH(16),
+            EXTREME(24),
             MAX(32);
             private int damage;
             private ITextComponent label;
@@ -53,20 +53,6 @@ public class ModuleMekaTool extends Module {
     }
 
     public static class ModuleSilkTouchUnit extends ModuleMekaTool {}
-
-    public static class ModuleVeinMiningUnit extends ModuleMekaTool {
-        private ModuleConfigItem<Boolean> extendedMode;
-
-        @Override
-        public void init() {
-            super.init();
-            addConfigItem(extendedMode = new ModuleConfigItem<Boolean>(this, "extended_mode", MekanismLang.MODULE_EXTENDED_MODE, new BooleanData(), false));
-        }
-
-        public boolean isExtended() {
-            return extendedMode.get();
-        }
-    }
 
     public static class ModuleTeleportationUnit extends ModuleMekaTool {}
 }

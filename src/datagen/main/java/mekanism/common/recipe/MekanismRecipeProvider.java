@@ -3207,7 +3207,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ).addCriterion(Criterion.HAS_PRESSURIZED_REACTION_CHAMBER)
             .build(consumer, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
 
-        //fissile fuel
+        //fissile fuel (IMPORTANT: determines fissile fuel reprocessing efficiency)
         ItemStackGasToGasRecipeBuilder.dissolution(
             ItemStackIngredient.from(MekanismTags.Items.PELLETS_PLUTONIUM),
             GasStackIngredient.from(MekanismGases.HYDROFLUORIC_ACID, 1),

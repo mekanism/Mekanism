@@ -40,7 +40,7 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
     @Override
     public void addHUDStrings(List<ITextComponent> list) {
         if (!isEnabled()) return;
-        list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.DARK_GRAY, EnumColor.INDIGO, excavationMode.get().getEfficiency()));
+        list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, excavationMode.get().getEfficiency()));
     }
 
     public double getEfficiency() {
@@ -52,6 +52,7 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
         SLOW(4, MekanismConfig.gear.disassemblerSlowMode),
         NORMAL(16, () -> true),
         FAST(32, () -> true),
+        SUPERFAST(64, () -> true),
         EXTREME(128, MekanismConfig.gear.disassemblerFastMode);
 
         private static ExcavationMode[] MODES = values();

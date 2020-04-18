@@ -842,6 +842,7 @@
   "module.mekanism.jump_boost": "Jump Boost",
   "module.mekanism.locomotive_boosting_unit": "Locomotive Boosting Unit",
   "module.mekanism.magnetic_attraction_unit": "Magnetic Attraction Unit",
+  "module.mekanism.mining_range": "Excavation Range",
   "module.mekanism.mode": "Mode",
   "module.mekanism.mode_change": "%s bumped to: %s",
   "module.mekanism.module_tweaker": "Module Tweaker",

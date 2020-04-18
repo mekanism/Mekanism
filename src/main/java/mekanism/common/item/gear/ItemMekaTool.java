@@ -1,12 +1,10 @@
 package mekanism.common.item.gear;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
@@ -26,6 +24,7 @@ import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleMekaTool;
+import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.IModeItem;
@@ -92,9 +91,10 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             for (Module module : Modules.loadAll(stack)) {
                 ITextComponent component = module.getData().getLangEntry().translateColored(EnumColor.GRAY);
                 if (module.getInstalledCount() > 1) {
-                    component.appendSibling(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, "", Integer.toString(module.getInstalledCount())));
+                    String s = module.getInstalledCount() + "/" + module.getData().getMaxStackSize();
+                    component.appendSibling(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, "", s));
                 }
-                tooltip.add(module.getData().getLangEntry().translateColored(EnumColor.GRAY));
+                tooltip.add(component);
             }
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
@@ -182,7 +182,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                 }
             }
             if (isModuleEnabled(stack, Modules.VEIN_MINING_UNIT)) {
-                boolean extended = Modules.load(stack, Modules.VEIN_MINING_UNIT).isExtended();
+                ModuleVeinMiningUnit module = Modules.load(stack, Modules.VEIN_MINING_UNIT);
+                boolean extended = module.isExtended();
                 if (state.getBlock() instanceof BlockBounding) {
                     //Even though we now handle breaking bounding blocks properly, don't allow vein mining
                     // them as an added safety measure
@@ -191,7 +192,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                 //If it is extended or should be treated as an ore
                 if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
-                    List<BlockPos> found = findPositions(state, pos, world, extended ? MekanismConfig.gear.disassemblerMiningRange.get() : -1);
+                    Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(state, pos, world, extended ? module.getExcavationRange() : -1);
                     for (BlockPos foundPos : found) {
                         if (pos.equals(foundPos)) {
                             continue;
@@ -241,33 +242,6 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         return true;
     }
 
-    private static List<BlockPos> findPositions(BlockState state, BlockPos location, World world, int maxRange) {
-        List<BlockPos> found = new ArrayList<>();
-        Set<BlockPos> checked = new ObjectOpenHashSet<>();
-        found.add(location);
-        Block startBlock = state.getBlock();
-        int maxCount = MekanismConfig.gear.disassemblerMiningCount.get() - 1;
-        for (int i = 0; i < found.size(); i++) {
-            BlockPos blockPos = found.get(i);
-            checked.add(blockPos);
-            for (BlockPos pos : BlockPos.getAllInBoxMutable(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
-                //We can check contains as mutable
-                if (!checked.contains(pos)) {
-                    if (maxRange == -1 || Math.sqrt(location.distanceSq(pos)) <= maxRange) {
-                        if (world.isBlockPresent(pos) && startBlock == world.getBlockState(pos).getBlock()) {
-                            //Make sure to add it as immutable
-                            found.add(pos.toImmutable());
-                            if (found.size() > maxCount) {
-                                return found;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return found;
-    }
-
     private FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
         FloatingLong destroyEnergy = silk ? MekanismConfig.gear.mekaToolEnergyUsageSilk.get() : MekanismConfig.gear.mekaToolEnergyUsage.get();
         ModuleExcavationEscalationUnit module = Modules.load(itemStack, Modules.EXCAVATION_ESCALATION_UNIT);
@@ -281,7 +255,6 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
         return null;
     }
-
 
     @Nonnull
     @Override
