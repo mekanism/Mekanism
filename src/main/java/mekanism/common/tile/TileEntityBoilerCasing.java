@@ -1,11 +1,9 @@
 package mekanism.common.tile;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
@@ -16,13 +14,13 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
-import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.multiblock.IValveHandler;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
@@ -31,17 +29,9 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> {
-
-    /**
-     * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids.
-     */
-    public Set<ValveData> valveViewing = new ObjectOpenHashSet<>();
+public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IValveHandler {
 
     public float prevWaterScale;
     public float prevSteamScale;
@@ -55,34 +45,10 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     }
 
     @Override
-    protected void onUpdateClient() {
-        super.onUpdateClient();
-        if (!clientHasStructure || !isRendering) {
-            for (ValveData data : valveViewing) {
-                TileEntityBoilerCasing tile = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
-                if (tile != null) {
-                    tile.clientHasStructure = false;
-                }
-            }
-            valveViewing.clear();
-        }
-    }
-
-    @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null && isRendering) {
-            boolean needsPacket = false;
-            for (ValveData data : structure.valves) {
-                if (data.activeTicks > 0) {
-                    data.activeTicks--;
-                }
-                if (data.activeTicks > 0 != data.prevActive) {
-                    needsPacket = true;
-                }
-                data.prevActive = data.activeTicks > 0;
-            }
-
+            boolean needsPacket = needsValveUpdate();
             boolean newHot = structure.getTotalTemperature() >= SynchronizedBoilerData.BASE_BOIL_TEMP - 0.01;
             if (newHot != structure.clientHot) {
                 needsPacket = true;
@@ -188,6 +154,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return super.persists(type);
     }
 
+    @Override
+    public Collection<ValveData> getValveData() {
+        return structure != null ? structure.valves : null;
+    }
+
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
@@ -201,15 +172,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             updateTag.put(NBTConstants.GAS_STORED, structure.steamTank.getStack().write(new CompoundNBT()));
             updateTag.put(NBTConstants.RENDER_Y, structure.upperRenderLocation.write(new CompoundNBT()));
             updateTag.putBoolean(NBTConstants.HOT, structure.clientHot);
-            ListNBT valves = new ListNBT();
-            for (ValveData valveData : structure.valves) {
-                if (valveData.activeTicks > 0) {
-                    CompoundNBT valveNBT = new CompoundNBT();
-                    valveData.location.write(valveNBT);
-                    valveNBT.putInt(NBTConstants.SIDE, valveData.side.ordinal());
-                }
-            }
-            updateTag.put(NBTConstants.VALVE, valves);
+            writeValves(updateTag);
         }
         return updateTag;
     }
@@ -226,21 +189,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.steamTank.setStack(value));
             NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_Y, value -> structure.upperRenderLocation = value);
             NBTUtils.setBooleanIfPresent(tag, NBTConstants.HOT, value -> structure.clientHot = value);
-            valveViewing.clear();
-            if (tag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
-                ListNBT valves = tag.getList(NBTConstants.VALVE, NBT.TAG_COMPOUND);
-                for (int i = 0; i < valves.size(); i++) {
-                    CompoundNBT valveNBT = valves.getCompound(i);
-                    ValveData data = new ValveData();
-                    data.location = Coord4D.read(valveNBT);
-                    data.side = Direction.byIndex(valveNBT.getInt(NBTConstants.SIDE));
-                    valveViewing.add(data);
-                    TileEntityBoilerCasing tile = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
-                    if (tile != null) {
-                        tile.clientHasStructure = true;
-                    }
-                }
-            }
+            readValves(tag);
         }
     }
 

@@ -1,27 +1,29 @@
 package mekanism.common.content.tank;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.base.ContainerEditMode;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.util.Direction;
 
 public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData> implements IMekanismFluidHandler {
 
-    public DynamicFluidTank fluidTank;
+    public MultiblockFluidTank<TileEntityDynamicTank> fluidTank;
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
@@ -32,7 +34,7 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     private int tankCapacity;
 
     public SynchronizedTankData(TileEntityDynamicTank tile) {
-        fluidTank = new DynamicFluidTank(tile);
+        fluidTank = MultiblockFluidTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getTankCapacity(), BasicFluidTank.alwaysTrue);
         fluidTanks = Collections.singletonList(fluidTank);
         inventorySlots = createBaseInventorySlots();
     }
@@ -84,31 +86,5 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
-    }
-
-    public static class ValveData {
-
-        public Direction side;
-        public Coord4D location;
-
-        public boolean prevActive;
-        public int activeTicks;
-
-        public void onTransfer() {
-            activeTicks = 30;
-        }
-
-        @Override
-        public int hashCode() {
-            int code = 1;
-            code = 31 * code + side.ordinal();
-            code = 31 * code + location.hashCode();
-            return code;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof ValveData && ((ValveData) obj).side == side && ((ValveData) obj).location.equals(location);
-        }
     }
 }

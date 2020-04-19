@@ -8,7 +8,6 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.tile.TileEntityMultiblock;
-import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;
 
 @FieldsAreNonnullByDefault
@@ -17,6 +16,10 @@ import net.minecraftforge.fluids.FluidStack;
 public class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultiblock<?>> extends VariableCapacityFluidTank {
 
     protected final MULTIBLOCK multiblock;
+
+    public static <MULTIBLOCK extends TileEntityMultiblock<?>> MultiblockFluidTank<MULTIBLOCK> create(MULTIBLOCK multiblock, IntSupplier capacity, Predicate<@NonNull FluidStack> validator) {
+        return new MultiblockFluidTank<>(multiblock, capacity, validator);
+    }
 
     protected MultiblockFluidTank(MULTIBLOCK multiblock, IntSupplier capacity, Predicate<@NonNull FluidStack> validator) {
         super(capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.structure != null,
@@ -30,7 +33,7 @@ public class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultiblock<?>> ext
     @Override
     public void onContentsChanged() {
         super.onContentsChanged();
-        if (multiblock.hasWorld() && !multiblock.isRemote() && multiblock.isRendering) {
+        if (multiblock.hasWorld() && !multiblock.isRemote()) {
             updateValveData();
             multiblock.markDirty(false);
         }

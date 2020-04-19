@@ -7,7 +7,7 @@ import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
