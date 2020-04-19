@@ -291,7 +291,7 @@
   "description.mekanism.chemical_injection_chamber": "鉱石を4つの欠片に加工する精鋭的な機械です。 鉱石4倍加の初期段階として機能します。",
   "description.mekanism.chemical_oxidizer": "物質を酸化させてガス状にする機械です",
   "description.mekanism.chemical_washer": "結晶化の準備として懸濁液を洗浄する、究極的な機械です。",
-  "description.mekanism.combiner": "A machine used to combine items together. For example, dusts and cobblestone to form their ore counterparts.",
+  "description.mekanism.combiner": "アイテムを組み合わせる機械です。 例えば、粉と丸石を組み合わせて対応する鉱石に加工します。",
   "description.mekanism.copper_ore": "ワイヤーに使われる普遍的で電導性の高い鉱物です。 高熱に耐えられるその性質は、発展的な機械には欠かせません。",
   "description.mekanism.crusher": "インゴットを砕いて粉にする機械です。 その他の処理も行います。",
   "description.mekanism.digital_miner": "高度に発展したフィルターベースの自動掘削機です。 最大半径32ブロック以内のあらゆるブロックも採掘することが出来ます。",
