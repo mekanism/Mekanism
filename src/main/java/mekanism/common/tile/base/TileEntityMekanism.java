@@ -648,36 +648,19 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        //TODO: Cache the LazyOptional where possible as recommended in ICapabilityProvider
-        if (hasInventory()) {
-            if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, itemHandlerManager.getCapability(side));
-            }
-        }
-        if (canHandleGas()) {
-            if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-                return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, gasHandlerManager.getCapability(side));
-            }
-        }
-        if (canHandleInfusion()) {
-            if (capability == Capabilities.INFUSION_HANDLER_CAPABILITY) {
-                return Capabilities.INFUSION_HANDLER_CAPABILITY.orEmpty(capability, infusionHandlerManager.getCapability(side));
-            }
-        }
-        if (canHandleFluid()) {
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, fluidHandlerManager.getCapability(side));
-            }
-        }
-        if (canHandleHeat()) {
-            if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
-                return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, heatHandlerManager.getCapability(side));
-            }
-        }
-        if (canHandleEnergy() && EnergyCompatUtils.isEnergyCapability(capability)) {
-            List<IEnergyContainer> energyContainers = getEnergyContainers(side);
-            //Don't return a energy handler if we don't actually even have any energy containers for that side
-            return energyContainers.isEmpty() ? LazyOptional.empty() : EnergyCompatUtils.getEnergyCapability(capability, energyHandlerManager.getHandler(side));
+        //Note: All the managers check to confirm that they are able to handle that type of system and return a lazy optional if they cannot
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, itemHandlerManager.getCapability(side));
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, gasHandlerManager.getCapability(side));
+        } else if (capability == Capabilities.INFUSION_HANDLER_CAPABILITY) {
+            return Capabilities.INFUSION_HANDLER_CAPABILITY.orEmpty(capability, infusionHandlerManager.getCapability(side));
+        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, fluidHandlerManager.getCapability(side));
+        } else if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
+            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, heatHandlerManager.getCapability(side));
+        } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
+            return energyHandlerManager.getEnergyCapability(capability, side);
         }
         //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
         return super.getCapability(capability, side);

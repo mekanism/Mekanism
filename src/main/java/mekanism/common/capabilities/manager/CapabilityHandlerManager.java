@@ -56,11 +56,11 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
     }
 
     public LazyOptional<HANDLER> getCapability(@Nullable Direction side) {
-        //TODO: Cache the LazyOptional where possible as recommended in ICapabilityProvider
         if (!canHandle() || getContainers(side).isEmpty()) {
             //If we can't handle this type or there are no containers accessible from that side, don't return a handler
             return LazyOptional.empty();
         }
+        //TODO: Cache the LazyOptional where possible as recommended in ICapabilityProvider
         return LazyOptional.of(() -> getHandler(side));
     }
 
@@ -69,8 +69,7 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
      *
      * @apiNote Assumes that {@link #canHandle} has been called before this and that it was {@code true}.
      */
-    public HANDLER getHandler(@Nullable Direction side) {
-        //TODO: Improve
+    protected HANDLER getHandler(@Nullable Direction side) {
         if (side == null) {
             if (readOnlyHandler == null) {
                 readOnlyHandler = proxyCreator.create(baseHandler, null, holder);
