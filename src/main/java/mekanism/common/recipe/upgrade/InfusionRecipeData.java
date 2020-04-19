@@ -41,7 +41,7 @@ public class InfusionRecipeData implements RecipeUpgradeData<InfusionRecipeData>
         for (int i = 0; i < count; i++) {
             infusionTanks.add(BasicInfusionTank.create(Long.MAX_VALUE, null));
         }
-        DataHandlerUtils.readTanks(infusionTanks, tanks);
+        DataHandlerUtils.readContainers(infusionTanks, tanks);
     }
 
     InfusionRecipeData(List<IInfusionTank> infusionTanks) {
@@ -122,7 +122,7 @@ public class InfusionRecipeData implements RecipeUpgradeData<InfusionRecipeData>
         }
         if (hasData) {
             //We managed to transfer it all into valid slots, so save it to the stack
-            ItemDataUtils.setList(stack, NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeTanks(infusionTanks));
+            ItemDataUtils.setList(stack, NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeContainers(infusionTanks));
         }
         return true;
     }

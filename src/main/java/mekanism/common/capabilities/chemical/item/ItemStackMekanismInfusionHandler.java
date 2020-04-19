@@ -27,7 +27,7 @@ public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanism
     protected void load() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            DataHandlerUtils.readTanks(getInfusionTanks(null), ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
+            DataHandlerUtils.readContainers(getInfusionTanks(null), ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
         }
     }
 
@@ -40,7 +40,7 @@ public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanism
     public void onContentsChanged() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeTanks(getInfusionTanks(null)));
+            ItemDataUtils.setList(stack, NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeContainers(getInfusionTanks(null)));
         }
     }
 

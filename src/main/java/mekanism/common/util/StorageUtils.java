@@ -95,7 +95,7 @@ public class StorageUtils {
     @Nonnull
     public static FluidStack getStoredFluidFromNBT(ItemStack stack) {
         BasicFluidTank tank = BasicFluidTank.create(Integer.MAX_VALUE, null);
-        DataHandlerUtils.readTanks(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
+        DataHandlerUtils.readContainers(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
         return tank.getFluid();
     }
 
@@ -106,7 +106,7 @@ public class StorageUtils {
     @Nonnull
     public static GasStack getStoredGasFromNBT(ItemStack stack) {
         BasicGasTank tank = BasicGasTank.create(Long.MAX_VALUE, null);
-        DataHandlerUtils.readTanks(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
+        DataHandlerUtils.readContainers(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
         return tank.getStack();
     }
 
@@ -117,7 +117,7 @@ public class StorageUtils {
     @Nonnull
     public static InfusionStack getStoredInfusionFromNBT(ItemStack stack) {
         BasicInfusionTank tank = BasicInfusionTank.create(Long.MAX_VALUE, null);
-        DataHandlerUtils.readTanks(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
+        DataHandlerUtils.readContainers(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
         return tank.getStack();
     }
 

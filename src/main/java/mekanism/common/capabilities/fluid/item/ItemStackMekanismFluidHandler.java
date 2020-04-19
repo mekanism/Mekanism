@@ -37,7 +37,7 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
     protected void load() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            DataHandlerUtils.readTanks(getFluidTanks(null), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
+            DataHandlerUtils.readContainers(getFluidTanks(null), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
         }
     }
 
@@ -51,7 +51,7 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
     public void onContentsChanged() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(getFluidTanks(null)));
+            ItemDataUtils.setList(stack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeContainers(getFluidTanks(null)));
         }
     }
 

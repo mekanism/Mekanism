@@ -28,7 +28,7 @@ public abstract class ItemStackMekanismGasHandler extends ItemStackMekanismChemi
     protected void load() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            DataHandlerUtils.readTanks(getGasTanks(null), ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
+            DataHandlerUtils.readContainers(getGasTanks(null), ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
         }
     }
 
@@ -42,7 +42,7 @@ public abstract class ItemStackMekanismGasHandler extends ItemStackMekanismChemi
     public void onContentsChanged() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(getGasTanks(null)));
+            ItemDataUtils.setList(stack, NBTConstants.GAS_TANKS, DataHandlerUtils.writeContainers(getGasTanks(null)));
         }
     }
 

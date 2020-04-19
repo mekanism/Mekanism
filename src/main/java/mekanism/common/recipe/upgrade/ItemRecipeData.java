@@ -42,7 +42,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         for (int i = 0; i < count; i++) {
             this.slots.add(new DummyInventorySlot());
         }
-        DataHandlerUtils.readSlots(this.slots, slots);
+        DataHandlerUtils.readContainers(this.slots, slots);
     }
 
     ItemRecipeData(List<IInventorySlot> slots) {
@@ -96,7 +96,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             for (IInventorySlot slot : this.slots) {
                 if (!slot.isEmpty()) {
                     //We have no information about what our item supports, but we have at least some stacks we want to transfer
-                    ((ISustainedInventory) stack.getItem()).setInventory(DataHandlerUtils.writeSlots(this.slots), stack);
+                    ((ISustainedInventory) stack.getItem()).setInventory(DataHandlerUtils.writeContainers(this.slots), stack);
                     return true;
                 }
             }
@@ -132,7 +132,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         }
         if (hasData) {
             //We managed to transfer it all into valid slots, so save it to the stack
-            ((ISustainedInventory) stack.getItem()).setInventory(DataHandlerUtils.writeSlots(slots), stack);
+            ((ISustainedInventory) stack.getItem()).setInventory(DataHandlerUtils.writeContainers(slots), stack);
         }
         return true;
     }

@@ -41,7 +41,7 @@ public class GasRecipeData implements RecipeUpgradeData<GasRecipeData> {
         for (int i = 0; i < count; i++) {
             gasTanks.add(BasicGasTank.create(Long.MAX_VALUE, null));
         }
-        DataHandlerUtils.readTanks(gasTanks, tanks);
+        DataHandlerUtils.readContainers(gasTanks, tanks);
     }
 
     GasRecipeData(List<IGasTank> gasTanks) {
@@ -121,7 +121,7 @@ public class GasRecipeData implements RecipeUpgradeData<GasRecipeData> {
         }
         if (hasData) {
             //We managed to transfer it all into valid slots, so save it to the stack
-            ItemDataUtils.setList(stack, NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(gasTanks));
+            ItemDataUtils.setList(stack, NBTConstants.GAS_TANKS, DataHandlerUtils.writeContainers(gasTanks));
         }
         return true;
     }

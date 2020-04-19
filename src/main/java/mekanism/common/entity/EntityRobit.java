@@ -361,7 +361,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         if (homeLocation != null) {
             homeLocation.write(nbtTags);
         }
-        nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeSlots(getInventorySlots(null)));
+        nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
         nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
     }
@@ -373,7 +373,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
         setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
         homeLocation = Coord4D.read(nbtTags);
-        DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
+        DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
         DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags.getList(NBTConstants.ENERGY_CONTAINERS, NBT.TAG_COMPOUND));
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
     }
@@ -441,13 +441,13 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     public void setInventory(ListNBT nbtTags, Object... data) {
         if (nbtTags != null && !nbtTags.isEmpty()) {
-            DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags);
+            DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags);
         }
     }
 
     @Override
     public ListNBT getInventory(Object... data) {
-        return DataHandlerUtils.writeSlots(getInventorySlots(null));
+        return DataHandlerUtils.writeContainers(getInventorySlots(null));
     }
 
     @Nonnull

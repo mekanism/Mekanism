@@ -82,9 +82,9 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
     protected void load() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            DataHandlerUtils.readTanks(getFluidTanks(null), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
-            DataHandlerUtils.readTanks(getGasTanks(null), ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
-            DataHandlerUtils.readTanks(getInfusionTanks(null), ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
+            DataHandlerUtils.readContainers(getFluidTanks(null), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
+            DataHandlerUtils.readContainers(getGasTanks(null), ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
+            DataHandlerUtils.readContainers(getInfusionTanks(null), ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
         }
     }
 
@@ -108,9 +108,9 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
     public void onContentsChanged() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(getFluidTanks(null)));
-            ItemDataUtils.setList(stack, NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(getGasTanks(null)));
-            ItemDataUtils.setList(stack, NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeTanks(getInfusionTanks(null)));
+            ItemDataUtils.setList(stack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeContainers(getFluidTanks(null)));
+            ItemDataUtils.setList(stack, NBTConstants.GAS_TANKS, DataHandlerUtils.writeContainers(getGasTanks(null)));
+            ItemDataUtils.setList(stack, NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeContainers(getInfusionTanks(null)));
         }
     }
 

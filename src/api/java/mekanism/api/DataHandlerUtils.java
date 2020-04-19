@@ -3,54 +3,31 @@ package mekanism.api;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.heat.IHeatCapacitor;
+import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fluids.IFluidTank;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class DataHandlerUtils {
 
     /**
-     * Helper to read and load a list of tanks from a {@link ListNBT}
-     */
-    public static void readTanks(List<? extends INBTSerializable<CompoundNBT>> tanks, ListNBT storedTanks) {
-        readContents(tanks, storedTanks, NBTConstants.TANK);
-    }
-
-    /**
-     * Helper to read and load a list of tanks to a {@link ListNBT}
-     */
-    public static ListNBT writeTanks(List<? extends INBTSerializable<CompoundNBT>> tanks) {
-        return writeContents(tanks, NBTConstants.TANK);
-    }
-
-    /**
      * Helper to read and load a list of containers from a {@link ListNBT}
      */
     public static void readContainers(List<? extends INBTSerializable<CompoundNBT>> containers, ListNBT storedContainers) {
-        readContents(containers, storedContainers, NBTConstants.CONTAINER);
+        readContents(containers, storedContainers, getTagByType(containers));
     }
 
     /**
      * Helper to read and load a list of containers to a {@link ListNBT}
      */
     public static ListNBT writeContainers(List<? extends INBTSerializable<CompoundNBT>> containers) {
-        return writeContents(containers, NBTConstants.CONTAINER);
-    }
-
-    /**
-     * Helper to read and load a list of tanks from a {@link ListNBT}
-     */
-    public static void readSlots(List<? extends INBTSerializable<CompoundNBT>> slots, ListNBT storedSlots) {
-        readContents(slots, storedSlots, NBTConstants.SLOT);
-    }
-
-    /**
-     * Helper to read and load a list of tanks to a {@link ListNBT}
-     */
-    public static ListNBT writeSlots(List<? extends INBTSerializable<CompoundNBT>> slots) {
-        return writeContents(slots, NBTConstants.SLOT);
+        return writeContents(containers, getTagByType(containers));
     }
 
     /**
@@ -80,6 +57,22 @@ public class DataHandlerUtils {
             }
         }
         return storedContents;
+    }
+
+    // keep this only for backwards compat
+    private static String getTagByType(List<? extends INBTSerializable<CompoundNBT>> containers) {
+        if (containers.isEmpty()) {
+            return NBTConstants.CONTAINER;
+        }
+        INBTSerializable<CompoundNBT> obj = containers.get(0);
+        if (obj instanceof IChemicalTank<?, ?> || obj instanceof IFluidTank) {
+            return NBTConstants.TANK;
+        } else if (obj instanceof IHeatCapacitor || obj instanceof IEnergyContainer) {
+            return NBTConstants.CONTAINER;
+        } else if (obj instanceof IInventorySlot) {
+            return NBTConstants.SLOT;
+        }
+        return NBTConstants.CONTAINER;
     }
 
     public static int getMaxId(ListNBT storedContents, String key) {

@@ -1,12 +1,12 @@
 package mekanism.common.util;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
@@ -44,7 +44,7 @@ public final class GasUtils {
         // (at least not on the first call to this, which is made via fillItemGroup)
         BasicGasTank tank = BasicGasTank.createDummy(capacity);
         tank.setStack(gasProvider.getGasStack(tank.getCapacity()));
-        ItemDataUtils.setList(toFill, NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(Collections.singletonList(tank)));
+        ItemDataUtils.setList(toFill, NBTConstants.GAS_TANKS, DataHandlerUtils.writeContainers(Collections.singletonList(tank)));
         //The item is now filled return it for convenience
         return toFill;
     }

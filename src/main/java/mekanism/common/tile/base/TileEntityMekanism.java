@@ -1,6 +1,5 @@
 package mekanism.common.tile.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
@@ -521,7 +521,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
         }
         if (hasInventory() && persistInventory()) {
-            DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
+            DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
         }
         for (SubstanceType type : SubstanceType.values()) {
             if (type.canHandle(this) && persists(type)) {
@@ -546,7 +546,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             nbtTags.putInt(NBTConstants.CONTROL_TYPE, controlType.ordinal());
         }
         if (hasInventory() && persistInventory()) {
-            nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeSlots(getInventorySlots(null)));
+            nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
         }
 
         for (SubstanceType type : SubstanceType.values()) {
@@ -829,13 +829,13 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public void setInventory(ListNBT nbtTags, Object... data) {
         if (nbtTags != null && !nbtTags.isEmpty() && persistInventory()) {
-            DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags);
+            DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags);
         }
     }
 
     @Override
     public ListNBT getInventory(Object... data) {
-        return persistInventory() ? DataHandlerUtils.writeSlots(getInventorySlots(null)) : new ListNBT();
+        return persistInventory() ? DataHandlerUtils.writeContainers(getInventorySlots(null)) : new ListNBT();
     }
 
     /**

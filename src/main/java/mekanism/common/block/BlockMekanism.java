@@ -3,6 +3,7 @@ package mekanism.common.block;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.sustained.ISustainedData;
@@ -82,7 +83,7 @@ public abstract class BlockMekanism extends Block {
         }
         for (SubstanceType type : SubstanceType.values()) {
             if (tile.handles(type)) {
-                ItemDataUtils.setList(itemStack, type.getContainerTag(), type.getWriteFunction().apply(type.getContainers(tile)));
+                ItemDataUtils.setList(itemStack, type.getContainerTag(), DataHandlerUtils.writeContainers(type.getContainers(tile)));
             }
         }
         if (item instanceof ISustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
@@ -177,7 +178,7 @@ public abstract class BlockMekanism extends Block {
         }
         for (SubstanceType type : SubstanceType.values()) {
             if (type.canHandle(tile)) {
-                type.getReadFunction().accept(type.getContainers(tile), ItemDataUtils.getList(stack, type.getContainerTag()));
+                DataHandlerUtils.readContainers(type.getContainers(tile), ItemDataUtils.getList(stack, type.getContainerTag()));
             }
         }
         if (tile instanceof ISustainedData && stack.hasTag()) {
