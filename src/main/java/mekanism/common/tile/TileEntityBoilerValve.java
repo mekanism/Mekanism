@@ -62,7 +62,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     @Override
     public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
-        if (ret.getAmount() < stack.getAmount()) {
+        if (ret.getAmount() < stack.getAmount() && action.execute()) {
             if (structure != null) {
                 Coord4D coord4D = Coord4D.get(this);
                 for (ValveData data : structure.valves) {
