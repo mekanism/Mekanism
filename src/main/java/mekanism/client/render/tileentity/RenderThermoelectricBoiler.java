@@ -9,9 +9,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.GasRenderData;
-import mekanism.client.render.data.ValveRenderData;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -46,14 +44,6 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                     matrix.pop();
 
                     MekanismRenderer.renderValves(matrix, buffer, tile.structure.valves, data, pos, glow);
-
-                    for (ValveData valveData : tile.structure.valves) {
-                        matrix.push();
-                        matrix.translate(valveData.location.x - pos.getX(), valveData.location.y - pos.getY(), valveData.location.z - pos.getZ());
-                        Model3D valveModel = ModelRenderer.getValveModel(ValveRenderData.get(data, valveData));
-                        MekanismRenderer.renderObject(valveModel, matrix, buffer, data.getColorARGB(), glow);
-                        matrix.pop();
-                    }
                 }
             }
             if (!tile.structure.steamTank.isEmpty()) {

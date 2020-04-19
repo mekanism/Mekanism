@@ -67,7 +67,7 @@ public class SynchronizedBoilerData extends MultiblockData<SynchronizedBoilerDat
     private List<IHeatCapacitor> heatCapacitors;
 
     public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
-        waterTank = MultiblockFluidTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
+        waterTank = MultiblockFluidTank.input(tile, () -> tile.structure == null ? 0 : tile.structure.getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
         fluidTanks = Collections.singletonList(waterTank);
         steamTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getSteamTankCapacity(),
             (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,

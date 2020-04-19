@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.MekanismUtils;
@@ -24,12 +23,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
         return side -> structure == null ? Collections.emptyList() : structure.getFluidTanks(side);
     }
 
-    @Nonnull
-    @Override
-    protected IInventorySlotHolder getInitialInventory() {
-        return side -> structure != null ? Collections.emptyList() : structure.getInventorySlots(side);
-    }
-
     @Override
     public boolean persists(SubstanceType type) {
         //Do not handle fluid when it comes to syncing it/saving this tile to disk
@@ -37,11 +30,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
             return false;
         }
         return super.persists(type);
-    }
-
-    @Override
-    public boolean persistInventory() {
-        return false;
     }
 
     @Override

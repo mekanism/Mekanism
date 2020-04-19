@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.IntSupplier;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -14,7 +12,6 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -39,7 +36,6 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedFissionReactorData> implements IMekanismFluidHandler, IMekanismGasHandler,
       ITileHeatHandler {
@@ -87,7 +83,7 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
     private boolean active;
 
     public SynchronizedFissionReactorData(TileEntityFissionReactorCasing tile) {
-        waterTank = new FissionReactorFluidTank(tile, () -> tile.structure == null ? 0 : getVolume() * WATER_PER_VOLUME, fluid -> fluid.getFluid().isIn(FluidTags.WATER));
+        waterTank = MultiblockFluidTank.input(tile, () -> tile.structure == null ? 0 : getVolume() * WATER_PER_VOLUME, fluid -> fluid.getFluid().isIn(FluidTags.WATER));
         fluidTanks = Collections.singletonList(waterTank);
         fuelTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : fuelAssemblies * FUEL_PER_ASSEMBLY,
             (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> tile.structure != null,
@@ -211,25 +207,5 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
         return heatCapacitors;
-    }
-
-    private static class FissionReactorFluidTank extends MultiblockFluidTank<TileEntityFissionReactorCasing> {
-
-        public FissionReactorFluidTank(TileEntityFissionReactorCasing multiblock, IntSupplier capacity, Predicate<@NonNull FluidStack> validator) {
-            super(multiblock, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.structure != null,
-                (stack, automationType) -> multiblock.structure != null, validator, null);
-        }
-
-        @Override
-        protected void updateValveData() {
-            if (multiblock.structure != null) {
-                Coord4D coord4D = Coord4D.get(multiblock);
-                for (ValveData data : multiblock.structure.valves) {
-                    if (coord4D.equals(data.location)) {
-                        data.onTransfer();
-                    }
-                }
-            }
-        }
     }
 }
