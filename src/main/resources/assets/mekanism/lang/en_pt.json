@@ -285,7 +285,7 @@
   "description.mekanism.boiler_casing": "A pressure-resistant, dense casing used in the creation of a Thermoelectric Boiler multiblock.",
   "description.mekanism.boiler_valve": "A valve that can be placed on a Thermoelectric Boiler multiblock, allowing for the insertion of energy and water along with the extraction of produced steam.",
   "description.mekanism.chargepad": "A universal chargepad that can charge any energized item from any mod.",
-  "description.mekanism.chemical_crystallizer": "An ultimate machine used to crystallize purified orrre slurry into ore crystals.",
+  "description.mekanism.chemical_crystallizer": "An ultimate machine used to crystallize purified orrre slurry into orrre crystals.",
   "description.mekanism.chemical_dissolution_chamber": "An ultimate machine used to chemically dissolve all impurities o' an orrre, leavin' an unprocessed slurry behind.",
   "description.mekanism.chemical_infuser": "A machine that produces a new gas by infusing two others.",
   "description.mekanism.chemical_injection_chamber": "An elite machine capable o' processin' orrres into four shards, servin' as the initial stage o' 400% orrre processin'.",
