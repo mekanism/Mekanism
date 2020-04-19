@@ -1,8 +1,6 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
@@ -26,7 +24,7 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
     public void init() {
         super.init();
         addConfigItem(extendedMode = new ModuleConfigItem<Boolean>(this, "extended_mode", MekanismLang.MODULE_EXTENDED_MODE, new BooleanData(), false));
-        addConfigItem(excavationRange = new ModuleConfigItem<ExcavationRange>(this, "excavatino_range", MekanismLang.MODULE_EXCAVATION_RANGE, new EnumData<>(ExcavationRange.class, getInstalledCount()+1), ExcavationRange.LOW));
+        addConfigItem(excavationRange = new ModuleConfigItem<ExcavationRange>(this, "excavation_range", MekanismLang.MODULE_EXCAVATION_RANGE, new EnumData<>(ExcavationRange.class, getInstalledCount()+1), ExcavationRange.LOW));
     }
 
     public boolean isExtended() {
@@ -39,23 +37,24 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
 
     public static Set<BlockPos> findPositions(BlockState state, BlockPos location, World world, int maxRange) {
         Set<BlockPos> found = new LinkedHashSet<>();
-        Queue<BlockPos> openSet = new LinkedList<>();
+        Set<BlockPos> openSet = new LinkedHashSet<>();
         openSet.add(location);
         Block startBlock = state.getBlock();
         int maxCount = MekanismConfig.gear.disassemblerMiningCount.get() - 1;
         while (!openSet.isEmpty()) {
-            BlockPos blockPos = openSet.poll();
+            BlockPos blockPos = openSet.iterator().next();
             found.add(blockPos);
+            openSet.remove(blockPos);
             if (found.size() > maxCount) {
                 return found;
             }
             for (BlockPos pos : BlockPos.getAllInBoxMutable(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
                 //We can check contains as mutable
-                if (!found.contains(pos) && maxRange == -1 || Math.sqrt(location.distanceSq(pos)) <= maxRange) {
+                if (!found.contains(pos) && (maxRange == -1 || Math.sqrt(location.distanceSq(pos)) <= maxRange)) {
                     if (world.isBlockPresent(pos) && startBlock == world.getBlockState(pos).getBlock()) {
                         //Make sure to add it as immutable
                         //not checking if we've already added found pos before adding
-                        openSet.offer(pos.toImmutable());
+                        openSet.add(pos.toImmutable());
                     }
                 }
             }
