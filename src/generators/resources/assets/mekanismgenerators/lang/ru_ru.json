@@ -21,7 +21,7 @@
   "block.mekanismgenerators.turbine_rotor": "Ротор турбины",
   "block.mekanismgenerators.turbine_valve": "Порт турбины",
   "block.mekanismgenerators.turbine_vent": "Вентиль турбины",
-  "block.mekanismgenerators.wind_generator": "Ветровая турбина",
+  "block.mekanismgenerators.wind_generator": "Ветрогенератор",
   "description.mekanismgenerators.advanced_solar_generator": "Продвинутый генератор, который напрямую поглощает солнечные лучи с небольшой потерей, для производства энергии.",
   "description.mekanismgenerators.bio_generator": "Генератор, который сжигает органические материалы мира для производства энергии.",
   "description.mekanismgenerators.electromagnetic_coil": "Блок, превращающий кинетическую энергию от вращательного комплекса в электроэнергию.",
