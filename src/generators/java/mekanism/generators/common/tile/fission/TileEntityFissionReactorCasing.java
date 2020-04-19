@@ -76,7 +76,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             }
             // update temperature
             structure.update(null);
-            structure.handleDamage();
+            structure.handleDamage(getWorld());
 
             // update scales
             float waterScale = MekanismUtils.getScale(prevWaterScale, structure.waterTank), fuelScale = MekanismUtils.getScale(prevFuelScale, structure.fuelTank);

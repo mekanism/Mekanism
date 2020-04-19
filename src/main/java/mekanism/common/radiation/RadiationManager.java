@@ -1,5 +1,6 @@
 package mekanism.common.radiation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -77,6 +78,7 @@ public class RadiationManager {
     private boolean loaded;
 
     private Map<Chunk3D, Map<Coord4D, RadiationSource>> radiationMap = new Object2ObjectOpenHashMap<>();
+    private Map<Integer, List<Meltdown>> meltdowns = new HashMap<>();
 
     private Map<UUID, RadiationScale> playerExposureMap = new Object2ObjectOpenHashMap<>();
 
@@ -135,6 +137,10 @@ public class RadiationManager {
         if (!found) {
             radiationMap.computeIfAbsent(new Chunk3D(coord), c -> new Object2ObjectOpenHashMap<>()).put(coord, new RadiationSource(coord, magnitude));
         }
+    }
+
+    public void createMeltdown(World world, Coord4D minPos, Coord4D maxPos, double magnitude, double chance) {
+        meltdowns.computeIfAbsent(minPos.dimension.getId(), (id) -> new ArrayList<>()).add(new Meltdown(world, minPos, maxPos, magnitude, chance));
     }
 
     public void clearSources() {
@@ -239,6 +245,15 @@ public class RadiationManager {
                 }
             }
         }
+        // update meltdowns
+        if (meltdowns.containsKey(world.dimension.getType().getId())) {
+            for (Iterator<Meltdown> iter = meltdowns.get(world.dimension.getType().getId()).iterator(); iter.hasNext();) {
+                Meltdown meltdown = iter.next();
+                if (meltdown.update()) {
+                    iter.remove();
+                }
+            }
+        }
     }
 
     /**
@@ -259,6 +274,7 @@ public class RadiationManager {
     public void reset() {
         clearSources();
         playerExposureMap.clear();
+        meltdowns.clear();
         dataHandler = null;
         loaded = false;
     }

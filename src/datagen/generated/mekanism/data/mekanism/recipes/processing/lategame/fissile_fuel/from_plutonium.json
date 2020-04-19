@@ -1,16 +1,15 @@
 {
-  "type": "mekanism:dissolution",
-  "itemInput": {
-    "ingredient": {
-      "tag": "forge:pellets/plutonium"
-    }
+  "type": "mekanism:washing",
+  "fluidInput": {
+    "amount": 10,
+    "tag": "minecraft:water"
   },
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:hydrofluoric_acid"
+    "gas": "mekanism:plutonium"
   },
   "output": {
     "gas": "mekanism:fissile_fuel",
-    "amount": 500
+    "amount": 5
   }
 }

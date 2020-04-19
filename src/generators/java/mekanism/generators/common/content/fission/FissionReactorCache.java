@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 public class FissionReactorCache extends MultiblockCache<SynchronizedFissionReactorData> {
 
     private double reactorDamage;
-    private double rateLimit;
+    private double rateLimit = 0.1;
     private double burnRemaining;
     private double partialWaste;
     public boolean active;

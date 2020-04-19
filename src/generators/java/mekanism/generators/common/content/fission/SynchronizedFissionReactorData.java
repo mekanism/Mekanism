@@ -36,6 +36,7 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedFissionReactorData> implements IMekanismFluidHandler, IMekanismGasHandler,
       ITileHeatHandler {
@@ -55,6 +56,7 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
     public static final double MAX_DAMAGE = 100;
 
     public static final long BURN_PER_ASSEMBLY = 1;
+    private static final double EXPLOSION_CHANCE = 1D / (512_000);
 
     public static Object2BooleanMap<UUID> burningMap = new Object2BooleanOpenHashMap<>();
 
@@ -102,7 +104,7 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
         heatCapacitors = Collections.singletonList(heatCapacitor);
     }
 
-    public void handleDamage() {
+    public void handleDamage(World world) {
         double temp = heatCapacitor.getTemperature();
         if (temp > MIN_DAMAGE_TEMPERATURE) {
             double damageRate = Math.min(temp, MAX_DAMAGE_TEMPERATURE) / (MIN_DAMAGE_TEMPERATURE * 10);
@@ -111,9 +113,20 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
             double repairRate = (MIN_DAMAGE_TEMPERATURE - temp) / (MIN_DAMAGE_TEMPERATURE * 100);
             reactorDamage = Math.max(0, reactorDamage - repairRate);
         }
-
-        if (reactorDamage >= MAX_DAMAGE) {
-            // meltdown scaling on stored fuel
+        // consider a meltdown only if it's config-enabled, we're passed the damage threshold and the temperature is still dangerous
+        if (MekanismGeneratorsConfig.generators.fissionMeltdownsEnabled.get() && reactorDamage >= MAX_DAMAGE && temp >= MIN_DAMAGE_TEMPERATURE) {
+            if (world.rand.nextDouble() < (reactorDamage / MAX_DAMAGE) * MekanismGeneratorsConfig.generators.fissionMeltdownChance.get()) {
+                double radiation = 0;
+                if (fuelTank.getStack().has(GasAttributes.Radiation.class)) {
+                    radiation += fuelTank.getStored() * fuelTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
+                }
+                if (wasteTank.getStack().has(GasAttributes.Radiation.class)) {
+                    radiation += wasteTank.getStored() * wasteTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
+                }
+                radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
+                Mekanism.radiationManager.radiate(getCenter(), radiation);
+                Mekanism.radiationManager.createMeltdown(world, minLocation, maxLocation, heatCapacitor.getHeat(), EXPLOSION_CHANCE);
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 {
   "type": "mekanism:crystallizing",
   "input": {
-    "amount": 100,
+    "amount": 1000,
     "gas": "mekanism:antimatter"
   },
   "output": {

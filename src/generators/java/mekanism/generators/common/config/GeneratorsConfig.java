@@ -3,6 +3,7 @@ package mekanism.generators.common.config;
 import java.util.ArrayList;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.BaseMekanismConfig;
+import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
@@ -39,9 +40,13 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedIntValue windGenerationMinY;
     public final CachedIntValue windGenerationMaxY;
     public final CachedResourceLocationListValue windGenerationDimBlacklist;
+
     public final CachedFloatingLongValue energyPerFissionFuel;
     public final CachedDoubleValue fissionCasingHeatCapacity;
     public final CachedDoubleValue fissionSurfaceAreaTarget;
+    public final CachedBooleanValue fissionMeltdownsEnabled;
+    public final CachedDoubleValue fissionMeltdownChance;
+    public final CachedDoubleValue fissionMeltdownRadiationMultiplier;
 
     public final CachedLongValue hohlraumMaxGas;
     public final CachedLongValue hohlraumFillRate;
@@ -122,6 +127,12 @@ public class GeneratorsConfig extends BaseMekanismConfig {
             .define("casingHeatCapacity", 10D));
         fissionSurfaceAreaTarget = CachedDoubleValue.wrap(this, builder.comment("The average surface area of a Fission Reactor's fuel assemblies to reach 100% boil efficiency. Higher values make it harder to cool the reactor.")
             .defineInRange("surfaceAreaTarget", 4D, 1D, Double.MAX_VALUE));
+        fissionMeltdownsEnabled = CachedBooleanValue.wrap(this, builder.comment("Whether catostrophic meltdowns can occur from Fission Reactors.")
+            .define("meltdownsEnabled", true));
+        fissionMeltdownChance = CachedDoubleValue.wrap(this, builder.comment("The chance of a meltdown occurring once damage passes 100%. Will linearly scale as damage continues increasing.")
+            .defineInRange("meltdownChance", 0.001D, 0D, 1D));
+        fissionMeltdownRadiationMultiplier = CachedDoubleValue.wrap(this, builder.comment("How much radioactivity of fuel/waste contents are multiplied during a meltdown.")
+            .define("meltdownRadiationMultiplier", 10D));
         builder.pop();
 
         builder.pop();
