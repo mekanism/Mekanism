@@ -1,12 +1,10 @@
 package mekanism.common.tile;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
@@ -14,13 +12,13 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ContainerEditMode;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.content.tank.SynchronizedTankData;
-import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.FluidInventorySlot;
+import mekanism.common.multiblock.IValveHandler;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
@@ -31,23 +29,16 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager {
-
-    /**
-     * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids.
-     */
-    public Set<ValveData> valveViewing = new ObjectOpenHashSet<>();
+public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager, IValveHandler {
 
     public float prevScale;
 
@@ -60,33 +51,10 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     }
 
     @Override
-    protected void onUpdateClient() {
-        super.onUpdateClient();
-        if (!clientHasStructure || !isRendering) {
-            for (ValveData data : valveViewing) {
-                TileEntityDynamicTank tile = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
-                if (tile != null) {
-                    tile.clientHasStructure = false;
-                }
-            }
-            valveViewing.clear();
-        }
-    }
-
-    @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null && isRendering) {
-            boolean needsPacket = false;
-            for (ValveData data : structure.valves) {
-                if (data.activeTicks > 0) {
-                    data.activeTicks--;
-                }
-                if (data.activeTicks > 0 != data.prevActive) {
-                    needsPacket = true;
-                }
-                data.prevActive = data.activeTicks > 0;
-            }
+            boolean needsPacket = needsValveUpdate();
             List<IInventorySlot> inventorySlots = structure.getInventorySlots(null);
             //TODO: No magic numbers??
             FluidInventorySlot inputSlot = (FluidInventorySlot) inventorySlots.get(0);
@@ -229,6 +197,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         return super.isCapabilityDisabled(capability, side);
     }
 
+    @Override
+    public Collection<ValveData> getValveData() {
+        return structure != null ? structure.valves : null;
+    }
+
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
@@ -237,15 +210,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             updateTag.putFloat(NBTConstants.SCALE, prevScale);
             updateTag.putInt(NBTConstants.VOLUME, structure.getVolume());
             updateTag.put(NBTConstants.FLUID_STORED, structure.fluidTank.getFluid().writeToNBT(new CompoundNBT()));
-            ListNBT valves = new ListNBT();
-            for (ValveData valveData : structure.valves) {
-                if (valveData.activeTicks > 0) {
-                    CompoundNBT valveNBT = new CompoundNBT();
-                    valveData.location.write(valveNBT);
-                    valveNBT.putInt(NBTConstants.SIDE, valveData.side.ordinal());
-                }
-            }
-            updateTag.put(NBTConstants.VALVE, valves);
+            writeValves(updateTag);
         }
         return updateTag;
     }
@@ -257,21 +222,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.setVolume(value));
             NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.fluidTank.setStack(value));
-            valveViewing.clear();
-            if (tag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
-                ListNBT valves = tag.getList(NBTConstants.VALVE, NBT.TAG_COMPOUND);
-                for (int i = 0; i < valves.size(); i++) {
-                    CompoundNBT valveNBT = valves.getCompound(i);
-                    ValveData data = new ValveData();
-                    data.location = Coord4D.read(valveNBT);
-                    data.side = Direction.byIndex(valveNBT.getInt(NBTConstants.SIDE));
-                    valveViewing.add(data);
-                    TileEntityDynamicTank tile = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
-                    if (tile != null) {
-                        tile.clientHasStructure = true;
-                    }
-                }
-            }
+            readValves(tag);
         }
     }
 

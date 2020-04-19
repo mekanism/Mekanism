@@ -4,6 +4,7 @@ import java.util.Collections;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -27,6 +28,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing implements IConfigurable {
 
@@ -114,6 +116,22 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapabilityIfEnabled(capability, side);
+    }
+
+    @Override
+    public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
+        FluidStack ret = super.insertFluid(stack, side, action);
+        if (ret.getAmount() < stack.getAmount()) {
+            if (structure != null) {
+                Coord4D coord4D = Coord4D.get(this);
+                for (ValveData data : structure.valves) {
+                    if (coord4D.equals(data.location)) {
+                        data.onTransfer();
+                    }
+                }
+            }
+        }
+        return ret;
     }
 
     @Nonnull

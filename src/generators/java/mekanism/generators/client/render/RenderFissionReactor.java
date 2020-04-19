@@ -9,9 +9,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.GasRenderData;
-import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
-import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -46,13 +44,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                     MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.prevWaterScale), matrix, buffer, data.getColorARGB(tile.prevWaterScale), glow);
                     matrix.pop();
 
-                    for (ValveData valveData : tile.valveViewing) {
-                        matrix.push();
-                        matrix.translate(valveData.location.x - pos.getX(), valveData.location.y - pos.getY(), valveData.location.z - pos.getZ());
-                        Model3D valveModel = ModelRenderer.getValveModel(ValveRenderData.get(data, valveData));
-                        MekanismRenderer.renderObject(valveModel, matrix, buffer, data.getColorARGB(), glow);
-                        matrix.pop();
-                    }
+                    MekanismRenderer.renderValves(matrix, buffer, tile.structure.valves, data, pos, glow);
                 }
             }
             if (!tile.structure.steamTank.isEmpty()) {

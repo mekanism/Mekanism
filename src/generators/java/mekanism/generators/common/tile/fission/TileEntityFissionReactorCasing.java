@@ -1,15 +1,12 @@
 package mekanism.generators.common.tile.fission;
 
-import java.util.Set;
+import java.util.Collection;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
-import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -17,6 +14,7 @@ import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.multiblock.IValveHandler;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
@@ -27,15 +25,11 @@ import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol;
 import mekanism.generators.common.content.fission.SynchronizedFissionReactorData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityFissionReactorCasing extends TileEntityMultiblock<SynchronizedFissionReactorData> {
+public class TileEntityFissionReactorCasing extends TileEntityMultiblock<SynchronizedFissionReactorData> implements IValveHandler {
 
-    public Set<ValveData> valveViewing = new ObjectOpenHashSet<>();
     public float prevWaterScale, prevFuelScale, prevSteamScale, prevWasteScale;
     private boolean handleSound, prevActive;
 
@@ -45,20 +39,6 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
 
     public TileEntityFissionReactorCasing(IBlockProvider blockProvider) {
         super(blockProvider);
-    }
-
-    @Override
-    protected void onUpdateClient() {
-        super.onUpdateClient();
-        if (!clientHasStructure || !isRendering) {
-            for (ValveData data : valveViewing) {
-                TileEntityFissionReactorCasing tile = MekanismUtils.getTileEntity(TileEntityFissionReactorCasing.class, getWorld(), data.location.getPos());
-                if (tile != null) {
-                    tile.clientHasStructure = false;
-                }
-            }
-            valveViewing.clear();
-        }
     }
 
     @Override
@@ -170,6 +150,11 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
         return structure != null && structure.isActive() && handleSound;
     }
 
+    @Override
+    public Collection<ValveData> getValveData() {
+        return structure != null ? structure.valves : null;
+    }
+
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
@@ -187,15 +172,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
                 updateTag.put(NBTConstants.GAS_STORED, structure.fuelTank.getStack().write(new CompoundNBT()));
                 updateTag.put(NBTConstants.GAS_STORED_ALT, structure.steamTank.getStack().write(new CompoundNBT()));
                 updateTag.put(NBTConstants.GAS_STORED_ALT_2, structure.wasteTank.getStack().write(new CompoundNBT()));
-                ListNBT valves = new ListNBT();
-                for (ValveData valveData : structure.valves) {
-                    if (valveData.activeTicks > 0) {
-                        CompoundNBT valveNBT = new CompoundNBT();
-                        valveData.location.write(valveNBT);
-                        valveNBT.putInt(NBTConstants.SIDE, valveData.side.ordinal());
-                    }
-                }
-                updateTag.put(NBTConstants.VALVE, valves);
+                writeValves(updateTag);
             }
         }
         return updateTag;
@@ -217,21 +194,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
                 NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.fuelTank.setStack(value));
                 NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> structure.steamTank.setStack(value));
                 NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> structure.wasteTank.setStack(value));
-                valveViewing.clear();
-                if (tag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
-                    ListNBT valves = tag.getList(NBTConstants.VALVE, NBT.TAG_COMPOUND);
-                    for (int i = 0; i < valves.size(); i++) {
-                        CompoundNBT valveNBT = valves.getCompound(i);
-                        ValveData data = new ValveData();
-                        data.location = Coord4D.read(valveNBT);
-                        data.side = Direction.byIndex(valveNBT.getInt(NBTConstants.SIDE));
-                        valveViewing.add(data);
-                        TileEntityFissionReactorCasing tile = MekanismUtils.getTileEntity(TileEntityFissionReactorCasing.class, getWorld(), data.location.getPos());
-                        if (tile != null) {
-                            tile.clientHasStructure = true;
-                        }
-                    }
-                }
+                readValves(tag);
             }
         }
     }

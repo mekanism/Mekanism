@@ -1,7 +1,7 @@
 package mekanism.client.render.data;
 
 import mekanism.api.Coord4D;
-import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.multiblock.IValveHandler.ValveData;
 import net.minecraft.util.Direction;
 
 public class ValveRenderData extends FluidRenderData {

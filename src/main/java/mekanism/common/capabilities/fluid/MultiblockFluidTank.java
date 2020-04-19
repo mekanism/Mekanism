@@ -60,7 +60,7 @@ public class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultiblock<?>> ext
     @Override
     public void onContentsChanged() {
         super.onContentsChanged();
-        if (multiblock.hasWorld() && !multiblock.isRemote() && multiblock.isRendering) {
+        if (multiblock.hasWorld() && !multiblock.isRemote()) {
             updateValveData();
             multiblock.markDirty(false);
         }

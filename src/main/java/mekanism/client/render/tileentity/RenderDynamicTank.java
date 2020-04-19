@@ -1,16 +1,14 @@
 package mekanism.client.render.tileentity;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.data.FluidRenderData;
-import mekanism.client.render.data.ValveRenderData;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -44,12 +42,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
             MekanismRenderer.renderObject(fluidModel, matrix, buffer, data.getColorARGB(tile.prevScale), glow);
             matrix.pop();
 
-            for (ValveData valveData : tile.valveViewing) {
-                matrix.push();
-                matrix.translate(valveData.location.x - pos.getX(), valveData.location.y - pos.getY(), valveData.location.z - pos.getZ());
-                MekanismRenderer.renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow);
-                matrix.pop();
-            }
+            MekanismRenderer.renderValves(matrix, buffer, tile.structure.valves, data, pos, glow);
         }
     }
 

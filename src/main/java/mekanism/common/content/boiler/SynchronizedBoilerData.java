@@ -1,14 +1,14 @@
 package mekanism.common.content.boiler;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
@@ -19,10 +19,11 @@ import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
+import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -41,7 +42,7 @@ public class SynchronizedBoilerData extends MultiblockData<SynchronizedBoilerDat
     public static final int WATER_PER_VOLUME = 16_000;
     public static final long STEAM_PER_VOLUME = 160_000;
 
-    public BoilerTank waterTank;
+    public MultiblockFluidTank<TileEntityBoilerCasing> waterTank;
     public MultiblockGasTank<TileEntityBoilerCasing> steamTank;
     public MultiblockHeatCapacitor<TileEntityBoilerCasing> heatCapacitor;
 
@@ -66,7 +67,7 @@ public class SynchronizedBoilerData extends MultiblockData<SynchronizedBoilerDat
     private List<IHeatCapacitor> heatCapacitors;
 
     public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
-        waterTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
+        waterTank = MultiblockFluidTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
         fluidTanks = Collections.singletonList(waterTank);
         steamTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getSteamTankCapacity(),
             (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,

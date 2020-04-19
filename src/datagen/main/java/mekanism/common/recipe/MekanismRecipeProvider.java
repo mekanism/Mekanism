@@ -2830,7 +2830,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         PressurizedReactionRecipeBuilder.reaction(
             ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
             FluidStackIngredient.from(FluidTags.WATER, 1000),
-            GasStackIngredient.from(MekanismGases.PLUTONIUM, 100),
+            GasStackIngredient.from(MekanismGases.PLUTONIUM, 1000),
             100,
             MekanismItems.PLUTONIUM_PELLET.getItemStack(),
             MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(1000)
@@ -2839,22 +2839,22 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         PressurizedReactionRecipeBuilder.reaction(
             ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
             FluidStackIngredient.from(FluidTags.WATER, 1000),
-            GasStackIngredient.from(MekanismGases.POLONIUM, 100),
+            GasStackIngredient.from(MekanismGases.POLONIUM, 1000),
             100,
             MekanismItems.POLONIUM_PELLET.getItemStack(),
             MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(1000)
         ).build(consumer, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
 
         //fissile fuel (IMPORTANT: determines fissile fuel reprocessing efficiency)
-        ItemStackGasToGasRecipeBuilder.dissolution(
-            ItemStackIngredient.from(MekanismTags.Items.PELLETS_PLUTONIUM),
-            GasStackIngredient.from(MekanismGases.HYDROFLUORIC_ACID, 1),
-            MekanismGases.FISSILE_FUEL.getGasStack(500)
+        FluidGasToGasRecipeBuilder.washing(
+            FluidStackIngredient.from(FluidTags.WATER, 10),
+            GasStackIngredient.from(MekanismGases.PLUTONIUM, 1),
+            MekanismGases.FISSILE_FUEL.getGasStack(5)
         ).build(consumer, Mekanism.rl(basePath + "fissile_fuel/from_plutonium"));
 
         //antimatter pellet
         GasToItemStackRecipeBuilder.crystallizing(
-              GasStackIngredient.from(MekanismGases.ANTIMATTER, 100),
+              GasStackIngredient.from(MekanismGases.ANTIMATTER, 1000),
               MekanismItems.ANTIMATTER_PELLET.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
 

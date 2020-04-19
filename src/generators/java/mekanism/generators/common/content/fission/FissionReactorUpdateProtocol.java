@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import mekanism.api.Coord4D;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.util.MekanismUtils;

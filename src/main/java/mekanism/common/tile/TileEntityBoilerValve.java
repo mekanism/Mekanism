@@ -2,6 +2,8 @@ package mekanism.common.tile;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
+import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -14,6 +16,7 @@ import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class TileEntityBoilerValve extends TileEntityBoilerCasing {
@@ -54,6 +57,22 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     @Override
     public int getRedstoneLevel() {
         return structure == null ? 0 : MekanismUtils.redstoneLevelFromContents(structure.waterTank.getFluidAmount(), structure.waterTank.getCapacity());
+    }
+
+    @Override
+    public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
+        FluidStack ret = super.insertFluid(stack, side, action);
+        if (ret.getAmount() < stack.getAmount()) {
+            if (structure != null) {
+                Coord4D coord4D = Coord4D.get(this);
+                for (ValveData data : structure.valves) {
+                    if (coord4D.equals(data.location)) {
+                        data.onTransfer();
+                    }
+                }
+            }
+        }
+        return ret;
     }
 
     @Override
