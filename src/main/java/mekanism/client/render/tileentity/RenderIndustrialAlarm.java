@@ -2,9 +2,7 @@ package mekanism.client.render.tileentity;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import mekanism.api.Pos3D;
 import mekanism.client.model.ModelIndustrialAlarm;
-import mekanism.client.render.BoltRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
@@ -28,7 +26,6 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
         performTranslations(tile, matrix);
         float rotation = (tile.getWorld().getDayTime() + partialTick) * ROTATE_SPEED % 360;
         model.render(matrix, renderer, light, overlayLight, Attribute.isActive(tile.getBlockState()), rotation, false);
-        BoltRenderer.render(new Pos3D(0, 0, 0), new Pos3D(10, 10, 10), 5, 15, partialTick, matrix, renderer, light);
         matrix.pop();
     }
 
