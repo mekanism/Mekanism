@@ -15,6 +15,7 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.Finder;
@@ -43,10 +44,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<TransporterFilter<?>>,
       IHasSortableFilters {
@@ -62,6 +60,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public TileEntityLogisticalSorter() {
         super(MekanismBlocks.LOGISTICAL_SORTER);
         delaySupplier = () -> 3;
+        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
+        addCapabilityResolver(PersistentCapabilityResolver.specialConfigData(() -> this));
     }
 
     @Nonnull
@@ -296,17 +296,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         remap.put(NBTConstants.SINGLE_ITEM, NBTConstants.SINGLE_ITEM);
         remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
         return remap;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        } else if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
-            return Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

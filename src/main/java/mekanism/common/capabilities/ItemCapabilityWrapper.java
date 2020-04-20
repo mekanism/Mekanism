@@ -27,7 +27,10 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (!itemStack.isEmpty()) {
+        //Note: The capability can technically be null if it is for a mod that is not loaded and another mod
+        // tries to check if we have it, so we just safety check to ensure that it is not so we don't have
+        // issues when caching our lazy optionals
+        if (capability != null && !itemStack.isEmpty()) {
             //Only provide capabilities if we are not empty
             for (ItemCapability cap : capabilities) {
                 if (cap.canProcess(capability)) {
@@ -43,9 +46,18 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
 
     public static abstract class ItemCapability {
 
+        private final CapabilityCache capabilityCache = new CapabilityCache();
         private ItemCapabilityWrapper wrapper;
 
-        public abstract boolean canProcess(Capability<?> capability);
+        protected ItemCapability() {
+            addCapabilityResolvers(capabilityCache);
+        }
+
+        protected abstract void addCapabilityResolvers(CapabilityCache capabilityCache);
+
+        public boolean canProcess(Capability<?> capability) {
+            return capabilityCache.canResolve(capability);
+        }
 
         protected void init() {
         }
@@ -61,7 +73,7 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
          * Note: it is expected that canProcess is called before this
          */
         public <T> LazyOptional<T> getMatchingCapability(@Nonnull Capability<T> capability) {
-            return LazyOptional.of(() -> this).cast();
+            return capabilityCache.getCapabilityUnchecked(capability, null);
         }
     }
 }

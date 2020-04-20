@@ -23,6 +23,7 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.proxy.ProxyFluidHandler;
+import mekanism.common.capabilities.resolver.advanced.AdvancedPersistentCapabilityResolver;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.transmitters.TransmitterImpl;
@@ -37,9 +38,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -50,7 +49,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Nonnull
     public FluidStack lastWrite = FluidStack.EMPTY;
-    private final ProxyFluidHandler readOnlyHandler;
     private final List<IExtendedFluidTank> tanks;
     public BasicFluidTank buffer;
 
@@ -60,7 +58,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         //TODO: If we make fluids support longs then adjust this
         buffer = BasicFluidTank.create(MathUtils.clampToInt(getCapacity()), BasicFluidTank.alwaysFalse, BasicFluidTank.alwaysTrue, this);
         tanks = Collections.singletonList(buffer);
-        readOnlyHandler = new ProxyFluidHandler(this, null, null);
+        addCapabilityResolver(AdvancedPersistentCapabilityResolver.fluidHandler(() -> this, () -> new ProxyFluidHandler(this, null, null)));
     }
 
     @Override
@@ -308,15 +306,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         } else {
             super.parseUpgradeData(upgradeData);
         }
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> side == null ? readOnlyHandler : this));
-        }
-        return super.getCapability(capability, side);
     }
 
     @Nonnull

@@ -61,6 +61,9 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
             return LazyOptional.empty();
         }
         //TODO: Cache the LazyOptional where possible as recommended in ICapabilityProvider
+        // we also need to cache the energy compat stuff, AND look into our disableable capabilities to see
+        // if any of them can change state and if so then we need to invalidate the capabilities?
+        //TODO: Ensure that we mark all our lazy optionals as invalidated when the tile gets invalidated
         return LazyOptional.of(() -> getHandler(side));
     }
 

@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,16 +9,15 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IFilter;
@@ -38,11 +38,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO - V10: Make this support other tag types, such as fluids
@@ -63,6 +60,8 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     public TileEntityOredictionificator() {
         super(MekanismBlocks.OREDICTIONIFICATOR);
+        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
+        addCapabilityResolver(PersistentCapabilityResolver.specialConfigData(() -> this));
     }
 
     @Nonnull
@@ -212,17 +211,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public boolean canPulse() {
         return true;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        } else if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
-            return Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

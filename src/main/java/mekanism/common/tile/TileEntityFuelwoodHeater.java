@@ -1,15 +1,14 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -18,10 +17,7 @@ import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityFuelwoodHeater extends TileEntityMekanism {
 
@@ -35,6 +31,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
 
     public TileEntityFuelwoodHeater() {
         super(MekanismBlocks.FUELWOOD_HEATER);
+        addCapabilityResolver(PersistentCapabilityResolver.heatHandler(() -> this));
     }
 
     @Nonnull
@@ -93,15 +90,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     @Override
     public boolean lightUpdate() {
         return true;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
-            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

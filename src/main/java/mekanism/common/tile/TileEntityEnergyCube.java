@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -10,12 +9,12 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.EnergyCubeEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tier.EnergyCubeTier;
@@ -34,7 +33,6 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityEnergyCube extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
@@ -81,6 +79,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         }
 
         ejectorComponent = new TileComponentEjector(this);
+        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
     }
 
     @Override
@@ -147,15 +146,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     @Override
     public Direction getOrientation() {
         return getDirection();
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

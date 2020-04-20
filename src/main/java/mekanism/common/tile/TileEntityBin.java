@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
@@ -12,6 +11,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.inventory.slot.BinInventorySlot;
@@ -32,8 +32,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
@@ -47,6 +45,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     public TileEntityBin(IBlockProvider blockProvider) {
         super(blockProvider);
+        addCapabilityResolver(PersistentCapabilityResolver.configurable(() -> this));
     }
 
     @Override
@@ -126,15 +125,6 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         return ActionResultType.PASS;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
-            return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

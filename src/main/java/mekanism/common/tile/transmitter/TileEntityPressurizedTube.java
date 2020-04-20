@@ -26,6 +26,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.ProxyGasHandler;
+import mekanism.common.capabilities.resolver.advanced.AdvancedPersistentCapabilityResolver;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.transmitters.TransmitterImpl;
@@ -40,17 +41,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IMekanismGasHandler {
 
     public final TubeTier tier;
-
     @Nonnull
     public GasStack lastWrite = GasStack.EMPTY;
-    private final ProxyGasHandler readOnlyHandler;
     private final List<IGasTank> tanks;
     public BasicGasTank buffer;
 
@@ -59,7 +56,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         this.tier = Attribute.getTier(blockProvider.getBlock(), TubeTier.class);
         buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         tanks = Collections.singletonList(buffer);
-        readOnlyHandler = new ProxyGasHandler(this, null, null);
+        addCapabilityResolver(AdvancedPersistentCapabilityResolver.gasHandler(() -> this, () -> new ProxyGasHandler(this, null, null)));
     }
 
     @Override
@@ -308,15 +305,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         } else {
             super.parseUpgradeData(upgradeData);
         }
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> side == null ? readOnlyHandler : this));
-        }
-        return super.getCapability(capability, side);
     }
 
     @Nonnull

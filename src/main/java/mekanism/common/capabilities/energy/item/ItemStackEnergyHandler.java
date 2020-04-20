@@ -9,13 +9,13 @@ import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 /**
  * Helper class for implementing fluid handlers for items
@@ -61,7 +61,9 @@ public abstract class ItemStackEnergyHandler extends ItemCapability implements I
     }
 
     @Override
-    public <T> LazyOptional<T> getMatchingCapability(@Nonnull Capability<T> capability) {
-        return EnergyCompatUtils.getEnergyCapability(capability, this);
+    protected void addCapabilityResolvers(CapabilityCache capabilityCache) {
+        //TODO: FIXME
+        // Process: EnergyCompatUtils.isEnergyCapability(capability)
+        // Provide: EnergyCompatUtils.getEnergyCapability(capability, this);
     }
 }

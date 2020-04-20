@@ -23,7 +23,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
+import mekanism.common.capabilities.resolver.advanced.AdvancedEnergyCapabilityResolver;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.CableTier;
@@ -38,15 +38,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> implements IMekanismStrictEnergyHandler {
 
     public final CableTier tier;
 
-    private final ProxyStrictEnergyHandler readOnlyHandler;
     private final List<IEnergyContainer> energyContainers;
     public BasicEnergyContainer buffer;
     public FloatingLong lastWrite = FloatingLong.ZERO;
@@ -56,7 +53,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
         this.tier = Attribute.getTier(blockProvider.getBlock(), CableTier.class);
         buffer = BasicEnergyContainer.create(getCapacityAsFloatingLong(), BasicEnergyContainer.alwaysFalse, BasicEnergyContainer.alwaysTrue, this);
         energyContainers = Collections.singletonList(buffer);
-        readOnlyHandler = new ProxyStrictEnergyHandler(this, null, null);
+        addCapabilityResolver(new AdvancedEnergyCapabilityResolver(this));
     }
 
     @Override
@@ -274,15 +271,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
         } else {
             super.parseUpgradeData(upgradeData);
         }
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (EnergyCompatUtils.isEnergyCapability(capability)) {
-            return EnergyCompatUtils.getEnergyCapability(capability, side == null ? readOnlyHandler : this);
-        }
-        return super.getCapability(capability, side);
     }
 
     @Nonnull

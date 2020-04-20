@@ -51,7 +51,6 @@ import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
@@ -123,7 +122,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
-public abstract class TileEntityMekanism extends TileEntityUpdateable implements IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
+public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
       ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler {
 
@@ -628,24 +627,11 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Do not override this method if you are implementing {@link IToggleableCapability}, instead override {@link #getCapabilityIfEnabled(Capability,
-     * Direction)}, calling this method is fine.
-     */
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        //Due to TileEntity implementing ICapabilityProvider we have to manually copy the logic from IToggleableCapability
-        // that reroutes getCapability to check if it is disabled and otherwise use getCapabilityIfEnabled
-        return isCapabilityDisabled(capability, side) ? LazyOptional.empty() : getCapabilityIfEnabled(capability, side);
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         //Note: All the managers check to confirm that they are able to handle that type of system and return a lazy optional if they cannot
+        //TODO: Somehow add the managers to the capability cache
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, itemHandlerManager.getCapability(side));
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
@@ -659,8 +645,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             return energyHandlerManager.getEnergyCapability(capability, side);
         }
-        //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
-        return super.getCapability(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 
     public void onNeighborChange(Block block) {

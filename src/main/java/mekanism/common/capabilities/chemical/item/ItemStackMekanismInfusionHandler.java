@@ -10,11 +10,11 @@ import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.CapabilityCache;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * Helper class for implementing infusion handlers for items
@@ -45,7 +45,7 @@ public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanism
     }
 
     @Override
-    public boolean canProcess(Capability<?> capability) {
-        return capability == Capabilities.INFUSION_HANDLER_CAPABILITY;
+    protected void addCapabilityResolvers(CapabilityCache capabilityCache) {
+        capabilityCache.addCapabilityResolver(PersistentCapabilityResolver.infusionHandler(() -> this));
     }
 }

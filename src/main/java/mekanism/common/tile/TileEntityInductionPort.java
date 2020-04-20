@@ -2,14 +2,13 @@ package mekanism.common.tile;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
@@ -18,14 +17,13 @@ import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IConfigurable {
 
     public TileEntityInductionPort() {
         super(MekanismBlocks.INDUCTION_PORT);
         delaySupplier = () -> 0;
+        addCapabilityResolver(PersistentCapabilityResolver.configurable(() -> this));
     }
 
     @Nonnull
@@ -72,15 +70,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public boolean renderUpdate() {
         return true;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
-            return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

@@ -26,7 +26,8 @@ import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tile.base.TileEntityUpdateable;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -45,11 +46,9 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class TileEntitySidedPipe extends TileEntityUpdateable implements IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
+public abstract class TileEntitySidedPipe extends CapabilityTileEntity implements IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
 
     public byte currentAcceptorConnections = 0x00;
     public byte currentTransmitterConnections = 0x00;
@@ -71,6 +70,8 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
 
     public TileEntitySidedPipe(TileEntityType<? extends TileEntitySidedPipe> type) {
         super(type);
+        addCapabilityResolver(PersistentCapabilityResolver.configurable(() -> this));
+        addCapabilityResolver(PersistentCapabilityResolver.create(Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, () -> this));
     }
 
     public static boolean connectionMapContainsSide(byte connections, Direction side) {
@@ -575,17 +576,6 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
     @Override
     public boolean canRenderBreaking() {
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
-            return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        } else if (capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY) {
-            return Capabilities.BLOCKABLE_CONNECTION_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapability(capability, side);
     }
 
     public enum ConnectionType implements IIncrementalEnum<ConnectionType>, IStringSerializable, IHasTranslationKey {

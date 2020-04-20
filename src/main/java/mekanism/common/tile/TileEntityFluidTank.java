@@ -12,12 +12,12 @@ import mekanism.common.base.ContainerEditMode;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.FluidTankFluidTank;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -37,8 +37,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager {
@@ -64,6 +62,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     public TileEntityFluidTank(IBlockProvider blockProvider) {
         super(blockProvider);
+        addCapabilityResolver(PersistentCapabilityResolver.configurable(() -> this));
     }
 
     @Override
@@ -190,15 +189,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         return ActionResultType.PASS;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
-            return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

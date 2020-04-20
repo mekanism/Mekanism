@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -34,6 +33,7 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.BaseFilter;
@@ -137,6 +137,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public TileEntityDigitalMiner() {
         super(MekanismBlocks.DIGITAL_MINER);
         radius = 10;
+        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
+        addCapabilityResolver(PersistentCapabilityResolver.specialConfigData(() -> this));
     }
 
     @Nonnull
@@ -838,17 +840,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (upgrade == Upgrade.SPEED) {
             delayLength = MekanismUtils.getTicks(this, MekanismConfig.general.minerTicksPerMine.get());
         }
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        } else if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
-            return Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Nonnull

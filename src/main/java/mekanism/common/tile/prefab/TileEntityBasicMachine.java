@@ -1,17 +1,15 @@
 package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> extends TileEntityOperationalMachine<RECIPE> implements ISideConfiguration, IConfigCardAccess {
 
@@ -20,6 +18,7 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
 
     public TileEntityBasicMachine(IBlockProvider blockProvider, int baseTicksRequired) {
         super(blockProvider, baseTicksRequired);
+        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
     }
 
     @Override
@@ -35,15 +34,6 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
     @Override
     public TileComponentEjector getEjector() {
         return ejectorComponent;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

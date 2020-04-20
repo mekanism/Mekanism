@@ -19,12 +19,12 @@ import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -47,7 +47,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ISideConfiguration, ISpecialConfigData,
       ITileCachedRecipeHolder<RECIPE> {
@@ -133,6 +132,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         progress = new int[tier.processes];
         cachedRecipes = new CachedRecipe[tier.processes];
         activeStates = new boolean[cachedRecipes.length];
+        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
+        addCapabilityResolver(PersistentCapabilityResolver.specialConfigData(() -> this));
     }
 
     @Override
@@ -324,17 +325,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public TileComponentEjector getEjector() {
         return ejectorComponent;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        } else if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
-            return Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override
