@@ -30,7 +30,7 @@ public class Meltdown {
                 minPos.x + world.rand.nextInt(maxPos.x - minPos.x),
                 minPos.y + world.rand.nextInt(maxPos.y - minPos.y),
                 minPos.z + world.rand.nextInt(maxPos.z - minPos.z),
-                6, true, Explosion.Mode.DESTROY);
+                8, true, Explosion.Mode.DESTROY);
         }
 
         if (!world.isBlockPresent(minPos.getPos()) || !world.isBlockPresent(maxPos.getPos())) {

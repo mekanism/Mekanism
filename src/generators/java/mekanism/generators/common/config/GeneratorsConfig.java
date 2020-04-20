@@ -132,7 +132,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         fissionMeltdownChance = CachedDoubleValue.wrap(this, builder.comment("The chance of a meltdown occurring once damage passes 100%. Will linearly scale as damage continues increasing.")
             .defineInRange("meltdownChance", 0.001D, 0D, 1D));
         fissionMeltdownRadiationMultiplier = CachedDoubleValue.wrap(this, builder.comment("How much radioactivity of fuel/waste contents are multiplied during a meltdown.")
-            .define("meltdownRadiationMultiplier", 10D));
+            .define("meltdownRadiationMultiplier", 50D));
         builder.pop();
 
         builder.pop();
