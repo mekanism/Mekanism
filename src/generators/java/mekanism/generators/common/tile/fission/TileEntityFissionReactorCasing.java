@@ -147,7 +147,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
 
     @Override
     protected boolean canPlaySound() {
-        return structure != null && structure.isActive() && handleSound;
+        return structure != null && structure.isBurning() && handleSound;
     }
 
     @Override
@@ -161,7 +161,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
         CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.putBoolean(NBTConstants.HANDLE_SOUND, structure != null && structure.handlesSound(this));
         if (structure != null) {
-            updateTag.putBoolean(NBTConstants.ACTIVE, structure.isActive());
+            updateTag.putDouble(NBTConstants.BURNING, structure.lastBurnRate);
             if (isRendering) {
                 updateTag.putFloat(NBTConstants.SCALE, prevWaterScale);
                 updateTag.putFloat(NBTConstants.SCALE_ALT, prevFuelScale);
@@ -183,7 +183,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
         super.handleUpdateTag(tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
         if (clientHasStructure && structure != null) {
-            NBTUtils.setBooleanIfPresent(tag, NBTConstants.ACTIVE, value -> structure.setActive(value));
+            NBTUtils.setDoubleIfPresent(tag, NBTConstants.BURNING, value -> structure.lastBurnRate = value);
             if (isRendering) {
                 NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
                 NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevFuelScale = scale);

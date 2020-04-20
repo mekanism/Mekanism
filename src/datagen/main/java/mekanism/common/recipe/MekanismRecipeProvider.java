@@ -2408,6 +2408,16 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     Pattern.CONSTANT)
               ).key(Pattern.CONSTANT, MekanismItems.HDPE_ROD)
               .build(consumer);
+        //Industrial Alarm
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.INDUSTRIAL_ALARM)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.CONSTANT, Blocks.REDSTONE_LAMP)
+              .build(consumer);
         //Isotopic Centrifuge
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ISOTOPIC_CENTRIFUGE)
               .pattern(RecipePattern.createPattern(

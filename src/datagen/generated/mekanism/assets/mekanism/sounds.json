@@ -124,6 +124,11 @@
       "mekanism:tile/chemical_injection_chamber"
     ]
   },
+  "tile.machine.industrial_alarm": {
+    "sounds": [
+      "mekanism:tile/industrial_alarm"
+    ]
+  },
   "tile.christmas.5": {
     "sounds": [
       "mekanism:holiday/nutcracker5"

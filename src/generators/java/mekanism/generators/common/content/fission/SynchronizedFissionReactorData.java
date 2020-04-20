@@ -155,6 +155,10 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
         this.active = active;
     }
 
+    public boolean isBurning() {
+        return lastBurnRate > 0;
+    }
+
     public boolean handlesSound(TileEntityFissionReactorCasing tile) {
         BlockPos pos = tile.getPos();
         return (pos.getX() == minLocation.x || pos.getX() == maxLocation.x) &&

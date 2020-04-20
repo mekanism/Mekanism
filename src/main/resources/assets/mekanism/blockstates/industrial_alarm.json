@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "facing=up,active=false": {
+      "model": "mekanism:block/industrial_alarm"
+    },
+    "facing=down,active=false": {
+      "model": "mekanism:block/industrial_alarm",
+      "x": 180
+    },
+    "facing=north,active=false": {
+      "model": "mekanism:block/industrial_alarm",
+      "x": 90
+    },
+    "facing=south,active=false": {
+      "model": "mekanism:block/industrial_alarm",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/industrial_alarm",
+      "x": 90,
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/industrial_alarm",
+      "x": 90,
+      "y": -90
+    },
+    "facing=up,active=true": {
+      "model": "mekanism:block/industrial_alarm_active"
+    },
+    "facing=down,active=true": {
+      "model": "mekanism:block/industrial_alarm_active",
+      "x": 180
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/industrial_alarm_active",
+      "x": 90
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/industrial_alarm_active",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/industrial_alarm_active",
+      "x": 90,
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/industrial_alarm_active",
+      "x": 90,
+      "y": -90
+    }
+  }
+}

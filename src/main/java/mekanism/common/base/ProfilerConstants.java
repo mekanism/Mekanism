@@ -12,6 +12,7 @@ public class ProfilerConstants {
     public static final String DYNAMIC_TANK = "dynamicTank";
     public static final String ENERGY_CUBE = "energyCube";
     public static final String FLUID_TANK = "fluidTank";
+    public static final String INDUSTRIAL_ALARM = "industrialAlarm";
     public static final String MEKANISM_OUTLINE = "mekOutline";
     public static final String PERSONAL_CHEST = "personalChest";
     public static final String QUANTUM_ENTANGLOPORTER = "quantumEntangloporter";

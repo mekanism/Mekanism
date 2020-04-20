@@ -6,6 +6,7 @@ import mekanism.client.render.item.block.RenderChemicalDissolutionChamberItem;
 import mekanism.client.render.item.block.RenderDigitalMinerItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
+import mekanism.client.render.item.block.RenderIndustrialAlarmItem;
 import mekanism.client.render.item.block.RenderQuantumEntangloporterItem;
 import mekanism.client.render.item.block.RenderResistiveHeaterItem;
 import mekanism.client.render.item.block.RenderSecurityDeskItem;
@@ -15,8 +16,8 @@ import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
-import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderJetpack;
+import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 
@@ -45,6 +46,10 @@ public class ISTERProvider {
 
     public static Callable<ItemStackTileEntityRenderer> fluidTank() {
         return RenderFluidTankItem::new;
+    }
+
+    public static Callable<ItemStackTileEntityRenderer> industrialAlarm() {
+        return RenderIndustrialAlarmItem::new;
     }
 
     public static Callable<ItemStackTileEntityRenderer> entangloporter() {

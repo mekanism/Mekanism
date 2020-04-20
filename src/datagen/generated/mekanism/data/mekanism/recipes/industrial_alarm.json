@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:industrial_alarm"
+  },
+  "pattern": [
+    "III",
+    "C#C",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/lead"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "#": {
+      "item": "minecraft:redstone_lamp"
+    }
+  }
+}

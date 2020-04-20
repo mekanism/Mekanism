@@ -7,6 +7,7 @@ import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -31,11 +32,13 @@ public class RenderFissionFuelAssembly extends MekanismTileEntityRenderer<TileEn
             glowModel.setTexture(MekanismRenderer.whiteIcon);
         }
 
-        matrix.push();
-        IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
-        int argb = MekanismRenderer.getColorARGB(0.466F, 0.882F, 0.929F, 0.8F);
-        MekanismRenderer.renderObject(glowModel, matrix, buffer, argb, MekanismRenderer.FULL_LIGHT);
-        matrix.pop();
+        if (Attribute.isActive(tile.getBlockState())) {
+            matrix.push();
+            IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+            int argb = MekanismRenderer.getColorARGB(0.466F, 0.882F, 0.929F, 0.8F);
+            MekanismRenderer.renderObject(glowModel, matrix, buffer, argb, MekanismRenderer.FULL_LIGHT);
+            matrix.pop();
+        }
     }
 
     @Override
