@@ -5,7 +5,8 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import net.minecraft.util.Direction;
@@ -18,7 +19,7 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
 
     public TileEntityBasicMachine(IBlockProvider blockProvider, int baseTicksRequired) {
         super(blockProvider, baseTicksRequired);
-        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Override

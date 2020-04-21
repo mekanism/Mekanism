@@ -11,7 +11,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.inventory.slot.BinInventorySlot;
@@ -45,7 +45,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     public TileEntityBin(IBlockProvider blockProvider) {
         super(blockProvider);
-        addCapabilityResolver(PersistentCapabilityResolver.configurable(() -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
     @Override

@@ -16,10 +16,16 @@ import net.minecraftforge.common.util.LazyOptional;
 @ParametersAreNonnullByDefault
 public class CapabilityCache {
 
+    //TODO: Allow for keeping track of capability managers via the capability cache?
     private final Map<Capability<?>, ICapabilityResolver> capabilityResolvers = new HashMap<>();
-    private final Map<Capability<?>, LazyOptional<?>> cachedCapabilities = new HashMap<>();
+    /**
+     * List of unique resolvers to make invalidating all easier as some resolvers (energy) may support multiple capabilities.
+     */
+    private final List<ICapabilityResolver> uniqueResolvers = new ArrayList<>();
 
     public void addCapabilityResolver(ICapabilityResolver resolver) {
+        //TODO: Do we want to validate if the resolver has already been added.
+        uniqueResolvers.add(resolver);
         List<Capability<?>> supportedCapabilities = resolver.getSupportedCapabilities();
         for (Capability<?> supportedCapability : supportedCapabilities) {
             if (capabilityResolvers.put(supportedCapability, resolver) != null) {
@@ -40,41 +46,25 @@ public class CapabilityCache {
         return LazyOptional.empty();
     }
 
+    //TODO: Decide on if this really should be unchecked given it *partially* checks it by checking the existence
+    // though we are not checking that it is not "disabled"
     public <T> LazyOptional<T> getCapabilityUnchecked(Capability<T> capability, @Nullable Direction side) {
-        //TODO: FIX Sidedness handling, currently we don't take the side into account for our cached value
-        // We will want to determine some way to define if we care about the side and how many sides we actually do
-        // care about. So that we can re-use the lazy optionals as much as possible
-        if (cachedCapabilities.containsKey(capability)) {
-            //If we already contain a cached object for this lazy optional then get it and use it
-            LazyOptional<?> cachedCapability = cachedCapabilities.get(capability);
-            if (cachedCapability.isPresent()) {
-                //If the capability is no longer present (not valid), then re-retrieve it
-                return cachedCapability.cast();
-            }
+        ICapabilityResolver capabilityResolver = capabilityResolvers.get(capability);
+        if (capabilityResolver == null) {
+            return LazyOptional.empty();
         }
-        LazyOptional<T> uncachedCapability = capabilityResolvers.get(capability).resolve(capability, side);
-        cachedCapabilities.put(capability, uncachedCapability);
-        return uncachedCapability;
-    }
-
-    public void invalidate(Capability<?> capability) {
-        if (cachedCapabilities.containsKey(capability)) {
-            invalidate(cachedCapabilities.get(capability));
-        }
+        return capabilityResolver.resolve(capability, side);
     }
 
     //TODO: Actually invalidate capabilities when they should be invalidated, including properly handling toggleable capabilities
-    public void invalidateAll() {
-        List<LazyOptional<?>> toInvalidate = new ArrayList<>(cachedCapabilities.values());
-        toInvalidate.forEach(this::invalidate);
-        //Note: We don't bother clearing cachedCapabilities as the elements will be ignored and re-retrieved anyways
-        // and this makes it less likely there will be some concurrent modification exception
+    public void invalidate(Capability<?> capability, @Nullable Direction side) {
+        ICapabilityResolver capabilityResolver = capabilityResolvers.get(capability);
+        if (capabilityResolver != null) {
+            capabilityResolver.invalidate(capability, side);
+        }
     }
 
-    private void invalidate(LazyOptional<?> cachedCapability) {
-        if (cachedCapability.isPresent()) {
-            //If it hasn't already been invalidated invalidate it
-            cachedCapability.invalidate();
-        }
+    public void invalidateAll() {
+        uniqueResolvers.forEach(ICapabilityResolver::invalidateAll);
     }
 }

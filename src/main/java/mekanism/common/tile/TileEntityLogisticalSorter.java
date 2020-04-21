@@ -15,7 +15,7 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.Finder;
@@ -60,8 +60,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public TileEntityLogisticalSorter() {
         super(MekanismBlocks.LOGISTICAL_SORTER);
         delaySupplier = () -> 3;
-        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
-        addCapabilityResolver(PersistentCapabilityResolver.specialConfigData(() -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     @Nonnull

@@ -23,7 +23,7 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.proxy.ProxyFluidHandler;
-import mekanism.common.capabilities.resolver.advanced.AdvancedPersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.transmitters.TransmitterImpl;
@@ -58,7 +58,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         //TODO: If we make fluids support longs then adjust this
         buffer = BasicFluidTank.create(MathUtils.clampToInt(getCapacity()), BasicFluidTank.alwaysFalse, BasicFluidTank.alwaysTrue, this);
         tanks = Collections.singletonList(buffer);
-        addCapabilityResolver(AdvancedPersistentCapabilityResolver.fluidHandler(() -> this, () -> new ProxyFluidHandler(this, null, null)));
+        addCapabilityResolver(AdvancedCapabilityResolver.readOnly(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this, () -> new ProxyFluidHandler(this, null, null)));
     }
 
     @Override

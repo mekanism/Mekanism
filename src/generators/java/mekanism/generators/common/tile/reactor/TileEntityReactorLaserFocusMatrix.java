@@ -3,7 +3,8 @@ package mekanism.generators.common.tile.reactor;
 import javax.annotation.Nonnull;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
 
@@ -11,7 +12,7 @@ public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock im
 
     public TileEntityReactorLaserFocusMatrix() {
         super(GeneratorsBlocks.LASER_FOCUS_MATRIX);
-        addCapabilityResolver(PersistentCapabilityResolver.laserReceptor(() -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.LASER_RECEPTOR_CAPABILITY, this));
     }
 
     @Override

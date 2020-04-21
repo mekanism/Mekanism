@@ -18,7 +18,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -58,7 +58,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         }
         transmitterDelegate = new TransporterImpl(this);
         redstoneReactive = true;
-        addCapabilityResolver(PersistentCapabilityResolver.create(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, this::getTransmitter));
+        addCapabilityResolver(BasicCapabilityResolver.persistent(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, this::getTransmitter));
     }
 
     @Override

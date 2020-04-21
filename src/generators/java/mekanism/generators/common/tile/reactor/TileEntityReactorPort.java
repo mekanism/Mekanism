@@ -20,7 +20,7 @@ import mekanism.common.capabilities.holder.fluid.ProxiedFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.ProxiedInventorySlotHolder;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -40,7 +40,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements ICo
     public TileEntityReactorPort() {
         super(GeneratorsBlocks.REACTOR_PORT);
         delaySupplier = () -> 0;
-        addCapabilityResolver(PersistentCapabilityResolver.configurable(() -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
     @Nonnull

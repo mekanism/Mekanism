@@ -6,14 +6,15 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import net.minecraft.util.Direction;
 
 public abstract class TileEntityLaserReceptor extends TileEntityBasicLaser implements ILaserReceptor {
 
     public TileEntityLaserReceptor(IBlockProvider blockProvider) {
         super(blockProvider);
-        addCapabilityResolver(PersistentCapabilityResolver.laserReceptor(() -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.LASER_RECEPTOR_CAPABILITY, this));
     }
 
     @Override

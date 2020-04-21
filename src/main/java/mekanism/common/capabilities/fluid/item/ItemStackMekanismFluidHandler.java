@@ -11,10 +11,11 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 /**
@@ -63,6 +64,6 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
 
     @Override
     protected void addCapabilityResolvers(CapabilityCache capabilityCache) {
-        capabilityCache.addCapabilityResolver(PersistentCapabilityResolver.fluidHandlerItem(() -> this));
+        capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, this));
     }
 }

@@ -11,6 +11,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.resolver.basic.EnergyCapabilityResolver;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
@@ -62,8 +63,6 @@ public abstract class ItemStackEnergyHandler extends ItemCapability implements I
 
     @Override
     protected void addCapabilityResolvers(CapabilityCache capabilityCache) {
-        //TODO: FIXME
-        // Process: EnergyCompatUtils.isEnergyCapability(capability)
-        // Provide: EnergyCompatUtils.getEnergyCapability(capability, this);
+        capabilityCache.addCapabilityResolver(new EnergyCapabilityResolver(this));
     }
 }

@@ -14,5 +14,10 @@ public interface ICapabilityResolver {
 
     List<Capability<?>> getSupportedCapabilities();
 
+    //TODO: Note it should cache the value
     <T> LazyOptional<T> resolve(Capability<T> capability, @Nullable Direction side);
+
+    void invalidate(Capability<?> capability, @Nullable Direction side);
+
+    void invalidateAll();
 }

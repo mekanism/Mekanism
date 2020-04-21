@@ -9,12 +9,13 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.EnergyCubeEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tier.EnergyCubeTier;
@@ -79,7 +80,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         }
 
         ejectorComponent = new TileComponentEjector(this);
-        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Override

@@ -33,7 +33,7 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.BaseFilter;
@@ -137,8 +137,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public TileEntityDigitalMiner() {
         super(MekanismBlocks.DIGITAL_MINER);
         radius = 10;
-        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
-        addCapabilityResolver(PersistentCapabilityResolver.specialConfigData(() -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     @Nonnull

@@ -34,6 +34,7 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable implemen
         //Due to TileEntity implementing ICapabilityProvider we have to manually copy the logic from IToggleableCapability
         // that reroutes getCapability to check if it is disabled and otherwise use getCapabilityIfEnabled
         if (isCapabilityDisabled(capability, side)) {
+            //TODO: Look into moving the disableable capability stuff into the capability cache?
             return LazyOptional.empty();
         } else if (capabilityCache.canResolve(capability)) {
             return capabilityCache.getCapabilityUnchecked(capability, side);

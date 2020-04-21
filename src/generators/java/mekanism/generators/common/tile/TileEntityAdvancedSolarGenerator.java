@@ -6,7 +6,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -18,7 +18,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     public TileEntityAdvancedSolarGenerator() {
         super(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.advancedSolarGeneration.get().multiply(2));
-        addCapabilityResolver(PersistentCapabilityResolver.create(Capabilities.EVAPORATION_SOLAR_CAPABILITY, () -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.EVAPORATION_SOLAR_CAPABILITY, this));
     }
 
     @Override

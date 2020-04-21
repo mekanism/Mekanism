@@ -26,7 +26,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.ProxyGasHandler;
-import mekanism.common.capabilities.resolver.advanced.AdvancedPersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.transmitters.TransmitterImpl;
@@ -56,7 +56,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         this.tier = Attribute.getTier(blockProvider.getBlock(), TubeTier.class);
         buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         tanks = Collections.singletonList(buffer);
-        addCapabilityResolver(AdvancedPersistentCapabilityResolver.gasHandler(() -> this, () -> new ProxyGasHandler(this, null, null)));
+        addCapabilityResolver(AdvancedCapabilityResolver.readOnly(Capabilities.GAS_HANDLER_CAPABILITY, this, () -> new ProxyGasHandler(this, null, null)));
     }
 
     @Override

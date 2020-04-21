@@ -19,12 +19,13 @@ import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.machine.prefab.BlockFactoryMachine.BlockFactory;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -132,8 +133,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         progress = new int[tier.processes];
         cachedRecipes = new CachedRecipe[tier.processes];
         activeStates = new boolean[cachedRecipes.length];
-        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
-        addCapabilityResolver(PersistentCapabilityResolver.specialConfigData(() -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     @Override

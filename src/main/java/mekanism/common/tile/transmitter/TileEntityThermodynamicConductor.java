@@ -23,7 +23,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.proxy.ProxyHeatHandler;
-import mekanism.common.capabilities.resolver.advanced.AdvancedPersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.transmitters.grid.HeatNetwork;
@@ -52,7 +52,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         this.tier = Attribute.getTier(blockProvider.getBlock(), ConductorTier.class);
         buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), this);
         capacitors = Collections.singletonList(buffer);
-        addCapabilityResolver(AdvancedPersistentCapabilityResolver.heatHandler(() -> this, () -> new ProxyHeatHandler(this, null, null)));
+        addCapabilityResolver(AdvancedCapabilityResolver.readOnly(Capabilities.HEAT_HANDLER_CAPABILITY, this, () -> new ProxyHeatHandler(this, null, null)));
     }
 
     @Override

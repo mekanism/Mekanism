@@ -18,7 +18,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
@@ -41,8 +41,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public TileEntityTransmitter(IBlockProvider blockProvider) {
         super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType());
         transmitterDelegate = new TransmitterImpl<>(this);
-        addCapabilityResolver(PersistentCapabilityResolver.create(Capabilities.ALLOY_INTERACTION_CAPABILITY, () -> this));
-        addCapabilityResolver(PersistentCapabilityResolver.create(Capabilities.GRID_TRANSMITTER_CAPABILITY, this::getTransmitter));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.persistent(Capabilities.GRID_TRANSMITTER_CAPABILITY, this::getTransmitter));
     }
 
     @Nonnull

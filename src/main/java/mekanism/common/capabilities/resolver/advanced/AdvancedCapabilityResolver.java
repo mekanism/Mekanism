@@ -9,6 +9,7 @@ import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.common.util.NonNullSupplier;
 
 @ParametersAreNonnullByDefault
@@ -19,9 +20,15 @@ public class AdvancedCapabilityResolver implements ICapabilityResolver {
         return new AdvancedCapabilityResolver(supportedCapability, supplier, readOnlySupplier);
     }
 
+    public static <T> AdvancedCapabilityResolver readOnly(Capability<T> supportedCapability, T value, NonNullSupplier<T> readOnlySupplier) {
+        return create(supportedCapability, () -> value, NonNullLazy.of(readOnlySupplier));
+    }
+
     private final List<Capability<?>> supportedCapability;
     private final NonNullSupplier<?> supplier;
     private final NonNullSupplier<?> readOnlySupplier;
+    private LazyOptional<?> cachedCapability;
+    private LazyOptional<?> cachedReadOnlyCapability;
 
     protected <T> AdvancedCapabilityResolver(Capability<T> supportedCapability, NonNullSupplier<T> supplier, NonNullSupplier<T> readOnlySupplier) {
         this.supportedCapability = Collections.singletonList(supportedCapability);
@@ -37,8 +44,45 @@ public class AdvancedCapabilityResolver implements ICapabilityResolver {
     @Override
     public <T> LazyOptional<T> resolve(Capability<T> capability, @Nullable Direction side) {
         if (side == null) {
-            return LazyOptional.of(readOnlySupplier).cast();
+            if (cachedReadOnlyCapability == null || !cachedReadOnlyCapability.isPresent()) {
+                //If the capability has not been retrieved yet or it is not valid then recreate it
+                cachedReadOnlyCapability = LazyOptional.of(readOnlySupplier);
+            }
+            return cachedReadOnlyCapability.cast();
         }
-        return LazyOptional.of(supplier).cast();
+        if (cachedCapability == null || !cachedCapability.isPresent()) {
+            //If the capability has not been retrieved yet or it is not valid then recreate it
+            cachedCapability = LazyOptional.of(supplier);
+        }
+        return cachedCapability.cast();
+    }
+
+    @Override
+    public void invalidate(Capability<?> capability, @Nullable Direction side) {
+        if (side == null) {
+            invalidateReadOnly();
+        } else {
+            invalidate();
+        }
+    }
+
+    @Override
+    public void invalidateAll() {
+        invalidate();
+        invalidateReadOnly();
+    }
+
+    private void invalidateReadOnly() {
+        if (cachedReadOnlyCapability != null) {
+            cachedReadOnlyCapability.invalidate();
+            cachedReadOnlyCapability = null;
+        }
+    }
+
+    private void invalidate() {
+        if (cachedCapability != null) {
+            cachedCapability.invalidate();
+            cachedCapability = null;
+        }
     }
 }

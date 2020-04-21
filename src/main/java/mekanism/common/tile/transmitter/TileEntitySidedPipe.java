@@ -26,7 +26,7 @@ import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
@@ -70,8 +70,8 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
 
     public TileEntitySidedPipe(TileEntityType<? extends TileEntitySidedPipe> type) {
         super(type);
-        addCapabilityResolver(PersistentCapabilityResolver.configurable(() -> this));
-        addCapabilityResolver(PersistentCapabilityResolver.create(Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, () -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, this));
     }
 
     public static boolean connectionMapContainsSide(byte connections, Direction side) {

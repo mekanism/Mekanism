@@ -15,9 +15,10 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.basic.PersistentCapabilityResolver;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IFilter;
@@ -60,8 +61,8 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     public TileEntityOredictionificator() {
         super(MekanismBlocks.OREDICTIONIFICATOR);
-        addCapabilityResolver(PersistentCapabilityResolver.configCard(() -> this));
-        addCapabilityResolver(PersistentCapabilityResolver.specialConfigData(() -> this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     @Nonnull

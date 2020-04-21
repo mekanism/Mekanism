@@ -9,6 +9,7 @@ import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.common.util.NonNullSupplier;
 
 @ParametersAreNonnullByDefault
@@ -19,8 +20,19 @@ public class BasicCapabilityResolver implements ICapabilityResolver {
         return new BasicCapabilityResolver(supportedCapability, supplier);
     }
 
+    //TODO: JavaDocs, calculated result persists through invalidation
+    public static <T> BasicCapabilityResolver persistent(Capability<T> supportedCapability, NonNullSupplier<T> supplier) {
+        return create(supportedCapability, NonNullLazy.of(supplier));
+    }
+
+    //TODO: JavaDocs, persistent but already precalculated (usually for "this") so remove overhead of NonNullLazy of verifying if it has already been calculated
+    public static <T> BasicCapabilityResolver constant(Capability<T> supportedCapability, T value) {
+        return create(supportedCapability, () -> value);
+    }
+
     private final List<Capability<?>> supportedCapability;
     private final NonNullSupplier<?> supplier;
+    private LazyOptional<?> cachedCapability;
 
     protected <T> BasicCapabilityResolver(Capability<T> supportedCapability, NonNullSupplier<T> supplier) {
         this.supportedCapability = Collections.singletonList(supportedCapability);
@@ -34,6 +46,24 @@ public class BasicCapabilityResolver implements ICapabilityResolver {
 
     @Override
     public <T> LazyOptional<T> resolve(Capability<T> capability, @Nullable Direction side) {
-        return LazyOptional.of(supplier).cast();
+        if (cachedCapability == null || !cachedCapability.isPresent()) {
+            //If the capability has not been retrieved yet or it is not valid then recreate it
+            cachedCapability = LazyOptional.of(supplier);
+        }
+        return cachedCapability.cast();
+    }
+
+    @Override
+    public void invalidate(Capability<?> capability, @Nullable Direction side) {
+        //We only have one capability so just invalidate everything
+        invalidateAll();
+    }
+
+    @Override
+    public void invalidateAll() {
+        if (cachedCapability != null) {
+            cachedCapability.invalidate();
+            cachedCapability = null;
+        }
     }
 }
