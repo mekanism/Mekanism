@@ -403,7 +403,7 @@
   "filter.mekanism.modid.no_id": "Lacking ID",
   "filter.mekanism.modid.same_id": "Similarian ID",
   "filter.mekanism.new": "New: %s",
-  "filter.mekanism.select.title": "Create New Filter",
+  "filter.mekanism.select.title": "Establish Birthen Curator",
   "filter.mekanism.size_mode": "Size Mode",
   "filter.mekanism.size_mode.conflict": "Size Mode - has no effect currently, because single item mode is turned on.",
   "filter.mekanism.tag": "Tag Filter",
