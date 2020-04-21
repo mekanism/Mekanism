@@ -1,9 +1,9 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import com.google.gson.JsonObject;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;

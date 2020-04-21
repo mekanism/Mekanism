@@ -459,6 +459,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.FREE_RUNNERS_STORED, "Runners Energy: %s");
         add(MekanismLang.FLAMETHROWER_STORED, "Flamethrower: %s");
         add(MekanismLang.JETPACK_STORED, "Jetpack Fuel: %s");
+        add(MekanismLang.PROGRESS, "Progress: %s");
+        add(MekanismLang.PROCESS_RATE, "Process Rate: %s");
         //Gui stuff
         add(MekanismLang.MIN, "Min: %s");
         add(MekanismLang.MAX, "Max: %s");

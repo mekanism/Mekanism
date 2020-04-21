@@ -109,6 +109,8 @@ public enum MekanismLang implements ILangEntry {
     FLAMETHROWER_STORED("tooltip", "stored.flamethrower"),
     JETPACK_STORED("tooltip", "stored.jetpack"),
     //Gui stuff
+    PROGRESS("gui", "progress"),
+    PROCESS_RATE("gui", "process_rate"),
     MIN("gui", "min"),
     MAX("gui", "max"),
     INFINITE("gui", "infinite"),

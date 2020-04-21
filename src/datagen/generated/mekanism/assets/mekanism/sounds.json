@@ -4,6 +4,11 @@
       "mekanism:item/jetpack"
     ]
   },
+  "tile.machine.antiprotonic_nucleosynthesizer": {
+    "sounds": [
+      "mekanism:tile/antiprotonic_nucleosynthesizer"
+    ]
+  },
   "tile.machine.laser": {
     "sounds": [
       "mekanism:tile/laser"

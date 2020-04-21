@@ -36,6 +36,7 @@ import mekanism.common.content.blocktype.Machine;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.content.blocktype.Machine.MachineBuilder;
 import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.AntiprotonicNucleosynthesizerContainer;
 import mekanism.common.inventory.container.tile.DigitalMinerContainer;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
@@ -434,8 +435,10 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityAntiprotonicNucleosynthesizer> ANTIPROTONIC_NUCLEOSYNTHESIZER = MachineBuilder
         .createMachine(() -> MekanismTileEntityTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismLang.DESCRIPTION_ANTIPROTONIC_NUCLEOSYNTHESIZER)
         .withGui(() -> MekanismContainerTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER)
-        .withEnergyConfig(() -> FloatingLong.ZERO, MekanismConfig.storage.antiprotonicNucleosynthesizer)
+        .withCustomContainerProvider((tile) -> (i, inv, player) -> new AntiprotonicNucleosynthesizerContainer(i, inv, (TileEntityAntiprotonicNucleosynthesizer) tile))
+        .withEnergyConfig(MekanismConfig.usage.antiprotonicNucleosynthesizer, MekanismConfig.storage.antiprotonicNucleosynthesizer)
         .withSound(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER)
+        .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
         .build();
 
     // Dynamic Tank

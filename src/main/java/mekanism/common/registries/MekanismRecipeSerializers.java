@@ -14,6 +14,7 @@ import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
+import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
@@ -59,6 +60,7 @@ import mekanism.common.recipe.serializer.ItemStackToInfuseTypeRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToItemStackRecipeSerializer;
 import mekanism.common.recipe.serializer.MekanismShapedRecipeSerializer;
 import mekanism.common.recipe.serializer.MetallurgicInfuserRecipeSerializer;
+import mekanism.common.recipe.serializer.NucleosynthesizingRecipeSerializer;
 import mekanism.common.recipe.serializer.PressurizedReactionRecipeSerializer;
 import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
 import mekanism.common.recipe.serializer.SawmillRecipeSerializer;
@@ -96,7 +98,7 @@ public class MekanismRecipeSerializers {
     public static final IRecipeSerializerRegistryObject<ItemStackGasToItemStackRecipe> PURIFYING = RECIPE_SERIALIZERS.register("purifying", () -> new ItemStackGasToItemStackRecipeSerializer<>(PurifyingIRecipe::new));
     public static final IRecipeSerializerRegistryObject<ItemStackGasToItemStackRecipe> INJECTING = RECIPE_SERIALIZERS.register("injecting", () -> new ItemStackGasToItemStackRecipeSerializer<>(InjectingIRecipe::new));
 
-    public static final IRecipeSerializerRegistryObject<ItemStackGasToItemStackRecipe> NUCLEOSYNTHESIZING = RECIPE_SERIALIZERS.register("nucleosynthesizing", () -> new ItemStackGasToItemStackRecipeSerializer<>(NucleosynthesizingIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<NucleosynthesizingRecipe> NUCLEOSYNTHESIZING = RECIPE_SERIALIZERS.register("nucleosynthesizing", () -> new NucleosynthesizingRecipeSerializer<>(NucleosynthesizingIRecipe::new));
 
     public static final IRecipeSerializerRegistryObject<ItemStackToEnergyRecipe> ENERGY_CONVERSION = RECIPE_SERIALIZERS.register("energy_conversion", () -> new ItemStackToEnergyRecipeSerializer<>(EnergyConversionIRecipe::new));
 

@@ -25,6 +25,7 @@ import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
+import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
@@ -73,7 +74,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
     public static final MekanismRecipeType<ItemStackGasToItemStackRecipe> PURIFYING = create("purifying");
     public static final MekanismRecipeType<ItemStackGasToItemStackRecipe> INJECTING = create("injecting");
 
-    public static final MekanismRecipeType<ItemStackGasToItemStackRecipe> NUCLEOSYNTHESIZING = create("nucleosynthesizing");
+    public static final MekanismRecipeType<NucleosynthesizingRecipe> NUCLEOSYNTHESIZING = create("nucleosynthesizing");
 
     public static final MekanismRecipeType<ItemStackToEnergyRecipe> ENERGY_CONVERSION = create("energy_conversion");
 

@@ -13,23 +13,20 @@ import net.minecraft.item.ItemStack;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ItemStackGasToItemStackCachedRecipe extends CachedRecipe<ItemStackGasToItemStackRecipe> {
+public class ItemStackGasToItemStackCachedRecipe<RECIPE extends ItemStackGasToItemStackRecipe> extends CachedRecipe<RECIPE> {
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
     private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
     private final LongSupplier gasUsage;
-    private final boolean useGasEachTick;
 
-    public ItemStackGasToItemStackCachedRecipe(ItemStackGasToItemStackRecipe recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
-          ILongInputHandler<@NonNull GasStack> gasInputHandler, LongSupplier gasUsage, IOutputHandler<@NonNull ItemStack> outputHandler,
-          boolean useGasEachTick) {
+    public ItemStackGasToItemStackCachedRecipe(RECIPE recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
+          ILongInputHandler<@NonNull GasStack> gasInputHandler, LongSupplier gasUsage, IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
         this.itemInputHandler = itemInputHandler;
         this.gasInputHandler = gasInputHandler;
         this.gasUsage = gasUsage;
         this.outputHandler = outputHandler;
-        this.useGasEachTick = useGasEachTick;
     }
 
     private long getGasUsage() {
@@ -84,9 +81,6 @@ public class ItemStackGasToItemStackCachedRecipe extends CachedRecipe<ItemStackG
     @Override
     protected void useResources(int operations) {
         super.useResources(operations);
-        if (!useGasEachTick) {
-            return;
-        }
         GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
         if (recipeGas.isEmpty()) {

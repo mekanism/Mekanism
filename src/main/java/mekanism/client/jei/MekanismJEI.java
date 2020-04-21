@@ -12,6 +12,7 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IItemProvider;
+import mekanism.client.gui.GuiAntiprotonicNucleosynthesizer;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
@@ -240,6 +241,8 @@ public class MekanismJEI implements IModPlugin {
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, GuiPRC.class, 75, 37, 36, 10);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE, GuiIsotopicCentrifuge.class, 64, 39, 48, 8);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER, GuiNutritionalLiquifier.class, 64, 40, 48, 8);
+        // todo fix params
+        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, GuiAntiprotonicNucleosynthesizer.class, 64, 40, 48, 8);
         GuiHandlerRegistryHelper.registerCondensentrator(registry);
 
         GuiHandlerRegistryHelper.register(registry, GuiRobitCrafting.class, VanillaRecipeCategoryUid.CRAFTING, 90, 35, 22, 15);
@@ -269,6 +272,7 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, MekanismBlocks.ELECTROLYTIC_SEPARATOR, MekanismRecipeType.SEPARATING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismRecipeType.EVAPORATING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, MekanismRecipeType.REACTION);
+        RecipeRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismRecipeType.NUCLEOSYNTHESIZING);
         RecipeRegistryHelper.registerCondensentrator(registry);
         RecipeRegistryHelper.registerSmelter(registry);
         RecipeRegistryHelper.registerNutritionalLiquifier(registry);
@@ -295,6 +299,7 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
         CatalystRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
         CatalystRegistryHelper.registerCondensentrator(registry);
         CatalystRegistryHelper.registerSmelter(registry);
         CatalystRegistryHelper.registerRecipeItem(registry, MekanismBlocks.FORMULAIC_ASSEMBLICATOR, VanillaRecipeCategoryUid.CRAFTING);

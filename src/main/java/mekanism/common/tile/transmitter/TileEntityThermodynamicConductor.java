@@ -15,7 +15,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.ColorRGBA;
+import mekanism.common.Color;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -135,7 +135,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         NBTUtils.setDoubleIfPresent(tag, NBTConstants.TEMPERATURE, heat -> buffer.setHeat(heat));
     }
 
-    public ColorRGBA getBaseColor() {
+    public Color getBaseColor() {
         return tier.getBaseColor();
     }
 

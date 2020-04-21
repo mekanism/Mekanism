@@ -3,17 +3,17 @@ package mekanism.common.tier;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.ColorRGBA;
+import mekanism.common.Color;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.util.EnumUtils;
 
 public enum ConductorTier implements ITier {
-    BASIC(BaseTier.BASIC, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 10, new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ADVANCED(BaseTier.ADVANCED, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 400, new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ELITE(BaseTier.ELITE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 8_000, new ColorRGBA(0.2, 0.2, 0.2, 1)),
-    ULTIMATE(BaseTier.ULTIMATE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 100_000, new ColorRGBA(0.2, 0.2, 0.2, 1));
+    BASIC(BaseTier.BASIC, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 10, Color.rgba(0.2, 0.2, 0.2, 1)),
+    ADVANCED(BaseTier.ADVANCED, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 400, Color.rgba(0.2, 0.2, 0.2, 1)),
+    ELITE(BaseTier.ELITE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 8_000, Color.rgba(0.2, 0.2, 0.2, 1)),
+    ULTIMATE(BaseTier.ULTIMATE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 100_000, Color.rgba(0.2, 0.2, 0.2, 1));
 
-    private final ColorRGBA baseColor;
+    private final Color baseColor;
     private final double baseConduction;
     private final double baseHeatCapacity;
     private final double baseConductionInsulation;
@@ -22,7 +22,7 @@ public enum ConductorTier implements ITier {
     private CachedDoubleValue capacityReference;
     private CachedDoubleValue insulationReference;
 
-    ConductorTier(BaseTier tier, double conduction, double heatCapacity, double conductionInsulation, ColorRGBA color) {
+    ConductorTier(BaseTier tier, double conduction, double heatCapacity, double conductionInsulation, Color color) {
         baseConduction = conduction;
         baseHeatCapacity = heatCapacity;
         baseConductionInsulation = conductionInsulation;
@@ -57,7 +57,7 @@ public enum ConductorTier implements ITier {
         return capacityReference == null ? getBaseHeatCapacity() : capacityReference.get();
     }
 
-    public ColorRGBA getBaseColor() {
+    public Color getBaseColor() {
         return baseColor;
     }
 

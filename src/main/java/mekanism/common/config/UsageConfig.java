@@ -36,6 +36,7 @@ public class UsageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue modificationStation;
     public final CachedFloatingLongValue isotopicCentrifuge;
     public final CachedFloatingLongValue nutritionalLiquifier;
+    public final CachedFloatingLongValue antiprotonicNucleosynthesizer;
 
     public final CachedFloatingLongValue teleporterBase;
     public final CachedFloatingLongValue teleporterDistance;
@@ -92,6 +93,8 @@ public class UsageConfig extends BaseMekanismConfig {
               FloatingLong.createConst(200));
         nutritionalLiquifier = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "nutritionalLiquifier",
               FloatingLong.createConst(200));
+        antiprotonicNucleosynthesizer = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "nutritionalLiquifier",
+              FloatingLong.createConst(100_000));
 
         builder.comment("Teleporter").push(TELEPORTER_CATEGORY);
 

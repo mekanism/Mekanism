@@ -51,6 +51,11 @@ public class BoltRenderer {
         return this;
     }
 
+    public BoltRenderer withSize(float size) {
+        this.size = size;
+        return this;
+    }
+
     public void render(Vec3d start, Vec3d end, int count, int segments, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         IVertexBuilder buffer = bufferIn.getBuffer(RenderType.getLightning());
         Matrix4f matrix = matrixStackIn.getLast().getMatrix();

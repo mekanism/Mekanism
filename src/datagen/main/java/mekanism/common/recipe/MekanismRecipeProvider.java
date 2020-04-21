@@ -20,6 +20,7 @@ import mekanism.api.datagen.recipe.builder.ItemStackToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToInfuseTypeRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.MetallurgicInfuserRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.NucleosynthesizingRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
@@ -186,6 +187,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addMiscRecipes(consumer);
         addUraniumRecipes(consumer);
         addLateGameRecipes(consumer);
+        addNucleosynthesizingRecipes(consumer);
     }
 
     private void addBinRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -2873,5 +2875,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
             ItemStackIngredient.from(MekanismTags.Items.PELLETS_ANTIMATTER),
             MekanismGases.ANTIMATTER.getGasStack(100)
         ).build(consumer, Mekanism.rl(basePath + "antimatter/from_pellet"));
+    }
+
+    private void addNucleosynthesizingRecipes(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "nucleosynthesizing/";
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+            ItemStackIngredient.from(Items.COAL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 4), new ItemStack(Items.DIAMOND), 1000)
+        .build(consumer, Mekanism.rl(basePath + "diamond"));
     }
 }

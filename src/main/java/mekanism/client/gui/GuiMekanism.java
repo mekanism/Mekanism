@@ -91,19 +91,33 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         renderScaledText(component.getFormattedText(), x, y, color, maxX);
     }
 
+    protected void renderScaledCenteredText(ITextComponent text, int left, int y, int color, float scale) {
+        int textWidth = getStringWidth(text);
+        int centerX = left - (int)((textWidth / 2) * scale);
+        renderTextWithScale(text.getString(), centerX, y, color, scale);
+    }
+
     public void renderScaledText(String text, int x, int y, int color, int maxX) {
-        int length = getStringWidth(text);
+        int length = getFont().getStringWidth(text);
+
         if (length <= maxX) {
             drawString(text, x, y, color);
         } else {
-            float scale = (float) maxX / length;
-            float reverse = 1 / scale;
-            float yAdd = 4 - (scale * 8) / 2F;
-            RenderSystem.pushMatrix();
-            RenderSystem.scalef(scale, scale, scale);
-            drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
-            RenderSystem.popMatrix();
+            renderTextWithScale(text, x, y, color, (float) maxX / length);
         }
+        //Make sure the color does not leak from having drawn the string
+        MekanismRenderer.resetColor();
+    }
+
+    public void renderTextWithScale(String text, int x, int y, int color, float scale) {
+        float reverse = 1 / scale;
+        float yAdd = 4 - (scale * 8) / 2F;
+
+        RenderSystem.pushMatrix();
+        RenderSystem.scalef(scale, scale, scale);
+        drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
+        RenderSystem.popMatrix();
+        MekanismRenderer.resetColor();
     }
 
     @Override
@@ -137,7 +151,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);
     }
 
-    private void addSlots() {
+    protected void addSlots() {
         int size = container.inventorySlots.size();
         for (int i = 0; i < size; i++) {
             Slot slot = container.inventorySlots.get(i);

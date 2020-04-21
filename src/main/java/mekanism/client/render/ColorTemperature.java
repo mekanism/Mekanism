@@ -3,9 +3,9 @@ package mekanism.client.render;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mekanism.api.heat.HeatAPI;
-import mekanism.common.ColorRGBA;
+import mekanism.common.Color;
 
-public class ColorTemperature extends ColorRGBA {
+public class ColorTemperature extends Color {
 
     public static Int2ObjectMap<ColorTemperature> cache = new Int2ObjectOpenHashMap<>();
 
@@ -16,7 +16,7 @@ public class ColorTemperature extends ColorRGBA {
         temp = t;
     }
 
-    public static ColorTemperature fromTemperature(double temperature, ColorRGBA baseColor) {
+    public static ColorTemperature fromTemperature(double temperature, Color baseColor) {
         double absTemp = temperature + HeatAPI.AMBIENT_TEMP;
         absTemp /= 100;
 
@@ -76,9 +76,9 @@ public class ColorTemperature extends ColorRGBA {
         return colorTemperature.blendOnto(baseColor);
     }
 
-    public ColorTemperature blendOnto(ColorRGBA baseColor) {
-        double sR = (valR & 0xFF) / 255D, sG = (valG & 0xFF) / 255D, sB = (valB & 0xFF) / 255D, sA = (valA & 0xFF) / 255D;
-        double dR = (baseColor.valR & 0xFF) / 255D, dG = (baseColor.valG & 0xFF) / 255D, dB = (baseColor.valB & 0xFF) / 255D, dA = (baseColor.valA & 0xFF) / 255D;
+    public ColorTemperature blendOnto(Color baseColor) {
+        double sR = (r & 0xFF) / 255D, sG = (g & 0xFF) / 255D, sB = (b & 0xFF) / 255D, sA = (a & 0xFF) / 255D;
+        double dR = (baseColor.r & 0xFF) / 255D, dG = (baseColor.g & 0xFF) / 255D, dB = (baseColor.b & 0xFF) / 255D, dA = (baseColor.a & 0xFF) / 255D;
 
         double rR = sR * sA + dR * (1 - sA);
         double rG = sG * sA + dG * (1 - sA);

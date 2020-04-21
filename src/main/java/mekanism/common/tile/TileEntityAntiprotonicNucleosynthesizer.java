@@ -8,7 +8,8 @@ import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
@@ -24,6 +25,8 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -39,7 +42,7 @@ import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityBasicMachine<ItemStackGasToItemStackRecipe> {
+public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityBasicMachine<NucleosynthesizingRecipe> {
 
     public static final int BASE_TICKS_REQUIRED = 400;
     public static final long MAX_GAS = 10_000;
@@ -54,6 +57,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityBasicMach
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
+
+    public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     public TileEntityAntiprotonicNucleosynthesizer() {
         super(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, BASE_TICKS_REQUIRED);
@@ -105,30 +110,37 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityBasicMach
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 64, 17));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 39, 35));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 26, 40));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 152, 40));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 173, 69));
         return builder.build();
     }
 
     @Override
     protected void onUpdateServer() {
         energySlot.fillContainerOrConvert();
+        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
         cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
+        // always update ticks required based on recipe
+        ticksRequired = cachedRecipe == null ? BASE_TICKS_REQUIRED : cachedRecipe.getRecipe().getDuration();
+        int toProcess = (int) Math.ceil(Math.sqrt(energyContainer.getMaxEnergy().divide(energyContainer.getEnergyPerTick()).doubleValue()));
+        for (int i = 0; i < toProcess; i++) {
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
+            }
         }
+        clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
     }
 
     @Nullable
     @Override
-    public CachedRecipe<ItemStackGasToItemStackRecipe> getCachedRecipe(int cacheIndex) {
+    public CachedRecipe<NucleosynthesizingRecipe> getCachedRecipe(int cacheIndex) {
         return cachedRecipe;
     }
 
     @Nullable
     @Override
-    public ItemStackGasToItemStackRecipe getRecipe(int cacheIndex) {
+    public NucleosynthesizingRecipe getRecipe(int cacheIndex) {
         ItemStack stack = itemInputHandler.getInput();
         if (stack.isEmpty()) {
             return null;
@@ -142,8 +154,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityBasicMach
 
     @Nullable
     @Override
-    public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
-        return new ItemStackGasToItemStackCachedRecipe(recipe, itemInputHandler, gasInputHandler, () -> 0, outputHandler, false)
+    public CachedRecipe<NucleosynthesizingRecipe> createNewCachedRecipe(@Nonnull NucleosynthesizingRecipe recipe, int cacheIndex) {
+        return new ItemStackGasToItemStackCachedRecipe<>(recipe, itemInputHandler, gasInputHandler, () -> 0, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
@@ -157,7 +169,13 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityBasicMach
     }
 
     @Override
-    public MekanismRecipeType<ItemStackGasToItemStackRecipe> getRecipeType() {
+    public MekanismRecipeType<NucleosynthesizingRecipe> getRecipeType() {
         return MekanismRecipeType.NUCLEOSYNTHESIZING;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableFloatingLong.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
     }
 }

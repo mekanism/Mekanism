@@ -1,7 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -12,21 +12,21 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 
-public class NucleosynthesizingIRecipe extends ItemStackGasToItemStackRecipe {
+public class NucleosynthesizingIRecipe extends NucleosynthesizingRecipe {
 
-    public NucleosynthesizingIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-        super(id, itemInput, gasInput, output);
+    public NucleosynthesizingIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
+        super(id, itemInput, gasInput, output, duration);
     }
 
     @Nonnull
     @Override
-    public IRecipeType<ItemStackGasToItemStackRecipe> getType() {
+    public IRecipeType<NucleosynthesizingRecipe> getType() {
         return MekanismRecipeType.NUCLEOSYNTHESIZING;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ItemStackGasToItemStackRecipe> getSerializer() {
+    public IRecipeSerializer<NucleosynthesizingRecipe> getSerializer() {
         return MekanismRecipeSerializers.NUCLEOSYNTHESIZING.getRecipeSerializer();
     }
 

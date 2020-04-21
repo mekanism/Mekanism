@@ -11,6 +11,7 @@ import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
+import mekanism.common.inventory.container.tile.AntiprotonicNucleosynthesizerContainer;
 import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.container.tile.DigitalMinerContainer;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
@@ -143,7 +144,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySolarNeutronActivator>> SOLAR_NEUTRON_ACTIVATOR = CONTAINER_TYPES.register(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, TileEntitySolarNeutronActivator.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityTeleporter>> TELEPORTER = CONTAINER_TYPES.register(MekanismBlocks.TELEPORTER, TeleporterContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityThermalEvaporationController>> THERMAL_EVAPORATION_CONTROLLER = CONTAINER_TYPES.register(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, TileEntityThermalEvaporationController.class);
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> ANTIPROTONIC_NUCLEOSYNTHESIZER = CONTAINER_TYPES.register(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, TileEntityAntiprotonicNucleosynthesizer.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> ANTIPROTONIC_NUCLEOSYNTHESIZER = CONTAINER_TYPES.register(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, AntiprotonicNucleosynthesizerContainer::new);
 
     //Named
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFactory<?>>> FACTORY = CONTAINER_TYPES.register("factory", FactoryContainer::new);
