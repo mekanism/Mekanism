@@ -31,15 +31,15 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable implemen
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        //Due to TileEntity implementing ICapabilityProvider we have to manually copy the logic from IToggleableCapability
-        // that reroutes getCapability to check if it is disabled and otherwise use getCapabilityIfEnabled
-        if (isCapabilityDisabled(capability, side)) {
-            //TODO: Look into moving the disableable capability stuff into the capability cache?
+        if (isCapabilityDisabled(capability, side) || capabilityCache.isCapabilityDisabled(capability, side)) {
+            //TODO: Move the isCapabilityDisabled check logic into the capability cache's method for checking it
             return LazyOptional.empty();
         } else if (capabilityCache.canResolve(capability)) {
             return capabilityCache.getCapabilityUnchecked(capability, side);
         }
         return getCapabilityIfEnabled(capability, side);
+        //TODO: Remove getCapabilityIfEnabled, and move all instances to being handled by out capability cache
+        // and then uncomment the below call
         //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
         //return super.getCapability(capability, side);
     }
@@ -51,5 +51,12 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable implemen
     public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    protected void invalidateCaps() {
+        super.invalidateCaps();
+        //When the capabilities on our tile get invalidated, make sure to also invalidate all our cached ones
+        capabilityCache.invalidateAll();
     }
 }

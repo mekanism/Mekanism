@@ -12,11 +12,9 @@ import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.resolver.basic.EnergyCapabilityResolver;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * Helper class for implementing fluid handlers for items
@@ -54,11 +52,6 @@ public abstract class ItemStackEnergyHandler extends ItemCapability implements I
         if (!stack.isEmpty()) {
             ItemDataUtils.setList(stack, NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
         }
-    }
-
-    @Override
-    public boolean canProcess(Capability<?> capability) {
-        return EnergyCompatUtils.isEnergyCapability(capability);
     }
 
     @Override

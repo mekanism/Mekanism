@@ -34,20 +34,23 @@ public class CapabilityCache {
         }
     }
 
-    //TODO: Do we want ones that can only be resolved on specific sides?
+    public boolean isCapabilityDisabled(Capability<?> capability, @Nullable Direction side) {
+        //TODO: Implement this, and note in the java docs that the capability does not have to be one that we support
+        return false;
+    }
+
     public boolean canResolve(Capability<?> capability) {
         return capabilityResolvers.containsKey(capability);
     }
 
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction side) {
-        if (canResolve(capability)) {
+        if (!isCapabilityDisabled(capability, side) && canResolve(capability)) {
             return getCapabilityUnchecked(capability, side);
         }
         return LazyOptional.empty();
     }
 
-    //TODO: Decide on if this really should be unchecked given it *partially* checks it by checking the existence
-    // though we are not checking that it is not "disabled"
+    //TODO: Note that this is called unchecked as it does not check if the capability is disabled
     public <T> LazyOptional<T> getCapabilityUnchecked(Capability<T> capability, @Nullable Direction side) {
         ICapabilityResolver capabilityResolver = capabilityResolvers.get(capability);
         if (capabilityResolver == null) {
@@ -56,7 +59,7 @@ public class CapabilityCache {
         return capabilityResolver.resolve(capability, side);
     }
 
-    //TODO: Actually invalidate capabilities when they should be invalidated, including properly handling toggleable capabilities
+    //TODO: Call this when needed, such as when configurable sides change
     public void invalidate(Capability<?> capability, @Nullable Direction side) {
         ICapabilityResolver capabilityResolver = capabilityResolvers.get(capability);
         if (capabilityResolver != null) {
