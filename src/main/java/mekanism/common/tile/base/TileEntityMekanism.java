@@ -82,6 +82,7 @@ import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.ITierUpgradable;
@@ -359,6 +360,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public void addComponent(ITileComponent component) {
         components.add(component);
+        if (component instanceof TileComponentConfig) {
+            addConfigComponent((TileComponentConfig) component);
+        }
     }
 
     public List<ITileComponent> getComponents() {

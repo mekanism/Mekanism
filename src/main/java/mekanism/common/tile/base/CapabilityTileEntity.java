@@ -1,16 +1,18 @@
 package mekanism.common.tile.base;
 
+import java.util.Collection;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.capabilities.CapabilityCache;
-import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
+import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public abstract class CapabilityTileEntity extends TileEntityUpdateable implements IToggleableCapability {
+public abstract class CapabilityTileEntity extends TileEntityUpdateable {
 
     private final CapabilityCache capabilityCache = new CapabilityCache();
 
@@ -22,11 +24,28 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable implemen
         capabilityCache.addCapabilityResolver(resolver);
     }
 
+    protected final void addDisabledCapabilities(Capability<?>... capabilities) {
+        capabilityCache.addDisabledCapabilities(capabilities);
+    }
+
+    protected final void addDisabledCapabilities(Collection<Capability<?>> capabilities) {
+        capabilityCache.addDisabledCapabilities(capabilities);
+    }
+
+    protected final void addSemiDisabledCapability(Capability<?> capability, BooleanSupplier checker) {
+        //TODO: View usages of this and potentially add invalidation to some of them
+        capabilityCache.addSemiDisabledCapability(capability, checker);
+    }
+
+    protected final void addConfigComponent(TileComponentConfig config) {
+        //TODO: Add invalidation to the config components
+        capabilityCache.addConfigComponent(config);
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side) || capabilityCache.isCapabilityDisabled(capability, side)) {
-            //TODO: Move the isCapabilityDisabled check logic into the capability cache's method for checking it
+        if (capabilityCache.isCapabilityDisabled(capability, side)) {
             return LazyOptional.empty();
         } else if (capabilityCache.canResolve(capability)) {
             return capabilityCache.getCapabilityUnchecked(capability, side);

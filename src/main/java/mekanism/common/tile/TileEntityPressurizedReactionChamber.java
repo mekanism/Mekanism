@@ -43,8 +43,6 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -213,11 +211,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     public PRCEnergyContainer getEnergyContainer() {

@@ -15,7 +15,6 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
@@ -23,6 +22,12 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     public TileEntityBoilerValve() {
         super(MekanismBlocks.BOILER_VALVE);
+        //If we are a valve for water, then disable the gas handler capability
+        addSemiDisabledCapability(Capabilities.GAS_HANDLER_CAPABILITY,
+              () -> structure != null && (structure.upperRenderLocation == null || getPos().getY() < structure.upperRenderLocation.y - 1));
+        //If we are a valve for steam, then disable the fluid handler capability
+        addSemiDisabledCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+              () -> structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1);
     }
 
     @Nonnull
@@ -73,19 +78,5 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
             }
         }
         return ret;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY && structure != null &&
-            (structure.upperRenderLocation == null || getPos().getY() < structure.upperRenderLocation.y - 1)) {
-            //If we are a valve for water, then disable the gas handler capability
-            return true;
-        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && structure != null && structure.upperRenderLocation != null &&
-                   getPos().getY() >= structure.upperRenderLocation.y - 1) {
-            //If we are a valve for steam, then disable the fluid handler capability
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 }

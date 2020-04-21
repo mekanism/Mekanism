@@ -42,11 +42,9 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.slot.ReactorInventorySlot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -77,6 +75,10 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
 
     public TileEntityReactorController() {
         super(GeneratorsBlocks.REACTOR_CONTROLLER);
+        //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
+        addDisabledCapabilities(Capabilities.GAS_HANDLER_CAPABILITY, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Capabilities.HEAT_HANDLER_CAPABILITY);
+        addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
+        addSemiDisabledCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, () -> !isFormed());
     }
 
     @Nonnull
@@ -243,18 +245,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
             box = new AxisAlignedBB(getPos().getX() - 1, getPos().getY() - 3, getPos().getZ() - 1, getPos().getX() + 2, getPos().getY(), getPos().getZ() + 2);
         }
         return box;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && !isFormed()) {
-            return true;
-        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ||
-                   capability == Capabilities.HEAT_HANDLER_CAPABILITY || EnergyCompatUtils.isEnergyCapability(capability)) {
-            //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Nonnull

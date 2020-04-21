@@ -33,7 +33,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityEnergyCube extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
@@ -147,11 +146,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     @Override
     public Direction getOrientation() {
         return getDirection();
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override

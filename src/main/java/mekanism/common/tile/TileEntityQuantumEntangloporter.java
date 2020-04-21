@@ -67,7 +67,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, IFrequencyHandler, ISustainedData, IChunkLoader, IHasFrequency {
@@ -342,11 +341,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public TileComponentEjector getEjector() {
         return ejectorComponent;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override

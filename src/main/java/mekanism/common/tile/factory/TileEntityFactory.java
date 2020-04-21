@@ -47,7 +47,6 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ISideConfiguration, ISpecialConfigData,
       ITileCachedRecipeHolder<RECIPE> {
@@ -326,11 +325,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public TileComponentEjector getEjector() {
         return ejectorComponent;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override

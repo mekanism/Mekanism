@@ -139,6 +139,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         radius = 10;
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
+        //Return some capabilities as disabled, and handle them with offset capabilities instead
+        addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
     }
 
     @Nonnull
@@ -892,17 +895,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             return true;
         }
         return false;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        //Return some capabilities as disabled, and handle them with offset capabilities instead
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

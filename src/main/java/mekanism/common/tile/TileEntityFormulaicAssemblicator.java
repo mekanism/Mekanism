@@ -52,7 +52,6 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess, IHasMode {
 
@@ -586,11 +585,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
         }
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     public MachineEnergyContainer<TileEntityFormulaicAssemblicator> getEnergyContainer() {

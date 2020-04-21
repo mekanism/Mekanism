@@ -50,7 +50,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -104,6 +103,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         super(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
+        //Never allow capabilities we handle internally but access through the valve to be accessed from the controller
+        addDisabledCapabilities(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Capabilities.HEAT_HANDLER_CAPABILITY, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
     @Nonnull
@@ -493,16 +494,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public boolean renderUpdate() {
         return true;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == Capabilities.HEAT_HANDLER_CAPABILITY ||
-                   capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            //Never allow capabilities we handle internally but access through the valve to be accessed from the controller
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

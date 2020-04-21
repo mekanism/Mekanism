@@ -1,14 +1,20 @@
 package mekanism.common.capabilities;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
+import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -23,6 +29,10 @@ public class CapabilityCache {
      * List of unique resolvers to make invalidating all easier as some resolvers (energy) may support multiple capabilities.
      */
     private final List<ICapabilityResolver> uniqueResolvers = new ArrayList<>();
+    //TODO: Use these
+    private final Set<Capability<?>> alwaysDisabled = new HashSet<>();
+    private final Map<Capability<?>, List<BooleanSupplier>> semiDisabled = new HashMap<>();
+    private TileComponentConfig config;
 
     public void addCapabilityResolver(ICapabilityResolver resolver) {
         //TODO: Do we want to validate if the resolver has already been added.
@@ -35,9 +45,43 @@ public class CapabilityCache {
         }
     }
 
+    public void addDisabledCapabilities(Capability<?>... capabilities) {
+        Collections.addAll(alwaysDisabled, capabilities);
+    }
+
+    public void addDisabledCapabilities(Collection<Capability<?>> capabilities) {
+        alwaysDisabled.addAll(capabilities);
+    }
+
+    public void addSemiDisabledCapability(Capability<?> capability, BooleanSupplier checker) {
+        //TODO: Note about the fact it uses a list so that it can properly also allow parents to separately disable the same capability
+        semiDisabled.computeIfAbsent(capability, cap -> new ArrayList<>()).add(checker);
+    }
+
+    public void addConfigComponent(TileComponentConfig config) {
+        if (this.config != null) {
+            Mekanism.logger.warn("Config component already registered. Overriding");
+        }
+        this.config = config;
+    }
+
     public boolean isCapabilityDisabled(Capability<?> capability, @Nullable Direction side) {
-        //TODO: Implement this, and note in the java docs that the capability does not have to be one that we support
-        return false;
+        //TODO: Note in the java docs that the capability does not have to be one that we support
+        if (alwaysDisabled.contains(capability)) {
+            return true;
+        }
+        if (semiDisabled.containsKey(capability)) {
+            List<BooleanSupplier> predicates = semiDisabled.get(capability);
+            for (BooleanSupplier predicate : predicates) {
+                if (predicate.getAsBoolean()) {
+                    return true;
+                }
+            }
+        }
+        if (config == null) {
+            return false;
+        }
+        return config.isCapabilityDisabled(capability, side);
     }
 
     public boolean canResolve(Capability<?> capability) {

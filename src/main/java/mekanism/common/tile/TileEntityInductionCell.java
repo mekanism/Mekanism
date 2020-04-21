@@ -9,8 +9,6 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityInductionCell extends TileEntityMekanism {
 
@@ -19,6 +17,8 @@ public class TileEntityInductionCell extends TileEntityMekanism {
 
     public TileEntityInductionCell(IBlockProvider blockProvider) {
         super(blockProvider);
+        //Never externally expose the energy capability
+        addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
     }
 
     @Nonnull
@@ -32,12 +32,6 @@ public class TileEntityInductionCell extends TileEntityMekanism {
     @Override
     protected void presetVariables() {
         tier = Attribute.getTier(getBlockType(), InductionCellTier.class);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        //Never externally expose the energy capability
-        return EnergyCompatUtils.isEnergyCapability(capability) || super.isCapabilityDisabled(capability, side);
     }
 
     public MachineEnergyContainer<TileEntityInductionCell> getEnergyContainer() {

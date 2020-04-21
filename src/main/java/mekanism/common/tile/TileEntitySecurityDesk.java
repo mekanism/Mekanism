@@ -23,10 +23,8 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -43,6 +41,9 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public TileEntitySecurityDesk() {
         super(MekanismBlocks.SECURITY_DESK);
+        //Even though there are inventory slots make this return none as accessible by automation, as then people could lock items to other
+        // people unintentionally
+        addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
     @Nonnull
@@ -201,16 +202,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return new AxisAlignedBB(pos, pos.add(1, 2, 1));
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            //Even though there are inventory slots make this return none as accessible by automation, as then people could lock items to other
-            // people unintentionally
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Nonnull

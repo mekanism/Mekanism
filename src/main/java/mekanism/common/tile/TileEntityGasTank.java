@@ -49,7 +49,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityGasTank extends TileEntityMekanism implements ISideConfiguration, ISustainedData, IHasGasMode {
 
@@ -155,11 +154,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
             markDirty(false);
         }
         currentGasAmount = newGasAmount;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override
