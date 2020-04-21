@@ -33,6 +33,7 @@ public final class MekanismSounds {
     public static final SoundEventRegistryObject<SoundEvent> ISOTOPIC_CENTRIFUGE = SOUND_EVENTS.register("tile.machine.isotopic_centrifuge");
     public static final SoundEventRegistryObject<SoundEvent> NUTRITIONAL_LIQUIFIER = SOUND_EVENTS.register("tile.machine.nutritional_liquifier");
     public static final SoundEventRegistryObject<SoundEvent> INDUSTRIAL_ALARM = SOUND_EVENTS.register("tile.machine.industrial_alarm");
+    public static final SoundEventRegistryObject<SoundEvent> ANTIPROTONIC_NUCLEOSYNTHESIZER = SOUND_EVENTS.register("tile.machine.antiprotonic_nucleosynthesizer");
 
     public static final SoundEventRegistryObject<SoundEvent> FLAMETHROWER_IDLE = SOUND_EVENTS.register("item.flamethrower.idle");
     public static final SoundEventRegistryObject<SoundEvent> FLAMETHROWER_ACTIVE = SOUND_EVENTS.register("item.flamethrower.active");

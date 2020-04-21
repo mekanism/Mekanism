@@ -55,6 +55,7 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
+import mekanism.common.tile.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityBoilerValve;
@@ -428,6 +429,13 @@ public class MekanismBlockTypes {
         .withGui(() -> MekanismContainerTypes.NUTRITIONAL_LIQUIFIER)
         .withEnergyConfig(MekanismConfig.usage.nutritionalLiquifier, MekanismConfig.storage.nutritionalLiquifier)
         .withSound(MekanismSounds.NUTRITIONAL_LIQUIFIER)
+        .build();
+    // Antiprotonic Nucleosynthesizer
+    public static final Machine<TileEntityAntiprotonicNucleosynthesizer> ANTIPROTONIC_NUCLEOSYNTHESIZER = MachineBuilder
+        .createMachine(() -> MekanismTileEntityTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismLang.DESCRIPTION_ANTIPROTONIC_NUCLEOSYNTHESIZER)
+        .withGui(() -> MekanismContainerTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER)
+        .withEnergyConfig(() -> FloatingLong.ZERO, MekanismConfig.storage.antiprotonicNucleosynthesizer)
+        .withSound(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER)
         .build();
 
     // Dynamic Tank
