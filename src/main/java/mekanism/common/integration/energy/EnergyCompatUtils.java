@@ -82,6 +82,8 @@ public class EnergyCompatUtils {
 
     @Nullable
     private static IStrictEnergyHandler getStrictEnergyHandler(ICapabilityProvider provider, Direction side) {
+        //TODO: Eventually look into making it so that we cache the handler we get back. Maybe by passing a listener
+        // to this that we can give to the capability as we wrap the result into
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.isUsable()) {
                 IStrictEnergyHandler handler = energyCompat.getStrictEnergyHandler(provider, side);

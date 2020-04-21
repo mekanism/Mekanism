@@ -3,7 +3,6 @@ package mekanism.common.capabilities.resolver.basic;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -47,13 +46,12 @@ public class EnergyCapabilityResolver implements ICapabilityResolver {
     }
 
     protected void invalidate(@Nullable LazyOptional<?> cachedCapability) {
-        if (cachedCapability != null) {
+        if (cachedCapability != null && cachedCapability.isPresent()) {
             cachedCapability.invalidate();
         }
     }
 
-    @Nonnull
-    protected <T> LazyOptional<T> getCachedOrResolve(Capability<T> capability, Map<Capability<?>, LazyOptional<?>> cachedCapabilities, IStrictEnergyHandler handler) {
+    public static <T> LazyOptional<T> getCachedOrResolve(Capability<T> capability, Map<Capability<?>, LazyOptional<?>> cachedCapabilities, IStrictEnergyHandler handler) {
         if (cachedCapabilities.containsKey(capability)) {
             //If we already contain a cached object for this lazy optional then get it and use it
             LazyOptional<?> cachedCapability = cachedCapabilities.get(capability);

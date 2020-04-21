@@ -22,12 +22,6 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable implemen
         capabilityCache.addCapabilityResolver(resolver);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Do not override this method if you are implementing {@link IToggleableCapability}, instead override {@link #getCapabilityIfEnabled(Capability,
-     * Direction)}, calling this method is fine.
-     */
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
@@ -37,18 +31,6 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable implemen
         } else if (capabilityCache.canResolve(capability)) {
             return capabilityCache.getCapabilityUnchecked(capability, side);
         }
-        return getCapabilityIfEnabled(capability, side);
-        //TODO: Remove getCapabilityIfEnabled, and move all instances to being handled by out capability cache
-        // and then uncomment the below call
-        //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
-        //return super.getCapability(capability, side);
-    }
-
-    //TODO: View usages and move them to our capability cache
-    @Nonnull
-    @Override
-    @Deprecated
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
         return super.getCapability(capability, side);
     }

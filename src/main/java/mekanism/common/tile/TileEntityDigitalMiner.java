@@ -846,9 +846,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, itemHandlerManager.getCapability(side));
+            if (hasInventory()) {
+                return itemHandlerManager.resolve(capability, side);
+            }
+            return LazyOptional.empty();
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
-            return energyHandlerManager.getEnergyCapability(capability, side);
+            if (canHandleEnergy()) {
+                return energyHandlerManager.resolve(capability, side);
+            }
+            return LazyOptional.empty();
         }
         //Fallback to checking the normal capabilities
         return getCapability(capability, side);

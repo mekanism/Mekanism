@@ -73,14 +73,14 @@ public class AdvancedCapabilityResolver implements ICapabilityResolver {
     }
 
     private void invalidateReadOnly() {
-        if (cachedReadOnlyCapability != null) {
+        if (cachedReadOnlyCapability != null && cachedReadOnlyCapability.isPresent()) {
             cachedReadOnlyCapability.invalidate();
             cachedReadOnlyCapability = null;
         }
     }
 
     private void invalidate() {
-        if (cachedCapability != null) {
+        if (cachedCapability != null && cachedCapability.isPresent()) {
             cachedCapability.invalidate();
             cachedCapability = null;
         }

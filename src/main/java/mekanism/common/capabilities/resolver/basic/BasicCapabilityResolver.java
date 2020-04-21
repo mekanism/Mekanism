@@ -61,7 +61,7 @@ public class BasicCapabilityResolver implements ICapabilityResolver {
 
     @Override
     public void invalidateAll() {
-        if (cachedCapability != null) {
+        if (cachedCapability != null && cachedCapability.isPresent()) {
             cachedCapability.invalidate();
             cachedCapability = null;
         }

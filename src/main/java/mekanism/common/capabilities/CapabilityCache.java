@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import net.minecraft.util.Direction;
@@ -14,9 +15,9 @@ import net.minecraftforge.common.util.LazyOptional;
 
 //TODO: JavaDocs
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class CapabilityCache {
 
-    //TODO: Allow for keeping track of capability managers via the capability cache?
     private final Map<Capability<?>, ICapabilityResolver> capabilityResolvers = new HashMap<>();
     /**
      * List of unique resolvers to make invalidating all easier as some resolvers (energy) may support multiple capabilities.
