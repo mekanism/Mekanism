@@ -279,7 +279,7 @@
   "constants.mekanism.log_format": "[%s] %s",
   "constants.mekanism.mod_name": "Mekanism",
   "crafting_formula.mekanism.encoded": "(Закодировано)",
-  "crafting_formula.mekanism.ingredients": "Ингридиенты:",
+  "crafting_formula.mekanism.ingredients": "Ингредиенты:",
   "death.attack.laser": "%s был сжижен.",
   "description.mekanism.bin": "Блок для хранения большого кол-ва одного типа предмета.",
   "description.mekanism.boiler_casing": "Плотная обшивка, используется для создания теплоэлектрического бойлера.",
