@@ -230,6 +230,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         super.setActive(active);
         if (active == (getReactor() == null)) {
             setReactor(active ? new FusionReactor(this) : null);
+            if (!active) {
+                invalidateCachedCapabilities();
+            }
         }
     }
 
