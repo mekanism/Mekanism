@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,11 +8,13 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.sustained.ISustainedData;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.HashList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -29,8 +30,11 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
-import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
@@ -44,7 +48,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO - V10: Make this support other tag types, such as fluids
-public class TileEntityOredictionificator extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<OredictionificatorFilter> {
+public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ISpecialConfigData, ISustainedData, ITileFilterHolder<OredictionificatorFilter> {
 
     public static final Map<String, List<String>> possibleFilters = new Object2ObjectOpenHashMap<>();
 
@@ -61,17 +65,21 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     public TileEntityOredictionificator() {
         super(MekanismBlocks.OREDICTIONIFICATOR);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+        configComponent.setupIOConfig(TransmissionType.ITEM, new InventorySlotInfo(true, false, inputSlot), new InventorySlotInfo(false, true, outputSlot), RelativeSide.RIGHT);
+
+        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
+
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        RelativeSide[] sides = new RelativeSide[]{RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK};
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> !getResult(item).isEmpty(), this, 26, 115), sides);
-        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 134, 115), sides);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> !getResult(item).isEmpty(), this, 26, 115));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 134, 115));
         return builder.build();
     }
 
