@@ -81,7 +81,7 @@ public class PacketConfigurationUpdate {
                         } else if (message.clickType == 1) {
                             info.decrementDataType(message.inputSide);
                         } else if (message.clickType == 2) {
-                            info.setDataType(message.inputSide, DataType.NONE);
+                            info.setDataType(DataType.NONE, message.inputSide);
                         }
                     }
                     //Notify the neighbor on that side our state changed

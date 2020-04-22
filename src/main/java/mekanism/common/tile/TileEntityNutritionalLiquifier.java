@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -17,6 +16,7 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -32,8 +32,11 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Food;
 import net.minecraft.item.ItemStack;
@@ -54,6 +57,14 @@ public class TileEntityNutritionalLiquifier extends TileEntityOperationalMachine
 
     public TileEntityNutritionalLiquifier() {
         super(MekanismBlocks.NUTRITIONAL_LIQUIFIER, 100);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
+        configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
+        configComponent.setupOutputConfig(TransmissionType.GAS, new GasSlotInfo(true, false, gasTank), RelativeSide.RIGHT);
+        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
+
+        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.GAS);
+
         inputHandler = InputHelper.getInputHandler(inputSlot);
         outputHandler = OutputHelper.getOutputHandler(gasTank);
     }
@@ -67,7 +78,6 @@ public class TileEntityNutritionalLiquifier extends TileEntityOperationalMachine
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
-        GasUtils.emit(EnumSet.of(getRightSide()), gasTank, this, gasOutput);
     }
 
     @Nonnull
@@ -108,15 +118,15 @@ public class TileEntityNutritionalLiquifier extends TileEntityOperationalMachine
     @Nonnull
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(gasTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.RIGHT);
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(gasTank = BasicGasTank.output(MAX_GAS, this));
         return builder.build();
     }
 
     @Nonnull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
         return builder.build();
     }
@@ -124,7 +134,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityOperationalMachine
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> item.getItem().isFood(), this, 26, 36), RelativeSide.LEFT);
         builder.addSlot(outputSlot = GasInventorySlot.drain(gasTank, this, 155, 25), RelativeSide.RIGHT);
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);

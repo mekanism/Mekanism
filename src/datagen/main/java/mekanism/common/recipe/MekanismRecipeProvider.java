@@ -369,10 +369,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ItemStackIngredient.from(Items.FLINT),
               new ItemStack(Items.GUNPOWDER)
         ).build(consumer, Mekanism.rl(basePath + "flint_to_gunpowder"));
-        //Gravel -> Sand
+        //Gravel -> Flint
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Tags.Items.GRAVEL),
-              new ItemStack(Items.SAND)
+              new ItemStack(Items.FLINT)
         ).build(consumer, Mekanism.rl(basePath + "gravel_to_sand"));
         //TODO: Do we just want to make a clear and red tag for sandstone?
         //Red Sandstone -> Sand
@@ -1486,7 +1486,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ItemStackGasToItemStackRecipeBuilder.purifying(
               ItemStackIngredient.from(Tags.Items.GRAVEL),
               GasStackIngredient.from(MekanismGases.OXYGEN, 1),
-              new ItemStack(Items.FLINT)
+              new ItemStack(Items.SAND)
         ).build(consumer, Mekanism.rl(basePath + "gravel_to_flint"));
     }
 

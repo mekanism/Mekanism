@@ -10,6 +10,6 @@
     "gas": "mekanism:oxygen"
   },
   "output": {
-    "item": "minecraft:flint"
+    "item": "minecraft:sand"
   }
 }

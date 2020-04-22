@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -93,7 +93,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             itemConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Inventory(false, true, slotSupplier));
             //Set default config directions
             itemConfig.fill(DataType.INPUT);
-            itemConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
+            itemConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
         }
 
         ConfigInfo fluidConfig = configComponent.getConfig(TransmissionType.FLUID);
@@ -103,7 +103,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             fluidConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Fluid(false, true, tankSupplier));
             //Set default config directions
             fluidConfig.fill(DataType.INPUT);
-            fluidConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
+            fluidConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
         }
 
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
@@ -113,7 +113,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             gasConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Gas(false, true, tankSupplier));
             //Set default config directions
             gasConfig.fill(DataType.INPUT);
-            gasConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
+            gasConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
         }
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
@@ -123,7 +123,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             energyConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Energy(false, true, containerSupplier));
             //Set default config directions
             energyConfig.fill(DataType.INPUT);
-            energyConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
+            energyConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
         }
 
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
@@ -137,9 +137,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         }
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
-        ejectorComponent.setOutputData(TransmissionType.FLUID, fluidConfig);
-        ejectorComponent.setOutputData(TransmissionType.GAS, gasConfig);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS);
 
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
     }

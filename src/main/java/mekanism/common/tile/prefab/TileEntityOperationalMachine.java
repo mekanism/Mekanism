@@ -9,14 +9,13 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ITileCachedRecipeHolder<RECIPE> {
+public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements ITileCachedRecipeHolder<RECIPE> {
 
     private int operatingTicks;
 

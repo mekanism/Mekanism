@@ -2,7 +2,6 @@ package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
@@ -33,16 +32,14 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 
-public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicMachine<ItemStackGasToItemStackRecipe> {
+public abstract class TileEntityAdvancedElectricMachine extends TileEntityOperationalMachine<ItemStackGasToItemStackRecipe> {
 
     public static final int BASE_TICKS_REQUIRED = 200;
     public static final long MAX_GAS = 210;
@@ -67,32 +64,15 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
     public TileEntityAdvancedElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
         super(blockProvider, ticksRequired);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
+        configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, secondarySlot, energySlot);
+        configComponent.setupInputConfig(TransmissionType.GAS, new GasSlotInfo(true, false, gasTank));
+        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
 
-        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
-        if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
-            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, secondarySlot));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-            //Set default config directions
-            itemConfig.setDataType(RelativeSide.TOP, DataType.INPUT);
-            itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
-            itemConfig.setDataType(RelativeSide.BOTTOM, DataType.EXTRA);
-            itemConfig.setDataType(RelativeSide.BACK, DataType.ENERGY);
-        }
-
-        ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
-        if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
-            energyConfig.fill(DataType.INPUT);
-            energyConfig.setCanEject(false);
-        }
+        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         gasUsage = BASE_GAS_PER_TICK;
-        ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
-
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
         gasInputHandler = InputHelper.getInputHandler(gasTank);
         outputHandler = OutputHelper.getOutputHandler(outputSlot);

@@ -29,12 +29,12 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.prefab.TileEntityBasicMachine;
+import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRecipe> {
+public class TileEntityPrecisionSawmill extends TileEntityOperationalMachine<SawmillRecipe> {
 
     private final IOutputHandler<@NonNull ChanceOutput> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
@@ -55,9 +55,9 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
             itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot, secondaryOutputSlot));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
             //Set default config directions
-            itemConfig.setDataType(RelativeSide.TOP, DataType.INPUT);
-            itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
-            itemConfig.setDataType(RelativeSide.BOTTOM, DataType.ENERGY);
+            itemConfig.setDataType(DataType.INPUT, RelativeSide.TOP);
+            itemConfig.setDataType(DataType.OUTPUT, RelativeSide.RIGHT);
+            itemConfig.setDataType(DataType.ENERGY, RelativeSide.BOTTOM);
         }
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
@@ -68,7 +68,7 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
         }
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         inputHandler = InputHelper.getInputHandler(inputSlot);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, secondaryOutputSlot);

@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -18,6 +17,7 @@ import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -31,9 +31,12 @@ import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
@@ -61,6 +64,15 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     public TileEntityChemicalDissolutionChamber() {
         super(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, BASE_TICKS_REQUIRED);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
+        configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, gasInputSlot, energySlot);
+        configComponent.setupIOConfig(TransmissionType.GAS, new GasSlotInfo(true, false, injectTank), new GasSlotInfo(false, true, outputTank), RelativeSide.RIGHT)
+              .setEjecting(true);
+        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
+
+        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS);
+
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
         gasInputHandler = InputHelper.getInputHandler(injectTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
@@ -69,16 +81,16 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Nonnull
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(injectTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this), RelativeSide.LEFT);
-        builder.addTank(outputTank = BasicGasTank.ejectOutput(MAX_GAS, this), RelativeSide.RIGHT);
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(injectTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
+        builder.addTank(outputTank = BasicGasTank.ejectOutput(MAX_GAS, this));
         return builder.build();
     }
 
     @Nonnull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
         return builder.build();
     }
@@ -86,12 +98,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(injectTank, this::getWorld, this, 6, 65), RelativeSide.BOTTOM);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 26, 36),
-              RelativeSide.TOP, RelativeSide.LEFT);
-        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 25), RelativeSide.RIGHT);
-        //TODO: Make this be accessible from some side for automation??
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(injectTank, this::getWorld, this, 6, 65));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 26, 36));
+        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 25));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
         gasInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
@@ -109,7 +119,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
-        GasUtils.emit(EnumSet.of(getRightSide()), outputTank, this, gasOutput);
     }
 
     @Nonnull

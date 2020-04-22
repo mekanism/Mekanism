@@ -8,6 +8,8 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
+import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
+import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -28,6 +30,8 @@ public class GuiChemicalOxidizer extends GuiMekanismTile<TileEntityChemicalOxidi
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiSideConfigurationTab(this, tile));
+        addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
         addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
         addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 133, 13));

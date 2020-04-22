@@ -34,10 +34,6 @@ public class ConfigInfo {
         slotInfo = new EnumMap<>(DataType.class);
     }
 
-    private RelativeSide getSide(Direction direction) {
-        return RelativeSide.fromDirections(facingSupplier.get(), direction);
-    }
-
     public boolean canEject() {
         return canEject;
     }
@@ -59,8 +55,10 @@ public class ConfigInfo {
         return sideConfig.get(side);
     }
 
-    public void setDataType(@Nonnull RelativeSide side, @Nonnull DataType dataType) {
-        sideConfig.put(side, dataType);
+    public void setDataType(@Nonnull DataType dataType, @Nonnull RelativeSide... sides) {
+        for (RelativeSide side : sides) {
+            sideConfig.put(side, dataType);
+        }
     }
 
     @Nonnull
@@ -72,7 +70,7 @@ public class ConfigInfo {
 
     public void fill(@Nonnull DataType dataType) {
         for (RelativeSide side : EnumUtils.SIDES) {
-            setDataType(side, dataType);
+            setDataType(dataType, side);
         }
     }
 
@@ -88,6 +86,17 @@ public class ConfigInfo {
 
     public void addSlotInfo(@Nonnull DataType dataType, @Nonnull ISlotInfo info) {
         slotInfo.put(dataType, info);
+    }
+
+    public void setDefaults() {
+        if (slotInfo.containsKey(DataType.INPUT))
+            fill(DataType.INPUT);
+        if (slotInfo.containsKey(DataType.OUTPUT))
+            setDataType(DataType.OUTPUT, RelativeSide.RIGHT);
+        if (slotInfo.containsKey(DataType.EXTRA))
+            setDataType(DataType.EXTRA, RelativeSide.BOTTOM);
+        if (slotInfo.containsKey(DataType.ENERGY))
+            setDataType(DataType.ENERGY, RelativeSide.BACK);
     }
 
     public Set<Direction> getSidesForData(@Nonnull DataType dataType) {

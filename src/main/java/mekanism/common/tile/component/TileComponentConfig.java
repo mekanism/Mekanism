@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
@@ -19,7 +20,9 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.BaseSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -93,6 +96,62 @@ public class TileComponentConfig implements ITileComponent, ITrackableContainer 
         return configInfo.get(type);
     }
 
+    public ConfigInfo setupInputConfig(TransmissionType type, BaseSlotInfo slotInfo) {
+        ConfigInfo config = getConfig(type);
+        if (config != null) {
+            config.addSlotInfo(DataType.INPUT, slotInfo);
+            config.fill(DataType.INPUT);
+            config.setCanEject(false);
+        }
+        return config;
+    }
+
+    public ConfigInfo setupOutputConfig(TransmissionType type, BaseSlotInfo slotInfo, RelativeSide... sides) {
+        ConfigInfo config = getConfig(type);
+        if (config != null) {
+            config.addSlotInfo(DataType.OUTPUT, slotInfo);
+            config.setDataType(DataType.OUTPUT, sides);
+            config.setEjecting(true);
+        }
+        return config;
+    }
+
+    public ConfigInfo setupIOConfig(TransmissionType type, BaseSlotInfo inputInfo, BaseSlotInfo outputInfo, RelativeSide outputSide) {
+        ConfigInfo gasConfig = getConfig(type);
+        if (gasConfig != null) {
+            gasConfig.addSlotInfo(DataType.INPUT, inputInfo);
+            gasConfig.addSlotInfo(DataType.OUTPUT, outputInfo);
+            gasConfig.fill(DataType.INPUT);
+            gasConfig.setDataType(DataType.OUTPUT, outputSide);
+        }
+        return gasConfig;
+    }
+
+    public ConfigInfo setupItemIOConfig(IInventorySlot inputSlot, IInventorySlot outputSlot, IInventorySlot energySlot) {
+        ConfigInfo itemConfig = getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
+            //Set default config directions
+            itemConfig.setDefaults();
+        }
+        return itemConfig;
+    }
+
+    public ConfigInfo setupItemIOExtraConfig(IInventorySlot inputSlot, IInventorySlot outputSlot, IInventorySlot extraSlot, IInventorySlot energySlot) {
+        ConfigInfo itemConfig = getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
+            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
+            //Set default config directions
+            itemConfig.setDefaults();
+        }
+        return itemConfig;
+    }
+
     @Nullable
     public DataType getDataType(TransmissionType type, RelativeSide side) {
         ConfigInfo info = getConfig(type);
@@ -133,7 +192,7 @@ public class TileComponentConfig implements ITileComponent, ITrackableContainer 
                 info.setEjecting(configNBT.getBoolean(NBTConstants.EJECT + type.ordinal()));
                 CompoundNBT sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
                 for (RelativeSide side : EnumUtils.SIDES) {
-                    NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> info.setDataType(side, dataType));
+                    NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> info.setDataType(dataType, side));
                 }
             }
         }
@@ -188,7 +247,7 @@ public class TileComponentConfig implements ITileComponent, ITrackableContainer 
                 ConfigInfo info = entry.getValue();
                 CompoundNBT sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
                 for (RelativeSide side : EnumUtils.SIDES) {
-                    NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> info.setDataType(side, dataType));
+                    NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> info.setDataType(dataType, side));
                 }
             }
         }

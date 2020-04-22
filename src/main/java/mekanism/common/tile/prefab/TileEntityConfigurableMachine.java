@@ -4,22 +4,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> extends TileEntityOperationalMachine<RECIPE> implements ISideConfiguration, IConfigCardAccess {
+public abstract class TileEntityConfigurableMachine extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
-    public TileEntityBasicMachine(IBlockProvider blockProvider, int baseTicksRequired) {
-        super(blockProvider, baseTicksRequired);
+    public TileEntityConfigurableMachine(IBlockProvider blockProvider) {
+        super(blockProvider);
     }
 
     @Override

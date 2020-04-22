@@ -57,28 +57,10 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         super(blockProvider);
 
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
-
-        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
-        if (itemConfig != null) {
-            //Note: we allow inputting and outputting in both directions as the slot is a processing slot
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, true, chargeSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(true, true, dischargeSlot));
-            //Set default config directions
-            itemConfig.setDataType(RelativeSide.LEFT, DataType.INPUT);
-            itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
-
-            itemConfig.setCanEject(false);
-        }
-
-        ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
-        if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
-            energyConfig.addSlotInfo(DataType.OUTPUT, new EnergySlotInfo(false, true, energyContainer));
-            //Set default config directions
-            energyConfig.fill(DataType.INPUT);
-            energyConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
-            energyConfig.setEjecting(true);
-        }
+        configComponent.setupIOConfig(TransmissionType.ITEM, new InventorySlotInfo(true, true, chargeSlot), new InventorySlotInfo(true, true, dischargeSlot), RelativeSide.FRONT)
+              .setCanEject(false);
+        configComponent.setupIOConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer), new EnergySlotInfo(false, true, energyContainer), RelativeSide.FRONT)
+              .setEjecting(true);
 
         ejectorComponent = new TileComponentEjector(this);
     }

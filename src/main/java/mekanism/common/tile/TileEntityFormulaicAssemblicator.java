@@ -1,11 +1,11 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.IntList;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
@@ -104,20 +104,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlots));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
             //Set default config directions
-            itemConfig.setDataType(RelativeSide.LEFT, DataType.INPUT);
-            itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
-            itemConfig.setDataType(RelativeSide.BACK, DataType.ENERGY);
+            itemConfig.setDataType(DataType.INPUT, RelativeSide.LEFT);
+            itemConfig.setDataType(DataType.OUTPUT, RelativeSide.RIGHT);
+            itemConfig.setDataType(DataType.ENERGY, RelativeSide.BACK);
         }
 
-        ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
-        if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
-            energyConfig.fill(DataType.INPUT);
-            energyConfig.setCanEject(false);
-        }
+        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
     }
 
     @Nonnull

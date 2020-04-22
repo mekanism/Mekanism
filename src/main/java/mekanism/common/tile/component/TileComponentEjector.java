@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -60,9 +59,12 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
         tile.addComponent(this);
     }
 
-    public TileComponentEjector setOutputData(TransmissionType type, @Nullable ConfigInfo info) {
-        if (info != null) {
-            configInfo.put(type, info);
+    public TileComponentEjector setOutputData(TileComponentConfig config, TransmissionType... types) {
+        for (TransmissionType type : types) {
+            ConfigInfo info = configInfo.get(type);
+            if (info != null) {
+                configInfo.put(type, info);
+            }
         }
         return this;
     }

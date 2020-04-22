@@ -73,28 +73,10 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
     public TileEntityGasTank(IBlockProvider blockProvider) {
         super(blockProvider);
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.ITEM);
-
-        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
-        if (itemConfig != null) {
-            //Note: we allow inputting and outputting in both directions as the slot is a processing slot
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, true, drainSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(true, true, fillSlot));
-            //Set default config directions
-            itemConfig.setDataType(RelativeSide.TOP, DataType.INPUT);
-            itemConfig.setDataType(RelativeSide.BOTTOM, DataType.OUTPUT);
-
-            itemConfig.setCanEject(false);
-        }
-
-        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
-        if (gasConfig != null) {
-            gasConfig.addSlotInfo(DataType.INPUT, new GasSlotInfo(true, false, gasTank));
-            gasConfig.addSlotInfo(DataType.OUTPUT, new GasSlotInfo(false, true, gasTank));
-            //Set default config directions
-            gasConfig.fill(DataType.INPUT);
-            gasConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
-            gasConfig.setEjecting(true);
-        }
+        configComponent.setupIOConfig(TransmissionType.ITEM, new InventorySlotInfo(true, true, drainSlot), new InventorySlotInfo(true, true, fillSlot), RelativeSide.FRONT)
+              .setCanEject(false);
+        configComponent.setupIOConfig(TransmissionType.GAS, new GasSlotInfo(true, false, gasTank), new GasSlotInfo(false, true, gasTank), RelativeSide.FRONT)
+              .setEjecting(true);
 
         dumping = GasMode.IDLE;
 

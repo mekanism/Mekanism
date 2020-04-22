@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -25,16 +24,13 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.prefab.TileEntityBasicMachine;
+import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
+public class TileEntityCombiner extends TileEntityOperationalMachine<CombinerRecipe> {
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
@@ -49,29 +45,11 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
     public TileEntityCombiner() {
         super(MekanismBlocks.COMBINER, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
-
-        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
-        if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, mainInputSlot));
-            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, false, extraInputSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-            //Set default config directions
-            itemConfig.setDataType(RelativeSide.TOP, DataType.INPUT);
-            itemConfig.setDataType(RelativeSide.BOTTOM, DataType.EXTRA);
-            itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
-            itemConfig.setDataType(RelativeSide.BACK, DataType.ENERGY);
-        }
-
-        ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
-        if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
-            energyConfig.fill(DataType.INPUT);
-            energyConfig.setCanEject(false);
-        }
+        configComponent.setupItemIOExtraConfig(mainInputSlot, outputSlot, extraInputSlot, energySlot);
+        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         inputHandler = InputHelper.getInputHandler(mainInputSlot);
         extraInputHandler = InputHelper.getInputHandler(extraInputSlot);

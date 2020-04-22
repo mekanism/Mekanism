@@ -90,7 +90,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected TileEntityFactory(IBlockProvider blockProvider) {
         super(blockProvider);
         BlockFactory<?> factoryBlock = (BlockFactory<?>) blockProvider.getBlock();
-        this.type = Attribute.get(factoryBlock, AttributeFactoryType.class).getFactoryType();
+        type = Attribute.get(factoryBlock, AttributeFactoryType.class).getFactoryType();
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
@@ -109,26 +109,21 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlots));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
             //Set default config directions
-            itemConfig.setDataType(RelativeSide.LEFT, DataType.INPUT);
-            itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
-            itemConfig.setDataType(RelativeSide.BACK, DataType.ENERGY);
+            itemConfig.setDataType(DataType.INPUT, RelativeSide.LEFT);
+            itemConfig.setDataType(DataType.OUTPUT, RelativeSide.RIGHT);
+            itemConfig.setDataType(DataType.ENERGY, RelativeSide.BACK);
 
             IInventorySlot extraSlot = getExtraSlot();
             if (extraSlot != null) {
                 itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
-                itemConfig.setDataType(RelativeSide.BOTTOM, DataType.EXTRA);
+                itemConfig.setDataType(DataType.EXTRA, RelativeSide.BOTTOM);
             }
         }
 
-        ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
-        if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
-            energyConfig.fill(DataType.INPUT);
-            energyConfig.setCanEject(false);
-        }
+        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         progress = new int[tier.processes];
         cachedRecipes = new CachedRecipe[tier.processes];
