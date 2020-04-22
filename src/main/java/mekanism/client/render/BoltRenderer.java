@@ -1,5 +1,7 @@
 package mekanism.client.render;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -12,17 +14,25 @@ public class BoltRenderer {
 
     private Random random = new Random();
 
+    private List<Vec3d> renderCache = new ArrayList<>();
+    private final int MAX_RENDER_TIME;
+
     /** How large the individual bolts should render. */
     private float size = 0.05F;
     /** How much variance is allowed in segment lengths (parallel to straight line). */
     private float parallelNoise;
     /** How much variance is allowed perpendicular to the straight line vector. Scaled by distance and spread function. */
     private float spreadFactor;
+    /** The chance of creating an additional branch after a certain segment. */
+    private float branchFactor = 0.1F;
+    /** Amount of ticks left before our next render. */
+    private int renderTime;
 
-    private float red = 0.45F, green = 0.45F, blue = 0.5F, alpha = 0.8F;
+    private float red = 0.54F, green = 0.91F, blue = 1F, alpha = 0.8F;
 
     private SpreadFunction spreadFunction;
     private RandomFunction randomFunction;
+    private SegmentSpreader segmentSpreader = SegmentSpreader.memory(0.7F);
 
     // These caches where the last segment renders left off, allowing us to 'seal' each bolt segment to the previous.
     private Vec3d prevEnd, prevEndRight, prevEndBack;
@@ -40,6 +50,7 @@ public class BoltRenderer {
         this.randomFunction = randomFunction;
         this.parallelNoise = parallelNoise;
         this.spreadFactor = spreadFactor;
+        this.MAX_RENDER_TIME = 3;
     }
 
     public BoltRenderer withColor(float red, float green, float blue, float alpha) {
@@ -59,6 +70,20 @@ public class BoltRenderer {
         IVertexBuilder buffer = bufferIn.getBuffer(RenderType.getLightning());
         Matrix4f matrix = matrixStackIn.getLast().getMatrix();
 
+        if (renderTime == 0) {
+            renderTime = random.nextInt(MAX_RENDER_TIME) + 1;
+            renderCache.clear();
+            updateRender(start, end, count, segments);
+        } else {
+            renderTime--;
+        }
+
+        for (Vec3d vec : renderCache) {
+            buffer.pos(matrix, (float) vec.x, (float) vec.y, (float) vec.z).color(red, green, blue, alpha).endVertex();
+        }
+    }
+
+    private void updateRender(Vec3d start, Vec3d end, int count, int segments) {
         Vec3d diff = end.subtract(start);
         float totalDistance = (float) diff.length();
         for (int i = 0; i < count; i++) {
@@ -67,16 +92,18 @@ public class BoltRenderer {
             while (segmentStart != end) {
                 progress = progress + (1F / segments) * (1 - parallelNoise + random.nextFloat() * parallelNoise * 2);
                 Vec3d segmentEnd = null;
+                Vec3d perpendicularDist = new Vec3d(0, 0, 0);
                 if (progress >= 1) {
                     segmentEnd = end;
                 } else {
                     float segmentDiffScale = spreadFunction.getMaxSpread(progress);
                     float maxDiff = spreadFactor * segmentDiffScale * totalDistance * randomFunction.getRandom(random);
-                    Vec3d cur = findRandomOrthogonalVector(diff, random).scale(maxDiff);
+                    Vec3d randVec = findRandomOrthogonalVector(diff, random);
+                    perpendicularDist = segmentSpreader.getSegmentAdd(perpendicularDist, randVec, maxDiff);
                     // new vector is original + current progress through segments + perpendicular change
-                    segmentEnd = start.add(diff.scale(progress)).add(cur);
+                    segmentEnd = start.add(diff.scale(progress)).add(perpendicularDist);
                 }
-                renderBolt(matrix, buffer, segmentStart, segmentEnd);
+                renderBolt(segmentStart, segmentEnd);
                 segmentStart = segmentEnd;
             }
             prevEnd = prevEndRight = prevEndBack = null;
@@ -88,7 +115,7 @@ public class BoltRenderer {
         return vec.crossProduct(newVec).normalize();
     }
 
-    private void renderBolt(Matrix4f matrix, IVertexBuilder buffer, Vec3d startPos, Vec3d end) {
+    private void renderBolt(Vec3d startPos, Vec3d end) {
         Vec3d diff = end.subtract(startPos);
         Vec3d rightAdd = diff.crossProduct(new Vec3d(0.5, 0.5, 0.5)).normalize().scale(size);
         Vec3d backAdd = diff.crossProduct(rightAdd).normalize().scale(size), rightAddSplit = rightAdd.scale(0.5F);
@@ -100,16 +127,16 @@ public class BoltRenderer {
 
         prevEnd = end; prevEndRight = endRight; prevEndBack = endBack;
 
-        draw(matrix, buffer, start, end, endRight, startRight);
-        draw(matrix, buffer, startRight, endRight, end, start);
+        addForRender(start, end, endRight, startRight);
+        addForRender(startRight, endRight, end, start);
 
-        draw(matrix, buffer, startRight, endRight, endBack, startBack);
-        draw(matrix, buffer, startBack, endBack, endRight, startRight);
+        addForRender(startRight, endRight, endBack, startBack);
+        addForRender(startBack, endBack, endRight, startRight);
     }
 
-    private void draw(Matrix4f matrix, IVertexBuilder buffer, Vec3d... vertices) {
-        for (Vec3d vec : vertices) {
-            buffer.pos(matrix, (float) vec.x, (float) vec.y, (float) vec.z).color(red, green, blue, alpha).endVertex();
+    private void addForRender(Vec3d... vertices) {
+        for (Vec3d vertex : vertices) {
+            renderCache.add(vertex);
         }
     }
 
@@ -130,5 +157,24 @@ public class BoltRenderer {
         public static final RandomFunction GAUSSIAN = (rand) -> (float) rand.nextGaussian();
 
         float getRandom(Random rand);
+    }
+
+    public interface SegmentSpreader {
+        /** Don't remember where the last segment left off, just randomly move from the straight-line vector. */
+        public static final SegmentSpreader NO_MEMORY = (perpendicularDist, randVec, maxDiff) -> {
+            return randVec.scale(maxDiff);
+        };
+        /** Move from where the previous segment ended by a certain memory factor. Higher memory will restrict perpendicular movement. */
+        public static SegmentSpreader memory(float memoryFactor) {
+            return (perpendicularDist, randVec, maxDiff) -> {
+                float nextDiff = maxDiff * (1 - memoryFactor);
+                Vec3d cur = randVec.scale(nextDiff);
+                if (perpendicularDist.add(cur).length() > maxDiff)
+                    cur.scale(-1);
+                return perpendicularDist.add(cur);
+            };
+        }
+
+        Vec3d getSegmentAdd(Vec3d perpendicularDist, Vec3d randVec, float maxDiff);
     }
 }
