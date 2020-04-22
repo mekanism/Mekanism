@@ -29,7 +29,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.CapabilityUtils;
@@ -104,11 +103,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType,
                                         dataType.getColor(), dataType, dataType.getColor().getColoredName())));
-                            if (config instanceof TileEntityUpdateable) {
-                                ((TileEntityUpdateable) config).sendUpdatePacket();
-                            }
-                            MekanismUtils.notifyNeighborOfChange(world, relativeSide.getDirection(config.getOrientation()), tile.getPos());
-                            MekanismUtils.saveChunk(tile);
+                            config.getConfig().sideChanged(transmissionType, relativeSide);
                         } else {
                             SecurityUtils.displayNoAccess(player);
                         }

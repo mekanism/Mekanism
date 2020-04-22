@@ -18,6 +18,12 @@ import sonar.fluxnetworks.api.energy.FNEnergyCapability;
 @ParametersAreNonnullByDefault
 public class FNEnergyCompat implements IEnergyCompat {
 
+    @Nonnull
+    @Override
+    public Capability<?> getCapability() {
+        return FNEnergyCapability.FN_ENERGY_STORAGE;
+    }
+
     @Override
     public boolean isMatchingCapability(@Nonnull Capability<?> capability) {
         if (Mekanism.hooks.FluxNetworksLoaded) {

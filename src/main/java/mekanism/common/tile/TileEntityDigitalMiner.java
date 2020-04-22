@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -34,6 +33,7 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.BaseFilter;
@@ -137,6 +137,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public TileEntityDigitalMiner() {
         super(MekanismBlocks.DIGITAL_MINER);
         radius = 10;
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
+        //Return some capabilities as disabled, and handle them with offset capabilities instead
+        addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
     }
 
     @Nonnull
@@ -842,22 +847,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        } else if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
-            return Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
-    }
-
-    @Nonnull
-    @Override
     public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, itemHandlerManager.getCapability(side));
+            if (hasInventory()) {
+                return itemHandlerManager.resolve(capability, side);
+            }
+            return LazyOptional.empty();
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
-            return energyHandlerManager.getEnergyCapability(capability, side);
+            if (canHandleEnergy()) {
+                return energyHandlerManager.resolve(capability, side);
+            }
+            return LazyOptional.empty();
         }
         //Fallback to checking the normal capabilities
         return getCapability(capability, side);
@@ -898,27 +898,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        //Return some capabilities as disabled, and handle them with offset capabilities instead
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
     public TileComponentChunkLoader<TileEntityDigitalMiner> getChunkLoader() {
         return chunkLoaderComponent;
     }
 
     @Override
     public Set<ChunkPos> getChunkSet() {
-        int chunkXMin = pos.getX() - radius >> 4;
-        int chunkXMax = pos.getX() + radius >> 4;
-        int chunkZMin = pos.getX() - radius >> 4;
-        int chunkZMax = pos.getZ() + radius >> 4;
+        int chunkXMin = (pos.getX() - radius) >> 4;
+        int chunkXMax = (pos.getX() + radius) >> 4;
+        int chunkZMin = (pos.getX() - radius) >> 4;
+        int chunkZMax = (pos.getZ() + radius) >> 4;
         Set<ChunkPos> set = new ObjectOpenHashSet<>();
         for (int chunkX = chunkXMin; chunkX <= chunkXMax; chunkX++) {
             for (int chunkZ = chunkZMin; chunkZ <= chunkZMax; chunkZ++) {

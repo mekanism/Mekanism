@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -16,6 +15,7 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tier.EnergyCubeTier;
@@ -33,8 +33,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityEnergyCube extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
@@ -63,6 +61,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
               .setEjecting(true);
 
         ejectorComponent = new TileComponentEjector(this);
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Override
@@ -129,20 +128,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     @Override
     public Direction getOrientation() {
         return getDirection();
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override

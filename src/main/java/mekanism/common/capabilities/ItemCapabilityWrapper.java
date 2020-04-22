@@ -13,7 +13,8 @@ import net.minecraftforge.common.util.LazyOptional;
 public class ItemCapabilityWrapper implements ICapabilityProvider {
 
     protected final ItemStack itemStack;
-    private List<ItemCapability> capabilities = new ArrayList<>();
+    private final List<ItemCapability> capabilities = new ArrayList<>();
+    private boolean capabilitiesInitialized;
 
     public ItemCapabilityWrapper(ItemStack stack, ItemCapability... caps) {
         itemStack = stack;
@@ -31,14 +32,30 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (!itemStack.isEmpty()) {
+        //Note: The capability can technically be null if it is for a mod that is not loaded and another mod
+        // tries to check if we have it, so we just safety check to ensure that it is not so we don't have
+        // issues when caching our lazy optionals
+        if (capability != null && !itemStack.isEmpty()) {
+            if (!capabilitiesInitialized) {
+                //If we haven't initialized the capabilities yet (due to them being null), go through and initialize all our handlers
+                // once we have at least one capability requested that is not null
+                capabilitiesInitialized = true;
+                for (ItemCapability cap : capabilities) {
+                    cap.addCapabilityResolvers(cap.capabilityCache);
+                }
+            }
             //Only provide capabilities if we are not empty
             for (ItemCapability cap : capabilities) {
-                if (cap.canProcess(capability)) {
+                if (cap.capabilityCache.isCapabilityDisabled(capability, null)) {
+                    //Note: Currently no item capabilities have toggleable capabilities, but check anyways to properly support our API
+                    return LazyOptional.empty();
+                } else if (cap.capabilityCache.canResolve(capability)) {
                     //Make sure that we load any data the cap needs from the stack, as it doesn't have any NBT set when it is initially initialized
                     // This also allows us to update to any direct changes on the NBT of the stack that someone may have made
+                    //TODO: Potentially move the loading to the capability initializing spot, as NBT shouldn't be randomly changing anyways
+                    // and then that may allow us to better cache the capabilities
                     cap.load();
-                    return cap.getMatchingCapability(capability);
+                    return cap.capabilityCache.getCapabilityUnchecked(capability, null);
                 }
             }
         }
@@ -47,9 +64,10 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
 
     public static abstract class ItemCapability {
 
+        private final CapabilityCache capabilityCache = new CapabilityCache();
         private ItemCapabilityWrapper wrapper;
 
-        public abstract boolean canProcess(Capability<?> capability);
+        protected abstract void addCapabilityResolvers(CapabilityCache capabilityCache);
 
         protected void init() {
         }
@@ -59,13 +77,6 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
 
         public ItemStack getStack() {
             return wrapper.itemStack;
-        }
-
-        /**
-         * Note: it is expected that canProcess is called before this
-         */
-        public <T> LazyOptional<T> getMatchingCapability(@Nonnull Capability<T> capability) {
-            return LazyOptional.of(() -> this).cast();
         }
     }
 }

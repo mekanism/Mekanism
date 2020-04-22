@@ -20,13 +20,23 @@ public interface IEnergyCompat {
     boolean isUsable();
 
     /**
+     * Gets the capability this compat integrates with.
+     *
+     * @return The capability this compat is integrating with. Or {@code null} if the capability is not usable.
+     */
+    @Nullable
+    Capability<?> getCapability();
+
+    /**
      * Checks if a given capability matches the capability that this {@link IEnergyCompat} is for.
      *
      * @param capability Capability to check
      *
      * @return {@code true} if the capability matches, {@code false} if it doesn't.
      */
-    boolean isMatchingCapability(Capability<?> capability);
+    default boolean isMatchingCapability(Capability<?> capability) {
+        return capability == getCapability();
+    }
 
     /**
      * Checks if the given provider has this capability.

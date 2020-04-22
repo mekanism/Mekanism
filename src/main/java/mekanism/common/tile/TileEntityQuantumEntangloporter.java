@@ -67,7 +67,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, IFrequencyHandler, ISustainedData, IChunkLoader, IHasFrequency {
@@ -261,6 +260,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
                 frequency = (InventoryFrequency) freq;
                 frequency.activeCoords.add(Coord4D.get(this));
                 MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
+                invalidateCachedCapabilities();
                 markDirty(false);
                 return;
             }
@@ -270,6 +270,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         freq.activeCoords.add(Coord4D.get(this));
         manager.addFrequency(freq);
         frequency = (InventoryFrequency) freq;
+        invalidateCachedCapabilities();
         MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
         markDirty(false);
     }
@@ -279,6 +280,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         FrequencyManager manager = getManager(new InventoryFrequency(name, null).setPublic(publicFreq));
         if (manager != null) {
             manager.remove(name, getSecurity().getOwnerUUID());
+            invalidateCachedCapabilities();
         }
     }
 
@@ -340,11 +342,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public TileComponentEjector getEjector() {
         return ejectorComponent;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override

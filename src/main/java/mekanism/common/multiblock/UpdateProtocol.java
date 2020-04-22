@@ -358,7 +358,7 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
                     for (Coord4D newCoord : iteratedNodes) {
                         TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), newCoord.getPos());
                         if (tile instanceof TileEntityMultiblock) {
-                            ((TileEntityMultiblock<?>) tile).structure = null;
+                            ((TileEntityMultiblock<?>) tile).removeStructure();
                         } else if (tile instanceof IStructuralMultiblock) {
                             ((IStructuralMultiblock) tile).setController(null);
                         }
@@ -431,7 +431,7 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
                         onStructureDestroyed(tileEntity.structure);
                         tileEntity.structure.destroyed = true;
                     }
-                    tileEntity.structure = null;
+                    tileEntity.removeStructure();
                 } else if (tile instanceof IStructuralMultiblock) {
                     ((IStructuralMultiblock) tile).setController(null);
                 }

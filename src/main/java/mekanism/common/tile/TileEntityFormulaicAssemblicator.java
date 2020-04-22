@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.IntList;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
@@ -22,6 +21,7 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -52,8 +52,6 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess, IHasMode {
 
@@ -113,6 +111,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
+
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Nonnull
@@ -581,20 +581,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
         }
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     public MachineEnergyContainer<TileEntityFormulaicAssemblicator> getEnergyContainer() {

@@ -18,6 +18,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -38,8 +39,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
 
@@ -59,6 +58,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         }
         transmitterDelegate = new TransporterImpl(this);
         redstoneReactive = true;
+        addCapabilityResolver(BasicCapabilityResolver.persistent(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, this::getTransmitter));
     }
 
     @Override
@@ -279,15 +279,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         } else {
             super.parseUpgradeData(upgradeData);
         }
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY) {
-            return Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY.orEmpty(capability, LazyOptional.of(this::getTransmitter));
-        }
-        return super.getCapability(capability, side);
     }
 
     @Override

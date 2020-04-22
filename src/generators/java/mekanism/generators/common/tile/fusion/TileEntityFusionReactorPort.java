@@ -20,6 +20,7 @@ import mekanism.common.capabilities.holder.fluid.ProxiedFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.ProxiedInventorySlotHolder;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -33,14 +34,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock implements IConfigurable {
 
     public TileEntityFusionReactorPort() {
         super(GeneratorsBlocks.FUSION_REACTOR_PORT);
         delaySupplier = () -> 0;
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
     @Nonnull
@@ -102,6 +102,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
             World world = getWorld();
             if (world != null) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+                invalidateCachedCapabilities();
             }
         }
         super.resetChanged();
@@ -114,15 +115,6 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
             GasUtils.emit(getReactor().getSteamTank(), this);
             CableUtils.emit(getReactor().controller.energyContainer, this);
         }
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
-            return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Nullable

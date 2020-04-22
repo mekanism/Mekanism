@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.manager;
+package mekanism.common.capabilities.resolver.manager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -7,6 +7,7 @@ import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.ISidedInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.proxy.ProxyInfusionHandler;
 
@@ -17,11 +18,6 @@ public class InfusionHandlerManager extends CapabilityHandlerManager<IChemicalTa
       ISidedInfusionHandler> {
 
     public InfusionHandlerManager(@Nullable IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> holder, @Nonnull ISidedInfusionHandler baseHandler) {
-        super(holder, baseHandler, ProxyInfusionHandler::new, IChemicalTankHolder::getTanks);
-    }
-
-    public InfusionHandlerManager(@Nullable IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> holder, boolean canHandle,
-          @Nonnull ISidedInfusionHandler baseHandler) {
-        super(holder, canHandle, baseHandler, ProxyInfusionHandler::new, IChemicalTankHolder::getTanks);
+        super(holder, baseHandler, Capabilities.INFUSION_HANDLER_CAPABILITY, ProxyInfusionHandler::new, IChemicalTankHolder::getTanks);
     }
 }

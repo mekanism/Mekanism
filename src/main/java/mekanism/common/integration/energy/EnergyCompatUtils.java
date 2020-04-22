@@ -2,6 +2,7 @@ package mekanism.common.integration.energy;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -44,6 +45,13 @@ public class EnergyCompatUtils {
         return false;
     }
 
+    /**
+     * Gets all enabled energy capability integrations.
+     */
+    public static List<Capability<?>> getEnabledEnergyCapabilities() {
+        return energyCompats.stream().filter(IEnergyCompat::isUsable).map(IEnergyCompat::getCapability).collect(Collectors.toList());
+    }
+
     public static boolean hasStrictEnergyHandler(@Nonnull ItemStack stack) {
         return !stack.isEmpty() && hasStrictEnergyHandler(stack, null);
     }
@@ -74,6 +82,8 @@ public class EnergyCompatUtils {
 
     @Nullable
     private static IStrictEnergyHandler getStrictEnergyHandler(ICapabilityProvider provider, Direction side) {
+        //TODO: Eventually look into making it so that we cache the handler we get back. Maybe by passing a listener
+        // to this that we can give to the capability as we wrap the result into
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.isUsable()) {
                 IStrictEnergyHandler handler = energyCompat.getStrictEnergyHandler(provider, side);
@@ -94,7 +104,7 @@ public class EnergyCompatUtils {
             //Should never be the case, but is when a capability does not exist due to a mod not being loaded
             return LazyOptional.empty();
         }
-        //TODO: Cache the lazy optionals, and the wrapper objects
+        //Note: The methods that call this method cache the returned lazy optional properly
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.isUsable() && energyCompat.isMatchingCapability(capability)) {
                 //Note: This is a little ugly but this extra method ensures that the supplier's type does not get prematurely resolved

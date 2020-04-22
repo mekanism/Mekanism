@@ -51,7 +51,6 @@ import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
@@ -60,17 +59,17 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.manager.EnergyHandlerManager;
-import mekanism.common.capabilities.manager.FluidHandlerManager;
-import mekanism.common.capabilities.manager.GasHandlerManager;
-import mekanism.common.capabilities.manager.HeatHandlerManager;
-import mekanism.common.capabilities.manager.InfusionHandlerManager;
-import mekanism.common.capabilities.manager.ItemHandlerManager;
+import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
+import mekanism.common.capabilities.resolver.manager.FluidHandlerManager;
+import mekanism.common.capabilities.resolver.manager.GasHandlerManager;
+import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
+import mekanism.common.capabilities.resolver.manager.InfusionHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -83,6 +82,7 @@ import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.ITierUpgradable;
@@ -114,16 +114,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
-public abstract class TileEntityMekanism extends TileEntityUpdateable implements IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
+public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
       ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler {
 
@@ -136,8 +132,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
      * A timer used to send packets to clients.
      */
     public int ticker;
-
-    private List<ITileComponent> components = new ArrayList<>();
+    private final List<ICapabilityHandlerManager<?>> capabilityHandlerManagers = new ArrayList<>();
+    private final List<ITileComponent> components = new ArrayList<>();
 
     protected IBlockProvider blockProvider;
 
@@ -222,12 +218,18 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         this.blockProvider = blockProvider;
         setSupportedTypes(this.blockProvider.getBlock());
         presetVariables();
-        gasHandlerManager = new GasHandlerManager(getInitialGasTanks(), this);
-        infusionHandlerManager = new InfusionHandlerManager(getInitialInfusionTanks(), this);
-        fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(), this);
-        energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(), this);
-        heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(), this);
-        itemHandlerManager = new ItemHandlerManager(getInitialInventory(), hasInventory, this);
+        capabilityHandlerManagers.add(gasHandlerManager = new GasHandlerManager(getInitialGasTanks(), this));
+        capabilityHandlerManagers.add(infusionHandlerManager = new InfusionHandlerManager(getInitialInfusionTanks(), this));
+        capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(), this));
+        capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(), this));
+        capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(), this));
+        capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(getInitialInventory(), hasInventory, this));
+        for (ICapabilityHandlerManager<?> capabilityHandlerManager : capabilityHandlerManagers) {
+            //Add all managers that we support in our tile, as capability resolvers
+            if (capabilityHandlerManager.canHandle()) {
+                addCapabilityResolver(capabilityHandlerManager);
+            }
+        }
         if (supportsUpgrades()) {
             upgradeComponent = new TileComponentUpgrade(this, UpgradeInventorySlot.of(this, getSupportedUpgrade()));
         }
@@ -358,6 +360,9 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     public void addComponent(ITileComponent component) {
         components.add(component);
+        if (component instanceof TileComponentConfig) {
+            addConfigComponent((TileComponentConfig) component);
+        }
     }
 
     public List<ITileComponent> getComponents() {
@@ -629,41 +634,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         for (ITileComponent component : components) {
             component.readFromUpdateTag(tag);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Do not override this method if you are implementing {@link IToggleableCapability}, instead override {@link #getCapabilityIfEnabled(Capability,
-     * Direction)}, calling this method is fine.
-     */
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        //Due to TileEntity implementing ICapabilityProvider we have to manually copy the logic from IToggleableCapability
-        // that reroutes getCapability to check if it is disabled and otherwise use getCapabilityIfEnabled
-        return isCapabilityDisabled(capability, side) ? LazyOptional.empty() : getCapabilityIfEnabled(capability, side);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        //Note: All the managers check to confirm that they are able to handle that type of system and return a lazy optional if they cannot
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, itemHandlerManager.getCapability(side));
-        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, gasHandlerManager.getCapability(side));
-        } else if (capability == Capabilities.INFUSION_HANDLER_CAPABILITY) {
-            return Capabilities.INFUSION_HANDLER_CAPABILITY.orEmpty(capability, infusionHandlerManager.getCapability(side));
-        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, fluidHandlerManager.getCapability(side));
-        } else if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
-            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, heatHandlerManager.getCapability(side));
-        } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
-            return energyHandlerManager.getEnergyCapability(capability, side);
-        }
-        //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
-        return super.getCapability(capability, side);
     }
 
     public void onNeighborChange(Block block) {

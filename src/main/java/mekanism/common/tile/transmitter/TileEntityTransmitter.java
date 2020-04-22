@@ -18,6 +18,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
@@ -31,8 +32,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> extends TileEntitySidedPipe implements IAlloyInteraction {
 
@@ -42,6 +41,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public TileEntityTransmitter(IBlockProvider blockProvider) {
         super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType());
         transmitterDelegate = new TransmitterImpl<>(this);
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.persistent(Capabilities.GRID_TRANSMITTER_CAPABILITY, this::getTransmitter));
     }
 
     @Nonnull
@@ -350,17 +351,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public AxisAlignedBB getRenderBoundingBox() {
         //If any of the block is in view, then allow rendering the contents
         return new AxisAlignedBB(pos, pos.add(1, 1, 1));
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.GRID_TRANSMITTER_CAPABILITY) {
-            return Capabilities.GRID_TRANSMITTER_CAPABILITY.orEmpty(capability, LazyOptional.of(this::getTransmitter));
-        } else if (capability == Capabilities.ALLOY_INTERACTION_CAPABILITY) {
-            return Capabilities.ALLOY_INTERACTION_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapability(capability, side);
     }
 
     @Nonnull

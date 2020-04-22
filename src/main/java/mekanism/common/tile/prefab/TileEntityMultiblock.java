@@ -83,6 +83,11 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
         super(blockProvider);
     }
 
+    public void removeStructure() {
+        structure = null;
+        invalidateCachedCapabilities();
+    }
+
     @Override
     protected void onUpdateClient() {
         super.onUpdateClient();

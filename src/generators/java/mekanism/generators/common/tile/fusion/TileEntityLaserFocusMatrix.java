@@ -1,19 +1,18 @@
 package mekanism.generators.common.tile.fusion;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock implements ILaserReceptor {
 
     public TileEntityLaserFocusMatrix() {
         super(GeneratorsBlocks.LASER_FOCUS_MATRIX);
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.LASER_RECEPTOR_CAPABILITY, this));
     }
 
     @Override
@@ -31,14 +30,5 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
     @Override
     public boolean canLasersDig() {
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.LASER_RECEPTOR_CAPABILITY) {
-            return Capabilities.LASER_RECEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 }

@@ -1,14 +1,12 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -27,9 +25,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
 
@@ -98,15 +93,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public float getVolume() {
         return (float) Math.sqrt(soundScale);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
-            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

@@ -18,9 +18,10 @@ import net.minecraftforge.energy.IEnergyStorage;
 @ParametersAreNonnullByDefault
 public class ForgeEnergyCompat implements IEnergyCompat {
 
+    @Nonnull
     @Override
-    public boolean isMatchingCapability(@Nonnull Capability<?> capability) {
-        return capability == CapabilityEnergy.ENERGY;
+    public Capability<?> getCapability() {
+        return CapabilityEnergy.ENERGY;
     }
 
     @Override

@@ -11,16 +11,15 @@ import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> {
 
     public TileEntityInductionCasing() {
         this(MekanismBlocks.INDUCTION_CASING);
+        //Disable item handler caps if we are the induction casing, don't disable it for the subclassed port though
+        addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
     public TileEntityInductionCasing(IBlockProvider blockProvider) {
@@ -38,15 +37,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
             structure.energyInputSlot.drainContainer();
             structure.energyOutputSlot.fillContainerOrConvert();
         }
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        //Disable item handler caps if we are the induction casing, don't disable it for the subclassed port though
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getType() == MekanismTileEntityTypes.INDUCTION_CASING.getTileEntityType()) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Nonnull

@@ -53,6 +53,12 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
+    public void controllerGone() {
+        super.controllerGone();
+        invalidateCachedCapabilities();
+    }
+
+    @Override
     public boolean persists(SubstanceType type) {
         //But that we do not handle fluid when it comes to syncing it/saving this tile to disk
         if (type == SubstanceType.FLUID || type == SubstanceType.HEAT) {

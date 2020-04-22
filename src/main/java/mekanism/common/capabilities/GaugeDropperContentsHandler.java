@@ -24,10 +24,10 @@ import mekanism.common.capabilities.chemical.item.RateLimitGasHandler.RateLimitG
 import mekanism.common.capabilities.chemical.item.RateLimitInfusionHandler.RateLimitInfusionTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler.RateLimitFluidTank;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -121,7 +121,9 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
     }
 
     @Override
-    public boolean canProcess(Capability<?> capability) {
-        return capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY || capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.INFUSION_HANDLER_CAPABILITY;
+    protected void addCapabilityResolvers(CapabilityCache capabilityCache) {
+        capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, this));
+        capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.GAS_HANDLER_CAPABILITY, this));
+        capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.INFUSION_HANDLER_CAPABILITY, this));
     }
 }

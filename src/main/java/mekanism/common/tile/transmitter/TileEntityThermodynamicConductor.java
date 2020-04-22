@@ -23,6 +23,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.proxy.ProxyHeatHandler;
+import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.transmitters.grid.HeatNetwork;
@@ -35,9 +36,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatHandler, HeatNetwork, Void> implements ITileHeatHandler {
 
@@ -45,7 +44,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     public double clientTemperature = HeatAPI.AMBIENT_TEMP;
 
-    private final ProxyHeatHandler readOnlyHandler;
     private final List<IHeatCapacitor> capacitors;
     public BasicHeatCapacitor buffer;
 
@@ -54,7 +52,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         this.tier = Attribute.getTier(blockProvider.getBlock(), ConductorTier.class);
         buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), this);
         capacitors = Collections.singletonList(buffer);
-        readOnlyHandler = new ProxyHeatHandler(this, null, null);
+        addCapabilityResolver(AdvancedCapabilityResolver.readOnly(Capabilities.HEAT_HANDLER_CAPABILITY, this, () -> new ProxyHeatHandler(this, null, null)));
     }
 
     @Override
@@ -164,15 +162,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
             return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
         }
         return null;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
-            return Capabilities.HEAT_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> side == null ? readOnlyHandler : this));
-        }
-        return super.getCapability(capability, side);
     }
 
     @Override

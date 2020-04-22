@@ -41,8 +41,6 @@ import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityPressurizedReactionChamber extends TileEntityProgressMachine<PressurizedReactionRecipe> {
@@ -172,11 +170,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     public PRCEnergyContainer getEnergyContainer() {

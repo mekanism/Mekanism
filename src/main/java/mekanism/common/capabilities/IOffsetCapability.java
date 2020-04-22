@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.LazyOptional;
  * able to return a partial true for hasCapability for a given side. Example: Instead of the entire back side having access to the ItemHandler capability, only the eject
  * slot on the back has access.
  */
-public interface IOffsetCapability extends IToggleableCapability {
+public interface IOffsetCapability {//TODO: Eventually we may want to give offset capabilities the CapabilityCache treatment more directly
 
     /**
      * Retrieves the handler for the capability requested on the specific side with a given offset.

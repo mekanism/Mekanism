@@ -21,7 +21,6 @@ import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.multiblock.IValveHandler;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -30,9 +29,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -44,6 +41,8 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
     public TileEntityDynamicTank() {
         this(MekanismBlocks.DYNAMIC_TANK);
+        //Disable item handler caps if we are the dynamic tank, don't disable it for the subclassed valve though
+        addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
     public TileEntityDynamicTank(IBlockProvider blockProvider) {
@@ -186,15 +185,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        //Disable item handler caps if we are the dynamic tank, don't disable it for the subclassed valve though
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getType() == MekanismTileEntityTypes.DYNAMIC_TANK.getTileEntityType()) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

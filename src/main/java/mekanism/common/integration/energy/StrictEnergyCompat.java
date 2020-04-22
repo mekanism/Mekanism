@@ -20,9 +20,10 @@ public class StrictEnergyCompat implements IEnergyCompat {
         return true;
     }
 
+    @Nonnull
     @Override
-    public boolean isMatchingCapability(Capability<?> capability) {
-        return capability == Capabilities.STRICT_ENERGY_CAPABILITY;
+    public Capability<?> getCapability() {
+        return Capabilities.STRICT_ENERGY_CAPABILITY;
     }
 
     @Override
