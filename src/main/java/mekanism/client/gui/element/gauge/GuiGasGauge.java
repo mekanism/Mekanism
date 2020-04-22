@@ -7,10 +7,14 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.network.PacketDropperUse.TankType;
+import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
@@ -18,6 +22,7 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
 
     private ITextComponent label;
+    private Supplier<IGasTank> tankSupplier;
 
     public GuiGasGauge(IGasInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y, handler, TankType.GAS_TANK);
@@ -38,12 +43,28 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
                 return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
             }
         }, type, gui, x, y);
+        this.tankSupplier = tankSupplier;
     }
 
     public static GuiGasGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
         GuiGasGauge gauge = new GuiGasGauge(null, type, gui, x, y);
         gauge.dummy = true;
         return gauge;
+    }
+
+    @Override
+    protected GaugeInfo getGaugeColor() {
+        IGasTank tank;
+        if (guiObj instanceof GuiMekanismTile && tankSupplier != null && (tank = tankSupplier.get()) != null) {
+            TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) guiObj).getContainer().getTileEntity();
+            if (tile instanceof ISideConfiguration) {
+                DataType dataType = ((ISideConfiguration) tile).getActiveDataType(tank);
+                if (dataType != null) {
+                    return GaugeInfo.get(dataType);
+                }
+            }
+        }
+        return GaugeInfo.STANDARD;
     }
 
     public GuiGasGauge setLabel(ITextComponent label) {

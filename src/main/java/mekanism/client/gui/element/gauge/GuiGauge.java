@@ -38,12 +38,17 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
 
     public abstract ITextComponent getTooltipText();
 
+    protected GaugeInfo getGaugeColor() {
+        return GaugeInfo.STANDARD;
+    }
+
     protected void applyRenderColor() {
     }
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        renderExtendedTexture(gaugeType.getGaugeInfo().getResourceLocation(), gaugeType.getGaugeInfo().getSideWidth(), gaugeType.getGaugeInfo().getSideHeight());
+        GaugeInfo color = getGaugeColor();
+        renderExtendedTexture(color.getResourceLocation(), color.getSideWidth(), color.getSideHeight());
         if (!dummy) {
             int scale = getScaledLevel();
             TextureAtlasSprite icon = getIcon();

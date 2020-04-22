@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.slot;
 
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -36,5 +37,17 @@ public enum SlotType {
 
     public int getHeight() {
         return height;
+    }
+
+    public static SlotType get(DataType type) {
+        switch (type) {
+            case INPUT: case INPUT_1: return INPUT;
+            case INPUT_2: return INPUT_2;
+            case OUTPUT: case OUTPUT_1: return OUTPUT;
+            case OUTPUT_2: return OUTPUT_2;
+            case ENERGY: return POWER;
+            case EXTRA: return EXTRA;
+            default: return NORMAL;
+        }
     }
 }

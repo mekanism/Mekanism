@@ -92,7 +92,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidGasTo
         configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS);
 
         fluidInputHandler = InputHelper.getInputHandler(fluidTank);
         gasInputHandler = InputHelper.getInputHandler(inputTank);
@@ -112,8 +112,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidGasTo
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, fluid -> containsRecipe(recipe -> recipe.getFluidInput().testType(fluid)), this),
-              RelativeSide.TOP);
+        builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, fluid -> containsRecipe(recipe -> recipe.getFluidInput().testType(fluid)), this));
         return builder.build();
     }
 

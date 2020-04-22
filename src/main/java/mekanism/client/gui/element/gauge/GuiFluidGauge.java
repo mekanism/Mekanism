@@ -5,11 +5,15 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.network.PacketDropperUse.TankType;
+import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
@@ -18,6 +22,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> {
 
     private ITextComponent label;
+    private Supplier<IExtendedFluidTank> tankSupplier;
 
     public GuiFluidGauge(IFluidInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y, handler, TankType.FLUID_TANK);
@@ -39,6 +44,22 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
                 return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
             }
         }, type, gui, x, y);
+        this.tankSupplier = tankSupplier;
+    }
+
+    @Override
+    protected GaugeInfo getGaugeColor() {
+        IExtendedFluidTank tank;
+        if (guiObj instanceof GuiMekanismTile && tankSupplier != null && (tank = tankSupplier.get()) != null) {
+            TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) guiObj).getContainer().getTileEntity();
+            if (tile instanceof ISideConfiguration) {
+                DataType dataType = ((ISideConfiguration) tile).getActiveDataType(tank);
+                if (dataType != null) {
+                    return GaugeInfo.get(dataType);
+                }
+            }
+        }
+        return GaugeInfo.STANDARD;
     }
 
     public GuiFluidGauge setLabel(ITextComponent label) {

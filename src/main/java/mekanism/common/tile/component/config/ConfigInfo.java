@@ -1,7 +1,10 @@
 package mekanism.common.tile.component.config;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -9,7 +12,13 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.tile.component.config.slot.FluidSlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 
@@ -22,6 +31,8 @@ public class ConfigInfo {
     private boolean ejecting;
     private Map<RelativeSide, DataType> sideConfig;
     private Map<DataType, ISlotInfo> slotInfo;
+    // used so slot & tank GUIs can quickly reference which color overlay to render
+    private Map<Object, List<DataType>> containerTypeMapping;
 
     public ConfigInfo(@Nonnull Supplier<Direction> facingSupplier) {
         this.facingSupplier = facingSupplier;
@@ -32,6 +43,7 @@ public class ConfigInfo {
             sideConfig.put(side, DataType.NONE);
         }
         slotInfo = new EnumMap<>(DataType.class);
+        containerTypeMapping = new HashMap<>();
     }
 
     public boolean canEject() {
@@ -86,6 +98,24 @@ public class ConfigInfo {
 
     public void addSlotInfo(@Nonnull DataType dataType, @Nonnull ISlotInfo info) {
         slotInfo.put(dataType, info);
+        // set up mapping
+        if (info instanceof GasSlotInfo) {
+            for (IGasTank tank : ((GasSlotInfo) info).getTanks()) {
+                containerTypeMapping.computeIfAbsent(tank, (t) -> new ArrayList<>()).add(dataType);
+            }
+        } else if (info instanceof FluidSlotInfo) {
+            for (IExtendedFluidTank tank : ((FluidSlotInfo) info).getTanks()) {
+                containerTypeMapping.computeIfAbsent(tank, (t) -> new ArrayList<>()).add(dataType);
+            }
+        } else if (info instanceof InventorySlotInfo) {
+            for (IInventorySlot slot : ((InventorySlotInfo) info).getSlots()) {
+                containerTypeMapping.computeIfAbsent(slot, (t) -> new ArrayList<>()).add(dataType);
+            }
+        }
+    }
+
+    public List<DataType> getDataTypeForContainer(Object container) {
+        return containerTypeMapping.getOrDefault(container, new ArrayList<>());
     }
 
     public void setDefaults() {

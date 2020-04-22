@@ -19,6 +19,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -34,20 +35,24 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 
-public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
+public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> {
 
     public static final long MAX_GAS = 10_000;
     public BasicGasTank leftTank;
     public BasicGasTank rightTank;
     public BasicGasTank centerTank;
     public long gasOutput = 256;
-
-    public CachedRecipe<ChemicalInfuserRecipe> cachedRecipe;
 
     public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
@@ -63,6 +68,37 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITi
 
     public TileEntityChemicalInfuser() {
         super(MekanismBlocks.CHEMICAL_INFUSER);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
+
+        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            itemConfig.addSlotInfo(DataType.INPUT_1, new InventorySlotInfo(true, true, leftInputSlot));
+            itemConfig.addSlotInfo(DataType.INPUT_2, new InventorySlotInfo(true, true, rightInputSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(true, true, outputSlot));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
+            //Set default config directions
+            itemConfig.setDataType(DataType.INPUT_1, RelativeSide.LEFT);
+            itemConfig.setDataType(DataType.INPUT_2, RelativeSide.RIGHT);
+            itemConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
+            itemConfig.setDataType(DataType.ENERGY, RelativeSide.BACK);
+        }
+
+        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
+        if (gasConfig != null) {
+            gasConfig.addSlotInfo(DataType.INPUT_1, new GasSlotInfo(true, false, leftTank));
+            gasConfig.addSlotInfo(DataType.INPUT_2, new GasSlotInfo(true, false, rightTank));
+            gasConfig.addSlotInfo(DataType.OUTPUT, new GasSlotInfo(false, true, centerTank));
+            gasConfig.setDataType(DataType.INPUT_1, RelativeSide.LEFT);
+            gasConfig.setDataType(DataType.INPUT_2, RelativeSide.RIGHT);
+            gasConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
+            gasConfig.setEjecting(true);
+        }
+
+        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
+
+        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS);
+
         leftInputHandler = InputHelper.getInputHandler(leftTank);
         rightInputHandler = InputHelper.getInputHandler(rightTank);
         outputHandler = OutputHelper.getOutputHandler(centerTank);
@@ -72,9 +108,9 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITi
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(leftTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, rightTank), this::isValidGas, this), RelativeSide.LEFT);
-        builder.addTank(rightTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, leftTank), this::isValidGas, this), RelativeSide.RIGHT);
-        builder.addTank(centerTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.FRONT);
+        builder.addTank(leftTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, rightTank), this::isValidGas, this));
+        builder.addTank(rightTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, leftTank), this::isValidGas, this));
+        builder.addTank(centerTank = BasicGasTank.output(MAX_GAS, this));
         return builder.build();
     }
 
@@ -108,10 +144,10 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITi
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //TODO: Should our gas checking, also check the other tank's contents so we don't let putting the same gas in on both sides
-        builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this, 5, 56), RelativeSide.LEFT);
-        builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this, 155, 56), RelativeSide.RIGHT);
-        builder.addSlot(outputSlot = GasInventorySlot.drain(centerTank, this, 80, 65), RelativeSide.FRONT);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 156, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
+        builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this, 5, 56));
+        builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this, 155, 56));
+        builder.addSlot(outputSlot = GasInventorySlot.drain(centerTank, this, 80, 65));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
         leftInputSlot.setSlotType(ContainerSlotType.INPUT);
         leftInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         rightInputSlot.setSlotType(ContainerSlotType.INPUT);
@@ -146,12 +182,6 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITi
 
     @Nullable
     @Override
-    public CachedRecipe<ChemicalInfuserRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
-    }
-
-    @Nullable
-    @Override
     public ChemicalInfuserRecipe getRecipe(int cacheIndex) {
         GasStack leftGas = leftInputHandler.getInput();
         if (leftGas.isEmpty()) {
@@ -179,16 +209,6 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITi
                   }
                   return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
               });
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
     }
 
     public MachineEnergyContainer<TileEntityChemicalInfuser> getEnergyContainer() {

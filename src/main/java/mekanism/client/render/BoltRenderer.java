@@ -16,7 +16,7 @@ public class BoltRenderer {
     private float size = 0.05F;
     /** How much variance is allowed in segment lengths (parallel to straight line). */
     private float parallelNoise;
-    /** How much individual */
+    /** How much variance is allowed perpendicular to the straight line vector. Scaled by distance and spread function. */
     private float spreadFactor;
 
     private float red = 0.45F, green = 0.45F, blue = 0.5F, alpha = 0.8F;

@@ -1,19 +1,17 @@
 package mekanism.client.gui.element.gauge;
 
-public enum GaugeType {
-    SMALL(GaugeInfo.STANDARD, GaugeOverlay.SMALL),
-    SMALL_BLUE(GaugeInfo.BLUE, GaugeOverlay.SMALL),
-    SMALL_MED(GaugeInfo.STANDARD, GaugeOverlay.SMALL_MED),
-    STANDARD(GaugeInfo.STANDARD, GaugeOverlay.STANDARD),
-    STANDARD_RED(GaugeInfo.RED, GaugeOverlay.STANDARD),
-    STANDARD_YELLOW(GaugeInfo.YELLOW, GaugeOverlay.STANDARD),
-    MEDIUM(GaugeInfo.STANDARD, GaugeOverlay.MEDIUM),
-    WIDE(GaugeInfo.STANDARD, GaugeOverlay.WIDE);
+public class GaugeType {
+
+    public static final GaugeType STANDARD = get(GaugeInfo.STANDARD, GaugeOverlay.STANDARD);
+    public static final GaugeType SMALL = get(GaugeInfo.STANDARD, GaugeOverlay.SMALL);
+    public static final GaugeType SMALL_MED = get(GaugeInfo.STANDARD, GaugeOverlay.SMALL_MED);
+    public static final GaugeType MEDIUM = get(GaugeInfo.STANDARD, GaugeOverlay.MEDIUM);
+    public static final GaugeType WIDE = get(GaugeInfo.STANDARD, GaugeOverlay.WIDE);
 
     private final GaugeInfo gaugeInfo;
     private final GaugeOverlay gaugeOverlay;
 
-    GaugeType(GaugeInfo gaugeInfo, GaugeOverlay gaugeOverlay) {
+    private GaugeType(GaugeInfo gaugeInfo, GaugeOverlay gaugeOverlay) {
         this.gaugeInfo = gaugeInfo;
         this.gaugeOverlay = gaugeOverlay;
     }
@@ -24,5 +22,13 @@ public enum GaugeType {
 
     public GaugeOverlay getGaugeOverlay() {
         return gaugeOverlay;
+    }
+
+    public GaugeType with(GaugeInfo info) {
+        return new GaugeType(info, gaugeOverlay);
+    }
+
+    public static GaugeType get(GaugeInfo info, GaugeOverlay overlay) {
+        return new GaugeType(info, overlay);
     }
 }

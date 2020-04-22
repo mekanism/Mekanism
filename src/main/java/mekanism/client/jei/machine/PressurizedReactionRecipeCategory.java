@@ -2,10 +2,12 @@ package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
+import mekanism.client.gui.element.gauge.GaugeInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
@@ -26,7 +28,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<PressurizedReactionRecipe> {
 
@@ -41,9 +42,9 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
         guiElements.add(new GuiSlot(SlotType.INPUT, this, 53, 34));
         guiElements.add(new GuiSlot(SlotType.POWER, this, 140, 18).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 115, 34));
-        guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD_YELLOW, this, 5, 10));
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD_RED, this, 28, 10));
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.SMALL_BLUE, this, 140, 40));
+        guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 5, 10));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD.with(GaugeInfo.RED), this, 28, 10));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.SMALL.with(GaugeInfo.BLUE), this, 140, 40));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
         guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.RIGHT, this, 77, 38));
     }

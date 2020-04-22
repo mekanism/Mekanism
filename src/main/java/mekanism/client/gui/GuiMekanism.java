@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
@@ -10,9 +11,12 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.FontRenderer;
@@ -158,9 +162,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             if (slot instanceof InventoryContainerSlot) {
                 InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
                 ContainerSlotType slotType = containerSlot.getSlotType();
+                DataType dataType = findDataType(containerSlot);
                 //Shift the slots by one as the elements include the border of the slot
                 SlotType type;
-                if (slotType == ContainerSlotType.INPUT) {
+                if (dataType != null) {
+                    type = SlotType.get(dataType);
+                } else if (slotType == ContainerSlotType.INPUT) {
                     type = SlotType.INPUT;
                 } else if (slotType == ContainerSlotType.OUTPUT) {
                     type = SlotType.OUTPUT;
@@ -187,6 +194,15 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
             }
         }
+    }
+
+    @Nullable
+    protected DataType findDataType(InventoryContainerSlot slot) {
+        if (container instanceof MekanismTileContainer && ((MekanismTileContainer<?>) container).getTileEntity() instanceof ISideConfiguration) {
+            ISideConfiguration tile = (ISideConfiguration) ((MekanismTileContainer<?>) container).getTileEntity();
+            return tile.getActiveDataType(slot.getInventorySlot());
+        }
+        return null;
     }
 
     protected ItemStack checkValidity(int slotIndex) {

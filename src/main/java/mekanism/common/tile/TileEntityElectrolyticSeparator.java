@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
-import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -20,6 +20,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.energy.ElectrolyticSeparatorEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -40,18 +41,24 @@ import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
-import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.FluidSlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
-import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
+import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 
-public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements ITileCachedRecipeHolder<ElectrolysisRecipe>, IHasGasMode {
+public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<ElectrolysisRecipe> implements IHasGasMode {
 
     /**
      * This separator's water slot.
@@ -81,7 +88,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
      * Type type of gas this block is dumping.
      */
     public GasMode dumpRight = GasMode.IDLE;
-    public CachedRecipe<ElectrolysisRecipe> cachedRecipe;
     public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
@@ -95,6 +101,36 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
     public TileEntityElectrolyticSeparator() {
         super(MekanismBlocks.ELECTROLYTIC_SEPARATOR);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID, TransmissionType.ENERGY);
+
+        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, true, fluidSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT_1, new InventorySlotInfo(true, true, leftOutputSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT_2, new InventorySlotInfo(true, true, rightOutputSlot));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
+            //Set default config directions
+            itemConfig.setDataType(DataType.INPUT, RelativeSide.FRONT);
+            itemConfig.setDataType(DataType.OUTPUT_1, RelativeSide.LEFT);
+            itemConfig.setDataType(DataType.OUTPUT_2, RelativeSide.RIGHT);
+            itemConfig.setDataType(DataType.ENERGY, RelativeSide.BACK);
+        }
+
+        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
+        if (gasConfig != null) {
+            gasConfig.addSlotInfo(DataType.OUTPUT_1, new GasSlotInfo(false, true, leftTank));
+            gasConfig.addSlotInfo(DataType.OUTPUT_2, new GasSlotInfo(false, true, rightTank));
+            gasConfig.setDataType(DataType.OUTPUT_1, RelativeSide.LEFT);
+            gasConfig.setDataType(DataType.OUTPUT_2, RelativeSide.RIGHT);
+            gasConfig.setEjecting(true);
+        }
+
+        configComponent.setupInputConfig(TransmissionType.FLUID, new FluidSlotInfo(true, false, fluidTank));
+        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
+
+        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
+
         inputHandler = InputHelper.getInputHandler(fluidTank);
         outputHandler = OutputHelper.getOutputHandler(leftTank, rightTank);
     }
@@ -103,8 +139,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(fluidTank = BasicFluidTank.input(24_000, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this),
-              RelativeSide.FRONT, RelativeSide.BACK);
+        builder.addTank(fluidTank = BasicFluidTank.input(24_000, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this));
         return builder.build();
     }
 
@@ -112,8 +147,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(leftTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.LEFT);
-        builder.addTank(rightTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.RIGHT);
+        builder.addTank(leftTank = BasicGasTank.output(MAX_GAS, this));
+        builder.addTank(rightTank = BasicGasTank.output(MAX_GAS, this));
         return builder.build();
     }
 
@@ -129,10 +164,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 26, 35), RelativeSide.FRONT);
-        builder.addSlot(leftOutputSlot = GasInventorySlot.drain(leftTank, this, 59, 52), RelativeSide.LEFT);
-        builder.addSlot(rightOutputSlot = GasInventorySlot.drain(rightTank, this, 101, 52), RelativeSide.RIGHT);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 143, 35), RelativeSide.BACK);
+        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 26, 35));
+        builder.addSlot(leftOutputSlot = GasInventorySlot.drain(leftTank, this, 59, 52));
+        builder.addSlot(rightOutputSlot = GasInventorySlot.drain(rightTank, this, 101, 52));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 143, 35));
         fluidSlot.setSlotType(ContainerSlotType.INPUT);
         leftOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
         rightOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -161,16 +196,19 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
 
         long dumpAmount = 8 * (long) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-        handleTank(leftTank, dumpLeft, getLeftSide(), dumpAmount);
-        handleTank(rightTank, dumpRight, getRightSide(), dumpAmount);
+        handleTank(leftTank, false, dumpLeft, getLeftSide(), dumpAmount);
+        handleTank(rightTank, true, dumpRight, getRightSide(), dumpAmount);
     }
 
-    private void handleTank(IGasTank tank, GasMode mode, Direction side, long dumpAmount) {
+    private void handleTank(IGasTank tank, boolean right, GasMode mode, Direction side, long dumpAmount) {
         if (!tank.isEmpty()) {
             if (mode == GasMode.DUMPING) {
                 tank.shrinkStack(dumpAmount, Action.EXECUTE);
             } else {
-                GasUtils.emit(EnumSet.of(side), tank, this, output);
+                ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
+                if (config != null && config.isEjecting()) {
+                    GasUtils.emit(config.getSidesForData(right ? DataType.OUTPUT_2 : DataType.OUTPUT_1), tank, this, output);
+                }
                 if (mode == GasMode.DUMPING_EXCESS) {
                     long needed = tank.getNeeded();
                     if (needed < output) {
@@ -185,12 +223,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     public MekanismRecipeType<ElectrolysisRecipe> getRecipeType() {
         return MekanismRecipeType.SEPARATING;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<ElectrolysisRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
     }
 
     @Nullable
@@ -254,16 +286,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
     }
 
     @Override
