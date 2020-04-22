@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 import net.minecraft.world.storage.WorldSavedData;
@@ -70,12 +69,12 @@ public class ChunkManager extends WorldSavedData {
         LOGGER.info("Loading {} chunks for dimension {}", savedData.chunks.size(), world.dimension.getType().getRegistryName());
         savedData.chunks.long2ObjectEntrySet().fastForEach(entry -> {
             boolean shouldLoad = false;
-            long key = entry.getLongKey();
             //option 1 - for each position, find TE and get it to refresh chunks
-            Chunk chunk = world.getChunk((int) key, (int) (key >> 32));
             for (Iterator<BlockPos> iterator = entry.getValue().iterator(); iterator.hasNext(); ) {
                 BlockPos blockPos = iterator.next();
-                Block block = chunk.getBlockState(blockPos).getBlock();
+                //Note: We need to get the block from the world, as just getting it from the chunk may not work
+                // if the source block is in a different chunk (such as the digital miner)
+                Block block = world.getBlockState(blockPos).getBlock();
                 if (Attribute.has(block, AttributeUpgradeSupport.class) && Attribute.get(block, AttributeUpgradeSupport.class).getSupportedUpgrades().contains(Upgrade.ANCHOR)) {
                     shouldLoad = true;
                 }else {
@@ -86,7 +85,7 @@ public class ChunkManager extends WorldSavedData {
             }
             if (shouldLoad) {
                 //option 2 - add a separate ticket (which has a timout) to let the chunk tick for a short while (chunkloader will refresh if it's able)
-                ChunkPos pos = new ChunkPos(key);
+                ChunkPos pos = new ChunkPos(entry.getLongKey());
                 world.getChunkProvider().registerTicket(INITIAL_LOAD_TICKET_TYPE, pos, TileComponentChunkLoader.TICKET_DISTANCE, pos);
             }
         });
