@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:light_gray_wool"
+    }
+  },
+  "gasInput": {
+    "amount": 2,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:quartz_block"
+  },
+  "duration": 500
+}

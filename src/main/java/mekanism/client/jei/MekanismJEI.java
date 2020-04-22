@@ -229,7 +229,7 @@ public class MekanismJEI implements IModPlugin {
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
         GuiHandlerRegistryHelper.registerElectricMachines(registry);
         GuiHandlerRegistryHelper.registerAdvancedElectricMachines(registry);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.COMBINER, GuiCombiner.class, 79, 40, 24, 7);
+        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.COMBINER, GuiCombiner.class, 87, 41, 24, 7);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PRECISION_SAWMILL, GuiPrecisionSawmill.class, 79, 40, 24, 7);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.METALLURGIC_INFUSER, GuiMetallurgicInfuser.class, 72, 47, 32, 8);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_CRYSTALLIZER, GuiChemicalCrystallizer.class, 53, 62, 48, 8);

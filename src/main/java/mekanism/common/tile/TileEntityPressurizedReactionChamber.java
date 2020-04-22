@@ -38,14 +38,14 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
-import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityPressurizedReactionChamber extends TileEntityOperationalMachine<PressurizedReactionRecipe> {
+public class TileEntityPressurizedReactionChamber extends TileEntityProgressMachine<PressurizedReactionRecipe> {
 
     private static final int BASE_DURATION = 100;
     private static final long MAX_GAS = 10_000;
@@ -68,7 +68,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityOperationalM
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.FLUID, new FluidSlotInfo(true, false, inputFluidTank));
-        configComponent.setupIOConfig(TransmissionType.GAS, new GasSlotInfo(true, false, inputGasTank), new GasSlotInfo(false, true, outputGasTank), RelativeSide.RIGHT);
+        configComponent.setupIOConfig(TransmissionType.GAS, new GasSlotInfo(true, false, inputGasTank), new GasSlotInfo(false, true, outputGasTank), RelativeSide.RIGHT)
+              .setEjecting(true);
         configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
 
         ejectorComponent = new TileComponentEjector(this);
@@ -141,12 +142,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityOperationalM
     @Override
     public MekanismRecipeType<PressurizedReactionRecipe> getRecipeType() {
         return MekanismRecipeType.REACTION;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<PressurizedReactionRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
     }
 
     @Nullable

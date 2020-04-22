@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -18,6 +17,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -38,13 +38,19 @@ import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
-import mekanism.common.util.GasUtils;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.FluidSlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityChemicalWasher extends TileEntityMekanism implements ITileCachedRecipeHolder<FluidGasToGasRecipe> {
+public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidGasToGasRecipe> {
 
     public static final long MAX_GAS = 10_000;
     public static final int MAX_FLUID = 10_000;
@@ -52,8 +58,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
     public BasicGasTank inputTank;
     public BasicGasTank outputTank;
     public long gasOutput = 256;
-
-    public CachedRecipe<FluidGasToGasRecipe> cachedRecipe;
 
     public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
@@ -69,6 +73,27 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
 
     public TileEntityChemicalWasher() {
         super(MekanismBlocks.CHEMICAL_WASHER);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID, TransmissionType.ENERGY);
+
+        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, true, fluidSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(true, true, gasOutputSlot, fluidOutputSlot));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
+            //Set default config directions
+            itemConfig.setDataType(DataType.INPUT, RelativeSide.LEFT);
+            itemConfig.setDataType(DataType.OUTPUT, RelativeSide.RIGHT);
+            itemConfig.setDataType(DataType.ENERGY, RelativeSide.BACK);
+        }
+
+        configComponent.setupIOConfig(TransmissionType.GAS, new GasSlotInfo(true, false, inputTank), new GasSlotInfo(false, true, outputTank), RelativeSide.RIGHT)
+              .setEjecting(true);
+        configComponent.setupInputConfig(TransmissionType.FLUID, new FluidSlotInfo(true, false, fluidTank));
+        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
+
+        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
+
         fluidInputHandler = InputHelper.getInputHandler(fluidTank);
         gasInputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
@@ -77,16 +102,16 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
     @Nonnull
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this), RelativeSide.LEFT);
-        builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.RIGHT);
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
+        builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this));
         return builder.build();
     }
 
     @Nonnull
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
-        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, fluid -> containsRecipe(recipe -> recipe.getFluidInput().testType(fluid)), this),
               RelativeSide.TOP);
         return builder.build();
@@ -95,7 +120,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
     @Nonnull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
         return builder.build();
     }
@@ -103,11 +128,11 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 180, 71), RelativeSide.LEFT);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 180, 71));
         //Output slot for the fluid container that was used as an input
-        builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 180, 102), RelativeSide.TOP);
-        builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.RIGHT);
+        builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 180, 102));
+        builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 155, 56));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
         gasOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
         fluidSlot.setSlotType(ContainerSlotType.INPUT);
@@ -127,19 +152,12 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
         }
         //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
         clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
-        GasUtils.emit(EnumSet.of(getRightSide()), outputTank, this, gasOutput);
     }
 
     @Nonnull
     @Override
     public MekanismRecipeType<FluidGasToGasRecipe> getRecipeType() {
         return MekanismRecipeType.WASHING;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<FluidGasToGasRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
     }
 
     @Nullable
@@ -176,16 +194,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITil
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
     }
 
     public MachineEnergyContainer<TileEntityChemicalWasher> getEnergyContainer() {

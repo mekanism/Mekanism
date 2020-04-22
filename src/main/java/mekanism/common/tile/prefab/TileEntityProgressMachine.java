@@ -6,25 +6,22 @@ import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements ITileCachedRecipeHolder<RECIPE> {
+public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> extends TileEntityRecipeMachine<RECIPE> {
 
     private int operatingTicks;
 
     public int BASE_TICKS_REQUIRED;
 
     public int ticksRequired;
-    protected CachedRecipe<RECIPE> cachedRecipe = null;
 
-    protected TileEntityOperationalMachine(IBlockProvider blockProvider, int baseTicksRequired) {
+    protected TileEntityProgressMachine(IBlockProvider blockProvider, int baseTicksRequired) {
         super(blockProvider);
         ticksRequired = BASE_TICKS_REQUIRED = baseTicksRequired;
     }
@@ -66,16 +63,6 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
         }
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
     }
 
     @Override

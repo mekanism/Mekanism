@@ -174,7 +174,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addNuggetRecipes(consumer);
         addChemicalOxidizerRecipes(consumer);
         addOreProcessingRecipes(consumer);
-        addPurificationChamberRecipes(consumer);
         addPressurizedReactionChamberRecipes(consumer);
         addRotaryCondensentratorRecipes(consumer);
         addPrecisionSawmillRecipes(consumer);
@@ -369,10 +368,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ItemStackIngredient.from(Items.FLINT),
               new ItemStack(Items.GUNPOWDER)
         ).build(consumer, Mekanism.rl(basePath + "flint_to_gunpowder"));
-        //Gravel -> Flint
+        //Gravel -> Sand
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Tags.Items.GRAVEL),
-              new ItemStack(Items.FLINT)
+              new ItemStack(Items.SAND)
         ).build(consumer, Mekanism.rl(basePath + "gravel_to_sand"));
         //TODO: Do we just want to make a clear and red tag for sandstone?
         //Red Sandstone -> Sand
@@ -513,11 +512,11 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ItemStackIngredient.from(Items.CRACKED_STONE_BRICKS),
               new ItemStack(Items.STONE_BRICKS)
         ).build(consumer, Mekanism.rl(basePath + "cracked_stone_bricks_to_stone_bricks"));
-        //Gravel -> cobblestone
+        //Gravel -> flint
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Tags.Items.GRAVEL),
-              new ItemStack(Items.COBBLESTONE)
-        ).build(consumer, Mekanism.rl(basePath + "gravel_to_cobblestone"));
+              new ItemStack(Items.FLINT)
+        ).build(consumer, Mekanism.rl(basePath + "gravel_to_flint"));
         //Gunpowder -> flint
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Tags.Items.GUNPOWDER),
@@ -1478,16 +1477,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ItemStackIngredient.from(MekanismTags.Items.INGOTS_STEEL),
               MekanismItems.STEEL_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
-    }
-
-    private void addPurificationChamberRecipes(Consumer<IFinishedRecipe> consumer) {
-        String basePath = "purifying/";
-        //Gravel -> flint
-        ItemStackGasToItemStackRecipeBuilder.purifying(
-              ItemStackIngredient.from(Tags.Items.GRAVEL),
-              GasStackIngredient.from(MekanismGases.OXYGEN, 1),
-              new ItemStack(Items.SAND)
-        ).build(consumer, Mekanism.rl(basePath + "gravel_to_flint"));
     }
 
     private void addPressurizedReactionChamberRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -2886,5 +2875,25 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
             ItemStackIngredient.from(Items.COAL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 4), new ItemStack(Items.DIAMOND), 1000)
         .build(consumer, Mekanism.rl(basePath + "diamond"));
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+            ItemStackIngredient.from(Items.DIAMOND), GasStackIngredient.from(MekanismGases.ANTIMATTER, 4), new ItemStack(Items.EMERALD), 1000)
+        .build(consumer, Mekanism.rl(basePath + "emerald"));
+
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+            ItemStackIngredient.from(Items.RED_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.REDSTONE_BLOCK), 500)
+        .build(consumer, Mekanism.rl(basePath + "redstone_block"));
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+            ItemStackIngredient.from(Items.YELLOW_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.GLOWSTONE), 500)
+        .build(consumer, Mekanism.rl(basePath + "glowstone_block"));
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+            ItemStackIngredient.from(Items.BLUE_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.LAPIS_BLOCK), 500)
+        .build(consumer, Mekanism.rl(basePath + "lapis_block"));
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+            ItemStackIngredient.from(Items.LIGHT_GRAY_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.QUARTZ_BLOCK), 500)
+        .build(consumer, Mekanism.rl(basePath + "quartz_block"));
+
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+            ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)), GasStackIngredient.from(MekanismGases.ANTIMATTER, 1), new ItemStack(Items.IRON_INGOT), 200)
+        .build(consumer, Mekanism.rl(basePath + "iron"));
     }
 }

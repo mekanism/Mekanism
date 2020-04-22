@@ -33,11 +33,11 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
-import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<ItemStackToGasRecipe> {
+public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemStackToGasRecipe> {
 
     public static final long MAX_GAS = 10_000;
     public BasicGasTank gasTank;
@@ -107,12 +107,6 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Override
     public MekanismRecipeType<ItemStackToGasRecipe> getRecipeType() {
         return MekanismRecipeType.OXIDIZING;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<ItemStackToGasRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
     }
 
     @Nullable

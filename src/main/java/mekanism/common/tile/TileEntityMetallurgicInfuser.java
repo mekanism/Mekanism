@@ -32,12 +32,12 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.interfaces.IHasDumpButton;
-import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<MetallurgicInfuserRecipe> implements IHasDumpButton {
+public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<MetallurgicInfuserRecipe> implements IHasDumpButton {
 
     public static final long MAX_INFUSE = 1_000;
     public BasicInfusionTank infusionTank;
@@ -121,12 +121,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     public MekanismRecipeType<MetallurgicInfuserRecipe> getRecipeType() {
         return MekanismRecipeType.METALLURGIC_INFUSING;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<MetallurgicInfuserRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
     }
 
     @Nullable

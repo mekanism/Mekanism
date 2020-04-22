@@ -29,12 +29,12 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityPrecisionSawmill extends TileEntityOperationalMachine<SawmillRecipe> {
+public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<SawmillRecipe> {
 
     private final IOutputHandler<@NonNull ChanceOutput> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
@@ -107,12 +107,6 @@ public class TileEntityPrecisionSawmill extends TileEntityOperationalMachine<Saw
     @Nonnull
     public MekanismRecipeType<SawmillRecipe> getRecipeType() {
         return MekanismRecipeType.SAWING;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<SawmillRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
     }
 
     @Nullable

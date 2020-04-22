@@ -9,7 +9,9 @@ public enum SlotType {
     POWER("power.png", 18, 18),
     EXTRA("extra.png", 18, 18),
     INPUT("input.png", 18, 18),
+    INPUT_2("input_2.png", 18, 18),
     OUTPUT("output.png", 18, 18),
+    OUTPUT_2("output_2.png", 18, 18),
     OUTPUT_WIDE("output_wide.png", 42, 26),
     OUTPUT_LARGE("output_large.png", 36, 54),
     ORE("ore.png", 18, 18);

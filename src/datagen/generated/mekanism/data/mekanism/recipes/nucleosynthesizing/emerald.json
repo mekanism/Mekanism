@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "gasInput": {
+    "amount": 4,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:emerald"
+  },
+  "duration": 1000
+}

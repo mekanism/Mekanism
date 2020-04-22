@@ -31,11 +31,11 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine<GasToItemStackRecipe> {
+public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<GasToItemStackRecipe> {
 
     public static final long MAX_GAS = 10_000;
 
@@ -104,12 +104,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public MekanismRecipeType<GasToItemStackRecipe> getRecipeType() {
         return MekanismRecipeType.CRYSTALLIZING;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<GasToItemStackRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
     }
 
     @Nullable

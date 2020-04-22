@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:ingots/tin"
+    }
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:iron_ingot"
+  },
+  "duration": 200
+}

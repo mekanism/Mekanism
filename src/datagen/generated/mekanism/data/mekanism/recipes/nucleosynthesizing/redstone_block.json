@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:red_wool"
+    }
+  },
+  "gasInput": {
+    "amount": 2,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:redstone_block"
+  },
+  "duration": 500
+}

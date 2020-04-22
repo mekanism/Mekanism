@@ -14,6 +14,8 @@ import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.client.gui.element.bar.GuiEmptyBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
@@ -52,6 +54,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 116, 35));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
         guiElements.add(new GuiEmptyBar(this, 68, 36, 6, 12));
+        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.BAR, this, 86, 38));
     }
 
     @Override

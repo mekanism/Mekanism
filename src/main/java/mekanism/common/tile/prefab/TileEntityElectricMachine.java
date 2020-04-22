@@ -27,7 +27,7 @@ import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public abstract class TileEntityElectricMachine extends TileEntityOperationalMachine<ItemStackToItemStackRecipe> {
+public abstract class TileEntityElectricMachine extends TileEntityProgressMachine<ItemStackToItemStackRecipe> {
 
     protected final IInputHandler<@NonNull ItemStack> inputHandler;
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;

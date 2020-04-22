@@ -13,7 +13,11 @@ import mekanism.common.base.ILangEntry;
 public enum DataType implements IIncrementalEnum<DataType>, IHasTranslationKey {
     NONE(MekanismLang.SIDE_DATA_NONE, EnumColor.GRAY),
     INPUT(MekanismLang.SIDE_DATA_INPUT, EnumColor.DARK_RED),
+    INPUT_1(MekanismLang.SIDE_DATA_INPUT_1, EnumColor.DARK_RED),
+    INPUT_2(MekanismLang.SIDE_DATA_INPUT_2, EnumColor.ORANGE),
     OUTPUT(MekanismLang.SIDE_DATA_OUTPUT, EnumColor.DARK_BLUE),
+    OUTPUT_1(MekanismLang.SIDE_DATA_OUTPUT_1, EnumColor.DARK_BLUE),
+    OUTPUT_2(MekanismLang.SIDE_DATA_OUTPUT_2, EnumColor.DARK_AQUA),
     ENERGY(MekanismLang.SIDE_DATA_ENERGY, EnumColor.DARK_GREEN),
     EXTRA(MekanismLang.SIDE_DATA_EXTRA, EnumColor.PURPLE);
 

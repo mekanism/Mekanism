@@ -13,6 +13,8 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
+import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
+import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -38,6 +40,8 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiSideConfigurationTab(this, tile));
+        addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getEnergyContainer().getNeeded()))), this));

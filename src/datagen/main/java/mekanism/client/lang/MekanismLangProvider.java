@@ -816,7 +816,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Side data/config
         add(MekanismLang.SIDE_DATA_NONE, "None");
         add(MekanismLang.SIDE_DATA_INPUT, "Input");
+        add(MekanismLang.SIDE_DATA_INPUT_1, "Input (1)");
+        add(MekanismLang.SIDE_DATA_INPUT_2, "Input (2)");
         add(MekanismLang.SIDE_DATA_OUTPUT, "Output");
+        add(MekanismLang.SIDE_DATA_OUTPUT_1, "Output (1)");
+        add(MekanismLang.SIDE_DATA_OUTPUT_2, "Output (2)");
         add(MekanismLang.SIDE_DATA_ENERGY, "Energy");
         add(MekanismLang.SIDE_DATA_EXTRA, "Extra");
         //Free runner modes

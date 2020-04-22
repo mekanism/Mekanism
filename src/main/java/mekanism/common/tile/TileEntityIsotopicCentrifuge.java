@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -18,6 +17,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -33,12 +33,14 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
-import mekanism.common.util.GasUtils;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
+import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 
-public class TileEntityIsotopicCentrifuge extends TileEntityMekanism implements ITileCachedRecipeHolder<GasToGasRecipe> {
+public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
 
@@ -46,8 +48,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityMekanism implements 
     public BasicGasTank outputTank;
 
     public int gasOutput = 256;
-
-    private CachedRecipe<GasToGasRecipe> cachedRecipe;
 
     public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
@@ -61,6 +61,15 @@ public class TileEntityIsotopicCentrifuge extends TileEntityMekanism implements 
 
     public TileEntityIsotopicCentrifuge() {
         super(MekanismBlocks.ISOTOPIC_CENTRIFUGE);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
+        configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
+        configComponent.setupIOConfig(TransmissionType.GAS, new GasSlotInfo(true, false, inputTank), new GasSlotInfo(false, true, outputTank), RelativeSide.RIGHT)
+              .setEjecting(true);
+        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
+
+        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS);
+
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
@@ -68,16 +77,16 @@ public class TileEntityIsotopicCentrifuge extends TileEntityMekanism implements 
     @Nonnull
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this), RelativeSide.BOTTOM);
-        builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.FRONT);
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this));
+        builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this));
         return builder.build();
     }
 
     @Nonnull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
         return builder.build();
     }
@@ -85,10 +94,9 @@ public class TileEntityIsotopicCentrifuge extends TileEntityMekanism implements 
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this, 5, 56), RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.RIGHT,
-              RelativeSide.LEFT, RelativeSide.BACK);
-        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.FRONT);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this, 5, 56));
+        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 56));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
         inputSlot.setSlotType(ContainerSlotType.INPUT);
         inputSlot.setSlotOverlay(SlotOverlay.MINUS);
@@ -110,19 +118,12 @@ public class TileEntityIsotopicCentrifuge extends TileEntityMekanism implements 
         }
         //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
         clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
-        GasUtils.emit(EnumSet.of(getDirection()), outputTank, this, gasOutput);
     }
 
     @Nonnull
     @Override
     public MekanismRecipeType<GasToGasRecipe> getRecipeType() {
         return MekanismRecipeType.CENTRIFUGING;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<GasToGasRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
     }
 
     @Nullable
@@ -150,16 +151,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityMekanism implements 
                   }
                   return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
               });
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
     }
 
     public MachineEnergyContainer<TileEntityIsotopicCentrifuge> getEnergyContainer() {

@@ -61,7 +61,7 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
 
     public TileComponentEjector setOutputData(TileComponentConfig config, TransmissionType... types) {
         for (TransmissionType type : types) {
-            ConfigInfo info = configInfo.get(type);
+            ConfigInfo info = config.getConfig(type);
             if (info != null) {
                 configInfo.put(type, info);
             }

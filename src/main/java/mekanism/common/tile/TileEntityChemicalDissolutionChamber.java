@@ -36,12 +36,12 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
-import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalMachine<ItemStackGasToGasRecipe> {
+public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMachine<ItemStackGasToGasRecipe> {
 
     public static final long MAX_GAS = 10_000;
     public static final int BASE_INJECT_USAGE = 1;
@@ -125,12 +125,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     public MekanismRecipeType<ItemStackGasToGasRecipe> getRecipeType() {
         return MekanismRecipeType.DISSOLUTION;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<ItemStackGasToGasRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
     }
 
     @Nullable

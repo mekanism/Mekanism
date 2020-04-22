@@ -37,11 +37,11 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
-import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityOperationalMachine<NucleosynthesizingRecipe> {
+public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressMachine<NucleosynthesizingRecipe> {
 
     public static final int BASE_TICKS_REQUIRED = 400;
     public static final long MAX_GAS = 10_000;

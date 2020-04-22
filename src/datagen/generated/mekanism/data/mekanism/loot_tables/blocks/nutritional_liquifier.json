@@ -32,6 +32,16 @@
                   "op": "replace"
                 },
                 {
+                  "source": "componentConfig",
+                  "target": "mekData.componentConfig",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentEjector",
+                  "target": "mekData.componentEjector",
+                  "op": "replace"
+                },
+                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"
@@ -44,11 +54,6 @@
                 {
                   "source": "GasTanks",
                   "target": "mekData.GasTanks",
-                  "op": "replace"
-                },
-                {
-                  "source": "Items",
-                  "target": "mekData.Items",
                   "op": "replace"
                 }
               ]

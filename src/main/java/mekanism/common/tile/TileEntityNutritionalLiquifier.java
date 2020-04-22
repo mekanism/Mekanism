@@ -36,12 +36,12 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
-import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Food;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityNutritionalLiquifier extends TileEntityOperationalMachine<ItemStackToGasRecipe> {
+public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<ItemStackToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
     public BasicGasTank gasTank;

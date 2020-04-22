@@ -84,7 +84,7 @@ public class GuiHandlerRegistryHelper {
                 } else if (tile instanceof TileEntityChemicalInjectionChamber) {
                     categories.add(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER.getRegistryName());
                 }
-                return Collections.singleton(IGuiClickableArea.createBasic(79, 40, 24, 7, categories.toArray(new ResourceLocation[0])));
+                return Collections.singleton(IGuiClickableArea.createBasic(87, 41, 24, 7, categories.toArray(new ResourceLocation[0])));
             }
         });
     }

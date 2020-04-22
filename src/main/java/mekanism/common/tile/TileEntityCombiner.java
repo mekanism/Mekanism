@@ -25,12 +25,12 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityCombiner extends TileEntityOperationalMachine<CombinerRecipe> {
+public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe> {
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
@@ -91,12 +91,6 @@ public class TileEntityCombiner extends TileEntityOperationalMachine<CombinerRec
     @Override
     public MekanismRecipeType<CombinerRecipe> getRecipeType() {
         return MekanismRecipeType.COMBINING;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<CombinerRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
     }
 
     @Nullable

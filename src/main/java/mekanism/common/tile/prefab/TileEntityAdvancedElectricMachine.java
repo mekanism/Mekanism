@@ -39,7 +39,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 
-public abstract class TileEntityAdvancedElectricMachine extends TileEntityOperationalMachine<ItemStackGasToItemStackRecipe> {
+public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgressMachine<ItemStackGasToItemStackRecipe> {
 
     public static final int BASE_TICKS_REQUIRED = 200;
     public static final long MAX_GAS = 210;
