@@ -33,12 +33,10 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
     }
 
     protected final void addSemiDisabledCapability(Capability<?> capability, BooleanSupplier checker) {
-        //TODO: View usages of this and potentially add invalidation to some of them
         capabilityCache.addSemiDisabledCapability(capability, checker);
     }
 
     protected final void addConfigComponent(TileComponentConfig config) {
-        //TODO: Add invalidation to the config components
         capabilityCache.addConfigComponent(config);
     }
 
@@ -58,6 +56,20 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
     protected void invalidateCaps() {
         super.invalidateCaps();
         //When the capabilities on our tile get invalidated, make sure to also invalidate all our cached ones
+        invalidateCachedCapabilities();
+    }
+
+    protected void invalidateCachedCapabilities() {
         capabilityCache.invalidateAll();
+    }
+
+    public void invalidateCapability(@Nonnull Capability<?> capability, @Nullable Direction side) {
+        capabilityCache.invalidate(capability, side);
+    }
+
+    public void invalidateCapabilities(@Nonnull Collection<Capability<?>> capabilities, @Nullable Direction side) {
+        for (Capability<?> capability : capabilities) {
+            invalidateCapability(capability, side);
+        }
     }
 }

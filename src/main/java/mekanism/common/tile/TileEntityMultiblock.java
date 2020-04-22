@@ -68,6 +68,11 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         super(blockProvider);
     }
 
+    public void removeStructure() {
+        structure = null;
+        invalidateCachedCapabilities();
+    }
+
     @Override
     protected void onUpdateClient() {
         super.onUpdateClient();

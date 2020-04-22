@@ -262,6 +262,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
                 frequency = (InventoryFrequency) freq;
                 frequency.activeCoords.add(Coord4D.get(this));
                 MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
+                invalidateCachedCapabilities();
                 markDirty(false);
                 return;
             }
@@ -271,6 +272,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         freq.activeCoords.add(Coord4D.get(this));
         manager.addFrequency(freq);
         frequency = (InventoryFrequency) freq;
+        invalidateCachedCapabilities();
         MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
         markDirty(false);
     }
@@ -280,6 +282,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         FrequencyManager manager = getManager(new InventoryFrequency(name, null).setPublic(publicFreq));
         if (manager != null) {
             manager.remove(name, getSecurity().getOwnerUUID());
+            invalidateCachedCapabilities();
         }
     }
 

@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.tile.base.TileEntityUpdateable;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -74,22 +74,25 @@ public class PacketConfigurationUpdate {
                         info.setEjecting(!info.isEjecting());
                     }
                 } else if (message.packetType == ConfigurationPacket.SIDE_DATA) {
-                    ConfigInfo info = config.getConfig().getConfig(message.transmission);
+                    TileComponentConfig configComponent = config.getConfig();
+                    ConfigInfo info = configComponent.getConfig(message.transmission);
                     if (info != null) {
+                        boolean changed = true;
                         if (message.clickType == 0) {
                             info.incrementDataType(message.inputSide);
                         } else if (message.clickType == 1) {
                             info.decrementDataType(message.inputSide);
                         } else if (message.clickType == 2) {
+                            if (info.getDataType(message.inputSide) == DataType.NONE) {
+                                //If it was already none, we don't need to invalidate capabilities
+                                changed = false;
+                            }
                             info.setDataType(message.inputSide, DataType.NONE);
                         }
+                        if (changed) {
+                            configComponent.sideChanged(message.transmission, message.inputSide);
+                        }
                     }
-                    //Notify the neighbor on that side our state changed
-                    MekanismUtils.notifyNeighborOfChange(tile.getWorld(), message.inputSide.getDirection(config.getOrientation()), tile.getPos());
-                    if (tile instanceof TileEntityUpdateable) {
-                        ((TileEntityUpdateable) tile).sendUpdatePacket();
-                    }
-                    MekanismUtils.saveChunk(tile);
                 } else if (message.packetType == ConfigurationPacket.EJECT_COLOR) {
                     TileComponentEjector ejector = config.getEjector();
                     if (message.clickType == 0) {

@@ -2,7 +2,6 @@ package mekanism.common.capabilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,23 +38,37 @@ public class CapabilityCache {
         uniqueResolvers.add(resolver);
         List<Capability<?>> supportedCapabilities = resolver.getSupportedCapabilities();
         for (Capability<?> supportedCapability : supportedCapabilities) {
-            if (capabilityResolvers.put(supportedCapability, resolver) != null) {
+            //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
+            if (supportedCapability != null && capabilityResolvers.put(supportedCapability, resolver) != null) {
                 Mekanism.logger.warn("Multiple capability resolvers registered for {}. Overriding", supportedCapability);
             }
         }
     }
 
     public void addDisabledCapabilities(Capability<?>... capabilities) {
-        Collections.addAll(alwaysDisabled, capabilities);
+        for (Capability<?> capability : capabilities) {
+            //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
+            if (capability != null) {
+                alwaysDisabled.add(capability);
+            }
+        }
     }
 
     public void addDisabledCapabilities(Collection<Capability<?>> capabilities) {
-        alwaysDisabled.addAll(capabilities);
+        for (Capability<?> capability : capabilities) {
+            //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
+            if (capability != null) {
+                alwaysDisabled.add(capability);
+            }
+        }
     }
 
     public void addSemiDisabledCapability(Capability<?> capability, BooleanSupplier checker) {
         //TODO: Note about the fact it uses a list so that it can properly also allow parents to separately disable the same capability
-        semiDisabled.computeIfAbsent(capability, cap -> new ArrayList<>()).add(checker);
+        //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
+        if (capability != null) {
+            semiDisabled.computeIfAbsent(capability, cap -> new ArrayList<>()).add(checker);
+        }
     }
 
     public void addConfigComponent(TileComponentConfig config) {

@@ -21,6 +21,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -42,6 +43,33 @@ public class TileComponentConfig implements ITileComponent, ITrackableContainer 
             addSupported(type);
         }
         tile.addComponent(this);
+    }
+
+    public void sideChanged(TransmissionType transmissionType, RelativeSide side) {
+        //TODO: Instead of getDirection this should use ISideConfiguration#getOrientation
+        Direction direction = side.getDirection(tile.getDirection());
+        switch (transmissionType) {
+            case ENERGY:
+                tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
+                break;
+            case FLUID:
+                tile.invalidateCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
+                break;
+            case GAS:
+                tile.invalidateCapability(Capabilities.GAS_HANDLER_CAPABILITY, direction);
+                break;
+            case ITEM:
+                tile.invalidateCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction);
+                break;
+            case HEAT:
+                tile.invalidateCapability(Capabilities.HEAT_HANDLER_CAPABILITY, direction);
+                break;
+        }
+        tile.sendUpdatePacket();
+        tile.markDirty(false);
+        //TODO - V10: We can probably remove the extra neighbor update notification
+        //Notify the neighbor on that side our state changed
+        MekanismUtils.notifyNeighborOfChange(tile.getWorld(), direction, tile.getPos());
     }
 
     private RelativeSide getSide(Direction direction) {
