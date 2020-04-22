@@ -61,6 +61,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.ANTIMATTER_PELLET, "Antimatter Pellet");
         add(MekanismItems.PLUTONIUM_PELLET, "Plutonium Pellet");
         add(MekanismItems.POLONIUM_PELLET, "Polonium Pellet");
+        add(MekanismItems.REPROCESSED_FISSILE_FRAGMENT, "Reprocessed Fissile Fragment");
         //Tools/Armor
         add(MekanismItems.GAUGE_DROPPER, "Gauge Dropper");
         add(MekanismItems.DICTIONARY, "Dictionary");
@@ -461,6 +462,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.JETPACK_STORED, "Jetpack Fuel: %s");
         add(MekanismLang.PROGRESS, "Progress: %s");
         add(MekanismLang.PROCESS_RATE, "Process Rate: %s");
+        add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %s");
         //Gui stuff
         add(MekanismLang.MIN, "Min: %s");
         add(MekanismLang.MAX, "Max: %s");

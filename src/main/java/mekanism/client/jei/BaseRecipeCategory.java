@@ -38,6 +38,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     protected int yOffset;
     protected IDrawable fluidOverlayLarge;
     protected IDrawable fluidOverlaySmall;
+    protected IDrawable fluidOverlaySmallMed;
     protected Set<GuiTexturedElement> guiElements = new ObjectOpenHashSet<>();
     private IBaseProvider provider;
 
@@ -50,6 +51,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         this.timer = helper.createTickTimer(20, 20, false);
         this.fluidOverlayLarge = createDrawable(guiHelper, GaugeOverlay.STANDARD);
         this.fluidOverlaySmall = createDrawable(guiHelper, GaugeOverlay.SMALL);
+        this.fluidOverlaySmallMed = createDrawable(guiHelper, GaugeOverlay.SMALL_MED);
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.background = new NOOPDrawable(width, height);
@@ -143,7 +145,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     protected void initGas(IGuiIngredientGroup<@NonNull GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<GasStack> stacks, boolean overlay) {
         initChemical(group, slot, input, x, y, width, height, stacks, max -> new GasStackRenderer(max, false, width, height,
-              overlay ? height > 50 ? fluidOverlayLarge : fluidOverlaySmall : null));
+              overlay ? height > 50 ? fluidOverlayLarge : (height == 46 ? fluidOverlaySmallMed : fluidOverlaySmall) : null));
     }
 
     protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void initChemical(IGuiIngredientGroup<@NonNull STACK> group, int slot,

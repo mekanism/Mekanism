@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Arrays;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -7,8 +8,8 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar.ColorFunction;
-import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
@@ -20,6 +21,8 @@ import mekanism.common.Color;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityAntiprotonicNucleosynthesizer;
+import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
@@ -42,9 +45,6 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntity
     @Override
     public void init() {
         super.init();
-        // manually run init stuff as we want to render slots over our components
-        guiLeft = (width - xSize) / 2;
-        guiTop = (height - ySize) / 2;
 
         addButton(new GuiInnerScreen(this, 45, 18, 104, 68));
         addButton(new GuiSecurityTab<>(this, tile));
@@ -52,34 +52,34 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntity
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
-        addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
-        addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 5, 18));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 178, 18, 46));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
+            MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getEnergyContainer().getNeeded()))), this));
+        addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.SMALL_MED, this, 5, 18));
+        addButton(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.SMALL_MED, this, 172, 18));
         addButton(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return MekanismLang.PROGRESS.translate("100%");
+                return MekanismLang.PROGRESS.translate(TextUtils.getPercent(tile.getScaledProgress()));
             }
 
             @Override
             public double getLevel() {
-                return 1;
+                return tile.getScaledProgress();
             }
-        }, 6, 88, xSize - 14, ColorFunction.scale(Color.rgb(60, 45, 74), Color.rgb(100, 30, 170))));
-        addSlots();
+        }, 5, 88, xSize - 12, ColorFunction.scale(Color.rgb(60, 45, 74), Color.rgb(100, 30, 170))));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 3, 0x404040);
-        renderScaledText(MekanismLang.PROCESS_RATE.translate("1800%"), 48, 76, 0x00CD00, 100);
+        renderScaledText(MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, 0x00CD00, 100);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         MatrixStack matrix = new MatrixStack();
         matrix.push();
         IRenderTypeBuffer.Impl renderer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-        bolt.render(from, to, 4, 12, MekanismRenderer.getPartialTick(), matrix, renderer, MekanismRenderer.FULL_LIGHT);
+        bolt.render(from, to, (int) Math.min(Math.ceil(tile.getProcessRate() / 8F), 20), 12, MekanismRenderer.getPartialTick(), matrix, renderer, MekanismRenderer.FULL_LIGHT);
         renderer.finish(RenderType.getLightning());
         matrix.pop();
     }

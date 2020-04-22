@@ -11,6 +11,6 @@
   },
   "output": {
     "gas": "mekanism:hydrofluoric_acid",
-    "amount": 100
+    "amount": 1000
   }
 }

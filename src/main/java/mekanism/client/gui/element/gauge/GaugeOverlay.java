@@ -6,6 +6,7 @@ import net.minecraft.util.ResourceLocation;
 
 public enum GaugeOverlay {
     SMALL(16, 28, "small.png"),
+    SMALL_MED(16, 46, "small_med.png"),
     STANDARD(16, 58, "standard.png"),
     MEDIUM(32, 58, "medium.png"),
     WIDE(64, 48, "wide.png");

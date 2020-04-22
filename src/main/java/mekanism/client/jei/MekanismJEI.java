@@ -46,6 +46,7 @@ import mekanism.client.jei.machine.ItemStackGasToItemStackRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToGasRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
 import mekanism.client.jei.machine.MetallurgicInfuserRecipeCategory;
+import mekanism.client.jei.machine.NucleosynthesizingRecipeCategory;
 import mekanism.client.jei.machine.PressurizedReactionRecipeCategory;
 import mekanism.client.jei.machine.RotaryCondensentratorRecipeCategory;
 import mekanism.client.jei.machine.SawmillRecipeCategory;
@@ -213,6 +214,8 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlocks.OSMIUM_COMPRESSOR));
         registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER));
 
+        registry.addRecipeCategories(new NucleosynthesizingRecipeCategory(guiHelper));
+
         registry.addRecipeCategories(new SawmillRecipeCategory(guiHelper, MekanismBlocks.PRECISION_SAWMILL));
 
         registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.ENRICHMENT_CHAMBER));
@@ -241,8 +244,7 @@ public class MekanismJEI implements IModPlugin {
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, GuiPRC.class, 75, 37, 36, 10);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE, GuiIsotopicCentrifuge.class, 64, 39, 48, 8);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER, GuiNutritionalLiquifier.class, 64, 40, 48, 8);
-        // todo fix params
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, GuiAntiprotonicNucleosynthesizer.class, 64, 40, 48, 8);
+        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, GuiAntiprotonicNucleosynthesizer.class, 45, 18, 104, 68);
         GuiHandlerRegistryHelper.registerCondensentrator(registry);
 
         GuiHandlerRegistryHelper.register(registry, GuiRobitCrafting.class, VanillaRecipeCategoryUid.CRAFTING, 90, 35, 22, 15);

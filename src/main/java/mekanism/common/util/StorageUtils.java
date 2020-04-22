@@ -32,6 +32,7 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -170,7 +171,7 @@ public class StorageUtils {
         } else {
             color = EnumColor.BRIGHT_GREEN;
         }
-        return new StringTextComponent(Long.toString(Math.round(ratio * 100)) + "%").applyTextStyle(color.textFormatting);
+        return new StringTextComponent(TextUtils.getPercent(ratio)).applyTextStyle(color.textFormatting);
     }
 
     public static double getDurabilityForDisplay(ItemStack stack) {

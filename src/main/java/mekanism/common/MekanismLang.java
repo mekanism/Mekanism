@@ -111,6 +111,7 @@ public enum MekanismLang implements ILangEntry {
     //Gui stuff
     PROGRESS("gui", "progress"),
     PROCESS_RATE("gui", "process_rate"),
+    TICKS_REQUIRED("gui", "ticks_required"),
     MIN("gui", "min"),
     MAX("gui", "max"),
     INFINITE("gui", "infinite"),

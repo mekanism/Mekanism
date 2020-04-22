@@ -38,7 +38,7 @@ public class MekanismGases {
     public static final GasRegistryObject<Gas> BRINE = GASES.register("brine", 0xFEEF9C);
     public static final GasRegistryObject<Gas> LITHIUM = GASES.register(ChemicalConstants.LITHIUM);
     public static final GasRegistryObject<Gas> LIQUID_OSMIUM = GASES.register("liquid_osmium", 0x52BDCA);
-    public static final GasRegistryObject<Gas> FISSILE_FUEL = GASES.register("fissile_fuel", 0x2E332F, new Radiation(0.01));
+    public static final GasRegistryObject<Gas> FISSILE_FUEL = GASES.register("fissile_fuel", 0x2E332F);
     public static final GasRegistryObject<Gas> NUCLEAR_WASTE = GASES.register("nuclear_waste", 0x4F412A, new Radiation(0.01));
     public static final GasRegistryObject<Gas> SPENT_NUCLEAR_WASTE = GASES.register("spent_nuclear_waste", 0x262015, new Radiation(0.01));
     public static final GasRegistryObject<Gas> PLUTONIUM = GASES.register("plutonium", 0x1F919C, new Radiation(0.02));

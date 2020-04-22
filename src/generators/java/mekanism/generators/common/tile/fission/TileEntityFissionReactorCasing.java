@@ -31,7 +31,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<SynchronizedFissionReactorData> implements IValveHandler {
 
     public float prevWaterScale, prevFuelScale, prevSteamScale, prevWasteScale;
-    private boolean handleSound, prevActive;
+    private boolean handleSound, prevBurning;
 
     public TileEntityFissionReactorCasing() {
         super(GeneratorsBlocks.FISSION_REACTOR_CASING);
@@ -45,10 +45,10 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
     protected void onUpdateServer() {
         super.onUpdateServer();
         boolean needsPacket = false;
-        boolean active = structure != null && structure.handlesSound(this) && structure.isActive();
-        if (active != prevActive) {
+        boolean burning = structure != null && structure.handlesSound(this) && structure.isBurning();
+        if (burning != prevBurning) {
             needsPacket = true;
-            prevActive = active;
+            prevBurning = burning;
         }
         if (structure != null && isRendering) {
             // burn reactor fuel, create energy
@@ -57,9 +57,9 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             } else {
                 structure.lastBurnRate = 0;
             }
-            if ((structure.lastBurnRate > 0) != structure.clientBurning) {
+            if (structure.isBurning() != structure.clientBurning) {
                 needsPacket = true;
-                structure.clientBurning = structure.lastBurnRate > 0;
+                structure.clientBurning = structure.isBurning();
                 SynchronizedFissionReactorData.burningMap.put(structure.inventoryID, structure.clientBurning);
             }
             // handle coolant heating (water -> steam)

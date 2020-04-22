@@ -44,7 +44,7 @@ public class NucleosynthesizingRecipeSerializer<T extends NucleosynthesizingReci
         if (duration <= 0) {
             throw new JsonSyntaxException("Expected duration to be a number greater than zero.");
         }
-        ItemStack itemOutput = SerializerHelper.getItemStack(json, JsonConstants.ITEM_OUTPUT);
+        ItemStack itemOutput = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (itemOutput.isEmpty()) {
             throw new JsonSyntaxException("Nucleosynthesizing item output must not be empty.");
         }

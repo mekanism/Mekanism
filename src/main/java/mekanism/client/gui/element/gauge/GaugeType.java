@@ -3,6 +3,7 @@ package mekanism.client.gui.element.gauge;
 public enum GaugeType {
     SMALL(GaugeInfo.STANDARD, GaugeOverlay.SMALL),
     SMALL_BLUE(GaugeInfo.BLUE, GaugeOverlay.SMALL),
+    SMALL_MED(GaugeInfo.STANDARD, GaugeOverlay.SMALL_MED),
     STANDARD(GaugeInfo.STANDARD, GaugeOverlay.STANDARD),
     STANDARD_RED(GaugeInfo.RED, GaugeOverlay.STANDARD),
     STANDARD_YELLOW(GaugeInfo.YELLOW, GaugeOverlay.STANDARD),

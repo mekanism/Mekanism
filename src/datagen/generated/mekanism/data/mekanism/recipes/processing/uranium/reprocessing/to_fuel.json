@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:oxidizing",
+  "input": {
+    "ingredient": {
+      "item": "mekanism:reprocessed_fissile_fragment"
+    }
+  },
+  "output": {
+    "gas": "mekanism:fissile_fuel",
+    "amount": 2000
+  }
+}

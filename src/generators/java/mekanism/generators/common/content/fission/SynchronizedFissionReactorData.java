@@ -117,9 +117,7 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
         if (MekanismGeneratorsConfig.generators.fissionMeltdownsEnabled.get() && reactorDamage >= MAX_DAMAGE && temp >= MIN_DAMAGE_TEMPERATURE) {
             if (world.rand.nextDouble() < (reactorDamage / MAX_DAMAGE) * MekanismGeneratorsConfig.generators.fissionMeltdownChance.get()) {
                 double radiation = 0;
-                if (fuelTank.getStack().has(GasAttributes.Radiation.class)) {
-                    radiation += fuelTank.getStored() * fuelTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
-                }
+                radiation += wasteTank.getStored() * MekanismGases.NUCLEAR_WASTE.get().get(GasAttributes.Radiation.class).getRadioactivity();
                 if (wasteTank.getStack().has(GasAttributes.Radiation.class)) {
                     radiation += wasteTank.getStored() * wasteTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
                 }

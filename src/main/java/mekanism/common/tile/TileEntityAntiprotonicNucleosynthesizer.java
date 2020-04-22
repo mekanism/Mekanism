@@ -26,8 +26,10 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -54,6 +56,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityBasicMach
     protected final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> energyContainer;
+    private GasInventorySlot gasInputSlot;
     private InputInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
@@ -69,10 +72,12 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityBasicMach
             itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
             itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
+            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, gasInputSlot));
             //Set default config directions
             itemConfig.setDataType(RelativeSide.TOP, DataType.INPUT);
             itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
             itemConfig.setDataType(RelativeSide.BACK, DataType.ENERGY);
+            itemConfig.setDataType(RelativeSide.BOTTOM, DataType.EXTRA);
         }
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
@@ -110,22 +115,30 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityBasicMach
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(gasTank, this::getWorld, this, 6, 69));
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 26, 40));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 152, 40));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 173, 69));
+        gasInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         return builder.build();
+    }
+
+    public double getProcessRate() {
+        return clientEnergyUsed.divide(energyContainer.getEnergyPerTick()).doubleValue();
     }
 
     @Override
     protected void onUpdateServer() {
         energySlot.fillContainerOrConvert();
+        gasInputSlot.fillTankOrConvert();
         FloatingLong prev = energyContainer.getEnergy().copyAsConst();
         cachedRecipe = getUpdatedCache(0);
         // always update ticks required based on recipe
         ticksRequired = cachedRecipe == null ? BASE_TICKS_REQUIRED : cachedRecipe.getRecipe().getDuration();
-        int toProcess = (int) Math.ceil(Math.sqrt(energyContainer.getMaxEnergy().divide(energyContainer.getEnergyPerTick()).doubleValue()));
-        for (int i = 0; i < toProcess; i++) {
-            if (cachedRecipe != null) {
+        int toProcess = (int) Math.sqrt(energyContainer.getEnergy().divide(energyContainer.getEnergyPerTick()).doubleValue());
+        if (cachedRecipe != null) {
+            cachedRecipe.process();
+            for (int i = 0; i < toProcess - 1; i++) {
                 cachedRecipe.process();
             }
         }

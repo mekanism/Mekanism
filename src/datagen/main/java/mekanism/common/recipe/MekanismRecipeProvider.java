@@ -2804,7 +2804,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ItemStackGasToGasRecipeBuilder.dissolution(
               ItemStackIngredient.from(MekanismTags.Items.GEMS_FLUORITE),
               GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
-              MekanismGases.HYDROFLUORIC_ACID.getGasStack(100)
+              MekanismGases.HYDROFLUORIC_ACID.getGasStack(1000)
         ).build(consumer, Mekanism.rl(basePath + "hydrofluoric_acid"));
         //uranium oxide
         ItemStackToGasRecipeBuilder.oxidizing(
@@ -2822,6 +2822,17 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               GasStackIngredient.from(MekanismGases.URANIUM_HEXAFLUORIDE, 1),
               MekanismGases.FISSILE_FUEL.getGasStack(1)
         ).build(consumer, Mekanism.rl(basePath + "fissile_fuel"));
+        //fissile fuel reprocessing (IMPORTANT)
+        ItemStackGasToItemStackRecipeBuilder.injecting(
+              ItemStackIngredient.from(MekanismTags.Items.PELLETS_PLUTONIUM),
+              GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
+              MekanismItems.REPROCESSED_FISSILE_FRAGMENT.getItemStack(4)
+        ).build(consumer, Mekanism.rl(basePath + "reprocessing/from_plutonium"));
+        //fragment -> fuel
+        ItemStackToGasRecipeBuilder.oxidizing(
+              ItemStackIngredient.from(MekanismItems.REPROCESSED_FISSILE_FRAGMENT),
+              MekanismGases.FISSILE_FUEL.getGasStack(2000)
+        ).build(consumer, Mekanism.rl(basePath + "reprocessing/to_fuel"));
     }
 
     private void addLateGameRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -2856,13 +2867,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
             MekanismItems.POLONIUM_PELLET.getItemStack(),
             MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(1000)
         ).build(consumer, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
-
-        //fissile fuel (IMPORTANT: determines fissile fuel reprocessing efficiency)
-        FluidGasToGasRecipeBuilder.washing(
-            FluidStackIngredient.from(FluidTags.WATER, 10),
-            GasStackIngredient.from(MekanismGases.PLUTONIUM, 1),
-            MekanismGases.FISSILE_FUEL.getGasStack(5)
-        ).build(consumer, Mekanism.rl(basePath + "fissile_fuel/from_plutonium"));
 
         //antimatter pellet
         GasToItemStackRecipeBuilder.crystallizing(

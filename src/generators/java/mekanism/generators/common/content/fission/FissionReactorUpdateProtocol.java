@@ -67,6 +67,7 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
                     }
                 }
                 fuelAssemblyCoords.add(coord);
+                structure.internalLocations.add(coord);
             } else if (tile instanceof TileEntityControlRodAssembly) {
                 if (assembly == null) {
                     map.put(pos, new FuelAssembly(coord, true));

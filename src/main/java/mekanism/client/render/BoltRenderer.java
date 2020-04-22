@@ -13,7 +13,7 @@ public class BoltRenderer {
     private Random random = new Random();
 
     /** How large the individual bolts should render. */
-    private float size;
+    private float size = 0.05F;
     /** How much variance is allowed in segment lengths (parallel to straight line). */
     private float parallelNoise;
     /** How much individual */
@@ -32,14 +32,13 @@ public class BoltRenderer {
     }
 
     public BoltRenderer(SpreadFunction spreadFunction, RandomFunction randomFunction) {
-        this(spreadFunction, randomFunction, 0.1F, 0.05F, 0.1F);
+        this(spreadFunction, randomFunction, 0.1F, 0.1F);
     }
 
-    public BoltRenderer(SpreadFunction spreadFunction, RandomFunction randomFunction, float parallelNoise, float size, float spreadFactor) {
+    public BoltRenderer(SpreadFunction spreadFunction, RandomFunction randomFunction, float parallelNoise, float spreadFactor) {
         this.spreadFunction = spreadFunction;
         this.randomFunction = randomFunction;
         this.parallelNoise = parallelNoise;
-        this.size = size;
         this.spreadFactor = spreadFactor;
     }
 
@@ -65,7 +64,7 @@ public class BoltRenderer {
         for (int i = 0; i < count; i++) {
             Vec3d segmentStart = start;
             float progress = 0;
-            for (int segment = 0; segment < segments; segment++) {
+            while (segmentStart != end) {
                 progress = progress + (1F / segments) * (1 - parallelNoise + random.nextFloat() * parallelNoise * 2);
                 Vec3d segmentEnd = null;
                 if (progress >= 1) {
