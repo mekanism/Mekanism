@@ -40,6 +40,7 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
                     //Make sure that we load any data the cap needs from the stack, as it doesn't have any NBT set when it is initially initialized
                     // This also allows us to update to any direct changes on the NBT of the stack that someone may have made
                     cap.load();
+                    //TODO: Fix the fact that in the creative menu the items appear as if they have no contents until they are grabbed
                     return cap.capabilityCache.getCapabilityUnchecked(capability, null);
                 }
             }

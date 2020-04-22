@@ -21,7 +21,6 @@ public class FNEnergyCompat implements IEnergyCompat {
     @Nonnull
     @Override
     public Capability<?> getCapability() {
-        //TODO: Validate this works properly without FN (should never be getting called as isUsable will be false)
         return FNEnergyCapability.FN_ENERGY_STORAGE;
     }
 

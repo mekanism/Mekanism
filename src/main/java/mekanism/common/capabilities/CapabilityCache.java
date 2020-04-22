@@ -18,7 +18,6 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-//TODO: JavaDocs
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CapabilityCache {
@@ -32,8 +31,10 @@ public class CapabilityCache {
     private final Map<Capability<?>, List<BooleanSupplier>> semiDisabled = new HashMap<>();
     private TileComponentConfig config;
 
+    /**
+     * Adds a capability resolver to the list of resolvers for this cache.
+     */
     public void addCapabilityResolver(ICapabilityResolver resolver) {
-        //TODO: Do we want to validate if the resolver has already been added.
         uniqueResolvers.add(resolver);
         List<Capability<?>> supportedCapabilities = resolver.getSupportedCapabilities();
         for (Capability<?> supportedCapability : supportedCapabilities) {
@@ -44,6 +45,9 @@ public class CapabilityCache {
         }
     }
 
+    /**
+     * Marks all the given capabilities as always being disabled.
+     */
     public void addDisabledCapabilities(Capability<?>... capabilities) {
         for (Capability<?> capability : capabilities) {
             //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
@@ -53,6 +57,9 @@ public class CapabilityCache {
         }
     }
 
+    /**
+     * Marks all the given capabilities as always being disabled.
+     */
     public void addDisabledCapabilities(Collection<Capability<?>> capabilities) {
         for (Capability<?> capability : capabilities) {
             //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
@@ -62,23 +69,35 @@ public class CapabilityCache {
         }
     }
 
+    /**
+     * Marks the given capability as having a check for sometimes being disabled.
+     *
+     * @implNote These "semi disabled" checks are stored in a list so that children can define more cases a capability should be disabled than the ones the parent already
+     * wants them to be disabed in.
+     */
     public void addSemiDisabledCapability(Capability<?> capability, BooleanSupplier checker) {
-        //TODO: Note about the fact it uses a list so that it can properly also allow parents to separately disable the same capability
         //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
         if (capability != null) {
             semiDisabled.computeIfAbsent(capability, cap -> new ArrayList<>()).add(checker);
         }
     }
 
+    /**
+     * Adds the given config component for use in checking if capabilities are disabled on a specific side.
+     */
     public void addConfigComponent(TileComponentConfig config) {
         if (this.config != null) {
-            Mekanism.logger.warn("Config component already registered. Overriding");
+            Mekanism.logger.warn("Config component already registered. Overriding", new Exception());
         }
         this.config = config;
     }
 
+    /**
+     * Checks if the given capability is disabled for the specific side.
+     *
+     * @return {@code true} if the capability is disabled, {@code false} otherwise.
+     */
     public boolean isCapabilityDisabled(Capability<?> capability, @Nullable Direction side) {
-        //TODO: Note in the java docs that the capability does not have to be one that we support
         if (alwaysDisabled.contains(capability)) {
             return true;
         }
@@ -96,10 +115,16 @@ public class CapabilityCache {
         return config.isCapabilityDisabled(capability, side);
     }
 
+    /**
+     * Checks if the given capability can be resolved by this capability cache.
+     */
     public boolean canResolve(Capability<?> capability) {
         return capabilityResolvers.containsKey(capability);
     }
 
+    /**
+     * Gets a capability on the given side, ensuring that it can be resolved and that it is not disabled.
+     */
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction side) {
         if (!isCapabilityDisabled(capability, side) && canResolve(capability)) {
             return getCapabilityUnchecked(capability, side);
@@ -107,7 +132,9 @@ public class CapabilityCache {
         return LazyOptional.empty();
     }
 
-    //TODO: Note that this is called unchecked as it does not check if the capability is disabled
+    /**
+     * Gets a capability on the given side not checking to ensure that it is not disabled.
+     */
     public <T> LazyOptional<T> getCapabilityUnchecked(Capability<T> capability, @Nullable Direction side) {
         ICapabilityResolver capabilityResolver = capabilityResolvers.get(capability);
         if (capabilityResolver == null) {
@@ -116,7 +143,12 @@ public class CapabilityCache {
         return capabilityResolver.resolve(capability, side);
     }
 
-    //TODO: Call this when needed, such as when configurable sides change
+    /**
+     * Invalidates the given capability on the given side.
+     *
+     * @param capability Capability
+     * @param side       Side
+     */
     public void invalidate(Capability<?> capability, @Nullable Direction side) {
         ICapabilityResolver capabilityResolver = capabilityResolvers.get(capability);
         if (capabilityResolver != null) {
@@ -124,6 +156,9 @@ public class CapabilityCache {
         }
     }
 
+    /**
+     * Invalidates all cached capabilities.
+     */
     public void invalidateAll() {
         uniqueResolvers.forEach(ICapabilityResolver::invalidateAll);
     }

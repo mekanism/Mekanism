@@ -12,6 +12,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.common.util.NonNullSupplier;
 
+/**
+ * Capability resolver for handling a read only variant, a generic unsided implementation variant.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class AdvancedCapabilityResolver implements ICapabilityResolver {
@@ -20,6 +23,9 @@ public class AdvancedCapabilityResolver implements ICapabilityResolver {
         return new AdvancedCapabilityResolver(supportedCapability, supplier, readOnlySupplier);
     }
 
+    /**
+     * Creates a capability resolver that strongly caches the result of the read only supplier. Persisting the calculated value through capability invalidation.
+     */
     public static <T> AdvancedCapabilityResolver readOnly(Capability<T> supportedCapability, T value, NonNullSupplier<T> readOnlySupplier) {
         return create(supportedCapability, () -> value, NonNullLazy.of(readOnlySupplier));
     }
