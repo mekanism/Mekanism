@@ -2,10 +2,11 @@ package mekanism.common.capabilities.radiation.item;
 
 import java.util.function.ToDoubleFunction;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.radiation.capability.IRadiationShielding;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
 
 public class RadiationShieldingHandler extends ItemCapability implements IRadiationShielding {
 
@@ -18,12 +19,12 @@ public class RadiationShieldingHandler extends ItemCapability implements IRadiat
     }
 
     @Override
-    public boolean canProcess(Capability<?> capability) {
-        return capability == Capabilities.RADIATION_SHIELDING_CAPABILITY;
+    public double getRadiationShielding() {
+        return shieldingFunction.applyAsDouble(getStack());
     }
 
     @Override
-    public double getRadiationShielding() {
-        return shieldingFunction.applyAsDouble(getStack());
+    protected void addCapabilityResolvers(CapabilityCache capabilityCache) {
+        capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.RADIATION_SHIELDING_CAPABILITY, this));
     }
 }
