@@ -726,10 +726,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Matrix
         add(MekanismLang.MATRIX, "Induction Matrix");
         add(MekanismLang.MATRIX_RECEIVING_RATE, "Receiving: %s/t");
-        add(MekanismLang.MATRIX_OUTPUT_AMOUNT, "Output:");
+        add(MekanismLang.MATRIX_OUTPUT_AMOUNT, "Output: %s");
         add(MekanismLang.MATRIX_OUTPUT_RATE, "Output: %s/t");
         add(MekanismLang.MATRIX_OUTPUTTING_RATE, "Outputting: %s/t");
-        add(MekanismLang.MATRIX_INPUT_AMOUNT, "Input:");
+        add(MekanismLang.MATRIX_INPUT_AMOUNT, "Input: %s");
         add(MekanismLang.MATRIX_INPUT_RATE, "Input: %s/t");
         add(MekanismLang.MATRIX_CONSTITUENTS, "Constituents:");
         add(MekanismLang.MATRIX_DIMENSIONS, "Dimensions:");

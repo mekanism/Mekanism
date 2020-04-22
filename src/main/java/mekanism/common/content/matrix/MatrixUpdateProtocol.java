@@ -3,6 +3,7 @@ package mekanism.common.content.matrix;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
+import mekanism.common.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
@@ -43,6 +44,11 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
         //Save all energy changes before destroying the structure
         structure.invalidate();
         super.onStructureDestroyed(structure);
+    }
+
+    @Override
+    protected boolean shouldCap(CacheSubstance type) {
+        return type != CacheSubstance.ENERGY;
     }
 
     @Override

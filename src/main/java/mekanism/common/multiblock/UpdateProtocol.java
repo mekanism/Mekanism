@@ -1,12 +1,12 @@
 package mekanism.common.multiblock;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.IGasTank;
@@ -15,6 +15,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.common.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
@@ -302,21 +303,25 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
             }
         }
 
-        if (structureFound instanceof IMekanismFluidHandler) {
+        if (structureFound instanceof IMekanismFluidHandler && shouldCap(CacheSubstance.FLUID)) {
             for (IExtendedFluidTank tank : ((IMekanismFluidHandler) structureFound).getFluidTanks(null)) {
                 tank.setStackSize(Math.min(tank.getFluidAmount(), tank.getCapacity()), Action.EXECUTE);
             }
         }
-        if (structureFound instanceof IMekanismGasHandler) {
+        if (structureFound instanceof IMekanismGasHandler && shouldCap(CacheSubstance.GAS)) {
             for (IGasTank tank : ((IMekanismGasHandler) structureFound).getGasTanks(null)) {
                 tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
             }
         }
-        if (structureFound instanceof IMekanismStrictEnergyHandler) {
+        if (structureFound instanceof IMekanismStrictEnergyHandler && shouldCap(CacheSubstance.ENERGY)) {
             for (IEnergyContainer container : ((IMekanismStrictEnergyHandler) structureFound).getEnergyContainers(null)) {
                 container.setEnergy(container.getEnergy().min(container.getMaxEnergy()));
             }
         }
+    }
+
+    protected boolean shouldCap(CacheSubstance type) {
+        return true;
     }
 
     protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}

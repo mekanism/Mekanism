@@ -10,10 +10,10 @@ import mekanism.common.config.value.CachedFloatingLongValue;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public enum InductionCellTier implements ITier {
-    BASIC(BaseTier.BASIC, FloatingLong.createConst(1_000_000_000L)),
-    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(8_000_000_000L)),
-    ELITE(BaseTier.ELITE, FloatingLong.createConst(64_000_000_000L)),
-    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(512_000_000_000L));
+    BASIC(BaseTier.BASIC, FloatingLong.createConst(8_000_000_000L)),
+    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(64_000_000_000L)),
+    ELITE(BaseTier.ELITE, FloatingLong.createConst(512_000_000_000L)),
+    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(4_000_000_000_000L));
 
     private final FloatingLong baseMaxEnergy;
     private final BaseTier baseTier;

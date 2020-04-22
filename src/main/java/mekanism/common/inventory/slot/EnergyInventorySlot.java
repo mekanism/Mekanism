@@ -104,9 +104,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         if (itemHandler != null) {
             for (int container = 0; container < itemHandler.getEnergyContainerCount(); container++) {
                 FloatingLong energyInContainer = itemHandler.getEnergy(container);
-                if (!energyInContainer.isZero() && energyContainer.insert(energyInContainer, Action.SIMULATE, AutomationType.INTERNAL).smallerThan(energyInContainer)) {
-                    //True if we can fill the container with any of our contents
-                    // Note: We need to recheck the fact there is energy in case the item has multiple containers
+                if (!energyInContainer.isZero()) {
+                    // if the item has any contained energy, allow insertion
                     return true;
                 }
             }

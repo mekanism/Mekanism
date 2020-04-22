@@ -135,8 +135,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityBasicMach
         cachedRecipe = getUpdatedCache(0);
         // always update ticks required based on recipe
         ticksRequired = cachedRecipe == null ? BASE_TICKS_REQUIRED : cachedRecipe.getRecipe().getDuration();
-        int toProcess = (int) Math.sqrt(energyContainer.getEnergy().divide(energyContainer.getEnergyPerTick()).doubleValue());
         if (cachedRecipe != null) {
+            int toProcess = (int) Math.sqrt(energyContainer.getEnergy().divide(energyContainer.getEnergyPerTick()).doubleValue());
             cachedRecipe.process();
             for (int i = 0; i < toProcess - 1; i++) {
                 cachedRecipe.process();
