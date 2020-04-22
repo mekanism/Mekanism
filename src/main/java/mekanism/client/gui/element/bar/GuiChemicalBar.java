@@ -2,6 +2,7 @@ package mekanism.client.gui.element.bar;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
@@ -11,6 +12,7 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiChemicalBar.ChemicalInfoProvider;
+import mekanism.client.jei.IJEIIngredientHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -24,21 +26,23 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar<ChemicalInfoProvider<CHEMICAL>> {
+public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends GuiBar<ChemicalInfoProvider<CHEMICAL, STACK>>
+      implements IJEIIngredientHelper {
 
     private final boolean horizontal;
 
-    public GuiChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, int x, int y, int width, int height, boolean horizontal) {
+    public GuiChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL, STACK> infoProvider, int x, int y, int width, int height, boolean horizontal) {
         super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, x, y, width, height);
         this.horizontal = horizontal;
     }
 
     @Override
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
-        CHEMICAL type = getHandler().getType();
-        if (!type.isEmptyType()) {
+        STACK stored = getHandler().getStack();
+        if (!stored.isEmpty()) {
             double level = getHandler().getLevel();
             if (level > 0) {
+                CHEMICAL type = stored.getType();
                 MekanismRenderer.color(type);
                 TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(type);
                 if (horizontal) {
@@ -57,7 +61,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar<
             ItemStack stack = GuiTexturedElement.minecraft.player.inventory.getItemStack();
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TankType tankType = null;
-                CHEMICAL type = getHandler().getType();
+                CHEMICAL type = getHandler().getStack().getType();
                 if (type instanceof Gas) {
                     tankType = TankType.GAS_TANK;
                 } else if (type instanceof InfuseType) {
@@ -81,22 +85,29 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar<
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    @Nullable
+    @Override
+    public Object getIngredient() {
+        STACK chemicalStack = getHandler().getStack();
+        return chemicalStack.isEmpty() ? null : chemicalStack;
+    }
+
     //Note the GuiBar.IBarInfoHandler is needed, as it cannot compile and resolve just IBarInfoHandler
-    public interface ChemicalInfoProvider<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar.IBarInfoHandler {
+    public interface ChemicalInfoProvider<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends GuiBar.IBarInfoHandler {
 
         @Nonnull
-        CHEMICAL getType();
+        STACK getStack();
 
         int getTankIndex();
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ChemicalInfoProvider<CHEMICAL> getProvider(IChemicalTank<CHEMICAL, STACK> tank,
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ChemicalInfoProvider<CHEMICAL, STACK> getProvider(IChemicalTank<CHEMICAL, STACK> tank,
           List<? extends IChemicalTank<CHEMICAL, STACK>> tanks) {
-        return new ChemicalInfoProvider<CHEMICAL>() {
+        return new ChemicalInfoProvider<CHEMICAL, STACK>() {
             @Nonnull
             @Override
-            public CHEMICAL getType() {
-                return tank.getType();
+            public STACK getStack() {
+                return tank.getStack();
             }
 
             @Override

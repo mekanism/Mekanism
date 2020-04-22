@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.jei.IJEIIngredientHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse;
@@ -12,15 +13,19 @@ import mekanism.common.network.PacketDropperUse.TankType;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 
-public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
+public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEIIngredientHelper {
 
-    protected final ITankInfoHandler<TANK> infoHandler;
+    private final ITankInfoHandler<TANK> infoHandler;
     private final TankType tankType;
 
     public GuiTankGauge(GaugeType type, IGuiWrapper gui, int x, int y, ITankInfoHandler<TANK> infoHandler, TankType tankType) {
         super(type, gui, x, y);
         this.infoHandler = infoHandler;
         this.tankType = tankType;
+    }
+
+    public TANK getTank() {
+        return infoHandler.getTank();
     }
 
     @Override
