@@ -102,6 +102,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements ICo
             World world = getWorld();
             if (world != null) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+                invalidateCachedCapabilities();
             }
         }
         super.resetChanged();

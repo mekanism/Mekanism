@@ -3,13 +3,11 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -32,7 +30,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
 
     public TileEntityFuelwoodHeater() {
         super(MekanismBlocks.FUELWOOD_HEATER);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.HEAT_HANDLER_CAPABILITY, this));
     }
 
     @Nonnull

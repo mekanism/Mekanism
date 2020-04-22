@@ -28,7 +28,6 @@ public class CapabilityCache {
      * List of unique resolvers to make invalidating all easier as some resolvers (energy) may support multiple capabilities.
      */
     private final List<ICapabilityResolver> uniqueResolvers = new ArrayList<>();
-    //TODO: Use these
     private final Set<Capability<?>> alwaysDisabled = new HashSet<>();
     private final Map<Capability<?>, List<BooleanSupplier>> semiDisabled = new HashMap<>();
     private TileComponentConfig config;
@@ -40,7 +39,7 @@ public class CapabilityCache {
         for (Capability<?> supportedCapability : supportedCapabilities) {
             //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
             if (supportedCapability != null && capabilityResolvers.put(supportedCapability, resolver) != null) {
-                Mekanism.logger.warn("Multiple capability resolvers registered for {}. Overriding", supportedCapability);
+                Mekanism.logger.warn("Multiple capability resolvers registered for " + supportedCapability.getName() + ". Overriding", new Exception());
             }
         }
     }
