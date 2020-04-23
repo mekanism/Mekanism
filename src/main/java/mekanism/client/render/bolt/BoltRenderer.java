@@ -17,6 +17,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.math.Vec3d;
 
 public class BoltRenderer {
+    /** Amount of times per tick we refresh. 3 implies 60 Hz. */
+    private static final float REFRESH_TIME = 3F;
 
     private Random random = new Random();
 
@@ -28,6 +30,7 @@ public class BoltRenderer {
     private final BoltEffect boltEffect;
     private final FadeFunction fadeFunction;
 
+    private float refreshTimestamp;
     private int renderTime;
 
     public static BoltRenderer create(BoltEffect boltEffect) {
@@ -51,23 +54,32 @@ public class BoltRenderer {
 
         Set<BoltInstance> bolts = boltRenderMap.computeIfAbsent(renderer, (r) -> new HashSet<>());
 
-        if (renderTime == 0) {
-            renderTime = random.nextInt(newBoltRate) + 1;
-            List<BoltQuads> quads = boltEffect.generate(start, end, count, segments);
-            bolts.add(new BoltInstance(boltLifespan, quads));
-        } else {
-            renderTime--;
+        if (partialTicks < refreshTimestamp)
+            partialTicks += 1;
+
+        if (partialTicks - refreshTimestamp >= (1 / REFRESH_TIME)) {
+            if (renderTime == 0) {
+                renderTime = random.nextInt(newBoltRate) + 1;
+                List<BoltQuads> quads = boltEffect.generate(start, end, count, segments);
+                bolts.add(new BoltInstance(boltLifespan, quads));
+            } else {
+                renderTime--;
+            }
+
+            for (Iterator<BoltInstance> iter = bolts.iterator(); iter.hasNext();) {
+                BoltInstance instance = iter.next();
+                if (instance.tick()) {
+                    iter.remove();
+                }
+            }
+            if (bolts.isEmpty()) {
+                boltRenderMap.remove(renderer);
+            }
+
+            refreshTimestamp = partialTicks % 1;
         }
 
-        for (Iterator<BoltInstance> iter = bolts.iterator(); iter.hasNext();) {
-            BoltInstance instance = iter.next();
-            if (instance.render(matrix, buffer)) {
-                iter.remove();
-            }
-        }
-        if (bolts.isEmpty()) {
-            boltRenderMap.remove(renderer);
-        }
+        bolts.forEach(bolt -> bolt.render(matrix, buffer));
     }
 
     public class BoltInstance {
@@ -81,14 +93,16 @@ public class BoltRenderer {
             this.renderQuads = renderQuads;
         }
 
-        public boolean render(Matrix4f matrix, IVertexBuilder buffer) {
+        public void render(Matrix4f matrix, IVertexBuilder buffer) {
             float lifeScale = ticksExisted / lifespan;
             int start = fadeFunction.getStart(renderQuads.size(), lifeScale);
             int end = fadeFunction.getEnd(renderQuads.size(), lifeScale);
             for (int i = start; i < end; i++) {
                 renderQuads.get(i).render(matrix, buffer, 1);
             }
+        }
 
+        public boolean tick() {
             return ticksExisted++ >= lifespan;
         }
     }
