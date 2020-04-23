@@ -373,7 +373,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public ITextComponent getName() {
         //TODO: Is this useful or should the gui title be got a different way
         // We can probably do it via the containers name
-        return TextComponentUtil.translate(getBlockType().getTranslationKey());
+        return TextComponentUtil.translate("container.mekanism." + getBlockType().getRegistryName().getPath());
     }
 
     @Override

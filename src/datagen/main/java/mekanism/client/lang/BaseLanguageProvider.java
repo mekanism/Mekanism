@@ -3,8 +3,11 @@ package mekanism.client.lang;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.data.DataGenerator;
@@ -31,6 +34,13 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     @Override
     public String getName() {
         return super.getName() + ": " + modid;
+    }
+
+    protected void add(IBlockProvider block, String value) {
+        if (block.getBlock() != null && Attribute.has(block.getBlock(), AttributeGui.class)) {
+            add("container.mekanism." + block.getRegistryName().getPath(), value);
+        }
+        add(block.getTranslationKey(), value);
     }
 
     protected void add(IHasTranslationKey key, String value) {
