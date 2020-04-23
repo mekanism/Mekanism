@@ -54,7 +54,7 @@ import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
+import mekanism.common.util.FluidUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -188,7 +188,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
             // emit
             ConfigInfo config = configComponent.getConfig(TransmissionType.FLUID);
             if (config != null && config.isEjecting()) {
-                PipeUtils.emit(config.getSidesForData(DataType.OUTPUT), fluidTank, this, fluidOutput);
+                FluidUtils.emit(config.getSidesForData(DataType.OUTPUT), fluidTank, this, fluidOutput);
             }
         }
         FloatingLong prev = energyContainer.getEnergy().copyAsConst();

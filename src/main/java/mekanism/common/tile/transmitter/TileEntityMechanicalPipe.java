@@ -33,7 +33,7 @@ import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.PipeUtils;
+import mekanism.common.util.FluidUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -66,7 +66,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         if (!isRemote()) {
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
-                for (IFluidHandler connectedAcceptor : PipeUtils.getConnectedAcceptors(getPos(), getWorld(), connections)) {
+                for (IFluidHandler connectedAcceptor : FluidUtils.getConnectedAcceptors(getPos(), getWorld(), connections)) {
                     if (connectedAcceptor != null) {
                         FluidStack received;
                         //Note: We recheck the buffer each time in case we ended up accepting fluid somewhere

@@ -33,7 +33,7 @@ import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.PipeUtils;
+import mekanism.common.util.FluidUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -90,7 +90,7 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
                 if (type == TransmissionType.GAS && slotInfo instanceof GasSlotInfo) {
                     ((GasSlotInfo) slotInfo).getTanks().forEach(tank -> GasUtils.emit(outputSides, tank, tile, GAS_OUTPUT));
                 } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo) {
-                    ((FluidSlotInfo) slotInfo).getTanks().forEach(tank -> PipeUtils.emit(outputSides, tank, tile, FLUID_OUTPUT));
+                    ((FluidSlotInfo) slotInfo).getTanks().forEach(tank -> FluidUtils.emit(outputSides, tank, tile, FLUID_OUTPUT));
                 }
             }
         }

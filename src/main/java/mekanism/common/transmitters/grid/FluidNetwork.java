@@ -26,7 +26,7 @@ import mekanism.common.distribution.target.FluidTransmitterSaveTarget;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
+import mekanism.common.util.FluidUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
@@ -200,7 +200,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
             for (Direction side : sides) {
                 CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side).ifPresent(acceptor -> {
-                    if (PipeUtils.canFill(acceptor, fluidToSend)) {
+                    if (FluidUtils.canFill(acceptor, fluidToSend)) {
                         target.addHandler(side, acceptor);
                     }
                 });

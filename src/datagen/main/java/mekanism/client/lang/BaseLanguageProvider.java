@@ -13,6 +13,7 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.item.BucketItem;
+import net.minecraft.util.Util;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
@@ -38,7 +39,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 
     protected void add(IBlockProvider block, String value) {
         if (block.getBlock() != null && Attribute.has(block.getBlock(), AttributeGui.class)) {
-            add("container.mekanism." + block.getRegistryName().getPath(), value);
+            add(Util.makeTranslationKey("container", block.getRegistryName()), value);
         }
         add(block.getTranslationKey(), value);
     }

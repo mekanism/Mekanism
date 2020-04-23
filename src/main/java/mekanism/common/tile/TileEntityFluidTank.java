@@ -30,7 +30,7 @@ import mekanism.common.upgrade.FluidTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.PipeUtils;
+import mekanism.common.util.FluidUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
@@ -124,7 +124,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         }
         inputSlot.handleTank(outputSlot, editMode);
         if (getActive()) {
-            PipeUtils.emit(EnumSet.of(Direction.DOWN), fluidTank, this, tier.getOutput());
+            FluidUtils.emit(EnumSet.of(Direction.DOWN), fluidTank, this, tier.getOutput());
         }
         if (needsPacket) {
             sendUpdatePacket();

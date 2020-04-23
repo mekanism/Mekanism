@@ -4,7 +4,7 @@ import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.util.PipeUtils;
+import mekanism.common.util.FluidUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 
 public class TileEntityTurbineVent extends TileEntityTurbineCasing {
@@ -23,7 +23,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null) {
-            PipeUtils.emit(structure.ventTank, this);
+            FluidUtils.emit(structure.ventTank, this);
         }
     }
 

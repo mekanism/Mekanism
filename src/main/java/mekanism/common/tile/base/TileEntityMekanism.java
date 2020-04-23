@@ -112,6 +112,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -371,9 +372,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Nonnull
     public ITextComponent getName() {
-        //TODO: Is this useful or should the gui title be got a different way
-        // We can probably do it via the containers name
-        return TextComponentUtil.translate("container.mekanism." + getBlockType().getRegistryName().getPath());
+        return TextComponentUtil.translate(Util.makeTranslationKey("container", getBlockType().getRegistryName()));
     }
 
     @Override

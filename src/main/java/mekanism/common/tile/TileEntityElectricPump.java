@@ -37,7 +37,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.PipeUtils;
+import mekanism.common.util.FluidUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -149,7 +149,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         suckedLastOperation = sucked;
 
         if (!fluidTank.isEmpty()) {
-            PipeUtils.emit(EnumSet.of(Direction.UP), fluidTank, this, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
+            FluidUtils.emit(EnumSet.of(Direction.UP), fluidTank, this, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
         }
     }
 
