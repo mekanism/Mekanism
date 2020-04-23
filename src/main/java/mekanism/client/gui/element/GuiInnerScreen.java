@@ -10,6 +10,6 @@ public class GuiInnerScreen extends GuiScalableElement {
     public static final ResourceLocation SCREEN = MekanismUtils.getResource(ResourceType.GUI, "inner_screen.png");
 
     public GuiInnerScreen(IGuiWrapper gui, int x, int y, int width, int height) {
-        super(SCREEN, gui, x, y, width, height, 2, 2);
+        super(SCREEN, gui, x, y, width, height, 32, 32);
     }
 }

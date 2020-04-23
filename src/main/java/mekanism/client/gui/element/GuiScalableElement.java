@@ -17,6 +17,6 @@ public abstract class GuiScalableElement extends GuiTexturedElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        renderExtendedTexture(getResource(), sideWidth, sideHeight);
+        renderBackgroundTexture(getResource(), sideWidth, sideHeight);
     }
 }

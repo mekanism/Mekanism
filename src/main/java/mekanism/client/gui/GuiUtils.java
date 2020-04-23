@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.gui.AbstractGui;
@@ -10,7 +11,6 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class GuiUtils {
 
@@ -20,9 +20,9 @@ public class GuiUtils {
         int textureHeight = 2 * sideHeight + 1;
         int centerWidth = width - 2 * sideWidth;
         int centerHeight = height - 2 * sideHeight;
-        int leftEdgeEnd = left + sideHeight;
+        int leftEdgeEnd = left + sideWidth;
         int rightEdgeStart = leftEdgeEnd + centerWidth;
-        int topEdgeEnd = top + sideWidth;
+        int topEdgeEnd = top + sideHeight;
         int bottomEdgeStart = topEdgeEnd + centerHeight;
         MekanismRenderer.bindTexture(resource);
         //Left Side
@@ -56,6 +56,62 @@ public class GuiUtils {
         }
         //Bottom Right Corner
         AbstractGui.blit(rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+    }
+
+    public static void renderBackgroundTexture(ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width, int height, int textureWidth, int textureHeight) {
+        // render as much side as we can, based on element dimensions
+        int sideWidth = Math.min(texSideWidth, width / 2);
+        int sideHeight = Math.min(texSideHeight, height / 2);
+
+        int texCenterWidth = textureWidth - texSideWidth * 2, texCenterHeight = textureHeight - texSideHeight * 2;
+        int centerWidth = width - 2 * sideWidth, centerHeight = height - 2 * sideHeight;
+
+        int leftEdgeEnd = left + sideWidth;
+        int rightEdgeStart = leftEdgeEnd + centerWidth;
+        int topEdgeEnd = top + sideHeight;
+        int bottomEdgeStart = topEdgeEnd + centerHeight;
+        MekanismRenderer.bindTexture(resource);
+
+        //Top Left Corner
+        AbstractGui.blit(left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        //Bottom Left Corner
+        AbstractGui.blit(left, bottomEdgeStart, 0, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
+
+        //Middle
+        if (centerWidth > 0) {
+            //Top Middle
+            blitTiled(leftEdgeEnd, top, centerWidth, sideHeight, texSideWidth, 0, texCenterWidth, sideHeight, textureWidth, textureHeight);
+            if (centerHeight > 0) {
+                //Center
+                blitTiled(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, texSideWidth, texSideHeight, texCenterWidth, texCenterHeight, textureWidth, textureHeight);
+            }
+            //Bottom Middle
+            blitTiled(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, texSideWidth, textureHeight - sideHeight, texCenterWidth, sideHeight, textureWidth, textureHeight);
+        }
+
+        if (centerHeight > 0) {
+            //Left Middle
+            blitTiled(left, topEdgeEnd, sideWidth, centerHeight, 0, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
+            //Right Middle
+            blitTiled(rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, textureWidth - sideWidth, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
+        }
+
+        //Top Right Corner
+        AbstractGui.blit(rightEdgeStart, top, texSideWidth + texCenterWidth, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        //Bottom Right Corner
+        AbstractGui.blit(rightEdgeStart, bottomEdgeStart, textureWidth - sideWidth, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
+    }
+
+    public static void blitTiled(int x, int y, int width, int height, int texX, int texY, int texDrawWidth, int texDrawHeight, int textureWidth, int textureHeight) {
+        int xTiles = (int) Math.ceil((float) width / texDrawWidth), yTiles = (int) Math.ceil((float) height / texDrawHeight);
+
+        for (int tileX = 0; tileX < xTiles; tileX++) {
+            for (int tileY = 0; tileY < yTiles; tileY++) {
+                AbstractGui.blit(x + texDrawWidth * tileX, y + texDrawHeight * tileY, texX, texY, Math.min(width, texDrawWidth), Math.min(height, texDrawHeight), textureWidth, textureHeight);
+                width -= texDrawWidth;
+                height -= texDrawHeight;
+            }
+        }
     }
 
     public static void drawTiledSprite(int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite, int textureWidth,

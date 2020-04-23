@@ -8,6 +8,8 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
@@ -18,6 +20,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiElement extends Widget {
+
+    public static final ResourceLocation BUTTON_LOCATION = MekanismUtils.getResource(ResourceType.GUI, "button.png");
+    private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60;
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
@@ -164,7 +169,7 @@ public abstract class GuiElement extends Widget {
         }
         //TODO: Convert this to being two different 16x48 images, one for with border and one for buttons without a black border?
         // And then make it so that they can stretch out to be any size (make this make use of the renderExtendedTexture method
-        MekanismRenderer.bindTexture(WIDGETS_LOCATION);
+        MekanismRenderer.bindTexture(BUTTON_LOCATION);
         //TODO: This can use isHovered() once we fix the isHovered logic
         int i = getYImage(isMouseOver(mouseX, mouseY));
         RenderSystem.enableBlend();
@@ -177,18 +182,18 @@ public abstract class GuiElement extends Widget {
         int halfWidthRight = width % 2 == 0 ? halfWidthLeft : halfWidthLeft + 1;
         int halfHeightTop = height / 2;
         int halfHeightBottom = height % 2 == 0 ? halfHeightTop : halfHeightTop + 1;
-        int position = 46 + i * 20;
+        int position = i * 20;
 
         int x = getButtonX();
         int y = getButtonY();
         //Left Top Corner
-        blit(x, y, 0, position, halfWidthLeft, halfHeightTop);
+        blit(x, y, 0, position, halfWidthLeft, halfHeightTop, BUTTON_TEX_X, BUTTON_TEX_Y);
         //Left Bottom Corner
-        blit(x, y + halfHeightTop, 0, position + 20 - halfHeightBottom, halfWidthLeft, halfHeightBottom);
+        blit(x, y + halfHeightTop, 0, position + 20 - halfHeightBottom, halfWidthLeft, halfHeightBottom, BUTTON_TEX_X, BUTTON_TEX_Y);
         //Right Top Corner
-        blit(x + halfWidthLeft, y, 200 - halfWidthRight, position, halfWidthRight, halfHeightTop);
+        blit(x + halfWidthLeft, y, 200 - halfWidthRight, position, halfWidthRight, halfHeightTop, BUTTON_TEX_X, BUTTON_TEX_Y);
         //Right Bottom Corner
-        blit(x + halfWidthLeft, y + halfHeightTop, 200 - halfWidthRight, position + 20 - halfHeightBottom, halfWidthRight, halfHeightBottom);
+        blit(x + halfWidthLeft, y + halfHeightTop, 200 - halfWidthRight, position + 20 - halfHeightBottom, halfWidthRight, halfHeightBottom, BUTTON_TEX_X, BUTTON_TEX_Y);
 
         //TODO: Add support for buttons that are larger than 200x20 in either direction (most likely would be in the height direction
         // Can use a lot of the same logic as GuiMekanism does for its background
@@ -207,6 +212,10 @@ public abstract class GuiElement extends Widget {
 
     protected void renderExtendedTexture(ResourceLocation resource, int sideWidth, int sideHeight) {
         GuiUtils.renderExtendedTexture(resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+    }
+
+    protected void renderBackgroundTexture(ResourceLocation resource, int sideWidth, int sideHeight) {
+        GuiUtils.renderBackgroundTexture(resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 256, 256);
     }
 
     @Override

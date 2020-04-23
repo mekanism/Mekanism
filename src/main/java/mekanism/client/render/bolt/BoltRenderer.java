@@ -2,11 +2,11 @@ package mekanism.client.render.bolt;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -66,12 +66,7 @@ public class BoltRenderer {
                 renderTime--;
             }
 
-            for (Iterator<BoltInstance> iter = bolts.iterator(); iter.hasNext();) {
-                BoltInstance instance = iter.next();
-                if (instance.tick()) {
-                    iter.remove();
-                }
-            }
+            bolts.removeIf(bolt -> bolt.tick());
             if (bolts.isEmpty()) {
                 boltRenderMap.remove(renderer);
             }
@@ -95,9 +90,8 @@ public class BoltRenderer {
 
         public void render(Matrix4f matrix, IVertexBuilder buffer) {
             float lifeScale = ticksExisted / lifespan;
-            int start = fadeFunction.getStart(renderQuads.size(), lifeScale);
-            int end = fadeFunction.getEnd(renderQuads.size(), lifeScale);
-            for (int i = start; i < end; i++) {
+            Pair<Integer, Integer> bounds = fadeFunction.getRenderBounds(renderQuads.size(), lifeScale);
+            for (int i = bounds.getLeft(); i < bounds.getRight(); i++) {
                 renderQuads.get(i).render(matrix, buffer, 1);
             }
         }
@@ -109,27 +103,16 @@ public class BoltRenderer {
 
     public interface FadeFunction {
 
-        public static FadeFunction NONE = new FadeFunction() {
-            @Override
-            public int getStart(int totalBolts, float lifeScale) { return 0; }
-            @Override
-            public int getEnd(int totalBolts, float lifeScale) { return totalBolts; }
-        };
+        public static FadeFunction NONE = (totalBolts, lifeScale) -> Pair.of(0, totalBolts);
 
         public static FadeFunction fade(float fade) {
-            return new FadeFunction() {
-                @Override
-                public int getStart(int totalBolts, float lifeScale) {
-                    return lifeScale > (1 - fade) ? (int) (totalBolts * (lifeScale - (1 - fade)) / fade) : 0;
-                }
-                @Override
-                public int getEnd(int totalBolts, float lifeScale) {
-                    return lifeScale < fade ? (int) (totalBolts * (lifeScale / fade)) : totalBolts;
-                }
+            return (totalBolts, lifeScale) -> {
+                int start = lifeScale > (1 - fade) ? (int) (totalBolts * (lifeScale - (1 - fade)) / fade) : 0;
+                int end = lifeScale < fade ? (int) (totalBolts * (lifeScale / fade)) : totalBolts;
+                return Pair.of(start, end);
             };
         }
 
-        int getStart(int totalBolts, float lifeScale);
-        int getEnd(int totalBolts, float lifeScale);
+        Pair<Integer, Integer> getRenderBounds(int totalBolts, float lifeScale);
     }
 }

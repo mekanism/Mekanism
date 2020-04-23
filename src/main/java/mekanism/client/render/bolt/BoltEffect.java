@@ -199,7 +199,7 @@ public class BoltEffect {
         /** A steady linear increase in perpendicular noise. */
         public static final SpreadFunction LINEAR_ASCENT = (progress) -> progress;
         /** A steady linear increase in perpendicular noise, followed by a steady decrease after the halfway point. */
-        public static final SpreadFunction LINEAR_ASCENT_DESCENT = (progress) -> (progress - Math.max(0, 2 * progress - 1)) / (0.5F);
+        public static final SpreadFunction LINEAR_ASCENT_DESCENT = (progress) -> (progress - Math.max(0, 2 * progress - 1)) / 0.5F;
         /** Represents a unit sine wave from 0 to PI, scaled by progress. */
         public static final SpreadFunction SINE = (progress) -> (float) Math.sin(Math.PI * progress);
 
