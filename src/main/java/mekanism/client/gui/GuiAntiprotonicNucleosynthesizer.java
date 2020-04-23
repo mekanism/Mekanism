@@ -15,8 +15,9 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.client.render.BoltRenderer;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.bolt.BoltEffect;
+import mekanism.client.render.bolt.BoltRenderer;
 import mekanism.common.Color;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -33,7 +34,7 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntityAntiprotonicNucleosynthesizer, MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> {
 
     private static final Vec3d from = new Vec3d(47, 50, 0), to = new Vec3d(146, 50, 0);
-    private BoltRenderer bolt = new BoltRenderer().withSize(1F).withColor(0.45F, 0.45F, 0.5F, 1);
+    private BoltRenderer bolt = BoltRenderer.create(BoltEffect.basic().withSize(1F).withColor(0.45F, 0.45F, 0.5F, 1), 3, 4, 0.1F);
 
     public GuiAntiprotonicNucleosynthesizer(MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -79,7 +80,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntity
         MatrixStack matrix = new MatrixStack();
         matrix.push();
         IRenderTypeBuffer.Impl renderer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-        bolt.render(from, to, (int) Math.min(Math.ceil(tile.getProcessRate() / 8F), 20), 12, MekanismRenderer.getPartialTick(), matrix, renderer, MekanismRenderer.FULL_LIGHT);
+        bolt.render(tile, from, to, (int) Math.min(Math.ceil(tile.getProcessRate() / 8F), 20), 12, MekanismRenderer.getPartialTick(), matrix, renderer, MekanismRenderer.FULL_LIGHT);
         renderer.finish(RenderType.getLightning());
         matrix.pop();
     }

@@ -3,7 +3,8 @@ package mekanism.client.render.tileentity;
 import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.model.ModelIndustrialAlarm;
-import mekanism.client.render.BoltRenderer;
+import mekanism.client.render.bolt.BoltEffect;
+import mekanism.client.render.bolt.BoltRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
@@ -18,7 +19,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
 
     private static final float ROTATE_SPEED = 10F;
     private final ModelIndustrialAlarm model = new ModelIndustrialAlarm();
-    private final BoltRenderer bolt = new BoltRenderer();
+    private final BoltRenderer bolt = BoltRenderer.create(BoltEffect.electricity());
 
     public RenderIndustrialAlarm(TileEntityRendererDispatcher renderer) {
         super(renderer);
@@ -29,7 +30,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
         performTranslations(tile, matrix);
         float rotation = (tile.getWorld().getDayTime() + partialTick) * ROTATE_SPEED % 360;
         model.render(matrix, renderer, light, overlayLight, Attribute.isActive(tile.getBlockState()), rotation, false);
-        bolt.render(new Vec3d(0, 0, 0), new Vec3d(15, 15, 15), 1, 15, partialTick, matrix, renderer, light);
+        bolt.render(tile, new Vec3d(0, 0, 0), new Vec3d(15, 15, 15), 1, 25, partialTick, matrix, renderer, light);
         matrix.pop();
     }
 
