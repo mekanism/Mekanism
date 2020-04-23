@@ -69,6 +69,7 @@ public class CommonWorldTickHandler {
         if (!world.isRemote) {
             MultiblockManager.tick(world);
             FrequencyManager.tick(world);
+            ChunkManager.tick((ServerWorld) world);
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;
             }

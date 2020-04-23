@@ -41,9 +41,9 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     /**
      * TileEntity implementing this component.
      */
-    private T tile;
+    private final T tile;
 
-    private Set<ChunkPos> chunkSet = new ObjectOpenHashSet<>();
+    private final Set<ChunkPos> chunkSet = new ObjectOpenHashSet<>();
 
     @Nullable
     private World prevWorld;
