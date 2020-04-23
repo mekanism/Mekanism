@@ -96,18 +96,18 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, 0x404040);
-        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 5, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 5, titleTextColor());
         if (tile.structure != null) {
             FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES)
                   .multiply(Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
             double rate = tile.structure.lowerVolume * (tile.structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
             rate = Math.min(rate, tile.structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
             renderScaledText(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(EnergyDisplay.of(energyMultiplier.multiply(tile.structure.clientFlow))),
-                  53, 26, 0x00CD00, 106);
-            renderScaledText(GeneratorsLang.TURBINE_FLOW_RATE.translate(tile.structure.clientFlow), 53, 35, 0x00CD00, 106);
-            renderScaledText(GeneratorsLang.TURBINE_CAPACITY.translate(tile.structure.getSteamCapacity()), 53, 44, 0x00CD00, 106);
-            renderScaledText(GeneratorsLang.TURBINE_MAX_FLOW.translate(rate), 53, 53, 0x00CD00, 106);
+                  53, 26, screenTextColor(), 106);
+            renderScaledText(GeneratorsLang.TURBINE_FLOW_RATE.translate(tile.structure.clientFlow), 53, 35, screenTextColor(), 106);
+            renderScaledText(GeneratorsLang.TURBINE_CAPACITY.translate(tile.structure.getSteamCapacity()), 53, 44, screenTextColor(), 106);
+            renderScaledText(GeneratorsLang.TURBINE_MAX_FLOW.translate(rate), 53, 53, screenTextColor(), 106);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

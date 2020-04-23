@@ -21,7 +21,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
     private static final ResourceLocation RADIO = MekanismUtils.getResource(ResourceType.GUI, "radio_button.png");
     private static final ResourceLocation SLIDER = MekanismUtils.getResource(ResourceType.GUI, "slider.png");
 
-    private static final int TEXT_COLOR = 0x00CD00;
+    private static final int TEXT_COLOR = screenTextColor();
 
     private GuiInnerScreen background;
     private Consumer<ItemStack> callback;

@@ -98,14 +98,14 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
         updateButtons();
 
         ITextComponent name = GeneratorsLang.FISSION_REACTOR.translate();
-        drawString(name, (getXSize() / 2) - (getStringWidth(name) / 2), 5, 0x404040);
-        renderScaledText(MekanismLang.STATUS.translate(tile.isReactorActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(tile.isReactorActive())), 48, 20, 0x00CD00, 100);
-        renderScaledText(GeneratorsLang.GAS_BURN_RATE.translate(tile.getLastBurnRate()), 48, 29, 0x00CD00, 100);
-        renderScaledText(MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()), 48, 38, 0x00CD00, 100);
-        renderScaledText(MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)), 48, 47, 0x00CD00, 100);
-        renderScaledText(GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString()), 48, 56, 0x00CD00, 100);
-        drawString(MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, 0x404040);
-        drawString(GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, 0x404040);
+        drawString(name, (getXSize() / 2) - (getStringWidth(name) / 2), 5, titleTextColor());
+        renderScaledText(MekanismLang.STATUS.translate(tile.isReactorActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(tile.isReactorActive())), 48, 20, screenTextColor(), 100);
+        renderScaledText(GeneratorsLang.GAS_BURN_RATE.translate(tile.getLastBurnRate()), 48, 29, screenTextColor(), 100);
+        renderScaledText(MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()), 48, 38, screenTextColor(), 100);
+        renderScaledText(MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)), 48, 47, screenTextColor(), 100);
+        renderScaledText(GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString()), 48, 56, screenTextColor(), 100);
+        drawString(MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, titleTextColor());
+        drawString(GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

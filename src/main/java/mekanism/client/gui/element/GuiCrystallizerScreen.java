@@ -45,15 +45,15 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
         super.renderForeground(mouseX, mouseY, xAxis, yAxis);
         GasStack gasStack = oreInfo.getInputGas();
         if (!gasStack.isEmpty()) {
-            drawString(TextComponentUtil.build(gasStack), 29, 15, 0x00CD00);
+            drawString(TextComponentUtil.build(gasStack), 29, 15, screenTextColor());
             if (gasStack.getType() instanceof Slurry && !renderStack.isEmpty()) {
-                drawString(MekanismLang.GENERIC_PARENTHESIS.translate(renderStack), 29, 24, 0x00CD00);
+                drawString(MekanismLang.GENERIC_PARENTHESIS.translate(renderStack), 29, 24, screenTextColor());
             } else {
                 GasToItemStackRecipe recipe = oreInfo.getRecipe();
                 if (recipe == null) {
-                    drawString(MekanismLang.NO_RECIPE.translate(), 29, 24, 0x00CD00);
+                    drawString(MekanismLang.NO_RECIPE.translate(), 29, 24, screenTextColor());
                 } else {
-                    drawString(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(gasStack)), 29, 24, 0x00CD00);
+                    drawString(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(gasStack)), 29, 24, screenTextColor());
                 }
             }
         }

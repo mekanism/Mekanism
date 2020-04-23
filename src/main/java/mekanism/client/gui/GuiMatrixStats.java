@@ -71,18 +71,18 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(MekanismLang.MATRIX_STATS.translate(), 0, getXSize(), 6, 0x404040);
+        drawCenteredText(MekanismLang.MATRIX_STATS.translate(), 0, getXSize(), 6, titleTextColor());
         drawString(MekanismLang.MATRIX_INPUT_AMOUNT.translate(), 53, 26, 0x797979);
-        drawString(EnergyDisplay.of(tile.getLastInput(), tile.getTransferCap()).getTextComponent(), 59, 35, 0x404040);
+        drawString(EnergyDisplay.of(tile.getLastInput(), tile.getTransferCap()).getTextComponent(), 59, 35, titleTextColor());
         drawString(MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(), 53, 46, 0x797979);
-        drawString(EnergyDisplay.of(tile.getLastOutput(), tile.getTransferCap()).getTextComponent(), 59, 55, 0x404040);
+        drawString(EnergyDisplay.of(tile.getLastOutput(), tile.getTransferCap()).getTextComponent(), 59, 55, titleTextColor());
         drawString(MekanismLang.MATRIX_DIMENSIONS.translate(), 8, 82, 0x797979);
         if (tile.structure != null) {
-            drawString(MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(tile.structure.volWidth, tile.structure.volHeight, tile.structure.volLength), 14, 91, 0x404040);
+            drawString(MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(tile.structure.volWidth, tile.structure.volHeight, tile.structure.volLength), 14, 91, titleTextColor());
         }
         drawString(MekanismLang.MATRIX_CONSTITUENTS.translate(), 8, 102, 0x797979);
-        drawString(MekanismLang.MATRIX_CELLS.translate(tile.getCellCount()), 14, 111, 0x404040);
-        drawString(MekanismLang.MATRIX_PROVIDERS.translate(tile.getProviderCount()), 14, 120, 0x404040);
+        drawString(MekanismLang.MATRIX_CELLS.translate(tile.getCellCount()), 14, 111, titleTextColor());
+        drawString(MekanismLang.MATRIX_PROVIDERS.translate(tile.getProviderCount()), 14, 120, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

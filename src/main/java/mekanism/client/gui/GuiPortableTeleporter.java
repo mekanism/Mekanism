@@ -250,12 +250,12 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(getName(), (getXSize() / 2) - (getStringWidth(getName()) / 2), 4, 0x404040);
-        drawString(OwnerDisplay.of(getOwner(), getOwnerUsername()).getTextComponent(), 8, !itemStack.isEmpty() ? getYSize() - 12 : (getYSize() - 96) + 4, 0x404040);
+        drawString(getName(), (getXSize() / 2) - (getStringWidth(getName()) / 2), 4, titleTextColor());
+        drawString(OwnerDisplay.of(getOwner(), getOwnerUsername()).getTextComponent(), 8, !itemStack.isEmpty() ? getYSize() - 12 : (getYSize() - 96) + 4, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
-        drawString(frequencyComponent, 32, 81, 0x404040);
+        drawString(frequencyComponent, 32, 81, titleTextColor());
         ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
-        drawString(securityComponent, 32, 91, 0x404040);
+        drawString(securityComponent, 32, 91, titleTextColor());
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (clientFreq != null) {
             renderScaledText(clientFreq.name, 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
@@ -264,7 +264,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
-        renderScaledText(MekanismLang.SET.translate(), 27, 104, 0x404040, 20);
+        renderScaledText(MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

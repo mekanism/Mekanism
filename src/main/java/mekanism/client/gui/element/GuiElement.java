@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
@@ -217,6 +218,14 @@ public abstract class GuiElement extends Widget {
 
     protected void drawTiledSprite(int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite) {
         GuiUtils.drawTiledSprite(xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, getBlitOffset());
+    }
+
+    protected static int titleTextColor() {
+        return MekanismConfig.client.guiTitleTextColor.get();
+    }
+
+    protected static int screenTextColor() {
+        return MekanismConfig.client.guiScreenTextColor.get();
     }
 
     @FunctionalInterface

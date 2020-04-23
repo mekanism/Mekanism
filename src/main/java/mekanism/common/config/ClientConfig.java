@@ -8,6 +8,8 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 
 public class ClientConfig extends BaseMekanismConfig {
 
+    private static final String GUI_CATEGORY = "gui";
+
     private final ForgeConfigSpec configSpec;
 
     public final CachedBooleanValue enablePlayerSounds;
@@ -25,6 +27,9 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedBooleanValue enableHUD;
     public final CachedIntValue radiationParticleRadius;
     public final CachedIntValue radiationParticleCount;
+
+    public final CachedIntValue guiTitleTextColor;
+    public final CachedIntValue guiScreenTextColor;
 
     ClientConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -60,6 +65,14 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("radiationParticleRadius", 30));
         radiationParticleCount = CachedIntValue.wrap(this, builder.comment("How many particles spawn when rendering radiation effects (scaled by radiation level).")
               .define("radiationParticleCount", 100));
+
+        builder.comment("GUI Config").push(GUI_CATEGORY);
+        guiTitleTextColor = CachedIntValue.wrap(this, builder.comment("Color of title text.")
+            .define("titleTextColor", 0x404040));
+        guiScreenTextColor = CachedIntValue.wrap(this, builder.comment("Color of text in black background/green text GUI elements.")
+            .define("screenTextColor", 0x3CFE9A));
+        builder.pop();
+
         builder.pop();
         configSpec = builder.build();
     }

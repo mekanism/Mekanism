@@ -39,13 +39,13 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(MekanismLang.BOILER_STATS.translate(), 0, getXSize(), 6, 0x404040);
-        drawString(MekanismLang.BOILER_MAX_WATER.translate(tile.structure == null ? 0 : tile.structure.waterTank.getCapacity()), 8, 26, 0x404040);
-        drawString(MekanismLang.BOILER_MAX_STEAM.translate(tile.structure == null ? 0 : tile.structure.steamTank.getCapacity()), 8, 35, 0x404040);
+        drawCenteredText(MekanismLang.BOILER_STATS.translate(), 0, getXSize(), 6, titleTextColor());
+        drawString(MekanismLang.BOILER_MAX_WATER.translate(tile.structure == null ? 0 : tile.structure.waterTank.getCapacity()), 8, 26, titleTextColor());
+        drawString(MekanismLang.BOILER_MAX_STEAM.translate(tile.structure == null ? 0 : tile.structure.steamTank.getCapacity()), 8, 35, titleTextColor());
         drawString(MekanismLang.BOILER_HEAT_TRANSFER.translate(), 8, 49, 0x797979);
-        drawString(MekanismLang.BOILER_HEATERS.translate(tile.getSuperheatingElements()), 14, 58, 0x404040);
+        drawString(MekanismLang.BOILER_HEATERS.translate(tile.getSuperheatingElements()), 14, 58, titleTextColor());
         long boilCapacity = (long) ((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getSuperheatingElements()) / HeatUtils.getVaporizationEnthalpy());
-        drawString(MekanismLang.BOILER_CAPACITY.translate(boilCapacity), 8, 72, 0x404040);
+        drawString(MekanismLang.BOILER_CAPACITY.translate(boilCapacity), 8, 72, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

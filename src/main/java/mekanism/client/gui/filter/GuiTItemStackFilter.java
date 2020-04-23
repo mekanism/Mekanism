@@ -155,23 +155,23 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void drawForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.MIN.translate(""), 128, 20, 0x404040);
-        drawString(MekanismLang.MAX.translate(""), 128, 32, 0x404040);
+        drawString(MekanismLang.MIN.translate(""), 128, 20, titleTextColor());
+        drawString(MekanismLang.MAX.translate(""), 128, 32, titleTextColor());
         if (tile.singleItem && filter.sizeMode) {
-            drawString(MekanismLang.ITEM_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.of(filter.sizeMode)), 141, 46, 0x404040);
+            drawString(MekanismLang.ITEM_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.of(filter.sizeMode)), 141, 46, titleTextColor());
         } else {
-            drawString(OnOff.of(filter.sizeMode).getTextComponent(), 141, 46, 0x404040);
+            drawString(OnOff.of(filter.sizeMode).getTextComponent(), 141, 46, titleTextColor());
         }
-        drawString(OnOff.of(filter.fuzzyMode).getTextComponent(), 24, 74, 0x404040);
+        drawString(OnOff.of(filter.fuzzyMode).getTextComponent(), 24, 74, titleTextColor());
         drawTransporterForegroundLayer(filter.getItemStack());
         if (!filter.getItemStack().isEmpty()) {
-            renderScaledText(filter.getItemStack().getDisplayName(), 35, 41, 0x00CD00, 89);
+            renderScaledText(filter.getItemStack().getDisplayName(), 35, 41, screenTextColor(), 89);
         }
     }
 
     @Override
     protected void drawTransporterForegroundLayer(@Nonnull ItemStack stack) {
-        drawString(OnOff.of(filter.allowDefault).getTextComponent(), 24, 64, 0x404040);
+        drawString(OnOff.of(filter.allowDefault).getTextComponent(), 24, 64, titleTextColor());
         renderItem(stack, 12, 19);
     }
 

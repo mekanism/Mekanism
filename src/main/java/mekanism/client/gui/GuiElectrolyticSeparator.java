@@ -49,7 +49,7 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), 45, 6, 0x404040);
+        drawString(tile.getName(), 45, 6, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

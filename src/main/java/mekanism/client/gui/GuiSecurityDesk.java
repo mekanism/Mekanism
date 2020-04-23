@@ -191,17 +191,17 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 4, titleTextColor());
         ITextComponent ownerComponent = OwnerDisplay.of(tile.ownerUUID, tile.clientOwner).getTextComponent();
-        drawString(ownerComponent, getXSize() - 7 - getStringWidth(ownerComponent), (getYSize() - 96) + 2, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
+        drawString(ownerComponent, getXSize() - 7 - getStringWidth(ownerComponent), (getYSize() - 96) + 2, titleTextColor());
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         drawCenteredText(MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, 0x787878);
         if (tile.frequency != null) {
-            drawString(MekanismLang.SECURITY.translate(tile.frequency.securityMode), 13, 103, 0x404040);
+            drawString(MekanismLang.SECURITY.translate(tile.frequency.securityMode), 13, 103, titleTextColor());
         } else {
-            drawString(MekanismLang.SECURITY_OFFLINE.translateColored(EnumColor.RED), 13, 103, 0x404040);
+            drawString(MekanismLang.SECURITY_OFFLINE.translateColored(EnumColor.RED), 13, 103, titleTextColor());
         }
-        renderScaledText(MekanismLang.SECURITY_ADD.translate(), 13, 70, 0x404040, 20);
+        renderScaledText(MekanismLang.SECURITY_ADD.translate(), 13, 70, titleTextColor(), 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

@@ -12,6 +12,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -251,6 +252,14 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
             }
         }
+    }
+
+    protected static int titleTextColor() {
+        return MekanismConfig.client.guiTitleTextColor.get();
+    }
+
+    protected static int screenTextColor() {
+        return MekanismConfig.client.guiScreenTextColor.get();
     }
 
     //Some blit param namings

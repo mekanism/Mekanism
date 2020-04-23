@@ -44,7 +44,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.CREATE_FILTER_TITLE.translate(), 43, 6, 0x404040);
+        drawString(MekanismLang.CREATE_FILTER_TITLE.translate(), 43, 6, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

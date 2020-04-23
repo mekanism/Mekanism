@@ -63,7 +63,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
     protected void drawTransporterForegroundLayer(@Nonnull ItemStack stack) {
         if (filter instanceof TransporterFilter) {
             TransporterFilter<?> tFilter = (TransporterFilter<?>) filter;
-            drawString(OnOff.of(tFilter.allowDefault).getTextComponent(), 24, 66, 0x404040);
+            drawString(OnOff.of(tFilter.allowDefault).getTextComponent(), 24, 66, titleTextColor());
             renderItem(stack, 12, 19);
         }
     }

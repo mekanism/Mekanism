@@ -103,7 +103,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         ITextComponent title = MekanismLang.MODULE_TWEAKER.translate();
-        drawString(title, (getXSize() / 2) - (getStringWidth(title) / 2), 6, 0x404040);
+        drawString(title, (getXSize() / 2) - (getStringWidth(title) / 2), 6, titleTextColor());
     }
 
     private void select(int index) {

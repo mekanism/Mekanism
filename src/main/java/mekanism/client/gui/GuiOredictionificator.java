@@ -76,8 +76,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, titleTextColor());
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         HashList<OredictionificatorFilter> filters = getFilters();
         for (int i = 0; i < FILTER_COUNT; i++) {
             OredictionificatorFilter filter = filters.getOrNull(scrollBar.getCurrentSelection() + i);
@@ -87,8 +87,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 }
                 int yStart = i * 22 + 18;
                 renderItem(renderStacks.get(filter), 13, yStart + 3);
-                drawString(MekanismLang.FILTER.translate(), 32, yStart + 2, 0x404040);
-                renderScaledText(filter.getFilterText(), 32, yStart + 2 + 9, 0x404040, 117);
+                drawString(MekanismLang.FILTER.translate(), 32, yStart + 2, titleTextColor());
+                renderScaledText(filter.getFilterText(), 32, yStart + 2 + 9, titleTextColor(), 117);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

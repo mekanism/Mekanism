@@ -23,8 +23,8 @@ public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismBlocks.PERSONAL_CHEST.getTextComponent(), 8, 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
+        drawString(MekanismBlocks.PERSONAL_CHEST.getTextComponent(), 8, 6, titleTextColor());
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

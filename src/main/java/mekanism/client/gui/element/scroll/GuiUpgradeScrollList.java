@@ -73,7 +73,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
             Upgrade upgrade = upgrades[index];
             int multipliedElement = elementHeight * i;
             //Always render the name and upgrade
-            drawString(TextComponentUtil.build(upgrade), relativeX + 13, relativeY + 3 + multipliedElement, 0x404040);
+            drawString(TextComponentUtil.build(upgrade), relativeX + 13, relativeY + 3 + multipliedElement, titleTextColor());
             renderUpgrade(upgrade, relativeX + 3, relativeY + 3 + multipliedElement, 0.5F);
         }
         // next render tooltips

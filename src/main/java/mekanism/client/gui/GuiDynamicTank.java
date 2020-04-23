@@ -38,15 +38,15 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, 0x404040);
-        drawString(MekanismLang.VOLUME.translate(tile.structure == null ? 0 : tile.structure.getVolume()), 53, 26, 0x00CD00);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, titleTextColor());
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
+        drawString(MekanismLang.VOLUME.translate(tile.structure == null ? 0 : tile.structure.getVolume()), 53, 26, screenTextColor());
         FluidStack fluidStored = tile.structure == null ? FluidStack.EMPTY : tile.structure.fluidTank.getFluid();
         if (fluidStored.isEmpty()) {
-            renderScaledText(MekanismLang.NO_FLUID.translate(), 53, 44, 0x00CD00, 74);
+            renderScaledText(MekanismLang.NO_FLUID.translate(), 53, 44, screenTextColor(), 74);
         } else {
-            renderScaledText(MekanismLang.GENERIC_PRE_COLON.translate(fluidStored), 53, 44, 0x00CD00, 74);
-            drawString(MekanismLang.GENERIC_MB.translate(fluidStored.getAmount()), 53, 53, 0x00CD00);
+            renderScaledText(MekanismLang.GENERIC_PRE_COLON.translate(fluidStored), 53, 44, screenTextColor(), 74);
+            drawString(MekanismLang.GENERIC_MB.translate(fluidStored.getAmount()), 53, 53, screenTextColor());
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

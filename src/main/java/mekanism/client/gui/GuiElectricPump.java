@@ -40,14 +40,14 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, 0x404040);
-        renderScaledText(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00, 74);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, titleTextColor());
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
+        renderScaledText(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent(), 51, 26, screenTextColor(), 74);
         FluidStack fluidStack = tile.fluidTank.getFluid();
         if (fluidStack.isEmpty()) {
-            renderScaledText(MekanismLang.NO_FLUID.translate(), 51, 35, 0x00CD00, 74);
+            renderScaledText(MekanismLang.NO_FLUID.translate(), 51, 35, screenTextColor(), 74);
         } else {
-            renderScaledText(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, fluidStack.getAmount()), 51, 35, 0x00CD00, 74);
+            renderScaledText(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, fluidStack.getAmount()), 51, 35, screenTextColor(), 74);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

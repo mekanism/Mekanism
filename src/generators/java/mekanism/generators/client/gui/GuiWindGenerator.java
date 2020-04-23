@@ -45,12 +45,12 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), 45, 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
-        renderScaledText(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00, 75);
+        drawString(tile.getName(), 45, 6, titleTextColor());
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+        renderScaledText(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent(), 51, 26, screenTextColor(), 75);
         renderScaledText(GeneratorsLang.POWER.translate(MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.windGenerationMin.get()
-              .multiply(tile.getCurrentMultiplier())).toString(2)), 51, 35, 0x00CD00, 75);
-        renderScaledText(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())), 51, 44, 0x00CD00, 75);
+              .multiply(tile.getCurrentMultiplier())).toString(2)), 51, 35, screenTextColor(), 75);
+        renderScaledText(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())), 51, 44, screenTextColor(), 75);
         int size = 44;
         if (!tile.getActive()) {
             size += 9;
@@ -58,7 +58,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
             if (tile.isBlacklistDimension()) {
                 reason = GeneratorsLang.NO_WIND;
             }
-            drawString(reason.translateColored(EnumColor.DARK_RED), 51, size, 0x00CD00);
+            drawString(reason.translateColored(EnumColor.DARK_RED), 51, size, screenTextColor());
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

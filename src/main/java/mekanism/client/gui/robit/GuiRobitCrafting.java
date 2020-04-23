@@ -21,8 +21,8 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.ROBIT_CRAFTING.translate(), 8, 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 93, 0x404040);
+        drawString(MekanismLang.ROBIT_CRAFTING.translate(), 8, 6, titleTextColor());
+        drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 93, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

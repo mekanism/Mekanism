@@ -84,13 +84,13 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.MINER_CONFIG.translate(), 43, 6, 0x404040);
-        drawString(MekanismLang.FILTERS.translate(), 11, 19, 0x00CD00);
-        drawString(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 11, 28, 0x00CD00);
-        drawString(MekanismLang.MINER_IS_INVERSE.translate(OnOff.of(tile.inverse)), 11, 131, 0x00CD00);
-        drawString(MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 11, 58, 0x00CD00);
-        drawString(MekanismLang.MIN.translate(tile.getMinY()), 11, 83, 0x00CD00);
-        drawString(MekanismLang.MAX.translate(tile.getMaxY()), 11, 108, 0x00CD00);
+        drawString(MekanismLang.MINER_CONFIG.translate(), 43, 6, titleTextColor());
+        drawString(MekanismLang.FILTERS.translate(), 11, 19, screenTextColor());
+        drawString(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 11, 28, screenTextColor());
+        drawString(MekanismLang.MINER_IS_INVERSE.translate(OnOff.of(tile.inverse)), 11, 131, screenTextColor());
+        drawString(MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 11, 58, screenTextColor());
+        drawString(MekanismLang.MIN.translate(tile.getMinY()), 11, 83, screenTextColor());
+        drawString(MekanismLang.MAX.translate(tile.getMaxY()), 11, 108, screenTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

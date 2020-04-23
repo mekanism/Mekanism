@@ -60,10 +60,10 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 5, 0x404040);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 5, titleTextColor());
         drawCenteredText(GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getReactor() == null ? MekanismLang.NONE : tile.getReactor().getInjectionRate()),
-              0, getXSize(), 35, 0x404040);
-        drawString(GeneratorsLang.REACTOR_EDIT_RATE.translate(), 50, 117, 0x404040);
+              0, getXSize(), 35, titleTextColor());
+        drawString(GeneratorsLang.REACTOR_EDIT_RATE.translate(), 50, 117, titleTextColor());
     }
 
     @Override

@@ -75,7 +75,7 @@ public class ReactorLogicButton<TYPE extends Enum<?> & IReactorLogicMode> extend
         if (mode == null) return;
         int typeOffset = 22 * index;
         guiObj.renderItem(mode.getRenderStack(), 20, 35 + typeOffset);
-        drawString(TextComponentUtil.build(EnumColor.WHITE, mode), 39, 34 + typeOffset, 0x404040);
+        drawString(TextComponentUtil.build(EnumColor.WHITE, mode), 39, 34 + typeOffset, titleTextColor());
         super.renderForeground(mouseX, mouseY, xAxis, yAxis);
     }
 }

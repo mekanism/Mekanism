@@ -59,7 +59,7 @@ public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher,
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), 45, 4, 0x404040);
+        drawString(tile.getName(), 45, 4, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         renderItem(BUCKET, 6, 65);
     }

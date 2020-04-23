@@ -70,8 +70,8 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
-        drawString(MekanismLang.UPGRADES_SUPPORTED.translate(), 26, 59, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+        drawString(MekanismLang.UPGRADES_SUPPORTED.translate(), 26, 59, titleTextColor());
         if (scrollList.hasSelection()) {
             Upgrade selectedType = scrollList.getSelection();
             int amount = tile.getComponent().getUpgrades(selectedType);
@@ -90,7 +90,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
             Upgrade[] supported = supportedTypes.toArray(new Upgrade[0]);
             if (supported.length > supportedIndex) {
                 renderUpgrade(supported[supportedIndex], 80, 57, 0.8F);
-                drawString(TextComponentUtil.build(supported[supportedIndex]), 96, 59, 0x404040);
+                drawString(TextComponentUtil.build(supported[supportedIndex]), 96, 59, titleTextColor());
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -99,7 +99,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
     private void renderText(ITextComponent component, int x, int y, float size) {
         RenderSystem.pushMatrix();
         RenderSystem.scalef(size, size, size);
-        drawString(component, (int) ((1F / size) * x), (int) ((1F / size) * y), 0x00CD00);
+        drawString(component, (int) ((1F / size) * x), (int) ((1F / size) * y), screenTextColor());
         RenderSystem.popMatrix();
     }
 

@@ -65,7 +65,7 @@ public class GuiTextScrollList extends GuiScrollList {
             for (int i = 0; i < focusedElements; i++) {
                 int index = scrollIndex + i;
                 if (index < maxElements) {
-                    renderScaledText(textEntries.get(index), relativeX + 2, relativeY + 2 + elementHeight * i, 0x00CD00, barX - x - 2);
+                    renderScaledText(textEntries.get(index), relativeX + 2, relativeY + 2 + elementHeight * i, screenTextColor(), barX - x - 2);
                 }
             }
         }

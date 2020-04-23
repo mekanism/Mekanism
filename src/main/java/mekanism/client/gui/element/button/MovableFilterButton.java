@@ -55,17 +55,17 @@ public class MovableFilterButton extends FilterButton {
         int y = this.y - guiObj.getTop();
         IFilter<?> filter = filters.get().getOrNull(filterIndex.getAsInt() + index);
         if (filter instanceof IItemStackFilter) {
-            renderScaledText(MekanismLang.ITEM_FILTER.translate(), x + 22, y + 2, 0x404040, 60);
+            renderScaledText(MekanismLang.ITEM_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
         } else if (filter instanceof ITagFilter) {
-            renderScaledText(MekanismLang.TAG_FILTER.translate(), x + 22, y + 2, 0x404040, 60);
+            renderScaledText(MekanismLang.TAG_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
         } else if (filter instanceof IMaterialFilter) {
-            renderScaledText(MekanismLang.MATERIAL_FILTER.translate(), x + 22, y + 2, 0x404040, 60);
+            renderScaledText(MekanismLang.MATERIAL_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
         } else if (filter instanceof IModIDFilter) {
-            renderScaledText(MekanismLang.MODID_FILTER.translate(), x + 22, y + 2, 0x404040, 60);
+            renderScaledText(MekanismLang.MODID_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
         }
         if (filter instanceof TransporterFilter<?>) {
             TransporterFilter<?> sorterFilter = (TransporterFilter<?>) filter;
-            drawString(sorterFilter.color == null ? MekanismLang.NONE.translate() : sorterFilter.color.getColoredName(), x + 22, y + 11, 0x404040);
+            drawString(sorterFilter.color == null ? MekanismLang.NONE.translate() : sorterFilter.color.getColoredName(), x + 22, y + 11, titleTextColor());
         }
     }
 

@@ -65,16 +65,16 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         // Write to info display
-        drawString(tile.getName(), 43, 6, 0x404040);
-        drawString(MekanismLang.FILTERS.translate(), 11, 19, 0x00CD00);
-        drawString(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 11, 28, 0x00CD00);
-        drawString(MekanismLang.SORTER_SINGLE_ITEM.translate(), 12, 48, 0x00CD00);
-        drawString(OnOff.of(tile.singleItem).getTextComponent(), 27, 60, 0x00CD00);
-        drawString(MekanismLang.SORTER_ROUND_ROBIN.translate(), 12, 74, 0x00CD00);
-        drawString(OnOff.of(tile.roundRobin).getTextComponent(), 27, 86, 0x00CD00);
-        drawString(MekanismLang.SORTER_AUTO_EJECT.translate(), 12, 100, 0x00CD00);
-        drawString(OnOff.of(tile.autoEject).getTextComponent(), 27, 112, 0x00CD00);
-        drawString(MekanismLang.SORTER_DEFAULT.translate(), 12, 126, 0x00CD00);
+        drawString(tile.getName(), 43, 6, titleTextColor());
+        drawString(MekanismLang.FILTERS.translate(), 11, 19, screenTextColor());
+        drawString(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 11, 28, screenTextColor());
+        drawString(MekanismLang.SORTER_SINGLE_ITEM.translate(), 12, 48, screenTextColor());
+        drawString(OnOff.of(tile.singleItem).getTextComponent(), 27, 60, screenTextColor());
+        drawString(MekanismLang.SORTER_ROUND_ROBIN.translate(), 12, 74, screenTextColor());
+        drawString(OnOff.of(tile.roundRobin).getTextComponent(), 27, 86, screenTextColor());
+        drawString(MekanismLang.SORTER_AUTO_EJECT.translate(), 12, 100, screenTextColor());
+        drawString(OnOff.of(tile.autoEject).getTextComponent(), 27, 112, screenTextColor());
+        drawString(MekanismLang.SORTER_DEFAULT.translate(), 12, 126, screenTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

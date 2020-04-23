@@ -100,8 +100,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), 69, 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
+        drawString(tile.getName(), 69, 6, titleTextColor());
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         ILangEntry runningType;
         if (tile.getEnergyContainer().getEnergyPerTick().greaterThan(tile.getEnergyContainer().getMaxEnergy())) {
             runningType = MekanismLang.MINER_LOW_POWER;
@@ -110,14 +110,14 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         } else {
             runningType = MekanismLang.IDLE;
         }
-        drawString(runningType.translate(), 9, 10, 0x00CD00);
-        drawString(tile.searcher.state.getTextComponent(), 9, 19, 0x00CD00);
+        drawString(runningType.translate(), 9, 10, screenTextColor());
+        drawString(tile.searcher.state.getTextComponent(), 9, 19, screenTextColor());
 
-        drawString(MekanismLang.EJECT.translate(OnOff.of(tile.doEject)), 9, 30, 0x00CD00);
-        drawString(MekanismLang.MINER_AUTO_PULL.translate(OnOff.of(tile.doPull)), 9, 39, 0x00CD00);
-        drawString(MekanismLang.MINER_SILK_ENABLED.translate(OnOff.of(tile.getSilkTouch())), 9, 48, 0x00CD00);
-        drawString(MekanismLang.MINER_TO_MINE.translate(), 9, 59, 0x00CD00);
-        drawString(TextComponentUtil.build(tile.cachedToMine), 9, 68, 0x00CD00);
+        drawString(MekanismLang.EJECT.translate(OnOff.of(tile.doEject)), 9, 30, screenTextColor());
+        drawString(MekanismLang.MINER_AUTO_PULL.translate(OnOff.of(tile.doPull)), 9, 39, screenTextColor());
+        drawString(MekanismLang.MINER_SILK_ENABLED.translate(OnOff.of(tile.getSilkTouch())), 9, 48, screenTextColor());
+        drawString(MekanismLang.MINER_TO_MINE.translate(), 9, 59, screenTextColor());
+        drawString(TextComponentUtil.build(tile.cachedToMine), 9, 68, screenTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

@@ -46,8 +46,8 @@ public class GuiChemicalInfuser extends GuiMekanismTile<TileEntityChemicalInfuse
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.CHEMICAL_INFUSER_SHORT.translate(), 5, 5, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, 0x404040);
+        drawString(MekanismLang.CHEMICAL_INFUSER_SHORT.translate(), 5, 5, titleTextColor());
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

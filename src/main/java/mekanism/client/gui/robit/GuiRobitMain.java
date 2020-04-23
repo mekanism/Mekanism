@@ -127,14 +127,14 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.ROBIT.translate(), 76, 6, 0x404040);
+        drawString(MekanismLang.ROBIT.translate(), 76, 6, titleTextColor());
         if (!nameChangeField.visible) {
             CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
-            renderScaledText(MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, 0x00CD00, 119);
-            renderScaledText(MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer().getEnergy(), robit.getEnergyContainer().getMaxEnergy())), 29, 36 - 4, 0x00CD00, 119);
-            renderScaledText(MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, 0x00CD00, 119);
-            renderScaledText(MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()), 29, 54 - 4, 0x00CD00, 119);
-            renderScaledText(MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, 0x00CD00, 119);
+            renderScaledText(MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, screenTextColor(), 119);
+            renderScaledText(MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer().getEnergy(), robit.getEnergyContainer().getMaxEnergy())), 29, 36 - 4, screenTextColor(), 119);
+            renderScaledText(MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, screenTextColor(), 119);
+            renderScaledText(MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()), 29, 54 - 4, screenTextColor(), 119);
+            renderScaledText(MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, screenTextColor(), 119);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
