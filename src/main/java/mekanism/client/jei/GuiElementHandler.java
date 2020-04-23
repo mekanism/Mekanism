@@ -20,7 +20,7 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
         for (IGuiEventListener child : children) {
             if (child instanceof GuiTexturedElement) {
                 GuiTexturedElement element = (GuiTexturedElement) child;
-                //TODO: Only do this if it goes past the border
+                //TODO: Only add this to the "extra areas" if it goes past the border
                 extraAreas.add(new Rectangle2d(element.x, element.y, element.getWidth(), element.getHeight()));
             }
         }
@@ -29,12 +29,13 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
 
     @Override
     public Object getIngredientUnderMouse(GuiMekanism gui, double mouseX, double mouseY) {
-        return null;
+        return gui.children().stream().filter(element -> element instanceof IJEIIngredientHelper && element.isMouseOver(mouseX, mouseY))
+              .findFirst().map(element -> ((IJEIIngredientHelper) element).getIngredient()).orElse(null);
     }
 
     @Override
     public Collection<IGuiClickableArea> getGuiClickableAreas(GuiMekanism gui) {
-        //TODO: Evaluate, maybe we want to make this be all GuiProgress elements
+        //TODO: Create a flag for GuiProgress elements that allows for them to know they are for JEI
         return Collections.emptyList();
     }
 }

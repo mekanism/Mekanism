@@ -291,7 +291,7 @@
   "description.mekanism.chemical_injection_chamber": "Une machine d'élite capable de transformer les minerais en quatre fragments, servant d'étape initiale au quadruplage du minerai.",
   "description.mekanism.chemical_oxidizer": "Une machine capable d'oxyder des matériaux solides en phase gazeuse.",
   "description.mekanism.chemical_washer": "Une machine ultime qui nettoie le lisier non traité et le prépare pour la cristallisation.",
-  "description.mekanism.combiner": "Une machine utilisée pour combiner les poussières et les pierres pour former leurs équivalents en minerai.",
+  "description.mekanism.combiner": "A machine used to combine items together. For example, dusts and cobblestone to form their ore counterparts.",
   "description.mekanism.copper_ore": "Un matériau conducteur commun qui peut être utilisé dans la production de fils. Sa capacité à résister à de fortes chaleurs en fait également un élément essentiel des machines de pointe.",
   "description.mekanism.crusher": "Une machine utilisée pour broyer les lingots en leurs équivalents de poussière, ainsi que pour effectuer de nombreuses autres opérations.",
   "description.mekanism.digital_miner": "Une machine à extraction automatique hautement perfectionnée, à base de filtres, qui peut extraire n'importe quel bloc dans un rayon de 32 blocs (maximum).",

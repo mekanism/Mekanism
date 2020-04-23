@@ -171,7 +171,7 @@
   "entity.mekanismadditions.obsidian_tnt": "Обсидиановый динамит",
   "item.mekanismadditions.baby_creeper_spawn_egg": "Яйцо призыва малыша крипера",
   "item.mekanismadditions.baby_enderman_spawn_egg": "Яйцо призыва малыша эндермена",
-  "item.mekanismadditions.baby_skeleton_spawn_egg": "Скелет-ребёнок Spawn Egg",
+  "item.mekanismadditions.baby_skeleton_spawn_egg": "Яйцо призыва малыша скелета",
   "item.mekanismadditions.baby_stray_spawn_egg": "Яйцо призыва малыша зимогора",
   "item.mekanismadditions.baby_wither_skeleton_spawn_egg": "Яйцо призыва малыша скелета-иссушителя",
   "item.mekanismadditions.black_balloon": "Черный Воздушный шар",
@@ -191,8 +191,8 @@
   "item.mekanismadditions.walkie_talkie": "Переносная рация",
   "item.mekanismadditions.white_balloon": "Белый Воздушный шар",
   "item.mekanismadditions.yellow_balloon": "Желтый Воздушный шар",
-  "key.mekanismadditions.voice": "Voice",
+  "key.mekanismadditions.voice": "Голос",
   "walkie.mekanismadditions.channel": "Канал: %s",
   "walkie.mekanismadditions.channel.change": "Канал изменен на: %s",
-  "walkie.mekanismadditions.disabled": "Voice server disabled."
+  "walkie.mekanismadditions.disabled": "Голосовой сервер отключен."
 }

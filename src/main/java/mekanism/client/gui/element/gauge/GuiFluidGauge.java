@@ -83,7 +83,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
         if (dummy) {
             return height - 2;
         }
-        IExtendedFluidTank tank = infoHandler.getTank();
+        IExtendedFluidTank tank = getTank();
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
@@ -96,10 +96,10 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
 
     @Override
     public TextureAtlasSprite getIcon() {
-        if (dummy || infoHandler.getTank() == null) {
+        if (dummy || getTank() == null) {
             return MekanismRenderer.getFluidTexture(dummyType, FluidType.STILL);
         }
-        FluidStack fluid = infoHandler.getTank().getFluid();
+        FluidStack fluid = getTank().getFluid();
         return MekanismRenderer.getFluidTexture(fluid.isEmpty() ? dummyType : fluid, FluidType.STILL);
     }
 
@@ -113,7 +113,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
         if (dummy) {
             return TextComponentUtil.build(dummyType);
         }
-        IExtendedFluidTank tank = infoHandler.getTank();
+        IExtendedFluidTank tank = getTank();
         if (tank == null || tank.isEmpty()) {
             return MekanismLang.EMPTY.translate();
         }
@@ -127,7 +127,13 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
 
     @Override
     protected void applyRenderColor() {
-        MekanismRenderer.color(dummy || infoHandler.getTank() == null ? dummyType : infoHandler.getTank().getFluid());
+        MekanismRenderer.color(dummy || getTank() == null ? dummyType : getTank().getFluid());
+    }
+
+    @Nullable
+    @Override
+    public Object getIngredient() {
+        return getTank().isEmpty() ? null : getTank().getFluid();
     }
 
     public interface IFluidInfoHandler extends ITankInfoHandler<IExtendedFluidTank> {

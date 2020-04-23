@@ -25,7 +25,7 @@
   "description.mekanismgenerators.advanced_solar_generator": "مولد كهربائي متقدم يمتص بشكل مباشر أشعة الشمس مع ضياع قليل لإنتاج الطاقة.",
   "description.mekanismgenerators.bio_generator": "مولد كهربائي يحرق المواد العضوية في العالم لإنتاج الطاقة.",
   "description.mekanismgenerators.electromagnetic_coil": "كتلة تحول الطاقة الحركية من مجمع دوران إلى كهرباء صالحة للاستعمال. يمكن أن توضع هذه في أي ترتيب فوق مجمع الدوران الخاص بك، طالما أنها تلامس بعضها بعضا والمجمّع نفسه.",
-  "description.mekanismgenerators.gas_burning_generator": "مولد كهربائي يستخدم الغازات الجزيئية المتباينة لإنتاج الطاقة.",
+  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the varying molecular gases to produce energy.",
   "description.mekanismgenerators.heat_generator": "مولد يستخدم حرارة الحمم أو غيرها من الموارد القابلة للحرق لإنتاج الطاقة.",
   "description.mekanismgenerators.laser_focus_matrix": "لوحة مفاعلات زجاجية قادرة على امتصاص الطاقة الضوئية ومن ثم تسخين مفاعل الانصهار.",
   "description.mekanismgenerators.reactor.logic.capacity": "تم تلبية القدرة الحرارية الأساسية للمفاعل",

@@ -25,7 +25,7 @@
   "description.mekanismgenerators.advanced_solar_generator": "Un generator avansat care absoarbe direct razele soarelui cu pierdere mică pentru a produce energie.",
   "description.mekanismgenerators.bio_generator": "Un generator care arde materiale organice din lume pentru a produce energie.",
   "description.mekanismgenerators.electromagnetic_coil": "Un bloc care transformă energia cinetică dintr-un Complex Rotational în electricitate utilizabilă. Acestea pot fi plasate în orice aranjament deasupra Complexului dvs. Rotational, atât timp cât toate se ating unul pe celălalt şi complexul în sine.",
-  "description.mekanismgenerators.gas_burning_generator": "Un generator care exploatează gazele variabile moleculare pentru a produce energie.",
+  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the varying molecular gases to produce energy.",
   "description.mekanismgenerators.heat_generator": "Un generator care utilizează căldura de lavă sau alte resurse arse pentru a produce energie.",
   "description.mekanismgenerators.laser_focus_matrix": "Un panou de sticlă de reactor capabil să absoarbă energia optică și, prin urmare, să încălzească reactorul de fuziune.",
   "description.mekanismgenerators.reactor.logic.capacity": "Capacitatea centrală de încălzire a reactorului a fost îndeplinită",

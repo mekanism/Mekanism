@@ -91,6 +91,18 @@ public class ChunkManager extends WorldSavedData {
         });
     }
 
+    public static void tick(ServerWorld world) {
+        ChunkManager instance = getInstance(world);
+        if (!instance.chunks.isEmpty()) {
+            //If we have any chunks loaded we need to reset the update entity tick
+            // This is similar to what vanilla does for when it has force loaded chunks
+            //TODO: Eventually we may want to validate that the tickets we are tracking
+            // are of the correct level and should be ticked, but as all our chunks we force load
+            // are supposed to tick, for now we just check if we are tracking any chunks
+            world.resetUpdateEntityTick();
+        }
+    }
+
     public static ChunkManager getInstance(ServerWorld world) {
         return world.getSavedData().getOrCreate(ChunkManager::new, SAVEDATA_KEY);
     }

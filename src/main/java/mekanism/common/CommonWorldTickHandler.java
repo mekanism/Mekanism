@@ -71,6 +71,8 @@ public class CommonWorldTickHandler {
             MultiblockManager.tick(world);
             FrequencyManager.tick(world);
             Mekanism.radiationManager.tickServer(world);
+            ChunkManager.tick((ServerWorld) world);
+
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;
             }

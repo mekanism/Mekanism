@@ -82,7 +82,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
         if (dummy) {
             return height - 2;
         }
-        IGasTank tank = infoHandler.getTank();
+        IGasTank tank = getTank();
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
@@ -95,7 +95,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
         if (dummy) {
             return MekanismRenderer.getChemicalTexture(dummyType);
         }
-        return infoHandler.getTank() == null || infoHandler.getTank().isEmpty() ? null : MekanismRenderer.getChemicalTexture(infoHandler.getTank().getType());
+        return getTank() == null || getTank().isEmpty() ? null : MekanismRenderer.getChemicalTexture(getTank().getType());
     }
 
     @Override
@@ -108,7 +108,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
         if (dummy) {
             return TextComponentUtil.build(dummyType);
         }
-        IGasTank tank = infoHandler.getTank();
+        IGasTank tank = getTank();
         if (tank == null || tank.isEmpty()) {
             return MekanismLang.EMPTY.translate();
         }
@@ -121,11 +121,17 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
 
     @Override
     protected void applyRenderColor() {
-        if (dummy || infoHandler.getTank() == null) {
+        if (dummy || getTank() == null) {
             MekanismRenderer.color(dummyType);
         } else {
-            MekanismRenderer.color(infoHandler.getTank().getStack());
+            MekanismRenderer.color(getTank().getStack());
         }
+    }
+
+    @Nullable
+    @Override
+    public Object getIngredient() {
+        return getTank().isEmpty() ? null : getTank().getStack();
     }
 
     public interface IGasInfoHandler extends ITankInfoHandler<IGasTank> {

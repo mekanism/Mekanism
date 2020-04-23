@@ -291,7 +291,7 @@
   "description.mekanism.chemical_injection_chamber": "En elit maskin som kan bearbeta malmer i fyra skärvor och fungera som det första steget av 400% malmbearbetning.",
   "description.mekanism.chemical_oxidizer": "En maskin som kan oxidera fasta material i gasfas.",
   "description.mekanism.chemical_washer": "En ultimat maskin som rengör obearbetad flytgödsel och förbereder den för kristallisering.",
-  "description.mekanism.combiner": "En maskin som används för att kombinera damm och kullersten för att bilda sina malmmotsvarigheter.",
+  "description.mekanism.combiner": "A machine used to combine items together. For example, dusts and cobblestone to form their ore counterparts.",
   "description.mekanism.copper_ore": "Ett gemensamt, ledande material som kan användas vid tillverkning av ledningar. Förmågan att tåla hög värme gör det också viktigt för avancerade maskiner.",
   "description.mekanism.crusher": "En maskin som används för att krossa göt till sina damm motsvarigheter, samt utföra många andra operationer.",
   "description.mekanism.digital_miner": "En högt avancerad, filterbaserad, auto-gruvarbetare som kan bryta vilket block du än säger till det inom en 32 block (max) radie.",
