@@ -6,10 +6,10 @@ import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
-import mekanism.common.base.ITileComponent;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.tile.component.ITileComponent;
 
 public class SawmillUpgradeData extends MachineUpgradeData {
 

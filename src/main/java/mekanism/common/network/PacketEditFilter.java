@@ -1,11 +1,11 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
-import mekanism.common.HashList;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.transporter.TransporterFilter;
+import mekanism.common.lib.HashList;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityOredictionificator;

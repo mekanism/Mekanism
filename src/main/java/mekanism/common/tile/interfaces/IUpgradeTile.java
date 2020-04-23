@@ -1,4 +1,4 @@
-package mekanism.common.base;
+package mekanism.common.tile.interfaces;
 
 import mekanism.api.Upgrade;
 import mekanism.common.tile.component.TileComponentUpgrade;

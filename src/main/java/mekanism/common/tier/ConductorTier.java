@@ -3,8 +3,8 @@ package mekanism.common.tier;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import mekanism.common.Color;
 import mekanism.common.config.value.CachedDoubleValue;
+import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
 
 public enum ConductorTier implements ITier {

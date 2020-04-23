@@ -3,7 +3,7 @@ package mekanism.client.render;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mekanism.api.heat.HeatAPI;
-import mekanism.common.Color;
+import mekanism.common.lib.Color;
 
 public class ColorTemperature extends Color {
 

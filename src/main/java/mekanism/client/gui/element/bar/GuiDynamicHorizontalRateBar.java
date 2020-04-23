@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Color;
+import mekanism.common.lib.Color;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;

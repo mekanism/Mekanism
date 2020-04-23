@@ -1,21 +1,26 @@
 package mekanism.client.render.bolt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
+import org.apache.commons.lang3.tuple.Pair;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import mekanism.common.Color;
+import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 
 public class BoltEffect {
 
+    public static final BoltEffect ELECTRICITY = new BoltEffect().withColor(0.54F, 0.91F, 1F, 0.8F).withNoise(0.2F, 0.3F)
+          .withBranching(0.1F, 0.6F).withSpreader(SegmentSpreader.memory(0.85F));
+
     private Random random = new Random();
 
     /** How large the individual bolts should render. */
-    private float size = 0.05F;
+    private float size = 0.1F;
 
     /** How much variance is allowed in segment lengths (parallel to straight line). */
     private float parallelNoise = 0.1F;
@@ -35,12 +40,6 @@ public class BoltEffect {
 
     public static BoltEffect basic() {
         return new BoltEffect();
-    }
-
-    public static BoltEffect electricity() {
-        // looks good with >20 segments
-        return new BoltEffect().withColor(0.54F, 0.91F, 1F, 0.8F).withNoise(0.2F, 0.3F).withBranching(0.1F, 0.6F)
-              .withSpreader(SegmentSpreader.memory(0.85F));
     }
 
     protected BoltEffect() {
@@ -104,22 +103,23 @@ public class BoltEffect {
                     // new vector is original + current progress through segments + perpendicular change
                     segmentEnd = start.add(diff.scale(progress)).add(perpendicularDist);
                 }
-                QuadData quadData = createQuads(data.cache, data.start, segmentEnd, Color.rgba(red, green, blue, alpha));
-                quads.add(quadData.quads);
+                float boltSize = size * (0.5F + (1 - progress) * 0.5F);
+                Pair<BoltQuads, QuadCache> quadData = createQuads(data.cache, data.start, segmentEnd, Color.rgba(red, green, blue, alpha), boltSize);
+                quads.add(quadData.getLeft());
 
                 if (segmentEnd == end)
                     // break if we've reached the defined end point
                     break;
                 if (!data.isBranch) {
                     // continue the bolt if this is the primary (non-branch) segment
-                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.cache, false));
+                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.getRight(), false));
                 } else if (random.nextFloat() < branchContinuationFactor) {
                     // branch continuation
-                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.cache, true));
+                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.getRight(), true));
                 }
                 while (random.nextFloat() < branchInitiationFactor * (1 - progress))
                     // branch initiation (probability decreases as progress increases)
-                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.cache, true));
+                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.getRight(), true));
             }
         }
         return quads;
@@ -130,7 +130,7 @@ public class BoltEffect {
         return vec.crossProduct(newVec).normalize();
     }
 
-    private QuadData createQuads(QuadCache cache, Vec3d startPos, Vec3d end, Color color) {
+    private Pair<BoltQuads, QuadCache> createQuads(QuadCache cache, Vec3d startPos, Vec3d end, Color color, float size) {
         Vec3d diff = end.subtract(startPos);
         Vec3d rightAdd = diff.crossProduct(new Vec3d(0.5, 0.5, 0.5)).normalize().scale(size);
         Vec3d backAdd = diff.crossProduct(rightAdd).normalize().scale(size), rightAddSplit = rightAdd.scale(0.5F);
@@ -147,16 +147,7 @@ public class BoltEffect {
         quads.addQuad(startRight, endRight, endBack, startBack);
         quads.addQuad(startBack, endBack, endRight, startRight);
 
-        return new QuadData(quads, new QuadCache(end, endRight, endBack));
-    }
-
-    private static class QuadData {
-        private BoltQuads quads;
-        private QuadCache cache;
-        public QuadData(BoltQuads quads, QuadCache cache) {
-            this.quads = quads;
-            this.cache = cache;
-        }
+        return Pair.of(quads, new QuadCache(end, endRight, endBack));
     }
 
     private static class QuadCache {
@@ -194,15 +185,13 @@ public class BoltEffect {
         }
 
         protected void addQuad(Vec3d... quadVecs) {
-            for (Vec3d vec : quadVecs) {
-                vecs.add(vec);
-            }
+            Arrays.stream(quadVecs).forEach(v -> vecs.add(v));
         }
 
         protected void render(Matrix4f matrix, IVertexBuilder buffer, float alpha) {
-            for (Vec3d vec : vecs) {
-                buffer.pos(matrix, (float) vec.x, (float) vec.y, (float) vec.z).color(color.r, color.g, color.b, (int) (color.a * alpha)).endVertex();
-            }
+            vecs.forEach(v -> buffer.pos(matrix, (float) v.x, (float) v.y, (float) v.z)
+                                    .color(color.r, color.g, color.b, (int) (color.a * alpha))
+                                    .endVertex());
         }
     }
 

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 import mekanism.api.Upgrade;
 import mekanism.api.Upgrade.IUpgradeInfoHandler;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.util.text.ITextComponent;
 

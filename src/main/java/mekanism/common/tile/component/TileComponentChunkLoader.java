@@ -9,7 +9,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.common.base.ITileComponent;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;

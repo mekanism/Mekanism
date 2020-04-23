@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.lib;
 
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 

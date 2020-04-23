@@ -18,9 +18,10 @@ import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.bolt.BoltEffect;
 import mekanism.client.render.bolt.BoltRenderer;
-import mekanism.common.Color;
+import mekanism.client.render.bolt.BoltRenderer.FadeFunction;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.lib.Color;
 import mekanism.common.tile.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
@@ -33,8 +34,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntityAntiprotonicNucleosynthesizer, MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> {
 
-    private static final Vec3d from = new Vec3d(47, 50, 0), to = new Vec3d(146, 50, 0);
-    private BoltRenderer bolt = BoltRenderer.create(BoltEffect.basic().withSize(1F).withColor(0.45F, 0.45F, 0.5F, 1), 3, 4, 0.1F);
+    private static final Vec3d from = new Vec3d(47, 50, 0), to = new Vec3d(147, 50, 0);
+    private BoltRenderer bolt = BoltRenderer.create(BoltEffect.basic().withSize(1F).withColor(0.45F, 0.45F, 0.5F, 1), 2, 2, FadeFunction.NONE);
 
     public GuiAntiprotonicNucleosynthesizer(MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

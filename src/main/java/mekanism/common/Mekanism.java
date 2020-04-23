@@ -34,6 +34,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.lib.Version;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketHandler;

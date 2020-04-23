@@ -1,4 +1,4 @@
-package mekanism.common.base;
+package mekanism.common.tile.component;
 
 import mekanism.common.inventory.container.MekanismContainer;
 import net.minecraft.nbt.CompoundNBT;

@@ -1,9 +1,9 @@
 package mekanism.defense.common;
 
 import mekanism.common.Mekanism;
-import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismModConfig;
+import mekanism.common.lib.Version;
 import mekanism.defense.common.config.MekanismDefenseConfig;
 import mekanism.defense.common.network.DefensePacketHandler;
 import mekanism.defense.common.registries.DefenseBlocks;

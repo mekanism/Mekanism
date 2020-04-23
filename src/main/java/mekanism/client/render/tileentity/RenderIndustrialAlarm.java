@@ -19,7 +19,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
 
     private static final float ROTATE_SPEED = 10F;
     private final ModelIndustrialAlarm model = new ModelIndustrialAlarm();
-    private final BoltRenderer bolt = BoltRenderer.create(BoltEffect.electricity());
+    private final BoltRenderer bolt = BoltRenderer.create(BoltEffect.ELECTRICITY);
 
     public RenderIndustrialAlarm(TileEntityRendererDispatcher renderer) {
         super(renderer);

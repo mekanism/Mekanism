@@ -1,6 +1,6 @@
 package mekanism.common.base;
 
-import mekanism.common.Version;
+import mekanism.common.lib.Version;
 
 /**
  * Implement in your main class if your mod happens to be completely reliant on Mekanism, or in other words, is a Mekanism module.

@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;

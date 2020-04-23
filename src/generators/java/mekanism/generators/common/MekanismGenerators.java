@@ -2,10 +2,10 @@ package mekanism.generators.common;
 
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
+import mekanism.common.lib.Version;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;

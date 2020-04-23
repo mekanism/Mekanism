@@ -4,7 +4,6 @@ import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ITileComponent;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;

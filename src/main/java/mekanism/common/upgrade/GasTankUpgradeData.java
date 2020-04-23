@@ -3,9 +3,9 @@ package mekanism.common.upgrade;
 import java.util.List;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
-import mekanism.common.base.ITileComponent;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.common.tile.component.ITileComponent;
 import net.minecraft.nbt.CompoundNBT;
 
 public class GasTankUpgradeData implements IUpgradeData {

@@ -11,7 +11,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.ITrackableContainer;

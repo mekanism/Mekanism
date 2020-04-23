@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.lib;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
