@@ -25,7 +25,7 @@
   "description.mekanismgenerators.advanced_solar_generator": "En avansert generator som direkte absorberer solens stråler med lite tap for å produsere energi.",
   "description.mekanismgenerators.bio_generator": "En generator som brenner verdens organiske materialer for å produsere energi.",
   "description.mekanismgenerators.electromagnetic_coil": "En blokk som konverterer kinetisk energi fra et rotasjonskompleks til brukbar elektrisitet. Disse kan plasseres i alle arrangement over rotasjonskomplekset ditt så lenge de alle berører hverandre og selve komplekset.",
-  "description.mekanismgenerators.gas_burning_generator": "En generator som gjør at molekylet varierer mellom gassene og produserer energi.",
+  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the varying molecular gases to produce energy.",
   "description.mekanismgenerators.heat_generator": "En generator som bruker lava eller andre brennbare ressurser til å produsere energi.",
   "description.mekanismgenerators.laser_focus_matrix": "En reaktør Glass som er i stand til å absorbere optisk energi og dermed varme opp Fusjonsreaktoren.",
   "description.mekanismgenerators.reactor.logic.capacity": "Reaktorens kjernekapasitet har blitt møtt",

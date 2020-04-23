@@ -291,7 +291,7 @@
   "description.mekanism.chemical_injection_chamber": "En elitemaskin som har kapasitet til å prosessere fire skifter, og som fungerer som første fase av 400 % malmprosessering.",
   "description.mekanism.chemical_oxidizer": "En maskin som er i stand til å forsere faste materialer i gassfase.",
   "description.mekanism.chemical_washer": "En maskin som rengjør ubehandlet slurisme og lager den for krystallisering.",
-  "description.mekanism.combiner": "En maskin brukes til å kombinere støv og brostein til å danne mal-motparter sine.",
+  "description.mekanism.combiner": "A machine used to combine items together. For example, dusts and cobblestone to form their ore counterparts.",
   "description.mekanism.copper_ore": "Et vanlig, ledende materiale som kan brukes i produksjonen av tråder. Evnen til å tåle høy varme, gjør det også avgjørende for å utvikle maskiner.",
   "description.mekanism.crusher": "En maskin som ble brukt til å knuse støv inn i sine motparter og utføre mange andre operasjoner.",
   "description.mekanism.digital_miner": "En svært avansert, filtrert, auto-miner som kan grave på hvilken blokk du forteller den om, innenfor en 32 blokk (maks) radius.",
