@@ -97,6 +97,6 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 5, titleTextColor());
+        renderTitleText(5);
     }
 }

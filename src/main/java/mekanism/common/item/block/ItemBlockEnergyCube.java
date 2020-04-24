@@ -9,6 +9,7 @@ import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
@@ -82,6 +83,11 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
         return StorageUtils.getDurabilityForDisplay(stack);
+    }
+
+    @Override
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
+        return MekanismConfig.client.energyColor.get();
     }
 
     @Override

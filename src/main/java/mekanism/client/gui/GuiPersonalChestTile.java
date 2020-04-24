@@ -23,7 +23,7 @@ public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChes
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), 8, 6, titleTextColor());
+        renderTitleText();
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

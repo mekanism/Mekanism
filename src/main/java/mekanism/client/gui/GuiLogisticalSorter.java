@@ -65,7 +65,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         // Write to info display
-        drawString(tile.getName(), 43, 6, titleTextColor());
+        renderTitleText();
         drawString(MekanismLang.FILTERS.translate(), 11, 19, screenTextColor());
         drawString(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 11, 28, screenTextColor());
         drawString(MekanismLang.SORTER_SINGLE_ITEM.translate(), 12, 48, screenTextColor());

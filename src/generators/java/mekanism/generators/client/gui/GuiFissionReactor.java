@@ -97,8 +97,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         updateButtons();
 
-        ITextComponent name = GeneratorsLang.FISSION_REACTOR.translate();
-        drawString(name, (getXSize() / 2) - (getStringWidth(name) / 2), 5, titleTextColor());
+        renderTitleText(GeneratorsLang.FISSION_REACTOR.translate(), 5);
         renderScaledText(MekanismLang.STATUS.translate(tile.isReactorActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(tile.isReactorActive())), 48, 20, screenTextColor(), 100);
         renderScaledText(GeneratorsLang.GAS_BURN_RATE.translate(tile.getLastBurnRate()), 48, 29, screenTextColor(), 100);
         renderScaledText(MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()), 48, 38, screenTextColor(), 100);

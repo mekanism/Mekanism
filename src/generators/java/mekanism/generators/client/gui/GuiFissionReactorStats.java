@@ -63,7 +63,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(GeneratorsLang.FISSION_REACTOR_STATS.translate(), 0, getXSize(), 6, titleTextColor());
+        renderTitleText(GeneratorsLang.FISSION_REACTOR_STATS.translate(), 6);
         // heat stats
         renderScaledText(GeneratorsLang.FISSION_HEAT_STATISTICS.translate(), 6, 20, 0x202020, xSize - 12);
         renderScaledText(GeneratorsLang.FISSION_HEAT_CAPACITY.translate(nf.format(tile.getHeatCapacity())), 6, 32, titleTextColor(), xSize - 12);

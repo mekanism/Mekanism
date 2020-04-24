@@ -150,6 +150,11 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     }
 
     @Override
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
+        return MekanismConfig.client.energyColor.get();
+    }
+
+    @Override
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {

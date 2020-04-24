@@ -51,6 +51,14 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
         }
     }
 
+    public void renderTitleText(int y) {
+        renderTitleText(tile.getName(), y);
+    }
+
+    public void renderTitleText() {
+        renderTitleText(6);
+    }
+
     private DataType getFromSlot(Slot slot) {
         if (slot.slotNumber < tile.getSlots() && slot instanceof InventoryContainerSlot) {
             ISideConfiguration config = (ISideConfiguration) tile;

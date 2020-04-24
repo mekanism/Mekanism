@@ -46,7 +46,7 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(GeneratorsLang.TURBINE_STATS.translate(), 0, getXSize(), 6, titleTextColor());
+        renderTitleText(GeneratorsLang.TURBINE_STATS.translate(), 6);
         if (tile.structure != null) {
             ITextComponent limiting = GeneratorsLang.IS_LIMITING.translateColored(EnumColor.DARK_RED);
             int lowerVolume = tile.structure.lowerVolume;

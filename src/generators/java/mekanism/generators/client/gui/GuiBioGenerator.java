@@ -38,6 +38,7 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        renderTitleText();
         drawString(tile.getName(), 45, 6, titleTextColor());
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         drawString(EnergyDisplay.of(tile.getEnergyContainer().getEnergy()).getTextComponent(), 51, 26, screenTextColor());

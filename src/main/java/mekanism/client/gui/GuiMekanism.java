@@ -96,6 +96,15 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         renderScaledText(component.getFormattedText(), x, y, color, maxX);
     }
 
+    protected void renderTitleText(ITextComponent text, int y) {
+        renderScaledCenteredText(text, getWidth() - 8, y, titleTextColor());
+    }
+
+    protected void renderScaledCenteredText(ITextComponent text, int maxX, int y, int color) {
+        float scale = Math.min(1, (float) maxX / getStringWidth(text));
+        renderScaledCenteredText(text, getXSize() / 2, y, color, scale);
+    }
+
     protected void renderScaledCenteredText(ITextComponent text, int left, int y, int color, float scale) {
         int textWidth = getStringWidth(text);
         int centerX = left - (int)((textWidth / 2) * scale);

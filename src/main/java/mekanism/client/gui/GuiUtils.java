@@ -101,7 +101,7 @@ public class GuiUtils {
         }
 
         //Top Right Corner
-        AbstractGui.blit(rightEdgeStart, top, texSideWidth + texCenterWidth, 0, sideWidth, topHeight, textureWidth, textureHeight);
+        AbstractGui.blit(rightEdgeStart, top, textureWidth - sideWidth, 0, sideWidth, topHeight, textureWidth, textureHeight);
         //Bottom Right Corner
         AbstractGui.blit(rightEdgeStart, bottomEdgeStart, textureWidth - sideWidth, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
     }

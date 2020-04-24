@@ -10,6 +10,7 @@ import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -51,6 +52,11 @@ public class ItemEnergized extends Item {
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
         return StorageUtils.getDurabilityForDisplay(stack);
+    }
+
+    @Override
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
+        return MekanismConfig.client.energyColor.get();
     }
 
     @Override

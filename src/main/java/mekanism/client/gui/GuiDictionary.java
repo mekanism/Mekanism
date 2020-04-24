@@ -35,7 +35,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismItems.DICTIONARY.getTextComponent(), 64, 5, titleTextColor());
+        renderTitleText(MekanismItems.DICTIONARY.getTextComponent(), 5);
         drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 96 + 2, titleTextColor());
         renderItem(itemType, 6, 6);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
