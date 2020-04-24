@@ -3,10 +3,12 @@ package mekanism.client.gui;
 import java.util.Collections;
 import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.client.gui.element.GuiDownArrow;
-import mekanism.client.gui.element.GuiInnerHolder;
+import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityDynamicTank;
@@ -23,14 +25,16 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
 
     @Override
     protected void initPreSlots() {
-        addButton(new GuiInnerHolder(this, 141, 15, 26, 57));
+        addButton(new GuiElementHolder(this, 141, 15, 26, 57));
     }
 
     @Override
     public void init() {
         super.init();
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 19));
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
         addButton(new GuiInnerScreen(this, 50, 23, 80, 42));
-        addButton(new GuiDownArrow(this, 150, 38));
+        addButton(new GuiDownArrow(this, 150, 39));
         addButton(new GuiContainerEditMode<>(this, tile));
         addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.fluidTank,
               () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.MEDIUM, this, 6, 13));

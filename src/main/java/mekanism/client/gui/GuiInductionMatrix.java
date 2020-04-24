@@ -2,12 +2,14 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.api.math.FloatingLong;
+import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiInnerHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge.IEnergyInfoHandler;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiMatrixTab;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.common.MekanismLang;
@@ -26,12 +28,14 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
 
     @Override
     protected void initPreSlots() {
-        addButton(new GuiInnerHolder(this, 141, 15, 26, 57));
+        addButton(new GuiElementHolder(this, 141, 15, 26, 57));
     }
 
     @Override
     public void init() {
         super.init();
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 19));
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
         addButton(new GuiInnerScreen(this, 50, 23, 80, 37));
         addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT));
         addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {

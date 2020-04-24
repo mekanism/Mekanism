@@ -15,7 +15,8 @@ public enum SlotType {
     OUTPUT_2("output_2.png", 18, 18),
     OUTPUT_WIDE("output_wide.png", 42, 26),
     OUTPUT_LARGE("output_large.png", 36, 54),
-    ORE("ore.png", 18, 18);
+    ORE("ore.png", 18, 18),
+    INNER_HOLDER_SLOT("inner_holder_slot.png", 18, 18);
 
     private final ResourceLocation texture;
     private final int width;

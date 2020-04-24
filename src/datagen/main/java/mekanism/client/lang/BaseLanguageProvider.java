@@ -9,6 +9,7 @@ import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.registration.impl.FluidRegistryObject;
+import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
@@ -37,14 +38,13 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         return super.getName() + ": " + modid;
     }
 
-    protected void add(IBlockProvider block, String value) {
-        if (block.getBlock() != null && Attribute.has(block.getBlock(), AttributeGui.class)) {
-            add(Util.makeTranslationKey("container", block.getRegistryName()), value);
-        }
-        add(block.getTranslationKey(), value);
-    }
-
     protected void add(IHasTranslationKey key, String value) {
+        if (key instanceof IBlockProvider) {
+            Block block = ((IBlockProvider) key).getBlock();
+            if (block != null && Attribute.has(block, AttributeGui.class)) {
+                add(Util.makeTranslationKey("container", block.getRegistryName()), value);
+            }
+        }
         add(key.getTranslationKey(), value);
     }
 

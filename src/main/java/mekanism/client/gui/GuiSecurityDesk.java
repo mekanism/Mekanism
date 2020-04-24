@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
+import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.GuiInnerHolder;
+import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSecurityLight;
 import mekanism.client.gui.element.GuiTextureOnlyElement;
@@ -13,6 +14,8 @@ import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.scroll.GuiTextScrollList;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -30,7 +33,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, MekanismTileContainer<TileEntitySecurityDesk>> {
 
@@ -54,20 +56,22 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     @Override
     protected void initPreSlots() {
-        addButton(new GuiInnerHolder(this, 141, 13, 26, 37));
-        addButton(new GuiInnerHolder(this, 141, 54, 26, 34));
-        addButton(new GuiInnerHolder(this, 141, 92, 26, 37));
+        addButton(new GuiElementHolder(this, 141, 13, 26, 37));
+        addButton(new GuiElementHolder(this, 141, 54, 26, 34));
+        addButton(new GuiElementHolder(this, 141, 92, 26, 37));
     }
 
     @Override
     public void init() {
         super.init();
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 17));
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
         addButton(new GuiInnerScreen(this, 34, 67, 89, 13));
         addButton(new GuiInnerScreen(this, 122, 67, 13, 13));
         addButton(new GuiSecurityLight(this, 144, 77, () -> tile.frequency == null || tile.ownerUUID == null ||
                                                             !tile.ownerUUID.equals(minecraft.player.getUniqueID()) ? 2 : tile.frequency.override ? 0 : 1));
-        addButton(new GuiTextureOnlyElement(PUBLIC, this, 146, 33, 18, 18));
-        addButton(new GuiTextureOnlyElement(PRIVATE, this, 146, 112, 18, 18));
+        addButton(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
+        addButton(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
         addButton(scrollList = new GuiTextScrollList(this, 13, 13, 122, 42));
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 13, getGuiTop() + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
             int selection = scrollList.getSelection();
