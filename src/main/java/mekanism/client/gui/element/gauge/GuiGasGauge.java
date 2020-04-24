@@ -116,7 +116,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
         if (amount == Long.MAX_VALUE) {
             return MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE);
         }
-        return MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), amount);
+        return MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), formatInt(amount));
     }
 
     @Override

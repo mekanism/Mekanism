@@ -33,7 +33,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<GasTo
     @Override
     protected void addGuiElements() {
         //TODO: Eventually make this be able to display the proper ores cycling at some point
-        guiElements.add(new GuiCrystallizerScreen(this, 27, 13, new IOreInfo() {
+        guiElements.add(new GuiCrystallizerScreen(this, 31, 13, new IOreInfo() {
             @Nonnull
             @Override
             public GasStack getInputGas() {
@@ -46,8 +46,8 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<GasTo
                 return null;
             }
         }));
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 5, 4));
-        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 5, 64).with(SlotOverlay.PLUS));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 7, 4));
+        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 7, 64).with(SlotOverlay.PLUS));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 130, 56));
         guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 53, 61));
     }
@@ -69,6 +69,6 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<GasTo
         itemStacks.init(0, false, 130 - xOffset, 56 - yOffset);
         itemStacks.set(0, recipe.getOutputDefinition());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
+        initGas(gasStacks, 0, true, 8 - xOffset, 5 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
     }
 }

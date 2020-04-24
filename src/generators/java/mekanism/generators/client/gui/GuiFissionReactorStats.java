@@ -1,6 +1,5 @@
 package mekanism.generators.client.gui;
 
-import java.text.NumberFormat;
 import org.lwjgl.glfw.GLFW;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -20,7 +19,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionReactorCasing, EmptyTileContainer<TileEntityFissionReactorCasing>> {
 
-    private static final NumberFormat nf = NumberFormat.getIntegerInstance();
     private TextFieldWidget rateLimitField;
 
     public GuiFissionReactorStats(EmptyTileContainer<TileEntityFissionReactorCasing> container, PlayerInventory inv, ITextComponent title) {
@@ -66,12 +64,12 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         renderTitleText(GeneratorsLang.FISSION_REACTOR_STATS.translate(), 6);
         // heat stats
         renderScaledText(GeneratorsLang.FISSION_HEAT_STATISTICS.translate(), 6, 20, 0x202020, xSize - 12);
-        renderScaledText(GeneratorsLang.FISSION_HEAT_CAPACITY.translate(nf.format(tile.getHeatCapacity())), 6, 32, titleTextColor(), xSize - 12);
-        renderScaledText(GeneratorsLang.FISSION_SURFACE_AREA.translate(nf.format(tile.getSurfaceArea())), 6, 42, titleTextColor(), xSize - 12);
+        renderScaledText(GeneratorsLang.FISSION_HEAT_CAPACITY.translate(formatInt(tile.getHeatCapacity())), 6, 32, titleTextColor(), xSize - 12);
+        renderScaledText(GeneratorsLang.FISSION_SURFACE_AREA.translate(formatInt(tile.getSurfaceArea())), 6, 42, titleTextColor(), xSize - 12);
         renderScaledText(GeneratorsLang.FISSION_BOIL_EFFICIENCY.translate(tile.getBoilEfficiency()), 6, 52, titleTextColor(), xSize - 12);
         // fuel stats
         renderScaledText(GeneratorsLang.FISSION_FUEL_STATISTICS.translate(), 6, 68, 0x202020, xSize - 12);
-        renderScaledText(GeneratorsLang.FISSION_MAX_BURN_RATE.translate(nf.format(tile.getMaxBurnRate())), 6, 80, titleTextColor(), xSize - 12);
+        renderScaledText(GeneratorsLang.FISSION_MAX_BURN_RATE.translate(formatInt(tile.getMaxBurnRate())), 6, 80, titleTextColor(), xSize - 12);
         renderScaledText(GeneratorsLang.FISSION_RATE_LIMIT.translate(tile.getRateLimit()), 6, 90, titleTextColor(), xSize - 12);
         renderScaledText(GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 6, 104, titleTextColor(), xSize - 12);
         renderScaledText(GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 6, 130, titleTextColor(), 69);

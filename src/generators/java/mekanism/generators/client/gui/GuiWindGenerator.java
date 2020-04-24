@@ -1,6 +1,8 @@
 package mekanism.generators.client.gui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -32,7 +34,18 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 48, 23, 80, 49));
+        addButton(new GuiInnerScreen(this, 48, 23, 80, 40, () -> {
+            List<ITextComponent> list = new ArrayList<>();
+            list.add(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent());
+            list.add(GeneratorsLang.POWER.translate(MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.windGenerationMin.get()
+                  .multiply(tile.getCurrentMultiplier())).toString(2)));
+            list.add(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())));
+            if (!tile.getActive()) {
+                ILangEntry reason = tile.isBlacklistDimension() ? GeneratorsLang.NO_WIND : GeneratorsLang.SKY_BLOCKED;
+                list.add(reason.translateColored(EnumColor.DARK_RED));
+            }
+            return list;
+        }));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(GeneratorsLang.PRODUCING_AMOUNT.translate(
@@ -47,19 +60,6 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText();
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
-        renderScaledText(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent(), 51, 26, screenTextColor(), 75);
-        renderScaledText(GeneratorsLang.POWER.translate(MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.windGenerationMin.get()
-              .multiply(tile.getCurrentMultiplier())).toString(2)), 51, 35, screenTextColor(), 75);
-        renderScaledText(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())), 51, 44, screenTextColor(), 75);
-        int size = 44;
-        if (!tile.getActive()) {
-            size += 9;
-            ILangEntry reason = GeneratorsLang.SKY_BLOCKED;
-            if (tile.isBlacklistDimension()) {
-                reason = GeneratorsLang.NO_WIND;
-            }
-            drawString(reason.translateColored(EnumColor.DARK_RED), 51, size, screenTextColor());
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

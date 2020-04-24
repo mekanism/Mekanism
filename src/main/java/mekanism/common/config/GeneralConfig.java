@@ -212,7 +212,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         evaporationHeatDissipation = CachedDoubleValue.wrap(this, builder.comment("Thermal Evaporation Tower heat loss per tick.")
               .define("heatDissipation", 0.02));
         evaporationTempMultiplier = CachedDoubleValue.wrap(this, builder.comment("Temperature to amount produced ratio for Thermal Evaporation Tower.")
-              .define("tempMultiplier", 0.1));
+              .define("tempMultiplier", 0.4));
         evaporationSolarMultiplier = CachedDoubleValue.wrap(this, builder.comment("Heat to absorb per Solar Panel array of Thermal Evaporation Tower.")
               .define("solarMultiplier", 0.2));
         evaporationHeatCapacity = CachedDoubleValue.wrap(this, builder.comment("Heat capacity of Thermal Evaporation Tower layers (increases amount of energy needed to increase temperature).")

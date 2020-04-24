@@ -28,15 +28,19 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
 
     @Override
     protected void initPreSlots() {
-        addButton(new GuiElementHolder(this, 141, 15, 26, 57));
+        addButton(new GuiElementHolder(this, 141, 16, 26, 56));
     }
 
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 19));
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
-        addButton(new GuiInnerScreen(this, 50, 23, 80, 37));
+        addButton(new GuiInnerScreen(this, 51, 23, 80, 42, () -> Arrays.asList(
+            MekanismLang.MATRIX_INPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastInput()))),
+            MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastOutput()))),
+            MekanismLang.CAPACITY.translate(EnergyDisplay.of(tile.getMaxEnergy()))
+        )).defaultFormat());
         addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT));
         addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
@@ -48,7 +52,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
             public FloatingLong getMaxEnergy() {
                 return tile.getMaxEnergy();
             }
-        }, GaugeType.MEDIUM, this, 6, 13));
+        }, GaugeType.MEDIUM, this, 7, 16, 34, 56));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
               MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
               MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))
@@ -60,9 +64,6 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         ITextComponent name = MekanismLang.MATRIX.translate();
         renderTitleText(name, 6);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
-        renderScaledText(MekanismLang.MATRIX_INPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastInput()))), 53, 26, screenTextColor(), 74);
-        renderScaledText(MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastOutput()))), 53, 37, screenTextColor(), 74);
-        renderScaledText(MekanismLang.CAPACITY.translate(EnergyDisplay.of(tile.getMaxEnergy())), 53, 48, screenTextColor(), 74);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

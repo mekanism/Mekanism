@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -26,7 +28,25 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
     public void init() {
         super.init();
         addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.gasTank, tile.getGasTanks(null)), 42, 16, 116, 10, true));
-        addButton(new GuiInnerScreen(this, 42, 37, 118, 28));
+        addButton(new GuiInnerScreen(this, 42, 37, 118, 28, () -> {
+            List<ITextComponent> list = new ArrayList<>();
+            ITextComponent component;
+            GasStack gasStack = tile.gasTank.getStack();
+            if (gasStack.isEmpty()) {
+                component = MekanismLang.GAS.translate(MekanismLang.NONE);
+            } else {
+                component = MekanismLang.GAS.translate(gasStack);
+            }
+            list.add(component);
+            if (!tile.gasTank.isEmpty() && tile.tier == GasTankTier.CREATIVE) {
+                component = MekanismLang.INFINITE.translate();
+            } else {
+                component = MekanismLang.GENERIC_FRACTION.translate(formatInt(tile.gasTank.getStored()),
+                      tile.tier == GasTankTier.CREATIVE ? MekanismLang.INFINITE : formatInt(tile.tier.getStorage()));
+            }
+            list.add(component);
+            return list;
+        }));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiSideConfigurationTab(this, tile));
@@ -38,20 +58,6 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText();
         drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 96 + 2, titleTextColor());
-        ITextComponent component;
-        GasStack gasStack = tile.gasTank.getStack();
-        if (gasStack.isEmpty()) {
-            component = MekanismLang.GAS.translate(MekanismLang.NONE);
-        } else {
-            component = MekanismLang.GAS.translate(gasStack);
-        }
-        renderScaledText(component, 45, 40, screenTextColor(), 112);
-        if (!tile.gasTank.isEmpty() && tile.tier == GasTankTier.CREATIVE) {
-            component = MekanismLang.INFINITE.translate();
-        } else {
-            component = MekanismLang.GENERIC_FRACTION.translate(tile.gasTank.getStored(), tile.tier == GasTankTier.CREATIVE ? MekanismLang.INFINITE : tile.tier.getStorage());
-        }
-        drawString(component, 45, 49, screenTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Arrays;
 import java.util.Collections;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -24,7 +25,10 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 48, 23, 80, 28));
+        addButton(new GuiInnerScreen(this, 48, 23, 80, 28, () -> Arrays.asList(
+            MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
+            MekanismLang.FUEL.translate(tile.burnTime)
+        )).defaultFormat());
         addButton(new GuiFlame(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
@@ -47,8 +51,6 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText();
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
-        renderScaledText(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)), 50, 25, screenTextColor(), 76);
-        renderScaledText(MekanismLang.FUEL.translate(tile.burnTime), 50, 41, screenTextColor(), 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

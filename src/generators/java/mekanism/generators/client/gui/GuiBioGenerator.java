@@ -26,7 +26,11 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 48, 23, 80, 40));
+        addButton(new GuiInnerScreen(this, 48, 23, 80, 40, () -> Arrays.asList(
+            EnergyDisplay.of(tile.getEnergyContainer().getEnergy()).getTextComponent(),
+            GeneratorsLang.STORED_BIO_FUEL.translate(formatInt(tile.bioFuelTank.getFluidAmount())),
+            GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput()))
+        )).defaultFormat());
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
@@ -40,9 +44,6 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText();
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
-        drawString(EnergyDisplay.of(tile.getEnergyContainer().getEnergy()).getTextComponent(), 51, 26, screenTextColor());
-        drawString(GeneratorsLang.STORED_BIO_FUEL.translate(tile.bioFuelTank.getFluidAmount()), 51, 35, screenTextColor());
-        drawString(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())), 51, 44, screenTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

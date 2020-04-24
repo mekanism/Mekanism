@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -48,7 +49,26 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 7, 8, 58, 69));
+        addButton(new GuiInnerScreen(this, 7, 8, 58, 69, () -> {
+            List<ITextComponent> list = new ArrayList<>();
+            ILangEntry runningType;
+            if (tile.getEnergyContainer().getEnergyPerTick().greaterThan(tile.getEnergyContainer().getMaxEnergy())) {
+                runningType = MekanismLang.MINER_LOW_POWER;
+            } else if (tile.running) {
+                runningType = MekanismLang.MINER_RUNNING;
+            } else {
+                runningType = MekanismLang.IDLE;
+            }
+            list.add(runningType.translate());
+            list.add(tile.searcher.state.getTextComponent());
+
+            list.add(MekanismLang.EJECT.translate(OnOff.of(tile.doEject)));
+            list.add(MekanismLang.MINER_AUTO_PULL.translate(OnOff.of(tile.doPull)));
+            list.add(MekanismLang.MINER_SILK_ENABLED.translate(OnOff.of(tile.getSilkTouch())));
+            list.add(MekanismLang.MINER_TO_MINE.translate());
+            list.add(TextComponentUtil.build(tile.cachedToMine));
+            return list;
+        }).spacing(1));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
@@ -102,22 +122,6 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), 69, 6, titleTextColor());
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
-        ILangEntry runningType;
-        if (tile.getEnergyContainer().getEnergyPerTick().greaterThan(tile.getEnergyContainer().getMaxEnergy())) {
-            runningType = MekanismLang.MINER_LOW_POWER;
-        } else if (tile.running) {
-            runningType = MekanismLang.MINER_RUNNING;
-        } else {
-            runningType = MekanismLang.IDLE;
-        }
-        drawString(runningType.translate(), 9, 10, screenTextColor());
-        drawString(tile.searcher.state.getTextComponent(), 9, 19, screenTextColor());
-
-        drawString(MekanismLang.EJECT.translate(OnOff.of(tile.doEject)), 9, 30, screenTextColor());
-        drawString(MekanismLang.MINER_AUTO_PULL.translate(OnOff.of(tile.doPull)), 9, 39, screenTextColor());
-        drawString(MekanismLang.MINER_SILK_ENABLED.translate(OnOff.of(tile.getSilkTouch())), 9, 48, screenTextColor());
-        drawString(MekanismLang.MINER_TO_MINE.translate(), 9, 59, screenTextColor());
-        drawString(TextComponentUtil.build(tile.cachedToMine), 9, 68, screenTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

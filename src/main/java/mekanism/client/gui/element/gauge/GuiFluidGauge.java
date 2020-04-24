@@ -24,13 +24,17 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     private ITextComponent label;
     private Supplier<IExtendedFluidTank> tankSupplier;
 
-    public GuiFluidGauge(IFluidInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
-        super(type, gui, x, y, handler, TankType.FLUID_TANK);
+    public GuiFluidGauge(IFluidInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
+        super(type, gui, x, y, sizeX, sizeY, handler, TankType.FLUID_TANK);
         //Ensure it isn't null
         setDummyType(FluidStack.EMPTY);
     }
 
     public GuiFluidGauge(Supplier<IExtendedFluidTank> tankSupplier, Supplier<List<IExtendedFluidTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
+        this(tankSupplier, tanksSupplier, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
+    }
+
+    public GuiFluidGauge(Supplier<IExtendedFluidTank> tankSupplier, Supplier<List<IExtendedFluidTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
         this(new IFluidInfoHandler() {
             @Nullable
             @Override
@@ -43,7 +47,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
                 IExtendedFluidTank tank = getTank();
                 return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
             }
-        }, type, gui, x, y);
+        }, type, gui, x, y, sizeX, sizeY);
         this.tankSupplier = tankSupplier;
     }
 
@@ -68,7 +72,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     }
 
     public static GuiFluidGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
-        GuiFluidGauge gauge = new GuiFluidGauge(null, type, gui, x, y);
+        GuiFluidGauge gauge = new GuiFluidGauge(null, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
         gauge.dummy = true;
         return gauge;
     }
@@ -122,7 +126,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
         if (amount == Integer.MAX_VALUE) {
             return MekanismLang.GENERIC_STORED.translate(fluidStack, MekanismLang.INFINITE);
         }
-        return MekanismLang.GENERIC_STORED_MB.translate(fluidStack, amount);
+        return MekanismLang.GENERIC_STORED_MB.translate(fluidStack, formatInt(amount));
     }
 
     @Override

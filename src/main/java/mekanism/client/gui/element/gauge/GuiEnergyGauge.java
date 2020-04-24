@@ -33,6 +33,11 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
         infoHandler = handler;
     }
 
+    public GuiEnergyGauge(IEnergyInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
+        super(type, gui, x, y, sizeX, sizeY);
+        infoHandler = handler;
+    }
+
     @Override
     public TransmissionType getTransmission() {
         return TransmissionType.ENERGY;

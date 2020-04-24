@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 import org.lwjgl.glfw.GLFW;
@@ -37,7 +38,10 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 48, 23, 80, 28));
+        addButton(new GuiInnerScreen(this, 48, 23, 80, 28, () -> Arrays.asList(
+            MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
+            MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick()))
+        )));
         addButton(new GuiInnerScreen(this, 48, 50, 68, 13));
         addButton(new GuiInnerScreen(this, 115, 50, 13, 13));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
@@ -50,9 +54,8 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         }, this));
 
         String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
-        addButton(energyUsageField = new TextFieldWidget(font, getGuiLeft() + 49, getGuiTop() + 52, 66, 11, prevEnergyUsage));
+        addButton(energyUsageField = new TextFieldWidget(font, getGuiLeft() + 49, getGuiTop() + 51, 78, 11, prevEnergyUsage));
         energyUsageField.setMaxStringLength(7);
-        energyUsageField.setEnableBackgroundDrawing(false);
         addButton(new MekanismImageButton(this, getGuiLeft() + 116, getGuiTop() + 51, 11, 12, getButtonLocation("checkmark"), this::setEnergyUsage));
     }
 
@@ -67,8 +70,6 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText();
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
-        renderScaledText(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)), 50, 25, screenTextColor(), 76);
-        renderScaledText(MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick())), 50, 41, screenTextColor(), 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

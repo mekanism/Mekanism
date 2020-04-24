@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -28,7 +30,18 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 48, 23, 80, 41));
+        addButton(new GuiInnerScreen(this, 54, 23, 80, 41, () -> {
+            List<ITextComponent> list = new ArrayList<>();
+            list.add(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent());
+            list.add(MekanismLang.FINISHED.translate(YesNo.of(tile.finishedCalc)));
+            FluidStack fluid = tile.fluidTank.getFluid();
+            if (fluid.isEmpty()) {
+                list.add(MekanismLang.NO_FLUID.translate());
+            } else {
+                list.add(MekanismLang.GENERIC_STORED_MB.translate(fluid, fluid.getAmount()));
+            }
+            return list;
+        }));
         addButton(new GuiDownArrow(this, 32, 39));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
@@ -42,14 +55,6 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText();
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
-        renderScaledText(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent(), 51, 26, screenTextColor(), 74);
-        renderScaledText(MekanismLang.FINISHED.translate(YesNo.of(tile.finishedCalc)), 51, 35, screenTextColor(), 74);
-        FluidStack fluid = tile.fluidTank.getFluid();
-        if (fluid.isEmpty()) {
-            renderScaledText(MekanismLang.NO_FLUID.translate(), 51, 44, screenTextColor(), 74);
-        } else {
-            renderScaledText(MekanismLang.GENERIC_STORED_MB.translate(fluid, fluid.getAmount()), 51, 44, screenTextColor(), 74);
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

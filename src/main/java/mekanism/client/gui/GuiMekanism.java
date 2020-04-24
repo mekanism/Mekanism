@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.text.NumberFormat;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,6 +35,7 @@ import net.minecraft.util.text.ITextComponent;
 //TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper {
 
+    private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     private static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
@@ -177,14 +179,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 SlotType type;
                 if (dataType != null) {
                     type = SlotType.get(dataType);
-                } else if (slotType == ContainerSlotType.INPUT) {
-                    type = SlotType.INPUT;
-                } else if (slotType == ContainerSlotType.OUTPUT) {
-                    type = SlotType.OUTPUT;
+                } else if (slotType == ContainerSlotType.INPUT || slotType == ContainerSlotType.OUTPUT || slotType == ContainerSlotType.EXTRA) {
+                    type = SlotType.NORMAL;
                 } else if (slotType == ContainerSlotType.POWER) {
                     type = SlotType.POWER;
-                } else if (slotType == ContainerSlotType.EXTRA) {
-                    type = SlotType.EXTRA;
                 } else if (slotType == ContainerSlotType.NORMAL || slotType == ContainerSlotType.VALIDITY) {
                     type = SlotType.NORMAL;
                 } else {//slotType == ContainerSlotType.IGNORED: don't do anything
@@ -269,6 +267,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     protected static int screenTextColor() {
         return MekanismConfig.client.guiScreenTextColor.get();
+    }
+
+    protected static String formatInt(long l) {
+        return intFormatter.format(l);
     }
 
     //Some blit param namings

@@ -33,10 +33,10 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     private IOreInfo oreInfo;
 
     public GuiCrystallizerScreen(IGuiWrapper gui, int x, int y, IOreInfo oreInfo) {
-        super(SLOT.getTexture(), gui, x, y, 121, 42);
+        super(SLOT.getTexture(), gui, x, y, 117, 42);
         innerScreen = new GuiInnerScreen(gui, x, y, width, height);
         this.oreInfo = oreInfo;
-        this.slotX = this.x + 121 - SLOT.getWidth();
+        this.slotX = this.x + 117 - SLOT.getWidth();
         active = false;
     }
 
@@ -45,15 +45,15 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
         super.renderForeground(mouseX, mouseY, xAxis, yAxis);
         GasStack gasStack = oreInfo.getInputGas();
         if (!gasStack.isEmpty()) {
-            drawString(TextComponentUtil.build(gasStack), 29, 15, screenTextColor());
+            drawString(TextComponentUtil.build(gasStack), 33, 15, screenTextColor());
             if (gasStack.getType() instanceof Slurry && !renderStack.isEmpty()) {
-                drawString(MekanismLang.GENERIC_PARENTHESIS.translate(renderStack), 29, 24, screenTextColor());
+                drawString(MekanismLang.GENERIC_PARENTHESIS.translate(renderStack), 33, 24, screenTextColor());
             } else {
                 GasToItemStackRecipe recipe = oreInfo.getRecipe();
                 if (recipe == null) {
-                    drawString(MekanismLang.NO_RECIPE.translate(), 29, 24, screenTextColor());
+                    drawString(MekanismLang.NO_RECIPE.translate(), 33, 24, screenTextColor());
                 } else {
-                    drawString(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(gasStack)), 29, 24, screenTextColor());
+                    drawString(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(gasStack)), 33, 24, screenTextColor());
                 }
             }
         }

@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Arrays;
 import java.util.Collections;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -30,7 +31,11 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 40, 27, 96, 32));
+        addButton(new GuiInnerScreen(this, 40, 23, 96, 40, () -> Arrays.asList(
+            MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
+            MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()),
+            MekanismLang.MAX_BOIL_RATE.translate(tile.getLastMaxBoil())
+        )));
         addButton(new GuiBoilerTab(this, tile, BoilerTab.STAT));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
@@ -69,9 +74,6 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText(MekanismLang.BOILER.translate(), 5);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
-        renderScaledText(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)), 43, 30, screenTextColor(), 90);
-        renderScaledText(MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()), 43, 39, screenTextColor(), 90);
-        renderScaledText(MekanismLang.MAX_BOIL_RATE.translate(tile.getLastMaxBoil()), 43, 48, screenTextColor(), 90);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

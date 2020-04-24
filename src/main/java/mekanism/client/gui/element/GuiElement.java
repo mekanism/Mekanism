@@ -1,5 +1,6 @@
 package mekanism.client.gui.element;
 
+import java.text.NumberFormat;
 import java.util.List;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
@@ -21,6 +22,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiElement extends Widget {
 
+    private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     public static final ResourceLocation BUTTON_LOCATION = MekanismUtils.getResource(ResourceType.GUI, "button.png");
     private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60;
 
@@ -66,6 +68,12 @@ public abstract class GuiElement extends Widget {
         return getFontRenderer().getStringWidth(text);
     }
 
+    public void renderDynamicText(ITextComponent text, int x, int y, int color, int maxX, float textScale) {
+        float width = getStringWidth(text) * textScale;
+        float scale = Math.min(1, maxX / width) * textScale;
+        renderTextWithScale(text.getFormattedText(), x, y, color, scale);
+    }
+
     public float getNeededScale(ITextComponent text, int maxX) {
         int length = getStringWidth(text);
         return length <= maxX ? 1 : (float) maxX / length;
@@ -97,7 +105,7 @@ public abstract class GuiElement extends Widget {
 
     public void renderTextWithScale(String text, int x, int y, int color, float scale) {
         float reverse = 1 / scale;
-        float yAdd = 4 - (scale * 8) / 2F;
+        float yAdd = 4 - (int) ((scale * 8) / 2F);
 
         RenderSystem.pushMatrix();
         RenderSystem.scalef(scale, scale, scale);
@@ -235,6 +243,10 @@ public abstract class GuiElement extends Widget {
 
     protected static int screenTextColor() {
         return MekanismConfig.client.guiScreenTextColor.get();
+    }
+
+    protected static String formatInt(long l) {
+        return intFormatter.format(l);
     }
 
     @FunctionalInterface

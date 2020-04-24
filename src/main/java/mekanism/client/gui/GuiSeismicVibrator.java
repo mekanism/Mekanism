@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -21,7 +22,10 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 16, 23, 112, 40));
+        addButton(new GuiInnerScreen(this, 16, 23, 112, 40, () -> Arrays.asList(
+            tile.getActive() ? MekanismLang.VIBRATING.translate() : MekanismLang.IDLE.translate(),
+            MekanismLang.CHUNK.translate(tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)
+        )));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
@@ -32,8 +36,6 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText();
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
-        drawString(tile.getActive() ? MekanismLang.VIBRATING.translate() : MekanismLang.IDLE.translate(), 19, 26, screenTextColor());
-        drawString(MekanismLang.CHUNK.translate(tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4), 19, 35, screenTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

@@ -26,7 +26,11 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
     protected T dummyType;
 
     public GuiGauge(GaugeType gaugeType, IGuiWrapper gui, int x, int y) {
-        super(gaugeType.getGaugeOverlay().getBarOverlay(), gui, x, y, gaugeType.getGaugeOverlay().getWidth() + 2, gaugeType.getGaugeOverlay().getHeight() + 2);
+        this(gaugeType, gui, x, y, gaugeType.getGaugeOverlay().getWidth() + 2, gaugeType.getGaugeOverlay().getHeight() + 2);
+    }
+
+    public GuiGauge(GaugeType gaugeType, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
+        super(gaugeType.getGaugeOverlay().getBarOverlay(), gui, x, y, sizeX, sizeY);
         this.gaugeType = gaugeType;
     }
 
@@ -60,7 +64,8 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
             //Draw the bar overlay
             minecraft.textureManager.bindTexture(getResource());
             GaugeOverlay gaugeOverlay = gaugeType.getGaugeOverlay();
-            blit(x + 1, y + 1, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
+
+            blit(x + 1, y + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
         }
     }
 

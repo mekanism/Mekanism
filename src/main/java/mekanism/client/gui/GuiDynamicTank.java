@@ -1,6 +1,8 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -25,33 +27,36 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
 
     @Override
     protected void initPreSlots() {
-        addButton(new GuiElementHolder(this, 141, 15, 26, 57));
+        addButton(new GuiElementHolder(this, 141, 16, 26, 56));
     }
 
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 19));
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
-        addButton(new GuiInnerScreen(this, 50, 23, 80, 42));
+        addButton(new GuiInnerScreen(this, 51, 23, 80, 42, () -> {
+            List<ITextComponent> ret = new ArrayList<>();
+            ret.add(MekanismLang.VOLUME.translate(tile.structure == null ? 0 : tile.structure.getVolume()));
+            FluidStack fluidStored = tile.structure == null ? FluidStack.EMPTY : tile.structure.fluidTank.getFluid();
+            if (fluidStored.isEmpty()) {
+                ret.add(MekanismLang.NO_FLUID.translate());
+            } else {
+                ret.add(MekanismLang.GENERIC_PRE_COLON.translate(fluidStored));
+                ret.add(MekanismLang.GENERIC_MB.translate(fluidStored.getAmount()));
+            }
+            return ret;
+        }).defaultFormat());
         addButton(new GuiDownArrow(this, 150, 39));
         addButton(new GuiContainerEditMode<>(this, tile));
         addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.fluidTank,
-              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.MEDIUM, this, 6, 13));
+              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.MEDIUM, this, 7, 16, 34, 56));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText();
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
-        drawString(MekanismLang.VOLUME.translate(tile.structure == null ? 0 : tile.structure.getVolume()), 53, 26, screenTextColor());
-        FluidStack fluidStored = tile.structure == null ? FluidStack.EMPTY : tile.structure.fluidTank.getFluid();
-        if (fluidStored.isEmpty()) {
-            renderScaledText(MekanismLang.NO_FLUID.translate(), 53, 44, screenTextColor(), 74);
-        } else {
-            renderScaledText(MekanismLang.GENERIC_PRE_COLON.translate(fluidStored), 53, 44, screenTextColor(), 74);
-            drawString(MekanismLang.GENERIC_MB.translate(fluidStored.getAmount()), 53, 53, screenTextColor());
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

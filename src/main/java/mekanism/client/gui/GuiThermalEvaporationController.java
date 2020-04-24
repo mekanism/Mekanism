@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Arrays;
 import java.util.Collections;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiHeatInfo;
@@ -27,7 +28,12 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 48, 19, 80, 40));
+        addButton(new GuiInnerScreen(this, 48, 19, 80, 40, () -> Arrays.asList(
+            getStruct().translate(),
+            MekanismLang.HEIGHT.translate(tile.height),
+            MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemp(), TemperatureUnit.KELVIN, true)),
+            MekanismLang.FLUID_PRODUCTION.translate(Math.round(tile.lastGain * 100D) / 100D)
+        )).spacing(1));
         addButton(new GuiDownArrow(this, 32, 39));
         addButton(new GuiDownArrow(this, 136, 39));
         addButton(new GuiHorizontalRateBar(this, new IBarInfoHandler() {
@@ -53,10 +59,6 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText(4);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
-        drawString(getStruct().translate(), 50, 21, screenTextColor());
-        drawString(MekanismLang.HEIGHT.translate(tile.height), 50, 30, screenTextColor());
-        drawString(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemp(), TemperatureUnit.KELVIN, true)), 50, 39, screenTextColor());
-        renderScaledText(MekanismLang.FLUID_PRODUCTION.translate(Math.round(tile.lastGain * 100D) / 100D), 50, 48, screenTextColor(), 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

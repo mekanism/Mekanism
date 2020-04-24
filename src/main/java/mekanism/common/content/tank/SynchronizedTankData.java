@@ -42,7 +42,7 @@ public class SynchronizedTankData extends MultiblockData<SynchronizedTankData> i
     private List<IInventorySlot> createBaseInventorySlots() {
         List<IInventorySlot> inventorySlots = new ArrayList<>();
         FluidInventorySlot input;
-        inventorySlots.add(input = FluidInventorySlot.input(fluidTank, this, 146, 20));
+        inventorySlots.add(input = FluidInventorySlot.input(fluidTank, this, 146, 21));
         inventorySlots.add(OutputInventorySlot.at(this, 146, 51));
         input.setSlotType(ContainerSlotType.INPUT);
         return inventorySlots;

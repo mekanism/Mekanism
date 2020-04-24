@@ -46,7 +46,7 @@ public class SynchronizedMatrixData extends MultiblockData<SynchronizedMatrixDat
         remote = tile.isRemote();
         energyContainers = Collections.singletonList(energyContainer = new MatrixEnergyContainer(tile));
         inventorySlots = new ArrayList<>();
-        inventorySlots.add(energyInputSlot = EnergyInventorySlot.drain(energyContainer, this, 146, 20));
+        inventorySlots.add(energyInputSlot = EnergyInventorySlot.drain(energyContainer, this, 146, 21));
         inventorySlots.add(energyOutputSlot = EnergyInventorySlot.fillOrConvert(energyContainer, tile::getWorld, this, 146, 51));
         energyInputSlot.setSlotOverlay(SlotOverlay.PLUS);
         energyOutputSlot.setSlotOverlay(SlotOverlay.MINUS);

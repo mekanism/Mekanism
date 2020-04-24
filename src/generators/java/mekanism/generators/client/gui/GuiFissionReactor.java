@@ -47,7 +47,13 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     public void init() {
         super.init();
         addButton(new GuiFissionReactorTab(this, tile, FissionReactorTab.STAT));
-        addButton(new GuiInnerScreen(this, 45, 17, 105, 56));
+        addButton(new GuiInnerScreen(this, 45, 17, 105, 56, () -> Arrays.asList(
+            MekanismLang.STATUS.translate(tile.isReactorActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(tile.isReactorActive())),
+            GeneratorsLang.GAS_BURN_RATE.translate(tile.getLastBurnRate()),
+            MekanismLang.BOIL_RATE.translate(formatInt(tile.getLastBoilRate())),
+            MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
+            GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
+        )).defaultFormat().spacing(2));
         addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.waterTank,
             () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13)
             .setLabel(GeneratorsLang.FISSION_WATER_TANK.translateColored(EnumColor.AQUA)));
@@ -98,11 +104,6 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
         updateButtons();
 
         renderTitleText(GeneratorsLang.FISSION_REACTOR.translate(), 5);
-        renderScaledText(MekanismLang.STATUS.translate(tile.isReactorActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(tile.isReactorActive())), 48, 20, screenTextColor(), 100);
-        renderScaledText(GeneratorsLang.GAS_BURN_RATE.translate(tile.getLastBurnRate()), 48, 29, screenTextColor(), 100);
-        renderScaledText(MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()), 48, 38, screenTextColor(), 100);
-        renderScaledText(MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)), 48, 47, screenTextColor(), 100);
-        renderScaledText(GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString()), 48, 56, screenTextColor(), 100);
         drawString(MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, titleTextColor());
         drawString(GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
