@@ -43,7 +43,7 @@ public class MekanismGases {
     public static final GasRegistryObject<Gas> SPENT_NUCLEAR_WASTE = GASES.register("spent_nuclear_waste", 0x262015, new Radiation(0.01));
     public static final GasRegistryObject<Gas> PLUTONIUM = GASES.register("plutonium", 0x1F919C, new Radiation(0.02));
     public static final GasRegistryObject<Gas> POLONIUM = GASES.register("polonium", 0x1B9E7B, new Radiation(0.05));
-    public static final GasRegistryObject<Gas> ANTIMATTER = GASES.register("antimatter", 0x7A91A1);
+    public static final GasRegistryObject<Gas> ANTIMATTER = GASES.register("antimatter", 0xA464B3);
     public static final GasRegistryObject<Gas> NUTRITIONAL_PASTE = GASES.register("nutritional_paste", 0XEB6CA3);
 
     public static final SlurryRegistryObject<Slurry, Slurry> URANIUM_SLURRY = GASES.registerSlurry(SecondaryResource.URANIUM);

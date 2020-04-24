@@ -297,7 +297,8 @@ public class RadiationManager {
         LOW,
         MEDIUM,
         ELEVATED,
-        HIGH;
+        HIGH,
+        EXTREME;
 
         /**
          * Get the corresponding RadiationScale from an equivalent dose rate (Sv/h)
@@ -311,8 +312,10 @@ public class RadiationManager {
                 return MEDIUM;
             } else if (magnitude < 10) { // 100 Sv/h
                 return ELEVATED;
-            } else {
+            } else if (magnitude < 100) {
                 return HIGH;
+            } else {
+                return EXTREME;
             }
         }
 
@@ -356,8 +359,9 @@ public class RadiationManager {
                 case MEDIUM:
                     return MekanismSounds.GEIGER_MEDIUM.get();
                 case ELEVATED:
-                    return MekanismSounds.GEIGER_ELEVATED.get();
                 case HIGH:
+                    return MekanismSounds.GEIGER_ELEVATED.get();
+                case EXTREME:
                     return MekanismSounds.GEIGER_FAST.get();
                 default:
                     return null;

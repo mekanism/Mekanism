@@ -45,7 +45,12 @@ public class GuiInnerScreen extends GuiScalableElement {
     }
 
     public GuiInnerScreen centerY() {
-        this.centerY = true;
+        centerY = true;
+        return this;
+    }
+
+    public GuiInnerScreen clearFormat() {
+        centerY = false;
         return this;
     }
 

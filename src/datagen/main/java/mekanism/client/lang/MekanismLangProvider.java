@@ -62,6 +62,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.PLUTONIUM_PELLET, "Plutonium Pellet");
         add(MekanismItems.POLONIUM_PELLET, "Polonium Pellet");
         add(MekanismItems.REPROCESSED_FISSILE_FRAGMENT, "Reprocessed Fissile Fragment");
+        add(MekanismItems.MODULE_BASE, "Module Base");
         //Tools/Armor
         add(MekanismItems.GAUGE_DROPPER, "Gauge Dropper");
         add(MekanismItems.DICTIONARY, "Dictionary");
@@ -742,7 +743,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Miner
         add(MekanismLang.MINER_INSUFFICIENT_BUFFER, "Insufficient energy buffer!");
         add(MekanismLang.MINER_BUFFER_FREE, "Free Buffer: %s");
-        add(MekanismLang.MINER_TO_MINE, "To mine:");
+        add(MekanismLang.MINER_TO_MINE, "To mine: %s");
         add(MekanismLang.MINER_SILK_ENABLED, "Silk: %s");
         add(MekanismLang.MINER_AUTO_PULL, "Pull: %s");
         add(MekanismLang.MINER_RUNNING, "Running");

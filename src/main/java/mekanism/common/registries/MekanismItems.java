@@ -58,29 +58,49 @@ public class MekanismItems {
     public static final Table<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> PROCESSED_RESOURCES = HashBasedTable.create();
     public static final Map<ModuleData<?>, ItemRegistryObject<? extends ItemModule>> MODULES = new LinkedHashMap<>();
 
-    public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.register("electric_bow", ItemElectricBow::new);
     public static final ItemRegistryObject<ItemRobit> ROBIT = ITEMS.register("robit", ItemRobit::new);
-    public static final ItemRegistryObject<ItemAtomicDisassembler> ATOMIC_DISASSEMBLER = ITEMS.register("atomic_disassembler", ItemAtomicDisassembler::new);
     public static final ItemRegistryObject<ItemEnergized> ENERGY_TABLET = ITEMS.register("energy_tablet", () -> new ItemEnergized(MekanismConfig.gear.tabletChargeRate, MekanismConfig.gear.tabletMaxEnergy, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, ItemDeferredRegister.getMekBaseProperties()));
     public static final ItemRegistryObject<ItemConfigurator> CONFIGURATOR = ITEMS.register("configurator", ItemConfigurator::new);
     public static final ItemRegistryObject<ItemNetworkReader> NETWORK_READER = ITEMS.register("network_reader", ItemNetworkReader::new);
     public static final ItemRegistryObject<ItemDictionary> DICTIONARY = ITEMS.register("dictionary", ItemDictionary::new);
-    public static final ItemRegistryObject<ItemScubaMask> SCUBA_MASK = ITEMS.register("scuba_mask", ItemScubaMask::new);
-    public static final ItemRegistryObject<ItemScubaTank> SCUBA_TANK = ITEMS.register("scuba_tank", ItemScubaTank::new);
     public static final ItemRegistryObject<ItemPortableTeleporter> PORTABLE_TELEPORTER = ITEMS.register("portable_teleporter", ItemPortableTeleporter::new);
-    public static final ItemRegistryObject<ItemFreeRunners> FREE_RUNNERS = ITEMS.register("free_runners", ItemFreeRunners::new);
     public static final ItemRegistryObject<ItemConfigurationCard> CONFIGURATION_CARD = ITEMS.register("configuration_card", ItemConfigurationCard::new);
     public static final ItemRegistryObject<ItemCraftingFormula> CRAFTING_FORMULA = ITEMS.register("crafting_formula", ItemCraftingFormula::new);
     public static final ItemRegistryObject<ItemSeismicReader> SEISMIC_READER = ITEMS.register("seismic_reader", ItemSeismicReader::new);
-    public static final ItemRegistryObject<ItemFlamethrower> FLAMETHROWER = ITEMS.register("flamethrower", ItemFlamethrower::new);
     public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.register("gauge_dropper", ItemGaugeDropper::new);
-    public static final ItemRegistryObject<Item> TELEPORTATION_CORE = ITEMS.register("teleportation_core");
     public static final ItemRegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.register("geiger_counter", ItemGeigerCounter::new);
     public static final ItemRegistryObject<ItemDosimeter> DOSIMETER = ITEMS.register("dosimeter", ItemDosimeter::new);
     public static final ItemRegistryObject<ItemCanteen> CANTEEN = ITEMS.register("canteen", ItemCanteen::new);
+    public static final ItemRegistryObject<ItemAtomicDisassembler> ATOMIC_DISASSEMBLER = ITEMS.register("atomic_disassembler", ItemAtomicDisassembler::new);
+    public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.register("electric_bow", ItemElectricBow::new);
+    public static final ItemRegistryObject<ItemFlamethrower> FLAMETHROWER = ITEMS.register("flamethrower", ItemFlamethrower::new);
     public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.register("meka_tool", ItemMekaTool::new);
 
+    public static final ItemRegistryObject<ItemFreeRunners> FREE_RUNNERS = ITEMS.register("free_runners", ItemFreeRunners::new);
+    public static final ItemRegistryObject<ItemScubaMask> SCUBA_MASK = ITEMS.register("scuba_mask", ItemScubaMask::new);
+    public static final ItemRegistryObject<ItemScubaTank> SCUBA_TANK = ITEMS.register("scuba_tank", ItemScubaTank::new);
+    public static final ItemRegistryObject<ItemJetpack> JETPACK = ITEMS.register("jetpack", ItemJetpack::new);
+    public static final ItemRegistryObject<ItemArmoredJetpack> ARMORED_JETPACK = ITEMS.register("jetpack_armored", ItemArmoredJetpack::new);
+
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_HELMET = ITEMS.register("mekasuit_helmet", props -> new ItemMekaSuitArmor(EquipmentSlotType.HEAD, props));
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BODYARMOR = ITEMS.register("mekasuit_bodyarmor", props -> new ItemMekaSuitArmor(EquipmentSlotType.CHEST, props));
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_PANTS = ITEMS.register("mekasuit_pants", props -> new ItemMekaSuitArmor(EquipmentSlotType.LEGS, props));
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BOOTS = ITEMS.register("mekasuit_boots", props -> new ItemMekaSuitArmor(EquipmentSlotType.FEET, props));
+
+    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_MASK = ITEMS.register("hazmat_mask", props -> new ItemHazmatSuitArmor(EquipmentSlotType.HEAD, props));
+    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_GOWN = ITEMS.register("hazmat_gown", props -> new ItemHazmatSuitArmor(EquipmentSlotType.CHEST, props));
+    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_PANTS = ITEMS.register("hazmat_pants", props -> new ItemHazmatSuitArmor(EquipmentSlotType.LEGS, props));
+    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_BOOTS = ITEMS.register("hazmat_boots", props -> new ItemHazmatSuitArmor(EquipmentSlotType.FEET, props));
+
+    public static final ItemRegistryObject<Item> MODULE_BASE = ITEMS.register("module_base");
+    static {
+        for (ModuleData<?> module : Modules.getAll()) {
+            MODULES.put(module, ITEMS.register("module_" + module.getName(), properties -> new ItemModule(module, properties)));
+        }
+    }
+
     public static final ItemRegistryObject<Item> ENRICHED_IRON = ITEMS.register("enriched_iron");
+    public static final ItemRegistryObject<Item> TELEPORTATION_CORE = ITEMS.register("teleportation_core");
     public static final ItemRegistryObject<Item> ELECTROLYTIC_CORE = ITEMS.register("electrolytic_core");
     public static final ItemRegistryObject<Item> SAWDUST = ITEMS.register("sawdust");
     public static final ItemRegistryObject<Item> SALT = ITEMS.register("salt");
@@ -115,19 +135,6 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> ADVANCED_CONTROL_CIRCUIT = registerCircuit(BaseTier.ADVANCED);
     public static final ItemRegistryObject<Item> ELITE_CONTROL_CIRCUIT = registerCircuit(BaseTier.ELITE);
     public static final ItemRegistryObject<Item> ULTIMATE_CONTROL_CIRCUIT = registerCircuit(BaseTier.ULTIMATE);
-
-    public static final ItemRegistryObject<ItemJetpack> JETPACK = ITEMS.register("jetpack", ItemJetpack::new);
-    public static final ItemRegistryObject<ItemArmoredJetpack> ARMORED_JETPACK = ITEMS.register("jetpack_armored", ItemArmoredJetpack::new);
-
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_HELMET = ITEMS.register("mekasuit_helmet", props -> new ItemMekaSuitArmor(EquipmentSlotType.HEAD, props));
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BODYARMOR = ITEMS.register("mekasuit_bodyarmor", props -> new ItemMekaSuitArmor(EquipmentSlotType.CHEST, props));
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_PANTS = ITEMS.register("mekasuit_pants", props -> new ItemMekaSuitArmor(EquipmentSlotType.LEGS, props));
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BOOTS = ITEMS.register("mekasuit_boots", props -> new ItemMekaSuitArmor(EquipmentSlotType.FEET, props));
-
-    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_MASK = ITEMS.register("hazmat_mask", props -> new ItemHazmatSuitArmor(EquipmentSlotType.HEAD, props));
-    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_GOWN = ITEMS.register("hazmat_gown", props -> new ItemHazmatSuitArmor(EquipmentSlotType.CHEST, props));
-    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_PANTS = ITEMS.register("hazmat_pants", props -> new ItemHazmatSuitArmor(EquipmentSlotType.LEGS, props));
-    public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_BOOTS = ITEMS.register("hazmat_boots", props -> new ItemHazmatSuitArmor(EquipmentSlotType.FEET, props));
 
     public static final ItemRegistryObject<Item> HDPE_PELLET = ITEMS.register("hdpe_pellet");
     public static final ItemRegistryObject<Item> HDPE_ROD = ITEMS.register("hdpe_rod");
@@ -170,9 +177,6 @@ public class MekanismItems {
                     PROCESSED_RESOURCES.put(type, resource, ITEMS.register(type.getRegistryPrefix() + "_" + resource.getName(), props -> new ItemProcessedResource(props, type, resource)));
                 }
             }
-        }
-        for (ModuleData<?> module : Modules.getAll()) {
-            MODULES.put(module, ITEMS.register("module_" + module.getName(), properties -> new ItemModule(module, properties)));
         }
     }
 

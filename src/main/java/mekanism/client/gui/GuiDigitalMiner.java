@@ -7,6 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSwitch;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -28,10 +29,11 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
@@ -39,6 +41,10 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     private MekanismButton startButton;
     private MekanismButton stopButton;
     private MekanismButton configButton;
+
+    private ResourceLocation eject = MekanismUtils.getResource(ResourceType.GUI, "switch/eject.png");
+    private ResourceLocation input = MekanismUtils.getResource(ResourceType.GUI, "switch/input.png");
+    private ResourceLocation silk = MekanismUtils.getResource(ResourceType.GUI, "switch/silk.png");
 
     public GuiDigitalMiner(MekanismTileContainer<TileEntityDigitalMiner> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -49,7 +55,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 7, 8, 58, 69, () -> {
+        addButton(new GuiInnerScreen(this, 7, 8, 59, 69, () -> {
             List<ITextComponent> list = new ArrayList<>();
             ILangEntry runningType;
             if (tile.getEnergyContainer().getEnergyPerTick().greaterThan(tile.getEnergyContainer().getMaxEnergy())) {
@@ -62,13 +68,12 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             list.add(runningType.translate());
             list.add(tile.searcher.state.getTextComponent());
 
-            list.add(MekanismLang.EJECT.translate(OnOff.of(tile.doEject)));
-            list.add(MekanismLang.MINER_AUTO_PULL.translate(OnOff.of(tile.doPull)));
-            list.add(MekanismLang.MINER_SILK_ENABLED.translate(OnOff.of(tile.getSilkTouch())));
-            list.add(MekanismLang.MINER_TO_MINE.translate());
-            list.add(TextComponentUtil.build(tile.cachedToMine));
+            list.add(MekanismLang.MINER_TO_MINE.translate(tile.cachedToMine));
             return list;
-        }).spacing(1));
+        }).spacing(1).clearFormat());
+        addButton(new GuiSwitch(this, 9, 43, eject, () -> tile.doEject, MekanismLang.AUTO_EJECT.translate()));
+        addButton(new GuiSwitch(this, 28, 43, input, () -> tile.doPull, MekanismLang.AUTO_PULL.translate()));
+        addButton(new GuiSwitch(this, 47, 43, silk, () -> tile.getSilkTouch(), MekanismLang.MINER_SILK.translate()));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiUpgradeTab(this, tile));

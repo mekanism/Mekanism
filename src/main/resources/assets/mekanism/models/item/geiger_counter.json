@@ -8,6 +8,7 @@
         { "predicate": { "radiation": 1 }, "model": "mekanism:item/geiger_counter_1" },
         { "predicate": { "radiation": 2 }, "model": "mekanism:item/geiger_counter_2" },
         { "predicate": { "radiation": 3 }, "model": "mekanism:item/geiger_counter_3" },
-        { "predicate": { "radiation": 4 }, "model": "mekanism:item/geiger_counter_4" }
+        { "predicate": { "radiation": 4 }, "model": "mekanism:item/geiger_counter_4" },
+        { "predicate": { "radiation": 5 }, "model": "mekanism:item/geiger_counter_5" }
     ]
 }
