@@ -63,41 +63,45 @@ public class GuiUtils {
         int sideWidth = Math.min(texSideWidth, width / 2);
         int sideHeight = Math.min(texSideHeight, height / 2);
 
-        int texCenterWidth = textureWidth - texSideWidth * 2, texCenterHeight = textureHeight - texSideHeight * 2;
-        int centerWidth = width - 2 * sideWidth, centerHeight = height - 2 * sideHeight;
+        // Adjustment for small odd-height and odd-width GUIs
+        int leftWidth = sideWidth < texSideWidth ? sideWidth + (width % 2) : sideWidth;
+        int topHeight = sideHeight < texSideHeight ? sideHeight + (height % 2) : sideHeight;
 
-        int leftEdgeEnd = left + sideWidth;
+        int texCenterWidth = textureWidth - texSideWidth * 2, texCenterHeight = textureHeight - texSideHeight * 2;
+        int centerWidth = width - leftWidth - sideWidth, centerHeight = height - topHeight - sideHeight;
+
+        int leftEdgeEnd = left + leftWidth;
         int rightEdgeStart = leftEdgeEnd + centerWidth;
-        int topEdgeEnd = top + sideHeight;
+        int topEdgeEnd = top + topHeight;
         int bottomEdgeStart = topEdgeEnd + centerHeight;
         MekanismRenderer.bindTexture(resource);
 
         //Top Left Corner
-        AbstractGui.blit(left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        AbstractGui.blit(left, top, 0, 0, leftWidth, topHeight, textureWidth, textureHeight);
         //Bottom Left Corner
-        AbstractGui.blit(left, bottomEdgeStart, 0, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
+        AbstractGui.blit(left, bottomEdgeStart, 0, textureHeight - sideHeight, leftWidth, sideHeight, textureWidth, textureHeight);
 
         //Middle
         if (centerWidth > 0) {
             //Top Middle
-            blitTiled(leftEdgeEnd, top, centerWidth, sideHeight, texSideWidth, 0, texCenterWidth, sideHeight, textureWidth, textureHeight);
+            blitTiled(leftEdgeEnd, top, centerWidth, topHeight, texSideWidth, 0, texCenterWidth, texSideHeight, textureWidth, textureHeight);
             if (centerHeight > 0) {
                 //Center
                 blitTiled(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, texSideWidth, texSideHeight, texCenterWidth, texCenterHeight, textureWidth, textureHeight);
             }
             //Bottom Middle
-            blitTiled(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, texSideWidth, textureHeight - sideHeight, texCenterWidth, sideHeight, textureWidth, textureHeight);
+            blitTiled(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, texSideWidth, textureHeight - sideHeight, texCenterWidth, texSideHeight, textureWidth, textureHeight);
         }
 
         if (centerHeight > 0) {
             //Left Middle
-            blitTiled(left, topEdgeEnd, sideWidth, centerHeight, 0, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
+            blitTiled(left, topEdgeEnd, leftWidth, centerHeight, 0, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
             //Right Middle
             blitTiled(rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, textureWidth - sideWidth, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
         }
 
         //Top Right Corner
-        AbstractGui.blit(rightEdgeStart, top, texSideWidth + texCenterWidth, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        AbstractGui.blit(rightEdgeStart, top, texSideWidth + texCenterWidth, 0, sideWidth, topHeight, textureWidth, textureHeight);
         //Bottom Right Corner
         AbstractGui.blit(rightEdgeStart, bottomEdgeStart, textureWidth - sideWidth, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
     }
