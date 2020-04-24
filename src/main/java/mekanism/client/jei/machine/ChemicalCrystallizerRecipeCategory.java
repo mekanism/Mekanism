@@ -48,7 +48,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<GasTo
         }));
         guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 7, 4));
         guiElements.add(new GuiSlot(SlotType.EXTRA, this, 7, 64).with(SlotOverlay.PLUS));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 130, 56));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 128, 56));
         guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 53, 61));
     }
 
@@ -66,7 +66,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<GasTo
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, GasToItemStackRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, false, 130 - xOffset, 56 - yOffset);
+        itemStacks.init(0, false, 128 - xOffset, 56 - yOffset);
         itemStacks.set(0, recipe.getOutputDefinition());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, true, 8 - xOffset, 5 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);

@@ -34,13 +34,13 @@ public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStac
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 5, 4));
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 133, 13));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, 154, 4).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 25, 35));
-        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 154, 24).with(SlotOverlay.PLUS));
-        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 5, 64).with(SlotOverlay.MINUS));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 79, 38));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 7, 4));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 131, 13));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, 151, 4).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 27, 35));
+        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 151, 24).with(SlotOverlay.PLUS));
+        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 7, 64).with(SlotOverlay.MINUS));
+        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 64, 40));
     }
 
     @Override
@@ -61,13 +61,13 @@ public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStac
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, ItemStackGasToGasRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
+        itemStacks.init(0, true, 27 - xOffset, 35 - yOffset);
         itemStacks.set(0, recipe.getItemInput().getRepresentations());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
         int scale = TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, scale)).collect(Collectors.toList());
-        initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58, scaledGases, true);
-        initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputDefinition()), true);
+        initGas(gasStacks, 0, true, 8 - xOffset, 5 - yOffset, 16, 58, scaledGases, true);
+        initGas(gasStacks, 1, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputDefinition()), true);
     }
 }

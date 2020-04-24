@@ -31,11 +31,11 @@ public class FluidGasToGasRecipeCategory extends BaseRecipeCategory<FluidGasToGa
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 5, 4));
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 26, 13));
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 133, 13));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, 154, 4).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 154, 55).with(SlotOverlay.MINUS));
+        guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 7, 13));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 28, 13));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 131, 13));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, 151, 4).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 151, 55).with(SlotOverlay.MINUS));
         guiElements.add(new GuiProgress(() -> 1, ProgressType.LARGE_RIGHT, this, 64, 39));
     }
 
@@ -56,10 +56,10 @@ public class FluidGasToGasRecipeCategory extends BaseRecipeCategory<FluidGasToGa
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
         List<FluidStack> fluidInputs = recipe.getFluidInput().getRepresentations();
         int max = fluidInputs.stream().mapToInt(FluidStack::getAmount).filter(input -> input >= 0).max().orElse(0);
-        fluidStacks.init(0, true, 6 - xOffset, 5 - yOffset, 16, 58, max, false, fluidOverlayLarge);
+        fluidStacks.init(0, true, 8 - xOffset, 14 - yOffset, 16, 58, max, false, fluidOverlayLarge);
         fluidStacks.set(0, fluidInputs);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 27 - xOffset, 14 - yOffset, 16, 58, recipe.getGasInput().getRepresentations(), true);
-        initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
+        initGas(gasStacks, 0, true, 29 - xOffset, 14 - yOffset, 16, 58, recipe.getGasInput().getRepresentations(), true);
+        initGas(gasStacks, 1, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
 }

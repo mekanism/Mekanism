@@ -83,8 +83,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ga
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this, 8, 65));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 131, 57));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 129, 57));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 152, 5));
         inputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }

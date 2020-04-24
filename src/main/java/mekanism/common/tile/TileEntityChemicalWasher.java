@@ -131,8 +131,8 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidGasTo
         builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 180, 71));
         //Output slot for the fluid container that was used as an input
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 180, 102));
-        builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 155, 56));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
+        builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 152, 56));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 152, 5));
         gasOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
         fluidSlot.setSlotType(ContainerSlotType.INPUT);
         return builder.build();

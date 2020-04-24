@@ -52,7 +52,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 160, 23));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 23));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));

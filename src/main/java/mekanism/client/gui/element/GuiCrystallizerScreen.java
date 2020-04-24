@@ -33,10 +33,10 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     private IOreInfo oreInfo;
 
     public GuiCrystallizerScreen(IGuiWrapper gui, int x, int y, IOreInfo oreInfo) {
-        super(SLOT.getTexture(), gui, x, y, 117, 42);
+        super(SLOT.getTexture(), gui, x, y, 115, 42);
         innerScreen = new GuiInnerScreen(gui, x, y, width, height);
         this.oreInfo = oreInfo;
-        this.slotX = this.x + 117 - SLOT.getWidth();
+        this.slotX = this.x + 115 - SLOT.getWidth();
         active = false;
     }
 

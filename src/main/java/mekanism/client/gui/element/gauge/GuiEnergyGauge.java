@@ -45,6 +45,9 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     @Override
     public int getScaledLevel() {
+        if (infoHandler.getEnergy().equals(FloatingLong.ZERO)) {
+            return 0;
+        }
         if (infoHandler.getEnergy().equals(FloatingLong.MAX_VALUE)) {
             return height - 2;
         }
