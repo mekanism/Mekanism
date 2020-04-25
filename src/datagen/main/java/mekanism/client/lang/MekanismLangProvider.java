@@ -424,6 +424,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_TRANSFER, "- %s (%s)");
         add(MekanismLang.GENERIC_PER_TICK, "%s/t");
         add(MekanismLang.GENERIC_PRE_STORED, "%s %s: %s");
+        add(MekanismLang.GENERIC_BLOCK_POS, "(%s, %s, %s)");
         //Directions
         add(MekanismLang.DOWN, "Down");
         add(MekanismLang.UP, "Up");

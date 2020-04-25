@@ -71,6 +71,7 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_TRANSFER("generic", "transfer"),
     GENERIC_PER_TICK("generic", "per_tick"),
     GENERIC_PRE_STORED("generic", "pre_pre_colon"),
+    GENERIC_BLOCK_POS("generic", "block_pos"),
     //Directions
     DOWN("direction", "down"),
     UP("direction", "up"),

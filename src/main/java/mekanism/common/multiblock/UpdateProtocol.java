@@ -477,7 +477,7 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
         }
 
         public static FormationResult fail(ILangEntry text, BlockPos pos) {
-            return new FormationResult(false, text.translateColored(EnumColor.GRAY, EnumColor.INDIGO, UpdateProtocol.toString(pos)));
+            return new FormationResult(false, text.translateColored(EnumColor.GRAY, EnumColor.INDIGO, text(pos)));
         }
 
         public static FormationResult fail(ILangEntry text) {
@@ -493,8 +493,8 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
         }
     }
 
-    protected static String toString(BlockPos pos) {
-        return "(" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + ")";
+    protected static ITextComponent text(BlockPos pos) {
+        return MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ());
     }
 
     public static class NodeCounter {
