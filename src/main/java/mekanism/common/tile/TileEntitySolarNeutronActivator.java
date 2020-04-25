@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -67,7 +68,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this), RelativeSide.BOTTOM);
+        builder.addTank(inputTank = BasicGasTank.create(MAX_GAS, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi,
+            gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, this), RelativeSide.BOTTOM);
         builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.FRONT);
         return builder.build();
     }

@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -78,7 +79,8 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this));
+        builder.addTank(inputTank = BasicGasTank.create(MAX_GAS, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi,
+            gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
         builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this));
         return builder.build();
     }

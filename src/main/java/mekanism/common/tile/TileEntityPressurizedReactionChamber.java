@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -83,7 +84,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputGasTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getInputGas().testType(gas)), this));
+        builder.addTank(inputGasTank = BasicGasTank.create(MAX_GAS, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi,
+            gas -> containsRecipe(recipe -> recipe.getInputGas().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
         builder.addTank(outputGasTank = BasicGasTank.output(MAX_GAS, this));
         return builder.build();
     }
