@@ -66,6 +66,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
                 HeatedCoolant coolantType = structure.superheatedCoolantTank.getStack().get(HeatedCoolant.class);
                 if (coolantType != null) {
                     long toCool = Math.round(BoilerMultiblockData.COOLANT_COOLING_EFFICIENCY * structure.superheatedCoolantTank.getStored());
+                    toCool *= 1 - structure.heatCapacitor.getTemperature() / HeatUtils.HEATED_COOLANT_TEMP;
                     GasStack cooledCoolant = coolantType.getCooledGas().getGasStack(toCool);
                     toCool = Math.min(toCool, toCool - structure.cooledCoolantTank.insert(cooledCoolant, Action.EXECUTE, AutomationType.INTERNAL).getAmount());
                     if (toCool > 0) {

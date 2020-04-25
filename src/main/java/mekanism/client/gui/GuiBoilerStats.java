@@ -44,7 +44,8 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
         drawString(MekanismLang.BOILER_MAX_STEAM.translate(formatInt(tile.structure == null ? 0 : tile.structure.steamTank.getCapacity())), 8, 35, titleTextColor());
         drawString(MekanismLang.BOILER_HEAT_TRANSFER.translate(), 8, 49, 0x797979);
         drawString(MekanismLang.BOILER_HEATERS.translate(tile.getSuperheatingElements()), 14, 58, titleTextColor());
-        long boilCapacity = (long) ((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getSuperheatingElements()) / HeatUtils.getWaterThermalEnthalpy());
+        long boilCapacity = (long) ((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getSuperheatingElements() / HeatUtils.getWaterThermalEnthalpy()));
+        boilCapacity *= HeatUtils.getSteamEnergyEfficiency();
         drawString(MekanismLang.BOILER_CAPACITY.translate(formatInt(boilCapacity)), 8, 72, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

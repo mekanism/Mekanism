@@ -115,7 +115,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         resistiveHeaterEfficiency = CachedDoubleValue.wrap(this, builder.comment("How much heat energy is created from one Joule of regular energy in the Resistive Heater.")
               .defineInRange("resistiveHeaterEfficiency", 0.6, 0, 1));
         superheatingHeatTransfer = CachedDoubleValue.wrap(this, builder.comment("Amount of heat each Boiler heating element produces.")
-              .define("superheatingHeatTransfer", 512_000D));
+              .define("superheatingHeatTransfer", 16_000_000D));
         tempUnit = CachedEnumValue.wrap(this, builder.comment("Displayed temperature unit in Mekanism GUIs.")
               .defineEnum("temperatureUnit", TempType.K));
         builder.comment("Energy Conversion Rate Settings").push(CONVERSION_CATEGORY);

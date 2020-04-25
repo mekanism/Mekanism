@@ -38,7 +38,7 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
 
     public static Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
-    public static final double CASING_HEAT_CAPACITY = 5;
+    public static final double CASING_HEAT_CAPACITY = 50;
     public static final double CASING_INVERSE_INSULATION_COEFFICIENT = 10;
     public static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
 
@@ -48,7 +48,7 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
     public static final int SUPERHEATED_COOLANT_PER_VOLUME = 64_000;
     public static final int COOLED_COOLANT_PER_VOLUME = 64_000;
 
-    public static final double COOLANT_COOLING_EFFICIENCY = 0.2;
+    public static final double COOLANT_COOLING_EFFICIENCY = 0.4;
 
     public MultiblockGasTank<TileEntityBoilerCasing> superheatedCoolantTank;
     public MultiblockGasTank<TileEntityBoilerCasing> cooledCoolantTank;
