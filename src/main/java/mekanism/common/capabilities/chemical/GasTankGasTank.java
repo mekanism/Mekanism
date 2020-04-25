@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
@@ -25,7 +26,7 @@ public class GasTankGasTank extends BasicGasTank {
     private final LongSupplier rate;
 
     private GasTankGasTank(GasTankTier tier, @Nullable IMekanismGasHandler gasHandler) {
-        super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, gasHandler);
+        super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, tier == GasTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, gasHandler);
         isCreative = tier == GasTankTier.CREATIVE;
         rate = tier::getOutput;
     }

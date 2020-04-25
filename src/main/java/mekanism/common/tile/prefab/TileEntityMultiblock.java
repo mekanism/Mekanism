@@ -63,13 +63,13 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
     /**
      * This multiblock segment's cached data
      */
-    public MultiblockCache<T> cachedData = getManager().getNewCache();
+    protected MultiblockCache<T> cachedData = getManager().getNewCache();
 
     /**
      * This multiblock segment's cached inventory ID
      */
     @Nullable
-    public UUID cachedID = null;
+    protected UUID cachedID = null;
 
     /**
      * If we've already run a protocol update that touches this block on this tick.
@@ -184,6 +184,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
                 cachedID = structure.inventoryID;
                 getManager().updateCache(this, true);
             }
+
             getProtocol().doUpdate();
 
             if (structure != null) {
@@ -211,6 +212,19 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
     public abstract UpdateProtocol<T> getProtocol();
 
     public abstract MultiblockManager<T> getManager();
+
+    public void resetCache() {
+        cachedID = null;
+        cachedData = getManager().getNewCache();
+    }
+
+    public UUID getCacheID() {
+        return cachedID;
+    }
+
+    public MultiblockCache<T> getCache() {
+        return cachedData;
+    }
 
     @Nonnull
     @Override
@@ -280,6 +294,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
         super.write(nbtTags);
         if (cachedID != null) {
             nbtTags.putUniqueId(NBTConstants.INVENTORY_ID, cachedID);
+            if (structure != null) {
+                cachedData.sync(structure);
+            }
             cachedData.save(nbtTags);
         }
         return nbtTags;

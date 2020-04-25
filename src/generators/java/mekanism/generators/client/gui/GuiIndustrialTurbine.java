@@ -48,7 +48,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 list.add(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(EnergyDisplay.of(energyMultiplier.multiply(tile.structure.clientFlow))));
                 list.add(GeneratorsLang.TURBINE_FLOW_RATE.translate(formatInt(tile.structure.clientFlow)));
                 list.add(GeneratorsLang.TURBINE_CAPACITY.translate(formatInt(tile.structure.getSteamCapacity())));
-                list.add(GeneratorsLang.TURBINE_MAX_FLOW.translate(rate));
+                list.add(GeneratorsLang.TURBINE_MAX_FLOW.translate(formatInt((long) rate)));
             }
             return list;
         }));

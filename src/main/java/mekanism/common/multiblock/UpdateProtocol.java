@@ -2,6 +2,7 @@ package mekanism.common.multiblock;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -379,11 +380,16 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
                 }
             }
 
-            List<UUID> idsFound = new ArrayList<>();
+            Set<UUID> idsFound = new HashSet<>();
             for (Coord4D obj : structureFound.locations) {
                 TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
-                if (tile instanceof TileEntityMultiblock && ((TileEntityMultiblock<?>) tile).cachedID != null) {
-                    idsFound.add(((TileEntityMultiblock<?>) tile).cachedID);
+                if (tile instanceof TileEntityMultiblock) {
+                    TileEntityMultiblock<T> multiblockTile = (TileEntityMultiblock<T>) tile;
+                    UUID uuid = multiblockTile.getCacheID();
+                    if (uuid != null && multiblockTile.getManager() == getManager()) {
+                        getManager().updateCache(multiblockTile, false);
+                        idsFound.add(uuid);
+                    }
                 }
             }
 
@@ -465,6 +471,7 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
     }
 
     public static class FormationResult {
+
         public static final FormationResult SUCCESS = new FormationResult(true, null);
         public static final FormationResult FAIL = new FormationResult(false, null);
 

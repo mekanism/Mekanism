@@ -12,7 +12,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
@@ -87,8 +86,8 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         private final boolean isCreative;
 
         private GasTankRateLimitGasTank(GasTankTier tier, IMekanismGasHandler gasHandler) {
-            //TODO change to null (default)
-            super(tier::getOutput, tier::getStorage, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, gasHandler);
+            super(tier::getOutput, tier::getStorage, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue,
+                tier == GasTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, gasHandler);
             isCreative = tier == GasTankTier.CREATIVE;
         }
 

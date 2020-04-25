@@ -1,7 +1,6 @@
 package mekanism.common.multiblock;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -46,7 +45,7 @@ public class MultiblockManager<T extends MultiblockData<T>> {
     }
 
     @Nullable
-    public static UUID getStructureId(TileEntityMultiblock<?> tile) {
+    public static UUID getMultiblockID(TileEntityMultiblock<?> tile) {
         return tile.structure == null ? null : tile.getMultiblockData().inventoryID;
     }
 
@@ -81,8 +80,7 @@ public class MultiblockManager<T extends MultiblockData<T>> {
         for (Coord4D obj : toReturn.locations) {
             TileEntityMultiblock<T> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, obj.getPos());
             if (tile != null) {
-                tile.cachedData = getNewCache();
-                tile.cachedID = null;
+                tile.resetCache();
             }
         }
         inventories.remove(id);
@@ -99,46 +97,35 @@ public class MultiblockManager<T extends MultiblockData<T>> {
     }
 
     public void tickSelf(World world) {
-        List<UUID> idsToKill = new ArrayList<>();
-        Map<UUID, Set<Coord4D>> tilesToKill = new Object2ObjectOpenHashMap<>();
-        for (Entry<UUID, MultiblockCache<T>> entry : inventories.entrySet()) {
+        for (Iterator<Entry<UUID, MultiblockCache<T>>> entryIterator = inventories.entrySet().iterator(); entryIterator.hasNext();) {
+            Entry<UUID, MultiblockCache<T>> entry = entryIterator.next();
             UUID inventoryID = entry.getKey();
-            for (Coord4D obj : entry.getValue().locations) {
+            for (Iterator<Coord4D> coordIterator = entry.getValue().locations.iterator(); coordIterator.hasNext();) {
+                Coord4D obj = coordIterator.next();
                 if (obj.dimension.equals(world.getDimension().getType()) && world.isBlockPresent(obj.getPos())) {
                     TileEntity tile = MekanismUtils.getTileEntity(world, obj.getPos());
                     if (!(tile instanceof TileEntityMultiblock) || ((TileEntityMultiblock<?>) tile).getManager() != this ||
-                        (getStructureId(((TileEntityMultiblock<?>) tile)) != null && !Objects.equals(getStructureId(((TileEntityMultiblock<?>) tile)), inventoryID))) {
-                        if (!tilesToKill.containsKey(inventoryID)) {
-                            tilesToKill.put(inventoryID, new ObjectOpenHashSet<>());
-                        }
-                        tilesToKill.get(inventoryID).add(obj);
+                        (getMultiblockID(((TileEntityMultiblock<?>) tile)) != null && !Objects.equals(getMultiblockID(((TileEntityMultiblock<?>) tile)), inventoryID))) {
+                        coordIterator.remove();
                     }
                 }
             }
             if (entry.getValue().locations.isEmpty()) {
-                idsToKill.add(inventoryID);
+                entryIterator.remove();
             }
-        }
-        for (Entry<UUID, Set<Coord4D>> entry : tilesToKill.entrySet()) {
-            for (Coord4D obj : entry.getValue()) {
-                inventories.get(entry.getKey()).locations.remove(obj);
-            }
-        }
-        for (UUID inventoryID : idsToKill) {
-            inventories.remove(inventoryID);
         }
     }
 
     public void updateCache(TileEntityMultiblock<T> tile, boolean force) {
-        if (!inventories.containsKey(tile.cachedID)) {
-            tile.cachedData.locations.add(Coord4D.get(tile));
-            inventories.put(tile.cachedID, tile.cachedData);
+        if (!inventories.containsKey(tile.getCacheID())) {
+            tile.getCache().locations.add(Coord4D.get(tile));
+            inventories.put(tile.getCacheID(), tile.getCache());
         } else {
-            MultiblockCache<T> cache = inventories.get(tile.cachedID);
+            MultiblockCache<T> cache = inventories.get(tile.getCacheID());
             if (force) {
-                tile.cachedData.locations = cache.locations;
-                inventories.put(tile.cachedID, tile.cachedData);
-                cache = tile.cachedData;
+                tile.getCache().locations = cache.locations;
+                inventories.put(tile.getCacheID(), tile.getCache());
+                cache = tile.getCache();
             }
             cache.locations.add(Coord4D.get(tile));
         }

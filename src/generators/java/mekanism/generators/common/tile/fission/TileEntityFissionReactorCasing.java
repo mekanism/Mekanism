@@ -79,7 +79,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
             structure.handleDamage(getWorld());
 
             // update scales
-            float coolantScale = Math.max(MekanismUtils.getScale(prevCoolantScale, structure.fluidCoolantTank), MekanismUtils.getScale(prevCoolantScale, structure.gasCoolantTank));
+            float coolantScale = MekanismUtils.getScale(prevCoolantScale, structure.fluidCoolantTank);
             float fuelScale = MekanismUtils.getScale(prevFuelScale, structure.fuelTank);
             float steamScale = MekanismUtils.getScale(prevHeatedCoolantScale, structure.heatedCoolantTank), wasteScale = MekanismUtils.getScale(prevWasteScale, structure.wasteTank);
             if (coolantScale != prevCoolantScale || fuelScale != prevFuelScale || steamScale != prevHeatedCoolantScale || wasteScale != prevWasteScale) {
@@ -129,6 +129,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         if (structure != null) {
             structure.rateLimit = Math.min(getMaxBurnRate(), rate);
         }
+        markDirty(false);
     }
 
     @Override
