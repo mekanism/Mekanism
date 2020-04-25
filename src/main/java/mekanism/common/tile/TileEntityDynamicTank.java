@@ -84,7 +84,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     }
 
     @Override
-    protected TankUpdateProtocol getProtocol() {
+    public TankUpdateProtocol getProtocol() {
         return new TankUpdateProtocol(this);
     }
 

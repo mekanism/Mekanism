@@ -105,7 +105,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     }
 
     @Override
-    protected BoilerUpdateProtocol getProtocol() {
+    public BoilerUpdateProtocol getProtocol() {
         return new BoilerUpdateProtocol(this);
     }
 

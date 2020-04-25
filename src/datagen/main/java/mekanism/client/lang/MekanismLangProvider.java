@@ -378,6 +378,15 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.FEET, "Feet");
         add(MekanismLang.MAINHAND, "Hand 1");
         add(MekanismLang.OFFHAND, "Hand 2");
+        //Multiblock
+        add(MekanismLang.MULTIBLOCK_INVALID_FRAME, "Couldn't create frame, invalid block at %s.");
+        add(MekanismLang.MULTIBLOCK_INVALID_INNER, "Couldn't validate center, found invalid block at %s.");
+
+        add(MekanismLang.BOILER_INVALID_AIR_POCKETS, "Couldn't form, found disconnected interior air pockets.");
+        add(MekanismLang.BOILER_INVALID_EXTRA_DISPERSER, "Couldn't form, found invalid Pressure Dispersers.");
+        add(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, "Couldn't form, expected but didn't find Pressure Disperser at %s.");
+        add(MekanismLang.BOILER_INVALID_NO_DISPERSER, "Couldn't form, no Pressure Disperser layer found.");
+        add(MekanismLang.BOILER_INVALID_SUPERHEATING, "Couldn't form, invalid Superheating Element arrangement.");
         //JEI
         add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%s / %s mB");
         //Key

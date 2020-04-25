@@ -9,6 +9,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
@@ -46,13 +47,13 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     }
 
     @Override
-    protected boolean canForm(SynchronizedTurbineData structure) {
+    protected FormationResult validate(SynchronizedTurbineData structure) {
         if (structure.volLength % 2 != 1 || structure.volWidth % 2 != 1) {
-            return false;
+            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH);
         }
         int innerRadius = (Math.min(structure.volLength, structure.volWidth) - 3) / 2;
         if (innerRadius < Math.ceil((structure.volHeight - 2) / 4)) {
-            return false;
+            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_TOO_NARROW);
         }
         int centerX = structure.minLocation.x + (structure.volLength - 1) / 2;
         int centerZ = structure.minLocation.z + (structure.volWidth - 1) / 2;
@@ -69,13 +70,13 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
             TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
             if (tile instanceof TileEntityRotationalComplex) {
                 if (complex != null || coord.x != centerX || coord.z != centerZ) {
-                    return false;
+                    return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_BAD_COMPLEX, coord.getPos());
                 }
                 structure.internalLocations.add(coord);
                 complex = coord;
             } else if (tile instanceof TileEntityTurbineRotor) {
                 if (coord.x != centerX || coord.z != centerZ) {
-                    return false;
+                    return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_BAD_ROTOR, coord.getPos());
                 }
                 turbines.add(coord);
             } else if (tile instanceof TileEntityPressureDisperser) {
@@ -89,7 +90,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
         //Terminate if complex doesn't exist
         if (complex == null) {
-            return false;
+            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_COMPLEX);
         }
 
         //Make sure a flat, horizontal plane of dispersers exists within the multiblock around the complex
@@ -98,7 +99,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
                 if (x != centerX || z != centerZ) {
                     TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, pointer.getWorld(), new BlockPos(x, complex.y, z));
                     if (tile == null) {
-                        return false;
+                        return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_DISPERSER, new BlockPos(x, complex.y, z));
                     }
                     dispersers.remove(new Coord4D(x, complex.y, z, pointer.getWorld().getDimension().getType()));
                 }
@@ -107,13 +108,13 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
         //If any dispersers were not processed, they're in the wrong place
         if (!dispersers.isEmpty()) {
-            return false;
+            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MALFORMED_DISPERSERS);
         }
 
         //Make sure all condensers are in proper locations
         for (Coord4D coord : condensers) {
             if (coord.y <= complex.y) {
-                return false;
+                return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_CONDENSER_BELOW_COMPLEX, coord.getPos());
             }
         }
 
@@ -126,7 +127,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
             TileEntityTurbineRotor rotor = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, pointer.getWorld(), new BlockPos(centerX, y, centerZ));
             if (rotor == null) {
                 // Not a contiguous set of rotors
-                return false;
+                FormationResult.fail(GeneratorsLang.TURBINE_INVALID_ROTORS_NOT_CONTIGUOUS);
             }
             turbineHeight++;
             blades += rotor.getHousedBlades();
@@ -136,7 +137,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
         // If there are any rotors left over, they are in the wrong place in the structure
         if (!turbines.isEmpty()) {
-            return false;
+            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_BAD_ROTORS);
         }
 
         // Update the structure with number of blades found on rotors
@@ -153,20 +154,20 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         }
 
         if (coils.size() > structure.coils) {
-            return false;
+            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MALFORMED_COILS);
         }
 
         for (Coord4D coord : structure.locations) {
             if (MekanismUtils.getTileEntity(TileEntityTurbineVent.class, pointer.getWorld(), coord.getPos()) != null) {
                 if (coord.y < complex.y) {
-                    return false;
+                    return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_VENT_BELOW_COMPLEX, coord.getPos());
                 }
                 structure.vents++;
             }
         }
         structure.lowerVolume = structure.volLength * structure.volWidth * turbineHeight;
         structure.complex = complex;
-        return true;
+        return FormationResult.SUCCESS;
     }
 
     @Override

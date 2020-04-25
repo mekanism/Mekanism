@@ -6,11 +6,16 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
+import mekanism.api.IConfigurable;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockData;
+import mekanism.common.multiblock.UpdateProtocol.FormationResult;
 import mekanism.common.registries.MekanismTileEntityTypes;
-import mekanism.common.tile.base.TileEntityUpdateable;
+import mekanism.common.tile.base.CapabilityTileEntity;
+import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
@@ -22,7 +27,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
-public class TileEntityStructuralGlass extends TileEntityUpdateable implements IStructuralMultiblock {
+public class TileEntityStructuralGlass extends CapabilityTileEntity implements IStructuralMultiblock, IConfigurable {
 
     public Coord4D master;
 
@@ -30,6 +35,7 @@ public class TileEntityStructuralGlass extends TileEntityUpdateable implements I
 
     public TileEntityStructuralGlass() {
         super(MekanismTileEntityTypes.STRUCTURAL_GLASS.getTileEntityType());
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
     @Override
@@ -101,6 +107,26 @@ public class TileEntityStructuralGlass extends TileEntityUpdateable implements I
     @Override
     public void setController(Coord4D coord) {
         master = coord;
+    }
+
+    @Override
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        if (!getWorld().isRemote() && master == null) {
+            IMultiblock<?> multiblock = new ControllerFinder().find();
+            if (multiblock instanceof TileEntityMultiblock && multiblock.getMultiblockData() == null) {
+                FormationResult result = ((TileEntityMultiblock<?>) multiblock).getProtocol().doUpdate();
+                if (!result.isFormed() && result.getResultText() != null) {
+                    player.sendMessage(result.getResultText());
+                    return ActionResultType.SUCCESS;
+                }
+            }
+        }
+        return ActionResultType.PASS;
+    }
+
+    @Override
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+        return ActionResultType.PASS;
     }
 
     public class ControllerFinder {

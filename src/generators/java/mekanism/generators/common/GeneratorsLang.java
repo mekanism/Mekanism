@@ -44,6 +44,19 @@ public enum GeneratorsLang implements ILangEntry {
     REACTOR_LOGIC_CAPACITY("reactor", "logic.capacity"),
     REACTOR_LOGIC_DEPLETED("reactor", "logic.depleted"),
 
+    TURBINE_INVALID_BAD_COMPLEX("turbine", "invalid_bad_complex"),
+    TURBINE_INVALID_BAD_ROTOR("turbine", "invalid_bad_rotor"),
+    TURBINE_INVALID_BAD_ROTORS("turbine", "invalid_bad_rotors"),
+    TURBINE_INVALID_CONDENSER_BELOW_COMPLEX("turbine", "invalid_condenser_below_complex"),
+    TURBINE_INVALID_EVEN_LENGTH("turbine", "invalid_even_length"),
+    TURBINE_INVALID_MALFORMED_COILS("turbine", "invalid_malformed_coils"),
+    TURBINE_INVALID_MALFORMED_DISPERSERS("turbine", "invalid_malformed_dispersers"),
+    TURBINE_INVALID_MISSING_COMPLEX("turbine", "invalid_missing_complex"),
+    TURBINE_INVALID_MISSING_DISPERSER("turbine", "invalid_missing_disperser"),
+    TURBINE_INVALID_ROTORS_NOT_CONTIGUOUS("turbine", "invalid_rotors_not_contiguous"),
+    TURBINE_INVALID_TOO_NARROW("turbine", "invalid_too_narrow"),
+    TURBINE_INVALID_VENT_BELOW_COMPLEX("turbine", "invalid_vent_below_complex"),
+
     TURBINE("turbine", "industrial_turbine"),
     TURBINE_FLOW_RATE("turbine", "flow_rate"),
     TURBINE_STEAM_INPUT_RATE("turbine", "steam_input"),
@@ -61,6 +74,12 @@ public enum GeneratorsLang implements ILangEntry {
     TURBINE_MAX_FLOW("turbine", "stats.max_flow"),
     TURBINE_MAX_PRODUCTION("turbine", "stats.max_production"),
     TURBINE_PRODUCTION("turbine", "stats.production"),
+
+    FISSION_INVALID_BAD_CONTROL_ROD("fission", "invalid_bad_control_rod"),
+    FISSION_INVALID_BAD_FUEL_ASSEMBLY("fission", "invalid_bad_fuel_assembly"),
+    FISSION_INVALID_EXTRA_CONTROL_ROD("fission", "invalid_extra_control_rod"),
+    FISSION_INVALID_MALFORMED_FUEL_ASSEMBLY("fission", "invalid_malformed_fuel_assembly"),
+    FISSION_INVALID_MISSING_FUEL_ASSEMBLY("fission", "invalid_missing_fuel_assembly"),
 
     FISSION_REACTOR("fission", "fission_reactor"),
     FISSION_REACTOR_STATS("fission", "stats"),

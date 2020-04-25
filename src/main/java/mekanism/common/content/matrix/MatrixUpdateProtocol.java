@@ -52,7 +52,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     }
 
     @Override
-    protected boolean canForm(SynchronizedMatrixData structure) {
+    protected FormationResult validate(SynchronizedMatrixData structure) {
         for (Coord4D coord : innerNodes) {
             TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
             if (tile instanceof TileEntityInductionCell) {
@@ -61,6 +61,6 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
                 structure.addProvider(coord, (TileEntityInductionProvider) tile);
             }
         }
-        return true;
+        return FormationResult.SUCCESS;
     }
 }

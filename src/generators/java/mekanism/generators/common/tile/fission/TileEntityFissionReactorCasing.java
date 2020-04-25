@@ -136,7 +136,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
     }
 
     @Override
-    protected UpdateProtocol<SynchronizedFissionReactorData> getProtocol() {
+    public UpdateProtocol<SynchronizedFissionReactorData> getProtocol() {
         return new FissionReactorUpdateProtocol(this);
     }
 

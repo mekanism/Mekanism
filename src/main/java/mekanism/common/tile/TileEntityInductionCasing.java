@@ -46,7 +46,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     }
 
     @Override
-    protected MatrixUpdateProtocol getProtocol() {
+    public MatrixUpdateProtocol getProtocol() {
         return new MatrixUpdateProtocol(this);
     }
 

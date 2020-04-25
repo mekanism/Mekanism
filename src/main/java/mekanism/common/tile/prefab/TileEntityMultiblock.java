@@ -1,23 +1,27 @@
 package mekanism.common.tile.prefab;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
+import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
+import mekanism.common.multiblock.UpdateProtocol.FormationResult;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -33,7 +37,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
-public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends TileEntityMekanism implements IMultiblock<T> {
+public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends TileEntityMekanism implements IMultiblock<T>, IConfigurable {
 
     /**
      * The multiblock data for this structure.
@@ -81,6 +85,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
 
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
     public void removeStructure() {
@@ -203,7 +208,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
     @Nonnull
     public abstract T getNewStructure();
 
-    protected abstract UpdateProtocol<T> getProtocol();
+    public abstract UpdateProtocol<T> getProtocol();
 
     public abstract MultiblockManager<T> getManager();
 
@@ -309,5 +314,22 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         return side -> structure == null ? Collections.emptyList() : structure.getInventorySlots(side);
+    }
+
+    @Override
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        if (!getWorld().isRemote() && structure == null) {
+            FormationResult result = getProtocol().doUpdate();
+            if (!result.isFormed() && result.getResultText() != null) {
+                player.sendMessage(result.getResultText());
+                return ActionResultType.SUCCESS;
+            }
+        }
+        return ActionResultType.PASS;
+    }
+
+    @Override
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+        return ActionResultType.PASS;
     }
 }

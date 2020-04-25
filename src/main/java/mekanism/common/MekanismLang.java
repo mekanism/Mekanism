@@ -25,6 +25,15 @@ public enum MekanismLang implements ILangEntry {
     FEET("equipment", "feet"),
     MAINHAND("equipment", "mainhand"),
     OFFHAND("equipment", "offhand"),
+    //Multiblock Stuff
+    MULTIBLOCK_INVALID_FRAME("multiblock", "invalid_frame"),
+    MULTIBLOCK_INVALID_INNER("multiblock", "invalid_inner"),
+
+    BOILER_INVALID_AIR_POCKETS("boiler", "invalid_air_pockets"),
+    BOILER_INVALID_EXTRA_DISPERSER("boiler", "invalid_extra_disperser"),
+    BOILER_INVALID_MISSING_DISPERSER("boiler", "invalid_missing_disperser"),
+    BOILER_INVALID_NO_DISPERSER("boiler", "invalid_no_disperser"),
+    BOILER_INVALID_SUPERHEATING("boiler", "invalid_superheating"),
     //JEI
     JEI_AMOUNT_WITH_CAPACITY("tooltip", "jei.amount.with.capacity"),
     //Key

@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.element.GuiDigitalSwitch;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSwitch;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
-import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -48,14 +47,14 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
 
     public GuiDigitalMiner(MekanismTileContainer<TileEntityDigitalMiner> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ySize += 64;
+        ySize += 76;
         dynamicSlots = true;
     }
 
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 7, 8, 59, 69, () -> {
+        addButton(new GuiInnerScreen(this, 7, 19, 77, 69, () -> {
             List<ITextComponent> list = new ArrayList<>();
             ILangEntry runningType;
             if (tile.getEnergyContainer().getEnergyPerTick().greaterThan(tile.getEnergyContainer().getMaxEnergy())) {
@@ -68,18 +67,21 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             list.add(runningType.translate());
             list.add(tile.searcher.state.getTextComponent());
 
-            list.add(MekanismLang.MINER_TO_MINE.translate(tile.cachedToMine));
+            list.add(MekanismLang.MINER_TO_MINE.translate(formatInt(tile.cachedToMine)));
             return list;
         }).spacing(1).clearFormat());
-        addButton(new GuiSwitch(this, 9, 43, eject, () -> tile.doEject, MekanismLang.AUTO_EJECT.translate()));
-        addButton(new GuiSwitch(this, 28, 43, input, () -> tile.doPull, MekanismLang.AUTO_PULL.translate()));
-        addButton(new GuiSwitch(this, 47, 43, silk, () -> tile.getSilkTouch(), MekanismLang.MINER_SILK.translate()));
+        addButton(new GuiDigitalSwitch(this, 19, 56, eject, () -> tile.doEject, MekanismLang.AUTO_EJECT.translate(),
+              (toggle) -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile))));
+        addButton(new GuiDigitalSwitch(this, 38, 56, input, () -> tile.doPull, MekanismLang.AUTO_PULL.translate(),
+              (toggle) -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_PULL_BUTTON, tile))));
+        addButton(new GuiDigitalSwitch(this, 57, 56, silk, () -> tile.getSilkTouch(), MekanismLang.MINER_SILK.translate(),
+              (toggle) -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SILK_TOUCH_BUTTON, tile))));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 163, 25, 50));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 39, 47));
         addButton(new GuiVisualsTab(this, tile));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 143, 26).validity(() -> tile.missingStack)
+        addButton(new GuiSlot(SlotType.DIGITAL, this, 64, 21).validity(() -> tile.missingStack)
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
               .hover(getOnHover(() -> tile.missingStack.isEmpty() ? MekanismLang.MINER_WELL.translate() : MekanismLang.MINER_MISSING_BLOCK.translate())));
         addButton(new GuiEnergyInfo(() -> {
@@ -94,20 +96,16 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             ret.add(MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(energyContainer.getNeeded())));
             return ret;
         }, this));
-        addButton(startButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 17, 60, 20, MekanismLang.BUTTON_START,
+
+        int buttonStart = getGuiTop() + 19;
+        addButton(startButton = new TranslationButton(this, getGuiLeft() + 87, buttonStart, 61, 18, MekanismLang.BUTTON_START,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.START_BUTTON, tile))));
-        addButton(stopButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 37, 60, 20, MekanismLang.BUTTON_STOP,
+        addButton(stopButton = new TranslationButton(this, getGuiLeft() + 87, buttonStart + 17, 61, 18, MekanismLang.BUTTON_STOP,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.STOP_BUTTON, tile))));
-        addButton(configButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 57, 60, 20, MekanismLang.BUTTON_CONFIG,
+        addButton(configButton = new TranslationButton(this, getGuiLeft() + 87, buttonStart + 34, 61, 18, MekanismLang.BUTTON_CONFIG,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tile))));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 131, getGuiTop() + 47, 14, getButtonLocation("reset"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, tile)), getOnHover(MekanismLang.MINER_RESET)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 131, getGuiTop() + 63, 14, getButtonLocation("silk_touch"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SILK_TOUCH_BUTTON, tile)), getOnHover(MekanismLang.MINER_SILK)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 147, getGuiTop() + 47, 14, getButtonLocation("auto_eject"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile)), getOnHover(MekanismLang.AUTO_EJECT)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 147, getGuiTop() + 63, 14, getButtonLocation("auto_pull"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_PULL_BUTTON, tile)), getOnHover(MekanismLang.AUTO_PULL)));
+        addButton(new TranslationButton(this, getGuiLeft() + 87, buttonStart + 51, 61, 18, MekanismLang.MINER_RESET,
+            () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, tile))));
         updateEnabledButtons();
     }
 
@@ -125,7 +123,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), 69, 6, titleTextColor());
+        renderTitleText();
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

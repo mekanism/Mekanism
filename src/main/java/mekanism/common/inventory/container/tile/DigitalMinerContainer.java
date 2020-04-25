@@ -17,6 +17,6 @@ public class DigitalMinerContainer extends MekanismTileContainer<TileEntityDigit
 
     @Override
     protected int getInventoryYOffset() {
-        return 148;
+        return 160;
     }
 }

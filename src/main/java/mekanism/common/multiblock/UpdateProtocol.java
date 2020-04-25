@@ -15,6 +15,9 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
@@ -24,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 
 public abstract class UpdateProtocol<T extends MultiblockData<T>> {
 
@@ -43,6 +47,8 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
      * The original block the calculation is getting run from.
      */
     public TileEntityMultiblock<T> pointer;
+
+    private FormationResult prevResult = FormationResult.FAIL;
 
     public UpdateProtocol(TileEntityMultiblock<T> tile) {
         pointer = tile;
@@ -94,12 +100,14 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
                                 //If it is not a valid node or if it is supposed to be a frame but is invalid
                                 // then we are not valid over all
                                 isValid = false;
+                                prevResult = FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, new BlockPos(xPos, yPos, zPos));
                                 break;
                             } else {
                                 locations.add(coord.translate(x, y, z));
                             }
                         } else if (!isValidInnerNode(xPos, yPos, zPos)) {
                             isValid = false;
+                            prevResult = FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, new BlockPos(xPos, yPos, zPos));
                             break;
                         } else if (!isAir(xPos, yPos, zPos)) {
                             innerNodes.add(new Coord4D(xPos, yPos, zPos, pointer.getWorld().getDimension().getType()));
@@ -133,7 +141,8 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
                     if (structure.volLength >= 3 && structure.volHeight >= 3 && structure.volWidth >= 3) {
                         onStructureCreated(structure, origX, origY, origZ, xmin, xmax, ymin, ymax, zmin, zmax);
                         if (structure.locations.contains(Coord4D.get(pointer)) && isCorrectCorner(coord, minX, minY, minZ)) {
-                            if (canForm(structure)) {
+                            prevResult = validate(structure);
+                            if (prevResult.isFormed()) {
                                 structureFound = structure;
                                 return;
                             }
@@ -158,8 +167,8 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
         }
     }
 
-    protected boolean canForm(T structure) {
-        return true;
+    protected FormationResult validate(T structure) {
+        return FormationResult.SUCCESS;
     }
 
     public Direction getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
@@ -342,7 +351,7 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
     /**
      * Runs the protocol and updates all nodes that make a part of the multiblock.
      */
-    public void doUpdate() {
+    public FormationResult doUpdate() {
         Deque<Coord4D> pathingQueue = new LinkedList<>();
         pathingQueue.add(Coord4D.get(pointer));
         while (pathingQueue.peek() != null) {
@@ -366,7 +375,7 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
                     for (Coord4D newCoord : innerNodes) {
                         killInnerNode(newCoord);
                     }
-                    return;
+                    return FormationResult.FAIL;
                 }
             }
 
@@ -422,6 +431,8 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
                 node.setController(toUse);
                 structureFound.locations.remove(Coord4D.get((TileEntity) node));
             }
+
+            return FormationResult.SUCCESS;
         } else {
             for (Coord4D coord : iteratedNodes) {
                 TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
@@ -439,6 +450,8 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
             for (Coord4D coord : innerNodes) {
                 killInnerNode(coord);
             }
+
+            return prevResult;
         }
     }
 
@@ -449,6 +462,39 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
         public boolean shouldContinue(int iterated) {
             return true;
         }
+    }
+
+    public static class FormationResult {
+        public static final FormationResult SUCCESS = new FormationResult(true, null);
+        public static final FormationResult FAIL = new FormationResult(false, null);
+
+        private ITextComponent resultText;
+        private boolean formed;
+
+        private FormationResult(boolean formed, ITextComponent resultText) {
+            this.formed = formed;
+            this.resultText = resultText;
+        }
+
+        public static FormationResult fail(ILangEntry text, BlockPos pos) {
+            return new FormationResult(false, text.translateColored(EnumColor.GRAY, EnumColor.INDIGO, UpdateProtocol.toString(pos)));
+        }
+
+        public static FormationResult fail(ILangEntry text) {
+            return new FormationResult(false, text.translateColored(EnumColor.GRAY));
+        }
+
+        public boolean isFormed() {
+            return formed;
+        }
+
+        public ITextComponent getResultText() {
+            return resultText;
+        }
+    }
+
+    protected static String toString(BlockPos pos) {
+        return "(" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + ")";
     }
 
     public static class NodeCounter {

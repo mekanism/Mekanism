@@ -29,6 +29,11 @@
       "mekanism:item/gravitational_modulation_unit"
     ]
   },
+  "gui.digital_beep": {
+    "sounds": [
+      "mekanism:gui/beep"
+    ]
+  },
   "tile.machine.precision_sawmill": {
     "sounds": [
       "mekanism:tile/precision_sawmill"

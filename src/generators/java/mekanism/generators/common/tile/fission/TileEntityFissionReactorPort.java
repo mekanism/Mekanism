@@ -12,11 +12,9 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
-import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
@@ -33,7 +31,6 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     public TileEntityFissionReactorPort() {
         super(GeneratorsBlocks.FISSION_REACTOR_PORT);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
     @Override
@@ -102,11 +99,6 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
                   GeneratorsLang.FISSION_PORT_MODE_CHANGE.translateColored(EnumColor.GRAY, mode.translate())));
         }
         return ActionResultType.SUCCESS;
-    }
-
-    @Override
-    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        return ActionResultType.PASS;
     }
 
     @Override

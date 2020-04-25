@@ -6,10 +6,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
-import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
@@ -24,7 +22,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public TileEntityInductionPort() {
         super(MekanismBlocks.INDUCTION_PORT);
         delaySupplier = () -> 0;
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
     @Nonnull
@@ -61,11 +58,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
                   MekanismLang.INDUCTION_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))));
         }
         return ActionResultType.SUCCESS;
-    }
-
-    @Override
-    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        return ActionResultType.PASS;
     }
 
     @Override

@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 public enum SlotType {
     NORMAL("normal.png", 18, 18),
+    DIGITAL("digital.png", 18, 18),
     POWER("power.png", 18, 18),
     EXTRA("extra.png", 18, 18),
     INPUT("input.png", 18, 18),

@@ -43,6 +43,8 @@ public final class MekanismSounds {
     public static final SoundEventRegistryObject<SoundEvent> GRAVITATIONAL_MODULATION_UNIT = SOUND_EVENTS.register("item.gravitational_modulation_unit");
     public static final SoundEventRegistryObject<SoundEvent> CJ_EASTER_EGG = SOUND_EVENTS.register("etc.cj");
 
+    public static final SoundEventRegistryObject<SoundEvent> BEEP = SOUND_EVENTS.register("gui.digital_beep");
+
     public static final SoundEventRegistryObject<SoundEvent> GEIGER_SLOW = SOUND_EVENTS.register("item.geiger_slow");
     public static final SoundEventRegistryObject<SoundEvent> GEIGER_MEDIUM = SOUND_EVENTS.register("item.geiger_medium");
     public static final SoundEventRegistryObject<SoundEvent> GEIGER_ELEVATED = SOUND_EVENTS.register("item.geiger_elevated");

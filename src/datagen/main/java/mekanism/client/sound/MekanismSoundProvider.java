@@ -16,6 +16,7 @@ public class MekanismSoundProvider extends BaseSoundProvider {
         addTileSoundEvents();
         addItemSoundEvents();
         addHolidaySoundEvents();
+        addGuiSoundEvents();
         addSoundEvent(SoundEventBuilder.create(MekanismSounds.CJ_EASTER_EGG).addSounds(this::createSoundBuilder,
               Mekanism.rl("cj/cj_1"),
               Mekanism.rl("cj/cj_2"),
@@ -79,5 +80,10 @@ public class MekanismSoundProvider extends BaseSoundProvider {
         addSoundEvent(MekanismSounds.CHRISTMAS3, Mekanism.rl(basePath + "nutcracker3"));
         addSoundEvent(MekanismSounds.CHRISTMAS4, Mekanism.rl(basePath + "nutcracker4"));
         addSoundEvent(MekanismSounds.CHRISTMAS5, Mekanism.rl(basePath + "nutcracker5"));
+    }
+
+    private void addGuiSoundEvents() {
+        String basePath = "gui/";
+        addSoundEvent(MekanismSounds.BEEP, Mekanism.rl(basePath + "beep"));
     }
 }

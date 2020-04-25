@@ -11,6 +11,7 @@ import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.fission.TileEntityControlRodAssembly;
@@ -42,7 +43,7 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
     }
 
     @Override
-    protected boolean canForm(SynchronizedFissionReactorData structure) {
+    protected FormationResult validate(SynchronizedFissionReactorData structure) {
         Map<AssemblyPos, FuelAssembly> map = new HashMap<>();
         Set<Coord4D> fuelAssemblyCoords = new HashSet<>();
         int assemblyCount = 0, surfaceArea = 0;
@@ -73,7 +74,7 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
                     map.put(pos, new FuelAssembly(coord, true));
                 } else if (assembly.controlRodAssembly != null) {
                     // only one control rod per assembly
-                    return false;
+                    return FormationResult.fail(GeneratorsLang.FISSION_INVALID_EXTRA_CONTROL_ROD, coord.getPos());
                 } else {
                     assembly.controlRodAssembly = coord;
                 }
@@ -82,19 +83,20 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
 
         // require at least one fuel assembly
         if (map.isEmpty()) {
-            return false;
+            return FormationResult.fail(GeneratorsLang.FISSION_INVALID_MISSING_FUEL_ASSEMBLY);
         }
 
         for (FuelAssembly assembly : map.values()) {
-            if (!assembly.validate()) {
-                return false;
+            FormationResult result = assembly.validate();
+            if (!result.isFormed()) {
+                return result;
             }
         }
 
         structure.fuelAssemblies = assemblyCount;
         structure.surfaceArea = surfaceArea;
 
-        return true;
+        return FormationResult.SUCCESS;
     }
 
     @Override
@@ -126,18 +128,22 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
             }
         }
 
-        public boolean validate() {
+        public FormationResult validate() {
             if (fuelAssemblies.isEmpty() || controlRodAssembly == null) {
-                return false;
+                return FormationResult.fail(GeneratorsLang.FISSION_INVALID_BAD_FUEL_ASSEMBLY);
             }
             int prevY = -1;
             for (Coord4D coord : fuelAssemblies) {
                 if (prevY != -1 && coord.y != prevY + 1) {
-                    return false;
+                    return FormationResult.fail(GeneratorsLang.FISSION_INVALID_MALFORMED_FUEL_ASSEMBLY, coord.getPos());
                 }
                 prevY = coord.y;
             }
-            return controlRodAssembly.y == prevY + 1;
+
+            if (controlRodAssembly.y != prevY + 1) {
+                return FormationResult.fail(GeneratorsLang.FISSION_INVALID_BAD_CONTROL_ROD, controlRodAssembly.getPos());
+            }
+            return FormationResult.SUCCESS;
         }
     }
 

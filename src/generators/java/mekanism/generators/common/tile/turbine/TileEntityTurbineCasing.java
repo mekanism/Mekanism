@@ -112,7 +112,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     }
 
     @Override
-    protected UpdateProtocol<SynchronizedTurbineData> getProtocol() {
+    public UpdateProtocol<SynchronizedTurbineData> getProtocol() {
         return new TurbineUpdateProtocol(this);
     }
 

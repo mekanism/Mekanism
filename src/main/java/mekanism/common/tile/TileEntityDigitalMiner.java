@@ -1,9 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
@@ -14,6 +10,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -163,12 +163,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract = (stack, automationType) -> automationType == AutomationType.MANUAL || !isReplaceStack(stack);
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, this, 8 + slotX * 18, 80 + slotY * 18);
+                BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, this, 8 + slotX * 18, 92 + slotY * 18);
                 builder.addSlot(slot, RelativeSide.BACK, RelativeSide.TOP);
                 mainSlots.add(slot);
             }
         }
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 152, 6));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 152, 20));
         return builder.build();
     }
 

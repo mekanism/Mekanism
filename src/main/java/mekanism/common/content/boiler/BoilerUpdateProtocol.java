@@ -4,6 +4,7 @@ import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
@@ -38,10 +39,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     }
 
     @Override
-    protected boolean canForm(SynchronizedBoilerData structure) {
-        if (structure.volHeight < 3) {
-            return false;
-        }
+    protected FormationResult validate(SynchronizedBoilerData structure) {
         Set<Coord4D> dispersers = new ObjectOpenHashSet<>();
         Set<Coord4D> elements = new ObjectOpenHashSet<>();
         for (Coord4D coord : innerNodes) {
@@ -55,7 +53,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         }
         //Ensure at least one disperser exists
         if (dispersers.isEmpty()) {
-            return false;
+            return FormationResult.fail(MekanismLang.BOILER_INVALID_NO_DISPERSER);
         }
 
         //Find a single disperser contained within this multiblock
@@ -68,7 +66,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
                 BlockPos shifted = pos.add(x, 0, z);
                 TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, pointer.getWorld(), shifted);
                 if (tile == null) {
-                    return false;
+                    return FormationResult.fail(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, shifted);
                 }
                 dispersers.remove(new Coord4D(shifted, pointer.getWorld()));
             }
@@ -76,20 +74,20 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 
         //If there are more dispersers than those on the plane found, the structure is invalid
         if (!dispersers.isEmpty()) {
-            return false;
+            return FormationResult.fail(MekanismLang.BOILER_INVALID_EXTRA_DISPERSER);
         }
 
         if (!elements.isEmpty()) {
             structure.superheatingElements = new NodeCounter(new NodeChecker() {
                 @Override
                 public boolean isValid(Coord4D coord) {
-                    return MekanismUtils.getTileEntity(TileEntitySuperheatingElement.class, pointer.getWorld(), coord.getPos()) != null;
+                    return coord.y < initDisperser.y && MekanismUtils.getTileEntity(TileEntitySuperheatingElement.class, pointer.getWorld(), coord.getPos()) != null;
                 }
             }).calculate(elements.iterator().next());
         }
 
         if (elements.size() > structure.superheatingElements) {
-            return false;
+            return FormationResult.fail(MekanismLang.BOILER_INVALID_SUPERHEATING);
         }
 
         Coord4D initAir = null;
@@ -105,11 +103,6 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
                     }
                 }
             }
-        }
-
-        //Some air must exist for the structure to be valid
-        if (initAir == null) {
-            return false;
         }
 
         //Gradle build requires these fields to be final
@@ -132,13 +125,13 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 
         //Make sure all air blocks are connected
         if (totalAir > structure.getWaterVolume()) {
-            return false;
+            return FormationResult.fail(MekanismLang.BOILER_INVALID_AIR_POCKETS);
         }
 
         int steamHeight = (structure.renderLocation.y + structure.volHeight - 2) - initDisperser.y;
         structure.setSteamVolume((long) structure.volWidth * structure.volLength * steamHeight);
         structure.upperRenderLocation = new Coord4D(structure.renderLocation.x, initDisperser.y + 1, structure.renderLocation.z, pointer.getWorld().getDimension().getType());
-        return true;
+        return FormationResult.SUCCESS;
     }
 
     @Override

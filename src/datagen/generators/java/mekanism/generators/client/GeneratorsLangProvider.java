@@ -116,6 +116,21 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.STORED_BIO_FUEL, "BioFuel: %s");
         add(GeneratorsLang.TURBINE_TANK_VOLUME, "Tank Volume: %s");
         add(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING, "Toggle Cooling Measurements");
+
+        //Industrial Turbine
+        add(GeneratorsLang.TURBINE_INVALID_BAD_COMPLEX, "Couldn't form, found improperly placed Rotational Complex at %s. Complex must be centered above Turbine Rotors.");
+        add(GeneratorsLang.TURBINE_INVALID_BAD_ROTOR, "Couldn't form, found invalid Turbine Rotor at %s. Turbine Rotors must be centered below Rotational Complex.");
+        add(GeneratorsLang.TURBINE_INVALID_BAD_ROTORS, "Couldn't form, invalid Turbine Rotor arrangement.");
+        add(GeneratorsLang.TURBINE_INVALID_CONDENSER_BELOW_COMPLEX, "Couldn't form, found improperly placed Saturating Condenser at %s. Saturating Condensers must be above Pressure Disperser layer.");
+        add(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH, "Couldn't form, width and length of structure must be odd.");
+        add(GeneratorsLang.TURBINE_INVALID_MALFORMED_COILS, "Couldn't form, Electromagnetic Coil arrangement is malformed. Coils must be connected to Rotational Complex and adjacently connected.");
+        add(GeneratorsLang.TURBINE_INVALID_MALFORMED_DISPERSERS, "Couldn't form, Pressure Disperser arrangement is malformed. Dispersers must create complete horizontal layer surrounding Rotational Complex.");
+        add(GeneratorsLang.TURBINE_INVALID_MISSING_COMPLEX, "Couldn't form, no Rotational Complex present.");
+        add(GeneratorsLang.TURBINE_INVALID_MISSING_DISPERSER, "Couldn't form, expected but didn't find Pressure Disperser at %s.");
+        add(GeneratorsLang.TURBINE_INVALID_ROTORS_NOT_CONTIGUOUS, "Couldn't form, rotors are invalid (non-contiguous).");
+        add(GeneratorsLang.TURBINE_INVALID_TOO_NARROW, "Couldn't form, structure is too narrow to support turbine size.");
+        add(GeneratorsLang.TURBINE_INVALID_VENT_BELOW_COMPLEX, "Couldn't form, found a Turbine Vent below Pressure Disperser layer. Vents must be at or above vertical position of disperser layer.");
+
         add(GeneratorsLang.TURBINE, "Industrial Turbine");
         add(GeneratorsLang.TURBINE_BLADES, "Blades: %s %s");
         add(GeneratorsLang.TURBINE_CAPACITY, "Capacity: %s mB");
@@ -127,6 +142,12 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_STATS, "Turbine Statistics");
         add(GeneratorsLang.TURBINE_VENTS, "Vents: %s %s");
         //Fission Reactor
+        add(GeneratorsLang.FISSION_INVALID_BAD_CONTROL_ROD, "Couldn't form, improper placement for Control Rod Assembly at %s.");
+        add(GeneratorsLang.FISSION_INVALID_BAD_FUEL_ASSEMBLY, "Couldn't form, invalid fuel assembly structure present.");
+        add(GeneratorsLang.FISSION_INVALID_EXTRA_CONTROL_ROD, "Couldn't form, found extra Control Rod Assembly at %s.");
+        add(GeneratorsLang.FISSION_INVALID_MALFORMED_FUEL_ASSEMBLY, "Couldn't form, invalid Fission Fuel Assembly placement at %s.");
+        add(GeneratorsLang.FISSION_INVALID_MISSING_FUEL_ASSEMBLY, "Couldn't form, no fuel assembly structures present.");
+
         add(GeneratorsLang.FISSION_REACTOR, "Fission Reactor");
         add(GeneratorsLang.FISSION_REACTOR_STATS, "Fission Reactor Statistics");
         add(GeneratorsLang.FISSION_ACTIVATE, "Activate");
