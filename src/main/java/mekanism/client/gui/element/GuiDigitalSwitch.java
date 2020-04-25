@@ -1,7 +1,6 @@
 package mekanism.client.gui.element;
 
 import java.util.function.BooleanSupplier;
-import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
@@ -20,15 +19,15 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     private final ResourceLocation icon;
     private final BooleanSupplier stateSupplier;
     private final ITextComponent tooltip;
-    private final BooleanConsumer onSwitch;
+    private final Runnable onToggle;
 
     public GuiDigitalSwitch(IGuiWrapper gui, int x, int y, ResourceLocation icon, BooleanSupplier stateSupplier, ITextComponent tooltip,
-          BooleanConsumer onSwitch) {
+          Runnable onToggle) {
         super(SWITCH, gui, x, y, BUTTON_SIZE_X, 40);
         this.icon = icon;
         this.stateSupplier = stateSupplier;
         this.tooltip = tooltip;
-        this.onSwitch = onSwitch;
+        this.onToggle = onToggle;
     }
 
     @Override
@@ -56,13 +55,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (mouseX >= x && mouseX < x + BUTTON_SIZE_X) {
-            Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
-            if (!stateSupplier.getAsBoolean() && mouseY >= y && mouseY < y + BUTTON_SIZE_Y) {
-                onSwitch.accept(true);
-            } else if (stateSupplier.getAsBoolean() && mouseY >= y + BUTTON_SIZE_Y + 1 && mouseY < y + BUTTON_SIZE_Y + 1 + BUTTON_SIZE_Y) {
-                onSwitch.accept(false);
-            }
-        }
+        Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
+        onToggle.run();
     }
 }

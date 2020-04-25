@@ -644,6 +644,7 @@
   "gas_mode.mekanism.dumping": "\u1D77u\u1D09d\u026Fn\u15E1",
   "gas_mode.mekanism.dumping_excess": "ss\u01DD\u0254x\u018E \u1D77u\u1D09d\u026Fn\u15E1",
   "gas_mode.mekanism.idle": "\u01DD\uA781pI",
+  "generic.mekanism.block_pos": "(%3$s '%s '%1$s)",
   "generic.mekanism.format": "%s",
   "generic.mekanism.fraction": "%2$s/%1$s",
   "generic.mekanism.mb": "\u15FA\u026F %s",

@@ -644,6 +644,7 @@
   "gas_mode.mekanism.dumping": "Dumping",
   "gas_mode.mekanism.dumping_excess": "Dumping Excess",
   "gas_mode.mekanism.idle": "Idle",
+  "generic.mekanism.block_pos": "(%s, %s, %s)",
   "generic.mekanism.format": "%s",
   "generic.mekanism.fraction": "%s/%s",
   "generic.mekanism.mb": "%s mB",
