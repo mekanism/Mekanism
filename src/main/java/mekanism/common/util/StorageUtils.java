@@ -63,8 +63,8 @@ public class StorageUtils {
         }
     }
 
-    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap) {
-        addStoredGas(stack, tooltip, showMissingCap, MekanismLang.NO_GAS, stored -> {
+    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, boolean showAttributes) {
+        addStoredGas(stack, tooltip, showMissingCap, showAttributes, MekanismLang.NO_GAS, stored -> {
             if (stored.isEmpty()) {
                 return MekanismLang.NO_GAS.translateColored(EnumColor.GRAY);
             }
@@ -72,8 +72,8 @@ public class StorageUtils {
         });
     }
 
-    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry,
-          Function<GasStack, ITextComponent> storedFunction) {
+    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, boolean showAttributes,
+          ILangEntry emptyLangEntry, Function<GasStack, ITextComponent> storedFunction) {
         if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
             //Ensure the capability is not null, as the first call to addInformation happens before capability injection
             Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
@@ -82,6 +82,7 @@ public class StorageUtils {
                 int tanks = gasHandlerItem.getGasTankCount();
                 for (int tank = 0; tank < tanks; tank++) {
                     tooltip.add(storedFunction.apply(gasHandlerItem.getGasInTank(tank)));
+                    tooltip.addAll(GasUtils.getAttributeTooltips(gasHandlerItem.getGasInTank(tank).getType()));
                 }
             } else if (showMissingCap) {
                 tooltip.add(emptyLangEntry.translate());

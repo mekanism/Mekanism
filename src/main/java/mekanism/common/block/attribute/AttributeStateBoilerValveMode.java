@@ -37,7 +37,7 @@ public class AttributeStateBoilerValveMode extends AttributeState {
     public enum BoilerValveMode implements IStringSerializable {
         INPUT("input", MekanismLang.BOILER_VALVE_MODE_INPUT, EnumColor.BRIGHT_GREEN),
         OUTPUT_STEAM("output_steam", MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, EnumColor.GRAY),
-        OUTPUT_COOLANT("output_coolant", MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, EnumColor.DARK_AQUA);
+        OUTPUT_COOLANT("output_coolant", MekanismLang.BOILER_VALVE_MODE_OUTPUT_COOLANT, EnumColor.DARK_AQUA);
 
         private String name;
         private ILangEntry langEntry;

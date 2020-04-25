@@ -361,9 +361,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.TRANSMISSION_TYPE_ITEM, "Items");
         add(APILang.TRANSMISSION_TYPE_HEAT, "Heat");
         //Chemical Attributes
-        add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, "Radioactivity: %s sV/h");
-        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY, "Coolant Efficiency: %s%");
-        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, "Themal Enthalpy: J/mB");
+        add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, " - Radioactivity: %s sV/h");
+        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY, " - Coolant Efficiency: %s");
+        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, " - Themal Enthalpy: %sJ/mB");
         //Colors
         for (EnumColor color : EnumColor.values()) {
             add(color.getLangEntry(), color.getEnglishName());

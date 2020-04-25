@@ -45,7 +45,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockTileModel<TileEntity
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         GasTankTier tier = Attribute.getTier(getBlock(), GasTankTier.class);
-        StorageUtils.addStoredGas(stack, tooltip, true, MekanismLang.EMPTY, stored -> {
+        StorageUtils.addStoredGas(stack, tooltip, true, true, MekanismLang.EMPTY, stored -> {
             if (stored.isEmpty()) {
                 return MekanismLang.EMPTY.translate();
             } else if (tier == GasTankTier.CREATIVE) {

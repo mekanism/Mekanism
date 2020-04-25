@@ -11,7 +11,7 @@ public class HeatUtils {
         return MekanismConfig.general.maxEnergyPerSteam.get().doubleValue();
     }
 
-    public static double getFluidThermalEfficiency() {
+    public static double getSteamEnergyEfficiency() {
         return 0.2;
     }
 }

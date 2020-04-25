@@ -7,7 +7,7 @@
       "model": "mekanism:block/boiler_valve_output_steam"
     },
     "mode=output_coolant": {
-      "model": "mekanism:block/boiler_valve_output_waste"
+      "model": "mekanism:block/boiler_valve_output_coolant"
     }
   }
 }

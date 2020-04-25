@@ -12,7 +12,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
@@ -23,18 +22,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     public TileEntityBoilerValve() {
         super(MekanismBlocks.BOILER_VALVE);
-        //If we are a valve for water, then disable the gas handler capability
-        addSemiDisabledCapability(Capabilities.GAS_HANDLER_CAPABILITY,
-              () -> structure != null && (structure.upperRenderLocation == null || getPos().getY() < structure.upperRenderLocation.y - 1));
-        //If we are a valve for steam, then disable the fluid handler capability
-        addSemiDisabledCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-              () -> structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1);
     }
 
     @Nonnull
@@ -52,7 +44,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1) {
+        if (structure != null) {
             BoilerValveMode mode = getMode();
 
             if (mode == BoilerValveMode.OUTPUT_STEAM) {

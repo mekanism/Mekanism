@@ -5,6 +5,8 @@ import java.util.Map;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.Slurry;
+import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
+import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
@@ -34,8 +36,8 @@ public class MekanismGases {
     public static final GasRegistryObject<Gas> URANIUM_HEXAFLUORIDE = GASES.register(ChemicalConstants.URANIUM_HEXAFLUORIDE);
     //Internal gases
     public static final GasRegistryObject<Gas> ETHENE = GASES.register(ChemicalConstants.ETHENE);
-    public static final GasRegistryObject<Gas> SODIUM = GASES.register(ChemicalConstants.SODIUM);
-    public static final GasRegistryObject<Gas> SUPERHEATED_SODIUM = GASES.register(ChemicalConstants.SUPERHEATED_SODIUM);
+    public static final GasRegistryObject<Gas> SODIUM = GASES.register(ChemicalConstants.SODIUM, Coolants.SODIUM_COOLANT);
+    public static final GasRegistryObject<Gas> SUPERHEATED_SODIUM = GASES.register(ChemicalConstants.SUPERHEATED_SODIUM, Coolants.HEATED_SODIUM_COOLANT);
     public static final GasRegistryObject<Gas> BRINE = GASES.register("brine", 0xFEEF9C);
     public static final GasRegistryObject<Gas> LITHIUM = GASES.register(ChemicalConstants.LITHIUM);
     public static final GasRegistryObject<Gas> LIQUID_OSMIUM = GASES.register("liquid_osmium", 0x52BDCA);
@@ -53,5 +55,10 @@ public class MekanismGases {
         for (PrimaryResource resource : PrimaryResource.values()) {
             PROCESSED_RESOURCE_SLURRIES.put(resource, GASES.registerSlurry(resource));
         }
+    }
+
+    public static class Coolants {
+        public static final CooledCoolant SODIUM_COOLANT = new CooledCoolant(() -> SUPERHEATED_SODIUM.get(), 5, 1);
+        public static final HeatedCoolant HEATED_SODIUM_COOLANT = new HeatedCoolant(() -> SODIUM.get(), 5, 1);
     }
 }

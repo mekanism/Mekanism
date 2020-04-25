@@ -17,8 +17,8 @@ public class GasDeferredRegister extends WrappedDeferredRegister<Gas> {
         super(modid, MekanismAPI.GAS_REGISTRY);
     }
 
-    public GasRegistryObject<Gas> register(IChemicalConstant constants) {
-        return register(constants.getName(), constants.getColor());
+    public GasRegistryObject<Gas> register(IChemicalConstant constants, ChemicalAttribute... attributes) {
+        return register(constants.getName(), constants.getColor(), attributes);
     }
 
     public GasRegistryObject<Gas> register(String name, int color, ChemicalAttribute... attributes) {

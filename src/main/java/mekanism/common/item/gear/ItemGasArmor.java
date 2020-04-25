@@ -51,7 +51,7 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        StorageUtils.addStoredGas(stack, tooltip, true);
+        StorageUtils.addStoredGas(stack, tooltip, true, false);
     }
 
     @Override

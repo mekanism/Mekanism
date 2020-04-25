@@ -46,7 +46,7 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
     public static final double INVERSE_INSULATION_COEFFICIENT = 100_000;
     public static final double INVERSE_CONDUCTION_COEFFICIENT = 10;
 
-    private static double waterConductivity = 0.9;
+    private static double waterConductivity = 0.5;
 
     public static final int COOLANT_PER_VOLUME = 100_000;
     public static final long HEATED_COOLANT_PER_VOLUME = 1_000_000;
@@ -142,7 +142,7 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
 
         if (!fluidCoolantTank.isEmpty()) {
             double caseCoolantHeat = heat * waterConductivity;
-            coolantHeated = (int) (HeatUtils.getFluidThermalEfficiency() * caseCoolantHeat / HeatUtils.getWaterThermalEnthalpy());
+            coolantHeated = (int) (HeatUtils.getSteamEnergyEfficiency() * caseCoolantHeat / HeatUtils.getWaterThermalEnthalpy());
             coolantHeated = Math.max(0, Math.min(coolantHeated, fluidCoolantTank.getFluidAmount()));
             if (coolantHeated > 0) {
                 if (fluidCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE) != coolantHeated) {
@@ -150,21 +150,21 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
                 }
                 // extra steam is dumped
                 heatedCoolantTank.insert(MekanismGases.STEAM.getGasStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
-                caseCoolantHeat = coolantHeated * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getFluidThermalEfficiency();
+                caseCoolantHeat = coolantHeated * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
                 heatCapacitor.handleHeat(-caseCoolantHeat);
             }
         } else if (!gasCoolantTank.isEmpty()) {
             CooledCoolant coolantType = gasCoolantTank.getStack().get(CooledCoolant.class);
             if (coolantType != null) {
                 double caseCoolantHeat = heat * coolantType.getConductivity();
-                coolantHeated = (int) (HeatUtils.getFluidThermalEfficiency() * caseCoolantHeat / coolantType.getThermalEnthalpy());
+                coolantHeated = (int) (caseCoolantHeat / coolantType.getThermalEnthalpy());
                 coolantHeated = Math.max(0, Math.min(coolantHeated, gasCoolantTank.getStored()));
                 if (coolantHeated > 0) {
                     if (gasCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE) != coolantHeated) {
                         MekanismUtils.logMismatchedStackSize();
                     }
                     heatedCoolantTank.insert(coolantType.getHeatedGas().getGasStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
-                    caseCoolantHeat = coolantHeated * coolantType.getThermalEnthalpy() / HeatUtils.getFluidThermalEfficiency();
+                    caseCoolantHeat = coolantHeated * coolantType.getThermalEnthalpy();
                     heatCapacitor.handleHeat(-caseCoolantHeat);
                 }
             }

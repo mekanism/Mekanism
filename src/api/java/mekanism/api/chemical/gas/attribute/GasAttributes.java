@@ -5,6 +5,7 @@ import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.APILang;
+import mekanism.api.text.EnumColor;
 import net.minecraft.util.text.ITextComponent;
 
 public class GasAttributes {
@@ -43,11 +44,21 @@ public class GasAttributes {
         @Override
         public List<ITextComponent> addTooltipText(List<ITextComponent> list) {
             super.addTooltipText(list);
-            list.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translate(radioactivity));
+            list.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, radioactivity));
             return list;
         }
     }
 
+    /**
+     * Defines the root data of a coolant, for use in Fission Reactors. Coolants have two primary
+     * properties: 'thermal enthalpy' and 'conductivity.' Thermal Enthalpy defines how much energy one mB
+     * the chemical can store; as such, lower values will cause reactors to require more of the chemical
+     * to stay cool. 'Conductivity' defines the proportion of a reactor's available heat that can be
+     * used at an instant to convert this coolant's cool variant to its heated variant.
+     *
+     * @author aidancbrady
+     *
+     */
     public static abstract class Coolant extends ChemicalAttribute {
 
         private double thermalEnthalpy;
@@ -69,12 +80,18 @@ public class GasAttributes {
         @Override
         public List<ITextComponent> addTooltipText(List<ITextComponent> list) {
             super.addTooltipText(list);
-            list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translate(Math.round(conductivity * 100)));
-            list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translate(thermalEnthalpy));
+            list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, Math.round(conductivity * 100) + "%"));
+            list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, thermalEnthalpy));
             return list;
         }
     }
 
+    /**
+     * Defines the 'cooled' variant of a coolant- the heated variant must be supplied in this class.
+     *
+     * @author aidancbrady
+     *
+     */
     public static class CooledCoolant extends Coolant {
 
         private IGasProvider heatedGas;
@@ -89,6 +106,12 @@ public class GasAttributes {
         }
     }
 
+    /**
+     * Defines the 'heated' variant of a coolant- the cooled variant must be supplied in this class.
+     *
+     * @author aidancbrady
+     *
+     */
     public static class HeatedCoolant extends Coolant {
 
         private IGasProvider cooledGas;
@@ -100,13 +123,6 @@ public class GasAttributes {
 
         public Gas getCooledGas() {
             return cooledGas.getGas();
-        }
-
-        @Override
-        public List<ITextComponent> addTooltipText(List<ITextComponent> list) {
-            super.addTooltipText(list);
-            list.add(APILang.CHEMICAL_ATTRIBUTE_SUPERHEATED.translate());
-            return list;
         }
     }
 }

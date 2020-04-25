@@ -1,7 +1,9 @@
 package mekanism.common.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -23,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 /**
@@ -123,5 +126,11 @@ public final class GasUtils {
 
     public static boolean canInsert(IGasHandler handler, @Nonnull GasStack unitStack) {
         return handler.insertGas(unitStack, Action.SIMULATE).isEmpty();
+    }
+
+    public static List<ITextComponent> getAttributeTooltips(Gas gas) {
+        List<ITextComponent> list = new ArrayList<>();
+        gas.getAttributes().forEach(attr -> attr.addTooltipText(list));
+        return list;
     }
 }

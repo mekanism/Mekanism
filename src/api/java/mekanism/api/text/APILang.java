@@ -61,7 +61,6 @@ public enum APILang implements ILangEntry {
     CHEMICAL_ATTRIBUTE_RADIATION("chemical", "attribute.radiation"),
     CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY("chemical", "attribute.coolant.efficiency"),
     CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY("chemical", "attribute.coolant.heat_capacity"),
-    CHEMICAL_ATTRIBUTE_SUPERHEATED("chemical", "attribute.coolant.superheated"),
     ;
 
     private final String key;

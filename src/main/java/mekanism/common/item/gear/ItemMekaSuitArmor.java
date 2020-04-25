@@ -111,7 +111,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
             if (!gasTankSpecs.isEmpty()) {
-                StorageUtils.addStoredGas(stack, tooltip, true);
+                StorageUtils.addStoredGas(stack, tooltip, true, false);
             }
             tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
         }

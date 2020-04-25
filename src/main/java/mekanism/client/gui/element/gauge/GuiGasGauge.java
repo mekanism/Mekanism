@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.gauge;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
@@ -17,6 +18,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.network.PacketDropperUse.TankType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.util.GasUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
@@ -113,11 +115,15 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
         if (tank == null || tank.isEmpty()) {
             return Arrays.asList(MekanismLang.EMPTY.translate());
         }
+        List<ITextComponent> list = new ArrayList<>();
         long amount = tank.getStored();
         if (amount == Long.MAX_VALUE) {
-            return Arrays.asList(MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE));
+            list.add(MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE));
+        } else {
+            list.add(MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), formatInt(amount)));
         }
-        return Arrays.asList(MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), formatInt(amount)));
+        list.addAll(GasUtils.getAttributeTooltips(tank.getType()));
+        return list;
     }
 
     @Override

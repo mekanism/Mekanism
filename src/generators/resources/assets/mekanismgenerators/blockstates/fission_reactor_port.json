@@ -3,7 +3,7 @@
     "mode=input": {
       "model": "mekanismgenerators:block/fission/port_input"
     },
-    "mode=output_steam": {
+    "mode=output_coolant": {
       "model": "mekanismgenerators:block/fission/port_output_coolant"
     },
     "mode=output_waste": {

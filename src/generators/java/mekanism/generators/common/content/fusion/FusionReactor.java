@@ -172,14 +172,14 @@ public class FusionReactor {
 
         //Transfer from casing to water if necessary
         double caseWaterHeat = caseWaterConductivity * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
-        int waterToVaporize = (int) (HeatUtils.getFluidThermalEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
+        int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
         waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), MathUtils.clampToInt(getSteamTank().getNeeded())));
         if (waterToVaporize > 0) {
             if (getWaterTank().shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
                 MekanismUtils.logMismatchedStackSize();
             }
             getSteamTank().insert(MekanismGases.STEAM.getGasStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
-            caseWaterHeat = waterToVaporize * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getFluidThermalEfficiency();
+            caseWaterHeat = waterToVaporize * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
             getHeatCapacitor().handleHeat(-caseWaterHeat);
         }
 
@@ -414,7 +414,7 @@ public class FusionReactor {
 
     public long getSteamPerTick(boolean current) {
         double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(true);
-        return MathUtils.clampToLong(HeatUtils.getFluidThermalEfficiency() * caseWaterConductivity * temperature / HeatUtils.getWaterThermalEnthalpy());
+        return MathUtils.clampToLong(HeatUtils.getSteamEnergyEfficiency() * caseWaterConductivity * temperature / HeatUtils.getWaterThermalEnthalpy());
     }
 
     public static double getInverseConductionCoefficient() {
