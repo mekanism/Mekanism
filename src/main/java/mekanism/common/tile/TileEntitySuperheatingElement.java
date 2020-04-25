@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.UUID;
-import mekanism.common.content.boiler.SynchronizedBoilerData;
+import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 
@@ -15,7 +15,7 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
     public void setMultiblock(UUID id) {
         boolean packet = false;
         if (id == null && multiblockUUID != null) {
-            SynchronizedBoilerData.hotMap.removeBoolean(multiblockUUID);
+            BoilerMultiblockData.hotMap.removeBoolean(multiblockUUID);
             packet = true;
         } else if (id != null && multiblockUUID == null) {
             packet = true;
@@ -35,8 +35,8 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
     protected void onUpdateServer() {
         super.onUpdateServer();
         boolean newHot = false;
-        if (multiblockUUID != null && SynchronizedBoilerData.hotMap.containsKey(multiblockUUID)) {
-            newHot = SynchronizedBoilerData.hotMap.getBoolean(multiblockUUID);
+        if (multiblockUUID != null && BoilerMultiblockData.hotMap.containsKey(multiblockUUID)) {
+            newHot = BoilerMultiblockData.hotMap.getBoolean(multiblockUUID);
         }
         setActive(newHot);
     }

@@ -18,7 +18,6 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -39,7 +38,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         if (structure != null) {
             FissionPortMode mode = getMode();
 
-            if (mode == FissionPortMode.OUTPUT_STEAM) {
+            if (mode == FissionPortMode.OUTPUT_COOLANT) {
                 GasUtils.emit(structure.steamTank, this);
             } else if (mode == FissionPortMode.OUTPUT_WASTE) {
                 GasUtils.emit(structure.wasteTank, this);
@@ -96,7 +95,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
             mode = FissionPortMode.values()[(mode.ordinal() + 1) % FissionPortMode.values().length];
             world.setBlockState(pos, getBlockState().with(AttributeStateFissionPortMode.modeProperty, mode));
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  GeneratorsLang.FISSION_PORT_MODE_CHANGE.translateColored(EnumColor.GRAY, mode.translate())));
+                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode.translate())));
         }
         return ActionResultType.SUCCESS;
     }
@@ -133,7 +132,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     public GasStack extractGas(int tank, long amount, @Nullable Direction side, @Nonnull Action action) {
         //TODO: Do this better so there is no magic numbers
         FissionPortMode mode = getMode();
-        if (mode == FissionPortMode.INPUT || (tank == 2 && mode == FissionPortMode.OUTPUT_STEAM) || (tank == 3 && mode == FissionPortMode.OUTPUT_WASTE)) {
+        if (mode == FissionPortMode.INPUT || (tank == 2 && mode == FissionPortMode.OUTPUT_COOLANT) || (tank == 1 && mode == FissionPortMode.OUTPUT_WASTE)) {
             // don't allow extraction from tanks based on mode
             return GasStack.EMPTY;
         }

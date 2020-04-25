@@ -12,7 +12,7 @@ import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.math.BlockPos;
 
-public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
+public class TankUpdateProtocol extends UpdateProtocol<TankMultiblockData> {
 
     public static final int FLUID_PER_TANK = 64_000;
 
@@ -26,12 +26,12 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     }
 
     @Override
-    protected MultiblockManager<SynchronizedTankData> getManager() {
+    protected MultiblockManager<TankMultiblockData> getManager() {
         return Mekanism.tankManager;
     }
 
     @Override
-    protected void onStructureCreated(SynchronizedTankData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
+    protected void onStructureCreated(TankMultiblockData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
         for (Coord4D obj : structure.locations) {
             if (MekanismUtils.getTileEntity(TileEntityDynamicValve.class, pointer.getWorld(), obj.getPos()) != null) {
                 ValveData data = new ValveData();

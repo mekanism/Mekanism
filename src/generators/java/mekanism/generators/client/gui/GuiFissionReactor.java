@@ -23,7 +23,7 @@ import mekanism.generators.client.gui.element.GuiFissionReactorTab;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab.FissionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.content.fission.SynchronizedFissionReactorData;
+import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.network.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
@@ -50,19 +50,19 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
         addButton(new GuiInnerScreen(this, 45, 17, 105, 56, () -> Arrays.asList(
             MekanismLang.STATUS.translate(tile.isReactorActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(tile.isReactorActive())),
             GeneratorsLang.GAS_BURN_RATE.translate(tile.getLastBurnRate()),
-            MekanismLang.BOIL_RATE.translate(formatInt(tile.getLastBoilRate())),
+            GeneratorsLang.FISSION_HEATING_RATE.translate(formatInt(tile.getLastBoilRate())),
             MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
             GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
         )).defaultFormat().spacing(2));
-        addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.waterTank,
+        addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.fluidCoolantTank,
             () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13)
-            .setLabel(GeneratorsLang.FISSION_WATER_TANK.translateColored(EnumColor.AQUA)));
+            .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));
         addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.fuelTank,
             () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 25, 13)
             .setLabel(GeneratorsLang.FISSION_FUEL_TANK.translateColored(EnumColor.DARK_GREEN)));
         addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.steamTank,
             () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 152, 13)
-            .setLabel(GeneratorsLang.FISSION_STEAM_TANK.translateColored(EnumColor.GRAY)));
+            .setLabel(GeneratorsLang.FISSION_HEATED_COOLANT_TANK.translateColored(EnumColor.GRAY)));
         addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.wasteTank,
             () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 171, 13)
             .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
@@ -86,7 +86,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
 
             @Override
             public double getLevel() {
-                return Math.min(1, tile.getTemperature() / SynchronizedFissionReactorData.MAX_DAMAGE_TEMPERATURE);
+                return Math.min(1, tile.getTemperature() / FissionReactorMultiblockData.MAX_DAMAGE_TEMPERATURE);
             }
         }, 5, 104, xSize - 12));
         addButton(heatGraph = new GuiGraph(this, 6, 128, xSize - 12, 36, MekanismLang.TEMPERATURE::translate));

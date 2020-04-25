@@ -8,24 +8,24 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
-public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> {
+public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
 
     public GasMode dumpMode = GasMode.IDLE;
 
     @Override
-    public void merge(MultiblockCache<SynchronizedTurbineData> mergeCache, List<ItemStack> rejectedItems) {
+    public void merge(MultiblockCache<TurbineMultiblockData> mergeCache, List<ItemStack> rejectedItems) {
         super.merge(mergeCache, rejectedItems);
         dumpMode = ((TurbineCache) mergeCache).dumpMode;
     }
 
     @Override
-    public void apply(SynchronizedTurbineData data) {
+    public void apply(TurbineMultiblockData data) {
         super.apply(data);
         data.dumpMode = dumpMode;
     }
 
     @Override
-    public void sync(SynchronizedTurbineData data) {
+    public void sync(TurbineMultiblockData data) {
         super.sync(data);
         dumpMode = data.dumpMode;
     }

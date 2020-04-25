@@ -26,12 +26,13 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
     public GuiThermoelectricBoiler(MekanismTileContainer<TileEntityBoilerCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
+        xSize += 40;
     }
 
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 40, 23, 96, 40, () -> Arrays.asList(
+        addButton(new GuiInnerScreen(this, 60, 23, 96, 40, () -> Arrays.asList(
             MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
             MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()),
             MekanismLang.MAX_BOIL_RATE.translate(tile.getLastMaxBoil())
@@ -47,7 +48,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
             public double getLevel() {
                 return tile.structure == null ? 0 : (double) tile.getLastBoilRate() / (double) tile.getLastMaxBoil();
             }
-        }, 24, 13));
+        }, 44, 13));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -59,11 +60,15 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
                 return tile.structure == null ? 0 : tile.getLastMaxBoil() * HeatUtils.getVaporizationEnthalpy() /
                       (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get());
             }
-        }, 144, 13));
+        }, 164, 13));
+        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.superheatedCoolantTank,
+              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 6, 13));
         addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.waterTank,
-              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
+              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.STANDARD, this, 26, 13));
         addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.steamTank,
-              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 152, 13));
+              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 172, 13));
+        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.cooledCoolantTank,
+              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 192, 13));
         addButton(new GuiHeatInfo(() -> {
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));

@@ -306,6 +306,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismGases.URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride");
         add(MekanismGases.ETHENE, "Ethylene");
         add(MekanismGases.SODIUM, "Sodium");
+        add(MekanismGases.SUPERHEATED_SODIUM, "Superheated Sodium");
         add(MekanismGases.BRINE, "Gaseous Brine");
         add(MekanismGases.LITHIUM, "Lithium");
         add(MekanismGases.LIQUID_OSMIUM, "Liquid Osmium");
@@ -784,6 +785,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BOILER_CAPACITY, "Boil Capacity: %s mB/t");
         add(MekanismLang.BOIL_RATE, "Boil Rate: %s mB/t");
         add(MekanismLang.MAX_BOIL_RATE, "Max Boil: %s mB/t");
+        add(MekanismLang.BOILER_VALVE_MODE_CHANGE, "Valve mode changed to: %s");
+        add(MekanismLang.BOILER_VALVE_MODE_INPUT, "input only");
+        add(MekanismLang.BOILER_VALVE_MODE_OUTPUT_COOLANT, "output coolant");
+        add(MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, "output steam");
         //Temperature
         add(MekanismLang.TEMPERATURE, "Temp: %s");
         add(MekanismLang.TEMPERATURE_LONG, "Temperature: %s");

@@ -422,6 +422,10 @@ public enum MekanismLang implements ILangEntry {
     BOILER_CAPACITY("boiler", "capacity"),
     BOIL_RATE("boiler", "boil_rate"),
     MAX_BOIL_RATE("boiler", "max_boil"),
+    BOILER_VALVE_MODE_CHANGE("boiler", "valve_mode_change"),
+    BOILER_VALVE_MODE_INPUT("boiler", "valve_mode_input"),
+    BOILER_VALVE_MODE_OUTPUT_STEAM("boiler", "valve_mode_output_steam"),
+    BOILER_VALVE_MODE_OUTPUT_COOLANT("boiler", "valve_mode_output_coolant"),
     //Temperature
     TEMPERATURE("temperature", "short"),
     TEMPERATURE_LONG("temperature", "long"),

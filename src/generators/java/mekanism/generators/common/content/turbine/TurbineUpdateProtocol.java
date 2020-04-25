@@ -22,7 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineData> {
+public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData> {
 
     public static final long GAS_PER_TANK = TankUpdateProtocol.FLUID_PER_TANK;
     public static final int MAX_BLADES = 28;
@@ -47,7 +47,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     }
 
     @Override
-    protected FormationResult validate(SynchronizedTurbineData structure) {
+    protected FormationResult validate(TurbineMultiblockData structure) {
         if (structure.volLength % 2 != 1 || structure.volWidth % 2 != 1) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH);
         }
@@ -171,7 +171,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     }
 
     @Override
-    protected MultiblockManager<SynchronizedTurbineData> getManager() {
+    protected MultiblockManager<TurbineMultiblockData> getManager() {
         return MekanismGenerators.turbineManager;
     }
 }

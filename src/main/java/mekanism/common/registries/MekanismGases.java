@@ -35,6 +35,7 @@ public class MekanismGases {
     //Internal gases
     public static final GasRegistryObject<Gas> ETHENE = GASES.register(ChemicalConstants.ETHENE);
     public static final GasRegistryObject<Gas> SODIUM = GASES.register(ChemicalConstants.SODIUM);
+    public static final GasRegistryObject<Gas> SUPERHEATED_SODIUM = GASES.register(ChemicalConstants.SUPERHEATED_SODIUM);
     public static final GasRegistryObject<Gas> BRINE = GASES.register("brine", 0xFEEF9C);
     public static final GasRegistryObject<Gas> LITHIUM = GASES.register(ChemicalConstants.LITHIUM);
     public static final GasRegistryObject<Gas> LIQUID_OSMIUM = GASES.register("liquid_osmium", 0x52BDCA);

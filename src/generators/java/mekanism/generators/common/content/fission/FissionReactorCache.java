@@ -7,7 +7,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
-public class FissionReactorCache extends MultiblockCache<SynchronizedFissionReactorData> {
+public class FissionReactorCache extends MultiblockCache<FissionReactorMultiblockData> {
 
     private double reactorDamage;
     private double rateLimit = 0.1;
@@ -16,7 +16,7 @@ public class FissionReactorCache extends MultiblockCache<SynchronizedFissionReac
     public boolean active;
 
     @Override
-    public void merge(MultiblockCache<SynchronizedFissionReactorData> mergeCache, List<ItemStack> rejectedItems) {
+    public void merge(MultiblockCache<FissionReactorMultiblockData> mergeCache, List<ItemStack> rejectedItems) {
         super.merge(mergeCache, rejectedItems);
         reactorDamage = Math.max(reactorDamage, ((FissionReactorCache) mergeCache).reactorDamage);
         rateLimit = Math.max(rateLimit, ((FissionReactorCache) mergeCache).rateLimit);
@@ -26,7 +26,7 @@ public class FissionReactorCache extends MultiblockCache<SynchronizedFissionReac
     }
 
     @Override
-    public void apply(SynchronizedFissionReactorData data) {
+    public void apply(FissionReactorMultiblockData data) {
         super.apply(data);
         data.reactorDamage = reactorDamage;
         data.rateLimit = rateLimit;
@@ -36,7 +36,7 @@ public class FissionReactorCache extends MultiblockCache<SynchronizedFissionReac
     }
 
     @Override
-    public void sync(SynchronizedFissionReactorData data) {
+    public void sync(FissionReactorMultiblockData data) {
         super.sync(data);
         reactorDamage = data.reactorDamage;
         rateLimit = data.rateLimit;

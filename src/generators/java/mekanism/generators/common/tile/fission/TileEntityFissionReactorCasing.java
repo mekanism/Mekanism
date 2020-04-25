@@ -21,14 +21,14 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol;
-import mekanism.generators.common.content.fission.SynchronizedFissionReactorData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityFissionReactorCasing extends TileEntityMultiblock<SynchronizedFissionReactorData> implements IValveHandler {
+public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> implements IValveHandler {
 
     public float prevWaterScale, prevFuelScale, prevSteamScale, prevWasteScale;
     private boolean handleSound, prevBurning;
@@ -60,7 +60,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             if (structure.isBurning() != structure.clientBurning) {
                 needsPacket = true;
                 structure.clientBurning = structure.isBurning();
-                SynchronizedFissionReactorData.burningMap.put(structure.inventoryID, structure.clientBurning);
+                FissionReactorMultiblockData.burningMap.put(structure.inventoryID, structure.clientBurning);
             }
             // handle coolant heating (water -> steam)
             structure.handleCoolant();
@@ -79,7 +79,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
             structure.handleDamage(getWorld());
 
             // update scales
-            float waterScale = MekanismUtils.getScale(prevWaterScale, structure.waterTank), fuelScale = MekanismUtils.getScale(prevFuelScale, structure.fuelTank);
+            float waterScale = MekanismUtils.getScale(prevWaterScale, structure.fluidCoolantTank), fuelScale = MekanismUtils.getScale(prevFuelScale, structure.fuelTank);
             float steamScale = MekanismUtils.getScale(prevSteamScale, structure.steamTank), wasteScale = MekanismUtils.getScale(prevWasteScale, structure.wasteTank);
             if (waterScale != prevWaterScale || fuelScale != prevFuelScale || steamScale != prevSteamScale || wasteScale != prevWasteScale) {
                 needsPacket = true;
@@ -104,18 +104,18 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
     public double getBoilEfficiency() { return structure != null ? (double) Math.round(structure.getBoilEfficiency() * 1000) / 1000 : 0; }
     public long getLastBoilRate() { return structure != null ? structure.lastBoilRate : 0; }
     public double getLastBurnRate() { return structure != null ? structure.lastBurnRate : 0; }
-    public long getMaxBurnRate() { return structure != null ? structure.fuelAssemblies * SynchronizedFissionReactorData.BURN_PER_ASSEMBLY : 1; }
+    public long getMaxBurnRate() { return structure != null ? structure.fuelAssemblies * FissionReactorMultiblockData.BURN_PER_ASSEMBLY : 1; }
     public double getRateLimit() { return structure != null ? structure.rateLimit : 0; }
     public boolean isReactorActive() { return structure != null ? structure.isActive() : false; }
     public void setReactorActive(boolean active) { if (structure != null) structure.setActive(active); }
 
     public String getDamageString() {
         if (structure == null) return "0%";
-        return Math.round((structure.reactorDamage / SynchronizedFissionReactorData.MAX_DAMAGE) * 100) + "%";
+        return Math.round((structure.reactorDamage / FissionReactorMultiblockData.MAX_DAMAGE) * 100) + "%";
     }
     public EnumColor getDamageColor() {
         if (structure == null) return EnumColor.BRIGHT_GREEN;
-        double damage = structure.reactorDamage / SynchronizedFissionReactorData.MAX_DAMAGE;
+        double damage = structure.reactorDamage / FissionReactorMultiblockData.MAX_DAMAGE;
         return damage < 0.25 ? EnumColor.BRIGHT_GREEN : (damage < 0.5 ? EnumColor.YELLOW : (damage < 0.75 ? EnumColor.ORANGE : EnumColor.DARK_RED));
     }
     public EnumColor getTempColor() {
@@ -131,17 +131,17 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
     }
 
     @Override
-    public SynchronizedFissionReactorData getNewStructure() {
-        return new SynchronizedFissionReactorData(this);
+    public FissionReactorMultiblockData getNewStructure() {
+        return new FissionReactorMultiblockData(this);
     }
 
     @Override
-    public UpdateProtocol<SynchronizedFissionReactorData> getProtocol() {
+    public UpdateProtocol<FissionReactorMultiblockData> getProtocol() {
         return new FissionReactorUpdateProtocol(this);
     }
 
     @Override
-    public MultiblockManager<SynchronizedFissionReactorData> getManager() {
+    public MultiblockManager<FissionReactorMultiblockData> getManager() {
         return MekanismGenerators.fissionReactorManager;
     }
 
@@ -168,7 +168,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
                 updateTag.putFloat(NBTConstants.SCALE_ALT_2, prevSteamScale);
                 updateTag.putFloat(NBTConstants.SCALE_ALT_3, prevWasteScale);
                 updateTag.putInt(NBTConstants.VOLUME, structure.getVolume());
-                updateTag.put(NBTConstants.FLUID_STORED, structure.waterTank.getFluid().writeToNBT(new CompoundNBT()));
+                updateTag.put(NBTConstants.FLUID_STORED, structure.fluidCoolantTank.getFluid().writeToNBT(new CompoundNBT()));
                 updateTag.put(NBTConstants.GAS_STORED, structure.fuelTank.getStack().write(new CompoundNBT()));
                 updateTag.put(NBTConstants.GAS_STORED_ALT, structure.steamTank.getStack().write(new CompoundNBT()));
                 updateTag.put(NBTConstants.GAS_STORED_ALT_2, structure.wasteTank.getStack().write(new CompoundNBT()));
@@ -190,7 +190,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
                 NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_2, scale -> prevSteamScale = scale);
                 NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
                 NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.setVolume(value));
-                NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.waterTank.setStack(value));
+                NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.fluidCoolantTank.setStack(value));
                 NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.fuelTank.setStack(value));
                 NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> structure.steamTank.setStack(value));
                 NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> structure.wasteTank.setStack(value));
@@ -205,8 +205,11 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Synchro
         container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getVolume(), value -> {
             if (structure != null) structure.setVolume(value);
         }));
-        container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.waterTank.getFluid(), value -> {
-            if (structure != null) structure.waterTank.setStack(value);
+        container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.fluidCoolantTank.getFluid(), value -> {
+            if (structure != null) structure.fluidCoolantTank.setStack(value);
+        }));
+        container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.gasCoolantTank.getStack(), value -> {
+            if (structure != null) structure.gasCoolantTank.setStack(value);
         }));
         container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.fuelTank.getStack(), value -> {
             if (structure != null) structure.fuelTank.setStack(value);

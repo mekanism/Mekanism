@@ -14,7 +14,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData> {
+public class MatrixUpdateProtocol extends UpdateProtocol<MatrixMultiblockData> {
 
     public MatrixUpdateProtocol(TileEntityInductionCasing tile) {
         super(tile);
@@ -35,12 +35,12 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     }
 
     @Override
-    protected MultiblockManager<SynchronizedMatrixData> getManager() {
+    protected MultiblockManager<MatrixMultiblockData> getManager() {
         return Mekanism.matrixManager;
     }
 
     @Override
-    protected void onStructureDestroyed(SynchronizedMatrixData structure) {
+    protected void onStructureDestroyed(MatrixMultiblockData structure) {
         //Save all energy changes before destroying the structure
         structure.invalidate();
         super.onStructureDestroyed(structure);
@@ -52,7 +52,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     }
 
     @Override
-    protected FormationResult validate(SynchronizedMatrixData structure) {
+    protected FormationResult validate(MatrixMultiblockData structure) {
         for (Coord4D coord : innerNodes) {
             TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
             if (tile instanceof TileEntityInductionCell) {

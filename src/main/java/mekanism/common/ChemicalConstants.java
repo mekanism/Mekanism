@@ -21,6 +21,7 @@ public enum ChemicalConstants implements IChemicalConstant {
     ETHENE("ethene", 0xFFEACCF9, 0, 169.45F, 577),
     //Note: it is a solid at room temperature
     SODIUM("sodium", 0xFFE9FEF4, 0, 370.944F, 927),
+    SUPERHEATED_SODIUM("superheated_sodium", 0xFFD19469, 0, 2_000.0F, 927),
     //Note: it is a solid at room temperature
     LITHIUM("lithium", 0xFFEBA400, 0, 453.65F, 512),
     HYDROFLUORIC_ACID("hydrofluoric_acid", 0xFFC6C7BD, 0, 189.6F, 1150F),

@@ -3,7 +3,7 @@ package mekanism.generators.common.tile.turbine;
 import java.util.UUID;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
+import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 
 public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
@@ -15,7 +15,7 @@ public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
     @Override
     public void setMultiblock(UUID id) {
         if (id == null && multiblockUUID != null) {
-            SynchronizedTurbineData.clientRotationMap.removeFloat(multiblockUUID);
+            TurbineMultiblockData.clientRotationMap.removeFloat(multiblockUUID);
         }
         super.setMultiblock(id);
         if (!isRemote()) {

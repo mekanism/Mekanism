@@ -29,14 +29,14 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
         if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null) {
             BlockPos pos = tile.getPos();
             IVertexBuilder buffer = null;
-            if (!tile.structure.waterTank.isEmpty()) {
+            if (!tile.structure.fluidCoolantTank.isEmpty()) {
                 FluidRenderData data = new FluidRenderData();
                 data.height = tile.structure.volHeight - 2;
                 if (data.height >= 1) {
                     data.location = tile.structure.renderLocation;
                     data.length = tile.structure.volLength;
                     data.width = tile.structure.volWidth;
-                    data.fluidType = tile.structure.waterTank.getFluid();
+                    data.fluidType = tile.structure.fluidCoolantTank.getFluid();
                     int glow = data.calculateGlowLight(light);
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());

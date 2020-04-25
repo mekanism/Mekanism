@@ -1,5 +1,6 @@
 package mekanism.common.content.boiler;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +19,7 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
+import mekanism.common.CoolantHandler;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
@@ -31,7 +33,7 @@ import mekanism.common.util.HeatUtils;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 
-public class SynchronizedBoilerData extends MultiblockData<SynchronizedBoilerData> implements IMekanismFluidHandler, IMekanismGasHandler, ITileHeatHandler {
+public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> implements IMekanismFluidHandler, IMekanismGasHandler, ITileHeatHandler {
 
     public static Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
@@ -41,6 +43,14 @@ public class SynchronizedBoilerData extends MultiblockData<SynchronizedBoilerDat
 
     public static final int WATER_PER_VOLUME = 16_000;
     public static final long STEAM_PER_VOLUME = 160_000;
+
+    public static final int SUPERHEATED_COOLANT_PER_VOLUME = 64_000;
+    public static final int COOLED_COOLANT_PER_VOLUME = 64_000;
+
+    public static final double COOLANT_COOLING_EFFICIENCY = 0.2;
+
+    public MultiblockGasTank<TileEntityBoilerCasing> superheatedCoolantTank;
+    public MultiblockGasTank<TileEntityBoilerCasing> cooledCoolantTank;
 
     public MultiblockFluidTank<TileEntityBoilerCasing> waterTank;
     public MultiblockGasTank<TileEntityBoilerCasing> steamTank;
@@ -54,10 +64,10 @@ public class SynchronizedBoilerData extends MultiblockData<SynchronizedBoilerDat
 
     public int superheatingElements;
 
-    private int waterVolume;
-    private long steamVolume;
+    private int waterVolume, steamVolume;
+
     private int waterTankCapacity;
-    private long steamTankCapacity;
+    private long superheatedCoolantCapacity, steamTankCapacity, cooledCoolantCapacity;
 
     public Coord4D upperRenderLocation;
 
@@ -66,13 +76,19 @@ public class SynchronizedBoilerData extends MultiblockData<SynchronizedBoilerDat
     private List<IGasTank> gasTanks;
     private List<IHeatCapacitor> heatCapacitors;
 
-    public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
+    public BoilerMultiblockData(TileEntityBoilerCasing tile) {
+        superheatedCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getSuperheatedCoolantTankCapacity(),
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null,
+            gas -> CoolantHandler.isHeatedCoolant(gas));
         waterTank = MultiblockFluidTank.input(tile, () -> tile.structure == null ? 0 : tile.structure.getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
         fluidTanks = Collections.singletonList(waterTank);
         steamTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getSteamTankCapacity(),
             (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
             gas -> gas == MekanismGases.STEAM.getGas());
-        gasTanks = Collections.singletonList(steamTank);
+        cooledCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getCooledCoolantTankCapacity(),
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
+            gas -> CoolantHandler.isCoolant(gas));
+        gasTanks = Arrays.asList(steamTank, superheatedCoolantTank, cooledCoolantTank);
         heatCapacitor = MultiblockHeatCapacitor.create(tile,
             CASING_HEAT_CAPACITY,
             () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size(),
@@ -108,22 +124,34 @@ public class SynchronizedBoilerData extends MultiblockData<SynchronizedBoilerDat
         return steamTankCapacity;
     }
 
+    public long getSuperheatedCoolantTankCapacity() {
+        return superheatedCoolantCapacity;
+    }
+
+    public long getCooledCoolantTankCapacity() {
+        return cooledCoolantCapacity;
+    }
+
     public int getWaterVolume() {
         return waterVolume;
     }
 
     public void setWaterVolume(int volume) {
         waterVolume = volume;
-        waterTankCapacity = getWaterVolume() * SynchronizedBoilerData.WATER_PER_VOLUME;
+
+        waterTankCapacity = getWaterVolume() * BoilerMultiblockData.WATER_PER_VOLUME;
+        superheatedCoolantCapacity = getWaterVolume() * BoilerMultiblockData.SUPERHEATED_COOLANT_PER_VOLUME;
     }
 
-    public long getSteamVolume() {
+    public int getSteamVolume() {
         return steamVolume;
     }
 
-    public void setSteamVolume(long volume) {
+    public void setSteamVolume(int volume) {
         steamVolume = volume;
-        steamTankCapacity = getSteamVolume() * SynchronizedBoilerData.STEAM_PER_VOLUME;
+
+        steamTankCapacity = getSteamVolume() * BoilerMultiblockData.STEAM_PER_VOLUME;
+        cooledCoolantCapacity = getSteamVolume() * BoilerMultiblockData.COOLED_COOLANT_PER_VOLUME;
     }
 
     @Nonnull

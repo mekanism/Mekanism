@@ -5,7 +5,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
-import mekanism.common.content.matrix.SynchronizedMatrixData;
+import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -14,7 +14,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> {
+public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultiblockData> {
 
     public TileEntityInductionCasing() {
         this(MekanismBlocks.INDUCTION_CASING);
@@ -41,8 +41,8 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
     @Nonnull
     @Override
-    public SynchronizedMatrixData getNewStructure() {
-        return new SynchronizedMatrixData(this);
+    public MatrixMultiblockData getNewStructure() {
+        return new MatrixMultiblockData(this);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     }
 
     @Override
-    public MultiblockManager<SynchronizedMatrixData> getManager() {
+    public MultiblockManager<MatrixMultiblockData> getManager() {
         return Mekanism.matrixManager;
     }
 

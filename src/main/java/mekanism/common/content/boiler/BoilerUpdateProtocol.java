@@ -18,7 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData> {
+public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
 
     public BoilerUpdateProtocol(TileEntityBoilerCasing tile) {
         super(tile);
@@ -39,7 +39,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     }
 
     @Override
-    protected FormationResult validate(SynchronizedBoilerData structure) {
+    protected FormationResult validate(BoilerMultiblockData structure) {
         Set<Coord4D> dispersers = new ObjectOpenHashSet<>();
         Set<Coord4D> elements = new ObjectOpenHashSet<>();
         for (Coord4D coord : innerNodes) {
@@ -129,18 +129,18 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         }
 
         int steamHeight = (structure.renderLocation.y + structure.volHeight - 2) - initDisperser.y;
-        structure.setSteamVolume((long) structure.volWidth * structure.volLength * steamHeight);
+        structure.setSteamVolume(structure.volWidth * structure.volLength * steamHeight);
         structure.upperRenderLocation = new Coord4D(structure.renderLocation.x, initDisperser.y + 1, structure.renderLocation.z, pointer.getWorld().getDimension().getType());
         return FormationResult.SUCCESS;
     }
 
     @Override
-    protected MultiblockManager<SynchronizedBoilerData> getManager() {
+    protected MultiblockManager<BoilerMultiblockData> getManager() {
         return Mekanism.boilerManager;
     }
 
     @Override
-    protected void onStructureCreated(SynchronizedBoilerData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
+    protected void onStructureCreated(BoilerMultiblockData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
         for (Coord4D obj : structure.locations) {
             if (MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos()) instanceof TileEntityBoilerValve) {
                 ValveData data = new ValveData();

@@ -4,7 +4,7 @@
     "type": "CTM",
     "layer": "SOLID",
     "textures": [
-      "mekanism:block/boiler_valve-ctm"
+      "mekanism:block/boiler_valve_output_steam-ctm"
     ],
     "extra": {
       "connect_to": [

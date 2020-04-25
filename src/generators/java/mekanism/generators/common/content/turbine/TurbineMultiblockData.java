@@ -27,7 +27,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 
-public class SynchronizedTurbineData extends MultiblockData<SynchronizedTurbineData> implements IMekanismGasHandler, IMekanismStrictEnergyHandler {
+public class TurbineMultiblockData extends MultiblockData<TurbineMultiblockData> implements IMekanismGasHandler, IMekanismStrictEnergyHandler {
 
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
@@ -60,7 +60,7 @@ public class SynchronizedTurbineData extends MultiblockData<SynchronizedTurbineD
     public long clientFlow;
     public float clientRotation;
 
-    public SynchronizedTurbineData(TileEntityTurbineCasing tile) {
+    public TurbineMultiblockData(TileEntityTurbineCasing tile) {
         gasTanks = Collections.singletonList(gasTank = new TurbineGasTank(tile));
         ventTank = VariableCapacityFluidTank.create(() -> tile.structure == null ? 1_000 : tile.structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get(),
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, BasicFluidTank.internalOnly,

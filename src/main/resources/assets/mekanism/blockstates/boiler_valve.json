@@ -1,7 +1,13 @@
 {
   "variants": {
-    "": {
-      "model": "mekanism:block/boiler_valve"
+    "mode=input": {
+      "model": "mekanism:block/boiler_valve_input"
+    },
+    "mode=output_steam": {
+      "model": "mekanism:block/boiler_valve_output_steam"
+    },
+    "mode=output_coolant": {
+      "model": "mekanism:block/boiler_valve_output_waste"
     }
   }
 }

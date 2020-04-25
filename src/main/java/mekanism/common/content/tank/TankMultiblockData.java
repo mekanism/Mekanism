@@ -21,7 +21,7 @@ import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.util.Direction;
 
-public class SynchronizedTankData extends MultiblockData<SynchronizedTankData> implements IMekanismFluidHandler {
+public class TankMultiblockData extends MultiblockData<TankMultiblockData> implements IMekanismFluidHandler {
 
     public MultiblockFluidTank<TileEntityDynamicTank> fluidTank;
 
@@ -33,7 +33,7 @@ public class SynchronizedTankData extends MultiblockData<SynchronizedTankData> i
     private List<IExtendedFluidTank> fluidTanks;
     private int tankCapacity;
 
-    public SynchronizedTankData(TileEntityDynamicTank tile) {
+    public TankMultiblockData(TileEntityDynamicTank tile) {
         fluidTank = MultiblockFluidTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getTankCapacity(), BasicFluidTank.alwaysTrue);
         fluidTanks = Collections.singletonList(fluidTank);
         inventorySlots = createBaseInventorySlots();

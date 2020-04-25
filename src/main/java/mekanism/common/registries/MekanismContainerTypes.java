@@ -26,6 +26,7 @@ import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
 import mekanism.common.inventory.container.tile.SecurityDeskContainer;
 import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.inventory.container.tile.TeleporterContainer;
+import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
 import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
 import mekanism.common.inventory.container.tile.filter.DMFilterSelectContainer;
@@ -152,7 +153,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFluidTank>> FLUID_TANK = CONTAINER_TYPES.register("fluid_tank", TileEntityFluidTank.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityEnergyCube>> ENERGY_CUBE = CONTAINER_TYPES.register("energy_cube", TileEntityEnergyCube.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityInductionCasing>> INDUCTION_MATRIX = CONTAINER_TYPES.register("induction_matrix", TileEntityInductionCasing.class);
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityBoilerCasing>> THERMOELECTRIC_BOILER = CONTAINER_TYPES.register("thermoelectric_boiler", TileEntityBoilerCasing.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityBoilerCasing>> THERMOELECTRIC_BOILER = CONTAINER_TYPES.register("thermoelectric_boiler", ThermoelectricBoilerContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityMekanism>> UPGRADE_MANAGEMENT = CONTAINER_TYPES.register("upgrade_management", UpgradeManagementContainer::new);
     public static final ContainerTypeRegistryObject<PersonalChestItemContainer> PERSONAL_CHEST_ITEM = CONTAINER_TYPES.register("personal_chest_item", PersonalChestItemContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPersonalChest>> PERSONAL_CHEST_BLOCK = CONTAINER_TYPES.register("personal_chest_block", PersonalChestTileContainer::new);

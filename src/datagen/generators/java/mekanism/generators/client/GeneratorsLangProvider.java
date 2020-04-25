@@ -161,16 +161,17 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.FISSION_MAX_BURN_RATE, "Max Burn Rate: %s mB/t");
         add(GeneratorsLang.FISSION_RATE_LIMIT, "Rate Limit: %s mB/t");
         add(GeneratorsLang.FISSION_CURRENT_BURN_RATE, "Current Burn Rate:");
+        add(GeneratorsLang.FISSION_HEATING_RATE, "Heating Rate: %s mB/t");
         add(GeneratorsLang.FISSION_SET_RATE_LIMIT, "Set Rate Limit:");
-        add(GeneratorsLang.FISSION_WATER_TANK, "Water Tank");
+        add(GeneratorsLang.FISSION_COOLANT_TANK, "Coolant Tank");
         add(GeneratorsLang.FISSION_FUEL_TANK, "Fuel Tank");
-        add(GeneratorsLang.FISSION_STEAM_TANK, "Steam Tank");
+        add(GeneratorsLang.FISSION_HEATED_COOLANT_TANK, "Heated Coolant Tank");
         add(GeneratorsLang.FISSION_WASTE_TANK, "Waste Tank");
         add(GeneratorsLang.FISSION_HEAT_GRAPH, "Heat Graph:");
         add(GeneratorsLang.FISSION_PORT_MODE_CHANGE, "Port mode changed to: %s");
         add(GeneratorsLang.FISSION_PORT_MODE_INPUT, "input only");
         add(GeneratorsLang.FISSION_PORT_MODE_OUTPUT_WASTE, "output waste");
-        add(GeneratorsLang.FISSION_PORT_MODE_OUTPUT_STEAM, "output steam");
+        add(GeneratorsLang.FISSION_PORT_MODE_OUTPUT_COOLANT, "output coolant");
         //Descriptions
         add(GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, "Output when the reactor's core heat capacity has been met");
         add(GeneratorsLang.DESCRIPTION_REACTOR_ACTIVATION, "Activate the reactor when powered, and deactivate when unpowered");

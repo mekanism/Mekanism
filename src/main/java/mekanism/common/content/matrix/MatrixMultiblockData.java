@@ -18,7 +18,7 @@ import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import net.minecraft.util.Direction;
 
-public class SynchronizedMatrixData extends MultiblockData<SynchronizedMatrixData> implements IMekanismStrictEnergyHandler {
+public class MatrixMultiblockData extends MultiblockData<MatrixMultiblockData> implements IMekanismStrictEnergyHandler {
 
     @Nonnull
     private final List<IEnergyContainer> energyContainers;
@@ -42,7 +42,7 @@ public class SynchronizedMatrixData extends MultiblockData<SynchronizedMatrixDat
 
     private final boolean remote;
 
-    public SynchronizedMatrixData(TileEntityInductionCasing tile) {
+    public MatrixMultiblockData(TileEntityInductionCasing tile) {
         remote = tile.isRemote();
         energyContainers = Collections.singletonList(energyContainer = new MatrixEnergyContainer(tile));
         inventorySlots = new ArrayList<>();

@@ -22,11 +22,11 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.command.CommandMek;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
-import mekanism.common.content.boiler.SynchronizedBoilerData;
+import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.gear.Modules;
-import mekanism.common.content.matrix.SynchronizedMatrixData;
-import mekanism.common.content.tank.SynchronizedTankData;
+import mekanism.common.content.matrix.MatrixMultiblockData;
+import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
@@ -128,9 +128,9 @@ public class Mekanism {
     /**
      * MultiblockManagers for various structrures
      */
-    public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<>("dynamicTank", () -> new TankCache());
-    public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<>("inductionMatrix", () -> new MultiblockCache<SynchronizedMatrixData>());
-    public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<>("thermoelectricBoiler", () -> new MultiblockCache<SynchronizedBoilerData>());
+    public static MultiblockManager<TankMultiblockData> tankManager = new MultiblockManager<>("dynamicTank", () -> new TankCache());
+    public static MultiblockManager<MatrixMultiblockData> matrixManager = new MultiblockManager<>("inductionMatrix", () -> new MultiblockCache<MatrixMultiblockData>());
+    public static MultiblockManager<BoilerMultiblockData> boilerManager = new MultiblockManager<>("thermoelectricBoiler", () -> new MultiblockCache<BoilerMultiblockData>());
     /**
      * RadiationManager for handling radiation across all dimensions
      */
@@ -278,7 +278,7 @@ public class Mekanism {
         worldTickHandler.resetRegenChunks();
         privateTeleporters.clear();
         privateEntangloporters.clear();
-        SynchronizedBoilerData.hotMap.clear();
+        BoilerMultiblockData.hotMap.clear();
 
         //Reset consistent managers
         radiationManager.reset();
@@ -301,6 +301,7 @@ public class Mekanism {
         //TODO: Make recipes be done from JSON
         //Fuel Gases
         FuelHandler.addGas(MekanismGases.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
+        CoolantHandler.addCoolant(MekanismGases.SODIUM.get(), MekanismGases.SUPERHEATED_SODIUM.get(), 0.4, 5);
 
         //Register the mod's world generators
         GenHandler.setupWorldGeneration();

@@ -24,14 +24,14 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
+import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IHasGasMode {
+public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultiblockData> implements IHasGasMode {
 
     public float prevSteamScale;
 
@@ -83,7 +83,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             float newRotation = (float) flowRate;
             boolean needsPacket = false;
 
-            if (Math.abs(newRotation - structure.clientRotation) > SynchronizedTurbineData.ROTATION_THRESHOLD) {
+            if (Math.abs(newRotation - structure.clientRotation) > TurbineMultiblockData.ROTATION_THRESHOLD) {
                 structure.clientRotation = newRotation;
                 needsPacket = true;
             }
@@ -107,17 +107,17 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
     @Nonnull
     @Override
-    public SynchronizedTurbineData getNewStructure() {
-        return new SynchronizedTurbineData(this);
+    public TurbineMultiblockData getNewStructure() {
+        return new TurbineMultiblockData(this);
     }
 
     @Override
-    public UpdateProtocol<SynchronizedTurbineData> getProtocol() {
+    public UpdateProtocol<TurbineMultiblockData> getProtocol() {
         return new TurbineUpdateProtocol(this);
     }
 
     @Override
-    public MultiblockManager<SynchronizedTurbineData> getManager() {
+    public MultiblockManager<TurbineMultiblockData> getManager() {
         return MekanismGenerators.turbineManager;
     }
 
@@ -146,7 +146,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.gasTank.setStack(value));
             NBTUtils.setCoord4DIfPresent(tag, NBTConstants.COMPLEX, value -> structure.complex = value);
             NBTUtils.setFloatIfPresent(tag, NBTConstants.ROTATION, value -> structure.clientRotation = value);
-            SynchronizedTurbineData.clientRotationMap.put(structure.inventoryID, structure.clientRotation);
+            TurbineMultiblockData.clientRotationMap.put(structure.inventoryID, structure.clientRotation);
         }
     }
 

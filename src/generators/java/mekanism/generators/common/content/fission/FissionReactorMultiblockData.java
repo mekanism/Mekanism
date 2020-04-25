@@ -21,6 +21,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
+import mekanism.common.CoolantHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
@@ -38,7 +39,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedFissionReactorData> implements IMekanismFluidHandler, IMekanismGasHandler,
+public class FissionReactorMultiblockData extends MultiblockData<FissionReactorMultiblockData> implements IMekanismFluidHandler, IMekanismGasHandler,
       ITileHeatHandler {
 
     public static final double INVERSE_INSULATION_COEFFICIENT = 100_000;
@@ -47,7 +48,7 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
     private static double steamTransferEfficiency = 0.2;
     private static double waterConductivity = 0.9;
 
-    public static final int WATER_PER_VOLUME = 100_000;
+    public static final int COOLANT_PER_VOLUME = 100_000;
     public static final long STEAM_PER_VOLUME = 1_000_000;
     public static final long FUEL_PER_ASSEMBLY = 8_000;
 
@@ -63,7 +64,8 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
     public int fuelAssemblies, surfaceArea;
 
-    public MultiblockFluidTank<TileEntityFissionReactorCasing> waterTank;
+    public MultiblockGasTank<TileEntityFissionReactorCasing> gasCoolantTank;
+    public MultiblockFluidTank<TileEntityFissionReactorCasing> fluidCoolantTank;
     public MultiblockGasTank<TileEntityFissionReactorCasing> fuelTank;
 
     public MultiblockGasTank<TileEntityFissionReactorCasing> steamTank;
@@ -84,9 +86,14 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
     public double burnRemaining = 0, partialWaste = 0;
     private boolean active;
 
-    public SynchronizedFissionReactorData(TileEntityFissionReactorCasing tile) {
-        waterTank = MultiblockFluidTank.input(tile, () -> tile.structure == null ? 0 : getVolume() * WATER_PER_VOLUME, fluid -> fluid.getFluid().isIn(FluidTags.WATER));
-        fluidTanks = Collections.singletonList(waterTank);
+    public FissionReactorMultiblockData(TileEntityFissionReactorCasing tile) {
+        fluidCoolantTank = MultiblockFluidTank.create(tile, () -> tile.structure == null ? 0 : getVolume() * COOLANT_PER_VOLUME,
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> tile.structure != null,
+            fluid -> fluid.getFluid().isIn(FluidTags.WATER), null);
+        fluidTanks = Collections.singletonList(fluidCoolantTank);
+        gasCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : getVolume() * COOLANT_PER_VOLUME,
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> tile.structure != null,
+            gas -> CoolantHandler.isCoolant(gas) && fluidCoolantTank.isEmpty());
         fuelTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : fuelAssemblies * FUEL_PER_ASSEMBLY,
             (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> tile.structure != null,
             gas -> gas == MekanismGases.FISSILE_FUEL.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
@@ -96,7 +103,7 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
         wasteTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : fuelAssemblies * FUEL_PER_ASSEMBLY,
             (stack, automationType) -> tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
             gas -> gas == MekanismGases.NUCLEAR_WASTE.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
-        gasTanks = Arrays.asList(fuelTank, steamTank, wasteTank);
+        gasTanks = Arrays.asList(fuelTank, steamTank, wasteTank, gasCoolantTank);
         heatCapacitor = MultiblockHeatCapacitor.create(tile,
             MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
             () -> INVERSE_INSULATION_COEFFICIENT,
@@ -132,9 +139,9 @@ public class SynchronizedFissionReactorData extends MultiblockData<SynchronizedF
         double temp = heatCapacitor.getTemperature();
         double caseWaterHeat = waterConductivity * getBoilEfficiency() * (temp - HeatUtils.BASE_BOIL_TEMP) * heatCapacitor.getHeatCapacity();
         int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / HeatUtils.getVaporizationEnthalpy());
-        waterToVaporize = Math.max(0, Math.min(waterToVaporize, waterTank.getFluidAmount()));
+        waterToVaporize = Math.max(0, Math.min(waterToVaporize, fluidCoolantTank.getFluidAmount()));
         if (waterToVaporize > 0) {
-            if (waterTank.shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
+            if (fluidCoolantTank.shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
                 MekanismUtils.logMismatchedStackSize();
             }
             // extra steam is dumped

@@ -46,11 +46,11 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
     protected void addGuiElements() {
         guiElements.add(new GuiInnerScreen(this, 45, 17, 105, 56));
         guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 6, 13)
-            .setLabel(GeneratorsLang.FISSION_WATER_TANK.translateColored(EnumColor.AQUA)));
+            .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));
         guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 25, 13)
             .setLabel(GeneratorsLang.FISSION_FUEL_TANK.translateColored(EnumColor.DARK_GREEN)));
         guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 152, 13)
-            .setLabel(GeneratorsLang.FISSION_STEAM_TANK.translateColored(EnumColor.GRAY)));
+            .setLabel(GeneratorsLang.FISSION_HEATED_COOLANT_TANK.translateColored(EnumColor.GRAY)));
         guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 171, 13)
             .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
     }

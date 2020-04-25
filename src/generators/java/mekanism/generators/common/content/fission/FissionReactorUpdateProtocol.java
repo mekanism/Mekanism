@@ -22,7 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFissionReactorData> {
+public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorMultiblockData> {
 
     public FissionReactorUpdateProtocol(TileEntityFissionReactorCasing tile) {
         super(tile);
@@ -43,7 +43,7 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
     }
 
     @Override
-    protected FormationResult validate(SynchronizedFissionReactorData structure) {
+    protected FormationResult validate(FissionReactorMultiblockData structure) {
         Map<AssemblyPos, FuelAssembly> map = new HashMap<>();
         Set<Coord4D> fuelAssemblyCoords = new HashSet<>();
         int assemblyCount = 0, surfaceArea = 0;
@@ -100,12 +100,12 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<SynchronizedFis
     }
 
     @Override
-    protected MultiblockManager<SynchronizedFissionReactorData> getManager() {
+    protected MultiblockManager<FissionReactorMultiblockData> getManager() {
         return MekanismGenerators.fissionReactorManager;
     }
 
     @Override
-    protected void onStructureCreated(SynchronizedFissionReactorData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
+    protected void onStructureCreated(FissionReactorMultiblockData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
         for (Coord4D obj : structure.locations) {
             if (MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos()) instanceof TileEntityFissionReactorPort) {
                 ValveData data = new ValveData();

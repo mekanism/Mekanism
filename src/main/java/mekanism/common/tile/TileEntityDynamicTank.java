@@ -9,7 +9,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ContainerEditMode;
 import mekanism.common.base.IFluidContainerManager;
-import mekanism.common.content.tank.SynchronizedTankData;
+import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -31,7 +31,7 @@ import net.minecraft.util.Hand;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager, IValveHandler {
+public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockData> implements IFluidContainerManager, IValveHandler {
 
     public float prevScale;
 
@@ -79,8 +79,8 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
     @Nonnull
     @Override
-    public SynchronizedTankData getNewStructure() {
-        return new SynchronizedTankData(this);
+    public TankMultiblockData getNewStructure() {
+        return new TankMultiblockData(this);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     }
 
     @Override
-    public MultiblockManager<SynchronizedTankData> getManager() {
+    public MultiblockManager<TankMultiblockData> getManager() {
         return Mekanism.tankManager;
     }
 

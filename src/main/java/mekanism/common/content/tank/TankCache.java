@@ -8,24 +8,24 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
-public class TankCache extends MultiblockCache<SynchronizedTankData> {
+public class TankCache extends MultiblockCache<TankMultiblockData> {
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
     @Override
-    public void merge(MultiblockCache<SynchronizedTankData> mergeCache, List<ItemStack> rejectedItems) {
+    public void merge(MultiblockCache<TankMultiblockData> mergeCache, List<ItemStack> rejectedItems) {
         super.merge(mergeCache, rejectedItems);
         editMode = ((TankCache) mergeCache).editMode;
     }
 
     @Override
-    public void apply(SynchronizedTankData data) {
+    public void apply(TankMultiblockData data) {
         super.apply(data);
         data.editMode = editMode;
     }
 
     @Override
-    public void sync(SynchronizedTankData data) {
+    public void sync(TankMultiblockData data) {
         super.sync(data);
         editMode = data.editMode;
     }

@@ -13,7 +13,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
-import mekanism.generators.common.content.fission.SynchronizedFissionReactorData;
+import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
 import net.minecraft.item.ItemStack;
@@ -63,11 +63,11 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
                 case ACTIVATION:
                     return isPowered() ? RedstoneStatus.POWERED : RedstoneStatus.IDLE;
                 case TEMPERATURE:
-                    return structure.heatCapacitor.getTemperature() >= SynchronizedFissionReactorData.MIN_DAMAGE_TEMPERATURE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
+                    return structure.heatCapacitor.getTemperature() >= FissionReactorMultiblockData.MIN_DAMAGE_TEMPERATURE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 case EXCESS_WASTE:
                     return structure.wasteTank.getNeeded() == 0 ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 case DAMAGED:
-                    return structure.reactorDamage >= SynchronizedFissionReactorData.MAX_DAMAGE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
+                    return structure.reactorDamage >= FissionReactorMultiblockData.MAX_DAMAGE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 case DEPLETED:
                     return structure.fuelTank.isEmpty() ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 default: break;

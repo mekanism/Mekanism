@@ -10,8 +10,8 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorCache;
-import mekanism.generators.common.content.fission.SynchronizedFissionReactorData;
-import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
+import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
+import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.network.GeneratorsPacketHandler;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -47,8 +47,8 @@ public class MekanismGenerators implements IModule {
      */
     public static GeneratorsPacketHandler packetHandler = new GeneratorsPacketHandler();
 
-    public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>("industrialTurbine", () -> new TurbineCache());
-    public static MultiblockManager<SynchronizedFissionReactorData> fissionReactorManager = new MultiblockManager<>("fissionReactor", () -> new FissionReactorCache());
+    public static MultiblockManager<TurbineMultiblockData> turbineManager = new MultiblockManager<>("industrialTurbine", () -> new TurbineCache());
+    public static MultiblockManager<FissionReactorMultiblockData> fissionReactorManager = new MultiblockManager<>("fissionReactor", () -> new FissionReactorCache());
 
     public MekanismGenerators() {
         Mekanism.modulesLoaded.add(instance = this);
@@ -89,7 +89,7 @@ public class MekanismGenerators implements IModule {
     }
 
     private void serverStopped(FMLServerStoppedEvent event) {
-        SynchronizedFissionReactorData.burningMap.clear();
+        FissionReactorMultiblockData.burningMap.clear();
     }
 
     @Override
@@ -104,7 +104,7 @@ public class MekanismGenerators implements IModule {
 
     @Override
     public void resetClient() {
-        SynchronizedTurbineData.clientRotationMap.clear();
+        TurbineMultiblockData.clientRotationMap.clear();
     }
 
     private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {

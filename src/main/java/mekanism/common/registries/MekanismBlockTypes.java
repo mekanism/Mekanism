@@ -10,6 +10,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
+import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeStateFacing.FacePlacementType;
 import mekanism.common.block.attribute.AttributeTier;
@@ -47,6 +48,7 @@ import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
 import mekanism.common.inventory.container.tile.SecurityDeskContainer;
 import mekanism.common.inventory.container.tile.TeleporterContainer;
+import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tier.BinTier;
@@ -459,15 +461,15 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityBoilerCasing> BOILER_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.BOILER_CASING, MekanismLang.DESCRIPTION_BOILER_CASING)
           .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
-          .withNamedContainerProvider((tile) -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.THERMOELECTRIC_BOILER, i, inv, tile)))
+          .withNamedContainerProvider((tile) -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, (TileEntityBoilerCasing) tile)))
           .with(new AttributeMultiblock())
           .build();
     // Boiler Valve
     public static final BlockTypeTile<TileEntityBoilerValve> BOILER_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.BOILER_VALVE, MekanismLang.DESCRIPTION_BOILER_VALVE)
           .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
-          .withNamedContainerProvider((tile) -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.THERMOELECTRIC_BOILER, i, inv, tile)))
-          .with(new AttributeInventory(), new AttributeComparator(), new AttributeMultiblock())
+          .withNamedContainerProvider((tile) -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, (TileEntityBoilerCasing) tile)))
+          .with(new AttributeInventory(), new AttributeComparator(), new AttributeStateBoilerValveMode(), new AttributeMultiblock())
           .build();
     // Superheating Element
     public static final BlockTypeTile<TileEntitySuperheatingElement> SUPERHEATING_ELEMENT =
