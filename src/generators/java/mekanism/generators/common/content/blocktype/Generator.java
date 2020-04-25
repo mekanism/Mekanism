@@ -1,7 +1,7 @@
 package mekanism.generators.common.content.blocktype;
 
 import java.util.function.Supplier;
-import mekanism.common.base.ILangEntry;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;

@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.util.text.ITextComponent;
 

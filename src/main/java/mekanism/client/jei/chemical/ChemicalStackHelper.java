@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.common.util.text.TextComponentUtil;
+import mekanism.api.text.TextComponentUtil;
 import mezz.jei.api.ingredients.IIngredientHelper;
 
 public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IIngredientHelper<STACK> {

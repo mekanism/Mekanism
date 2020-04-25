@@ -2,9 +2,9 @@ package mekanism.client.gui.element.button;
 
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.base.ILangEntry;
 
 public class TranslationButton extends MekanismButton {
 

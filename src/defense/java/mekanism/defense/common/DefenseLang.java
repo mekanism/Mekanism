@@ -1,6 +1,6 @@
 package mekanism.defense.common;
 
-import mekanism.common.base.ILangEntry;
+import mekanism.api.text.ILangEntry;
 import net.minecraft.util.Util;
 
 public enum DefenseLang implements ILangEntry {

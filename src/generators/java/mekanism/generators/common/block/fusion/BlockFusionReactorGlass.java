@@ -3,7 +3,7 @@ package mekanism.generators.common.block.fusion;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.base.ILangEntry;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.tile.base.TileEntityMekanism;

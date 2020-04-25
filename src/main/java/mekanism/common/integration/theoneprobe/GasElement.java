@@ -4,8 +4,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
 import net.minecraft.network.PacketBuffer;
 
 public class GasElement extends ChemicalElement<Gas, GasStack> {

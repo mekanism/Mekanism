@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
-import mekanism.common.base.ILangEntry;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;

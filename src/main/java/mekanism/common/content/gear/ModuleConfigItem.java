@@ -2,7 +2,7 @@ package mekanism.common.content.gear;
 
 import java.util.function.Consumer;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.common.base.ILangEntry;
+import mekanism.api.text.ILangEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 

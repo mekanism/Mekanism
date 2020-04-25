@@ -360,6 +360,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.TRANSMISSION_TYPE_GAS, "Gases");
         add(APILang.TRANSMISSION_TYPE_ITEM, "Items");
         add(APILang.TRANSMISSION_TYPE_HEAT, "Heat");
+        //Chemical Attributes
+        add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, "Radioactivity: %s sV/h");
+        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY, "Coolant Efficiency: %s%");
+        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, "Themal Enthalpy: J/mB");
         //Colors
         for (EnumColor color : EnumColor.values()) {
             add(color.getLangEntry(), color.getEnglishName());
@@ -412,7 +416,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.NEW_YEAR_LINE_THREE, "new and exciting year of %s! :)");
         add(MekanismLang.MAY_4_LINE_ONE, "May the 4th be with you, %s!");
         //Generic
-        add(MekanismLang.GENERIC, "%s");
+        add(APILang.GENERIC, "%s");
         add(MekanismLang.GENERIC_WITH_COMMA, "%s, %s");
         add(MekanismLang.GENERIC_STORED, "%s: %s");
         add(MekanismLang.GENERIC_STORED_MB, "%s: %s mB");
@@ -427,12 +431,12 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_PRE_STORED, "%s %s: %s");
         add(MekanismLang.GENERIC_BLOCK_POS, "(%s, %s, %s)");
         //Directions
-        add(MekanismLang.DOWN, "Down");
-        add(MekanismLang.UP, "Up");
-        add(MekanismLang.NORTH, "North");
-        add(MekanismLang.SOUTH, "South");
-        add(MekanismLang.WEST, "West");
-        add(MekanismLang.EAST, "East");
+        add(APILang.DOWN, "Down");
+        add(APILang.UP, "Up");
+        add(APILang.NORTH, "North");
+        add(APILang.SOUTH, "South");
+        add(APILang.WEST, "West");
+        add(APILang.EAST, "East");
         //Hold for
         add(MekanismLang.HOLD_FOR_DETAILS, "Hold %s for details.");
         add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %s for a description.");
@@ -789,6 +793,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BOILER_VALVE_MODE_INPUT, "input only");
         add(MekanismLang.BOILER_VALVE_MODE_OUTPUT_COOLANT, "output coolant");
         add(MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, "output steam");
+        add(MekanismLang.BOILER_WATER_TANK, "Water Tank");
+        add(MekanismLang.BOILER_STEAM_TANK, "Steam Tank");
+        add(MekanismLang.BOILER_HEATED_COOLANT_TANK, "Heated Coolant Tank");
+        add(MekanismLang.BOILER_COOLANT_TANK, "Coolant Tank");
         //Temperature
         add(MekanismLang.TEMPERATURE, "Temp: %s");
         add(MekanismLang.TEMPERATURE_LONG, "Temperature: %s");

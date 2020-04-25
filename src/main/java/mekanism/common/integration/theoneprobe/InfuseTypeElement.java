@@ -4,8 +4,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
 import net.minecraft.network.PacketBuffer;
 
 public class InfuseTypeElement extends ChemicalElement<InfuseType, InfusionStack> {

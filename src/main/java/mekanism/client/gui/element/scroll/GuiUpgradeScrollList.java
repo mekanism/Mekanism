@@ -3,6 +3,7 @@ package mekanism.client.gui.element.scroll;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Upgrade;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.MekanismRenderer;
@@ -10,7 +11,6 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UpgradeUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiUpgradeScrollList extends GuiScrollList {

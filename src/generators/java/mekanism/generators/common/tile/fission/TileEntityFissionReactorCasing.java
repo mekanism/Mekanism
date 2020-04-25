@@ -30,7 +30,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> implements IValveHandler {
 
-    public float prevWaterScale, prevFuelScale, prevSteamScale, prevWasteScale;
+    public float prevCoolantScale, prevFuelScale, prevHeatedCoolantScale, prevWasteScale;
     private boolean handleSound, prevBurning;
 
     public TileEntityFissionReactorCasing() {
@@ -79,13 +79,13 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
             structure.handleDamage(getWorld());
 
             // update scales
-            float waterScale = MekanismUtils.getScale(prevWaterScale, structure.fluidCoolantTank), fuelScale = MekanismUtils.getScale(prevFuelScale, structure.fuelTank);
-            float steamScale = MekanismUtils.getScale(prevSteamScale, structure.steamTank), wasteScale = MekanismUtils.getScale(prevWasteScale, structure.wasteTank);
-            if (waterScale != prevWaterScale || fuelScale != prevFuelScale || steamScale != prevSteamScale || wasteScale != prevWasteScale) {
+            float waterScale = MekanismUtils.getScale(prevCoolantScale, structure.fluidCoolantTank), fuelScale = MekanismUtils.getScale(prevFuelScale, structure.fuelTank);
+            float steamScale = MekanismUtils.getScale(prevHeatedCoolantScale, structure.heatedCoolantTank), wasteScale = MekanismUtils.getScale(prevWasteScale, structure.wasteTank);
+            if (waterScale != prevCoolantScale || fuelScale != prevFuelScale || steamScale != prevHeatedCoolantScale || wasteScale != prevWasteScale) {
                 needsPacket = true;
-                prevWaterScale = waterScale;
+                prevCoolantScale = waterScale;
                 prevFuelScale = fuelScale;
-                prevSteamScale = steamScale;
+                prevHeatedCoolantScale = steamScale;
                 prevWasteScale = wasteScale;
             }
             // save changed data
@@ -163,14 +163,14 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         if (structure != null) {
             updateTag.putDouble(NBTConstants.BURNING, structure.lastBurnRate);
             if (isRendering) {
-                updateTag.putFloat(NBTConstants.SCALE, prevWaterScale);
+                updateTag.putFloat(NBTConstants.SCALE, prevCoolantScale);
                 updateTag.putFloat(NBTConstants.SCALE_ALT, prevFuelScale);
-                updateTag.putFloat(NBTConstants.SCALE_ALT_2, prevSteamScale);
+                updateTag.putFloat(NBTConstants.SCALE_ALT_2, prevHeatedCoolantScale);
                 updateTag.putFloat(NBTConstants.SCALE_ALT_3, prevWasteScale);
                 updateTag.putInt(NBTConstants.VOLUME, structure.getVolume());
                 updateTag.put(NBTConstants.FLUID_STORED, structure.fluidCoolantTank.getFluid().writeToNBT(new CompoundNBT()));
                 updateTag.put(NBTConstants.GAS_STORED, structure.fuelTank.getStack().write(new CompoundNBT()));
-                updateTag.put(NBTConstants.GAS_STORED_ALT, structure.steamTank.getStack().write(new CompoundNBT()));
+                updateTag.put(NBTConstants.GAS_STORED_ALT, structure.heatedCoolantTank.getStack().write(new CompoundNBT()));
                 updateTag.put(NBTConstants.GAS_STORED_ALT_2, structure.wasteTank.getStack().write(new CompoundNBT()));
                 writeValves(updateTag);
             }
@@ -185,14 +185,14 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         if (clientHasStructure && structure != null) {
             NBTUtils.setDoubleIfPresent(tag, NBTConstants.BURNING, value -> structure.lastBurnRate = value);
             if (isRendering) {
-                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
+                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevCoolantScale = scale);
                 NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevFuelScale = scale);
-                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_2, scale -> prevSteamScale = scale);
+                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_2, scale -> prevHeatedCoolantScale = scale);
                 NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
                 NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.setVolume(value));
                 NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.fluidCoolantTank.setStack(value));
                 NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.fuelTank.setStack(value));
-                NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> structure.steamTank.setStack(value));
+                NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> structure.heatedCoolantTank.setStack(value));
                 NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> structure.wasteTank.setStack(value));
                 readValves(tag);
             }
@@ -214,8 +214,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.fuelTank.getStack(), value -> {
             if (structure != null) structure.fuelTank.setStack(value);
         }));
-        container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.steamTank.getStack(), value -> {
-            if (structure != null) structure.steamTank.setStack(value);
+        container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.heatedCoolantTank.getStack(), value -> {
+            if (structure != null) structure.heatedCoolantTank.setStack(value);
         }));
         container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.wasteTank.getStack(), value -> {
             if (structure != null) structure.wasteTank.setStack(value);

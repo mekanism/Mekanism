@@ -1,6 +1,6 @@
 package mekanism.generators.common;
 
-import mekanism.common.base.ILangEntry;
+import mekanism.api.text.ILangEntry;
 import net.minecraft.util.Util;
 
 public enum GeneratorsLang implements ILangEntry {
@@ -96,9 +96,9 @@ public enum GeneratorsLang implements ILangEntry {
     FISSION_CURRENT_BURN_RATE("fission", "burn_rate"),
     FISSION_HEATING_RATE("fission", "heating_rate"),
     FISSION_SET_RATE_LIMIT("fission", "set_rate_limit"),
-    FISSION_COOLANT_TANK("fission", "water_tank"),
+    FISSION_COOLANT_TANK("fission", "coolant_tank"),
     FISSION_FUEL_TANK("fission", "fuel_tank"),
-    FISSION_HEATED_COOLANT_TANK("fission", "steam_tank"),
+    FISSION_HEATED_COOLANT_TANK("fission", "heated_coolant_tank"),
     FISSION_WASTE_TANK("fission", "waste_tank"),
     FISSION_HEAT_GRAPH("fission", "heat_graph"),
     FISSION_PORT_MODE_CHANGE("fission", "port_mode_change"),

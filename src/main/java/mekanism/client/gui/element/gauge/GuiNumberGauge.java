@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.gauge;
 
+import java.util.Arrays;
+import java.util.List;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -35,8 +37,8 @@ public class GuiNumberGauge extends GuiGauge<Void> {
     }
 
     @Override
-    public ITextComponent getTooltipText() {
-        return infoHandler.getText();
+    public List<ITextComponent> getTooltipText() {
+        return Arrays.asList(infoHandler.getText());
     }
 
     public interface INumberInfoHandler {

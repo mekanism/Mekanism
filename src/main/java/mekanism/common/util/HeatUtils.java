@@ -7,7 +7,11 @@ public class HeatUtils {
 
     public static final double BASE_BOIL_TEMP = TemperatureUnit.CELSIUS.zeroOffset + 100;
 
-    public static double getVaporizationEnthalpy() {
+    public static double getWaterThermalEnthalpy() {
         return MekanismConfig.general.maxEnergyPerSteam.get().doubleValue();
+    }
+
+    public static double getFluidThermalEfficiency() {
+        return 0.2;
     }
 }

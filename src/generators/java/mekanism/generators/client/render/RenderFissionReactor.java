@@ -41,20 +41,20 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
-                    MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.prevWaterScale), matrix, buffer, data.getColorARGB(tile.prevWaterScale), glow);
+                    MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.prevCoolantScale), matrix, buffer, data.getColorARGB(tile.prevCoolantScale), glow);
                     matrix.pop();
 
                     MekanismRenderer.renderValves(matrix, buffer, tile.structure.valves, data, pos, glow);
                 }
             }
-            if (!tile.structure.steamTank.isEmpty()) {
+            if (!tile.structure.heatedCoolantTank.isEmpty()) {
                 GasRenderData data = new GasRenderData();
                 data.height = tile.structure.volHeight - 2;
                 if (data.height >= 1) {
                     data.location = tile.structure.renderLocation;
                     data.length = tile.structure.volLength;
                     data.width = tile.structure.volWidth;
-                    data.gasType = tile.structure.steamTank.getStack();
+                    data.gasType = tile.structure.heatedCoolantTank.getStack();
                     if (buffer == null) {
                         buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
                     }
@@ -62,7 +62,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                     matrix.scale(0.998F, 0.998F, 0.998F);
                     matrix.translate(data.location.x - pos.getX() + 0.001, data.location.y - pos.getY() + 0.001, data.location.z - pos.getZ() + 0.001);
                     Model3D gasModel = ModelRenderer.getModel(data, 1);
-                    MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.prevSteamScale), data.calculateGlowLight(light));
+                    MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.prevHeatedCoolantScale), data.calculateGlowLight(light));
                     matrix.pop();
                 }
             }

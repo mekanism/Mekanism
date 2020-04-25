@@ -39,7 +39,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
             FissionPortMode mode = getMode();
 
             if (mode == FissionPortMode.OUTPUT_COOLANT) {
-                GasUtils.emit(structure.steamTank, this);
+                GasUtils.emit(structure.heatedCoolantTank, this);
             } else if (mode == FissionPortMode.OUTPUT_WASTE) {
                 GasUtils.emit(structure.wasteTank, this);
             }

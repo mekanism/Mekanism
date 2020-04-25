@@ -2,8 +2,8 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.registries.MekanismTileEntityTypes;

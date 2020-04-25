@@ -1,10 +1,11 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import java.util.ArrayList;
-import java.util.List;
+import mekanism.api.text.APILang;
 import mekanism.client.gui.element.GuiArrowSelection;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismButton;
@@ -77,7 +78,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         int currentLayer = scrollBar.getCurrentSelection();
         //Render the layer text scaled, so that it does not start overlapping past 100
-        renderScaledText(MekanismLang.GENERIC.translate(currentLayer), 111, 87, screenTextColor(), 13);
+        renderScaledText(APILang.GENERIC.translate(currentLayer), 111, 87, screenTextColor(), 13);
 
         //TODO - V10: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
         //Render the item stacks

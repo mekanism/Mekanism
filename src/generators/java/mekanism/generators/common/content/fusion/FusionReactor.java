@@ -47,7 +47,6 @@ public class FusionReactor {
     public static double caseHeatCapacity = 1;
     public static double inverseInsulation = 100_000;
     private static double thermocoupleEfficiency = 0.05;
-    private static double steamTransferEfficiency = 0.2;
     //Heat transfer metrics
     private static double plasmaCaseConductivity = 0.2;
     private static double caseWaterConductivity = 0.3;
@@ -173,14 +172,14 @@ public class FusionReactor {
 
         //Transfer from casing to water if necessary
         double caseWaterHeat = caseWaterConductivity * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
-        int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / HeatUtils.getVaporizationEnthalpy());
+        int waterToVaporize = (int) (HeatUtils.getFluidThermalEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
         waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), MathUtils.clampToInt(getSteamTank().getNeeded())));
         if (waterToVaporize > 0) {
             if (getWaterTank().shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
                 MekanismUtils.logMismatchedStackSize();
             }
             getSteamTank().insert(MekanismGases.STEAM.getGasStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
-            caseWaterHeat = waterToVaporize * HeatUtils.getVaporizationEnthalpy() / steamTransferEfficiency;
+            caseWaterHeat = waterToVaporize * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getFluidThermalEfficiency();
             getHeatCapacitor().handleHeat(-caseWaterHeat);
         }
 
@@ -415,7 +414,7 @@ public class FusionReactor {
 
     public long getSteamPerTick(boolean current) {
         double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(true);
-        return MathUtils.clampToLong(steamTransferEfficiency * caseWaterConductivity * temperature / HeatUtils.getVaporizationEnthalpy());
+        return MathUtils.clampToLong(HeatUtils.getFluidThermalEfficiency() * caseWaterConductivity * temperature / HeatUtils.getWaterThermalEnthalpy());
     }
 
     public static double getInverseConductionCoefficient() {

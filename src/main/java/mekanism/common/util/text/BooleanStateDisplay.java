@@ -2,8 +2,8 @@ package mekanism.common.util.text;
 
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class BooleanStateDisplay implements IHasTextComponent {

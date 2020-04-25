@@ -5,8 +5,8 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
 import mekanism.common.tile.component.TileComponentSecurity;
 import net.minecraft.util.text.ITextComponent;
 

@@ -1,7 +1,7 @@
 package mekanism.common.block;
 
 import javax.annotation.Nonnull;
-import mekanism.common.base.ILangEntry;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.resource.OreType;
 import net.minecraft.block.Block;

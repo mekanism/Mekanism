@@ -1,6 +1,7 @@
 package mekanism.client.gui.robit;
 
 import javax.annotation.Nonnull;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiRobitScreen;
 import mekanism.client.gui.element.GuiSideHolder;
@@ -17,7 +18,6 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedEntityButton;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;

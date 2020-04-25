@@ -9,7 +9,7 @@ import net.minecraft.util.Util;
  *
  * @apiNote These should only be accessed via their corresponding users, except for use in making it easier to not miss any entries in the DataGenerators
  */
-public enum APILang implements IHasTranslationKey {
+public enum APILang implements ILangEntry {
     //Upgrades
     UPGRADE_SPEED("upgrade", "speed"),
     UPGRADE_SPEED_DESCRIPTION("upgrade", "speed.description"),
@@ -23,6 +23,15 @@ public enum APILang implements IHasTranslationKey {
     UPGRADE_MUFFLING_DESCRIPTION("upgrade", "muffling.description"),
     UPGRADE_ANCHOR("upgrade", "anchor"),
     UPGRADE_ANCHOR_DESCRIPTION("upgrade", "anchor.description"),
+    //Generic
+    GENERIC("generic", "format"),
+    //Directions
+    DOWN("direction", "down"),
+    UP("direction", "up"),
+    NORTH("direction", "north"),
+    SOUTH("direction", "south"),
+    WEST("direction", "west"),
+    EAST("direction", "east"),
     //Transmission types
     TRANSMISSION_TYPE_ENERGY("transmission", "energy"),
     TRANSMISSION_TYPE_FLUID("transmission", "fluids"),
@@ -48,6 +57,11 @@ public enum APILang implements IHasTranslationKey {
     COLOR_WHITE("color", "white"),
     COLOR_BROWN("color", "brown"),
     COLOR_BRIGHT_PINK("color", "bright_pink"),
+    //Chemical Attributes
+    CHEMICAL_ATTRIBUTE_RADIATION("chemical", "attribute.radiation"),
+    CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY("chemical", "attribute.coolant.efficiency"),
+    CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY("chemical", "attribute.coolant.heat_capacity"),
+    CHEMICAL_ATTRIBUTE_SUPERHEATED("chemical", "attribute.coolant.superheated"),
     ;
 
     private final String key;

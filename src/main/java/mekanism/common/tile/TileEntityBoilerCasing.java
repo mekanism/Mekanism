@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
@@ -61,12 +62,23 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
             structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer();
             // handle coolant heat transfer
             if (!structure.superheatedCoolantTank.isEmpty()) {
-                // TODO
+                HeatedCoolant coolantType = structure.superheatedCoolantTank.getStack().get(HeatedCoolant.class);
+                if (coolantType != null) {
+                    long toCool = Math.round(BoilerMultiblockData.COOLANT_COOLING_EFFICIENCY * structure.superheatedCoolantTank.getStored());
+                    GasStack cooledCoolant = coolantType.getCooledGas().getGasStack(toCool);
+                    toCool = Math.min(toCool, toCool - structure.cooledCoolantTank.insertGas(cooledCoolant, Action.EXECUTE).getAmount());
+
+                    if (toCool > 0) {
+                        double heatEnergy = toCool * coolantType.getThermalEnthalpy();
+                        structure.heatCapacitor.handleHeat(heatEnergy);
+                        structure.superheatedCoolantTank.shrinkStack(toCool, Action.EXECUTE);
+                    }
+                }
             }
             // handle water heat transfer
             if (structure.getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
                 double heatAvailable = structure.getHeatAvailable();
-                structure.lastMaxBoil = (int) Math.floor(heatAvailable / HeatUtils.getVaporizationEnthalpy());
+                structure.lastMaxBoil = (int) Math.floor(HeatUtils.getFluidThermalEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
 
                 int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterTank.getFluidAmount());
                 amountToBoil = Math.min(amountToBoil, MathUtils.clampToInt(structure.steamTank.getNeeded()));
@@ -79,7 +91,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
                     structure.steamTank.growStack(amountToBoil, Action.EXECUTE);
                 }
 
-                structure.handleHeat(-amountToBoil * HeatUtils.getVaporizationEnthalpy());
+                structure.handleHeat(-amountToBoil * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getFluidThermalEfficiency());
                 structure.lastBoilRate = amountToBoil;
             } else {
                 structure.lastBoilRate = 0;

@@ -1,11 +1,13 @@
 package mekanism.client.gui.element.gauge;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.MathUtils;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
@@ -15,7 +17,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.network.PacketDropperUse.TankType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
@@ -104,19 +105,19 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
     }
 
     @Override
-    public ITextComponent getTooltipText() {
+    public List<ITextComponent> getTooltipText() {
         if (dummy) {
-            return TextComponentUtil.build(dummyType);
+            return Arrays.asList(TextComponentUtil.build(dummyType));
         }
         IGasTank tank = getTank();
         if (tank == null || tank.isEmpty()) {
-            return MekanismLang.EMPTY.translate();
+            return Arrays.asList(MekanismLang.EMPTY.translate());
         }
         long amount = tank.getStored();
         if (amount == Long.MAX_VALUE) {
-            return MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE);
+            return Arrays.asList(MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE));
         }
-        return MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), formatInt(amount));
+        return Arrays.asList(MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), formatInt(amount)));
     }
 
     @Override

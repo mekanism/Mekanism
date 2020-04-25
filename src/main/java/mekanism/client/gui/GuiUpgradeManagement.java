@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Set;
 import mekanism.api.Upgrade;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismButton;
@@ -19,7 +20,6 @@ import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.UpgradeUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 

@@ -19,7 +19,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.GeneratorsLang;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -89,7 +88,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
             mode = BoilerValveMode.values()[(mode.ordinal() + 1) % BoilerValveMode.values().length];
             world.setBlockState(pos, getBlockState().with(AttributeStateBoilerValveMode.modeProperty, mode));
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  GeneratorsLang.FISSION_PORT_MODE_CHANGE.translateColored(EnumColor.GRAY, mode.translate())));
+                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode.translate())));
         }
         return ActionResultType.SUCCESS;
     }

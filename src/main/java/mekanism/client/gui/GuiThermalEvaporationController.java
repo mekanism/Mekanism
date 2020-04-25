@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import java.util.Collections;
+import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -10,7 +11,6 @@ import mekanism.client.gui.element.bar.GuiHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.util.MekanismUtils;

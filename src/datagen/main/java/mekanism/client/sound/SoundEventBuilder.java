@@ -11,8 +11,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.DataGenJsonConstants;
-import mekanism.common.base.ILangEntry;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.util.ResourceLocation;
 

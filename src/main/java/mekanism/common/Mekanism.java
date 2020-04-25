@@ -26,8 +26,8 @@ import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.matrix.MatrixMultiblockData;
-import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.content.tank.TankCache;
+import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.frequency.Frequency;
@@ -301,7 +301,6 @@ public class Mekanism {
         //TODO: Make recipes be done from JSON
         //Fuel Gases
         FuelHandler.addGas(MekanismGases.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
-        CoolantHandler.addCoolant(MekanismGases.SODIUM.get(), MekanismGases.SUPERHEATED_SODIUM.get(), 0.4, 5);
 
         //Register the mod's world generators
         GenHandler.setupWorldGeneration();

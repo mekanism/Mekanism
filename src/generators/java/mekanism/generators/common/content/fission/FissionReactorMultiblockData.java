@@ -17,11 +17,12 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
+import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.CoolantHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
@@ -45,11 +46,10 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
     public static final double INVERSE_INSULATION_COEFFICIENT = 100_000;
     public static final double INVERSE_CONDUCTION_COEFFICIENT = 10;
 
-    private static double steamTransferEfficiency = 0.2;
     private static double waterConductivity = 0.9;
 
     public static final int COOLANT_PER_VOLUME = 100_000;
-    public static final long STEAM_PER_VOLUME = 1_000_000;
+    public static final long HEATED_COOLANT_PER_VOLUME = 1_000_000;
     public static final long FUEL_PER_ASSEMBLY = 8_000;
 
     public static final double MIN_DAMAGE_TEMPERATURE = 1_200;
@@ -68,7 +68,7 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
     public MultiblockFluidTank<TileEntityFissionReactorCasing> fluidCoolantTank;
     public MultiblockGasTank<TileEntityFissionReactorCasing> fuelTank;
 
-    public MultiblockGasTank<TileEntityFissionReactorCasing> steamTank;
+    public MultiblockGasTank<TileEntityFissionReactorCasing> heatedCoolantTank;
     public MultiblockGasTank<TileEntityFissionReactorCasing> wasteTank;
     public MultiblockHeatCapacitor<TileEntityFissionReactorCasing> heatCapacitor;
 
@@ -93,17 +93,17 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
         fluidTanks = Collections.singletonList(fluidCoolantTank);
         gasCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : getVolume() * COOLANT_PER_VOLUME,
             (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> tile.structure != null,
-            gas -> CoolantHandler.isCoolant(gas) && fluidCoolantTank.isEmpty());
+            gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty());
         fuelTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : fuelAssemblies * FUEL_PER_ASSEMBLY,
             (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> tile.structure != null,
             gas -> gas == MekanismGases.FISSILE_FUEL.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
-        steamTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : getVolume() * STEAM_PER_VOLUME,
+        heatedCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : getVolume() * HEATED_COOLANT_PER_VOLUME,
             (stack, automationType) -> tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
-            gas -> gas == MekanismGases.STEAM.getGas());
+            gas -> gas == MekanismGases.STEAM.get() || gas.has(HeatedCoolant.class));
         wasteTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : fuelAssemblies * FUEL_PER_ASSEMBLY,
             (stack, automationType) -> tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
             gas -> gas == MekanismGases.NUCLEAR_WASTE.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
-        gasTanks = Arrays.asList(fuelTank, steamTank, wasteTank, gasCoolantTank);
+        gasTanks = Arrays.asList(fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank);
         heatCapacitor = MultiblockHeatCapacitor.create(tile,
             MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
             () -> INVERSE_INSULATION_COEFFICIENT,
@@ -137,19 +137,39 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
 
     public void handleCoolant() {
         double temp = heatCapacitor.getTemperature();
-        double caseWaterHeat = waterConductivity * getBoilEfficiency() * (temp - HeatUtils.BASE_BOIL_TEMP) * heatCapacitor.getHeatCapacity();
-        int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / HeatUtils.getVaporizationEnthalpy());
-        waterToVaporize = Math.max(0, Math.min(waterToVaporize, fluidCoolantTank.getFluidAmount()));
-        if (waterToVaporize > 0) {
-            if (fluidCoolantTank.shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
-                MekanismUtils.logMismatchedStackSize();
+        double heat = getBoilEfficiency() * (temp - HeatUtils.BASE_BOIL_TEMP) * heatCapacitor.getHeatCapacity();
+        long coolantHeated = 0;
+
+        if (!fluidCoolantTank.isEmpty()) {
+            double caseCoolantHeat = heat * waterConductivity;
+            coolantHeated = (int) (HeatUtils.getFluidThermalEfficiency() * caseCoolantHeat / HeatUtils.getWaterThermalEnthalpy());
+            coolantHeated = Math.max(0, Math.min(coolantHeated, fluidCoolantTank.getFluidAmount()));
+            if (coolantHeated > 0) {
+                if (fluidCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE) != coolantHeated) {
+                    MekanismUtils.logMismatchedStackSize();
+                }
+                // extra steam is dumped
+                heatedCoolantTank.insert(MekanismGases.STEAM.getGasStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
+                caseCoolantHeat = coolantHeated * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getFluidThermalEfficiency();
+                heatCapacitor.handleHeat(-caseCoolantHeat);
             }
-            // extra steam is dumped
-            steamTank.insert(MekanismGases.STEAM.getGasStack(Math.min(waterToVaporize, steamTank.getNeeded())), Action.EXECUTE, AutomationType.INTERNAL);
-            caseWaterHeat = waterToVaporize * HeatUtils.getVaporizationEnthalpy() / steamTransferEfficiency;
-            heatCapacitor.handleHeat(-caseWaterHeat);
+        } else if (!gasCoolantTank.isEmpty()) {
+            CooledCoolant coolantType = gasCoolantTank.getStack().get(CooledCoolant.class);
+            if (coolantType != null) {
+                double caseCoolantHeat = heat * coolantType.getConductivity();
+                coolantHeated = (int) (HeatUtils.getFluidThermalEfficiency() * caseCoolantHeat / coolantType.getThermalEnthalpy());
+                coolantHeated = Math.max(0, Math.min(coolantHeated, gasCoolantTank.getStored()));
+                if (coolantHeated > 0) {
+                    if (gasCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE) != coolantHeated) {
+                        MekanismUtils.logMismatchedStackSize();
+                    }
+                    heatedCoolantTank.insert(coolantType.getHeatedGas().getGasStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
+                    caseCoolantHeat = coolantHeated * coolantType.getThermalEnthalpy() / HeatUtils.getFluidThermalEfficiency();
+                    heatCapacitor.handleHeat(-caseCoolantHeat);
+                }
+            }
         }
-        lastBoilRate = waterToVaporize;
+        lastBoilRate = coolantHeated;
     }
 
     public boolean isActive() {

@@ -2,6 +2,7 @@ package mekanism.common.util.text;
 
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.TextComponentUtil;
 import net.minecraft.util.text.ITextComponent;
 
 //TODO: Cache objects of this that get used in GUI's in static final variables

@@ -1,8 +1,5 @@
-package mekanism.common.base;
+package mekanism.api.text;
 
-import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTranslationKey;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;

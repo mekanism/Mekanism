@@ -13,13 +13,14 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
+import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.CoolantHandler;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
@@ -79,7 +80,7 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
     public BoilerMultiblockData(TileEntityBoilerCasing tile) {
         superheatedCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getSuperheatedCoolantTankCapacity(),
             (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null,
-            gas -> CoolantHandler.isHeatedCoolant(gas));
+            gas -> gas.has(HeatedCoolant.class));
         waterTank = MultiblockFluidTank.input(tile, () -> tile.structure == null ? 0 : tile.structure.getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
         fluidTanks = Collections.singletonList(waterTank);
         steamTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getSteamTankCapacity(),
@@ -87,7 +88,7 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
             gas -> gas == MekanismGases.STEAM.getGas());
         cooledCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getCooledCoolantTankCapacity(),
             (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
-            gas -> CoolantHandler.isCoolant(gas));
+            gas -> gas.has(CooledCoolant.class));
         gasTanks = Arrays.asList(steamTank, superheatedCoolantTank, cooledCoolantTank);
         heatCapacitor = MultiblockHeatCapacitor.create(tile,
             CASING_HEAT_CAPACITY,

@@ -5,9 +5,9 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.ILangEntry;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.ILangEntry;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.text.ITextComponent;
 
 /**

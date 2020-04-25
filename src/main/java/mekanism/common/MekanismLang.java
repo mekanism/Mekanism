@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import mekanism.common.base.ILangEntry;
+import mekanism.api.text.ILangEntry;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.Util;
 
@@ -58,7 +58,6 @@ public enum MekanismLang implements ILangEntry {
     NEW_YEAR_LINE_THREE("holiday", "new_year.3"),
     MAY_4_LINE_ONE("holiday", "may_4.1"),
     //Generic
-    GENERIC("generic", "format"),
     GENERIC_WITH_COMMA("generic", "with_comma"),
     GENERIC_STORED("generic", "stored"),
     GENERIC_STORED_MB("generic", "stored.mb"),
@@ -72,13 +71,6 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_PER_TICK("generic", "per_tick"),
     GENERIC_PRE_STORED("generic", "pre_pre_colon"),
     GENERIC_BLOCK_POS("generic", "block_pos"),
-    //Directions
-    DOWN("direction", "down"),
-    UP("direction", "up"),
-    NORTH("direction", "north"),
-    SOUTH("direction", "south"),
-    WEST("direction", "west"),
-    EAST("direction", "east"),
     //Hold for
     HOLD_FOR_DETAILS("tooltip", "hold_for_details"),
     HOLD_FOR_DESCRIPTION("tooltip", "hold_for_description"),
@@ -426,6 +418,10 @@ public enum MekanismLang implements ILangEntry {
     BOILER_VALVE_MODE_INPUT("boiler", "valve_mode_input"),
     BOILER_VALVE_MODE_OUTPUT_STEAM("boiler", "valve_mode_output_steam"),
     BOILER_VALVE_MODE_OUTPUT_COOLANT("boiler", "valve_mode_output_coolant"),
+    BOILER_WATER_TANK("boiler", "water_tank"),
+    BOILER_COOLANT_TANK("boiler", "coolant_tank"),
+    BOILER_STEAM_TANK("boiler", "steam_tank"),
+    BOILER_HEATED_COOLANT_TANK("fission", "heated_coolant_tank"),
     //Temperature
     TEMPERATURE("temperature", "short"),
     TEMPERATURE_LONG("temperature", "long"),

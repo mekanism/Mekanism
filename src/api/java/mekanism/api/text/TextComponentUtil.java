@@ -1,11 +1,7 @@
-package mekanism.common.util.text;
+package mekanism.api.text;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.IHasTranslationKey;
-import mekanism.common.MekanismLang;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -17,7 +13,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidStack;
 
-//TODO: Move this to API package? would let ore gas use it, and then let us move ILangEntry to the API package for APILang to extend
 public class TextComponentUtil {
 
     public static ITextComponent build(Object... components) {
@@ -60,7 +55,7 @@ public class TextComponentUtil {
                 current = getString(component.toString());
             } else {
                 //Fallback to a generic replacement
-                current = MekanismLang.GENERIC.translate(component);
+                current = APILang.GENERIC.translate(component);
             }
             if (current == null) {
                 //If we don't have a component to add, don't
@@ -85,17 +80,17 @@ public class TextComponentUtil {
     private static ITextComponent getTranslatedDirection(Direction direction) {
         switch (direction) {
             case DOWN:
-                return MekanismLang.DOWN.translate();
+                return APILang.DOWN.translate();
             case UP:
-                return MekanismLang.UP.translate();
+                return APILang.UP.translate();
             case NORTH:
-                return MekanismLang.NORTH.translate();
+                return APILang.NORTH.translate();
             case SOUTH:
-                return MekanismLang.SOUTH.translate();
+                return APILang.SOUTH.translate();
             case WEST:
-                return MekanismLang.WEST.translate();
+                return APILang.WEST.translate();
             case EAST:
-                return MekanismLang.EAST.translate();
+                return APILang.EAST.translate();
         }
         return getString(direction.toString());
     }
@@ -154,7 +149,7 @@ public class TextComponentUtil {
                     current = ((EnumColor) component).getName();
                 } else {
                     //Fallback to a direct replacement just so that we can properly color it
-                    current = MekanismLang.GENERIC.translate(component);
+                    current = APILang.GENERIC.translate(component);
                 }
             }
             //Formatting

@@ -40,7 +40,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
 
     public abstract ITextComponent getLabel();
 
-    public abstract ITextComponent getTooltipText();
+    public abstract List<ITextComponent> getTooltipText();
 
     protected GaugeInfo getGaugeColor() {
         return GaugeInfo.STANDARD;
@@ -100,7 +100,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
             if (getLabel() != null) {
                 list.add(getLabel());
             }
-            list.add(getTooltipText());
+            list.addAll(getTooltipText());
             guiObj.displayTooltips(list, mouseX, mouseY);
         }
     }

@@ -2,11 +2,11 @@ package mekanism.common.block.attribute;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.inventory.container.INamedContainerProvider;
 
 public class AttributeGui implements Attribute {
