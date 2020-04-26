@@ -46,6 +46,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         if (outputItem.isEmpty()) {
             throw new IllegalArgumentException("This reaction recipe requires a non empty output item.");
         }
+        validateDuration(duration);
         return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, outputItem, GasStack.EMPTY);
     }
 
@@ -54,6 +55,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         if (outputGas.isEmpty()) {
             throw new IllegalArgumentException("This reaction recipe requires a non empty output gas.");
         }
+        validateDuration(duration);
         return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, ItemStack.EMPTY, outputGas);
     }
 
@@ -62,7 +64,14 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         if (outputItem.isEmpty() || outputGas.isEmpty()) {
             throw new IllegalArgumentException("This reaction recipe requires non empty item and gas outputs.");
         }
+        validateDuration(duration);
         return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, outputItem, outputGas);
+    }
+
+    private static void validateDuration(int duration) {
+        if (duration <= 0) {
+            throw new IllegalArgumentException("This reaction recipe must have a positive duration.");
+        }
     }
 
     public PressurizedReactionRecipeBuilder energyRequired(FloatingLong energyRequired) {

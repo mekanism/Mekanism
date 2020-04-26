@@ -2866,7 +2866,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //back to antimatter
         ItemStackToGasRecipeBuilder.oxidizing(
             ItemStackIngredient.from(MekanismTags.Items.PELLETS_ANTIMATTER),
-            MekanismGases.ANTIMATTER.getGasStack(100)
+            MekanismGases.ANTIMATTER.getGasStack(1000)
         ).build(consumer, Mekanism.rl(basePath + "antimatter/from_pellet"));
     }
 

@@ -20,7 +20,7 @@ public class MekanismAPI {
     /**
      * The version of the api classes - may not always match the mod's version
      */
-    public static final String API_VERSION = "9.10.1";
+    public static final String API_VERSION = "9.10.2";
     public static final String MEKANISM_MODID = "mekanism";
 
     public static Logger logger = LogManager.getLogger(MEKANISM_MODID + "_api");

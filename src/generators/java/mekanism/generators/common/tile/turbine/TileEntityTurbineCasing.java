@@ -56,21 +56,24 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
             if (stored > 0 && !energyNeeded.isZero()) {
                 FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES)
                                                 .multiply(Math.min(structure.blades, structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-                double rate = structure.lowerVolume * (structure.getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
-                rate = Math.min(rate, structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+                if (energyMultiplier.isZero()) {
+                    structure.clientFlow = 0;
+                } else {
+                    double rate = structure.lowerVolume * (structure.getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+                    rate = Math.min(rate, structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+                    double proportion = stored / (double) structure.getSteamCapacity();
+                    double origRate = rate;
+                    rate = Math.min(Math.min(stored, rate), energyNeeded.divide(energyMultiplier).doubleValue()) * proportion;
 
-                double proportion = stored / (double) structure.getSteamCapacity();
-                double origRate = rate;
-                rate = Math.min(Math.min(stored, rate), energyNeeded.divide(energyMultiplier).doubleValue()) * proportion;
+                    flowRate = rate / origRate;
+                    structure.energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
 
-                flowRate = rate / origRate;
-                structure.energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
-
-                if (!structure.gasTank.isEmpty()) {
-                    structure.gasTank.shrinkStack((long) rate, Action.EXECUTE);
+                    if (!structure.gasTank.isEmpty()) {
+                        structure.gasTank.shrinkStack((long) rate, Action.EXECUTE);
+                    }
+                    structure.clientFlow = (long) rate;
+                    structure.ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
                 }
-                structure.clientFlow = (long) rate;
-                structure.ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
             } else {
                 structure.clientFlow = 0;
             }
