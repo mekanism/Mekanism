@@ -15,8 +15,6 @@ import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
-import mekanism.client.sound.GeigerSound;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -84,7 +82,6 @@ public class RadiationManager {
 
     // client fields
     private RadiationScale clientRadiationScale = RadiationScale.NONE;
-    private Map<RadiationScale, GeigerSound> soundMap = new HashMap<>();
 
     /**
      * Note: This can and will be null on the client side
@@ -182,16 +179,6 @@ public class RadiationManager {
                 player.world.addParticle((BasicParticleType) MekanismParticleTypes.RADIATION.getParticleType(), x, y, z, 0, 0, 0);
             }
         }
-
-        if (MekanismConfig.client.enablePlayerSounds.get() && soundMap.isEmpty()) {
-            for (RadiationScale scale : RadiationScale.values()) {
-                if (scale != RadiationScale.NONE) {
-                    GeigerSound sound = new GeigerSound(player, scale);
-                    soundMap.put(scale, sound);
-                    SoundHandler.playSound(sound);
-                }
-            }
-        }
     }
 
     public void tickServer(ServerPlayerEntity player) {
@@ -281,11 +268,6 @@ public class RadiationManager {
 
     public void resetClient() {
         clientRadiationScale = RadiationScale.NONE;
-        resetSounds();
-    }
-
-    public void resetSounds() {
-        soundMap.clear();
     }
 
     public void resetPlayer(UUID uuid) {

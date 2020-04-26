@@ -10,6 +10,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.render.RenderTickHandler;
+import mekanism.client.sound.GeigerSound;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.HolidayManager;
 import mekanism.common.KeySync;
@@ -30,6 +32,7 @@ import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketPortableTeleporterGui;
 import mekanism.common.network.PacketPortableTeleporterGui.PortableTeleporterPacketType;
+import mekanism.common.radiation.RadiationManager.RadiationScale;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
@@ -291,6 +294,16 @@ public class ClientTickHandler {
             } else if (visionEnhancement) {
                 visionEnhancement = false;
                 minecraft.player.removePotionEffect(Effects.NIGHT_VISION);
+            }
+
+            if (MekanismConfig.client.enablePlayerSounds.get() && SoundHandler.radiationSoundMap.isEmpty()) {
+                for (RadiationScale scale : RadiationScale.values()) {
+                    if (scale != RadiationScale.NONE) {
+                        GeigerSound sound = new GeigerSound(minecraft.player, scale);
+                        SoundHandler.radiationSoundMap.put(scale, sound);
+                        SoundHandler.playSound(sound);
+                    }
+                }
             }
         }
     }

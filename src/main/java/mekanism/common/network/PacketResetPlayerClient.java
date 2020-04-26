@@ -3,7 +3,6 @@ package mekanism.common.network;
 import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -18,9 +17,6 @@ public class PacketResetPlayerClient {
     public static void handle(PacketResetPlayerClient message, Supplier<Context> context) {
         context.get().enqueueWork(() -> {
             Mekanism.playerState.clearPlayer(message.uuid);
-            if (Minecraft.getInstance().player.getUniqueID().equals(message.uuid)) {
-                Mekanism.radiationManager.resetSounds();
-            }
         });
         context.get().setPacketHandled(true);
     }

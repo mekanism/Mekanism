@@ -1,5 +1,7 @@
 package mekanism.client.sound;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -11,6 +13,7 @@ import mekanism.api.Upgrade;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.radiation.RadiationManager.RadiationScale;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.MekanismUtils;
@@ -58,6 +61,7 @@ public class SoundHandler {
     private static Set<UUID> scubaMaskSounds = new ObjectOpenHashSet<>();
     private static Set<UUID> flamethrowerSounds = new ObjectOpenHashSet<>();
     private static Set<UUID> gravitationalModulationSounds = new ObjectOpenHashSet<>();
+    public static Map<RadiationScale, GeigerSound> radiationSoundMap = new HashMap<>();
 
     private static Long2ObjectMap<ISound> soundMap = new Long2ObjectOpenHashMap<>();
     private static boolean IN_MUFFLED_CHECK = false;

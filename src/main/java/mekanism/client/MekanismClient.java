@@ -5,6 +5,7 @@ import java.util.UUID;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.render.RenderTickHandler;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.network.PacketKey;
@@ -39,6 +40,7 @@ public class MekanismClient {
         Mekanism.playerState.clear();
         Mekanism.activeVibrators.clear();
         Mekanism.radiationManager.resetClient();
+        SoundHandler.radiationSoundMap.clear();
         TransmitterNetworkRegistry.getInstance().clearClientNetworks();
         RenderTickHandler.prevRadiation = 0;
 
