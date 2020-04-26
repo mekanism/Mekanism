@@ -1,11 +1,11 @@
 package mekanism.common.inventory.slot;
 
-import com.mojang.datafixers.util.Pair;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import com.mojang.datafixers.util.Pair;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -15,6 +15,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandlerWrapper;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.util.MekanismUtils;
@@ -163,19 +164,28 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
      * Fills tank from slot, does not try converting the item via any conversions conversion
      */
     public void fillTank() {
-        if (!isEmpty() && chemicalTank.getNeeded() > 0) {
+        fillChemicalTank(this, chemicalTank, getCapabilityWrapper());
+    }
+
+    public boolean fillTankFromItem() {
+        return fillChemicalTankFromItem(this, chemicalTank, getCapabilityWrapper());
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void fillChemicalTank(IInventorySlot slot,
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper) {
+        if (!slot.isEmpty() && chemicalTank.getNeeded() > 0) {
             //Try filling from the tank's item
-            fillTankFromItem();
+            fillChemicalTankFromItem(slot, chemicalTank, wrapper);
         }
     }
 
     /**
      * @implNote Does not pre-check if the current stack is empty or that the chemical tank needs chemical
      */
-    private boolean fillTankFromItem() {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean fillChemicalTankFromItem(IInventorySlot slot,
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper) {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         // Note: None of Mekanism's chemical items stack so at the moment it doesn't fully matter
-        IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper = getCapabilityWrapper();
         if (wrapper != null) {
             boolean didTransfer = false;
             for (int tank = 0; tank < wrapper.getTanks(); tank++) {
@@ -206,21 +216,25 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                 }
             }
             if (didTransfer) {
-                onContentsChanged();
+                slot.onContentsChanged();
                 return true;
             }
         }
         return false;
     }
 
+    public void drainTank() {
+        drainChemicalTank(this, chemicalTank, getCapabilityWrapper());
+    }
+
     /**
      * Drains tank into slot
      */
-    public void drainTank() {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void drainChemicalTank(IInventorySlot slot, IChemicalTank<CHEMICAL, STACK> chemicalTank,
+          IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper) {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         // Note: None of Mekanism's chemical items stack so at the moment it doesn't fully matter
-        if (!isEmpty() && !chemicalTank.isEmpty()) {
-            IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper = getCapabilityWrapper();
+        if (!slot.isEmpty() && !chemicalTank.isEmpty()) {
             if (wrapper != null) {
                 STACK storedChemical = chemicalTank.getStack();
                 STACK simulatedRemainder = wrapper.insertChemical(storedChemical, Action.SIMULATE);
@@ -234,7 +248,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                         if (!wrapper.insertChemical(extractedChemical, Action.EXECUTE).isEmpty()) {
                             MekanismUtils.logMismatchedStackSize();
                         }
-                        onContentsChanged();
+                        slot.onContentsChanged();
                     }
                 }
             }

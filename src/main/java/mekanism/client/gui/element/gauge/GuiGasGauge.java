@@ -27,12 +27,17 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
     private ITextComponent label;
     private Supplier<IGasTank> tankSupplier;
 
-    public GuiGasGauge(IGasInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
-        super(type, gui, x, y, handler, TankType.GAS_TANK);
+    public GuiGasGauge(IGasInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
+        super(type, gui, x, y, sizeX, sizeY, handler, TankType.GAS_TANK);
     }
 
     public GuiGasGauge(Supplier<IGasTank> tankSupplier, Supplier<List<IGasTank>> tanksSupplier, GaugeType type,
-          IGuiWrapper gui, int x, int y) {
+        IGuiWrapper gui, int x, int y) {
+        this(tankSupplier, tanksSupplier, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
+    }
+
+    public GuiGasGauge(Supplier<IGasTank> tankSupplier, Supplier<List<IGasTank>> tanksSupplier, GaugeType type,
+          IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
         this(new IGasInfoHandler() {
             @Nullable
             @Override
@@ -45,12 +50,12 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
                 IGasTank tank = getTank();
                 return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
             }
-        }, type, gui, x, y);
+        }, type, gui, x, y, sizeX, sizeY);
         this.tankSupplier = tankSupplier;
     }
 
     public static GuiGasGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
-        GuiGasGauge gauge = new GuiGasGauge(null, type, gui, x, y);
+        GuiGasGauge gauge = new GuiGasGauge(null, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
         gauge.dummy = true;
         return gauge;
     }

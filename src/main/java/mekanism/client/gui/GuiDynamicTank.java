@@ -3,12 +3,13 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.gauge.GuiHybridGauge;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
@@ -37,20 +38,24 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
         addButton(new GuiInnerScreen(this, 51, 23, 80, 42, () -> {
             List<ITextComponent> ret = new ArrayList<>();
-            ret.add(MekanismLang.VOLUME.translate(tile.structure == null ? 0 : tile.structure.getVolume()));
             FluidStack fluidStored = tile.structure == null ? FluidStack.EMPTY : tile.structure.fluidTank.getFluid();
-            if (fluidStored.isEmpty()) {
-                ret.add(MekanismLang.NO_FLUID.translate());
+            GasStack gasStored = tile.structure == null ? GasStack.EMPTY : tile.structure.gasTank.getStack();
+            if (fluidStored.isEmpty() && gasStored.isEmpty()) {
+                ret.add(MekanismLang.EMPTY.translate());
             } else {
-                ret.add(MekanismLang.GENERIC_PRE_COLON.translate(fluidStored));
-                ret.add(MekanismLang.GENERIC_MB.translate(fluidStored.getAmount()));
+                ret.add(MekanismLang.GENERIC_PRE_COLON.translate(!fluidStored.isEmpty() ? fluidStored : gasStored));
+                ret.add(MekanismLang.GENERIC_MB.translate(formatInt(!fluidStored.isEmpty() ? fluidStored.getAmount() : gasStored.getAmount())));
             }
+            ret.add(MekanismLang.CAPACITY.translate(""));
+            // capacity is the same for both fluid and gas tank
+            ret.add(MekanismLang.GENERIC_MB.translate(formatInt(tile.structure == null ? 0 : tile.structure.fluidTank.getCapacity())));
             return ret;
-        }).defaultFormat());
+        }).defaultFormat().spacing(2));
         addButton(new GuiDownArrow(this, 150, 39));
         addButton(new GuiContainerEditMode<>(this, tile));
-        addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.fluidTank,
-              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.MEDIUM, this, 7, 16, 34, 56));
+        addButton(new GuiHybridGauge(() -> tile.structure == null ? null : tile.structure.gasTank, () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null),
+                                     () -> tile.structure == null ? null : tile.structure.fluidTank, () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null),
+                                     GaugeType.MEDIUM, this, 7, 16, 34, 56));
     }
 
     @Override

@@ -7,23 +7,27 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.base.ContainerEditMode;
+import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
-import mekanism.common.inventory.slot.FluidInventorySlot;
-import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.slot.HybridInventorySlot;
 import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.util.Direction;
 
-public class TankMultiblockData extends MultiblockData<TankMultiblockData> implements IMekanismFluidHandler {
+public class TankMultiblockData extends MultiblockData<TankMultiblockData> implements IMekanismFluidHandler, IMekanismGasHandler {
 
     public MultiblockFluidTank<TileEntityDynamicTank> fluidTank;
+    public MultiblockGasTank<TileEntityDynamicTank> gasTank;
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
@@ -31,20 +35,26 @@ public class TankMultiblockData extends MultiblockData<TankMultiblockData> imple
     @Nonnull
     private List<IInventorySlot> inventorySlots;
     private List<IExtendedFluidTank> fluidTanks;
+    private List<IGasTank> gasTanks;
     private int tankCapacity;
 
     public TankMultiblockData(TileEntityDynamicTank tile) {
-        fluidTank = MultiblockFluidTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getTankCapacity(), BasicFluidTank.alwaysTrue);
+        fluidTank = MultiblockFluidTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getTankCapacity(), BasicFluidTank.alwaysTrueBi,
+              (stack, automationType) -> gasTank.isEmpty(), BasicFluidTank.alwaysTrue, null);
         fluidTanks = Collections.singletonList(fluidTank);
+        gasTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getTankCapacity(), BasicGasTank.alwaysTrueBi,
+              (stack, automationType) -> fluidTank.isEmpty(), BasicGasTank.alwaysTrue, null, null);
+        gasTanks = Collections.singletonList(gasTank);
         inventorySlots = createBaseInventorySlots();
     }
 
     private List<IInventorySlot> createBaseInventorySlots() {
         List<IInventorySlot> inventorySlots = new ArrayList<>();
-        FluidInventorySlot input;
-        inventorySlots.add(input = FluidInventorySlot.input(fluidTank, this, 146, 21));
-        inventorySlots.add(OutputInventorySlot.at(this, 146, 51));
+        HybridInventorySlot input, output;
+        inventorySlots.add(input = HybridInventorySlot.inputOrDrain(gasTank, fluidTank, this, 146, 21));
+        inventorySlots.add(output = HybridInventorySlot.outputOrFill(gasTank, fluidTank, this, 146, 51));
         input.setSlotType(ContainerSlotType.INPUT);
+        output.setSlotType(ContainerSlotType.OUTPUT);
         return inventorySlots;
     }
 
@@ -68,5 +78,11 @@ public class TankMultiblockData extends MultiblockData<TankMultiblockData> imple
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
+    }
+
+    @Nonnull
+    @Override
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
+        return gasTanks;
     }
 }

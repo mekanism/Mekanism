@@ -89,7 +89,7 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
     public FissionReactorMultiblockData(TileEntityFissionReactorCasing tile) {
         fluidCoolantTank = MultiblockFluidTank.create(tile, () -> tile.structure == null ? 0 : getVolume() * COOLANT_PER_VOLUME,
             (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> tile.structure != null,
-            fluid -> fluid.getFluid().isIn(FluidTags.WATER), null);
+            fluid -> fluid.getFluid().isIn(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
         fluidTanks = Collections.singletonList(fluidCoolantTank);
         gasCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : getVolume() * COOLANT_PER_VOLUME,
             (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> tile.structure != null,

@@ -8,6 +8,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.data.FluidRenderData;
+import mekanism.client.render.data.GasRenderData;
+import mekanism.client.render.data.RenderData;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -24,25 +26,35 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     protected void render(TileEntityDynamicTank tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && !tile.structure.fluidTank.isEmpty() && tile.structure.renderLocation != null
-            && tile.structure.volHeight > 2) {
-            FluidRenderData data = new FluidRenderData();
-            data.location = tile.structure.renderLocation;
-            data.height = tile.structure.volHeight - 2;
-            data.length = tile.structure.volLength;
-            data.width = tile.structure.volWidth;
-            data.fluidType = tile.structure.fluidTank.getFluid();
+        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null && tile.structure.volHeight > 2) {
+            RenderData data = null;
+            if (!tile.structure.fluidTank.isEmpty()) {
+                data = new FluidRenderData();
+                ((FluidRenderData) data).fluidType = tile.structure.fluidTank.getFluid();
+            } else if (!tile.structure.gasTank.isEmpty()) {
+                data = new GasRenderData();
+                ((GasRenderData) data).gasType = tile.structure.gasTank.getStack();
+            }
 
-            matrix.push();
-            IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
-            BlockPos pos = tile.getPos();
-            matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
-            int glow = data.calculateGlowLight(light);
-            Model3D fluidModel = ModelRenderer.getModel(data, tile.prevScale);
-            MekanismRenderer.renderObject(fluidModel, matrix, buffer, data.getColorARGB(tile.prevScale), glow);
-            matrix.pop();
+            if (data != null) {
+                data.location = tile.structure.renderLocation;
+                data.height = tile.structure.volHeight - 2;
+                data.length = tile.structure.volLength;
+                data.width = tile.structure.volWidth;
+                matrix.push();
 
-            MekanismRenderer.renderValves(matrix, buffer, tile.structure.valves, data, pos, glow);
+                IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+                BlockPos pos = tile.getPos();
+                matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
+                int glow = data.calculateGlowLight(light);
+                Model3D fluidModel = ModelRenderer.getModel(data, 1);
+                MekanismRenderer.renderObject(fluidModel, matrix, buffer, data.getColorARGB(tile.prevScale), glow);
+                matrix.pop();
+
+                if (data instanceof FluidRenderData) {
+                    MekanismRenderer.renderValves(matrix, buffer, tile.structure.valves, (FluidRenderData) data, pos, glow);
+                }
+            }
         }
     }
 
@@ -53,7 +65,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     public boolean isGlobalRenderer(TileEntityDynamicTank tile) {
-        return tile.clientHasStructure && tile.isRendering && tile.structure != null && !tile.structure.fluidTank.isEmpty() && tile.structure.renderLocation != null
-               && tile.structure.volHeight > 2;
+        return tile.clientHasStructure && tile.isRendering && tile.structure != null && (!tile.structure.fluidTank.isEmpty() || !tile.structure.gasTank.isEmpty()) &&
+              tile.structure.renderLocation != null && tile.structure.volHeight > 2;
     }
 }

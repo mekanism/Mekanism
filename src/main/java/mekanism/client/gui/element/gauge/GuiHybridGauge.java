@@ -23,12 +23,19 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
 
     public GuiHybridGauge(Supplier<IGasTank> gasTankSupplier, Supplier<List<IGasTank>> gasTanksSupplier,
           Supplier<IExtendedFluidTank> fluidTankSupplier, Supplier<List<IExtendedFluidTank>> fluidTanksSupplier, GaugeType type,
-        IGuiWrapper gui, int x, int y) {
-        super(type, gui, x, y);
+          IGuiWrapper gui, int x, int y) {
+        this(gasTankSupplier, gasTanksSupplier, fluidTankSupplier, fluidTanksSupplier, type, gui, x, y,
+              type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
+    }
+
+    public GuiHybridGauge(Supplier<IGasTank> gasTankSupplier, Supplier<List<IGasTank>> gasTanksSupplier,
+          Supplier<IExtendedFluidTank> fluidTankSupplier, Supplier<List<IExtendedFluidTank>> fluidTanksSupplier, GaugeType type,
+          IGuiWrapper gui, int x, int y, int width, int height) {
+        super(type, gui, x, y, width, height);
         this.gasTankSupplier = gasTankSupplier;
         this.fluidTankSupplier = fluidTankSupplier;
-        gasGauge = new GuiGasGauge(gasTankSupplier, gasTanksSupplier, type, gui, x, y);
-        fluidGauge = new GuiFluidGauge(fluidTankSupplier, fluidTanksSupplier, type, gui, x, y);
+        gasGauge = new GuiGasGauge(gasTankSupplier, gasTanksSupplier, type, gui, x, y, width, height);
+        fluidGauge = new GuiFluidGauge(fluidTankSupplier, fluidTanksSupplier, type, gui, x, y, width, height);
     }
 
     public GuiHybridGauge setLabel(ITextComponent label) {

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
@@ -14,8 +15,9 @@ import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.inventory.slot.FluidInventorySlot;
+import mekanism.common.inventory.slot.HybridInventorySlot;
 import mekanism.common.multiblock.IValveHandler;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
@@ -52,9 +54,12 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
             boolean needsPacket = needsValveUpdate();
             List<IInventorySlot> inventorySlots = structure.getInventorySlots(null);
             //TODO: No magic numbers??
-            FluidInventorySlot inputSlot = (FluidInventorySlot) inventorySlots.get(0);
-            inputSlot.handleTank(inventorySlots.get(1), structure.editMode);
-            float scale = MekanismUtils.getScale(prevScale, structure.fluidTank);
+            HybridInventorySlot inputSlot = (HybridInventorySlot) inventorySlots.get(0);
+            HybridInventorySlot outputSlot = (HybridInventorySlot) inventorySlots.get(1);
+            inputSlot.handleTank(outputSlot, structure.editMode);
+            inputSlot.drainGasTank();
+            outputSlot.fillGasTank();
+            float scale = Math.max(MekanismUtils.getScale(prevScale, structure.fluidTank), MekanismUtils.getScale(prevScale, structure.gasTank));
             if (scale != prevScale) {
                 needsPacket = true;
                 prevScale = scale;
@@ -128,6 +133,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
             updateTag.putFloat(NBTConstants.SCALE, prevScale);
             updateTag.putInt(NBTConstants.VOLUME, structure.getVolume());
             updateTag.put(NBTConstants.FLUID_STORED, structure.fluidTank.getFluid().writeToNBT(new CompoundNBT()));
+            updateTag.put(NBTConstants.GAS_STORED, structure.gasTank.getStack().write(new CompoundNBT()));
             writeValves(updateTag);
         }
         return updateTag;
@@ -140,6 +146,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.setVolume(value));
             NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.fluidTank.setStack(value));
+            NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.gasTank.setStack(value));
             readValves(tag);
         }
     }
@@ -160,6 +167,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
         container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.fluidTank.getFluid(), value -> {
             if (structure != null) {
                 structure.fluidTank.setStack(value);
+            }
+        }));
+        container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.gasTank.getStack(), value -> {
+            if (structure != null) {
+                structure.gasTank.setStack(value);
             }
         }));
     }
