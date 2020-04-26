@@ -30,7 +30,7 @@ public abstract class NucleosynthesizingRecipe extends ItemStackGasToItemStackRe
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeInt(duration);
+        buffer.writeVarInt(duration);
     }
 
     public int getDuration() {

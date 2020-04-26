@@ -26,8 +26,8 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
     private final ItemStack output;
     private final int duration;
 
-    protected NucleosynthesizingRecipeBuilder(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration, ResourceLocation serializerName) {
-        super(serializerName);
+    protected NucleosynthesizingRecipeBuilder(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
+        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "nucleosynthesizing"));
         this.itemInput = itemInput;
         this.gasInput = gasInput;
         this.output = output;
@@ -36,9 +36,12 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
 
     public static NucleosynthesizingRecipeBuilder nucleosynthesizing(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This injecting recipe requires a non empty item output.");
+            throw new IllegalArgumentException("This nucleosynthesizing recipe requires a non empty item output.");
         }
-        return new NucleosynthesizingRecipeBuilder(itemInput, gasInput, output, duration, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "nucleosynthesizing"));
+        if (duration <= 0) {
+            throw new IllegalArgumentException("This nucleosynthesizing recipe must have a positive duration.");
+        }
+        return new NucleosynthesizingRecipeBuilder(itemInput, gasInput, output, duration);
     }
 
     @Override

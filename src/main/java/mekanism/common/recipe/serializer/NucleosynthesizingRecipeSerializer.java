@@ -56,8 +56,8 @@ public class NucleosynthesizingRecipeSerializer<T extends NucleosynthesizingReci
         try {
             ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
             GasStackIngredient inputGas = GasStackIngredient.read(buffer);
-            int duration = buffer.readVarInt();
             ItemStack outputItem = buffer.readItemStack();
+            int duration = buffer.readVarInt();
             return this.factory.create(recipeId, inputSolid, inputGas, outputItem, duration);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading nucleosynthesizing recipe from packet.", e);
