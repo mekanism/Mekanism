@@ -2,14 +2,12 @@ package mekanism.common;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
@@ -26,12 +24,14 @@ import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.matrix.MatrixMultiblockData;
+import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankMultiblockData;
+import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
-import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.frequency.FrequencyManagerWrapper;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.lib.Version;
@@ -138,11 +138,10 @@ public class Mekanism {
     /**
      * FrequencyManagers for various networks
      */
-    public static FrequencyManager publicTeleporters = new FrequencyManager(FrequencyType.BASE, Frequency.TELEPORTER);
-    public static Map<UUID, FrequencyManager> privateTeleporters = new Object2ObjectOpenHashMap<>();
-    public static FrequencyManager publicEntangloporters = new FrequencyManager(FrequencyType.INVENTORY, InventoryFrequency.ENTANGLOPORTER);
-    public static Map<UUID, FrequencyManager> privateEntangloporters = new Object2ObjectOpenHashMap<>();
-    public static FrequencyManager securityFrequencies = new FrequencyManager(FrequencyType.SECURITY, SecurityFrequency.SECURITY);
+    public static FrequencyManagerWrapper<TeleporterFrequency> teleporterFrequencies = FrequencyManagerWrapper.createPublicPrivate(FrequencyType.TELEPORTER);
+    public static FrequencyManagerWrapper<InventoryFrequency> entangloporterFrequencies = FrequencyManagerWrapper.createPublicPrivate(FrequencyType.INVENTORY);
+    public static FrequencyManagerWrapper<SecurityFrequency> securityFrequencies = FrequencyManagerWrapper.createPublicOnly(FrequencyType.SECURITY);
+    public static FrequencyManagerWrapper<QIOFrequency> qioFrequencies = FrequencyManagerWrapper.createPrivateOnly(FrequencyType.QIO);
     /**
      * Mekanism creative tab
      */
@@ -276,8 +275,9 @@ public class Mekanism {
         playerState.clear();
         activeVibrators.clear();
         worldTickHandler.resetRegenChunks();
-        privateTeleporters.clear();
-        privateEntangloporters.clear();
+        teleporterFrequencies.clear();
+        entangloporterFrequencies.clear();
+        qioFrequencies.clear();
         BoilerMultiblockData.hotMap.clear();
 
         //Reset consistent managers

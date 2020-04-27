@@ -26,6 +26,6 @@ public class QuantumEntangloporterGasTankHolder extends QuantumEntangloporterCon
     @Nonnull
     @Override
     public List<IGasTank> getTanks(@Nullable Direction side) {
-        return entangloporter.hasFrequency() ? entangloporter.frequency.getGasTanks(side) : Collections.emptyList();
+        return entangloporter.hasFrequency() ? entangloporter.getFreq().getGasTanks(side) : Collections.emptyList();
     }
 }

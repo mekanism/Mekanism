@@ -6,7 +6,6 @@ import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.frequency.Frequency;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -76,11 +75,7 @@ public final class SecurityUtils {
 
     public static SecurityFrequency getFrequency(UUID uuid) {
         if (uuid != null) {
-            for (Frequency f : Mekanism.securityFrequencies.getFrequencies()) {
-                if (f instanceof SecurityFrequency && f.ownerUUID.equals(uuid)) {
-                    return (SecurityFrequency) f;
-                }
-            }
+            return Mekanism.securityFrequencies.getPublicManager().getFrequencies().get(uuid);
         }
         return null;
     }
@@ -94,7 +89,7 @@ public final class SecurityUtils {
             return SecurityMode.PUBLIC;
         }
         if (side.isDedicatedServer()) {
-            SecurityFrequency freq = security.getSecurity().getFrequency();
+            SecurityFrequency freq = security.getSecurity().getFreq();
             if (freq != null && freq.override) {
                 return freq.securityMode;
             }

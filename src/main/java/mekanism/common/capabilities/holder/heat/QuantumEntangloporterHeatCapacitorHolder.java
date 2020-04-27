@@ -24,6 +24,6 @@ public class QuantumEntangloporterHeatCapacitorHolder extends QuantumEntanglopor
     @Nonnull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
-        return entangloporter.hasFrequency() ? entangloporter.frequency.getHeatCapacitors(side) : Collections.emptyList();
+        return entangloporter.hasFrequency() ? entangloporter.getFreq().getHeatCapacitors(side) : Collections.emptyList();
     }
 }

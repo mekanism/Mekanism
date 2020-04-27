@@ -43,6 +43,11 @@ public class SecurityFrequency extends Frequency {
     }
 
     @Override
+    public UUID getKey() {
+        return ownerUUID;
+    }
+
+    @Override
     protected void readFromUpdateTag(CompoundNBT updateTag) {
         super.readFromUpdateTag(updateTag);
         securityMode = SecurityMode.PUBLIC;

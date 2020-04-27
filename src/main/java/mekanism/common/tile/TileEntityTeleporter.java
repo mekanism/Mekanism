@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -23,20 +23,14 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.frequency.Frequency;
-import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.FrequencyType;
-import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableByte;
-import mekanism.common.inventory.container.sync.SyncableFrequency;
-import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
-import mekanism.common.tile.interfaces.IHasFrequency;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.Entity;
@@ -50,24 +44,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader, IFrequencyHandler, IHasFrequency {
+public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
 
     private AxisAlignedBB teleportBounds = null;
-
     public Set<UUID> didTeleport = new ObjectOpenHashSet<>();
-
     public int teleDelay = 0;
-
     public boolean shouldRender;
-
-    public Frequency frequency;
-
-    public List<Frequency> publicCache = new ArrayList<>();
-    public List<Frequency> privateCache = new ArrayList<>();
 
     /**
      * This teleporter's current status.
@@ -82,6 +67,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public TileEntityTeleporter() {
         super(MekanismBlocks.TELEPORTER);
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
+        frequencyComponent.track(FrequencyType.TELEPORTER, true, true, false);
     }
 
     @Nonnull
@@ -138,17 +124,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (teleportBounds == null) {
             resetBounds();
         }
-        FrequencyManager manager = getManager(frequency);
-        if (manager != null) {
-            if (frequency != null && !frequency.valid) {
-                frequency = manager.validateFrequency(getSecurity().getOwnerUUID(), Coord4D.get(this), frequency);
-            }
-            if (frequency != null) {
-                frequency = manager.update(Coord4D.get(this), frequency);
-            }
-        } else {
-            frequency = null;
-        }
 
         status = canTeleport();
         if (MekanismUtils.canFunction(this) && status == 1 && teleDelay == 0) {
@@ -169,82 +144,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         energySlot.fillContainerOrConvert();
     }
 
-    @Override
-    public Frequency getFrequency(FrequencyManager manager) {
-        if (manager == Mekanism.securityFrequencies) {
-            return getSecurity().getFrequency();
-        }
-        return frequency;
-    }
-
     @Nullable
     private Coord4D getClosest() {
-        return frequency == null ? null : frequency.getClosestCoords(Coord4D.get(this));
-    }
-
-    @Override
-    public void setFrequency(String name, boolean publicFreq) {
-        FrequencyManager manager = getManager(new Frequency(name, null).setPublic(publicFreq));
-        manager.deactivate(Coord4D.get(this));
-        for (Frequency freq : manager.getFrequencies()) {
-            if (freq.name.equals(name)) {
-                frequency = freq;
-                frequency.activeCoords.add(Coord4D.get(this));
-                markDirty(false);
-                return;
-            }
-        }
-        Frequency freq = new Frequency(name, getSecurity().getOwnerUUID()).setPublic(publicFreq);
-        freq.activeCoords.add(Coord4D.get(this));
-        manager.addFrequency(freq);
-        frequency = freq;
-        markDirty(false);
-    }
-
-    @Override
-    public void removeFrequency(String name, boolean publicFreq) {
-        FrequencyManager manager = getManager(new Frequency(name, null).setPublic(publicFreq));
-        if (manager != null) {
-            manager.remove(name, getSecurity().getOwnerUUID());
-        }
-    }
-
-    public FrequencyManager getManager(Frequency freq) {
-        if (getSecurity().getOwnerUUID() == null || freq == null) {
-            return null;
-        }
-        if (freq.isPublic()) {
-            return Mekanism.publicTeleporters;
-        } else if (!Mekanism.privateTeleporters.containsKey(getSecurity().getOwnerUUID())) {
-            FrequencyManager manager = new FrequencyManager(FrequencyType.BASE, Frequency.TELEPORTER, getSecurity().getOwnerUUID());
-            Mekanism.privateTeleporters.put(getSecurity().getOwnerUUID(), manager);
-            if (!isRemote()) {
-                manager.createOrLoad();
-            }
-        }
-        return Mekanism.privateTeleporters.get(getSecurity().getOwnerUUID());
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-        if (!isRemote() && frequency != null) {
-            FrequencyManager manager = getManager(frequency);
-            if (manager != null) {
-                manager.deactivate(Coord4D.get(this));
-            }
-        }
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
-        if (!isRemote() && frequency != null) {
-            FrequencyManager manager = getManager(frequency);
-            if (manager != null) {
-                manager.deactivate(Coord4D.get(this));
-            }
-        }
+        return getFrequency(FrequencyType.TELEPORTER) == null ? null : getFrequency(FrequencyType.TELEPORTER).getClosestCoords(Coord4D.get(this));
     }
 
     private void cleanTeleportCache() {
@@ -304,7 +206,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 if (entity instanceof ServerPlayerEntity) {
                     alignPlayer((ServerPlayerEntity) entity, closestCoords);
                 }
-                for (Coord4D coords : frequency.activeCoords) {
+                for (Coord4D coords : getFrequency(FrequencyType.TELEPORTER).activeCoords) {
                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), currentServer.getWorld(coords.dimension), coords.getPos());
                 }
                 energyContainer.extract(calculateEnergyCost(entity, closestCoords), Action.EXECUTE, AutomationType.INTERNAL);
@@ -364,27 +266,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return world.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockTeleporterFrame;
     }
 
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        if (nbtTags.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
-            frequency = new Frequency(nbtTags.getCompound(NBTConstants.FREQUENCY), false);
-            frequency.valid = false;
-        }
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        if (frequency != null) {
-            CompoundNBT frequencyTag = new CompoundNBT();
-            frequency.write(frequencyTag);
-            nbtTags.put(NBTConstants.FREQUENCY, frequencyTag);
-        }
-        return nbtTags;
-    }
-
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
@@ -418,39 +299,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return energyContainer;
     }
 
-    private List<Frequency> getPublicFrequencies() {
-        return isRemote() ? publicCache : Mekanism.publicTeleporters.getFrequencies();
-    }
-
-    private List<Frequency> getPrivateFrequencies() {
-        if (isRemote()) {
-            return privateCache;
-        }
-        //Note: This is a cleaned up version of getting the manager via getManager, given we only want
-        // to get private frequencies here, and there is no reason to be creating a dummy frequency just to get
-        // past the checks for public frequencies
-        UUID ownerUUID = getSecurity().getOwnerUUID();
-        if (ownerUUID == null) {
-            return Collections.emptyList();
-        }
-        if (Mekanism.privateTeleporters.containsKey(ownerUUID)) {
-            return Mekanism.privateTeleporters.get(ownerUUID).getFrequencies();
-        }
-        FrequencyManager manager = new FrequencyManager(FrequencyType.BASE, Frequency.TELEPORTER, ownerUUID);
-        Mekanism.privateTeleporters.put(ownerUUID, manager);
-        if (!isRemote()) {
-            manager.createOrLoad();
-        }
-        return manager.getFrequencies();
-    }
-
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableByte.create(() -> status, value -> status = value));
-        container.track(SyncableFrequency.create(() -> frequency, value -> frequency = value));
-        container.track(SyncableFrequencyList.create(this::getPublicFrequencies, value -> publicCache = value));
-        container.track(SyncableFrequencyList.create(this::getPrivateFrequencies, value -> privateCache = value));
     }
 
     @Nonnull

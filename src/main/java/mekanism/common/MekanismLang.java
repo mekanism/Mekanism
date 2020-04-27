@@ -586,6 +586,7 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_QUANTUM_ENTANGLOPORTER("description", "quantum_entangloporter"),
     DESCRIPTION_NUTRITIONAL_LIQUIFIER("description", "nutritional_liquifier"),
     DESCRIPTION_ANTIPROTONIC_NUCLEOSYNTHESIZER("description", "antiprotonic_nucleosynthesizer"),
+    DESCRIPTION_QIO_DRIVE_ARRAY("description", "qio_drive_array"),
     DESCRIPTION_RADIOACTIVE_WASTE_BARREL("description", "radioactive_waste_barrel"),
     DESCRIPTION_INDUSTRIAL_ALARM("description", "industrial_alarm"),
     DESCRIPTION_ENERGY_CUBE("description", "energy_cube"),

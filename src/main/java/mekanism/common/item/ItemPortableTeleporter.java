@@ -10,6 +10,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.network.PacketSecurityUpdate;
@@ -43,8 +45,8 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
         if (getFrequency(stack) != null) {
-            tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getFrequency(stack).name));
-            tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, !getFrequency(stack).publicFreq ? MekanismLang.PRIVATE : MekanismLang.PUBLIC));
+            tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getFrequency(stack).getKey()));
+            tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, !getFrequency(stack).isPublic() ? MekanismLang.PRIVATE : MekanismLang.PUBLIC));
         }
         super.addInformation(stack, world, tooltip, flag);
     }
@@ -81,9 +83,9 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
         }
     }
 
-    public Frequency.Identity getFrequency(ItemStack stack) {
+    public FrequencyIdentity getFrequency(ItemStack stack) {
         if (ItemDataUtils.hasData(stack, NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
-            return Frequency.Identity.load(ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY));
+            return FrequencyIdentity.load(FrequencyType.TELEPORTER, ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY));
         }
         return null;
     }
@@ -92,7 +94,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
         if (frequency == null) {
             ItemDataUtils.removeData(stack, NBTConstants.FREQUENCY);
         } else {
-            ItemDataUtils.setCompound(stack, NBTConstants.FREQUENCY, frequency.getIdentity().serialize());
+            ItemDataUtils.setCompound(stack, NBTConstants.FREQUENCY, frequency.serializeIdentity());
         }
     }
 }

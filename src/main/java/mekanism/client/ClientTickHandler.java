@@ -22,7 +22,7 @@ import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleVisionEnhancementUnit;
-import mekanism.common.frequency.Frequency;
+import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.IModeItem;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemJetpack;
@@ -138,7 +138,7 @@ public class ClientTickHandler {
         return !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && GasUtils.hasGas(currentItem);
     }
 
-    public static void portableTeleport(PlayerEntity player, Hand hand, Frequency freq) {
+    public static void portableTeleport(PlayerEntity player, Hand hand, TeleporterFrequency freq) {
         int delay = MekanismConfig.gear.portableTeleporterDelay.get();
         if (delay == 0) {
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.TELEPORT, hand, freq));
@@ -355,10 +355,10 @@ public class ClientTickHandler {
     private static class TeleportData {
 
         private Hand hand;
-        private Frequency freq;
+        private TeleporterFrequency freq;
         private long teleportTime;
 
-        public TeleportData(Hand h, Frequency f, long t) {
+        public TeleportData(Hand h, TeleporterFrequency f, long t) {
             hand = h;
             freq = f;
             teleportTime = t;

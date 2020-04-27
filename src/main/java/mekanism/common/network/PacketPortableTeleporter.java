@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiPortableTeleporter;
+import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.frequency.Frequency;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -13,13 +14,13 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketPortableTeleporter {
 
-    private List<Frequency> publicCache;
-    private List<Frequency> privateCache;
-    private Frequency frequency;
+    private List<TeleporterFrequency> publicCache;
+    private List<TeleporterFrequency> privateCache;
+    private TeleporterFrequency frequency;
     private Hand currentHand;
     private byte status;
 
-    public PacketPortableTeleporter(Hand hand, Frequency freq, byte b, List<Frequency> publicFreqs, List<Frequency> privateFreqs) {
+    public PacketPortableTeleporter(Hand hand, TeleporterFrequency freq, byte b, List<TeleporterFrequency> publicFreqs, List<TeleporterFrequency> privateFreqs) {
         currentHand = hand;
         frequency = freq;
         status = b;
@@ -54,31 +55,32 @@ public class PacketPortableTeleporter {
         }
         buf.writeByte(pkt.status);
         buf.writeVarInt(pkt.publicCache.size());
-        for (Frequency freq : pkt.publicCache) {
+        for (TeleporterFrequency freq : pkt.publicCache) {
             freq.write(buf);
         }
         buf.writeVarInt(pkt.privateCache.size());
-        for (Frequency freq : pkt.privateCache) {
+        for (TeleporterFrequency freq : pkt.privateCache) {
             freq.write(buf);
         }
     }
 
     public static PacketPortableTeleporter decode(PacketBuffer buf) {
         Hand currentHand = buf.readEnumValue(Hand.class);
-        List<Frequency> publicCache = new ArrayList<>();
-        List<Frequency> privateCache = new ArrayList<>();
-        Frequency frequency = null;
+        List<TeleporterFrequency> publicCache = new ArrayList<>();
+        List<TeleporterFrequency> privateCache = new ArrayList<>();
+        TeleporterFrequency frequency = null;
         if (buf.readBoolean()) {
-            frequency = new Frequency(BasePacketHandler.readString(buf), null).setPublic(buf.readBoolean());
+            frequency = new TeleporterFrequency(BasePacketHandler.readString(buf), null);
+            frequency.setPublic(buf.readBoolean());
         }
         byte status = buf.readByte();
         int amount = buf.readVarInt();
         for (int i = 0; i < amount; i++) {
-            publicCache.add(Frequency.readFromPacket(buf));
+            publicCache.add((TeleporterFrequency) Frequency.readFromPacket(buf));
         }
         amount = buf.readVarInt();
         for (int i = 0; i < amount; i++) {
-            privateCache.add(Frequency.readFromPacket(buf));
+            privateCache.add((TeleporterFrequency) Frequency.readFromPacket(buf));
         }
         return new PacketPortableTeleporter(currentHand, frequency, status, publicCache, privateCache);
     }

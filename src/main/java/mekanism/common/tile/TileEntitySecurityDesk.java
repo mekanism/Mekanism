@@ -1,17 +1,14 @@
 package mekanism.common.tile;
 
-import com.mojang.authlib.GameProfile;
 import java.util.Collections;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
+import com.mojang.authlib.GameProfile;
 import mekanism.api.NBTConstants;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.frequency.Frequency;
-import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -25,7 +22,6 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -33,8 +29,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public UUID ownerUUID;
     public String clientOwner;
-
-    public SecurityFrequency frequency;
 
     private SecurityInventorySlot unlockSlot;
     private SecurityInventorySlot lockSlot;
@@ -58,81 +52,39 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
+        SecurityFrequency frequency = getFreq();
         if (ownerUUID != null && frequency != null) {
             unlockSlot.unlock(ownerUUID);
             lockSlot.lock(ownerUUID, frequency);
         }
-
-        if (frequency == null && ownerUUID != null) {
-            setFrequency(ownerUUID);
-        }
-
-        FrequencyManager manager = getManager(frequency);
-        if (manager != null) {
-            if (frequency != null && !frequency.valid) {
-                frequency = (SecurityFrequency) manager.validateFrequency(ownerUUID, Coord4D.get(this), frequency);
-            }
-            if (frequency != null) {
-                frequency = (SecurityFrequency) manager.update(Coord4D.get(this), frequency);
-            }
-        } else {
-            frequency = null;
-        }
-    }
-
-    public FrequencyManager getManager(Frequency freq) {
-        if (ownerUUID == null || freq == null) {
-            return null;
-        }
-        return Mekanism.securityFrequencies;
-    }
-
-    public void setFrequency(UUID owner) {
-        FrequencyManager manager = Mekanism.securityFrequencies;
-        manager.deactivate(Coord4D.get(this));
-        for (Frequency freq : manager.getFrequencies()) {
-            if (freq.ownerUUID.equals(owner)) {
-                frequency = (SecurityFrequency) freq;
-                frequency.activeCoords.add(Coord4D.get(this));
-                sendUpdatePacket();
-                return;
-            }
-        }
-
-        Frequency freq = new SecurityFrequency(owner).setPublic(true);
-        freq.activeCoords.add(Coord4D.get(this));
-        manager.addFrequency(freq);
-        frequency = (SecurityFrequency) freq;
-        markDirty(false);
-        sendUpdatePacket();
     }
 
     public void toggleOverride() {
-        if (frequency != null) {
-            frequency.override = !frequency.override;
+        if (getFreq() != null) {
+            getFreq().override = !getFreq().override;
             markDirty(false);
         }
     }
 
     public void removeTrusted(int index) {
-        if (frequency != null) {
-            frequency.removeTrusted(index);
+        if (getFreq() != null) {
+            getFreq().removeTrusted(index);
             markDirty(false);
         }
     }
 
     public void setSecurityMode(SecurityMode mode) {
-        if (frequency != null) {
-            frequency.securityMode = mode;
+        if (getFreq() != null) {
+            getFreq().securityMode = mode;
             markDirty(false);
         }
     }
 
     public void addTrusted(String name) {
-        if (frequency != null) {
+        if (getFreq() != null) {
             GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(name);
             if (profile != null) {
-                frequency.addTrusted(profile.getId(), profile.getName());
+                getFreq().addTrusted(profile.getId(), profile.getName());
                 markDirty(false);
             }
         }
@@ -142,10 +94,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
-        if (nbtTags.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
-            frequency = new SecurityFrequency(nbtTags.getCompound(NBTConstants.FREQUENCY), false);
-            frequency.valid = false;
-        }
     }
 
     @Nonnull
@@ -155,25 +103,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (ownerUUID != null) {
             nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
         }
-        if (frequency != null) {
-            CompoundNBT frequencyTag = new CompoundNBT();
-            frequency.write(frequencyTag);
-            nbtTags.put(NBTConstants.FREQUENCY, frequencyTag);
-        }
         return nbtTags;
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
-        if (!isRemote()) {
-            if (frequency != null) {
-                FrequencyManager manager = getManager(frequency);
-                if (manager != null) {
-                    manager.deactivate(Coord4D.get(this));
-                }
-            }
-        }
     }
 
     @Override
@@ -190,14 +120,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         }
     }
 
-    @Override
-    public Frequency getFrequency(FrequencyManager manager) {
-        if (manager == Mekanism.securityFrequencies) {
-            return frequency;
-        }
-        return null;
-    }
-
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
@@ -212,11 +134,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             updateTag.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
             updateTag.putString(NBTConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
         }
-        if (frequency != null) {
-            CompoundNBT frequencyTag = new CompoundNBT();
-            frequency.writeToUpdateTag(frequencyTag);
-            updateTag.put(NBTConstants.FREQUENCY, frequencyTag);
-        }
         return updateTag;
     }
 
@@ -225,26 +142,29 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         super.handleUpdateTag(tag);
         NBTUtils.setUUIDIfPresent(tag, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
         NBTUtils.setStringIfPresent(tag, NBTConstants.OWNER_NAME, uuid -> clientOwner = uuid);
-        NBTUtils.setCompoundIfPresent(tag, NBTConstants.FREQUENCY, nbt -> frequency = new SecurityFrequency(nbt, true));
+    }
+
+    public SecurityFrequency getFreq() {
+        return getFrequency(FrequencyType.SECURITY);
     }
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableBoolean.create(() -> frequency != null && frequency.override, value -> {
-            if (frequency != null) {
-                frequency.override = value;
+        container.track(SyncableBoolean.create(() -> getFreq() != null && getFreq().override, value -> {
+            if (getFreq() != null) {
+                getFreq().override = value;
             }
         }));
-        container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, () -> frequency == null ? SecurityMode.PUBLIC : frequency.securityMode,
+        container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, () -> getFreq() == null ? SecurityMode.PUBLIC : getFreq().securityMode,
               value -> {
-                  if (frequency != null) {
-                      frequency.securityMode = value;
+                  if (getFreq() != null) {
+                      getFreq().securityMode = value;
                   }
               }));
-        container.track(SyncableStringList.create(() -> frequency == null ? Collections.emptyList() : frequency.trustedCache, value -> {
-            if (frequency != null) {
-                frequency.trustedCache = value;
+        container.track(SyncableStringList.create(() -> getFreq() == null ? Collections.emptyList() : getFreq().trustedCache, value -> {
+            if (getFreq() != null) {
+                getFreq().trustedCache = value;
             }
         }));
     }

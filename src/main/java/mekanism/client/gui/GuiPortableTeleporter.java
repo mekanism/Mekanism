@@ -19,7 +19,7 @@ import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.scroll.GuiTextScrollList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.frequency.Frequency;
+import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.item.ItemPortableTeleporter;
@@ -48,10 +48,10 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     private GuiTextScrollList scrollList;
     private TextFieldWidget frequencyField;
     private boolean privateMode;
-    private Frequency clientFreq;
+    private TeleporterFrequency clientFreq;
     private byte clientStatus;
-    private List<Frequency> clientPublicCache = new ArrayList<>();
-    private List<Frequency> clientPrivateCache = new ArrayList<>();
+    private List<TeleporterFrequency> clientPublicCache = new ArrayList<>();
+    private List<TeleporterFrequency> clientPrivateCache = new ArrayList<>();
     private boolean isInit = true;
 
     public GuiPortableTeleporter(PortableTeleporterContainer container, PlayerInventory inv, ITextComponent title) {
@@ -61,8 +61,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         ySize = 175;
         ItemPortableTeleporter item = (ItemPortableTeleporter) itemStack.getItem();
         if (item.getFrequency(itemStack) != null) {
-            privateMode = !item.getFrequency(itemStack).publicFreq;
-            setFrequency(item.getFrequency(itemStack).name);
+            privateMode = !item.getFrequency(itemStack).isPublic();
+            setFrequencyFromName((String) item.getFrequency(itemStack).getKey());
         } else {
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
         }
@@ -103,15 +103,15 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         addButton(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
-                Frequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
-                setFrequency(freq.name);
+                TeleporterFrequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
+                setFrequencyFromName(freq.name);
             }
             updateButtons();
         }));
         addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
-                Frequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
+                TeleporterFrequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
                 Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.DEL_FREQ, currentHand, freq));
                 Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.DATA_REQUEST, currentHand, null));
                 scrollList.clearSelection();
@@ -129,7 +129,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
         addButton(new MekanismImageButton(this, getGuiLeft() + 137, getGuiTop() + 103, 11, 12, getButtonLocation("checkmark"), () -> {
-            setFrequency(frequencyField.getText());
+            setFrequencyFromName(frequencyField.getText());
             frequencyField.setText("");
             updateButtons();
         }));
@@ -148,15 +148,15 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         frequencyField.setText(s);
     }
 
-    public void setFrequency(Frequency newFrequency) {
+    public void setFrequency(TeleporterFrequency newFrequency) {
         clientFreq = newFrequency;
     }
 
-    public void setPublicCache(List<Frequency> cache) {
+    public void setPublicCache(List<TeleporterFrequency> cache) {
         clientPublicCache = cache;
     }
 
-    public void setPrivateCache(List<Frequency> cache) {
+    public void setPrivateCache(List<TeleporterFrequency> cache) {
         clientPrivateCache = cache;
     }
 
@@ -164,7 +164,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         clientStatus = status;
     }
 
-    public ITextComponent getSecurity(Frequency freq) {
+    public ITextComponent getSecurity(TeleporterFrequency freq) {
         if (!freq.publicFreq) {
             return MekanismLang.PRIVATE.translateColored(EnumColor.DARK_RED);
         }
@@ -177,11 +177,11 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }
         List<String> text = new ArrayList<>();
         if (privateMode) {
-            for (Frequency freq : clientPrivateCache) {
+            for (TeleporterFrequency freq : clientPrivateCache) {
                 text.add(freq.name);
             }
         } else {
-            for (Frequency freq : clientPublicCache) {
+            for (TeleporterFrequency freq : clientPublicCache) {
                 text.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(freq.name, freq.clientOwner).getFormattedText());
             }
         }
@@ -194,7 +194,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             privateButton.active = true;
         }
         if (scrollList.hasSelection()) {
-            Frequency freq = privateMode ? clientPrivateCache.get(scrollList.getSelection()) : clientPublicCache.get(scrollList.getSelection());
+            TeleporterFrequency freq = privateMode ? clientPrivateCache.get(scrollList.getSelection()) : clientPublicCache.get(scrollList.getSelection());
             setButton.active = clientFreq == null || !clientFreq.equals(freq);
             deleteButton.active = getOwner().equals(freq.ownerUUID);
         } else {
@@ -227,7 +227,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                 frequencyField.setFocused2(false);
                 return true;
             } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                setFrequency(frequencyField.getText());
+                setFrequencyFromName(frequencyField.getText());
                 frequencyField.setText("");
                 return true;
             }
@@ -276,11 +276,12 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         return MekanismClient.clientUUIDMap.get(((IOwnerItem) itemStack.getItem()).getOwnerUUID(itemStack));
     }
 
-    public void setFrequency(String freq) {
-        if (freq.isEmpty()) {
+    public void setFrequencyFromName(String name) {
+        if (name.isEmpty()) {
             return;
         }
-        Frequency newFreq = new Frequency(freq, null).setPublic(!privateMode);
+        TeleporterFrequency newFreq = new TeleporterFrequency(name, null);
+        newFreq.setPublic(!privateMode);
         Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.SET_FREQ, currentHand, newFreq));
     }
 

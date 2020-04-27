@@ -1,22 +1,17 @@
 package mekanism.common.frequency;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
-import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.network.BasePacketHandler;
-import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class Frequency {
-
-    public static final String TELEPORTER = "Teleporter";
+public abstract class Frequency {
 
     public String name;
     public UUID ownerUUID;
@@ -28,23 +23,15 @@ public class Frequency {
 
     public Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
 
-    private final FrequencyType frequencyType;
+    private final FrequencyType<?> frequencyType;
 
-    public Frequency(String name, UUID uuid) {
-        this(FrequencyType.BASE, name, uuid);
-    }
-
-    public Frequency(FrequencyType frequencyType, String name, UUID uuid) {
+    public Frequency(FrequencyType<?> frequencyType, String name, UUID uuid) {
         this.frequencyType = frequencyType;
         this.name = name;
         ownerUUID = uuid;
     }
 
-    public Frequency(CompoundNBT nbtTags, boolean fromUpdate) {
-        this(FrequencyType.BASE, nbtTags, fromUpdate);
-    }
-
-    public Frequency(FrequencyType frequencyType, CompoundNBT nbtTags, boolean fromUpdate) {
+    public Frequency(FrequencyType<?> frequencyType, CompoundNBT nbtTags, boolean fromUpdate) {
         this.frequencyType = frequencyType;
         if (fromUpdate) {
             readFromUpdateTag(nbtTags);
@@ -53,13 +40,17 @@ public class Frequency {
         }
     }
 
-    protected Frequency(FrequencyType frequencyType, PacketBuffer dataStream) {
+    protected Frequency(FrequencyType<?> frequencyType, PacketBuffer dataStream) {
         this.frequencyType = frequencyType;
         read(dataStream);
     }
 
-    public FrequencyType getFrequencyType() {
+    public FrequencyType<?> getType() {
         return frequencyType;
+    }
+
+    public Object getKey() {
+        return name;
     }
 
     public boolean isPublic() {
@@ -118,7 +109,7 @@ public class Frequency {
     }
 
     public void write(PacketBuffer buffer) {
-        buffer.writeEnumValue(getFrequencyType());
+        getType().write(buffer);
         buffer.writeString(name);
         buffer.writeUniqueId(ownerUUID);
         buffer.writeString(MekanismUtils.getLastKnownUsername(ownerUUID));
@@ -146,49 +137,55 @@ public class Frequency {
         return obj instanceof Frequency && ((Frequency) obj).name.equals(name) && ((Frequency) obj).ownerUUID.equals(ownerUUID) && ((Frequency) obj).publicFreq == publicFreq;
     }
 
-    public Identity getIdentity() {
-        return new Identity(name, publicFreq);
+    public FrequencyIdentity getIdentity() {
+        return new FrequencyIdentity(getKey(), publicFreq);
+    }
+
+    public CompoundNBT serializeIdentity() {
+        return frequencyType.getKey().serialize(getIdentity());
     }
 
     /**
      * If type is unrecognized falls back to default frequency type
      */
     public static Frequency readFromPacket(PacketBuffer dataStream) {
-        FrequencyType type = dataStream.readEnumValue(FrequencyType.class);
-        switch (type) {
-            case INVENTORY:
-                return new InventoryFrequency(dataStream);
-            case SECURITY:
-                return new SecurityFrequency(dataStream);
-            case BASE:
-            default:
-                return new Frequency(type, dataStream);
-        }
+        return FrequencyType.load(dataStream).create(dataStream);
     }
 
-    public static class Identity {
+    public static class FrequencyIdentity {
 
-        public String name;
-        public boolean publicFreq;
+        private Object key;
+        private boolean publicFreq;
 
-        private Identity(String name, boolean publicFreq) {
-            this.name = name;
+        public FrequencyIdentity(Object key, boolean publicFreq) {
+            this.key = key;
             this.publicFreq = publicFreq;
         }
 
-        @Nullable
-        public static Identity load(CompoundNBT data) {
-            if (!data.getString(NBTConstants.NAME).isEmpty()) {
-                return new Identity(data.getString(NBTConstants.NAME), data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
-            }
-            return null;
+        public Object getKey() {
+            return key;
         }
 
-        public CompoundNBT serialize() {
-            CompoundNBT tag = new CompoundNBT();
-            tag.putString(NBTConstants.NAME, name);
-            tag.putBoolean(NBTConstants.PUBLIC_FREQUENCY, publicFreq);
-            return tag;
+        public boolean isPublic() {
+            return publicFreq;
+        }
+
+        public static FrequencyIdentity load(FrequencyType<?> type, CompoundNBT tag) {
+            return type.getKey().load(tag);
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (publicFreq ? 1231 : 1237);
+            result = prime * result + ((key == null) ? 0 : key.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof FrequencyIdentity && ((FrequencyIdentity) obj).key.equals(key) && ((FrequencyIdentity) obj).publicFreq == publicFreq;
         }
     }
 }

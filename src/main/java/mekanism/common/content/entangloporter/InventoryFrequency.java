@@ -32,8 +32,6 @@ import net.minecraft.util.Direction;
 
 public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismGasHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler {
 
-    public static final String ENTANGLOPORTER = "Entangloporter";
-
     public BasicFluidTank storedFluid;
     public BasicGasTank storedGas;
     private IInventorySlot storedItem;

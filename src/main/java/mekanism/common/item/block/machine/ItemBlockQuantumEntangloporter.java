@@ -10,7 +10,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.prefab.BlockTile;
-import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.frequency.FrequencyType;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
@@ -38,10 +39,10 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTile<?
 
     @Override
     public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
-        Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY));
+        FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.INVENTORY, ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY));
         if (freq != null) {
-            tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, freq.name));
-            tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, !freq.publicFreq ? MekanismLang.PRIVATE : MekanismLang.PUBLIC));
+            tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, freq.getKey()));
+            tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, !freq.isPublic() ? MekanismLang.PRIVATE : MekanismLang.PUBLIC));
         }
     }
 

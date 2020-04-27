@@ -36,6 +36,7 @@ import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.content.blocktype.Machine.MachineBuilder;
+import mekanism.common.content.qio.TileEntityQIODriveArray;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.AntiprotonicNucleosynthesizerContainer;
 import mekanism.common.inventory.container.tile.DigitalMinerContainer;
@@ -407,7 +408,7 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.SECURITY_DESK, MekanismLang.DESCRIPTION_SECURITY_DESK)
           .withGui(() -> MekanismContainerTypes.SECURITY_DESK)
           .withCustomContainerProvider((tile) -> (i, inv, player) -> new SecurityDeskContainer(i, inv, (TileEntitySecurityDesk) tile))
-          .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
+          .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeCustomResistance(-1F), new AttributeSecurity())
           .withCustomShape(BlockShapes.SECURITY_DESK)
           .with(new AttributeCustomSelectionBox())
           .build();
@@ -442,6 +443,10 @@ public class MekanismBlockTypes {
         .withSound(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER)
         .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
         .build();
+
+    public static final BlockTypeTile<TileEntityQIODriveArray> QIO_DRIVE_ARRAY = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.QIO_DRIVE_ARRAY, MekanismLang.DESCRIPTION_QIO_DRIVE_ARRAY)
+          .build();
 
     // Dynamic Tank
     public static final BlockTypeTile<TileEntityDynamicTank> DYNAMIC_TANK = BlockTileBuilder

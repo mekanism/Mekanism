@@ -24,6 +24,6 @@ public class QuantumEntangloporterFluidTankHolder extends QuantumEntangloporterC
     @Nonnull
     @Override
     public List<IExtendedFluidTank> getTanks(@Nullable Direction side) {
-        return entangloporter.hasFrequency() ? entangloporter.frequency.getFluidTanks(side) : Collections.emptyList();
+        return entangloporter.hasFrequency() ? entangloporter.getFreq().getFluidTanks(side) : Collections.emptyList();
     }
 }

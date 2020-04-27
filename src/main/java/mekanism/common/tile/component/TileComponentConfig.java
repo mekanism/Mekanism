@@ -242,10 +242,6 @@ public class TileComponentConfig implements ITileComponent, ITrackableContainer 
     }
 
     @Override
-    public void invalidate() {
-    }
-
-    @Override
     public void trackForMainContainer(MekanismContainer container) {
     }
 

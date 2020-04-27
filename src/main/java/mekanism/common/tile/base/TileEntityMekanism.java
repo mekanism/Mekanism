@@ -67,9 +67,8 @@ import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.capabilities.resolver.manager.InfusionHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.frequency.Frequency;
-import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
+import mekanism.common.frequency.TileComponentFrequency;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -168,6 +167,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected TileComponentUpgrade upgradeComponent;
     //End variables ITileUpgradable
 
+    //Variables for handling IFrequencyHandler
+    protected TileComponentFrequency frequencyComponent;
+    //End variables IFrequencyHandler
+
     //Variables for handling ITileContainer
     protected final ItemHandlerManager itemHandlerManager;
     //End variables ITileContainer
@@ -231,6 +234,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 addCapabilityResolver(capabilityHandlerManager);
             }
         }
+        frequencyComponent = new TileComponentFrequency(this);
         if (supportsUpgrades()) {
             upgradeComponent = new TileComponentUpgrade(this, UpgradeInventorySlot.of(this, getSupportedUpgrade()));
         }
@@ -499,6 +503,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
+    @Override
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
+        for (ITileComponent component : components) {
+            component.onChunkUnload();
+        }
+    }
+
     /**
      * Update call for machines. Use instead of updateEntity -- it's called every tick on the client side.
      */
@@ -651,12 +663,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public Frequency getFrequency(FrequencyManager manager) {
-        //TODO: I don't think this is needed, only thing that uses this method is querying the quantum entangloporter
-        if (manager == Mekanism.securityFrequencies && hasSecurity) {
-            return getSecurity().getFrequency();
-        }
-        return null;
+    public TileComponentFrequency getFrequencyComponent() {
+        return frequencyComponent;
     }
 
     //Methods pertaining to IUpgradeableTile

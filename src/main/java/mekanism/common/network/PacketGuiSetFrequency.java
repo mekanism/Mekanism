@@ -1,7 +1,9 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
-import mekanism.common.tile.interfaces.IHasFrequency;
+import mekanism.common.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.frequency.FrequencyType;
+import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -12,15 +14,15 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 public class PacketGuiSetFrequency {
 
     private final BlockPos tilePosition;
-    private final boolean setFrequency;
-    private final boolean isPublic;
-    private final String name;
+    private final FrequencyType<?> type;
+    private final FrequencyUpdate updateType;
+    private final FrequencyIdentity data;
 
-    public PacketGuiSetFrequency(BlockPos tilePosition, boolean setFrequency, String name, boolean isPublic) {
+    public PacketGuiSetFrequency(BlockPos tilePosition, FrequencyType<?> type, FrequencyUpdate updateType, FrequencyIdentity data) {
         this.tilePosition = tilePosition;
-        this.setFrequency = setFrequency;
-        this.isPublic = isPublic;
-        this.name = name;
+        this.type = type;
+        this.updateType = updateType;
+        this.data = data;
     }
 
     public static void handle(PacketGuiSetFrequency message, Supplier<Context> context) {
@@ -30,11 +32,11 @@ public class PacketGuiSetFrequency {
         }
         context.get().enqueueWork(() -> {
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.tilePosition);
-            if (tile instanceof IHasFrequency) {
-                if (message.setFrequency) {
-                    ((IHasFrequency) tile).setFrequency(message.name, message.isPublic);
+            if (tile instanceof IFrequencyHandler) {
+                if (message.updateType == FrequencyUpdate.SET) {
+                    ((IFrequencyHandler) tile).setFrequency(message.type, message.data);
                 } else {
-                    ((IHasFrequency) tile).removeFrequency(message.name, message.isPublic);
+                    ((IFrequencyHandler) tile).removeFrequency(message.type, message.data);
                 }
             }
         });
@@ -43,12 +45,19 @@ public class PacketGuiSetFrequency {
 
     public static void encode(PacketGuiSetFrequency pkt, PacketBuffer buf) {
         buf.writeBlockPos(pkt.tilePosition);
-        buf.writeBoolean(pkt.setFrequency);
-        buf.writeString(pkt.name);
-        buf.writeBoolean(pkt.isPublic);
+        pkt.type.write(buf);
+        buf.writeEnumValue(pkt.updateType);
+        pkt.type.getKey().write(buf, pkt.data);
     }
 
     public static PacketGuiSetFrequency decode(PacketBuffer buf) {
-        return new PacketGuiSetFrequency(buf.readBlockPos(), buf.readBoolean(), BasePacketHandler.readString(buf), buf.readBoolean());
+        BlockPos pos = buf.readBlockPos();
+        FrequencyType<?> type = FrequencyType.load(buf);
+        return new PacketGuiSetFrequency(pos, type, buf.readEnumValue(FrequencyUpdate.class), type.getKey().read(buf));
+    }
+
+    public enum FrequencyUpdate {
+        SET,
+        REMOVE;
     }
 }

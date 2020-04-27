@@ -1,12 +1,10 @@
 package mekanism.common.tile.component;
 
 import java.util.UUID;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
-import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.frequency.Frequency;
-import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -29,34 +27,14 @@ public class TileComponentSecurity implements ITileComponent {
 
     private SecurityMode securityMode = SecurityMode.PUBLIC;
 
-    private SecurityFrequency frequency;
-
     public TileComponentSecurity(TileEntityMekanism tile) {
         this.tile = tile;
         tile.addComponent(this);
+        tile.getFrequencyComponent().track(FrequencyType.SECURITY, true, false, true);
     }
 
-    public SecurityFrequency getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(UUID owner) {
-        FrequencyManager manager = Mekanism.securityFrequencies;
-        manager.deactivate(Coord4D.get(tile));
-
-        for (Frequency freq : manager.getFrequencies()) {
-            if (freq.ownerUUID.equals(owner)) {
-                frequency = (SecurityFrequency) freq;
-                frequency.activeCoords.add(Coord4D.get(tile));
-                return;
-            }
-        }
-
-        Frequency freq = new SecurityFrequency(owner).setPublic(true);
-        freq.activeCoords.add(Coord4D.get(tile));
-        manager.addFrequency(freq);
-        frequency = (SecurityFrequency) freq;
-        tile.markDirty(false);
+    public SecurityFrequency getFreq() {
+        return tile.getFrequency(FrequencyType.SECURITY);
     }
 
     public UUID getOwnerUUID() {
@@ -64,7 +42,7 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     public void setOwnerUUID(UUID uuid) {
-        frequency = null;
+        tile.getFrequencyComponent().setFrequency(FrequencyType.SECURITY, null);
         ownerUUID = uuid;
     }
 
@@ -84,29 +62,11 @@ public class TileComponentSecurity implements ITileComponent {
         tile.markDirty(false);
     }
 
-    public FrequencyManager getManager(Frequency freq) {
-        if (ownerUUID == null || freq == null) {
-            return null;
-        }
-        return Mekanism.securityFrequencies;
-    }
-
     @Override
     public void tick() {
         if (!tile.isRemote()) {
-            if (frequency == null && ownerUUID != null) {
-                setFrequency(ownerUUID);
-            }
-            FrequencyManager manager = getManager(frequency);
-            if (manager == null) {
-                frequency = null;
-            } else {
-                if (frequency != null && !frequency.valid) {
-                    frequency = (SecurityFrequency) manager.validateFrequency(ownerUUID, Coord4D.get(tile), frequency);
-                }
-                if (frequency != null) {
-                    frequency = (SecurityFrequency) manager.update(Coord4D.get(tile), frequency);
-                }
+            if (getFreq() == null && ownerUUID != null) {
+                tile.getFrequencyComponent().setFrequencyFromData(FrequencyType.SECURITY, new FrequencyIdentity(ownerUUID, true));
             }
         }
     }
@@ -117,10 +77,6 @@ public class TileComponentSecurity implements ITileComponent {
             CompoundNBT securityNBT = nbtTags.getCompound(NBTConstants.COMPONENT_SECURITY);
             NBTUtils.setEnumIfPresent(securityNBT, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
             NBTUtils.setUUIDIfPresent(securityNBT, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
-            if (securityNBT.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
-                frequency = new SecurityFrequency(securityNBT.getCompound(NBTConstants.FREQUENCY), false);
-                frequency.valid = false;
-            }
         }
     }
 
@@ -131,22 +87,7 @@ public class TileComponentSecurity implements ITileComponent {
         if (ownerUUID != null) {
             securityNBT.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
         }
-        if (frequency != null) {
-            CompoundNBT frequencyTag = new CompoundNBT();
-            frequency.write(frequencyTag);
-            securityNBT.put(NBTConstants.FREQUENCY, frequencyTag);
-        }
         nbtTags.put(NBTConstants.COMPONENT_SECURITY, securityNBT);
-    }
-
-    @Override
-    public void invalidate() {
-        if (!tile.isRemote() && frequency != null) {
-            FrequencyManager manager = getManager(frequency);
-            if (manager != null) {
-                manager.deactivate(Coord4D.get(tile));
-            }
-        }
     }
 
     @Override

@@ -24,6 +24,6 @@ public class QuantumEntangloporterEnergyContainerHolder extends QuantumEntanglop
     @Nonnull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return entangloporter.hasFrequency() ? entangloporter.frequency.getEnergyContainers(side) : Collections.emptyList();
+        return entangloporter.hasFrequency() ? entangloporter.getFreq().getEnergyContainers(side) : Collections.emptyList();
     }
 }

@@ -132,6 +132,7 @@ public final class NBTConstants {
     public static final String PUBLIC_FREQUENCY = "publicFreq";
     public static final String PULL = "pull";
     public static final String PULSE = "pulse";
+    public static final String QIO_ITEM_MAP = "qioItemMap";
     public static final String RADIATION = "radiation";
     public static final String RADIATION_LIST = "radList";
     public static final String RADIUS = "radius";

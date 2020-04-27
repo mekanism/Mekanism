@@ -23,6 +23,7 @@ import mekanism.common.network.PacketAddTrusted;
 import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -68,14 +69,14 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
         addButton(new GuiInnerScreen(this, 34, 67, 89, 13));
         addButton(new GuiInnerScreen(this, 122, 67, 13, 13));
-        addButton(new GuiSecurityLight(this, 144, 77, () -> tile.frequency == null || tile.ownerUUID == null ||
-                                                            !tile.ownerUUID.equals(minecraft.player.getUniqueID()) ? 2 : tile.frequency.override ? 0 : 1));
+        addButton(new GuiSecurityLight(this, 144, 77, () -> tile.getFreq() == null || tile.ownerUUID == null ||
+                                                            !tile.ownerUUID.equals(minecraft.player.getUniqueID()) ? 2 : tile.getFreq().override ? 0 : 1));
         addButton(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
         addButton(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
         addButton(scrollList = new GuiTextScrollList(this, 13, 13, 122, 42));
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 13, getGuiTop() + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
             int selection = scrollList.getSelection();
-            if (tile.frequency != null && selection != -1) {
+            if (tile.getFreq() != null && selection != -1) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.REMOVE_TRUSTED, tile, selection));
                 scrollList.clearSelection();
                 updateButtons();
@@ -110,8 +111,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, tile));
                   updateButtons();
               }, (onHover, xAxis, yAxis) -> {
-            if (tile.frequency != null) {
-                displayTooltip(MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(tile.frequency.override)), xAxis, yAxis);
+            if (tile.getFreq() != null) {
+                displayTooltip(MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(tile.getFreq().override)), xAxis, yAxis);
             }
         }));
         updateButtons();
@@ -131,15 +132,16 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     private void updateButtons() {
+        SecurityFrequency freq = tile.getFreq();
         if (tile.ownerUUID != null) {
-            scrollList.setText(tile.frequency == null ? Collections.emptyList() : tile.frequency.trustedCache);
+            scrollList.setText(tile.getFreq() == null ? Collections.emptyList() : tile.getFreq().trustedCache);
             removeButton.active = scrollList.hasSelection();
         }
 
-        if (tile.frequency != null && tile.ownerUUID != null && tile.ownerUUID.equals(minecraft.player.getUniqueID())) {
-            publicButton.active = tile.frequency.securityMode != SecurityMode.PUBLIC;
-            privateButton.active = tile.frequency.securityMode != SecurityMode.PRIVATE;
-            trustedButton.active = tile.frequency.securityMode != SecurityMode.TRUSTED;
+        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(minecraft.player.getUniqueID())) {
+            publicButton.active = freq.securityMode != SecurityMode.PUBLIC;
+            privateButton.active = freq.securityMode != SecurityMode.PRIVATE;
+            trustedButton.active = freq.securityMode != SecurityMode.TRUSTED;
             checkboxButton.active = true;
             overrideButton.active = true;
         } else {
@@ -200,8 +202,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         drawString(ownerComponent, getXSize() - 7 - getStringWidth(ownerComponent), (getYSize() - 96) + 2, titleTextColor());
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         drawCenteredText(MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, 0x787878);
-        if (tile.frequency != null) {
-            drawString(MekanismLang.SECURITY.translate(tile.frequency.securityMode), 13, 103, titleTextColor());
+        if (tile.getFreq() != null) {
+            drawString(MekanismLang.SECURITY.translate(tile.getFreq().securityMode), 13, 103, titleTextColor());
         } else {
             drawString(MekanismLang.SECURITY_OFFLINE.translateColored(EnumColor.RED), 13, 103, titleTextColor());
         }

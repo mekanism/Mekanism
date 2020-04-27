@@ -29,11 +29,11 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.FluidUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -206,10 +206,6 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
             ejectorNBT.putInt(NBTConstants.COLOR + i, TransporterUtils.getColorIndex(inputColors[i]));
         }
         nbtTags.put(NBTConstants.COMPONENT_EJECTOR, ejectorNBT);
-    }
-
-    @Override
-    public void invalidate() {
     }
 
     @Override

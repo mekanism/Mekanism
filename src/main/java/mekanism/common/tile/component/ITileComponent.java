@@ -11,7 +11,9 @@ public interface ITileComponent {
 
     void write(CompoundNBT nbtTags);
 
-    void invalidate();
+    default void invalidate() {}
+
+    default void onChunkUnload() {}
 
     void trackForMainContainer(MekanismContainer container);
 
