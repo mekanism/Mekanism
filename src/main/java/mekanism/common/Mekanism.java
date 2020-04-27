@@ -21,17 +21,13 @@ import mekanism.common.command.CommandMek;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
-import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.matrix.MatrixMultiblockData;
-import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankMultiblockData;
-import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.frequency.FrequencyManagerWrapper;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.lib.Version;
@@ -55,7 +51,6 @@ import mekanism.common.registries.MekanismPlacements;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
-import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tags.MekanismTagManager;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
@@ -135,13 +130,6 @@ public class Mekanism {
      * RadiationManager for handling radiation across all dimensions
      */
     public static RadiationManager radiationManager = new RadiationManager();
-    /**
-     * FrequencyManagers for various networks
-     */
-    public static FrequencyManagerWrapper<TeleporterFrequency> teleporterFrequencies = FrequencyManagerWrapper.createPublicPrivate(FrequencyType.TELEPORTER);
-    public static FrequencyManagerWrapper<InventoryFrequency> entangloporterFrequencies = FrequencyManagerWrapper.createPublicPrivate(FrequencyType.INVENTORY);
-    public static FrequencyManagerWrapper<SecurityFrequency> securityFrequencies = FrequencyManagerWrapper.createPublicOnly(FrequencyType.SECURITY);
-    public static FrequencyManagerWrapper<QIOFrequency> qioFrequencies = FrequencyManagerWrapper.createPrivateOnly(FrequencyType.QIO);
     /**
      * Mekanism creative tab
      */
@@ -275,9 +263,7 @@ public class Mekanism {
         playerState.clear();
         activeVibrators.clear();
         worldTickHandler.resetRegenChunks();
-        teleporterFrequencies.clear();
-        entangloporterFrequencies.clear();
-        qioFrequencies.clear();
+        FrequencyType.clear();
         BoilerMultiblockData.hotMap.clear();
 
         //Reset consistent managers

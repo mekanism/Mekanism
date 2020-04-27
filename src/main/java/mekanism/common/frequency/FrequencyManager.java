@@ -1,6 +1,7 @@
 package mekanism.common.frequency;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -81,7 +82,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public FREQ update(Coord4D coord, FREQ freq) {
-        FREQ storedFreq = getFrequencies().get(freq.name);
+        FREQ storedFreq = getFrequency(freq.name);
         if (storedFreq != null) {
             storedFreq.activeCoords.add(coord);
             if (dataHandler != null) {
@@ -95,9 +96,9 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public void remove(Object key, UUID ownerUUID) {
-        FREQ freq = getFrequencies().get(key);
+        FREQ freq = getFrequency(key);
         if (freq != null && freq.ownerUUID.equals(ownerUUID)) {
-            getFrequencies().remove(key);
+            frequencies.remove(key);
             if (dataHandler != null) {
                 dataHandler.markDirty();
             }
@@ -114,7 +115,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public FREQ validateFrequency(UUID uuid, Coord4D coord, FREQ freq) {
-        FREQ storedFreq = getFrequencies().get(freq.name);
+        FREQ storedFreq = getFrequency(freq.name);
         if (storedFreq != null) {
             storedFreq.activeCoords.add(coord);
             if (dataHandler != null) {
@@ -145,8 +146,12 @@ public class FrequencyManager<FREQ extends Frequency> {
         }
     }
 
-    public Map<Object, FREQ> getFrequencies() {
-        return frequencies;
+    public Collection<FREQ> getFrequencies() {
+        return frequencies.values();
+    }
+
+    public FREQ getFrequency(Object key) {
+        return frequencies.get(key);
     }
 
     public void addFrequency(FREQ freq) {
@@ -161,7 +166,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     private void tickSelf(World world) {
-        for (FREQ iterFreq : getFrequencies().values()) {
+        for (FREQ iterFreq : getFrequencies()) {
             for (Iterator<Coord4D> iter = iterFreq.activeCoords.iterator(); iter.hasNext(); ) {
                 Coord4D coord = iter.next();
                 if (coord.dimension.equals(world.getDimension().getType())) {
@@ -221,7 +226,7 @@ public class FrequencyManager<FREQ extends Frequency> {
                 nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
             }
             ListNBT list = new ListNBT();
-            for (FREQ freq : getFrequencies().values()) {
+            for (FREQ freq : getFrequencies()) {
                 CompoundNBT compound = new CompoundNBT();
                 freq.write(compound);
                 list.add(compound);

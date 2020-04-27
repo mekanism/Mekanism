@@ -114,18 +114,18 @@ public class TileComponentFrequency implements ITileComponent {
         if (tile.getSecurity().getOwnerUUID() == null || freq == null) {
             return null;
         }
-        return type.getWrapperManager().getManager(freq);
+        return type.getFrequencyManager(freq);
     }
 
     private <FREQ extends Frequency> FrequencyManager<FREQ> getManager(FrequencyType<FREQ> type, FrequencyIdentity data) {
-        FrequencyManagerWrapper<FREQ> wrapper = type.getWrapperManager();
+        FrequencyManagerWrapper<FREQ> wrapper = type.getManagerWrapper();
         return data.isPublic() ? wrapper.getPublicManager() : wrapper.getPrivateManager(tile.getSecurity().getOwnerUUID());
     }
 
     public <FREQ extends Frequency> void setFrequencyFromData(FrequencyType<FREQ> type, FrequencyIdentity data) {
         FrequencyManager<FREQ> manager = getManager(type, data);
         manager.deactivate(getFrequency(type), Coord4D.get(tile));
-        FREQ freq = manager.getFrequencies().get(data.getKey());
+        FREQ freq = manager.getFrequency(data.getKey());
         if (freq != null) {
             freq.activeCoords.add(Coord4D.get(tile));
             notifyNeighbors(type);
@@ -198,10 +198,10 @@ public class TileComponentFrequency implements ITileComponent {
 
     private <FREQ extends Frequency> void track(MekanismContainer container, FrequencyType<FREQ> type) {
         container.track(SyncableFrequencyList.create(() ->
-              type.getWrapperManager().getPublicFrequencies(tile, getPublicCache(type)),
+              type.getManagerWrapper().getPublicFrequencies(tile, getPublicCache(type)),
               value -> publicCache.put(type, value)));
         container.track(SyncableFrequencyList.create(() ->
-              type.getWrapperManager().getPrivateFrequencies(tile, getPrivateCache(type)),
+              type.getManagerWrapper().getPrivateFrequencies(tile, getPrivateCache(type)),
               value -> privateCache.put(type, value)));
     }
 

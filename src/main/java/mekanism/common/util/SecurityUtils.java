@@ -3,9 +3,9 @@ package mekanism.common.util;
 import java.util.UUID;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.frequency.FrequencyType;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -75,7 +75,7 @@ public final class SecurityUtils {
 
     public static SecurityFrequency getFrequency(UUID uuid) {
         if (uuid != null) {
-            return Mekanism.securityFrequencies.getPublicManager().getFrequencies().get(uuid);
+            return FrequencyType.SECURITY.getManager(null).getFrequency(uuid);
         }
         return null;
     }

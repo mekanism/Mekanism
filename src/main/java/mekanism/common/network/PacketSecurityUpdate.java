@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.MekanismClient;
-import mekanism.common.Mekanism;
+import mekanism.common.frequency.FrequencyType;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
@@ -68,7 +68,7 @@ public class PacketSecurityUpdate {
                 pkt.securityData.write(buf);
             }
         } else {
-            List<SecurityFrequency> frequencies = Mekanism.securityFrequencies.getPublicManager().getFrequencies().values().stream().collect(Collectors.toList());
+            List<SecurityFrequency> frequencies = FrequencyType.SECURITY.getManager(null).getFrequencies().stream().collect(Collectors.toList());
             buf.writeVarInt(frequencies.size());
             for (SecurityFrequency frequency : frequencies) {
                 buf.writeUniqueId(frequency.ownerUUID);
