@@ -62,13 +62,13 @@ public final class SecurityUtils {
         if (freq == null) {
             return true;
         }
-        if (freq.override) {
-            mode = freq.securityMode;
+        if (freq.isOverridden()) {
+            mode = freq.getSecurityMode();
         }
         if (mode == SecurityMode.PUBLIC) {
             return true;
         } else if (mode == SecurityMode.TRUSTED) {
-            return freq.trusted.contains(player.getUniqueID());
+            return freq.getTrustedUUIDs().contains(player.getUniqueID());
         }
         return false;
     }
@@ -90,8 +90,8 @@ public final class SecurityUtils {
         }
         if (side.isDedicatedServer()) {
             SecurityFrequency freq = security.getSecurity().getFreq();
-            if (freq != null && freq.override) {
-                return freq.securityMode;
+            if (freq != null && freq.isOverridden()) {
+                return freq.getSecurityMode();
             }
         } else if (side.isClient()) {
             SecurityData data = MekanismClient.clientSecurityMap.get(security.getSecurity().getOwnerUUID());
@@ -108,8 +108,8 @@ public final class SecurityUtils {
         if (security.getOwnerUUID(stack) != null) {
             if (side.isDedicatedServer()) {
                 SecurityFrequency freq = getFrequency(security.getOwnerUUID(stack));
-                if (freq != null && freq.override) {
-                    mode = freq.securityMode;
+                if (freq != null && freq.isOverridden()) {
+                    mode = freq.getSecurityMode();
                 }
             } else if (side.isClient()) {
                 SecurityData data = MekanismClient.clientSecurityMap.get(security.getOwnerUUID(stack));
@@ -128,7 +128,7 @@ public final class SecurityUtils {
         }
         if (side.isDedicatedServer()) {
             SecurityFrequency freq = getFrequency(security.getOwnerUUID(stack));
-            return freq != null && freq.override;
+            return freq != null && freq.isOverridden();
         }
         SecurityData data = MekanismClient.clientSecurityMap.get(security.getOwnerUUID(stack));
         return data != null && data.override;
@@ -141,7 +141,7 @@ public final class SecurityUtils {
         }
         if (side.isDedicatedServer()) {
             SecurityFrequency freq = getFrequency(security.getSecurity().getOwnerUUID());
-            return freq != null && freq.override;
+            return freq != null && freq.isOverridden();
         }
         SecurityData data = MekanismClient.clientSecurityMap.get(security.getSecurity().getOwnerUUID());
         return data != null && data.override;

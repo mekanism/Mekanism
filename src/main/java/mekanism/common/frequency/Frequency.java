@@ -18,11 +18,9 @@ public abstract class Frequency {
     public String clientOwner;
 
     public boolean valid = true;
-
     public boolean publicFreq;
 
     public Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
-
     private final FrequencyType<?> frequencyType;
 
     public Frequency(FrequencyType<?> frequencyType, String name, UUID uuid) {
@@ -64,28 +62,6 @@ public abstract class Frequency {
 
     public boolean isPrivate() {
         return !publicFreq;
-    }
-
-    public Coord4D getClosestCoords(Coord4D coord) {
-        Coord4D closest = null;
-        for (Coord4D iterCoord : activeCoords) {
-            if (iterCoord.equals(coord)) {
-                continue;
-            }
-            if (closest == null) {
-                closest = iterCoord;
-                continue;
-            }
-
-            if (coord.dimension != closest.dimension && coord.dimension == iterCoord.dimension) {
-                closest = iterCoord;
-            } else if (coord.dimension != closest.dimension || coord.dimension == iterCoord.dimension) {
-                if (coord.distanceTo(closest) > coord.distanceTo(iterCoord)) {
-                    closest = iterCoord;
-                }
-            }
-        }
-        return closest;
     }
 
     public void writeToUpdateTag(CompoundNBT updateTag) {

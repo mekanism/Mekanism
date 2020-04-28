@@ -82,7 +82,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public FREQ update(Coord4D coord, FREQ freq) {
-        FREQ storedFreq = getFrequency(freq.name);
+        FREQ storedFreq = getFrequency(freq.getKey());
         if (storedFreq != null) {
             storedFreq.activeCoords.add(coord);
             if (dataHandler != null) {
@@ -115,7 +115,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public FREQ validateFrequency(UUID uuid, Coord4D coord, FREQ freq) {
-        FREQ storedFreq = getFrequency(freq.name);
+        FREQ storedFreq = getFrequency(freq.getKey());
         if (storedFreq != null) {
             storedFreq.activeCoords.add(coord);
             if (dataHandler != null) {
@@ -155,14 +155,10 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public void addFrequency(FREQ freq) {
-        frequencies.put(freq.getKey(), freq);;
+        frequencies.put(freq.getKey(), freq);
         if (dataHandler != null) {
             dataHandler.markDirty();
         }
-    }
-
-    public boolean containsFrequency(String name) {
-        return frequencies.containsKey(name);
     }
 
     private void tickSelf(World world) {

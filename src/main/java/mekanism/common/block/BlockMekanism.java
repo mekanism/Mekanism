@@ -19,6 +19,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.security.ISecurityItem;
+import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
@@ -160,6 +161,9 @@ public abstract class BlockMekanism extends Block {
         Item item = stack.getItem();
         setTileData(world, pos, state, placer, stack, tile);
 
+        if (tile instanceof TileEntitySecurityDesk) {
+            tile.getSecurity().setOwnerUUID(placer.getUniqueID());
+        }
         if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
             tile.getSecurity().setMode(securityItem.getSecurity(stack));

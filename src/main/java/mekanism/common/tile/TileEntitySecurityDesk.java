@@ -1,20 +1,18 @@
 package mekanism.common.tile;
 
-import java.util.Collections;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import com.mojang.authlib.GameProfile;
 import mekanism.api.NBTConstants;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.frequency.FrequencyType;
-import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.inventory.container.sync.list.SyncableStringList;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
+import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
@@ -61,8 +59,10 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public void toggleOverride() {
         if (getFreq() != null) {
-            getFreq().override = !getFreq().override;
+            getFreq().setOverridden(!getFreq().isOverridden());
             markDirty(false);
+            // send the security update to other players; this change will be visible on machine security tabs
+            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(getFreq().ownerUUID, new SecurityData(getFreq())));
         }
     }
 
@@ -75,8 +75,10 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public void setSecurityMode(SecurityMode mode) {
         if (getFreq() != null) {
-            getFreq().securityMode = mode;
+            getFreq().setSecurityMode(mode);
             markDirty(false);
+            // send the security update to other players; this change will be visible on machine security tabs
+            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(getFreq().ownerUUID, new SecurityData(getFreq())));
         }
     }
 
@@ -146,26 +148,5 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public SecurityFrequency getFreq() {
         return getFrequency(FrequencyType.SECURITY);
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableBoolean.create(() -> getFreq() != null && getFreq().override, value -> {
-            if (getFreq() != null) {
-                getFreq().override = value;
-            }
-        }));
-        container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, () -> getFreq() == null ? SecurityMode.PUBLIC : getFreq().securityMode,
-              value -> {
-                  if (getFreq() != null) {
-                      getFreq().securityMode = value;
-                  }
-              }));
-        container.track(SyncableStringList.create(() -> getFreq() == null ? Collections.emptyList() : getFreq().trustedCache, value -> {
-            if (getFreq() != null) {
-                getFreq().trustedCache = value;
-            }
-        }));
     }
 }

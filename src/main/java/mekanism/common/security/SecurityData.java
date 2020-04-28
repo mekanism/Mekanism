@@ -12,8 +12,8 @@ public class SecurityData {
     }
 
     public SecurityData(SecurityFrequency frequency) {
-        mode = frequency.securityMode;
-        override = frequency.override;
+        mode = frequency.getSecurityMode();
+        override = frequency.isOverridden();
     }
 
     public static SecurityData read(PacketBuffer dataStream) {

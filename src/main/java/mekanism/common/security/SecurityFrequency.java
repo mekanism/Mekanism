@@ -20,17 +20,18 @@ public class SecurityFrequency extends Frequency {
 
     public static final String SECURITY = "Security";
 
-    public boolean override;
+    private boolean override;
 
-    public List<UUID> trusted;
-    public List<String> trustedCache;
+    private List<UUID> trusted;
+    private List<String> trustedCache;
+    private int trustedCacheHash;
 
-    public SecurityMode securityMode;
+    private SecurityMode securityMode;
 
     public SecurityFrequency(UUID uuid) {
         super(FrequencyType.SECURITY, SECURITY, uuid);
         trusted = new HashList<>();
-        trustedCache = new ArrayList<>();
+        trustedCache = new HashList<>();
         securityMode = SecurityMode.PUBLIC;
     }
 
@@ -83,9 +84,64 @@ public class SecurityFrequency extends Frequency {
         }
     }
 
+    @Override
+    public void write(PacketBuffer buffer) {
+        super.write(buffer);
+        buffer.writeBoolean(override);
+        buffer.writeEnumValue(securityMode);
+        buffer.writeInt(trustedCache.size());
+        trustedCache.forEach(s -> buffer.writeString(s));
+    }
+
+    @Override
+    protected void read(PacketBuffer dataStream) {
+        super.read(dataStream);
+        override = dataStream.readBoolean();
+        securityMode = dataStream.readEnumValue(SecurityMode.class);
+        trustedCache = new ArrayList<>();
+        int count = dataStream.readInt();
+        for (int i = 0; i < count; i++) {
+            trustedCache.add(dataStream.readString());
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int code = super.hashCode();
+        code = 31 * code + (override ? 1 : 0);
+        code = 31 * code + (securityMode != null ? securityMode.ordinal() : 0);
+        code = 31 * code + trustedCacheHash;
+        return code;
+    }
+
+    public void setOverridden(boolean override) {
+        this.override = override;
+    }
+
+    public boolean isOverridden() {
+        return override;
+    }
+
+    public void setSecurityMode(SecurityMode securityMode) {
+        this.securityMode = securityMode;
+    }
+
+    public SecurityMode getSecurityMode() {
+        return securityMode;
+    }
+
+    public List<UUID> getTrustedUUIDs() {
+        return trusted;
+    }
+
+    public List<String> getTrustedUsernameCache() {
+        return trustedCache;
+    }
+
     public void addTrusted(UUID uuid, String name) {
         trusted.add(uuid);
         trustedCache.add(name);
+        trustedCacheHash = trustedCache.hashCode();
     }
 
     public void removeTrusted(int index) {
@@ -95,5 +151,6 @@ public class SecurityFrequency extends Frequency {
         if (index >= 0 && index < trustedCache.size()) {
             trustedCache.remove(index);
         }
+        trustedCacheHash = trustedCache.hashCode();
     }
 }
