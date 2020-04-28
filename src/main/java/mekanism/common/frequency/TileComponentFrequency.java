@@ -91,7 +91,7 @@ public class TileComponentFrequency implements ITileComponent {
         FrequencyManager<FREQ> manager = getManager(type, frequency);
         if (manager != null) {
             if (frequency != null && !frequency.isValid()) {
-                frequency = manager.validateFrequency(tile.getSecurity().getOwnerUUID(), tile, frequency);
+                frequency = manager.validateFrequency(tile, frequency);
                 notifyNeighbors(type);
             }
             if (frequency != null) {
