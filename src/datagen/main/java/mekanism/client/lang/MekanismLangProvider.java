@@ -317,8 +317,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismGases.PLUTONIUM, "Plutonium");
         add(MekanismGases.POLONIUM, "Polonium");
         add(MekanismGases.NUTRITIONAL_PASTE, "Nutritional Paste");
-        //Slurry
-        addSlurry(MekanismGases.URANIUM_SLURRY, "Uranium");
 
         for (Map.Entry<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> entry : MekanismGases.PROCESSED_RESOURCE_SLURRIES.entrySet()) {
             addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getName()));

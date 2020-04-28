@@ -7,6 +7,6 @@
   },
   "output": {
     "gas": "mekanism:uranium_oxide",
-    "amount": 100
+    "amount": 250
   }
 }

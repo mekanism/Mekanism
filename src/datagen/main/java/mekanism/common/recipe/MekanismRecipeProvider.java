@@ -2772,23 +2772,11 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     private void addUraniumRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "processing/uranium/";
 
-        //dirty uranium slurry
-        ItemStackGasToGasRecipeBuilder.dissolution(
-            ItemStackIngredient.from(MekanismTags.Items.ORES.get(OreType.URANIUM)),
-            GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
-            MekanismGases.URANIUM_SLURRY.getDirtySlurry().getGasStack(1_000)
-        ).build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
-        //clean uranium slurry
-        FluidGasToGasRecipeBuilder.washing(
-              FluidStackIngredient.from(FluidTags.WATER, 5),
-              GasStackIngredient.from(MekanismGases.URANIUM_SLURRY.getDirtySlurry(), 1),
-              MekanismGases.URANIUM_SLURRY.getCleanSlurry().getGasStack(1)
-        ).build(consumer, Mekanism.rl(basePath + "slurry/clean"));
         //yellow cake
-        GasToItemStackRecipeBuilder.crystallizing(
-              GasStackIngredient.from(MekanismGases.URANIUM_SLURRY.getCleanSlurry(), 100),
-              MekanismItems.YELLOW_CAKE_URANIUM.getItemStack()
-        ).build(consumer, Mekanism.rl(basePath + "yellow_cake_uranium/from_slurry"));
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)),
+              MekanismItems.YELLOW_CAKE_URANIUM.getItemStack(2)
+        ).build(consumer, Mekanism.rl(basePath + "yellow_cake_uranium"));
         //hydrofluoric acid
         ItemStackGasToGasRecipeBuilder.dissolution(
               ItemStackIngredient.from(MekanismTags.Items.GEMS_FLUORITE),
@@ -2798,7 +2786,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //uranium oxide
         ItemStackToGasRecipeBuilder.oxidizing(
             ItemStackIngredient.from(MekanismTags.Items.YELLOW_CAKE_URANIUM),
-            MekanismGases.URANIUM_OXIDE.getGasStack(100)
+            MekanismGases.URANIUM_OXIDE.getGasStack(250)
         ).build(consumer, Mekanism.rl(basePath + "uranium_oxide"));
         //uranium hexafluoride
         ChemicalInfuserRecipeBuilder.chemicalInfusing(

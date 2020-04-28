@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "tag": "mekanism:dirty_dusts/uranium"
+    }
+  },
+  "output": {
+    "item": "mekanism:dust_uranium"
+  }
+}

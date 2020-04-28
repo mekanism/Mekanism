@@ -51,7 +51,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addDusts();
         addGems();
         addFluids();
-        addSlurryTags(MekanismGases.URANIUM_SLURRY);
+        addSlurryTags();
         addInfuseTags();
         addPellets();
         getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);

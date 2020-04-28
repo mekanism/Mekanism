@@ -14,7 +14,6 @@ import mekanism.common.registration.impl.GasDeferredRegister;
 import mekanism.common.registration.impl.GasRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.resource.PrimaryResource;
-import mekanism.common.resource.SecondaryResource;
 
 public class MekanismGases {
 
@@ -48,8 +47,6 @@ public class MekanismGases {
     public static final GasRegistryObject<Gas> POLONIUM = GASES.register("polonium", 0x1B9E7B, new Radiation(0.05));
     public static final GasRegistryObject<Gas> ANTIMATTER = GASES.register("antimatter", 0xA464B3);
     public static final GasRegistryObject<Gas> NUTRITIONAL_PASTE = GASES.register("nutritional_paste", 0XEB6CA3);
-
-    public static final SlurryRegistryObject<Slurry, Slurry> URANIUM_SLURRY = GASES.registerSlurry(SecondaryResource.URANIUM);
 
     static {
         for (PrimaryResource resource : PrimaryResource.values()) {

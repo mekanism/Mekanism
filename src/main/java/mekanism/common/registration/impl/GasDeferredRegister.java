@@ -9,7 +9,6 @@ import mekanism.api.chemical.gas.Slurry;
 import mekanism.common.base.IChemicalConstant;
 import mekanism.common.registration.WrappedDeferredRegister;
 import mekanism.common.resource.PrimaryResource;
-import mekanism.common.resource.SecondaryResource;
 
 public class GasDeferredRegister extends WrappedDeferredRegister<Gas> {
 
@@ -33,12 +32,6 @@ public class GasDeferredRegister extends WrappedDeferredRegister<Gas> {
 
     public <GAS extends Gas> GasRegistryObject<GAS> register(String name, Supplier<? extends GAS> sup) {
         return register(name, sup, GasRegistryObject::new);
-    }
-
-    public SlurryRegistryObject<Slurry, Slurry> registerSlurry(SecondaryResource resource) {
-        String baseSlurryName = resource.getRegistrySuffix() + "_slurry";
-        return new SlurryRegistryObject<>(internal.register("dirty_" + baseSlurryName, () -> new Slurry(false, resource.getTint(), resource.getOreTag())),
-            internal.register("clean_" + baseSlurryName, () -> new Slurry(true, resource.getTint(), resource.getOreTag())));
     }
 
     public SlurryRegistryObject<Slurry, Slurry> registerSlurry(PrimaryResource resource) {

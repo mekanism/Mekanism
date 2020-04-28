@@ -4,7 +4,7 @@ public enum OreType {
     COPPER(PrimaryResource.COPPER, 16, 8, 0, 0, 60),
     TIN(PrimaryResource.TIN, 14, 8, 0, 0, 60),
     OSMIUM(PrimaryResource.OSMIUM, 12, 8, 0, 0, 60),
-    URANIUM(SecondaryResource.URANIUM, 8, 8, 0, 0, 60),
+    URANIUM(PrimaryResource.URANIUM, 8, 8, 0, 0, 60),
     FLUORITE(MiscResource.FLUORITE, 6, 12, 0, 0, 32),
     LEAD(PrimaryResource.LEAD, 8, 8, 0, 0, 48);
 

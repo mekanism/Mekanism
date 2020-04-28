@@ -5,6 +5,7 @@ public enum BlockResourceInfo implements IResource {
     TIN("tin", 5.0F, 10.0F, 1),
     COPPER("copper", 5.0F, 10.0F, 1),
     LEAD("lead", 5.0F, 10.0F, 1),
+    URANIUM("uranium", 5.0F, 10.0F, 1),
     CHARCOAL("charcoal", 5.0F, 10.0F, 0, 0, false),
     BRONZE("bronze", 5.0F, 15.0F, 1),
     STEEL("steel", 5.0F, 15.0F, 1),

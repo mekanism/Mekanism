@@ -12,7 +12,8 @@ public enum PrimaryResource implements IResource {
     OSMIUM("osmium", 0xFF1E79C3, () -> MekanismTags.Items.ORES.get(OreType.OSMIUM), false, BlockResourceInfo.OSMIUM, true),
     COPPER("copper", 0xFFAA4B19, () -> MekanismTags.Items.ORES.get(OreType.COPPER), false, BlockResourceInfo.COPPER, true),
     TIN("tin", 0xFFCCCCD9, () -> MekanismTags.Items.ORES.get(OreType.TIN), false, BlockResourceInfo.TIN, true),
-    LEAD("lead", 0xFF3A404A, () -> MekanismTags.Items.ORES.get(OreType.LEAD), false, BlockResourceInfo.LEAD, false);
+    LEAD("lead", 0xFF3A404A, () -> MekanismTags.Items.ORES.get(OreType.LEAD), false, BlockResourceInfo.LEAD, false),
+    URANIUM("uranium", 0xFF46664F, () -> MekanismTags.Items.ORES.get(OreType.URANIUM), false, BlockResourceInfo.URANIUM, false);
 
     private String name;
     private int tint;
