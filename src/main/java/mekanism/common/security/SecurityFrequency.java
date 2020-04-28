@@ -35,25 +35,13 @@ public class SecurityFrequency extends Frequency {
         securityMode = SecurityMode.PUBLIC;
     }
 
-    public SecurityFrequency(CompoundNBT nbtTags, boolean fromUpdate) {
-        super(FrequencyType.SECURITY, nbtTags, fromUpdate);
-    }
-
-    public SecurityFrequency(PacketBuffer dataStream) {
-        super(FrequencyType.SECURITY, dataStream);
+    public SecurityFrequency() {
+        super(FrequencyType.SECURITY);
     }
 
     @Override
     public UUID getKey() {
-        return ownerUUID;
-    }
-
-    @Override
-    protected void readFromUpdateTag(CompoundNBT updateTag) {
-        super.readFromUpdateTag(updateTag);
-        securityMode = SecurityMode.PUBLIC;
-        trustedCache = new ArrayList<>();
-        trusted = new HashList<>();
+        return getOwner();
     }
 
     @Override

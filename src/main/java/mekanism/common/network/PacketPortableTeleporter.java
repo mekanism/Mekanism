@@ -50,8 +50,8 @@ public class PacketPortableTeleporter {
             buf.writeBoolean(false);
         } else {
             buf.writeBoolean(true);
-            buf.writeString(pkt.frequency.name);
-            buf.writeBoolean(pkt.frequency.publicFreq);
+            buf.writeString(pkt.frequency.getName());
+            buf.writeBoolean(pkt.frequency.isPublic());
         }
         buf.writeByte(pkt.status);
         buf.writeVarInt(pkt.publicCache.size());

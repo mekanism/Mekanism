@@ -1,24 +1,39 @@
 package mekanism.common.content.teleporter;
 
+import java.util.Set;
 import java.util.UUID;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 
 public class TeleporterFrequency extends Frequency {
+
+    private Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
 
     public TeleporterFrequency(String n, UUID uuid) {
         super(FrequencyType.TELEPORTER, n, uuid);
     }
 
-    public TeleporterFrequency(CompoundNBT nbtTags, boolean fromUpdate) {
-        super(FrequencyType.TELEPORTER, nbtTags, fromUpdate);
+    public TeleporterFrequency() {
+        super(FrequencyType.TELEPORTER);
     }
 
-    public TeleporterFrequency(PacketBuffer dataStream) {
-        super(FrequencyType.TELEPORTER, dataStream);
+    public Set<Coord4D> getActiveCoords() {
+        return activeCoords;
+    }
+
+    @Override
+    public void update(TileEntity tile) {
+        super.update(tile);
+        activeCoords.add(Coord4D.get(tile));
+    }
+
+    @Override
+    public void onDeactivate(TileEntity tile) {
+        super.onDeactivate(tile);
+        activeCoords.remove(Coord4D.get(tile));
     }
 
     public Coord4D getClosestCoords(Coord4D coord) {

@@ -49,7 +49,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     public GuiQuantumEntangloporter(MekanismTileContainer<TileEntityQuantumEntangloporter> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         if (tile.getFreq() != null) {
-            privateMode = !tile.getFreq().publicFreq;
+            privateMode = tile.getFreq().isPrivate();
         }
         ySize += 64;
         dynamicSlots = true;
@@ -78,7 +78,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(selection) : tile.getPublicCache(FrequencyType.INVENTORY).get(selection);
-                setFrequency(freq.name);
+                setFrequency(freq.getName());
             }
             updateButtons();
         }));
@@ -126,7 +126,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     }
 
     public ITextComponent getSecurity(Frequency freq) {
-        if (freq.publicFreq) {
+        if (freq.isPublic()) {
             return MekanismLang.PUBLIC.translate();
         }
         return MekanismLang.PRIVATE.translateColored(EnumColor.DARK_RED);
@@ -139,11 +139,11 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         List<String> text = new ArrayList<>();
         if (privateMode) {
             for (Frequency freq : tile.getPrivateCache(FrequencyType.INVENTORY)) {
-                text.add(freq.name);
+                text.add(freq.getName());
             }
         } else {
             for (Frequency freq : tile.getPublicCache(FrequencyType.INVENTORY)) {
-                text.add(freq.name + " (" + freq.clientOwner + ")");
+                text.add(freq.getName() + " (" + freq.getClientOwner() + ")");
             }
         }
         scrollList.setText(text);
@@ -158,7 +158,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(scrollList.getSelection()) :
                                            tile.getPublicCache(FrequencyType.INVENTORY).get(scrollList.getSelection());
             setButton.active = tile.getFrequency(null) == null || !tile.getFrequency(null).equals(freq);
-            deleteButton.active = tile.getSecurity().getOwnerUUID().equals(freq.ownerUUID);
+            deleteButton.active = tile.getSecurity().getOwnerUUID().equals(freq.getOwner());
         } else {
             setButton.active = false;
             deleteButton.active = false;
@@ -221,7 +221,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
         } else {
-            renderScaledText(frequency.name, 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
+            renderScaledText(frequency.getName(), 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
             drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
         renderScaledText(MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);

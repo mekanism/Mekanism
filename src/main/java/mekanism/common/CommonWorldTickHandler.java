@@ -49,9 +49,7 @@ public class CommonWorldTickHandler {
     @SubscribeEvent
     public void worldLoadEvent(WorldEvent.Load event) {
         if (!event.getWorld().isRemote()) {
-            if (!FrequencyManager.loaded) {
-                FrequencyManager.load();
-            }
+            FrequencyManager.load();
             Mekanism.radiationManager.createOrLoad();
             if (event.getWorld() instanceof ServerWorld) {
                 ChunkManager.worldLoad((ServerWorld) event.getWorld());

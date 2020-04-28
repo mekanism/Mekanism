@@ -206,7 +206,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 if (entity instanceof ServerPlayerEntity) {
                     alignPlayer((ServerPlayerEntity) entity, closestCoords);
                 }
-                for (Coord4D coords : getFrequency(FrequencyType.TELEPORTER).activeCoords) {
+                for (Coord4D coords : getFrequency(FrequencyType.TELEPORTER).getActiveCoords()) {
                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), currentServer.getWorld(coords.dimension), coords.getPos());
                 }
                 energyContainer.extract(calculateEnergyCost(entity, closestCoords), Action.EXECUTE, AutomationType.INTERNAL);

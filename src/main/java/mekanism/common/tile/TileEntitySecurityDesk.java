@@ -62,7 +62,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             getFreq().setOverridden(!getFreq().isOverridden());
             markDirty(false);
             // send the security update to other players; this change will be visible on machine security tabs
-            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(getFreq().ownerUUID, new SecurityData(getFreq())));
+            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(getFreq().getOwner(), new SecurityData(getFreq())));
         }
     }
 
@@ -78,7 +78,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             getFreq().setSecurityMode(mode);
             markDirty(false);
             // send the security update to other players; this change will be visible on machine security tabs
-            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(getFreq().ownerUUID, new SecurityData(getFreq())));
+            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(getFreq().getOwner(), new SecurityData(getFreq())));
         }
     }
 

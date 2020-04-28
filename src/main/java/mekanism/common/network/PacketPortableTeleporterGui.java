@@ -54,9 +54,9 @@ public class PacketPortableTeleporterGui {
                         break;
                     case SET_FREQ:
                         FrequencyManager<TeleporterFrequency> manager1 = FrequencyType.TELEPORTER.getManager(message.frequency.isPublic() ? null : player.getUniqueID());
-                        TeleporterFrequency toUse = manager1.getFrequency(message.frequency.name);
+                        TeleporterFrequency toUse = manager1.getFrequency(message.frequency.getName());
                         if (toUse == null) {
-                            toUse = new TeleporterFrequency(message.frequency.name, player.getUniqueID());
+                            toUse = new TeleporterFrequency(message.frequency.getName(), player.getUniqueID());
                             toUse.setPublic(message.frequency.isPublic());
                             manager1.addFrequency(toUse);
                         }
@@ -65,12 +65,12 @@ public class PacketPortableTeleporterGui {
                         break;
                     case DEL_FREQ:
                         FrequencyManager<TeleporterFrequency> manager = FrequencyType.TELEPORTER.getManager(message.frequency.isPublic() ? null : player.getUniqueID());
-                        manager.remove(message.frequency.name, player.getUniqueID());
+                        manager.remove(message.frequency.getName(), player.getUniqueID());
                         item.setFrequency(stack, null);
                         break;
                     case TELEPORT:
                         FrequencyManager<TeleporterFrequency> manager2 = FrequencyType.TELEPORTER.getManager(message.frequency.isPublic() ? null : player.getUniqueID());
-                        TeleporterFrequency found = manager2.getFrequency(message.frequency.name);
+                        TeleporterFrequency found = manager2.getFrequency(message.frequency.getName());
                         if (found == null) {
                             break;
                         }
@@ -119,8 +119,8 @@ public class PacketPortableTeleporterGui {
             buf.writeBoolean(false);
         } else {
             buf.writeBoolean(true);
-            buf.writeString(pkt.frequency.name);
-            buf.writeBoolean(pkt.frequency.publicFreq);
+            buf.writeString(pkt.frequency.getName());
+            buf.writeBoolean(pkt.frequency.isPublic());
         }
 
     }
@@ -142,8 +142,8 @@ public class PacketPortableTeleporterGui {
         byte status = 3;
         if (given != null) {
             FrequencyManager<TeleporterFrequency> manager = FrequencyType.TELEPORTER.getFrequencyManager(given);
-            TeleporterFrequency freq = manager.getFrequency(given.name);
-            if (freq != null && !freq.activeCoords.isEmpty()) {
+            TeleporterFrequency freq = manager.getFrequency(given.getName());
+            if (freq != null && !freq.getActiveCoords().isEmpty()) {
                 if (!player.isCreative()) {
                     Coord4D coords = given.getClosestCoords(new Coord4D(player));
                     if (coords != null) {

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.qio.QIOFrequency;
@@ -18,51 +18,44 @@ public class FrequencyType<FREQ extends Frequency> {
 
     public static final FrequencyType<TeleporterFrequency> TELEPORTER = register("Teleporter",
           (key, uuid) -> new TeleporterFrequency((String) key, uuid),
-          (tag, fromUpdate) -> new TeleporterFrequency(tag, fromUpdate),
-          (packet) -> new TeleporterFrequency(packet),
+          () -> new TeleporterFrequency(),
           FrequencyManagerWrapper.Type.PUBLIC_PRIVATE,
           IdentitySerializer.NAME);
     public static final FrequencyType<InventoryFrequency> INVENTORY = register("Inventory",
           (key, uuid) -> new InventoryFrequency((String) key, uuid),
-          (tag, fromUpdate) -> new InventoryFrequency(tag, fromUpdate),
-          (packet) -> new InventoryFrequency(packet),
+          () -> new InventoryFrequency(),
           FrequencyManagerWrapper.Type.PUBLIC_PRIVATE,
           IdentitySerializer.NAME);
     public static final FrequencyType<SecurityFrequency> SECURITY = register("Security",
           (key, uuid) -> new SecurityFrequency(uuid),
-          (tag, fromUpdate) -> new SecurityFrequency(tag, fromUpdate),
-          (packet) -> new SecurityFrequency(packet),
+          () -> new SecurityFrequency(),
           FrequencyManagerWrapper.Type.PUBLIC_ONLY,
           IdentitySerializer.UUID);
     public static final FrequencyType<QIOFrequency> QIO = register("QIO",
           (key, uuid) -> new QIOFrequency((String) key, uuid),
-          (tag, fromUpdate) -> new QIOFrequency(tag, fromUpdate),
-          (packet) -> new QIOFrequency(packet),
+          () -> new QIOFrequency(),
           FrequencyManagerWrapper.Type.PRIVATE_ONLY,
           IdentitySerializer.NAME);
 
     private String name;
     private BiFunction<Object, UUID, FREQ> creationFunction;
-    private BiFunction<CompoundNBT, Boolean, FREQ> nbtCreationFunction;
-    private Function<PacketBuffer, FREQ> packetCreationFunction;
+    private Supplier<FREQ> baseCreationFunction;
     private IdentitySerializer identitySerializer;
 
     private FrequencyManagerWrapper<FREQ> managerWrapper;
 
     private static <FREQ extends Frequency> FrequencyType<FREQ> register(String name, BiFunction<Object, UUID, FREQ> creationFunction,
-          BiFunction<CompoundNBT, Boolean, FREQ> nbtCreationFunction, Function<PacketBuffer, FREQ> packetCreationFunction,
-          FrequencyManagerWrapper.Type managerType, IdentitySerializer identitySerializer) {
-        FrequencyType<FREQ> type = new FrequencyType<>(name, creationFunction, nbtCreationFunction, packetCreationFunction, managerType, identitySerializer);
+          Supplier<FREQ> baseCreationFunction, FrequencyManagerWrapper.Type managerType, IdentitySerializer identitySerializer) {
+        FrequencyType<FREQ> type = new FrequencyType<>(name, creationFunction, baseCreationFunction, managerType, identitySerializer);
         registryMap.put(name, type);
         return type;
     }
 
-    private FrequencyType(String name, BiFunction<Object, UUID, FREQ> creationFunction, BiFunction<CompoundNBT, Boolean, FREQ> nbtCreationFunction,
-        Function<PacketBuffer, FREQ> packetCreationFunction, FrequencyManagerWrapper.Type managerType, IdentitySerializer identitySerializer) {
+    private FrequencyType(String name, BiFunction<Object, UUID, FREQ> creationFunction, Supplier<FREQ> baseCreationFunction,
+          FrequencyManagerWrapper.Type managerType, IdentitySerializer identitySerializer) {
         this.name = name;
         this.creationFunction = creationFunction;
-        this.nbtCreationFunction = nbtCreationFunction;
-        this.packetCreationFunction = packetCreationFunction;
+        this.baseCreationFunction = baseCreationFunction;
         this.managerWrapper = FrequencyManagerWrapper.create(this, managerType);
         this.identitySerializer = identitySerializer;
     }
@@ -71,8 +64,10 @@ public class FrequencyType<FREQ extends Frequency> {
         return name;
     }
 
-    public FREQ create(CompoundNBT tag, boolean fromUpdate) {
-        return nbtCreationFunction.apply(tag, fromUpdate);
+    public FREQ create(CompoundNBT tag) {
+        FREQ freq = baseCreationFunction.get();
+        freq.read(tag);
+        return freq;
     }
 
     public FREQ create(Object key, UUID ownerUUID) {
@@ -80,7 +75,9 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     public FREQ create(PacketBuffer packet) {
-        return packetCreationFunction.apply(packet);
+        FREQ freq = baseCreationFunction.get();
+        freq.read(packet);
+        return freq;
     }
 
     public FrequencyManagerWrapper<FREQ> getManagerWrapper() {
@@ -92,7 +89,7 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     public FrequencyManager<FREQ> getFrequencyManager(FREQ freq) {
-        return freq.isPrivate() ? getManagerWrapper().getPrivateManager(freq.ownerUUID) : getManagerWrapper().getPublicManager();
+        return freq.isPrivate() ? getManagerWrapper().getPrivateManager(freq.getOwner()) : getManagerWrapper().getPublicManager();
     }
 
     public IdentitySerializer getKey() {

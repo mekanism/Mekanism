@@ -2,7 +2,6 @@ package mekanism.common.frequency;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +11,8 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.HashList;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -32,7 +29,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     public static final int MAX_FREQ_LENGTH = 16;
     public static final List<Character> SPECIAL_CHARS = Arrays.asList('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')', '?', '!', '/', '@', '$', '`', '~', ',', '.', '#');
 
-    public static boolean loaded;
+    private static boolean loaded;
 
     private static Set<FrequencyManager<?>> managers = new ObjectOpenHashSet<>();
 
@@ -62,8 +59,10 @@ public class FrequencyManager<FREQ extends Frequency> {
      * Note: This should only be called from the server side
      */
     public static void load() {
-        loaded = true;
-        managers.forEach(manager -> manager.createOrLoad());
+        if (!loaded) {
+            loaded = true;
+            managers.forEach(manager -> manager.createOrLoad());
+        }
     }
 
     public static void tick(World world) {
@@ -81,23 +80,24 @@ public class FrequencyManager<FREQ extends Frequency> {
         loaded = false;
     }
 
-    public FREQ update(Coord4D coord, FREQ freq) {
+    public FREQ update(TileEntity tile, FREQ freq) {
         FREQ storedFreq = getFrequency(freq.getKey());
         if (storedFreq != null) {
-            storedFreq.activeCoords.add(coord);
+            storedFreq.update(tile);
             if (dataHandler != null) {
                 dataHandler.markDirty();
             }
             return storedFreq;
         }
 
-        deactivate(freq, coord);
+        deactivate(freq, tile);
         return null;
     }
 
     public void remove(Object key, UUID ownerUUID) {
         FREQ freq = getFrequency(key);
-        if (freq != null && freq.ownerUUID.equals(ownerUUID)) {
+        if (freq != null && freq.getOwner().equals(ownerUUID)) {
+            freq.onRemove();
             frequencies.remove(key);
             if (dataHandler != null) {
                 dataHandler.markDirty();
@@ -105,32 +105,27 @@ public class FrequencyManager<FREQ extends Frequency> {
         }
     }
 
-    public void deactivate(Frequency freq, Coord4D coord) {
+    public void deactivate(Frequency freq, TileEntity tile) {
         if (freq != null) {
-            freq.activeCoords.remove(coord);
+            freq.onDeactivate(tile);
             if (dataHandler != null) {
                 dataHandler.markDirty();
             }
         }
     }
 
-    public FREQ validateFrequency(UUID uuid, Coord4D coord, FREQ freq) {
+    public FREQ validateFrequency(TileEntity tile, FREQ freq) {
         FREQ storedFreq = getFrequency(freq.getKey());
-        if (storedFreq != null) {
-            storedFreq.activeCoords.add(coord);
-            if (dataHandler != null) {
-                dataHandler.markDirty();
-            }
-            return storedFreq;
-        }
-
-        if (uuid.equals(freq.ownerUUID)) {
-            freq.activeCoords.add(coord);
-            freq.valid = true;
+        if (storedFreq == null) {
+            freq.setValid(true);
             addFrequency(freq);
-            return freq;
+            storedFreq = freq;
         }
-        return null;
+        storedFreq.update(tile);
+        if (dataHandler != null) {
+            dataHandler.markDirty();
+        }
+        return storedFreq;
     }
 
     /**
@@ -162,24 +157,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     private void tickSelf(World world) {
-        for (FREQ iterFreq : getFrequencies()) {
-            for (Iterator<Coord4D> iter = iterFreq.activeCoords.iterator(); iter.hasNext(); ) {
-                Coord4D coord = iter.next();
-                if (coord.dimension.equals(world.getDimension().getType())) {
-                    //Note: We will check if the block is loaded while getting the tile so we don't need to
-                    // specifically have that case as all it did was also remove iter
-                    TileEntity tile = MekanismUtils.getTileEntity(world, coord.getPos());
-                    if (tile instanceof IFrequencyHandler) {
-                        FREQ freq = ((IFrequencyHandler) tile).getFrequency(frequencyType);
-                        if (freq == null || !freq.equals(iterFreq)) {
-                            iter.remove();
-                        }
-                    } else {
-                        iter.remove();
-                    }
-                }
-            }
-        }
+        getFrequencies().forEach(freq -> freq.tick());
     }
 
     public String getName() {
@@ -205,7 +183,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         @Override
         public void read(@Nonnull CompoundNBT nbtTags) {
             NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
-            Function<CompoundNBT, FREQ> creatorFunction = (nbt) -> frequencyType.create(nbt, false);
+            Function<CompoundNBT, FREQ> creatorFunction = (nbt) -> frequencyType.create(nbt);
             ListNBT list = nbtTags.getList(NBTConstants.FREQUENCY_LIST, NBT.TAG_COMPOUND);
             loadedFrequencies = new HashList<>();
             if (creatorFunction != null) {

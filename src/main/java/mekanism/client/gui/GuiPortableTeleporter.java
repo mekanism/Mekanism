@@ -104,7 +104,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 TeleporterFrequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
-                setFrequencyFromName(freq.name);
+                setFrequencyFromName(freq.getName());
             }
             updateButtons();
         }));
@@ -165,7 +165,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     public ITextComponent getSecurity(TeleporterFrequency freq) {
-        if (!freq.publicFreq) {
+        if (freq.isPrivate()) {
             return MekanismLang.PRIVATE.translateColored(EnumColor.DARK_RED);
         }
         return MekanismLang.PUBLIC.translate();
@@ -178,11 +178,11 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         List<String> text = new ArrayList<>();
         if (privateMode) {
             for (TeleporterFrequency freq : clientPrivateCache) {
-                text.add(freq.name);
+                text.add(freq.getName());
             }
         } else {
             for (TeleporterFrequency freq : clientPublicCache) {
-                text.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(freq.name, freq.clientOwner).getFormattedText());
+                text.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(freq.getName(), freq.getClientOwner()).getFormattedText());
             }
         }
         scrollList.setText(text);
@@ -196,7 +196,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         if (scrollList.hasSelection()) {
             TeleporterFrequency freq = privateMode ? clientPrivateCache.get(scrollList.getSelection()) : clientPublicCache.get(scrollList.getSelection());
             setButton.active = clientFreq == null || !clientFreq.equals(freq);
-            deleteButton.active = getOwner().equals(freq.ownerUUID);
+            deleteButton.active = getOwner().equals(freq.getOwner());
         } else {
             setButton.active = false;
             deleteButton.active = false;
@@ -258,7 +258,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         drawString(securityComponent, 32, 91, titleTextColor());
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (clientFreq != null) {
-            renderScaledText(clientFreq.name, 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
+            renderScaledText(clientFreq.getName(), 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
             drawString(getSecurity(clientFreq), 32 + getStringWidth(securityComponent), 91, 0x797979);
         } else {
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);

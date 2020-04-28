@@ -49,12 +49,8 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         presetVariables();
     }
 
-    public InventoryFrequency(CompoundNBT nbtTags, boolean fromUpdate) {
-        super(FrequencyType.INVENTORY, nbtTags, fromUpdate);
-    }
-
-    public InventoryFrequency(PacketBuffer dataStream) {
-        super(FrequencyType.INVENTORY, dataStream);
+    public InventoryFrequency() {
+        super(FrequencyType.INVENTORY);
     }
 
     private void presetVariables() {

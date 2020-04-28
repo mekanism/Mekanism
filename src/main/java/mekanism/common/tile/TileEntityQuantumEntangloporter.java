@@ -177,7 +177,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     public boolean hasFrequency() {
         Frequency freq = getFreq();
-        return freq != null && freq.valid;
+        return freq != null && freq.isValid();
     }
 
     @Override

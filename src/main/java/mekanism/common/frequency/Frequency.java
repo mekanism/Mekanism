@@ -1,47 +1,43 @@
 package mekanism.common.frequency;
 
-import java.util.Set;
 import java.util.UUID;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 
 public abstract class Frequency {
 
-    public String name;
-    public UUID ownerUUID;
-    public String clientOwner;
+    private String name;
 
-    public boolean valid = true;
-    public boolean publicFreq;
+    private UUID ownerUUID;
+    private String clientOwner;
 
-    public Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
+    private boolean valid = true;
+    private boolean publicFreq;
+
     private final FrequencyType<?> frequencyType;
 
     public Frequency(FrequencyType<?> frequencyType, String name, UUID uuid) {
-        this.frequencyType = frequencyType;
+        this(frequencyType);
         this.name = name;
         ownerUUID = uuid;
     }
 
-    public Frequency(FrequencyType<?> frequencyType, CompoundNBT nbtTags, boolean fromUpdate) {
+    public Frequency(FrequencyType<?> frequencyType) {
         this.frequencyType = frequencyType;
-        if (fromUpdate) {
-            readFromUpdateTag(nbtTags);
-        } else {
-            read(nbtTags);
-        }
     }
 
-    protected Frequency(FrequencyType<?> frequencyType, PacketBuffer dataStream) {
-        this.frequencyType = frequencyType;
-        read(dataStream);
-    }
+    public void tick() {}
+
+    public void onRemove() {}
+
+    public void onDeactivate(TileEntity tile) {}
+
+    public void update(TileEntity tile) {}
 
     public FrequencyType<?> getType() {
         return frequencyType;
@@ -64,24 +60,36 @@ public abstract class Frequency {
         return !publicFreq;
     }
 
-    public void writeToUpdateTag(CompoundNBT updateTag) {
-        updateTag.putString(NBTConstants.NAME, name);
-        updateTag.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
-        updateTag.putBoolean(NBTConstants.PUBLIC_FREQUENCY, publicFreq);
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public UUID getOwner() {
+        return ownerUUID;
+    }
+
+    public String getClientOwner() {
+        return clientOwner;
     }
 
     public void write(CompoundNBT nbtTags) {
-        writeToUpdateTag(nbtTags);
-    }
-
-    protected void readFromUpdateTag(CompoundNBT updateTag) {
-        name = updateTag.getString(NBTConstants.NAME);
-        NBTUtils.setUUIDIfPresent(updateTag, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
-        publicFreq = updateTag.getBoolean(NBTConstants.PUBLIC_FREQUENCY);
+        nbtTags.putString(NBTConstants.NAME, name);
+        nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+        nbtTags.putBoolean(NBTConstants.PUBLIC_FREQUENCY, publicFreq);
     }
 
     protected void read(CompoundNBT nbtTags) {
-        readFromUpdateTag(nbtTags);
+        name = nbtTags.getString(NBTConstants.NAME);
+        NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
+        publicFreq = nbtTags.getBoolean(NBTConstants.PUBLIC_FREQUENCY);
     }
 
     public void write(PacketBuffer buffer) {
@@ -121,9 +129,6 @@ public abstract class Frequency {
         return frequencyType.getKey().serialize(getIdentity());
     }
 
-    /**
-     * If type is unrecognized falls back to default frequency type
-     */
     public static Frequency readFromPacket(PacketBuffer dataStream) {
         return FrequencyType.load(dataStream).create(dataStream);
     }

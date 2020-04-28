@@ -71,9 +71,9 @@ public class PacketSecurityUpdate {
             List<SecurityFrequency> frequencies = FrequencyType.SECURITY.getManager(null).getFrequencies().stream().collect(Collectors.toList());
             buf.writeVarInt(frequencies.size());
             for (SecurityFrequency frequency : frequencies) {
-                buf.writeUniqueId(frequency.ownerUUID);
+                buf.writeUniqueId(frequency.getOwner());
                 new SecurityData(frequency).write(buf);
-                buf.writeString(MekanismUtils.getLastKnownUsername(frequency.ownerUUID));
+                buf.writeString(MekanismUtils.getLastKnownUsername(frequency.getOwner()));
             }
         }
     }
