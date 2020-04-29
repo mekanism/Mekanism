@@ -443,9 +443,11 @@ public class MekanismBlockTypes {
         .withSound(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER)
         .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
         .build();
-
+    // QIO Drive Array
     public static final BlockTypeTile<TileEntityQIODriveArray> QIO_DRIVE_ARRAY = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.QIO_DRIVE_ARRAY, MekanismLang.DESCRIPTION_QIO_DRIVE_ARRAY)
+          .withGui(() -> MekanismContainerTypes.QIO_DRIVE_ARRAY)
+          .with(new AttributeStateFacing())
           .build();
 
     // Dynamic Tank

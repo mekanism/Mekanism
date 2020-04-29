@@ -1,22 +1,15 @@
 package mekanism.common.item;
 
 import java.util.List;
-import java.util.UUID;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.frequency.Frequency;
-import mekanism.common.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.frequency.FrequencyType;
+import mekanism.common.frequency.IFrequencyItem;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.network.PacketSecurityUpdate;
-import mekanism.common.security.IOwnerItem;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
@@ -31,10 +24,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem {
+public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem {
 
     public ItemPortableTeleporter(Properties properties) {
         super(MekanismConfig.gear.portableTeleporterChargeRate, MekanismConfig.gear.portableTeleporterMaxEnergy, properties);
@@ -70,31 +62,5 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
             }
         }
         return new ActionResult<>(ActionResultType.SUCCESS, stack);
-    }
-
-    @Override
-    public void setOwnerUUID(@Nonnull ItemStack stack, @Nullable UUID owner) {
-        setFrequency(stack, null);
-        //TODO: Should setFrequency be pulled out of this method and then it can just use default impl from the interface
-        if (owner == null) {
-            ItemDataUtils.removeData(stack, NBTConstants.OWNER_UUID);
-        } else {
-            ItemDataUtils.setUUID(stack, NBTConstants.OWNER_UUID, owner);
-        }
-    }
-
-    public FrequencyIdentity getFrequency(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
-            return FrequencyIdentity.load(FrequencyType.TELEPORTER, ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY));
-        }
-        return null;
-    }
-
-    public void setFrequency(ItemStack stack, Frequency frequency) {
-        if (frequency == null) {
-            ItemDataUtils.removeData(stack, NBTConstants.FREQUENCY);
-        } else {
-            ItemDataUtils.setCompound(stack, NBTConstants.FREQUENCY, frequency.serializeIdentity());
-        }
     }
 }

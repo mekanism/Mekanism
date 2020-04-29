@@ -63,6 +63,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.POLONIUM_PELLET, "Polonium Pellet");
         add(MekanismItems.REPROCESSED_FISSILE_FRAGMENT, "Reprocessed Fissile Fragment");
         add(MekanismItems.MODULE_BASE, "Module Base");
+        add(MekanismItems.PORTABLE_ITEM_DASHBOARD, "Portable Item Dashboard");
         //Tools/Armor
         add(MekanismItems.GAUGE_DROPPER, "Gauge Dropper");
         add(MekanismItems.DICTIONARY, "Dictionary");
@@ -228,6 +229,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, "Radioactive Waste Barrel");
         add(MekanismBlocks.INDUSTRIAL_ALARM, "Industrial Alarm");
         add(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, "Antiprotonic Nucleosynthesizer");
+        add(MekanismBlocks.QIO_DRIVE_ARRAY, "QIO Drive Array");
         //Bounding block (I don't think these lang keys actually will ever be used, but set them just in case)
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         add(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, "Advanced Bounding Block");

@@ -34,7 +34,7 @@ public class FrequencyType<FREQ extends Frequency> {
     public static final FrequencyType<QIOFrequency> QIO = register("QIO",
           (key, uuid) -> new QIOFrequency((String) key, uuid),
           () -> new QIOFrequency(),
-          FrequencyManagerWrapper.Type.PRIVATE_ONLY,
+          FrequencyManagerWrapper.Type.PUBLIC_PRIVATE,
           IdentitySerializer.NAME);
 
     private String name;
@@ -92,7 +92,7 @@ public class FrequencyType<FREQ extends Frequency> {
         return freq.isPrivate() ? getManagerWrapper().getPrivateManager(freq.getOwner()) : getManagerWrapper().getPublicManager();
     }
 
-    public IdentitySerializer getKey() {
+    public IdentitySerializer getIdentitySerializer() {
         return identitySerializer;
     }
 
@@ -100,12 +100,12 @@ public class FrequencyType<FREQ extends Frequency> {
         buf.writeString(name);
     }
 
-    public static FrequencyType<?> load(PacketBuffer buf) {
-        return registryMap.get(buf.readString());
+    public static <FREQ extends Frequency> FrequencyType<FREQ> load(PacketBuffer buf) {
+        return (FrequencyType<FREQ>) registryMap.get(buf.readString());
     }
 
-    public static FrequencyType<?> load(CompoundNBT tag) {
-        return registryMap.get(tag.getString(NBTConstants.TYPE));
+    public static <FREQ extends Frequency> FrequencyType<FREQ> load(CompoundNBT tag) {
+        return (FrequencyType<FREQ>) registryMap.get(tag.getString(NBTConstants.TYPE));
     }
 
     public static void clear() {

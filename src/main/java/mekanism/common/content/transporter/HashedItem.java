@@ -1,6 +1,7 @@
 package mekanism.common.content.transporter;
 
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -20,6 +21,10 @@ public class HashedItem {
 
     public ItemStack getStack() {
         return itemStack;
+    }
+
+    public ItemStack createStack(int size) {
+        return StackUtils.size(itemStack, size);
     }
 
     @Override

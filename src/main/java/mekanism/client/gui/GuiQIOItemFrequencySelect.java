@@ -1,0 +1,55 @@
+package mekanism.client.gui;
+
+import java.util.List;
+import java.util.UUID;
+import mekanism.common.Mekanism;
+import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.frequency.FrequencyType;
+import mekanism.common.inventory.container.item.QIOFrequencySelectItemContainer;
+import mekanism.common.network.PacketGuiSetFrequency;
+import mekanism.common.network.PacketGuiSetFrequency.FrequencyUpdate;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
+public class GuiQIOItemFrequencySelect extends GuiQIOFrequencySelect<QIOFrequencySelectItemContainer> {
+
+    public GuiQIOItemFrequencySelect(QIOFrequencySelectItemContainer container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
+    }
+
+    @Override
+    public void sendSetFrequency(FrequencyIdentity identity) {
+        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_ITEM, FrequencyType.QIO, identity, container.getHand()));
+    }
+
+    @Override
+    public void sendRemoveFrequency(FrequencyIdentity identity) {
+        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_ITEM, FrequencyType.QIO, identity, container.getHand()));
+    }
+
+    @Override
+    public QIOFrequency getFrequency() {
+        return container.getFrequency();
+    }
+
+    @Override
+    public String getOwnerUsername() {
+        return container.getOwnerUsername();
+    }
+
+    @Override
+    public UUID getOwnerUUID() {
+        return container.getOwnerUUID();
+    }
+
+    @Override
+    public List<QIOFrequency> getPublicFrequencies() {
+        return container.getPublicCache();
+    }
+
+    @Override
+    public List<QIOFrequency> getPrivateFrequencies() {
+        return container.getPrivateCache();
+    }
+}

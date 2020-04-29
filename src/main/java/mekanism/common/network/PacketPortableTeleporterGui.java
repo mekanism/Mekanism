@@ -54,12 +54,7 @@ public class PacketPortableTeleporterGui {
                         break;
                     case SET_FREQ:
                         FrequencyManager<TeleporterFrequency> manager1 = FrequencyType.TELEPORTER.getManager(message.frequency.isPublic() ? null : player.getUniqueID());
-                        TeleporterFrequency toUse = manager1.getFrequency(message.frequency.getName());
-                        if (toUse == null) {
-                            toUse = new TeleporterFrequency(message.frequency.getName(), player.getUniqueID());
-                            toUse.setPublic(message.frequency.isPublic());
-                            manager1.addFrequency(toUse);
-                        }
+                        TeleporterFrequency toUse = manager1.getOrCreateFrequency(message.frequency.getIdentity(), player.getUniqueID());
                         item.setFrequency(stack, toUse);
                         sendDataResponse(toUse, world, player, item, stack, message.currentHand);
                         break;

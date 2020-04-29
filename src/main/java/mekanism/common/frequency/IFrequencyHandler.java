@@ -6,7 +6,7 @@ import mekanism.common.security.ISecurityTile;
 
 public interface IFrequencyHandler extends ISecurityTile {
 
-    public TileComponentFrequency getFrequencyComponent();
+    TileComponentFrequency getFrequencyComponent();
 
     default <FREQ extends Frequency> FREQ getFrequency(FrequencyType<FREQ> type) {
         return getFrequencyComponent().getFrequency(type);

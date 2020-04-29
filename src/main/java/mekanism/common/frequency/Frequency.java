@@ -126,7 +126,7 @@ public abstract class Frequency {
     }
 
     public CompoundNBT serializeIdentity() {
-        return frequencyType.getKey().serialize(getIdentity());
+        return frequencyType.getIdentitySerializer().serialize(getIdentity());
     }
 
     public static Frequency readFromPacket(PacketBuffer dataStream) {
@@ -152,7 +152,7 @@ public abstract class Frequency {
         }
 
         public static FrequencyIdentity load(FrequencyType<?> type, CompoundNBT tag) {
-            return type.getKey().load(tag);
+            return type.getIdentitySerializer().load(tag);
         }
 
         @Override

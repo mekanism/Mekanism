@@ -47,6 +47,10 @@ public final class ItemDataUtils {
         return hasDataTag(stack) ? getDataMap(stack).getInt(key) : 0;
     }
 
+    public static long getLong(ItemStack stack, String key) {
+        return hasDataTag(stack) ? getDataMap(stack).getLong(key) : 0;
+    }
+
     public static boolean getBoolean(ItemStack stack, String key) {
         return hasDataTag(stack) && getDataMap(stack).getBoolean(key);
     }
@@ -75,6 +79,11 @@ public final class ItemDataUtils {
     public static void setInt(ItemStack stack, String key, int i) {
         initStack(stack);
         getDataMap(stack).putInt(key, i);
+    }
+
+    public static void setLong(ItemStack stack, String key, long l) {
+        initStack(stack);
+        getDataMap(stack).putLong(key, l);
     }
 
     public static void setBoolean(ItemStack stack, String key, boolean b) {

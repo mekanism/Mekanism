@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.NBTConstants;
+import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.HashList;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -149,11 +150,25 @@ public class FrequencyManager<FREQ extends Frequency> {
         return frequencies.get(key);
     }
 
+    public FREQ getOrCreateFrequency(FrequencyIdentity identity, UUID ownerUUID) {
+        FREQ freq = getFrequency(identity.getKey());
+        if (freq == null) {
+            freq = frequencyType.create(identity.getKey(), ownerUUID);
+            freq.setPublic(identity.isPublic());
+            addFrequency(freq);
+        }
+        return freq;
+    }
+
     public void addFrequency(FREQ freq) {
         frequencies.put(freq.getKey(), freq);
         if (dataHandler != null) {
             dataHandler.markDirty();
         }
+    }
+
+    public FrequencyType<FREQ> getType() {
+        return frequencyType;
     }
 
     private void tickSelf(World world) {

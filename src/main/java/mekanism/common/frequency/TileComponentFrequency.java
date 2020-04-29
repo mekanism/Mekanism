@@ -66,12 +66,7 @@ public class TileComponentFrequency implements ITileComponent {
     public <FREQ extends Frequency> void setFrequencyFromData(FrequencyType<FREQ> type, FrequencyIdentity data) {
         FrequencyManager<FREQ> manager = getManager(type, data);
         manager.deactivate(getFrequency(type), tile);
-        FREQ freq = manager.getFrequency(data.getKey());
-        if (freq == null) {
-            freq = type.create(data.getKey(), tile.getSecurity().getOwnerUUID());
-            freq.setPublic(data.isPublic());
-            manager.addFrequency(freq);
-        }
+        FREQ freq = manager.getOrCreateFrequency(data, tile.getSecurity().getOwnerUUID());
         freq.update(tile);
         setFrequency(type, freq);
         notifyNeighbors(type);

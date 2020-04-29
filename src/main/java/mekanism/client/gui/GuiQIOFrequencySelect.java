@@ -1,42 +1,29 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.scroll.GuiTextScrollList;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
-import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
-import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.frequency.FrequencyType;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.PacketGuiSetFrequency;
-import mekanism.common.network.PacketGuiSetFrequency.FrequencyUpdate;
-import mekanism.common.tile.TileEntityQuantumEntangloporter;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumEntangloporter, MekanismTileContainer<TileEntityQuantumEntangloporter>> {
+public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends GuiMekanism<CONTAINER> {
 
     private MekanismButton publicButton;
     private MekanismButton privateButton;
@@ -46,13 +33,8 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     private TextFieldWidget frequencyField;
     private boolean privateMode;
 
-    public GuiQuantumEntangloporter(MekanismTileContainer<TileEntityQuantumEntangloporter> container, PlayerInventory inv, ITextComponent title) {
+    public GuiQIOFrequencySelect(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        if (tile.getFreq() != null) {
-            privateMode = tile.getFreq().isPrivate();
-        }
-        ySize += 64;
-        dynamicSlots = true;
     }
 
     @Override
@@ -61,10 +43,6 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         addButton(new GuiInnerScreen(this, 48, 102, 89, 13));
         addButton(new GuiInnerScreen(this, 136, 102, 13, 13));
         addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
-        addButton(new GuiSideConfigurationTab(this, tile));
-        addButton(new GuiTransporterConfigTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
 
         addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
@@ -77,7 +55,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         addButton(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
-                Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(selection) : tile.getPublicCache(FrequencyType.INVENTORY).get(selection);
+                Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
                 setFrequency(freq.getName());
             }
             updateButtons();
@@ -85,8 +63,8 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
-                Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(selection) : tile.getPublicCache(FrequencyType.INVENTORY).get(selection);
-                Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, FrequencyType.INVENTORY, freq.getIdentity(), tile.getPos()));
+                Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
+                sendRemoveFrequency(freq.getIdentity());
                 scrollList.clearSelection();
             }
             updateButtons();
@@ -99,16 +77,6 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             frequencyField.setText("");
             updateButtons();
         }));
-        addButton(new GuiEnergyInfo(() -> {
-            EnergyDisplay storing = tile.getFreq() == null ? EnergyDisplay.ZERO : EnergyDisplay.of(tile.getFreq().storedEnergy.getEnergy(), tile.getFreq().storedEnergy.getMaxEnergy());
-            EnergyDisplay rate = EnergyDisplay.of(tile.getInputRate());
-            return Arrays.asList(MekanismLang.STORING.translate(storing), MekanismLang.MATRIX_INPUT_RATE.translate(rate));
-        }, this));
-        addButton(new GuiHeatInfo(() -> {
-            ITextComponent transfer = MekanismUtils.getTemperatureDisplay(tile.getLastTransferLoss(), TemperatureUnit.KELVIN, false);
-            ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);
-            return Arrays.asList(MekanismLang.TRANSFERRED_RATE.translate(transfer), MekanismLang.DISSIPATED_RATE.translate(environment));
-        }, this));
         updateButtons();
     }
 
@@ -121,7 +89,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
 
     public void setFrequency(String freq) {
         if (!freq.isEmpty()) {
-            Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_TILE, FrequencyType.INVENTORY, new FrequencyIdentity(freq, !privateMode), tile.getPos()));
+            sendSetFrequency(new FrequencyIdentity(freq, !privateMode));
         }
     }
 
@@ -133,16 +101,16 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     }
 
     private void updateButtons() {
-        if (tile.getSecurity().getClientOwner() == null) {
+        if (getOwnerUsername() == null) {
             return;
         }
         List<String> text = new ArrayList<>();
         if (privateMode) {
-            for (Frequency freq : tile.getPrivateCache(FrequencyType.INVENTORY)) {
+            for (Frequency freq : getPrivateFrequencies()) {
                 text.add(freq.getName());
             }
         } else {
-            for (Frequency freq : tile.getPublicCache(FrequencyType.INVENTORY)) {
+            for (Frequency freq : getPublicFrequencies()) {
                 text.add(freq.getName() + " (" + freq.getClientOwner() + ")");
             }
         }
@@ -155,10 +123,10 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             privateButton.active = true;
         }
         if (scrollList.hasSelection()) {
-            Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(scrollList.getSelection()) :
-                                           tile.getPublicCache(FrequencyType.INVENTORY).get(scrollList.getSelection());
-            setButton.active = tile.getFrequency(null) == null || !tile.getFrequency(null).equals(freq);
-            deleteButton.active = tile.getSecurity().getOwnerUUID().equals(freq.getOwner());
+            Frequency freq = privateMode ? getPrivateFrequencies().get(scrollList.getSelection()) :
+                                           getPublicFrequencies().get(scrollList.getSelection());
+            setButton.active = getFrequency() == null || !getFrequency().equals(freq);
+            deleteButton.active = getOwnerUUID().equals(freq.getOwner());
         } else {
             setButton.active = false;
             deleteButton.active = false;
@@ -209,13 +177,12 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(4);
-        drawString(OwnerDisplay.of(tile.getSecurity().getOwnerUUID(), tile.getSecurity().getClientOwner()).getTextComponent(), 8, (getYSize() - 96) + 4, titleTextColor());
+        drawString(OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, (getYSize() - 96) + 4, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
         drawString(frequencyComponent, 32, 81, titleTextColor());
         ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
         drawString(securityComponent, 32, 91, titleTextColor());
-        Frequency frequency = tile.getFreq();
+        Frequency frequency = getFrequency();
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (frequency == null) {
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
@@ -227,4 +194,15 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         renderScaledText(MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
+
+    public abstract void sendSetFrequency(FrequencyIdentity identity);
+    public abstract void sendRemoveFrequency(FrequencyIdentity identity);
+
+    public abstract QIOFrequency getFrequency();
+
+    public abstract String getOwnerUsername();
+    public abstract UUID getOwnerUUID();
+
+    public abstract List<QIOFrequency> getPublicFrequencies();
+    public abstract List<QIOFrequency> getPrivateFrequencies();
 }

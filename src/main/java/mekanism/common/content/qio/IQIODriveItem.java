@@ -1,7 +1,6 @@
 package mekanism.common.content.qio;
 
 import java.util.Map;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.util.ItemDataUtils;
@@ -12,34 +11,50 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public interface IQIODriveItem {
 
-    default QIODriveMap readItemMap(ItemStack stack) {
+    default void loadItemMap(ItemStack stack, QIODriveData data) {
         if (ItemDataUtils.hasData(stack, NBTConstants.QIO_ITEM_MAP, NBT.TAG_LIST)) {
-            QIODriveMap map = new QIODriveMap();
             ListNBT list = ItemDataUtils.getList(stack, NBTConstants.QIO_ITEM_MAP);
             for (int i = 0; i < list.size(); i++) {
                 CompoundNBT tag = list.getCompound(i);
                 ItemStack itemType = ItemStack.read(tag.getCompound(NBTConstants.ITEM));
-                int count = tag.getInt(NBTConstants.AMOUNT);
-                map.itemMap.put(new HashedItem(itemType), count);
+                long count = tag.getLong(NBTConstants.AMOUNT);
+                data.getItemMap().put(new HashedItem(itemType), count);
             }
-            return map;
         }
-        return null;
     }
 
-    default void writeItemMap(ItemStack stack, QIODriveMap map) {
+    default void writeItemMap(ItemStack stack, QIODriveData map) {
         ListNBT list = new ListNBT();
-        for (Map.Entry<HashedItem, Integer> entry : map.itemMap.entrySet()) {
+        for (Map.Entry<HashedItem, Long> entry : map.getItemMap().entrySet()) {
             CompoundNBT tag = new CompoundNBT();
             tag.put(NBTConstants.ITEM, entry.getKey().getStack().write(new CompoundNBT()));
-            tag.putInt(NBTConstants.AMOUNT, entry.getValue());
+            tag.putLong(NBTConstants.AMOUNT, entry.getValue());
             list.add(tag);
         }
         ItemDataUtils.setList(stack, NBTConstants.QIO_ITEM_MAP, list);
     }
 
-    public static class QIODriveMap {
+    int getCountCapacity(ItemStack stack);
 
-        private Map<HashedItem, Integer> itemMap = new Object2ObjectOpenHashMap<>();
+    int getTypeCapacity(ItemStack stack);
+
+    public static class DriveMetadata {
+
+        private long count;
+        private int types;
+
+        protected DriveMetadata(long count, int types) {
+            this.count = count;
+            this.types = types;
+        }
+
+        public void write(ItemStack stack) {
+            ItemDataUtils.setLong(stack, NBTConstants.QIO_META_COUNT, count);
+            ItemDataUtils.setInt(stack, NBTConstants.QIO_META_TYPES, types);
+        }
+
+        public static DriveMetadata load(ItemStack stack) {
+            return new DriveMetadata(ItemDataUtils.getLong(stack, NBTConstants.QIO_META_COUNT), ItemDataUtils.getInt(stack, NBTConstants.QIO_META_TYPES));
+        }
     }
 }
