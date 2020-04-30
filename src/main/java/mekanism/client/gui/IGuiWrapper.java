@@ -62,6 +62,8 @@ public interface IGuiWrapper {
 
     void addElement(GuiTexturedElement e);
 
+    void removeElement(GuiTexturedElement e);
+
     @Nullable
     FontRenderer getFont();
 

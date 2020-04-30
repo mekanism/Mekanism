@@ -35,6 +35,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
 
     public GuiQIOFrequencySelect(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        ySize -= 6;
     }
 
     @Override
@@ -178,7 +179,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText(MekanismLang.QIO_FREQUENCY_SELECT.translate(), 5);
-        drawString(OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, (getYSize() - 96) + 4, titleTextColor());
+        drawString(OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, 140, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
         drawString(frequencyComponent, 32, 81, titleTextColor());
         ITextComponent securityComponent = MekanismLang.SECURITY.translate("");

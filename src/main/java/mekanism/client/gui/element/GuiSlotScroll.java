@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.util.MekanismUtils;
@@ -30,7 +32,8 @@ public class GuiSlotScroll extends GuiTexturedElement {
         this.slotList = slotList;
         this.clickHandler = clickHandler;
 
-        gui.addElement(scrollBar = new GuiScrollBar(gui, xSlots * 18 + 3, y, ySlots * 18, () -> (int) Math.ceil((double) getSlotList().size() / xSlots), () -> ySlots));
+        gui.addElement(scrollBar = new GuiScrollBar(gui, relativeX + xSlots * 18 + 2, y, ySlots * 18,
+              () -> getSlotList() == null ? 0 : (int) Math.ceil((double) getSlotList().size() / xSlots), () -> ySlots));
     }
 
     @Override
@@ -55,6 +58,16 @@ public class GuiSlotScroll extends GuiTexturedElement {
     @Override
     public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
         super.renderForeground(mouseX, mouseY, xAxis, yAxis);
+
+        int slotX = (xAxis - relativeX) / 18, slotY = (yAxis - relativeY) / 18;
+        if (slotX >= 0 && slotY >= 0 && slotX < xSlots && slotY < ySlots) {
+            int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
+            if (xAxis >= slotStartX && xAxis < slotStartX + 16 && yAxis >= slotStartY && yAxis < slotStartY + 16) {
+                System.out.println(slotX + " " + slotY);
+                fill(slotStartX, slotStartY, slotStartX + 16, slotStartY + 16, GuiSlot.DEFAULT_HOVER_COLOR);
+                MekanismRenderer.resetColor();
+            }
+        }
     }
 
     @Override
@@ -79,6 +92,8 @@ public class GuiSlotScroll extends GuiTexturedElement {
 
     private IScrollableSlot getSlot(double mouseX, double mouseY, int relativeX, int relativeY) {
         List<IScrollableSlot> list = getSlotList();
+        if (list == null)
+            return null;
         int slotX = (int) ((mouseX - relativeX) / 18), slotY = (int) ((mouseY - relativeY) / 18);
         // terminate if we clicked the border of a slot
         int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;

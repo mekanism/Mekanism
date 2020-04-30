@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 public class GuiSlot extends GuiTexturedElement {
 
     private static final int INVALID_SLOT_COLOR = MekanismRenderer.getColorARGB(EnumColor.DARK_RED, 0.8F);
-    private static final int DEFAULT_HOVER_COLOR = 0x80FFFFFF;
+    public static final int DEFAULT_HOVER_COLOR = 0x80FFFFFF;
     private boolean hasValidityCheck;
     private Supplier<ItemStack> validityCheck = () -> ItemStack.EMPTY;
     private Supplier<SlotOverlay> overlaySupplier;

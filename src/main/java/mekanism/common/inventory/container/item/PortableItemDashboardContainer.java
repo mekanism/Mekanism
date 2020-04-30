@@ -33,10 +33,21 @@ public class PortableItemDashboardContainer extends QIOItemViewerContainer {
         return hand;
     }
 
+    public ItemStack getStack() {
+        return stack;
+    }
+
+    @Override
+    public PortableItemDashboardContainer recreate() {
+        return new PortableItemDashboardContainer(windowId, inv, hand, stack);
+    }
+
     @Override
     public QIOFrequency getFrequency() {
         if (!inv.player.world.isRemote()) {
             FrequencyIdentity identity = ((IFrequencyItem) stack.getItem()).getFrequency(stack);
+            if (identity == null)
+                return null;
             FrequencyManager<QIOFrequency> manager = identity.isPublic() ? FrequencyType.QIO.getManager(null) : FrequencyType.QIO.getManager(inv.player.getUniqueID());
             QIOFrequency freq = manager.getFrequency(identity.getKey());
             // if this frequency no longer exists, remove the reference from the stack

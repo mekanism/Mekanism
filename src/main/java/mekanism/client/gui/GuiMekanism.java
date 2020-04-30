@@ -300,6 +300,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         addButton(e);
     }
 
+    @Override
+    public void removeElement(GuiTexturedElement e) {
+        buttons.remove(e);
+        children.remove(e);
+    }
+
     //Some blit param namings
     //blit(int x, int y, int textureX, int textureY, int width, int height);
     //blit(int x, int y, TextureAtlasSprite icon, int width, int height);

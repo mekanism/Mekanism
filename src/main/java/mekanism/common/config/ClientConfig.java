@@ -1,14 +1,17 @@
 package mekanism.common.config;
 
 import mekanism.common.config.value.CachedBooleanValue;
+import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
 public class ClientConfig extends BaseMekanismConfig {
 
     private static final String GUI_CATEGORY = "gui";
+    private static final String QIO_CATEGORY = "qio";
 
     private final ForgeConfigSpec configSpec;
 
@@ -31,6 +34,10 @@ public class ClientConfig extends BaseMekanismConfig {
 
     public final CachedIntValue guiTitleTextColor;
     public final CachedIntValue guiScreenTextColor;
+
+    public final CachedEnumValue<ListSortType> qioItemViewerSortType;
+    public final CachedIntValue qioItemViewerSlotsX;
+    public final CachedIntValue qioItemViewerSlotsY;
 
     ClientConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -76,7 +83,14 @@ public class ClientConfig extends BaseMekanismConfig {
             .define("screenTextColor", 0x3CFE9A));
         builder.pop();
 
-
+        builder.comment("QIO Config").push(QIO_CATEGORY);
+        qioItemViewerSortType = CachedEnumValue.wrap(this, builder.comment("Sorting strategy when viewing items in a QIO Item Viewer.")
+              .defineEnum("itemViewerSortType", ListSortType.NAME_ASCENDING));
+        qioItemViewerSlotsX = CachedIntValue.wrap(this, builder.comment("Number of slots to view horizontally on a QIO Item Viewer.")
+              .defineInRange("itemViewerSlotsX", 8, 8, 16));
+        qioItemViewerSlotsY = CachedIntValue.wrap(this, builder.comment("Number of slots to view vertically on a QIO Item Viewer.")
+              .defineInRange("itemViewerSlotsY", 4, 2, 16));
+        builder.pop();
 
         builder.pop();
         configSpec = builder.build();

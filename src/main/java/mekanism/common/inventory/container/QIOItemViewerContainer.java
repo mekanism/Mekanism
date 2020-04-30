@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.inventory.ISlotClickHandler;
@@ -21,6 +22,9 @@ import net.minecraft.item.ItemStack;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
+    public static final int SLOTS_X_MIN = 8, SLOTS_X_MAX = 16, SLOTS_Y_MIN = 2, SLOTS_Y_MAX = 16;
+
+    public static final int SLOTS_START_Y = 40;
     private static final int DOUBLE_CLICK_TRANSFER_DURATION = 20;
 
     private ListSortType sortType = ListSortType.NAME_ASCENDING;
@@ -28,8 +32,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private Map<HashedItem, Long> cachedInventory = new Object2ObjectOpenHashMap<>();
     private long cachedCountCapacity;
     private int cachedTypeCapacity;
+    private long totalItems;
 
-    private List<ItemSlotData> itemList;
+    private List<IScrollableSlot> itemList;
 
     private int doubleClickTransferTicks = 0;
     private int lastSlot = -1;
@@ -40,6 +45,18 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public abstract QIOFrequency getFrequency();
+
+    public abstract QIOItemViewerContainer recreate();
+
+    @Override
+    protected int getInventoryYOffset() {
+        return SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 12;
+    }
+
+    @Override
+    protected int getInventoryXOffset() {
+        return super.getInventoryXOffset() + (MekanismConfig.client.qioItemViewerSlotsX.get() - 8) * 18 / 2;
+    }
 
     @Override
     protected void openInventory(@Nonnull PlayerInventory inv) {
@@ -147,11 +164,20 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         syncItemList();
     }
 
+    public void handleKill() {
+        itemList = null;
+        cachedInventory.clear();
+    }
+
     private void syncItemList() {
         if (itemList == null)
             return;
         itemList.clear();
-        cachedInventory.entrySet().forEach(e -> itemList.add(new ItemSlotData(e.getKey(), e.getValue())));
+        totalItems = 0;
+        cachedInventory.entrySet().forEach(e -> {
+            itemList.add(new ItemSlotData(e.getKey(), e.getValue()));
+            totalItems += e.getValue();
+        });
         sortItemList();
     }
 
@@ -170,7 +196,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         setSortType(sortType.toggle());
     }
 
-    public List<ItemSlotData> getQIOItemList() {
+    public List<IScrollableSlot> getQIOItemList() {
         return itemList;
     }
 
@@ -180,6 +206,14 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public int getTypeCapacity() {
         return cachedTypeCapacity;
+    }
+
+    public long getTotalItems() {
+        return totalItems;
+    }
+
+    public int getTotalTypes() {
+        return itemList.size();
     }
 
     public ItemStack insertIntoPlayerInventory(ItemStack stack) {
@@ -232,6 +266,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             return count;
         }
 
+        @Override
         public String getDisplayName() {
             return getItem().getStack().getDisplayName().getString();
         }
@@ -243,13 +278,13 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         SIZE_ASCENDING((a, b) -> Long.compare(a.getCount(), b.getCount())),
         SIZE_DESCENDING((a, b) -> Long.compare(b.getCount(), a.getCount()));
 
-        private Comparator<ItemSlotData> comparator;
+        private Comparator<IScrollableSlot> comparator;
 
-        private ListSortType(Comparator<ItemSlotData> comparator) {
+        private ListSortType(Comparator<IScrollableSlot> comparator) {
             this.comparator = comparator;
         }
 
-        public void sort(List<ItemSlotData> list) {
+        public void sort(List<IScrollableSlot> list) {
             list.sort(comparator);
         }
 

@@ -12,5 +12,7 @@ public interface ISlotClickHandler {
         public HashedItem getItem();
 
         public long getCount();
+
+        public String getDisplayName();
     }
 }

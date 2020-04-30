@@ -69,12 +69,6 @@ public class PacketGuiButtonPress {
     private int extra;
     private BlockPos tilePosition;
 
-    public PacketGuiButtonPress(ClickedItemButton buttonClicked, Hand hand) {
-        type = Type.ITEM;
-        this.itemButton = buttonClicked;
-        this.hand = hand;
-    }
-
     public PacketGuiButtonPress(ClickedTileButton buttonClicked, TileEntity tile) {
         this(buttonClicked, tile.getPos());
     }
@@ -85,6 +79,12 @@ public class PacketGuiButtonPress {
 
     public PacketGuiButtonPress(ClickedTileButton buttonClicked, BlockPos tilePosition) {
         this(buttonClicked, tilePosition, 0);
+    }
+
+    public PacketGuiButtonPress(ClickedItemButton buttonClicked, Hand hand) {
+        type = Type.ITEM;
+        this.itemButton = buttonClicked;
+        this.hand = hand;
     }
 
     public PacketGuiButtonPress(ClickedTileButton buttonClicked, BlockPos tilePosition, int extra) {
@@ -153,6 +153,7 @@ public class PacketGuiButtonPress {
             buf.writeBlockPos(pkt.tilePosition);
             buf.writeVarInt(pkt.extra);
         } else if (pkt.type == Type.ITEM) {
+            buf.writeEnumValue(pkt.itemButton);
             buf.writeEnumValue(pkt.hand);
         }
     }

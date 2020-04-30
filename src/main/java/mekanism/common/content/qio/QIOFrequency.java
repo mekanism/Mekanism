@@ -132,6 +132,7 @@ public class QIOFrequency extends Frequency {
         super.onRemove();
         driveMap.keySet().forEach(key -> removeDrive(key, false));
         driveMap.clear();
+        playersViewingItems.forEach(player -> Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.kill(), player));
     }
 
     @Override

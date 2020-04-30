@@ -46,8 +46,8 @@ public class OwnerDisplay implements IHasTextComponent {
         //Allows for the name to be overridden by a passed value
         String name = ownerName == null ? MekanismClient.clientUUIDMap.get(ownerUUID) : ownerName;
         if (player == null) {
-            return MekanismLang.OWNER.translateColored(EnumColor.GRAY, name);
+            return MekanismLang.OWNER.translateColored(EnumColor.DARK_GRAY, name);
         }
-        return MekanismLang.OWNER.translateColored(EnumColor.GRAY, player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
+        return MekanismLang.OWNER.translateColored(EnumColor.DARK_GRAY, player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
     }
 }

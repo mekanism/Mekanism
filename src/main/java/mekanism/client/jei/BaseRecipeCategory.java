@@ -106,6 +106,11 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
+    public void removeElement(GuiTexturedElement e) {
+        guiElements.remove(e);
+    }
+
+    @Override
     public void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
         if (!stack.isEmpty()) {
             try {

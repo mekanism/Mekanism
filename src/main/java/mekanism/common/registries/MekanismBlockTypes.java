@@ -447,7 +447,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityQIODriveArray> QIO_DRIVE_ARRAY = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.QIO_DRIVE_ARRAY, MekanismLang.DESCRIPTION_QIO_DRIVE_ARRAY)
           .withGui(() -> MekanismContainerTypes.QIO_DRIVE_ARRAY)
-          .with(new AttributeStateFacing())
+          .with(new AttributeStateFacing(), new AttributeSecurity(), new AttributeInventory())
           .build();
 
     // Dynamic Tank
