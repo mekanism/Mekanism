@@ -4,6 +4,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.IGuiItem;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.entity.EntityRobit;
@@ -13,10 +14,12 @@ import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
+import mekanism.common.inventory.container.item.QIOFrequencySelectItemContainer;
 import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.MatrixStatsTabContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.container.tile.QIOFrequencySelectTileContainer;
 import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
@@ -44,8 +47,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -55,12 +60,20 @@ import net.minecraftforge.fml.network.NetworkHooks;
  */
 public class PacketGuiButtonPress {
 
+    private Type type;
+    private ClickedItemButton itemButton;
     private ClickedTileButton tileButton;
     private ClickedEntityButton entityButton;
-    private boolean hasEntity;
+    private Hand hand;
     private int entityID;
     private int extra;
     private BlockPos tilePosition;
+
+    public PacketGuiButtonPress(ClickedItemButton buttonClicked, Hand hand) {
+        type = Type.ITEM;
+        this.itemButton = buttonClicked;
+        this.hand = hand;
+    }
 
     public PacketGuiButtonPress(ClickedTileButton buttonClicked, TileEntity tile) {
         this(buttonClicked, tile.getPos());
@@ -75,14 +88,15 @@ public class PacketGuiButtonPress {
     }
 
     public PacketGuiButtonPress(ClickedTileButton buttonClicked, BlockPos tilePosition, int extra) {
+        type = Type.TILE;
         this.tileButton = buttonClicked;
         this.tilePosition = tilePosition;
         this.extra = extra;
     }
 
     public PacketGuiButtonPress(ClickedEntityButton buttonClicked, int entityID) {
+        type = Type.ENTITY;
         this.entityButton = buttonClicked;
-        hasEntity = true;
         this.entityID = entityID;
     }
 
@@ -92,7 +106,7 @@ public class PacketGuiButtonPress {
             return;
         }
         context.get().enqueueWork(() -> {
-            if (message.hasEntity) {
+            if (message.type == Type.ENTITY) {
                 Entity entity = player.world.getEntityByID(message.entityID);
                 if (entity != null) {
                     INamedContainerProvider provider = message.entityButton.getProvider(entity);
@@ -101,7 +115,7 @@ public class PacketGuiButtonPress {
                         NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> buf.writeVarInt(message.entityID));
                     }
                 }
-            } else {
+            } else if (message.type == Type.TILE) {
                 TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
                 if (tile != null) {
                     INamedContainerProvider provider = message.tileButton.getProvider(tile, message.extra);
@@ -113,29 +127,68 @@ public class PacketGuiButtonPress {
                         });
                     }
                 }
+            } else if (message.type == Type.ITEM) {
+                ItemStack stack = player.getHeldItem(message.hand);
+                if (stack.getItem() instanceof IGuiItem) {
+                    INamedContainerProvider provider = message.itemButton.getProvider(stack, message.hand);
+                    if (provider != null) {
+                        NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> {
+                            buf.writeEnumValue(message.hand);
+                            buf.writeItemStack(stack);
+                        });
+                    }
+                }
             }
         });
         context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketGuiButtonPress pkt, PacketBuffer buf) {
-        buf.writeBoolean(pkt.hasEntity);
-        if (pkt.hasEntity) {
+        buf.writeEnumValue(pkt.type);
+        if (pkt.type == Type.ENTITY) {
             buf.writeEnumValue(pkt.entityButton);
             buf.writeVarInt(pkt.entityID);
-        } else {
+        } else if (pkt.type == Type.TILE) {
             buf.writeEnumValue(pkt.tileButton);
             buf.writeBlockPos(pkt.tilePosition);
             buf.writeVarInt(pkt.extra);
+        } else if (pkt.type == Type.ITEM) {
+            buf.writeEnumValue(pkt.hand);
         }
     }
 
     public static PacketGuiButtonPress decode(PacketBuffer buf) {
-        boolean hasEntity = buf.readBoolean();
-        if (hasEntity) {
-            return new PacketGuiButtonPress(buf.readEnumValue(ClickedEntityButton.class), buf.readVarInt());
+        Type type = buf.readEnumValue(Type.class);
+        switch (type) {
+            case ENTITY:
+                return new PacketGuiButtonPress(buf.readEnumValue(ClickedEntityButton.class), buf.readVarInt());
+            case TILE:
+                return new PacketGuiButtonPress(buf.readEnumValue(ClickedTileButton.class), buf.readBlockPos(), buf.readVarInt());
+            case ITEM:
+                return new PacketGuiButtonPress(buf.readEnumValue(ClickedItemButton.class), buf.readEnumValue(Hand.class));
+            default:
+                return null;
         }
-        return new PacketGuiButtonPress(buf.readEnumValue(ClickedTileButton.class), buf.readBlockPos(), buf.readVarInt());
+    }
+
+    public enum ClickedItemButton {
+        BACK_BUTTON((stack, hand) -> {
+            if (stack.getItem() instanceof IGuiItem) {
+                return ((IGuiItem) stack.getItem()).getContainerProvider(stack, hand);
+            }
+            return null;
+        }),
+        QIO_FREQUENCY_SELECT((stack, hand) -> new ContainerProvider(MekanismLang.QIO_FREQUENCY_SELECT, (i, inv, player) -> new QIOFrequencySelectItemContainer(i, inv, hand, stack)));
+
+        private BiFunction<ItemStack, Hand, INamedContainerProvider> providerFromItem;
+
+        ClickedItemButton(BiFunction<ItemStack, Hand, INamedContainerProvider> providerFromItem) {
+            this.providerFromItem = providerFromItem;
+        }
+
+        public INamedContainerProvider getProvider(ItemStack stack, Hand hand) {
+            return providerFromItem.apply(stack, hand);
+        }
     }
 
     public enum ClickedTileButton {
@@ -147,6 +200,7 @@ public class PacketGuiButtonPress {
             }
             return null;
         }),
+        QIO_FREQUENCY_SELECT((tile, extra) -> new ContainerProvider(MekanismLang.QIO_FREQUENCY_SELECT, (i, inv, player) -> new QIOFrequencySelectTileContainer(i, inv, tile))),
         SIDE_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.SIDE_CONFIG, (i, inv, player) -> new SideConfigurationContainer(i, inv, tile))),
         TRANSPORTER_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.TRANSPORTER_CONFIG, (i, inv, player) -> new TransporterConfigurationContainer(i, inv, tile))),
         UPGRADE_MANAGEMENT((tile, extra) -> new ContainerProvider(MekanismLang.UPGRADES, (i, inv, player) -> new UpgradeManagementContainer(i, inv, tile))),
@@ -294,5 +348,11 @@ public class PacketGuiButtonPress {
         public INamedContainerProvider getProvider(Entity entity) {
             return providerFromEntity.apply(entity);
         }
+    }
+
+    public enum Type {
+        TILE,
+        ITEM,
+        ENTITY;
     }
 }

@@ -28,6 +28,7 @@ import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableItemDashboard;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProcessedResource;
+import mekanism.common.item.ItemQIODrive;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemTierInstaller;
@@ -50,6 +51,7 @@ import mekanism.common.resource.IResource;
 import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
+import mekanism.common.tier.QIODriveTier;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 
@@ -73,6 +75,10 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemDosimeter> DOSIMETER = ITEMS.register("dosimeter", ItemDosimeter::new);
     public static final ItemRegistryObject<ItemCanteen> CANTEEN = ITEMS.register("canteen", ItemCanteen::new);
     public static final ItemRegistryObject<ItemPortableItemDashboard> PORTABLE_ITEM_DASHBOARD = ITEMS.register("portable_item_dashboard", ItemPortableItemDashboard::new);
+    public static final ItemRegistryObject<ItemQIODrive> BASE_QIO_DRIVE = registerQIODrive(QIODriveTier.BASE);
+    public static final ItemRegistryObject<ItemQIODrive> HYPER_DENSE_QIO_DRIVE = registerQIODrive(QIODriveTier.HYPER_DENSE);
+    public static final ItemRegistryObject<ItemQIODrive> TIME_DILATING_QIO_DRIVE = registerQIODrive(QIODriveTier.TIME_DILATING);
+    public static final ItemRegistryObject<ItemQIODrive> SUPERMASSIVE_QIO_DRIVE = registerQIODrive(QIODriveTier.SUPERMASSIVE);
     // Tools
     public static final ItemRegistryObject<ItemAtomicDisassembler> ATOMIC_DISASSEMBLER = ITEMS.register("atomic_disassembler", ItemAtomicDisassembler::new);
     public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.register("electric_bow", ItemElectricBow::new);
@@ -203,5 +209,9 @@ public class MekanismItems {
 
     private static ItemRegistryObject<ItemUpgrade> registerUpgrade(Upgrade type) {
         return ITEMS.register("upgrade_" + type.getRawName(), properties -> new ItemUpgrade(type, properties));
+    }
+
+    private static ItemRegistryObject<ItemQIODrive> registerQIODrive(QIODriveTier tier) {
+        return ITEMS.register("qio_drive_" + tier.name().toLowerCase(), properties -> new ItemQIODrive(tier, properties));
     }
 }

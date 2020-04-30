@@ -10,6 +10,7 @@ import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
+import mekanism.common.inventory.container.item.PortableItemDashboardContainer;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.inventory.container.item.QIOFrequencySelectItemContainer;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
@@ -104,6 +105,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<PortableTeleporterContainer> PORTABLE_TELEPORTER = CONTAINER_TYPES.register(MekanismItems.PORTABLE_TELEPORTER, PortableTeleporterContainer::new);
     public static final ContainerTypeRegistryObject<SeismicReaderContainer> SEISMIC_READER = CONTAINER_TYPES.register(MekanismItems.SEISMIC_READER, SeismicReaderContainer::new);
     public static final ContainerTypeRegistryObject<QIOFrequencySelectItemContainer> QIO_FREQUENCY_SELECT_ITEM = CONTAINER_TYPES.register("qio_frequency_select_item", QIOFrequencySelectItemContainer::new);
+    public static final ContainerTypeRegistryObject<PortableItemDashboardContainer> PORTABLE_ITEM_DASHBOARD = CONTAINER_TYPES.register(MekanismItems.PORTABLE_ITEM_DASHBOARD, PortableItemDashboardContainer::new);
 
     //Entity
     public static final ContainerTypeRegistryObject<MainRobitContainer> MAIN_ROBIT = CONTAINER_TYPES.register("main_robit", MainRobitContainer::new);
@@ -162,7 +164,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityMekanism>> UPGRADE_MANAGEMENT = CONTAINER_TYPES.register("upgrade_management", UpgradeManagementContainer::new);
     public static final ContainerTypeRegistryObject<PersonalChestItemContainer> PERSONAL_CHEST_ITEM = CONTAINER_TYPES.register("personal_chest_item", PersonalChestItemContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPersonalChest>> PERSONAL_CHEST_BLOCK = CONTAINER_TYPES.register("personal_chest_block", PersonalChestTileContainer::new);
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityMekanism>> QIO_FREQUENCY_SELECT_TILE = CONTAINER_TYPES.register("qio_frequency_select_tile", QIOFrequencySelectTileContainer::new);
+    public static final ContainerTypeRegistryObject<QIOFrequencySelectTileContainer> QIO_FREQUENCY_SELECT_TILE = CONTAINER_TYPES.register("qio_frequency_select_tile", QIOFrequencySelectTileContainer::new);
 
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityBoilerCasing>> BOILER_STATS = CONTAINER_TYPES.registerEmpty("boiler_stats", TileEntityBoilerCasing.class);
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityInductionCasing>> MATRIX_STATS = CONTAINER_TYPES.register("matrix_stats", MatrixStatsTabContainer::new);

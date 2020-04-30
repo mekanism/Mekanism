@@ -34,7 +34,7 @@ public interface IQIODriveItem {
         ItemDataUtils.setList(stack, NBTConstants.QIO_ITEM_MAP, list);
     }
 
-    int getCountCapacity(ItemStack stack);
+    long getCountCapacity(ItemStack stack);
 
     int getTypeCapacity(ItemStack stack);
 
@@ -55,6 +55,14 @@ public interface IQIODriveItem {
 
         public static DriveMetadata load(ItemStack stack) {
             return new DriveMetadata(ItemDataUtils.getLong(stack, NBTConstants.QIO_META_COUNT), ItemDataUtils.getInt(stack, NBTConstants.QIO_META_TYPES));
+        }
+
+        public long getCount() {
+            return count;
+        }
+
+        public int getTypes() {
+            return types;
         }
     }
 }

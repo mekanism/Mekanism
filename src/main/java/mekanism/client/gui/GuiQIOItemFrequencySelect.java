@@ -2,11 +2,14 @@ package mekanism.client.gui;
 
 import java.util.List;
 import java.util.UUID;
+import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.container.item.QIOFrequencySelectItemContainer;
+import mekanism.common.network.PacketGuiButtonPress;
+import mekanism.common.network.PacketGuiButtonPress.ClickedItemButton;
 import mekanism.common.network.PacketGuiSetFrequency;
 import mekanism.common.network.PacketGuiSetFrequency.FrequencyUpdate;
 import net.minecraft.entity.player.PlayerInventory;
@@ -16,6 +19,13 @@ public class GuiQIOItemFrequencySelect extends GuiQIOFrequencySelect<QIOFrequenc
 
     public GuiQIOItemFrequencySelect(QIOFrequencySelectItemContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
+            () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedItemButton.BACK_BUTTON, container.getHand()))));
     }
 
     @Override

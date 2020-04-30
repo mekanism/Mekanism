@@ -91,6 +91,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.MEKASUIT_BODYARMOR, "MekaSuit Bodyarmor");
         add(MekanismItems.MEKASUIT_PANTS, "MekaSuit Pants");
         add(MekanismItems.MEKASUIT_BOOTS, "MekaSuit Boots");
+        //Drives
+        add(MekanismItems.BASE_QIO_DRIVE, "QIO Drive");
+        add(MekanismItems.HYPER_DENSE_QIO_DRIVE, "Hyper-Dense QIO Drive");
+        add(MekanismItems.TIME_DILATING_QIO_DRIVE, "Time-Dilating QIO Drive");
+        add(MekanismItems.SUPERMASSIVE_QIO_DRIVE, "Supermassive QIO Drive");
         //HDPE
         add(MekanismItems.HDPE_PELLET, "HDPE Pellet");
         add(MekanismItems.HDPE_ROD, "HDPE Rod");
@@ -392,6 +397,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, "Couldn't form, expected but didn't find Pressure Disperser at %s.");
         add(MekanismLang.BOILER_INVALID_NO_DISPERSER, "Couldn't form, no Pressure Disperser layer found.");
         add(MekanismLang.BOILER_INVALID_SUPERHEATING, "Couldn't form, invalid Superheating Element arrangement.");
+        //QIO stuff
+        add(MekanismLang.SET_FREQUENCY, "Set Frequency");
+        add(MekanismLang.QIO_FREQUENCY_SELECT, "QIO Frequency Select");
+        add(MekanismLang.QIO_ITEMS, "Items: %s / %s");
+        add(MekanismLang.QIO_TYPES, "Types: %s / %s");
         //JEI
         add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%s / %s mB");
         //Key
@@ -902,6 +912,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ROBIT_FOLLOWING, "Following: %s");
         add(MekanismLang.ROBIT_DROP_PICKUP, "Drop pickup: %s");
         //Descriptions
+        add(MekanismLang.DESCRIPTION_QIO_DRIVE_ARRAY, "The foundation of any Quantum Item Orchestration system. QIO Drives are stored here.");
         add(MekanismLang.DESCRIPTION_SEISMIC_READER, "A portable machine that uses seismic vibrations to provide information on differing layers of the world.");
         add(MekanismLang.DESCRIPTION_BIN, "A block used to store large quantities of a single type of item.");
         add(MekanismLang.DESCRIPTION_TELEPORTER_FRAME, "The frame used to construct the Teleporter multiblock, allowing a portal to be generated within the structure.");

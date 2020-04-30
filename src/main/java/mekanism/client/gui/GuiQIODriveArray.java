@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.common.content.qio.TileEntityQIODriveArray;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import net.minecraft.entity.player.PlayerInventory;
@@ -15,7 +16,7 @@ public class GuiQIODriveArray extends GuiMekanismTile<TileEntityQIODriveArray, M
     @Override
     public void init() {
         super.init();
-
+        addButton(new GuiQIOFrequencyTab(this, tile));
     }
 
     @Override

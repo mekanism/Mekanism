@@ -42,8 +42,12 @@ import mekanism.client.gui.GuiOredictionificator;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPersonalChestItem;
 import mekanism.client.gui.GuiPersonalChestTile;
+import mekanism.client.gui.GuiPortableItemDashboard;
 import mekanism.client.gui.GuiPortableTeleporter;
 import mekanism.client.gui.GuiPrecisionSawmill;
+import mekanism.client.gui.GuiQIODriveArray;
+import mekanism.client.gui.GuiQIOItemFrequencySelect;
+import mekanism.client.gui.GuiQIOTileFrequencySelect;
 import mekanism.client.gui.GuiQuantumEntangloporter;
 import mekanism.client.gui.GuiResistiveHeater;
 import mekanism.client.gui.GuiRotaryCondensentrator;
@@ -248,6 +252,8 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DICTIONARY, GuiDictionary::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PORTABLE_TELEPORTER, GuiPortableTeleporter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SEISMIC_READER, GuiSeismicReader::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_FREQUENCY_SELECT_ITEM, GuiQIOItemFrequencySelect::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PORTABLE_ITEM_DASHBOARD, GuiPortableItemDashboard::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.MAIN_ROBIT, GuiRobitMain::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.INVENTORY_ROBIT, GuiRobitInventory::new);
@@ -292,6 +298,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SOLAR_NEUTRON_ACTIVATOR, GuiSolarNeutronActivator::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.TELEPORTER, GuiTeleporter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER, GuiThermalEvaporationController::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_DRIVE_ARRAY, GuiQIODriveArray::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FACTORY, GuiFactory::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.GAS_TANK, GuiGasTank::new);
@@ -319,6 +326,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.UPGRADE_MANAGEMENT, GuiUpgradeManagement::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SIDE_CONFIGURATION, GuiSideConfiguration::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.TRANSPORTER_CONFIGURATION, GuiTransporterConfig::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_FREQUENCY_SELECT_TILE, GuiQIOTileFrequencySelect::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.BOILER_STATS, GuiBoilerStats::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.MATRIX_STATS, GuiMatrixStats::new);

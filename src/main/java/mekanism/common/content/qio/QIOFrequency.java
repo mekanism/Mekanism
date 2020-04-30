@@ -1,5 +1,6 @@
 package mekanism.common.content.qio;
 
+import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -18,6 +19,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 public class QIOFrequency extends Frequency {
+
+    private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
 
     private Map<QIODriveKey, QIODriveData> driveMap = new Object2ObjectOpenHashMap<>();
     private Map<HashedItem, QIOItemTypeData> itemDataMap = new Object2ObjectOpenHashMap<>();
@@ -219,5 +222,13 @@ public class QIOFrequency extends Frequency {
             updatedItems.add(itemType);
             return ret;
         }
+    }
+
+    public static String formatItemCount(long count) {
+        return intFormatter.format(count);
+    }
+
+    public static String formatItemTypes(int types) {
+        return intFormatter.format(types);
     }
 }

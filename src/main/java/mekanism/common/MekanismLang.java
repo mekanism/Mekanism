@@ -28,12 +28,17 @@ public enum MekanismLang implements ILangEntry {
     //Multiblock Stuff
     MULTIBLOCK_INVALID_FRAME("multiblock", "invalid_frame"),
     MULTIBLOCK_INVALID_INNER("multiblock", "invalid_inner"),
-
+    //Boiler
     BOILER_INVALID_AIR_POCKETS("boiler", "invalid_air_pockets"),
     BOILER_INVALID_EXTRA_DISPERSER("boiler", "invalid_extra_disperser"),
     BOILER_INVALID_MISSING_DISPERSER("boiler", "invalid_missing_disperser"),
     BOILER_INVALID_NO_DISPERSER("boiler", "invalid_no_disperser"),
     BOILER_INVALID_SUPERHEATING("boiler", "invalid_superheating"),
+    //QIO stuff
+    SET_FREQUENCY("qio", "set_frequency"),
+    QIO_FREQUENCY_SELECT("qio", "qio_frequency_select"),
+    QIO_ITEMS("qio", "items"),
+    QIO_TYPES("qio", "types"),
     //JEI
     JEI_AMOUNT_WITH_CAPACITY("tooltip", "jei.amount.with.capacity"),
     //Key
