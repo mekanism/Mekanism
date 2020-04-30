@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.item.ItemStack;
@@ -58,6 +60,8 @@ public interface IGuiWrapper {
         return 0;
     }
 
+    void addElement(GuiTexturedElement e);
+
     @Nullable
     FontRenderer getFont();
 
@@ -66,4 +70,12 @@ public interface IGuiWrapper {
     }
 
     void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale);
+
+    default void renderItemTooltip(@Nonnull ItemStack stack, int xAxis, int yAxis) {
+        Mekanism.logger.error("Tried to call 'renderItemTooltip' but unsupported in " + this);
+    }
+
+    default void renderItemWithOverlay(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
+        Mekanism.logger.error("Tried to call 'renderItemWithOverlay' but unsupported in " + this);
+    }
 }

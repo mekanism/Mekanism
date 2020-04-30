@@ -20,19 +20,16 @@ public class SecurityFrequency extends Frequency {
 
     public static final String SECURITY = "Security";
 
-    private boolean override;
+    private boolean override = false;
 
-    private List<UUID> trusted;
-    private List<String> trustedCache;
+    private List<UUID> trusted = new HashList<>();
+    private List<String> trustedCache = new HashList<>();
     private int trustedCacheHash;
 
-    private SecurityMode securityMode;
+    private SecurityMode securityMode = SecurityMode.PUBLIC;
 
     public SecurityFrequency(UUID uuid) {
         super(FrequencyType.SECURITY, SECURITY, uuid);
-        trusted = new HashList<>();
-        trustedCache = new HashList<>();
-        securityMode = SecurityMode.PUBLIC;
     }
 
     public SecurityFrequency() {

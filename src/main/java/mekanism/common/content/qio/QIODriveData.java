@@ -10,7 +10,8 @@ import net.minecraft.item.ItemStack;
 public class QIODriveData {
 
     private QIODriveKey key;
-    private long countCapacity, typeCapacity;
+    private long countCapacity;
+    private int typeCapacity;
     private Map<HashedItem, Long> itemMap = new Object2ObjectOpenHashMap<>();
     private long itemCount;
 
@@ -63,6 +64,14 @@ public class QIODriveData {
 
     public QIODriveKey getKey() {
         return key;
+    }
+
+    public long getCountCapacity() {
+        return countCapacity;
+    }
+
+    public int getTypeCapacity() {
+        return typeCapacity;
     }
 
     public void updateItemMetadata() {

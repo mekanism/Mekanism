@@ -210,7 +210,7 @@ public abstract class MekanismContainer extends Container {
     //TODO: JAVADOC?
     //Returns remainder, don't modify inserted stack
     @Nonnull
-    private <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, boolean ignoreEmpty) {
+    protected <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, boolean ignoreEmpty) {
         if (stack.isEmpty()) {
             //Skip doing anything if the stack is already empty.
             // Makes it easier to chain calls, rather than having to check if the stack is empty after our previous call

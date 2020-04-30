@@ -16,6 +16,7 @@ import mekanism.common.frequency.FrequencyType;
 import mekanism.common.network.PacketQIOItemViewerGuiSync;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
 public class QIOFrequency extends Frequency {
@@ -28,6 +29,12 @@ public class QIOFrequency extends Frequency {
 
     private Set<HashedItem> updatedItems = new HashSet<>();
     private Set<ServerPlayerEntity> playersViewingItems = new HashSet<>();
+
+    private boolean needsUpdate;
+    private long totalCount, totalCountCapacity;
+    private int totalTypeCapacity;
+    // only used on client side, for server side we can just look at itemDataMap.size()
+    private int clientTypes;
 
     public QIOFrequency(String n, UUID uuid) {
         super(FrequencyType.QIO, n, uuid);
@@ -72,7 +79,7 @@ public class QIOFrequency extends Frequency {
         playersViewingItems.add(player);
         Map<HashedItem, Long> map = new Object2ObjectOpenHashMap<>();
         itemDataMap.values().forEach(d -> map.put(d.itemType, d.count));
-        Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.batch(map), player);
+        Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.batch(map, totalCountCapacity, totalTypeCapacity), player);
     }
 
     public void closeItemViewer(ServerPlayerEntity player) {
@@ -82,15 +89,16 @@ public class QIOFrequency extends Frequency {
     @Override
     public void tick() {
         super.tick();
-        if (!updatedItems.isEmpty()) {
+        if (!updatedItems.isEmpty() || needsUpdate) {
             Map<HashedItem, Long> map = new Object2ObjectOpenHashMap<>();
             updatedItems.forEach(type -> {
                 QIOItemTypeData data = itemDataMap.get(type);
                 map.put(type, data == null ? 0 : data.count);
             });
             playersViewingItems.forEach(player -> {
-                Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.update(map), player);
+                Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity), player);
             });
+            needsUpdate = false;
         }
     }
 
@@ -126,6 +134,24 @@ public class QIOFrequency extends Frequency {
         driveMap.clear();
     }
 
+    @Override
+    public void write(PacketBuffer buf) {
+        super.write(buf);
+        buf.writeVarLong(totalCount);
+        buf.writeVarLong(totalCountCapacity);
+        buf.writeVarInt(itemDataMap.size());
+        buf.writeVarInt(totalTypeCapacity);
+    }
+
+    @Override
+    public void read(PacketBuffer buf) {
+        super.read(buf);
+        totalCount = buf.readVarLong();
+        totalCountCapacity = buf.readVarLong();
+        clientTypes = buf.readVarInt();
+        totalTypeCapacity = buf.readVarInt();
+    }
+
     public void addDrive(QIODriveKey key) {
         if (key.getDriveStack().getItem() instanceof IQIODriveItem) {
             // if a drive in this position is already in the system, we remove it before adding this one
@@ -152,6 +178,9 @@ public class QIOFrequency extends Frequency {
                 if (itemData != null) {
                     itemData.containingDrives.remove(key);
                     itemData.count -= entry.getValue();
+                    totalCount -= entry.getValue();
+                    totalCountCapacity -= data.getCountCapacity();
+                    totalTypeCapacity -= data.getTypeCapacity();
                     // remove this entry from the item data map if it's now empty
                     if (itemData.containingDrives.isEmpty() || itemData.count == 0) {
                         itemDataMap.remove(entry.getKey());
@@ -159,6 +188,7 @@ public class QIOFrequency extends Frequency {
                     updatedItems.add(entry.getKey());
                 }
             });
+            needsUpdate = true;
         }
         // save the item list onto the physical drive
         key.save(data);
@@ -183,7 +213,11 @@ public class QIOFrequency extends Frequency {
 
         private void addFromDrive(QIODriveData data, long toAdd) {
             count += toAdd;
+            totalCount += toAdd;
+            totalCountCapacity += data.getCountCapacity();
+            totalTypeCapacity += data.getTypeCapacity();
             containingDrives.add(data.getKey());
+            needsUpdate = true;
         }
 
         private long add(long amount) {
@@ -197,6 +231,7 @@ public class QIOFrequency extends Frequency {
                     break;
             }
             count += amount - toAdd;
+            totalCount += amount - toAdd;
             updatedItems.add(itemType);
             return amount;
         }
@@ -219,6 +254,7 @@ public class QIOFrequency extends Frequency {
                     break;
             }
             count -= ret.getCount();
+            totalCount -= ret.getCount();
             updatedItems.add(itemType);
             return ret;
         }

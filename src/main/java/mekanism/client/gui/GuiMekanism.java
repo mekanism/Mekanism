@@ -8,6 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.render.MekanismRenderer;
@@ -261,6 +262,27 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
     }
 
+    @Override
+    public void renderItemWithOverlay(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
+        if (!stack.isEmpty()) {
+            try {
+                RenderSystem.pushMatrix();
+                RenderSystem.enableDepthTest();
+                RenderHelper.enableStandardItemLighting();
+                if (scale != 1) {
+                    RenderSystem.scalef(scale, scale, scale);
+                }
+                itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
+                itemRenderer.renderItemOverlayIntoGUI(font, stack, xAxis, yAxis, text);
+                RenderHelper.disableStandardItemLighting();
+                RenderSystem.disableDepthTest();
+                RenderSystem.popMatrix();
+            } catch (Exception e) {
+                Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
+            }
+        }
+    }
+
     protected static int titleTextColor() {
         return MekanismConfig.client.guiTitleTextColor.get();
     }
@@ -271,6 +293,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     protected static String formatInt(long l) {
         return intFormatter.format(l);
+    }
+
+    @Override
+    public void addElement(GuiTexturedElement e) {
+        addButton(e);
     }
 
     //Some blit param namings

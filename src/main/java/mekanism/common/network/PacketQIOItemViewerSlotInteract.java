@@ -1,14 +1,17 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
+import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketQIOItemViewerSlotInteract {
@@ -31,6 +34,10 @@ public class PacketQIOItemViewerSlotInteract {
         return new PacketQIOItemViewerSlotInteract(Type.PUT, null, count);
     }
 
+    public static PacketQIOItemViewerSlotInteract shiftTake(HashedItem itemType) {
+        return new PacketQIOItemViewerSlotInteract(Type.SHIFT_TAKE, itemType, 0);
+    }
+
     public static void handle(PacketQIOItemViewerSlotInteract message, Supplier<Context> context) {
         PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
@@ -49,12 +56,22 @@ public class PacketQIOItemViewerSlotInteract {
                         } else if (InventoryUtils.areItemsStackable(ret, curStack)) {
                             curStack.grow(ret.getCount());
                         }
-                        player.inventory.markDirty();
+                        ((ServerPlayerEntity) player).connection.sendPacket(new SSetSlotPacket(-1, -1, player.inventory.getItemStack()));
+                    } else if (message.type == Type.SHIFT_TAKE) {
+                        ItemStack ret = freq.removeByType(message.itemType, 64);
+                        ItemStack remainder = container.insertIntoPlayerInventory(ret);
+                        if (!remainder.isEmpty()) {
+                            remainder = freq.addItem(remainder);
+                            if (!remainder.isEmpty())
+                                Mekanism.logger.error("QIO shift-click transfer resulted in lost items. This shouldn't happen!");
+                        }
                     } else if (message.type == Type.PUT) {
                         if (!curStack.isEmpty()) {
-                            player.inventory.setItemStack(freq.addItem(StackUtils.size(curStack, message.count)));
-                            player.inventory.markDirty();
+                            ItemStack rejects = freq.addItem(StackUtils.size(curStack, message.count));
+                            ItemStack newStack = StackUtils.size(curStack, curStack.getCount() - (message.count - rejects.getCount()));
+                            player.inventory.setItemStack(newStack);
                         }
+                        ((ServerPlayerEntity) player).connection.sendPacket(new SSetSlotPacket(-1, -1, player.inventory.getItemStack()));
                     }
                 }
             }
@@ -68,6 +85,9 @@ public class PacketQIOItemViewerSlotInteract {
             case TAKE:
                 buf.writeItemStack(pkt.itemType.getStack());
                 buf.writeInt(pkt.count);
+                break;
+            case SHIFT_TAKE:
+                buf.writeItemStack(pkt.itemType.getStack());
                 break;
             case PUT:
                 buf.writeInt(pkt.count);
@@ -84,6 +104,9 @@ public class PacketQIOItemViewerSlotInteract {
                 item = new HashedItem(buf.readItemStack());
                 count = buf.readInt();
                 break;
+            case SHIFT_TAKE:
+                item = new HashedItem(buf.readItemStack());
+                break;
             case PUT:
                 count = buf.readInt();
                 break;
@@ -93,6 +116,7 @@ public class PacketQIOItemViewerSlotInteract {
 
     public enum Type {
         TAKE,
+        SHIFT_TAKE,
         PUT;
     }
 }
