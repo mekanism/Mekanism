@@ -160,9 +160,9 @@ public final class TransporterPathfinder {
 
     public static class IdlePath {
 
-        private World world;
-        private Coord4D start;
-        private TransporterStack transportStack;
+        private final World world;
+        private final Coord4D start;
+        private final TransporterStack transportStack;
 
         public IdlePath(World world, Coord4D obj, TransporterStack stack) {
             this.world = world;
@@ -248,9 +248,9 @@ public final class TransporterPathfinder {
 
     public static class Destination implements Comparable<Destination> {
 
-        private List<Coord4D> path;
+        private final List<Coord4D> path;
         private Path pathType;
-        private TransitResponse response;
+        private final TransitResponse response;
         private double score;
 
         public Destination(List<Coord4D> list, boolean inv, TransitResponse ret, double gScore) {

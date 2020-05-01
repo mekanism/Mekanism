@@ -454,12 +454,14 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
     }
 
     public void onNeighborBlockChange(Direction side) {
-        if (!isRemote()) {
-            //Note: The block might have changed if the redstone level changed
-            // so we need to recheck the redstone before we can recheck the connections.
-            recheckRedstone();
+        if (handlesRedstone() && redstoneReactive) {
+            //If our tile can handle redstone and we are redstone reactive we need to recheck all connections
+            // as the power might have changed and we may have to update our own visuals
+            refreshConnections();
+        } else {
+            //Otherwise we can just get away with checking the single side
+            refreshConnections(side);
         }
-        refreshConnections(side);
     }
 
     public ConnectionType getConnectionType(Direction side) {

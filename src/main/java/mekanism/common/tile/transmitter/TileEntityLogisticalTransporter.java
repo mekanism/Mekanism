@@ -94,11 +94,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     @Override
-    public boolean handlesRedstone() {
-        return true;
-    }
-
-    @Override
     public void tick() {
         super.tick();
         getTransmitter().update();
