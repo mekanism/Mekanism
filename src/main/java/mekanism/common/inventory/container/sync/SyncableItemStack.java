@@ -48,7 +48,7 @@ public class SyncableItemStack implements ISyncableData {
     @Override
     public DirtyType isDirty() {
         ItemStack value = get();
-        boolean sameItem = value.isItemEqual(this.lastKnownValue);
+        boolean sameItem = value.isItemEqual(this.lastKnownValue) && ItemStack.areItemStackTagsEqual(value, this.lastKnownValue);
         if (!sameItem || value.getCount() != this.lastKnownValue.getCount()) {
             //Make sure to copy it in case our item stack object is the same object so would be getting modified
             // only do so though if it is dirty, as we don't need to spam object creation
