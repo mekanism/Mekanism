@@ -1,5 +1,7 @@
 package mekanism.common.content.transporter;
 
+import java.util.HashSet;
+import java.util.Set;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import mekanism.common.Mekanism;
@@ -89,6 +91,7 @@ public final class InvStack {
     private void use(int amount, TransitResponse response) {
         IItemHandler handler = InventoryUtils.assertItemHandler("InvStack", tile, side);
         if (handler != null) {
+            Set<Integer> emptySlots = new HashSet<>();
             for (Int2IntMap.Entry entry : itemMap.int2IntEntrySet()) {
                 int toUse = Math.min(amount, entry.getIntValue());
                 ItemStack ret = handler.extractItem(entry.getIntKey(), toUse, false);
@@ -102,13 +105,14 @@ public final class InvStack {
 
                 // update the SlotData to reflect the new item count
                 // this change will be reflected in the original TransitRequest as well
-                if (response != null) {
-                    response.use(entry.getIntKey(), toUse);
+                if (response != null && response.use(entry.getIntKey(), toUse)) {
+                    emptySlots.add(entry.getIntKey());
                 }
                 if (amount == 0) {
                     return;
                 }
             }
+            emptySlots.forEach(i -> response.removeSlot(i));
         }
     }
 

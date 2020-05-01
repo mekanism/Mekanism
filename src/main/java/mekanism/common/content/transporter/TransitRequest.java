@@ -1,11 +1,11 @@
 package mekanism.common.content.transporter;
 
+import java.util.Map;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.util.InventoryUtils;
@@ -134,11 +134,12 @@ public class TransitRequest {
             return toSend.getCount();
         }
 
-        public void use(int slot, int amount) {
-            slotData.use(slot, amount);
+        public boolean use(int slot, int amount) {
+            boolean empty = slotData.use(slot, amount);
             if (slotData.getTotalCount() == 0) {
                 itemMap.remove(slotData.itemType);
             }
+            return empty;
         }
 
         public boolean isEmpty() {
@@ -157,6 +158,10 @@ public class TransitRequest {
 
             InvStack stack = new InvStack(tile, toSend, slotData.slotCountMap, side);
             stack.use(this);
+        }
+
+        public void removeSlot(int slot) {
+            slotData.slotCountMap.remove(slot);
         }
     }
 
@@ -193,14 +198,11 @@ public class TransitRequest {
             totalCount += stack.getCount();
         }
 
-        public void use(int slot, int amount) {
+        public boolean use(int slot, int amount) {
             int stored = getSlotCount(slot);
             totalCount -= amount;
-            if (stored == amount) {
-                slotCountMap.remove(slot);
-            } else {
-                slotCountMap.put(slot, stored - amount);
-            }
+            slotCountMap.put(slot, stored - amount);
+            return stored == amount;
         }
     }
 }
