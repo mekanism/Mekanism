@@ -20,7 +20,7 @@ public class ItemBlockAdvancedSolarGenerator extends ItemBlockMachine {
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
+        if (!MekanismUtils.isValidReplaceableBlock(world, pos.up())) {
             return false;
         }
         for (int xPos = -1; xPos <= 1; xPos++) {
