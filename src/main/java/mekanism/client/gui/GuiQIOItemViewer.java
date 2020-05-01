@@ -8,7 +8,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -25,7 +24,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 8, 14, xSize - 16, 11, () -> {
+        addButton(new GuiInnerScreen(this, 7, 14, xSize - 16, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             FrequencyIdentity freq = getFrequency();
             if (freq != null) {
@@ -35,7 +34,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             }
             return list;
         }));
-        addButton(new GuiSlotScroll(this, 8, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), MekanismConfig.client.qioItemViewerSlotsY.get(),
+        addButton(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), MekanismConfig.client.qioItemViewerSlotsY.get(),
               () -> container.getQIOItemList(), container));
     }
 
@@ -64,8 +63,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         @SuppressWarnings("unchecked")
         CONTAINER c = (CONTAINER) container.recreate();
         Screen s = recreate(c);
-        Minecraft.getInstance().player.openContainer = ((IHasContainer<?>)s).getContainer();
-        Minecraft.getInstance().displayGuiScreen(recreate(c));
+        minecraft.currentScreen = null;
+        minecraft.player.openContainer = ((IHasContainer<?>)s).getContainer();
+        minecraft.displayGuiScreen(recreate(c));
     }
 
     public abstract GuiQIOItemViewer<CONTAINER> recreate(CONTAINER container);

@@ -13,6 +13,7 @@ import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyType;
+import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.PacketQIOItemViewerGuiSync;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -46,6 +47,10 @@ public class QIOFrequency extends Frequency {
 
     public ItemStack addItem(ItemStack stack) {
         HashedItem type = new HashedItem(stack);
+        // these checks are extremely important; they prevent us from wasting CPU searching for a place to put the new items,
+        // and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
+        if (totalCount == totalCountCapacity || (!itemDataMap.containsKey(type) && itemDataMap.size() == totalTypeCapacity))
+            return stack;
         QIOItemTypeData data = itemDataMap.computeIfAbsent(type, t -> new QIOItemTypeData(type));
         return type.createStack((int) data.add(stack.getCount()));
     }
@@ -64,7 +69,11 @@ public class QIOFrequency extends Frequency {
                 return ItemStack.EMPTY;
         }
 
-        return data.remove(amount);
+        ItemStack removed = data.remove(amount);
+        // remove this item type if it's now empty
+        if (data.count == 0)
+            itemDataMap.remove(data.itemType);
+        return removed;
     }
 
     public ItemStack removeItem(int amount) {
@@ -86,6 +95,12 @@ public class QIOFrequency extends Frequency {
         playersViewingItems.remove(player);
     }
 
+    // utility methods for accessing descriptors
+    public long getTotalItemCount() { return totalCount; }
+    public long getTotalItemCountCapacity() { return totalCountCapacity; }
+    public int getTotalItemTypes(boolean remote) { return remote ? clientTypes : itemDataMap.size(); }
+    public int getTotalItemTypeCapacity() { return totalTypeCapacity; }
+
     @Override
     public void tick() {
         super.tick();
@@ -95,9 +110,12 @@ public class QIOFrequency extends Frequency {
                 QIOItemTypeData data = itemDataMap.get(type);
                 map.put(type, data == null ? 0 : data.count);
             });
+            // flush players that somehow didn't send a container close packet
+            playersViewingItems.removeIf(player -> !(player.openContainer instanceof QIOItemViewerContainer));
             playersViewingItems.forEach(player -> {
                 Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity), player);
             });
+            updatedItems.clear();
             needsUpdate = false;
         }
     }
@@ -159,8 +177,10 @@ public class QIOFrequency extends Frequency {
             if (driveMap.containsKey(key)) {
                 removeDrive(key, true);
             }
-
+            // add drive and capacity info to core tracking
             QIODriveData data = new QIODriveData(key);
+            totalCountCapacity += data.getCountCapacity();
+            totalTypeCapacity += data.getTypeCapacity();
             driveMap.put(key, data);
             data.getItemMap().entrySet().forEach(entry -> {
                 itemDataMap.computeIfAbsent(entry.getKey(), e -> new QIOItemTypeData(entry.getKey())).addFromDrive(data, entry.getValue());
@@ -180,8 +200,6 @@ public class QIOFrequency extends Frequency {
                     itemData.containingDrives.remove(key);
                     itemData.count -= entry.getValue();
                     totalCount -= entry.getValue();
-                    totalCountCapacity -= data.getCountCapacity();
-                    totalTypeCapacity -= data.getTypeCapacity();
                     // remove this entry from the item data map if it's now empty
                     if (itemData.containingDrives.isEmpty() || itemData.count == 0) {
                         itemDataMap.remove(entry.getKey());
@@ -189,9 +207,14 @@ public class QIOFrequency extends Frequency {
                     updatedItems.add(entry.getKey());
                 }
             });
-            needsUpdate = true;
+            setNeedsUpdate();
         }
+        // remove drive and capacity info from core tracking
+        totalCountCapacity -= data.getCountCapacity();
+        totalTypeCapacity -= data.getTypeCapacity();
+        driveMap.remove(key);
         // save the item list onto the physical drive
+        data.updateItemMetadata();
         key.save(data);
     }
 
@@ -200,6 +223,10 @@ public class QIOFrequency extends Frequency {
         for (int i = 0; i < holder.getDriveSlots().size(); i++) {
             addDrive(new QIODriveKey(holder, i));
         }
+    }
+
+    private void setNeedsUpdate() {
+        needsUpdate = true;
     }
 
     public class QIOItemTypeData {
@@ -215,10 +242,8 @@ public class QIOFrequency extends Frequency {
         private void addFromDrive(QIODriveData data, long toAdd) {
             count += toAdd;
             totalCount += toAdd;
-            totalCountCapacity += data.getCountCapacity();
-            totalTypeCapacity += data.getTypeCapacity();
             containingDrives.add(data.getKey());
-            needsUpdate = true;
+            setNeedsUpdate();
         }
 
         private long add(long amount) {
@@ -234,7 +259,7 @@ public class QIOFrequency extends Frequency {
             count += amount - toAdd;
             totalCount += amount - toAdd;
             updatedItems.add(itemType);
-            return amount;
+            return toAdd;
         }
 
         private ItemStack remove(int amount) {

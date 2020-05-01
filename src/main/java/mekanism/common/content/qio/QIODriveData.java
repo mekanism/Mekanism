@@ -33,12 +33,13 @@ public class QIODriveData {
     public long add(HashedItem type, long amount) {
         long stored = getStored(type);
         // fail if we've reached item count capacity or adding this item would make us exceed type capacity
-        if (itemCount == countCapacity || !(stored == 0 && itemMap.size() == typeCapacity))
+        if (itemCount == countCapacity || (stored == 0 && itemMap.size() == typeCapacity))
             return amount;
         long toAdd = Math.min(amount, countCapacity - itemCount);
         itemMap.put(type, stored + toAdd);
         itemCount += toAdd;
         updateItemMetadata();
+        key.save(this);
         return amount - toAdd;
     }
 
@@ -51,6 +52,7 @@ public class QIODriveData {
             itemMap.remove(type);
         itemCount -= ret.getCount();
         updateItemMetadata();
+        key.save(this);
         return ret;
     }
 
@@ -96,6 +98,7 @@ public class QIODriveData {
 
         public void save(QIODriveData data) {
             holder.save(driveSlot, data);
+            holder.onDataUpdate();
         }
 
         public ItemStack getDriveStack() {

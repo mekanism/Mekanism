@@ -61,12 +61,13 @@ public class PacketQIOItemViewerGuiSync {
 
     public static void encode(PacketQIOItemViewerGuiSync pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.type);
-        if (pkt.type != Type.KILL) {
+        if (pkt.type == Type.BATCH || pkt.type == Type.UPDATE) {
             buf.writeVarLong(pkt.countCapacity);
             buf.writeVarInt(pkt.typeCapacity);
+            buf.writeVarInt(pkt.itemMap.size());
             pkt.itemMap.entrySet().forEach(e -> {
                 buf.writeItemStack(e.getKey().getStack());
-                buf.writeLong(e.getValue());
+                buf.writeVarLong(e.getValue());
             });
         }
     }
@@ -76,13 +77,13 @@ public class PacketQIOItemViewerGuiSync {
         long countCapacity = 0;
         int typeCapacity = 0;
         Map<HashedItem, Long> map = null;
-        if (type != Type.KILL) {
+        if (type == Type.BATCH || type == Type.UPDATE) {
             countCapacity = buf.readVarLong();
             typeCapacity = buf.readVarInt();
             map = new Object2ObjectOpenHashMap<>();
-            int count = buf.readInt();
+            int count = buf.readVarInt();
             for (int i = 0; i < count; i++) {
-                map.put(new HashedItem(buf.readItemStack()), buf.readLong());
+                map.put(new HashedItem(buf.readItemStack()), buf.readVarLong());
             }
         }
         return new PacketQIOItemViewerGuiSync(type, map, countCapacity, typeCapacity);

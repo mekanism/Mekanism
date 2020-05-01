@@ -48,27 +48,29 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.tilePosition);
-            if (tile instanceof IFrequencyHandler) {
-                if (message.updateType == FrequencyUpdate.SET_TILE) {
-                    ((IFrequencyHandler) tile).setFrequency(message.type, message.data);
-                } else if (message.updateType == FrequencyUpdate.REMOVE_TILE) {
-                    ((IFrequencyHandler) tile).removeFrequency(message.type, message.data);
-                } else {
-                    FrequencyManager<FREQ> manager = message.type.getManager(message.data.isPublic() ? null : player.getUniqueID());
-                    ItemStack stack = player.getHeldItem(message.currentHand);
-                    if (stack.getItem() instanceof IFrequencyItem) {
-                        IFrequencyItem item = (IFrequencyItem) stack.getItem();
-                        FREQ toUse = null;
-                        if (message.updateType == FrequencyUpdate.SET_ITEM) {
-                            toUse = manager.getOrCreateFrequency(message.data, player.getUniqueID());
-                            item.setFrequency(stack, toUse);
-                        } else if (message.updateType == FrequencyUpdate.REMOVE_ITEM) {
-                            manager.remove(message.data.getKey(), player.getUniqueID());
-                            item.setFrequency(stack, null);
-                        }
-                        Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.create(message.currentHand, message.type, player.getUniqueID(), toUse), (ServerPlayerEntity) player);
+            if (message.updateType.isTile()) {
+                TileEntity tile = MekanismUtils.getTileEntity(player.world, message.tilePosition);
+                if (tile instanceof IFrequencyHandler) {
+                    if (message.updateType == FrequencyUpdate.SET_TILE) {
+                        ((IFrequencyHandler) tile).setFrequency(message.type, message.data);
+                    } else if (message.updateType == FrequencyUpdate.REMOVE_TILE) {
+                        ((IFrequencyHandler) tile).removeFrequency(message.type, message.data);
                     }
+                }
+            } else {
+                FrequencyManager<FREQ> manager = message.type.getManager(message.data.isPublic() ? null : player.getUniqueID());
+                ItemStack stack = player.getHeldItem(message.currentHand);
+                if (stack.getItem() instanceof IFrequencyItem) {
+                    IFrequencyItem item = (IFrequencyItem) stack.getItem();
+                    FREQ toUse = null;
+                    if (message.updateType == FrequencyUpdate.SET_ITEM) {
+                        toUse = manager.getOrCreateFrequency(message.data, player.getUniqueID());
+                        item.setFrequency(stack, toUse);
+                    } else if (message.updateType == FrequencyUpdate.REMOVE_ITEM) {
+                        manager.remove(message.data.getKey(), player.getUniqueID());
+                        item.setFrequency(stack, null);
+                    }
+                    Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(message.currentHand, message.type, player.getUniqueID(), toUse), (ServerPlayerEntity) player);
                 }
             }
         });

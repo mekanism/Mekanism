@@ -52,7 +52,7 @@ public class PacketQIOItemViewerSlotInteract {
                     if (message.type == Type.TAKE) {
                         ItemStack ret = freq.removeByType(message.itemType, message.count);
                         if (curStack.isEmpty()) {
-                            player.inventory.setItemStack(curStack);
+                            player.inventory.setItemStack(ret);
                         } else if (InventoryUtils.areItemsStackable(ret, curStack)) {
                             curStack.grow(ret.getCount());
                         }
@@ -63,7 +63,7 @@ public class PacketQIOItemViewerSlotInteract {
                         if (!remainder.isEmpty()) {
                             remainder = freq.addItem(remainder);
                             if (!remainder.isEmpty())
-                                Mekanism.logger.error("QIO shift-click transfer resulted in lost items. This shouldn't happen!");
+                                Mekanism.logger.error("QIO shift-click transfer resulted in lost items (" + remainder + "). This shouldn't happen!");
                         }
                     } else if (message.type == Type.PUT) {
                         if (!curStack.isEmpty()) {

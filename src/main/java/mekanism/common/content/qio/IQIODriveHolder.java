@@ -9,6 +9,8 @@ public interface IQIODriveHolder extends IQIOFrequencyHolder {
 
     List<IInventorySlot> getDriveSlots();
 
+    void onDataUpdate();
+
     default void save(int slot, QIODriveData data) {
         ItemStack stack = getDriveSlots().get(slot).getStack();
         if (!(stack.getItem() instanceof IQIODriveItem)) {

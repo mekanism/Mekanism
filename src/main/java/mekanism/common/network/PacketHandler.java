@@ -55,6 +55,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketUpdateInventorySlot.class, PacketUpdateInventorySlot::encode, PacketUpdateInventorySlot::decode, PacketUpdateInventorySlot::handle);
         registerClientToServer(PacketPortableTeleporterGui.class, PacketPortableTeleporterGui::encode, PacketPortableTeleporterGui::decode, PacketPortableTeleporterGui::handle);
         registerClientToServer(PacketQIOItemViewerSlotInteract.class, PacketQIOItemViewerSlotInteract::encode, PacketQIOItemViewerSlotInteract::decode, PacketQIOItemViewerSlotInteract::handle);
+        registerClientToServer(PacketGuiItemDataRequest.class, PacketGuiItemDataRequest::encode, PacketGuiItemDataRequest::decode, PacketGuiItemDataRequest::handle);
 
         //Server to client messages
         registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);

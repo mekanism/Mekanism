@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +12,11 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
+import mekanism.common.network.PacketGuiItemDataRequest;
 import mekanism.common.network.PacketQIOItemViewerSlotInteract;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -61,9 +64,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     protected void openInventory(@Nonnull PlayerInventory inv) {
         super.openInventory(inv);
-        QIOFrequency freq = getFrequency();
-        if (!inv.player.world.isRemote() && freq != null) {
-            freq.openItemViewer((ServerPlayerEntity) inv.player);
+        if (inv.player.world.isRemote()) {
+            Mekanism.packetHandler.sendToServer(PacketGuiItemDataRequest.qioItemViewer());
         }
     }
 
@@ -79,7 +81,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
-
         if (doubleClickTransferTicks > 0) {
             doubleClickTransferTicks--;
         } else {
@@ -111,6 +112,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 slot.putStack(freq.addItem(slot.getStack()));
             }
         });
+        ((ServerPlayerEntity) player).sendContainerToPlayer(this);
     }
 
     @Nonnull
@@ -120,17 +122,25 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         if (currentSlot == null || !currentSlot.getHasStack()) {
             return ItemStack.EMPTY;
         }
-        ItemStack slotStack = currentSlot.getStack();
-        ItemStack stackToInsert = slotStack;
+        ItemStack slotStack = currentSlot.getStack().copy();
         // special handling for shift-clicking into GUI
         if (!(currentSlot instanceof InventoryContainerSlot)) {
             if (!player.world.isRemote() && getFrequency() != null) {
                 if (!slotStack.isEmpty()) {
-                    ItemStack ret = getFrequency().addItem(stackToInsert);
+                    ItemStack ret = getFrequency().addItem(slotStack);
                     if (slotStack.getCount() != ret.getCount()) {
                         setTransferTracker(slotStack, slotID);
+                    } else {
+                        return ItemStack.EMPTY;
                     }
-                    return ret;
+
+                    int difference = slotStack.getCount() - ret.getCount();
+                    currentSlot.decrStackSize(difference);
+                    ItemStack newStack = StackUtils.size(slotStack, difference);
+                    currentSlot.onTake(player, newStack);
+                    // update the client
+                    ((ServerPlayerEntity) player).sendContainerToPlayer(this);
+                    return newStack;
                 } else {
                     if (slotID == lastSlot && !lastStack.isEmpty()) {
                         doDoubleClickTransfer(player);
@@ -171,7 +181,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     private void syncItemList() {
         if (itemList == null)
-            return;
+            itemList = new ArrayList<>();
         itemList.clear();
         totalItems = 0;
         cachedInventory.entrySet().forEach(e -> {
@@ -239,7 +249,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             }
         } else if (button == 1) {
             if (heldItem.isEmpty() && slot != null) {
-                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItem(), (int) slot.getCount() / 2));
+                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItem(), (int) Math.min(32, slot.getCount() / 2)));
             } else if (!heldItem.isEmpty()) {
                 Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.put(1));
             }

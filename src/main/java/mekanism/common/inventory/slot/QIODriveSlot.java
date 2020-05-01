@@ -7,6 +7,7 @@ import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 public class QIODriveSlot extends BasicInventorySlot {
 
@@ -24,18 +25,22 @@ public class QIODriveSlot extends BasicInventorySlot {
 
     @Override
     public void setStack(ItemStack stack) {
-        super.setStack(stack);
-        if (getStack().isEmpty()) {
+        // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
+        if (!isRemote() && !getStack().isEmpty() && stack.isEmpty()) {
             removeDrive();
-        } else {
-            addDrive(stack);
+        }
+        super.setStack(stack);
+        // if we just added a new drive, add it to the frequency
+        // (note that both of these operations can happen in this order if a user replaces the drive in the slot)
+        if (!isRemote() && !getStack().isEmpty()) {
+            addDrive(getStack());
         }
     }
 
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         ItemStack ret = super.insertItem(stack, action, automationType);
-        if (action.execute() && ret.isEmpty()) {
+        if (!isRemote() && action.execute() && ret.isEmpty()) {
             addDrive(stack);
         }
         return ret;
@@ -43,11 +48,17 @@ public class QIODriveSlot extends BasicInventorySlot {
 
     @Override
     public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        ItemStack ret = super.extractItem(amount, action, automationType);
-        if (action.execute() && !ret.isEmpty()) {
-            removeDrive();
+        if (!isRemote() && action.execute()) {
+            ItemStack ret = super.extractItem(amount, Action.SIMULATE, automationType);
+            if (!ret.isEmpty()) {
+                removeDrive();
+            }
         }
-        return ret;
+        return super.extractItem(amount, action, automationType);
+    }
+
+    private boolean isRemote() {
+        return ((TileEntity) driveHolder).getWorld().isRemote();
     }
 
     private void addDrive(ItemStack stack) {

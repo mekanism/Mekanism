@@ -15,7 +15,7 @@ public class HashedItem {
     private final int hashCode;
 
     public HashedItem(ItemStack stack) {
-        itemStack = stack;
+        itemStack = StackUtils.size(stack, 1);
         hashCode = initHashCode();
     }
 

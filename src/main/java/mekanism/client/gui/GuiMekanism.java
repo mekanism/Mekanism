@@ -283,6 +283,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
     }
 
+    @Override
+    public void renderItemTooltip(@Nonnull ItemStack stack, int xAxis, int yAxis) {
+        renderTooltip(stack, xAxis, yAxis);
+    }
+
     protected static int titleTextColor() {
         return MekanismConfig.client.guiTitleTextColor.get();
     }

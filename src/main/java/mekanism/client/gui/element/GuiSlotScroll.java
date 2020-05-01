@@ -32,7 +32,7 @@ public class GuiSlotScroll extends GuiTexturedElement {
         this.slotList = slotList;
         this.clickHandler = clickHandler;
 
-        gui.addElement(scrollBar = new GuiScrollBar(gui, relativeX + xSlots * 18 + 2, y, ySlots * 18,
+        gui.addElement(scrollBar = new GuiScrollBar(gui, relativeX + xSlots * 18 + 4, y, ySlots * 18,
               () -> getSlotList() == null ? 0 : (int) Math.ceil((double) getSlotList().size() / xSlots), () -> ySlots));
     }
 
@@ -50,7 +50,7 @@ public class GuiSlotScroll extends GuiTexturedElement {
             // terminate if we've exceeded max slot pos
             if (slot >= list.size())
                 break;
-            int slotX = x + (i % xSlots) * 18, slotY = y + (i / ySlots) * 18;
+            int slotX = x + (i % xSlots) * 18, slotY = y + (i / xSlots) * 18;
             renderSlot(list.get(slot), slotX, slotY);
         }
     }
@@ -63,7 +63,6 @@ public class GuiSlotScroll extends GuiTexturedElement {
         if (slotX >= 0 && slotY >= 0 && slotX < xSlots && slotY < ySlots) {
             int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
             if (xAxis >= slotStartX && xAxis < slotStartX + 16 && yAxis >= slotStartY && yAxis < slotStartY + 16) {
-                System.out.println(slotX + " " + slotY);
                 fill(slotStartX, slotStartY, slotStartX + 16, slotStartY + 16, GuiSlot.DEFAULT_HOVER_COLOR);
                 MekanismRenderer.resetColor();
             }

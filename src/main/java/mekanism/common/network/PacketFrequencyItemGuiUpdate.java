@@ -30,7 +30,7 @@ public class PacketFrequencyItemGuiUpdate<FREQ extends Frequency> {
         privateCache = privateFreqs;
     }
 
-    public static <FREQ extends Frequency> PacketFrequencyItemGuiUpdate<FREQ> create(Hand hand, FrequencyType<FREQ> type, UUID ownerUUID, FREQ freq) {
+    public static <FREQ extends Frequency> PacketFrequencyItemGuiUpdate<FREQ> update(Hand hand, FrequencyType<FREQ> type, UUID ownerUUID, FREQ freq) {
         return new PacketFrequencyItemGuiUpdate<>(hand, type, freq,
               type.getManager(null).getFrequencies().stream().collect(Collectors.toList()),
               type.getManager(ownerUUID).getFrequencies().stream().collect(Collectors.toList()));
@@ -76,15 +76,15 @@ public class PacketFrequencyItemGuiUpdate<FREQ extends Frequency> {
         List<FREQ> privateCache = new ArrayList<>();
         FREQ frequency = null;
         if (buf.readBoolean()) {
-            frequency = type.create(buf);
+            frequency = Frequency.readFromPacket(buf);
         }
         int amount = buf.readVarInt();
         for (int i = 0; i < amount; i++) {
-            publicCache.add(type.create(buf));
+            publicCache.add(Frequency.readFromPacket(buf));
         }
         amount = buf.readVarInt();
         for (int i = 0; i < amount; i++) {
-            privateCache.add(type.create(buf));
+            privateCache.add(Frequency.readFromPacket(buf));
         }
         return new PacketFrequencyItemGuiUpdate<FREQ>(currentHand, type, frequency, publicCache, privateCache);
     }

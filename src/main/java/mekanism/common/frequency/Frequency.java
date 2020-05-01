@@ -129,8 +129,8 @@ public abstract class Frequency {
         return frequencyType.getIdentitySerializer().serialize(getIdentity());
     }
 
-    public static Frequency readFromPacket(PacketBuffer dataStream) {
-        return FrequencyType.load(dataStream).create(dataStream);
+    public static <FREQ extends Frequency> FREQ readFromPacket(PacketBuffer dataStream) {
+        return (FREQ) FrequencyType.load(dataStream).create(dataStream);
     }
 
     public static class FrequencyIdentity {

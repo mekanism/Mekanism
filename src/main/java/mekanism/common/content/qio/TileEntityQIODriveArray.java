@@ -28,12 +28,17 @@ public class TileEntityQIODriveArray extends TileEntityMekanism implements IQIOD
         driveSlots = new ArrayList<>();
         for (int y = 0; y < 2; y++) {
             for (int x = 0; x < 8; x++) {
-                QIODriveSlot slot = new QIODriveSlot(this, y * 8 + x, xSize / 2 - (8 * 18 / 2) + x * 18, 40);
+                QIODriveSlot slot = new QIODriveSlot(this, y * 8 + x, xSize / 2 - (8 * 18 / 2) + x * 18, 22 + y * 18);
                 driveSlots.add(slot);
                 builder.addSlot(slot);
             }
         }
         return builder.build();
+    }
+
+    @Override
+    public void onDataUpdate() {
+        markDirty(false);
     }
 
     @Override
