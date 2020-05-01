@@ -128,7 +128,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
         drawCenteredText((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.FILTER), 0, getXSize(), 6, titleTextColor());
         drawString(MekanismLang.FILTER_INDEX.translate(filter.index), 79, 23, titleTextColor());
         if (filter.hasFilter()) {
-            renderScaledText(filter.getFilterText(), 32, 38, titleTextColor(), 111);
+            drawTextScaledBound(filter.getFilterText(), 32, 38, titleTextColor(), 111);
         }
         renderItem(renderStack, 45, 19);
         int xAxis = mouseX - getGuiLeft();

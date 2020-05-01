@@ -52,7 +52,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     }
 
     public void renderTitleText(int y) {
-        renderTitleText(tile.getName(), y);
+        drawTitleText(tile.getName(), y);
     }
 
     public void renderTitleText() {

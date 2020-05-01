@@ -1,17 +1,22 @@
 package mekanism.common.inventory.container.item;
 
+import javax.annotation.Nonnull;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.frequency.IFrequencyItem;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.item.ItemPortableItemDashboard;
 import mekanism.common.registries.MekanismContainerTypes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PortableItemDashboardContainer extends QIOItemViewerContainer {
 
@@ -39,7 +44,9 @@ public class PortableItemDashboardContainer extends QIOItemViewerContainer {
 
     @Override
     public PortableItemDashboardContainer recreate() {
-        return new PortableItemDashboardContainer(windowId, inv, hand, stack);
+        PortableItemDashboardContainer container = new PortableItemDashboardContainer(windowId, inv, hand, stack);
+        sync(container);
+        return container;
     }
 
     @Override
@@ -57,5 +64,24 @@ public class PortableItemDashboardContainer extends QIOItemViewerContainer {
             return freq;
         }
         return null;
+    }
+
+    @Override
+    protected HotBarSlot createHotBarSlot(@Nonnull PlayerInventory inv, int index, int x, int y) {
+        // special handling to prevent removing the dashboard from the player's inventory slot
+        if (index == inv.currentItem) {
+            return new HotBarSlot(inv, index, x, y) {
+                @Override
+                public boolean canTakeStack(PlayerEntity player) {
+                    return false;
+                }
+                @Override
+                @OnlyIn(Dist.CLIENT)
+                public boolean isEnabled() {
+                   return false;
+                }
+            };
+        }
+        return super.createHotBarSlot(inv, index, x, y);
     }
 }

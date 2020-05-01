@@ -178,7 +178,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(MekanismLang.QIO_FREQUENCY_SELECT.translate(), 5);
+        drawTitleText(MekanismLang.QIO_FREQUENCY_SELECT.translate(), 5);
         drawString(OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, 142, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
         drawString(frequencyComponent, 32, 81, titleTextColor());
@@ -190,10 +190,10 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
         } else {
-            renderScaledText(frequency.getName(), 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
+            drawTextScaledBound(frequency.getName(), 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
             drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
-        renderScaledText(MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
+        drawScaledText(MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

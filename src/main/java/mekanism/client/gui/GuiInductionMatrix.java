@@ -62,7 +62,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         ITextComponent name = MekanismLang.MATRIX.translate();
-        renderTitleText(name, 6);
+        drawTitleText(name, 6);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

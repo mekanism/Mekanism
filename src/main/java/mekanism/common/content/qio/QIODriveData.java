@@ -27,7 +27,7 @@ public class QIODriveData {
         // update cached item count value
         itemCount = itemMap.values().stream().mapToLong(Long::longValue).sum();
 
-        updateItemMetadata();
+        key.updateMetadata(this);
     }
 
     public long add(HashedItem type, long amount) {
@@ -38,8 +38,8 @@ public class QIODriveData {
         long toAdd = Math.min(amount, countCapacity - itemCount);
         itemMap.put(type, stored + toAdd);
         itemCount += toAdd;
-        updateItemMetadata();
-        key.save(this);
+        key.updateMetadata(this);
+        key.dataUpdate();
         return amount - toAdd;
     }
 
@@ -51,8 +51,8 @@ public class QIODriveData {
         else
             itemMap.remove(type);
         itemCount -= ret.getCount();
-        updateItemMetadata();
-        key.save(this);
+        key.updateMetadata(this);
+        key.dataUpdate();
         return ret;
     }
 
@@ -76,16 +76,6 @@ public class QIODriveData {
         return typeCapacity;
     }
 
-    public void updateItemMetadata() {
-        ItemStack stack = key.getDriveStack();
-        if (!(stack.getItem() instanceof IQIODriveItem)) {
-            Mekanism.logger.error("Tried to update QIO meta values on an invalid ItemStack. Something has gone very wrong!");
-            return;
-        }
-        DriveMetadata meta = new DriveMetadata(itemCount, itemMap.entrySet().size());
-        meta.write(stack);
-    }
-
     public static class QIODriveKey {
 
         private IQIODriveHolder holder;
@@ -98,7 +88,20 @@ public class QIODriveData {
 
         public void save(QIODriveData data) {
             holder.save(driveSlot, data);
+        }
+
+        public void dataUpdate() {
             holder.onDataUpdate();
+        }
+
+        public void updateMetadata(QIODriveData data) {
+            ItemStack stack = getDriveStack();
+            if (!(stack.getItem() instanceof IQIODriveItem)) {
+                Mekanism.logger.error("Tried to update QIO meta values on an invalid ItemStack. Something has gone very wrong!");
+                return;
+            }
+            DriveMetadata meta = new DriveMetadata(data.itemCount, data.itemMap.entrySet().size());
+            meta.write(stack);
         }
 
         public ItemStack getDriveStack() {

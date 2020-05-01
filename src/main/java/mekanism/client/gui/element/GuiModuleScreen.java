@@ -21,7 +21,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
     private static final ResourceLocation RADIO = MekanismUtils.getResource(ResourceType.GUI, "radio_button.png");
     private static final ResourceLocation SLIDER = MekanismUtils.getResource(ResourceType.GUI, "slider.png");
 
-    private static final int TEXT_COLOR = screenTextColor();
+    private final int TEXT_COLOR = screenTextColor();
 
     private GuiInnerScreen background;
     private Consumer<ItemStack> callback;
@@ -198,7 +198,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
                 int diffFromCenter = ((BAR_LENGTH / (count-1)) * i) - (BAR_LENGTH / 2);
                 float diffScale = 1 - (1 - enumData.getTextScale())/2F;
                 int textCenter = getRelativeX() + BAR_START + (BAR_LENGTH / 2) + (int)(diffFromCenter * diffScale);
-                renderScaledCenteredText(((IHasTextComponent) arr[i]).getTextComponent(), textCenter, getRelativeY() + 20, TEXT_COLOR, enumData.getTextScale());
+                drawScaledCenteredText(((IHasTextComponent) arr[i]).getTextComponent(), textCenter, getRelativeY() + 20, TEXT_COLOR, enumData.getTextScale());
             }
 
             if (dragging) {

@@ -88,7 +88,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 int yStart = i * 22 + 18;
                 renderItem(renderStacks.get(filter), 13, yStart + 3);
                 drawString(MekanismLang.FILTER.translate(), 32, yStart + 2, titleTextColor());
-                renderScaledText(filter.getFilterText(), 32, yStart + 2 + 9, titleTextColor(), 117);
+                drawTextScaledBound(filter.getFilterText(), 32, yStart + 2 + 9, titleTextColor(), 117);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

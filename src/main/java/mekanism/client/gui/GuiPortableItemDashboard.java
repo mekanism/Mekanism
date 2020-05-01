@@ -27,7 +27,7 @@ public class GuiPortableItemDashboard extends GuiQIOItemViewer<PortableItemDashb
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(getName(), 4);
+        drawTitleText(getName(), 4);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

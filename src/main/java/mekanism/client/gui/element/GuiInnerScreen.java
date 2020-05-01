@@ -64,10 +64,10 @@ public class GuiInnerScreen extends GuiScalableElement {
 
         if (renderStrings != null) {
             List<ITextComponent> list = renderStrings.get();
-            int startY = relativeY + padding;
+            float startY = relativeY + padding;
             if (centerY) {
-                int totalHeight = list.size() * 8 + spacing * list.size() - 1;
-                startY = relativeY + Math.round(getHeight() / 2F - totalHeight / 2F);
+                int totalHeight = list.size() * 8 + spacing * (list.size() - 1);
+                startY = relativeY + getHeight() / 2F - totalHeight / 2F;
             }
             for (ITextComponent text : renderStrings.get()) {
                 drawText(text, relativeX + padding, startY);
@@ -76,7 +76,7 @@ public class GuiInnerScreen extends GuiScalableElement {
         }
     }
 
-    private void drawText(ITextComponent text, int x, int y) {
-        renderDynamicText(text, x, y, screenTextColor(), getWidth() - padding * 2, textScale);
+    private void drawText(ITextComponent text, float x, float y) {
+        drawScaledTextScaledBound(text, x, y, screenTextColor(), getWidth() - padding * 2, textScale);
     }
 }

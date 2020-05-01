@@ -38,6 +38,11 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private long totalItems;
 
     private List<IScrollableSlot> itemList;
+    private List<IScrollableSlot> searchList;
+
+    private Map<String, List<IScrollableSlot>> searchCache = new Object2ObjectOpenHashMap<>();
+
+    private String searchQuery = "";
 
     private int doubleClickTransferTicks = 0;
     private int lastSlot = -1;
@@ -50,6 +55,18 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     public abstract QIOFrequency getFrequency();
 
     public abstract QIOItemViewerContainer recreate();
+
+    protected void sync(QIOItemViewerContainer container) {
+        container.sortType = sortType;
+        container.cachedInventory = cachedInventory;
+        container.cachedCountCapacity = cachedCountCapacity;
+        container.cachedTypeCapacity = cachedTypeCapacity;
+        container.totalItems = totalItems;
+        container.itemList = itemList;
+        container.searchList = searchList;
+        container.searchCache = searchCache;
+        container.searchQuery = searchQuery;
+    }
 
     @Override
     protected int getInventoryYOffset() {
@@ -104,12 +121,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         QIOFrequency freq = getFrequency();
         mainInventorySlots.forEach(slot -> {
             if (slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
-                slot.putStack(freq.addItem(slot.getStack()));
+                updateSlot(player, slot, freq.addItem(slot.getStack()));
             }
         });
         hotBarSlots.forEach(slot -> {
             if (slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
-                slot.putStack(freq.addItem(slot.getStack()));
+                updateSlot(player, slot, freq.addItem(slot.getStack()));
             }
         });
         ((ServerPlayerEntity) player).sendContainerToPlayer(this);
@@ -134,10 +151,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                         return ItemStack.EMPTY;
                     }
 
-                    int difference = slotStack.getCount() - ret.getCount();
-                    currentSlot.decrStackSize(difference);
-                    ItemStack newStack = StackUtils.size(slotStack, difference);
-                    currentSlot.onTake(player, newStack);
+                    ItemStack newStack = updateSlot(player, currentSlot, ret);
                     // update the client
                     ((ServerPlayerEntity) player).sendContainerToPlayer(this);
                     return newStack;
@@ -152,6 +166,14 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             return ItemStack.EMPTY;
         }
         return super.transferStackInSlot(player, slotID);
+    }
+
+    private ItemStack updateSlot(PlayerEntity player, Slot currentSlot, ItemStack ret) {
+        int difference = currentSlot.getStack().getCount() - ret.getCount();
+        currentSlot.decrStackSize(difference);
+        ItemStack newStack = StackUtils.size(currentSlot.getStack(), difference);
+        currentSlot.onTake(player, newStack);
+        return newStack;
     }
 
     public void handleBatchUpdate(Map<HashedItem, Long> itemMap, long countCapacity, int typeCapacity) {
@@ -176,6 +198,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public void handleKill() {
         itemList = null;
+        searchList = null;
         cachedInventory.clear();
     }
 
@@ -183,12 +206,16 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         if (itemList == null)
             itemList = new ArrayList<>();
         itemList.clear();
+        searchCache.clear();
         totalItems = 0;
         cachedInventory.entrySet().forEach(e -> {
             itemList.add(new ItemSlotData(e.getKey(), e.getValue()));
             totalItems += e.getValue();
         });
         sortItemList();
+        if (!searchQuery.isEmpty()) {
+            updateSearch(searchQuery);
+        }
     }
 
     private void sortItemList() {
@@ -207,7 +234,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public List<IScrollableSlot> getQIOItemList() {
-        return itemList;
+        return !searchQuery.isEmpty() ? searchList : itemList;
     }
 
     public long getCountCapacity() {
@@ -232,6 +259,21 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         stack = insertItem(hotBarSlots, stack, false);
         stack = insertItem(mainInventorySlots, stack, false);
         return stack;
+    }
+
+    public void updateSearch(String query) {
+        List<IScrollableSlot> list = searchCache.get(query);
+        if (list != null) {
+            searchList = list;
+            return;
+        }
+        list = new ArrayList<>();
+        for (IScrollableSlot slot : itemList) {
+            if (slot.getDisplayName().toLowerCase().contains(query.toLowerCase())) {
+                list.add(slot);
+            }
+        }
+        searchCache.put(query, searchList);
     }
 
     @Override

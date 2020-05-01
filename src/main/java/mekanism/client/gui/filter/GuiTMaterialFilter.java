@@ -62,7 +62,7 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
     @Override
     protected void drawForegroundLayer(int mouseX, int mouseY) {
         if (!filter.getMaterialItem().isEmpty()) {
-            renderScaledText(filter.getMaterialItem().getDisplayName(), 35, 41, screenTextColor(), 107);
+            drawScaledText(filter.getMaterialItem().getDisplayName(), 35, 41, screenTextColor(), 107);
         }
         drawTransporterForegroundLayer(filter.getMaterialItem());
     }

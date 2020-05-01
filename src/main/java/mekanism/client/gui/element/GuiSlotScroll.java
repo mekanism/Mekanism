@@ -2,6 +2,8 @@ package mekanism.client.gui.element;
 
 import java.util.List;
 import java.util.function.Supplier;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -11,6 +13,8 @@ import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiSlotScroll extends GuiTexturedElement {
@@ -112,7 +116,10 @@ public class GuiSlotScroll extends GuiTexturedElement {
         // sanity checks
         if (slot.getItem() == null || slot.getItem().getStack() == null || slot.getItem().getStack().isEmpty())
             return;
-        guiObj.renderItemWithOverlay(slot.getItem().getStack(), slotX + 1, slotY + 1, 1.0F, getCountText(slot.getCount()));
+        guiObj.renderItemWithOverlay(slot.getItem().getStack(), slotX + 1, slotY + 1, 1.0F, "");
+        if (slot.getCount() > 1) {
+            renderSlotText(getCountText(slot.getCount()), slotX + 1, slotY + 1);
+        }
     }
 
     private void renderSlotTooltip(IScrollableSlot slot, int slotX, int slotY) {
@@ -122,17 +129,33 @@ public class GuiSlotScroll extends GuiTexturedElement {
         guiObj.renderItemTooltip(slot.getItem().getStack(), slotX, slotY);
     }
 
+    private void renderSlotText(String text, int x, int y) {
+        RenderSystem.pushMatrix();
+        MekanismRenderer.resetColor();
+        float scale = 0.6F;
+        MatrixStack matrix = new MatrixStack();
+        float yAdd = 4 - (scale * 8) / 2F;
+        matrix.translate(x + 16 - getFont().getStringWidth(text) * scale, y + 9 + yAdd, 200F);
+        matrix.scale(scale, scale, scale);
+
+        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+        getFont().renderString(text, 0, 0, 0xFFFFFF, true, matrix.getLast().getMatrix(), buffer, false, 0, 15728880);
+        buffer.finish();
+
+        RenderSystem.popMatrix();
+    }
+
     private String getCountText(long count) {
         if (count <= 1)
             return null;
         if (count < 10_000)
             return Long.toString(count);
         if (count < 10_000_000)
-            return Double.toString(count / 1000D);
+            return Double.toString(Math.round(count / 1000D)) + "K";
         if (count < 10_000_000_000L)
-            return Double.toString(count / 1_000_000D);
+            return Double.toString(Math.round(count / 1_000_000D)) + "M";
         if (count < 10_000_000_000_000L)
-            return Double.toString(count / 1_000_000_000D);
+            return Double.toString(Math.round(count / 1_000_000_000D)) + "B";
         return ">10T";
     }
 

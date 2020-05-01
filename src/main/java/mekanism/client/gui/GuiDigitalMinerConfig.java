@@ -84,7 +84,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(MekanismLang.MINER_CONFIG.translate(), 6);
+        drawTitleText(MekanismLang.MINER_CONFIG.translate(), 6);
         drawString(MekanismLang.FILTERS.translate(), 11, 19, screenTextColor());
         drawString(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 11, 28, screenTextColor());
         drawString(MekanismLang.MINER_IS_INVERSE.translate(OnOff.of(tile.inverse)), 11, 131, screenTextColor());

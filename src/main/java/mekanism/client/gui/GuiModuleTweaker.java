@@ -102,7 +102,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        renderTitleText(MekanismLang.MODULE_TWEAKER.translate(), 6);
+        drawTitleText(MekanismLang.MODULE_TWEAKER.translate(), 6);
     }
 
     private void select(int index) {

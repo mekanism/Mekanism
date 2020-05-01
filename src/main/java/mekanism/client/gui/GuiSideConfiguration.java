@@ -113,7 +113,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Em
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(MekanismLang.CONFIG_TYPE.translate(currentType), 5);
+        drawTitleText(MekanismLang.CONFIG_TYPE.translate(currentType), 5);
         ConfigInfo config = getTile().getConfig().getConfig(currentType);
         if (config == null || !config.canEject()) {
             drawString(MekanismLang.NO_EJECT.translate(), 53, 17, screenTextColor());

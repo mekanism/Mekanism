@@ -10,6 +10,7 @@ import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityQIODriveArray extends TileEntityMekanism implements IQIODriveHolder {
 
@@ -34,6 +35,17 @@ public class TileEntityQIODriveArray extends TileEntityMekanism implements IQIOD
             }
         }
         return builder.build();
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT tag) {
+        QIOFrequency freq = getFrequency(FrequencyType.QIO);
+        if (freq != null) {
+            // save all item data before we save
+            freq.saveAll();
+        }
+        super.write(tag);
+        return tag;
     }
 
     @Override

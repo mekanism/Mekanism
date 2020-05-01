@@ -11,10 +11,10 @@ import mekanism.client.gui.element.GuiElement.IHoverable;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -34,7 +34,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 //TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
-public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper {
+public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
 
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     private static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
@@ -67,74 +67,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     protected ResourceLocation getButtonLocation(String name) {
         return MekanismUtils.getResource(ResourceType.GUI_BUTTON, name + ".png");
-    }
-
-    public int getStringWidth(ITextComponent component) {
-        return getStringWidth(component.getFormattedText());
-    }
-
-    public int getStringWidth(String text) {
-        return font.getStringWidth(text);
-    }
-
-    public int drawString(ITextComponent component, int x, int y, int color) {
-        return drawString(component.getFormattedText(), x, y, color);
-    }
-
-    public int drawString(String text, int x, int y, int color) {
-        return font.drawString(text, x, y, color);
-    }
-
-    protected void drawCenteredText(ITextComponent component, int leftMargin, int y, int color) {
-        drawCenteredText(component, leftMargin, 0, y, color);
-    }
-
-    protected void drawCenteredText(ITextComponent component, int leftMargin, int areaWidth, int y, int color) {
-        int textWidth = getStringWidth(component);
-        int centerX = leftMargin + (areaWidth / 2) - (textWidth / 2);
-        drawString(component, centerX, y, color);
-    }
-
-    public void renderScaledText(ITextComponent component, int x, int y, int color, int maxX) {
-        renderScaledText(component.getFormattedText(), x, y, color, maxX);
-    }
-
-    protected void renderTitleText(ITextComponent text, int y) {
-        renderScaledCenteredText(text, getWidth() - 8, y, titleTextColor());
-    }
-
-    protected void renderScaledCenteredText(ITextComponent text, int maxX, int y, int color) {
-        float scale = Math.min(1, (float) maxX / getStringWidth(text));
-        renderScaledCenteredText(text, getXSize() / 2, y, color, scale);
-    }
-
-    protected void renderScaledCenteredText(ITextComponent text, int left, int y, int color, float scale) {
-        int textWidth = getStringWidth(text);
-        int centerX = left - (int)((textWidth / 2) * scale);
-        renderTextWithScale(text.getString(), centerX, y, color, scale);
-    }
-
-    public void renderScaledText(String text, int x, int y, int color, int maxX) {
-        int length = getFont().getStringWidth(text);
-
-        if (length <= maxX) {
-            drawString(text, x, y, color);
-        } else {
-            renderTextWithScale(text, x, y, color, (float) maxX / length);
-        }
-        //Make sure the color does not leak from having drawn the string
-        MekanismRenderer.resetColor();
-    }
-
-    public void renderTextWithScale(String text, int x, int y, int color, float scale) {
-        float reverse = 1 / scale;
-        float yAdd = 4 - (scale * 8) / 2F;
-
-        RenderSystem.pushMatrix();
-        RenderSystem.scalef(scale, scale, scale);
-        drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
-        RenderSystem.popMatrix();
-        MekanismRenderer.resetColor();
     }
 
     @Override
@@ -286,14 +218,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void renderItemTooltip(@Nonnull ItemStack stack, int xAxis, int yAxis) {
         renderTooltip(stack, xAxis, yAxis);
-    }
-
-    protected static int titleTextColor() {
-        return MekanismConfig.client.guiTitleTextColor.get();
-    }
-
-    protected static int screenTextColor() {
-        return MekanismConfig.client.guiScreenTextColor.get();
     }
 
     protected static String formatInt(long l) {

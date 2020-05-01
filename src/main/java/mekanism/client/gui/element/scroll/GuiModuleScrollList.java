@@ -109,7 +109,7 @@ public class GuiModuleScrollList extends GuiScrollList {
             //Always render the name and module
             Module instance = Modules.load(currentItem, module);
             int color = module.isExclusive() ? (instance.isEnabled() ? 0x635BD4 : 0x2E2A69) : (instance.isEnabled() ? titleTextColor() : 0x5E1D1D);
-            renderDynamicText(TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
+            drawScaledTextScaledBound(TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
             renderModule(module, relativeX + 3, relativeY + 3 + multipliedElement, 0.5F);
         }
         // next render tooltips

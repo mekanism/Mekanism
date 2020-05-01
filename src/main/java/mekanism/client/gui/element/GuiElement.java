@@ -7,8 +7,8 @@ import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
@@ -20,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class GuiElement extends Widget {
+public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     public static final ResourceLocation BUTTON_LOCATION = MekanismUtils.getResource(ResourceType.GUI, "button.png");
@@ -48,74 +48,14 @@ public abstract class GuiElement extends Widget {
         guiObj.displayTooltips(list, xAxis, yAxis);
     }
 
-    public int drawString(ITextComponent component, int x, int y, int color) {
-        return drawString(component.getFormattedText(), x, y, color);
-    }
-
-    public void renderScaledText(ITextComponent component, int x, int y, int color, int maxX) {
-        renderScaledText(component.getFormattedText(), x, y, color, maxX);
-    }
-
-    public int drawString(String text, int x, int y, int color) {
-        return getFontRenderer().drawString(text, x, y, color);
-    }
-
-    public int getStringWidth(ITextComponent component) {
-        return getFontRenderer().getStringWidth(component.getFormattedText());
-    }
-
-    public int getStringWidth(String text) {
-        return getFontRenderer().getStringWidth(text);
-    }
-
-    public void renderDynamicText(ITextComponent text, int x, int y, int color, int maxX, float textScale) {
-        float width = getStringWidth(text) * textScale;
-        float scale = Math.min(1, maxX / width) * textScale;
-        renderTextWithScale(text.getFormattedText(), x, y, color, scale);
-    }
-
-    public float getNeededScale(ITextComponent text, int maxX) {
-        int length = getStringWidth(text);
-        return length <= maxX ? 1 : (float) maxX / length;
-    }
-
-    protected void renderCenteredText(ITextComponent text, int left, int y, int color) {
-        int textWidth = getStringWidth(text);
-        int centerX = left - (textWidth / 2);
-        drawString(text.getString(), centerX, y, color);
-    }
-
-    protected void renderScaledCenteredText(ITextComponent text, int left, int y, int color, float scale) {
-        int textWidth = getStringWidth(text);
-        int centerX = left - (int)((textWidth / 2) * scale);
-        renderTextWithScale(text.getString(), centerX, y, color, scale);
-    }
-
-    public void renderScaledText(String text, int x, int y, int color, int maxX) {
-        int length = getFontRenderer().getStringWidth(text);
-
-        if (length <= maxX) {
-            drawString(text, x, y, color);
-        } else {
-            renderTextWithScale(text, x, y, color, (float) maxX / length);
-        }
-        //Make sure the color does not leak from having drawn the string
-        MekanismRenderer.resetColor();
-    }
-
-    public void renderTextWithScale(String text, int x, int y, int color, float scale) {
-        float reverse = 1 / scale;
-        float yAdd = 4 - (int) ((scale * 8) / 2F);
-
-        RenderSystem.pushMatrix();
-        RenderSystem.scalef(scale, scale, scale);
-        drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
-        RenderSystem.popMatrix();
-        MekanismRenderer.resetColor();
-    }
-
-    protected FontRenderer getFontRenderer() {
+    @Override
+    public FontRenderer getFont() {
         return guiObj.getFont();
+    }
+
+    @Override
+    public int getXSize() {
+        return width;
     }
 
     @Override
@@ -212,7 +152,7 @@ public abstract class GuiElement extends Widget {
         //Only attempt to draw the message if we have a message to draw
         if (!message.isEmpty()) {
             //TODO: Improve the math for this so that it calculates the y value better
-            drawCenteredString(getFontRenderer(), message, x + halfWidthLeft, y + (height - 8) / 2,
+            drawCenteredString(getFont(), message, x + halfWidthLeft, y + (height - 8) / 2,
                   getFGColor() | MathHelper.ceil(alpha * 255.0F) << 24);
         }
         RenderSystem.disableBlend();
@@ -235,14 +175,6 @@ public abstract class GuiElement extends Widget {
 
     protected void drawTiledSprite(int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite) {
         GuiUtils.drawTiledSprite(xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, getBlitOffset());
-    }
-
-    protected static int titleTextColor() {
-        return MekanismConfig.client.guiTitleTextColor.get();
-    }
-
-    protected static int screenTextColor() {
-        return MekanismConfig.client.guiScreenTextColor.get();
     }
 
     protected static String formatInt(long l) {

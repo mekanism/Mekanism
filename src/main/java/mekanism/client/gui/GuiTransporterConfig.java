@@ -96,8 +96,8 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Em
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
-        renderScaledText(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(getTile().getEjector().hasStrictInput())), 53, 17, screenTextColor(), 70);
+        drawTitleText(MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
+        drawScaledText(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(getTile().getEjector().hasStrictInput())), 53, 17, screenTextColor(), 70);
         drawString(MekanismLang.INPUT.translate(), 48, 81, 0x787878);
         drawString(MekanismLang.OUTPUT.translate(), 114, 68, 0x787878);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

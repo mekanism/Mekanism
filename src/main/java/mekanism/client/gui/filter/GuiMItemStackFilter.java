@@ -64,7 +64,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
     @Override
     protected void drawForegroundLayer(int mouseX, int mouseY) {
         if (!filter.getItemStack().isEmpty()) {
-            renderScaledText(filter.getItemStack().getDisplayName(), 35, 41, screenTextColor(), 107);
+            drawScaledText(filter.getItemStack().getDisplayName(), 35, 41, screenTextColor(), 107);
         }
         renderItem(filter.getItemStack(), 12, 19);
         renderItem(filter.replaceStack, 149, 19);

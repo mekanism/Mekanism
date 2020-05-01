@@ -9,7 +9,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -62,7 +61,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         // here we subtly recreate the entire interface + container, maintaining the same window ID
         @SuppressWarnings("unchecked")
         CONTAINER c = (CONTAINER) container.recreate();
-        Screen s = recreate(c);
+        GuiQIOItemViewer<CONTAINER> s = recreate(c);
+        // TODO set search box
         minecraft.currentScreen = null;
         minecraft.player.openContainer = ((IHasContainer<?>)s).getContainer();
         minecraft.displayGuiScreen(recreate(c));

@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -23,6 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 public class QIOFrequency extends Frequency {
 
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
+    private static final Random rand = new Random();
 
     private Map<QIODriveKey, QIODriveData> driveMap = new Object2ObjectOpenHashMap<>();
     private Map<HashedItem, QIOItemTypeData> itemDataMap = new Object2ObjectOpenHashMap<>();
@@ -31,7 +33,11 @@ public class QIOFrequency extends Frequency {
     private Set<HashedItem> updatedItems = new HashSet<>();
     private Set<ServerPlayerEntity> playersViewingItems = new HashSet<>();
 
+    /** If we need to send a packet to viewing clients with changed item data. */
     private boolean needsUpdate;
+    /** If we have new item changes that haven't been saved. */
+    private boolean isDirty;
+
     private long totalCount, totalCountCapacity;
     private int totalTypeCapacity;
     // only used on client side, for server side we can just look at itemDataMap.size()
@@ -118,6 +124,14 @@ public class QIOFrequency extends Frequency {
             updatedItems.clear();
             needsUpdate = false;
         }
+        // if something has changed, we'll subsequently randomly run a save operation in the next 100 ticks.
+        // the random factor helps us avoid bogging down the CPU by saving all QIO frequencies at once
+        // this isn't a fully necessary operation, but it'll help avoid all item data getting lost if the server
+        // is forcibly shut down.
+        if (isDirty && rand.nextInt(100) == 0) {
+            saveAll();
+            isDirty = false;
+        }
     }
 
     @Override
@@ -186,6 +200,7 @@ public class QIOFrequency extends Frequency {
                 itemDataMap.computeIfAbsent(entry.getKey(), e -> new QIOItemTypeData(entry.getKey())).addFromDrive(data, entry.getValue());
                 updatedItems.add(entry.getKey());
             });
+            setNeedsUpdate();
         }
     }
 
@@ -214,8 +229,15 @@ public class QIOFrequency extends Frequency {
         totalTypeCapacity -= data.getTypeCapacity();
         driveMap.remove(key);
         // save the item list onto the physical drive
-        data.updateItemMetadata();
+        key.updateMetadata(data);
         key.save(data);
+    }
+
+    public void saveAll() {
+        driveMap.entrySet().forEach(e -> {
+            e.getKey().updateMetadata(e.getValue());
+            e.getKey().save(e.getValue());
+        });
     }
 
     private void addHolder(IQIODriveHolder holder) {
@@ -225,8 +247,15 @@ public class QIOFrequency extends Frequency {
         }
     }
 
-    private void setNeedsUpdate() {
+    private void setNeedsUpdate(@Nullable HashedItem changedItem) {
         needsUpdate = true;
+        isDirty = true;
+        if (changedItem != null)
+            updatedItems.add(changedItem);
+    }
+
+    private void setNeedsUpdate() {
+        setNeedsUpdate(null);
     }
 
     public class QIOItemTypeData {
@@ -248,18 +277,34 @@ public class QIOFrequency extends Frequency {
 
         private long add(long amount) {
             long toAdd = amount;
-            for (QIODriveData data : driveMap.values()) {
-                long rejects = data.add(itemType, toAdd);
-                if (rejects < toAdd)
-                    containingDrives.add(data.getKey());
-                toAdd = rejects;
+            // first we try to add the items to an already-containing drive
+            for (QIODriveKey key : containingDrives) {
+                toAdd = addItemsToDrive(toAdd, driveMap.get(key));
                 if (toAdd == 0)
                     break;
             }
+            // next, we add the items to any drive that will take it
+            if (toAdd > 0) {
+                for (QIODriveData data : driveMap.values()) {
+                    if (containingDrives.contains(data.getKey()))
+                        continue;
+                    toAdd = addItemsToDrive(toAdd, data);
+                    if (toAdd == 0)
+                        break;
+                }
+            }
+            // update internal/core values and return
             count += amount - toAdd;
             totalCount += amount - toAdd;
-            updatedItems.add(itemType);
+            setNeedsUpdate(itemType);
             return toAdd;
+        }
+
+        private long addItemsToDrive(long toAdd, QIODriveData data) {
+            long rejects = data.add(itemType, toAdd);
+            if (rejects < toAdd)
+                containingDrives.add(data.getKey());
+            return rejects;
         }
 
         private ItemStack remove(int amount) {
@@ -281,7 +326,7 @@ public class QIOFrequency extends Frequency {
             }
             count -= ret.getCount();
             totalCount -= ret.getCount();
-            updatedItems.add(itemType);
+            setNeedsUpdate(itemType);
             return ret;
         }
     }

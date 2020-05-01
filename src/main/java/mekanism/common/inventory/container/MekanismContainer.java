@@ -135,8 +135,12 @@ public abstract class MekanismContainer extends Container {
         }
         yOffset += 58;
         for (int slotY = 0; slotY < 9; slotY++) {
-            addSlot(new HotBarSlot(inv, slotY, xOffset + slotY * 18, yOffset));
+            addSlot(createHotBarSlot(inv, slotY, xOffset + slotY * 18, yOffset));
         }
+    }
+
+    protected HotBarSlot createHotBarSlot(@Nonnull PlayerInventory inv, int index, int x, int y) {
+        return new HotBarSlot(inv, index, x, y);
     }
 
     protected void addSlots() {

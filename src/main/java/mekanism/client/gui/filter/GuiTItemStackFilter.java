@@ -165,7 +165,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         drawString(OnOff.of(filter.fuzzyMode).getTextComponent(), 24, 74, titleTextColor());
         drawTransporterForegroundLayer(filter.getItemStack());
         if (!filter.getItemStack().isEmpty()) {
-            renderScaledText(filter.getItemStack().getDisplayName(), 35, 41, screenTextColor(), 89);
+            drawScaledText(filter.getItemStack().getDisplayName(), 35, 41, screenTextColor(), 89);
         }
     }
 

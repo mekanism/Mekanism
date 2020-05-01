@@ -105,7 +105,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         updateButtons();
 
-        renderTitleText(GeneratorsLang.FISSION_REACTOR.translate(), 5);
+        drawTitleText(GeneratorsLang.FISSION_REACTOR.translate(), 5);
         drawString(MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, titleTextColor());
         drawString(GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

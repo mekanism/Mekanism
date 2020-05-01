@@ -75,7 +75,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntity
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, titleTextColor());
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 3, titleTextColor());
-        renderScaledText(MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
+        drawScaledText(MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         MatrixStack matrix = new MatrixStack();

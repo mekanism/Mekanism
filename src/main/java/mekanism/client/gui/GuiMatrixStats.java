@@ -71,7 +71,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(MekanismLang.MATRIX_STATS.translate(), 6);
+        drawTitleText(MekanismLang.MATRIX_STATS.translate(), 6);
         drawString(MekanismLang.MATRIX_INPUT_AMOUNT.translate(), 53, 26, 0x797979);
         drawString(EnergyDisplay.of(tile.getLastInput(), tile.getTransferCap()).getTextComponent(), 59, 35, titleTextColor());
         drawString(MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(), 53, 46, 0x797979);
