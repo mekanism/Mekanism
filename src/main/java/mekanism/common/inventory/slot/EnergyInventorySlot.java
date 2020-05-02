@@ -49,7 +49,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             // This might happen after a reload for example
             return !EnergyCompatUtils.hasStrictEnergyHandler(stack) && potentialConversionSupplier.apply(stack).isZero();
         }, stack -> {
-            if (fillInsertCheck(energyContainer, stack)) {
+            if (fillInsertCheck(stack)) {
                 return true;
             }
             FloatingLong conversion = potentialConversionSupplier.apply(stack);
@@ -67,7 +67,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      */
     public static EnergyInventorySlot fill(IEnergyContainer energyContainer, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
-        return new EnergyInventorySlot(energyContainer, stack -> !EnergyCompatUtils.hasStrictEnergyHandler(stack), stack -> fillInsertCheck(energyContainer, stack),
+        return new EnergyInventorySlot(energyContainer, stack -> !EnergyCompatUtils.hasStrictEnergyHandler(stack), EnergyInventorySlot::fillInsertCheck,
               EnergyCompatUtils::hasStrictEnergyHandler, inventory, x, y);
     }
 
@@ -99,13 +99,12 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         return new EnergyInventorySlot(energyContainer, insertPredicate.negate(), insertPredicate, EnergyCompatUtils::hasStrictEnergyHandler, inventory, x, y);
     }
 
-    private static boolean fillInsertCheck(IEnergyContainer energyContainer, ItemStack stack) {
+    private static boolean fillInsertCheck(ItemStack stack) {
         IStrictEnergyHandler itemHandler = EnergyCompatUtils.getStrictEnergyHandler(stack);
         if (itemHandler != null) {
             for (int container = 0; container < itemHandler.getEnergyContainerCount(); container++) {
                 FloatingLong energyInContainer = itemHandler.getEnergy(container);
                 if (!energyInContainer.isZero()) {
-                    // if the item has any contained energy, allow insertion
                     return true;
                 }
             }

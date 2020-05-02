@@ -51,10 +51,6 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
         if (structure.volLength % 2 != 1 || structure.volWidth % 2 != 1) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH);
         }
-        int innerRadius = (Math.min(structure.volLength, structure.volWidth) - 3) / 2;
-        if (innerRadius < Math.ceil((structure.volHeight - 2) / 4)) {
-            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_TOO_NARROW);
-        }
         int centerX = structure.minLocation.x + (structure.volLength - 1) / 2;
         int centerZ = structure.minLocation.z + (structure.volWidth - 1) / 2;
 
@@ -91,6 +87,12 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
         //Terminate if complex doesn't exist
         if (complex == null) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_COMPLEX);
+        }
+
+        int rotors = complex.y - structure.minLocation.y + 1;
+        int innerRadius = (Math.min(structure.volLength, structure.volWidth) - 3) / 2;
+        if (innerRadius < rotors / 4) {
+            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_TOO_NARROW);
         }
 
         //Make sure a flat, horizontal plane of dispersers exists within the multiblock around the complex

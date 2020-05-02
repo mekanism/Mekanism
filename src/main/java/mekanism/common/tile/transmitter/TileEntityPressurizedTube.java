@@ -154,7 +154,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
               TransmissionType.checkTransmissionType(transmitter, TransmissionType.GAS)).isPresent()) {
             return false;
         }
-        return CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
+        return isAcceptorAndListen(tile, side, Capabilities.GAS_HANDLER_CAPABILITY);
     }
 
     @Override

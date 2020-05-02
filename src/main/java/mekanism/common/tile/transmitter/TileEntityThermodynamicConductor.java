@@ -91,7 +91,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
+        return isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER_CAPABILITY);
     }
 
     @Override

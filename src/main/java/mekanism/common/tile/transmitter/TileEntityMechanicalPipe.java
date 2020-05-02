@@ -155,7 +155,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
               TransmissionType.checkTransmissionType(transmitter, TransmissionType.FLUID)).isPresent()) {
             return false;
         }
-        return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
+        return isAcceptorAndListen(tile, side, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
     }
 
     @Override

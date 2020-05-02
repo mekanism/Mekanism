@@ -46,6 +46,8 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntitySidedPipe extends CapabilityTileEntity implements IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
@@ -214,6 +216,28 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
     public abstract TransmitterType getTransmitterType();
 
     public abstract boolean isValidAcceptor(TileEntity tile, Direction side);
+
+    //TODO - V10: Rewrite this to not be as "directly" needed/be less of a "patch".
+    // Ideally we will end up instead having it so that all targets are fully cached rather than
+    // just registering a listener and "forgetting" about it
+    protected boolean isAcceptorAndListen(TileEntity tile, Direction side, Capability<?> capability) {
+        LazyOptional<?> lazyOptional = CapabilityUtils.getCapability(tile, capability, side.getOpposite());
+        if (lazyOptional.isPresent()) {
+            //If the capability is present
+            if (!isRemote()) {
+                //And we are on the server, add a listener so that once it gets invalidated we recheck that side
+                // assuming that the world and position is still loaded and our tile has not been removed
+                BlockPos pos = tile.getPos();
+                lazyOptional.addListener(invalidated -> {
+                    if (!isRemoved() && world != null && world.isBlockPresent(pos)) {
+                        refreshConnections(side);
+                    }
+                });
+            }
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public boolean canConnectMutual(Direction side, @Nullable TileEntity cachedTile) {
