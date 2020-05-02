@@ -168,6 +168,16 @@ public class QIOFrequency extends Frequency {
     }
 
     @Override
+    public int hashCode() {
+        int code = super.hashCode();
+        code = 31 * code + Long.hashCode(totalCount);
+        code = 31 * code + Long.hashCode(totalCountCapacity);
+        code = 31 * code + itemDataMap.size();
+        code = 31 * code + totalTypeCapacity;
+        return code;
+    }
+
+    @Override
     public void write(PacketBuffer buf) {
         super.write(buf);
         buf.writeVarLong(totalCount);

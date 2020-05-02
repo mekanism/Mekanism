@@ -8,30 +8,28 @@ import mekanism.common.frequency.FrequencyType;
 import mekanism.common.frequency.IFrequencyItem;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;
-import mekanism.common.item.ItemPortableItemDashboard;
+import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class PortableItemDashboardContainer extends QIOItemViewerContainer {
+public class PortableQIODashboardContainer extends QIOItemViewerContainer {
 
     protected Hand hand;
     protected ItemStack stack;
 
-    public PortableItemDashboardContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack) {
-        super(MekanismContainerTypes.PORTABLE_ITEM_DASHBOARD, id, inv);
+    public PortableQIODashboardContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack) {
+        super(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, id, inv);
         this.hand = hand;
         this.stack = stack;
         addSlotsAndOpen();
     }
 
-    public PortableItemDashboardContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, buf.readEnumValue(Hand.class), MekanismItemContainer.getStackFromBuffer(buf, ItemPortableItemDashboard.class));
+    public PortableQIODashboardContainer(int id, PlayerInventory inv, PacketBuffer buf) {
+        this(id, inv, buf.readEnumValue(Hand.class), MekanismItemContainer.getStackFromBuffer(buf, ItemPortableQIODashboard.class));
     }
 
     public Hand getHand() {
@@ -43,8 +41,8 @@ public class PortableItemDashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    public PortableItemDashboardContainer recreate() {
-        PortableItemDashboardContainer container = new PortableItemDashboardContainer(windowId, inv, hand, stack);
+    public PortableQIODashboardContainer recreate() {
+        PortableQIODashboardContainer container = new PortableQIODashboardContainer(windowId, inv, hand, stack);
         sync(container);
         return container;
     }
@@ -74,11 +72,6 @@ public class PortableItemDashboardContainer extends QIOItemViewerContainer {
                 @Override
                 public boolean canTakeStack(PlayerEntity player) {
                     return false;
-                }
-                @Override
-                @OnlyIn(Dist.CLIENT)
-                public boolean isEnabled() {
-                   return false;
                 }
             };
         }

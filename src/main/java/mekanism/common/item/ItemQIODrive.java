@@ -28,9 +28,9 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         DriveMetadata meta = DriveMetadata.load(stack);
-        tooltip.add(MekanismLang.QIO_ITEMS.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+        tooltip.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
               QIOFrequency.formatItemCount(meta.getCount()), QIOFrequency.formatItemCount(getCountCapacity(stack))));
-        tooltip.add(MekanismLang.QIO_ITEMS.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+        tooltip.add(MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
             QIOFrequency.formatItemCount(meta.getTypes()), QIOFrequency.formatItemCount(getTypeCapacity(stack))));
     }
 

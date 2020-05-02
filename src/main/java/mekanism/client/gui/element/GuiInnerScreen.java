@@ -13,6 +13,7 @@ public class GuiInnerScreen extends GuiScalableElement {
     public static final ResourceLocation SCREEN = MekanismUtils.getResource(ResourceType.GUI, "inner_screen.png");
 
     private Supplier<List<ITextComponent>> renderStrings;
+    private Supplier<List<ITextComponent>> tooltipStrings;
 
     private boolean centerY;
     private int spacing = 1;
@@ -27,6 +28,12 @@ public class GuiInnerScreen extends GuiScalableElement {
         this(gui, x, y, width, height);
         this.renderStrings = renderStrings;
         defaultFormat();
+    }
+
+    public GuiInnerScreen tooltip(Supplier<List<ITextComponent>> tooltipStrings) {
+        this.tooltipStrings = tooltipStrings;
+        active = true;
+        return this;
     }
 
     public GuiInnerScreen spacing(int spacing) {
@@ -73,6 +80,16 @@ public class GuiInnerScreen extends GuiScalableElement {
                 drawText(text, relativeX + padding, startY);
                 startY += 8 + spacing;
             }
+        }
+    }
+
+    @Override
+    public void renderToolTip(int mouseX, int mouseY) {
+        if (tooltipStrings != null) {
+            List<ITextComponent> list = tooltipStrings.get();
+            if (list == null || list.isEmpty())
+                return;
+            displayTooltips(list, mouseX, mouseY);
         }
     }
 

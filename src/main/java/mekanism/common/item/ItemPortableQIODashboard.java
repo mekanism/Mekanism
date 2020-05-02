@@ -7,7 +7,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.IGuiItem;
 import mekanism.common.frequency.IFrequencyItem;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.item.PortableItemDashboardContainer;
+import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,9 +21,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class ItemPortableItemDashboard extends Item implements IFrequencyItem, IGuiItem {
+public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem {
 
-    public ItemPortableItemDashboard(Properties properties) {
+    public ItemPortableQIODashboard(Properties properties) {
         super(properties.maxStackSize(1));
     }
 
@@ -50,6 +50,6 @@ public class ItemPortableItemDashboard extends Item implements IFrequencyItem, I
 
     @Override
     public INamedContainerProvider getContainerProvider(ItemStack stack, Hand hand) {
-        return new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PortableItemDashboardContainer(i, inv, hand, stack));
+        return new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PortableQIODashboardContainer(i, inv, hand, stack));
     }
 }

@@ -10,7 +10,7 @@ import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
-import mekanism.common.inventory.container.item.PortableItemDashboardContainer;
+import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.inventory.container.item.QIOFrequencySelectItemContainer;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
@@ -25,6 +25,7 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.ModificationStationContainer;
 import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
+import mekanism.common.inventory.container.tile.QIODriveArrayContainer;
 import mekanism.common.inventory.container.tile.QIOFrequencySelectTileContainer;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
 import mekanism.common.inventory.container.tile.SecurityDeskContainer;
@@ -105,7 +106,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<PortableTeleporterContainer> PORTABLE_TELEPORTER = CONTAINER_TYPES.register(MekanismItems.PORTABLE_TELEPORTER, PortableTeleporterContainer::new);
     public static final ContainerTypeRegistryObject<SeismicReaderContainer> SEISMIC_READER = CONTAINER_TYPES.register(MekanismItems.SEISMIC_READER, SeismicReaderContainer::new);
     public static final ContainerTypeRegistryObject<QIOFrequencySelectItemContainer> QIO_FREQUENCY_SELECT_ITEM = CONTAINER_TYPES.register("qio_frequency_select_item", QIOFrequencySelectItemContainer::new);
-    public static final ContainerTypeRegistryObject<PortableItemDashboardContainer> PORTABLE_ITEM_DASHBOARD = CONTAINER_TYPES.register(MekanismItems.PORTABLE_ITEM_DASHBOARD, PortableItemDashboardContainer::new);
+    public static final ContainerTypeRegistryObject<PortableQIODashboardContainer> PORTABLE_QIO_DASHBOARD = CONTAINER_TYPES.register(MekanismItems.PORTABLE_QIO_DASHBOARD, PortableQIODashboardContainer::new);
 
     //Entity
     public static final ContainerTypeRegistryObject<MainRobitContainer> MAIN_ROBIT = CONTAINER_TYPES.register("main_robit", MainRobitContainer::new);
@@ -152,7 +153,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityTeleporter>> TELEPORTER = CONTAINER_TYPES.register(MekanismBlocks.TELEPORTER, TeleporterContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityThermalEvaporationController>> THERMAL_EVAPORATION_CONTROLLER = CONTAINER_TYPES.register(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, TileEntityThermalEvaporationController.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> ANTIPROTONIC_NUCLEOSYNTHESIZER = CONTAINER_TYPES.register(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, AntiprotonicNucleosynthesizerContainer::new);
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIODriveArray>> QIO_DRIVE_ARRAY = CONTAINER_TYPES.register(MekanismBlocks.QIO_DRIVE_ARRAY, TileEntityQIODriveArray.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIODriveArray>> QIO_DRIVE_ARRAY = CONTAINER_TYPES.register(MekanismBlocks.QIO_DRIVE_ARRAY, QIODriveArrayContainer::new);
 
     //Named
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFactory<?>>> FACTORY = CONTAINER_TYPES.register("factory", FactoryContainer::new);

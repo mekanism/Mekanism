@@ -37,8 +37,18 @@ public enum MekanismLang implements ILangEntry {
     //QIO stuff
     SET_FREQUENCY("qio", "set_frequency"),
     QIO_FREQUENCY_SELECT("qio", "qio_frequency_select"),
+    QIO_ITEMS_DETAIL("qio", "items_detail"),
+    QIO_TYPES_DETAIL("qio", "types_detail"),
     QIO_ITEMS("qio", "items"),
     QIO_TYPES("qio", "types"),
+    LIST_SORT_NAME_ASCENDING("qio", "sort_name_ascending"),
+    LIST_SORT_NAME_DESCENDING("qio", "sort_name_descending"),
+    LIST_SORT_COUNT_ASCENDING("qio", "sort_count_ascending"),
+    LIST_SORT_COUNT_DESCENDING("qio", "sort_count_descending"),
+    LIST_SORT_COUNT("qio", "sort_count"),
+    LIST_SORT_NAME("qio", "sort_name"),
+    LIST_SEARCH("qio", "list_search"),
+    LIST_SORT("qio", "list_sort"),
     //JEI
     JEI_AMOUNT_WITH_CAPACITY("tooltip", "jei.amount.with.capacity"),
     //Key

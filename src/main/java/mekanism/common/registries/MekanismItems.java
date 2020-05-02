@@ -25,7 +25,7 @@ import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.item.ItemGeigerCounter;
 import mekanism.common.item.ItemModule;
 import mekanism.common.item.ItemNetworkReader;
-import mekanism.common.item.ItemPortableItemDashboard;
+import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProcessedResource;
 import mekanism.common.item.ItemQIODrive;
@@ -74,7 +74,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.register("geiger_counter", ItemGeigerCounter::new);
     public static final ItemRegistryObject<ItemDosimeter> DOSIMETER = ITEMS.register("dosimeter", ItemDosimeter::new);
     public static final ItemRegistryObject<ItemCanteen> CANTEEN = ITEMS.register("canteen", ItemCanteen::new);
-    public static final ItemRegistryObject<ItemPortableItemDashboard> PORTABLE_ITEM_DASHBOARD = ITEMS.register("portable_item_dashboard", ItemPortableItemDashboard::new);
+    public static final ItemRegistryObject<ItemPortableQIODashboard> PORTABLE_QIO_DASHBOARD = ITEMS.register("portable_qio_dashboard", ItemPortableQIODashboard::new);
     public static final ItemRegistryObject<ItemQIODrive> BASE_QIO_DRIVE = registerQIODrive(QIODriveTier.BASE);
     public static final ItemRegistryObject<ItemQIODrive> HYPER_DENSE_QIO_DRIVE = registerQIODrive(QIODriveTier.HYPER_DENSE);
     public static final ItemRegistryObject<ItemQIODrive> TIME_DILATING_QIO_DRIVE = registerQIODrive(QIODriveTier.TIME_DILATING);

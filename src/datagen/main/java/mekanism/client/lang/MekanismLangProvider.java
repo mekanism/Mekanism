@@ -63,7 +63,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.POLONIUM_PELLET, "Polonium Pellet");
         add(MekanismItems.REPROCESSED_FISSILE_FRAGMENT, "Reprocessed Fissile Fragment");
         add(MekanismItems.MODULE_BASE, "Module Base");
-        add(MekanismItems.PORTABLE_ITEM_DASHBOARD, "Portable Item Dashboard");
+        add(MekanismItems.PORTABLE_QIO_DASHBOARD, "Portable QIO Dashboard");
         //Tools/Armor
         add(MekanismItems.GAUGE_DROPPER, "Gauge Dropper");
         add(MekanismItems.DICTIONARY, "Dictionary");
@@ -400,8 +400,18 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //QIO stuff
         add(MekanismLang.SET_FREQUENCY, "Set Frequency");
         add(MekanismLang.QIO_FREQUENCY_SELECT, "QIO Frequency Select");
-        add(MekanismLang.QIO_ITEMS, "Items: %s / %s");
-        add(MekanismLang.QIO_TYPES, "Types: %s / %s");
+        add(MekanismLang.QIO_ITEMS_DETAIL, "Items: %s / %s");
+        add(MekanismLang.QIO_TYPES_DETAIL, "Types: %s / %s");
+        add(MekanismLang.QIO_ITEMS, "Items");
+        add(MekanismLang.QIO_TYPES, "Types");
+        add(MekanismLang.LIST_SORT_NAME_ASCENDING, "Sort items by name in ascending order.");
+        add(MekanismLang.LIST_SORT_NAME_DESCENDING, "Sort items by name in descending order.");
+        add(MekanismLang.LIST_SORT_COUNT_ASCENDING, "Sort items by count in ascending order.");
+        add(MekanismLang.LIST_SORT_COUNT_DESCENDING, "Sort items by count in descending order.");
+        add(MekanismLang.LIST_SORT_COUNT, "Count");
+        add(MekanismLang.LIST_SORT_NAME, "Name");
+        add(MekanismLang.LIST_SEARCH, "Search:");
+        add(MekanismLang.LIST_SORT, "Sort:");
         //JEI
         add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%s / %s mB");
         //Key

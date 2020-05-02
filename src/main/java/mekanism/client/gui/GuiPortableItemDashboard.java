@@ -3,13 +3,13 @@ package mekanism.client.gui;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.frequency.IFrequencyItem;
-import mekanism.common.inventory.container.item.PortableItemDashboardContainer;
+import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiPortableItemDashboard extends GuiQIOItemViewer<PortableItemDashboardContainer> {
+public class GuiPortableItemDashboard extends GuiQIOItemViewer<PortableQIODashboardContainer> {
 
-    public GuiPortableItemDashboard(PortableItemDashboardContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiPortableItemDashboard(PortableQIODashboardContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
     }
@@ -21,13 +21,13 @@ public class GuiPortableItemDashboard extends GuiQIOItemViewer<PortableItemDashb
     }
 
     @Override
-    public GuiQIOItemViewer<PortableItemDashboardContainer> recreate(PortableItemDashboardContainer container) {
+    public GuiQIOItemViewer<PortableQIODashboardContainer> recreate(PortableQIODashboardContainer container) {
         return new GuiPortableItemDashboard(container, playerInventory, title);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawTitleText(getName(), 4);
+        drawTitleText(getName(), 5);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

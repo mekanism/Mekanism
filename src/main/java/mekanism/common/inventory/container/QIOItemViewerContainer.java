@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.transporter.HashedItem;
@@ -22,15 +24,16 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
     public static final int SLOTS_X_MIN = 8, SLOTS_X_MAX = 16, SLOTS_Y_MIN = 2, SLOTS_Y_MAX = 16;
 
-    public static final int SLOTS_START_Y = 40;
+    public static final int SLOTS_START_Y = 43;
     private static final int DOUBLE_CLICK_TRANSFER_DURATION = 20;
 
-    private ListSortType sortType = ListSortType.NAME_ASCENDING;
+    private ListSortType sortType = MekanismConfig.client.qioItemViewerSortType.get();
 
     private Map<HashedItem, Long> cachedInventory = new Object2ObjectOpenHashMap<>();
     private long cachedCountCapacity;
@@ -70,7 +73,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     @Override
     protected int getInventoryYOffset() {
-        return SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 12;
+        return SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 15;
     }
 
     @Override
@@ -226,11 +229,13 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public void setSortType(ListSortType sortType) {
         this.sortType = sortType;
+        MekanismConfig.client.qioItemViewerSortType.set(sortType);
+        MekanismConfig.client.getConfigSpec().save();
         sortItemList();
     }
 
-    public void toggleSortType() {
-        setSortType(sortType.toggle());
+    public ListSortType getSortType() {
+        return sortType;
     }
 
     public List<IScrollableSlot> getQIOItemList() {
@@ -265,6 +270,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         List<IScrollableSlot> list = searchCache.get(query);
         if (list != null) {
             searchList = list;
+            searchQuery = query;
             return;
         }
         list = new ArrayList<>();
@@ -273,6 +279,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 list.add(slot);
             }
         }
+        searchList = list;
+        searchQuery = query;
         searchCache.put(query, searchList);
     }
 
@@ -325,14 +333,16 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public enum ListSortType {
-        NAME_ASCENDING((a, b) -> a.getDisplayName().compareTo(b.getDisplayName())),
-        NAME_DESCENDING((a, b) -> b.getDisplayName().compareTo(a.getDisplayName())),
-        SIZE_ASCENDING((a, b) -> Long.compare(a.getCount(), b.getCount())),
-        SIZE_DESCENDING((a, b) -> Long.compare(b.getCount(), a.getCount()));
+        NAME_ASCENDING(MekanismLang.LIST_SORT_NAME_ASCENDING, (a, b) -> a.getDisplayName().compareTo(b.getDisplayName())),
+        NAME_DESCENDING(MekanismLang.LIST_SORT_NAME_DESCENDING, (a, b) -> b.getDisplayName().compareTo(a.getDisplayName())),
+        SIZE_ASCENDING(MekanismLang.LIST_SORT_COUNT_ASCENDING, (a, b) -> Long.compare(a.getCount(), b.getCount())),
+        SIZE_DESCENDING(MekanismLang.LIST_SORT_COUNT_DESCENDING, (a, b) -> Long.compare(b.getCount(), a.getCount()));
 
+        private ILangEntry langEntry;
         private Comparator<IScrollableSlot> comparator;
 
-        private ListSortType(Comparator<IScrollableSlot> comparator) {
+        private ListSortType(ILangEntry langEntry, Comparator<IScrollableSlot> comparator) {
+            this.langEntry = langEntry;
             this.comparator = comparator;
         }
 
@@ -340,15 +350,16 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             list.sort(comparator);
         }
 
-        public ListSortType toggle() {
-            switch (this) {
-                case NAME_ASCENDING: return NAME_DESCENDING;
-                case NAME_DESCENDING: return NAME_ASCENDING;
-                case SIZE_ASCENDING: return SIZE_DESCENDING;
-                case SIZE_DESCENDING: return SIZE_ASCENDING;
-                default:
-                    return NAME_ASCENDING; // java is annoying
-            }
+        public ITextComponent getTooltip() {
+            return langEntry.translate();
+        }
+
+        public ITextComponent getShortName() {
+            return this == NAME_ASCENDING || this == NAME_DESCENDING ? MekanismLang.LIST_SORT_NAME.translate() : MekanismLang.LIST_SORT_COUNT.translate();
+        }
+
+        public boolean isAscending() {
+            return this == NAME_ASCENDING || this == SIZE_ASCENDING;
         }
     }
 }
