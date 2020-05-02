@@ -39,6 +39,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
 
@@ -90,7 +91,13 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return TransporterUtils.isValidAcceptorOnSide(tile, side);
+        //TODO: Maybe merge this back with TransporterUtils.isValidAcceptorOnSide
+        //return TransporterUtils.isValidAcceptorOnSide(tile, side);
+        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
+              TransmissionType.checkTransmissionType(transmitter, TransmissionType.ITEM)).isPresent()) {
+            return false;
+        }
+        return isAcceptorAndListen(tile, side, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
     @Override

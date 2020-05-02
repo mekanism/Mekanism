@@ -2,6 +2,7 @@ package mekanism.common.integration.energy;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,9 +13,11 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
+import mekanism.common.util.CapabilityUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -65,6 +68,35 @@ public class EnergyCompatUtils {
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.isUsable() && energyCompat.isCapabilityPresent(provider, side)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Utility method for universal cables to perform a similar function to TileEntitySidedPipe#isAcceptorAndListen
+     *
+     * @apiNote This is a helper specifically for universal cables and is likely to be removed/changed in V10.
+     */
+    @Deprecated//TODO - V10: Re-evaluate this
+    public static boolean hasStrictEnergyHandlerAndListen(TileEntity tile, Direction side, Consumer<BlockPos> listener) {
+        if (tile != null && tile.getWorld() != null) {
+            if (tile.getWorld().isRemote()) {
+                //If we are on the client we don't end up adding any invalidation listeners
+                // so just fallback to the normal checks
+                return hasStrictEnergyHandler((ICapabilityProvider) tile, side);
+            }
+            for (IEnergyCompat energyCompat : energyCompats) {
+                if (energyCompat.isUsable()) {
+                    //Note: Capability should not be null due to us validating the compat is usable
+                    LazyOptional<?> lazyOptional = CapabilityUtils.getCapability(tile, energyCompat.getCapability(), side);
+                    if (lazyOptional.isPresent()) {
+                        BlockPos pos = tile.getPos();
+                        //If the capability is present add a listener so that once it gets invalidated we recheck that side
+                        lazyOptional.addListener(invalidated -> listener.accept(pos));
+                        return true;
+                    }
+                }
             }
         }
         return false;
