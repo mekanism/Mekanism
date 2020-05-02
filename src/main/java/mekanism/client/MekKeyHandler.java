@@ -41,20 +41,26 @@ public abstract class MekKeyHandler {
         if (keyBinding.isKeyDown()) {
             return true;
         }
-        InputMappings.Input key = keyBinding.getKey();
+        if (keyBinding.getKeyConflictContext().isActive() && keyBinding.getKeyModifier().isActive(keyBinding.getKeyConflictContext())) {
+            //Manually check in case keyBinding#pressed just never got a chance to be updated
+            return isKeyPressed(keyBinding);
+        }
         //If we failed, due to us being a key modifier as our key, check the old way
-        if (KeyModifier.isKeyCodeModifier(key)) {
-            int keyCode = key.getKeyCode();
-            if (keyCode != InputMappings.INPUT_INVALID.getKeyCode()) {
-                long windowHandle = Minecraft.getInstance().getMainWindow().getHandle();
-                try {
-                    if (key.getType() == InputMappings.Type.KEYSYM) {
-                        return InputMappings.isKeyDown(windowHandle, keyCode);
-                    } else if (key.getType() == InputMappings.Type.MOUSE) {
-                        return GLFW.glfwGetMouseButton(windowHandle, keyCode) == GLFW.GLFW_PRESS;
-                    }
-                } catch (Exception ignored) {
+        return KeyModifier.isKeyCodeModifier(keyBinding.getKey()) && isKeyPressed(keyBinding);
+    }
+
+    private static boolean isKeyPressed(KeyBinding keyBinding) {
+        InputMappings.Input key = keyBinding.getKey();
+        int keyCode = key.getKeyCode();
+        if (keyCode != InputMappings.INPUT_INVALID.getKeyCode()) {
+            long windowHandle = Minecraft.getInstance().getMainWindow().getHandle();
+            try {
+                if (key.getType() == InputMappings.Type.KEYSYM) {
+                    return InputMappings.isKeyDown(windowHandle, keyCode);
+                } else if (key.getType() == InputMappings.Type.MOUSE) {
+                    return GLFW.glfwGetMouseButton(windowHandle, keyCode) == GLFW.GLFW_PRESS;
                 }
+            } catch (Exception ignored) {
             }
         }
         return false;

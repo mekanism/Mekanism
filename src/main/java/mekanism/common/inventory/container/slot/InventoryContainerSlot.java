@@ -49,7 +49,6 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     @Nonnull
     @Override
     public ItemStack getStack() {
-        //TODO: Does this need to return a copy? Depends on if this getStack is allowed to be modified
         return slot.getStack();
     }
 
@@ -61,7 +60,6 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Override
     public void onSlotChange(@Nonnull ItemStack current, @Nonnull ItemStack newStack) {
-        //TODO: should we call: slot.onContentsChanged();
     }
 
     @Override
@@ -71,12 +69,11 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Override
     public int getItemStackLimit(@Nonnull ItemStack stack) {
-        //TODO: This logic is a lot simpler than the one in SlotItemHandler, is there some case we are missing?
         return slot.getLimit(stack);
     }
 
     @Override
-    public boolean canTakeStack(PlayerEntity player) {
+    public boolean canTakeStack(@Nonnull PlayerEntity player) {
         return !slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty();
     }
 

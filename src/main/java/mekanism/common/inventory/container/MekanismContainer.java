@@ -45,6 +45,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.fluids.FluidStack;
 
 public abstract class MekanismContainer extends Container {
@@ -67,8 +68,13 @@ public abstract class MekanismContainer extends Container {
 
     @Nonnull
     @Override
-    protected Slot addSlot(Slot slot) {
-        slot = super.addSlot(slot);
+    protected Slot addSlot(@Nonnull Slot slot) {
+        //Manually handle the code that is in super.addSlot so that we do not end up adding extra elements to
+        // inventoryItemStacks as we handle the tracking/sync changing via the below track call. This way we are
+        // able to minimize the amount of overhead that we end up with due to keeping track of the stack in SyncableItemStack
+        slot.slotNumber = inventorySlots.size();
+        inventorySlots.add(slot);
+        track(SyncableItemStack.create(slot::getStack, slot::putStack));
         if (slot instanceof InventoryContainerSlot) {
             inventoryContainerSlots.add((InventoryContainerSlot) slot);
         } else if (slot instanceof ArmorSlot) {
@@ -80,7 +86,7 @@ public abstract class MekanismContainer extends Container {
         } else if (slot instanceof OffhandSlot) {
             offhandSlots.add((OffhandSlot) slot);
         }
-        //TODO: Should we add a warning if it is not one of the above. Would currently get thrown by personal chest item
+        //TODO: Should we add a warning if it is not one of the above
         return slot;
     }
 
@@ -238,6 +244,15 @@ public abstract class MekanismContainer extends Container {
         trackedData.add(data);
     }
 
+    @Nonnull
+    @Override
+    protected IntReferenceHolder trackInt(@Nonnull IntReferenceHolder referenceHolder) {
+        //Override vanilla's int tracking so that if for some reason this method gets called for our container
+        // it properly adds it to our tracking
+        track(SyncableInt.create(referenceHolder::get, referenceHolder::set));
+        return referenceHolder;
+    }
+
     public void trackArray(boolean[] arrayIn) {
         for (int i = 0; i < arrayIn.length; i++) {
             track(SyncableBoolean.create(arrayIn, i));
@@ -390,7 +405,9 @@ public abstract class MekanismContainer extends Container {
 
     @Override
     public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+        //Note: We do not call super.detectAndSendChanges() because we intercept and track the
+        // stack changes and int changes ourselves. This allows for us to have more accurate syncing
+        // and also batch various sync packets
         if (!listeners.isEmpty()) {
             //Only check tracked data for changes if we actually have any listeners
             List<PropertyData> dirtyData = new ArrayList<>();

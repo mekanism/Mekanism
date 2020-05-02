@@ -20,10 +20,7 @@ public class ItemBlockWindGenerator extends ItemBlockMachine {
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
-            return false;
-        }
-        for (int yPos = 1; yPos <= 4; yPos++) {
+        for (int yPos = 1; yPos < 5; yPos++) {
             BlockPos toCheck = pos.up(yPos);
             if (!MekanismUtils.isValidReplaceableBlock(world, toCheck)) {
                 //If there is not enough room, fail

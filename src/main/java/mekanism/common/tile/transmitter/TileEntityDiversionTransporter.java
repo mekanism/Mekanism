@@ -23,11 +23,31 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 
     public TileEntityDiversionTransporter() {
         super(MekanismBlocks.DIVERSION_TRANSPORTER);
+        redstoneReactive = false;
     }
 
     @Override
     public TransmitterType getTransmitterType() {
         return TransmitterType.DIVERSION_TRANSPORTER;
+    }
+
+    @Override
+    public boolean handlesRedstone() {
+        return false;
+    }
+
+    @Override
+    public void onNeighborBlockChange(Direction side) {
+        //Override onNeighborBlockChange to recheck all connections as our connections
+        // might have changed due to redstone
+        byte current = getAllCurrentConnections();
+        refreshConnections();
+        if (current != getAllCurrentConnections()) {
+            //Has to be markDirtyTransmitters instead of notify tile change
+            // or it will not properly tell the neighboring connections that
+            // it is no longer valid
+            markDirtyTransmitters();
+        }
     }
 
     @Override
