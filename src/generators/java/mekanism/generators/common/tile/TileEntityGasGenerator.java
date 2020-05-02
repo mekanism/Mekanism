@@ -22,6 +22,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.util.MekanismUtils;
@@ -130,6 +131,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         return Math.round(gasUsedLastTick * 100) / 100D;
     }
 
+    public int getMaxBurnTicks() {
+        return maxBurnTicks;
+    }
+
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getCapacity());
@@ -141,6 +146,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         container.track(SyncableFloatingLong.create(this::getGenerationRate, value -> generationRate = value));
         container.track(SyncableFloatingLong.create(() -> output, value -> output = value));
         container.track(SyncableDouble.create(this::getUsed, value -> gasUsedLastTick = value));
+        container.track(SyncableInt.create(this::getMaxBurnTicks, value -> maxBurnTicks = value));
     }
 
     //Implementation of gas tank that on no longer being empty updates the output rate of this generator
