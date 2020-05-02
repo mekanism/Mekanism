@@ -180,6 +180,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public void handleBatchUpdate(Map<HashedItem, Long> itemMap, long countCapacity, int typeCapacity) {
+        System.out.println("HANDLE BATCH");
         cachedInventory = itemMap;
         cachedCountCapacity = countCapacity;
         cachedTypeCapacity = typeCapacity;
@@ -255,7 +256,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public int getTotalTypes() {
-        return itemList.size();
+        return itemList != null ? itemList.size() : 0;
     }
 
     public ItemStack insertIntoPlayerInventory(ItemStack stack) {

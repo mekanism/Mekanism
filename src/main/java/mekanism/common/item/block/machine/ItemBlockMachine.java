@@ -63,7 +63,9 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
                 tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
             }
         }
-        StorageUtils.addStoredEnergy(stack, tooltip, false);
+        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+            StorageUtils.addStoredEnergy(stack, tooltip, false);
+        }
         //TODO: Make this support "multiple" tanks, and probably expose the tank via capabilities
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluidStack.isEmpty()) {

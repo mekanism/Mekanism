@@ -42,9 +42,10 @@ import mekanism.client.gui.GuiOredictionificator;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPersonalChestItem;
 import mekanism.client.gui.GuiPersonalChestTile;
-import mekanism.client.gui.GuiPortableItemDashboard;
+import mekanism.client.gui.GuiPortableQIODashboard;
 import mekanism.client.gui.GuiPortableTeleporter;
 import mekanism.client.gui.GuiPrecisionSawmill;
+import mekanism.client.gui.GuiQIODashboard;
 import mekanism.client.gui.GuiQIODriveArray;
 import mekanism.client.gui.GuiQIOItemFrequencySelect;
 import mekanism.client.gui.GuiQIOTileFrequencySelect;
@@ -253,7 +254,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PORTABLE_TELEPORTER, GuiPortableTeleporter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SEISMIC_READER, GuiSeismicReader::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_FREQUENCY_SELECT_ITEM, GuiQIOItemFrequencySelect::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, GuiPortableItemDashboard::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, GuiPortableQIODashboard::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.MAIN_ROBIT, GuiRobitMain::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.INVENTORY_ROBIT, GuiRobitInventory::new);
@@ -299,6 +300,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.TELEPORTER, GuiTeleporter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER, GuiThermalEvaporationController::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_DRIVE_ARRAY, GuiQIODriveArray::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_DASHBOARD, GuiQIODashboard::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FACTORY, GuiFactory::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.GAS_TANK, GuiGasTank::new);

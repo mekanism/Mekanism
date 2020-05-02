@@ -25,6 +25,7 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.ModificationStationContainer;
 import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
+import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.inventory.container.tile.QIODriveArrayContainer;
 import mekanism.common.inventory.container.tile.QIOFrequencySelectTileContainer;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
@@ -154,6 +155,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityThermalEvaporationController>> THERMAL_EVAPORATION_CONTROLLER = CONTAINER_TYPES.register(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, TileEntityThermalEvaporationController.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> ANTIPROTONIC_NUCLEOSYNTHESIZER = CONTAINER_TYPES.register(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, AntiprotonicNucleosynthesizerContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIODriveArray>> QIO_DRIVE_ARRAY = CONTAINER_TYPES.register(MekanismBlocks.QIO_DRIVE_ARRAY, QIODriveArrayContainer::new);
+    public static final ContainerTypeRegistryObject<QIODashboardContainer> QIO_DASHBOARD = CONTAINER_TYPES.register(MekanismBlocks.QIO_DASHBOARD, QIODashboardContainer::new);
 
     //Named
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFactory<?>>> FACTORY = CONTAINER_TYPES.register("factory", FactoryContainer::new);

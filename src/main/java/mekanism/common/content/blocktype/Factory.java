@@ -10,7 +10,7 @@ import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
@@ -22,7 +22,7 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
 
     private FactoryMachine<?> origMachine;
 
-    public Factory(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<? extends MekanismTileContainer<?>>> containerRegistrar, FactoryMachine<?> origMachine, FactoryTier tier) {
+    public Factory(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<? extends MekanismContainer>> containerRegistrar, FactoryMachine<?> origMachine, FactoryTier tier) {
         super(tileEntityRegistrar, MekanismLang.DESCRIPTION_FACTORY, origMachine.get(AttributeFactoryType.class).getFactoryType());
         this.origMachine = origMachine;
         setMachineData();
@@ -51,7 +51,7 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
               Supplier<?> containerRegistrar, FactoryMachine<?> origMachine, FactoryTier tier) {
             // this is dirty but unfortunately necessary for things to play right
             return new FactoryBuilder<>(new Factory<>((Supplier<TileEntityTypeRegistryObject<TILE>>) tileEntityRegistrar,
-                  (Supplier<ContainerTypeRegistryObject<? extends MekanismTileContainer<?>>>) containerRegistrar, origMachine, tier));
+                  (Supplier<ContainerTypeRegistryObject<? extends MekanismContainer>>) containerRegistrar, origMachine, tier));
         }
     }
 }

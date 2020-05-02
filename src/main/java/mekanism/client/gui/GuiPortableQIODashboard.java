@@ -7,9 +7,9 @@ import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiPortableItemDashboard extends GuiQIOItemViewer<PortableQIODashboardContainer> {
+public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboardContainer> {
 
-    public GuiPortableItemDashboard(PortableQIODashboardContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiPortableQIODashboard(PortableQIODashboardContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
     }
@@ -22,7 +22,7 @@ public class GuiPortableItemDashboard extends GuiQIOItemViewer<PortableQIODashbo
 
     @Override
     public GuiQIOItemViewer<PortableQIODashboardContainer> recreate(PortableQIODashboardContainer container) {
-        return new GuiPortableItemDashboard(container, playerInventory, title);
+        return new GuiPortableQIODashboard(container, playerInventory, title);
     }
 
     @Override

@@ -235,6 +235,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.INDUSTRIAL_ALARM, "Industrial Alarm");
         add(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, "Antiprotonic Nucleosynthesizer");
         add(MekanismBlocks.QIO_DRIVE_ARRAY, "QIO Drive Array");
+        add(MekanismBlocks.QIO_DASHBOARD, "QIO Dashboard");
         //Bounding block (I don't think these lang keys actually will ever be used, but set them just in case)
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         add(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, "Advanced Bounding Block");
@@ -923,6 +924,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ROBIT_DROP_PICKUP, "Drop pickup: %s");
         //Descriptions
         add(MekanismLang.DESCRIPTION_QIO_DRIVE_ARRAY, "The foundation of any Quantum Item Orchestration system. QIO Drives are stored here.");
+        add(MekanismLang.DESCRIPTION_QIO_DASHBOARD, "A placeable monitor used to access an Quantum Item Orchestration system's contents.");
         add(MekanismLang.DESCRIPTION_SEISMIC_READER, "A portable machine that uses seismic vibrations to provide information on differing layers of the world.");
         add(MekanismLang.DESCRIPTION_BIN, "A block used to store large quantities of a single type of item.");
         add(MekanismLang.DESCRIPTION_TELEPORTER_FRAME, "The frame used to construct the Teleporter multiblock, allowing a portal to be generated within the structure.");

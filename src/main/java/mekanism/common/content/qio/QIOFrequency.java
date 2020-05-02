@@ -3,6 +3,7 @@ package mekanism.common.content.qio;
 import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -26,8 +27,8 @@ public class QIOFrequency extends Frequency {
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     private static final Random rand = new Random();
 
-    private Map<QIODriveKey, QIODriveData> driveMap = new Object2ObjectOpenHashMap<>();
-    private Map<HashedItem, QIOItemTypeData> itemDataMap = new Object2ObjectOpenHashMap<>();
+    private Map<QIODriveKey, QIODriveData> driveMap = new LinkedHashMap<>();
+    private Map<HashedItem, QIOItemTypeData> itemDataMap = new LinkedHashMap<>();
     private Set<IQIODriveHolder> driveHolders = new HashSet<>();
 
     private Set<HashedItem> updatedItems = new HashSet<>();

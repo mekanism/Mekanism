@@ -35,6 +35,7 @@ public final class BlockShapes {
     public static final VoxelShape[] SECURITY_DESK = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] GAS_TANK = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] INDUSTRIAL_ALARM = new VoxelShape[EnumUtils.DIRECTIONS.length];
+    public static final VoxelShape[] QIO_DASHBOARD = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
@@ -632,7 +633,11 @@ public final class BlockShapes {
         setShape(VoxelShapeUtils.combine(
             makeCuboidShape(5, 15, 5, 11, 16, 11),
             makeCuboidShape(6, 11, 6, 10, 15, 10)
-      ), INDUSTRIAL_ALARM, true);
+        ), INDUSTRIAL_ALARM, true);
+
+        setShape(VoxelShapeUtils.combine(
+            makeCuboidShape(1, 15, 1, 15, 16, 15)
+        ), QIO_DASHBOARD, true);
 
         //TODO: Don't bother rotating the shape, it is the same for all rotations
         setShape(makeCuboidShape(2, 0, 2, 14, 16, 14), FLUID_TANK);

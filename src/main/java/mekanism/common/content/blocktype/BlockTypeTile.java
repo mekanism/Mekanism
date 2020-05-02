@@ -11,8 +11,8 @@ import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -49,7 +49,7 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
             return with(new AttributeSound(soundRegistrar));
         }
 
-        public T withGui(Supplier<ContainerTypeRegistryObject<? extends MekanismTileContainer<?>>> containerRegistrar) {
+        public T withGui(Supplier<ContainerTypeRegistryObject<? extends MekanismContainer>> containerRegistrar) {
             return with(new AttributeGui(containerRegistrar));
         }
 

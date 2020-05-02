@@ -46,6 +46,7 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.ModificationStationContainer;
 import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
+import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
 import mekanism.common.inventory.container.tile.SecurityDeskContainer;
 import mekanism.common.inventory.container.tile.TeleporterContainer;
@@ -101,6 +102,7 @@ import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 import mekanism.common.tile.TileEntityPurificationChamber;
+import mekanism.common.tile.TileEntityQIODashboard;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.tile.TileEntityResistiveHeater;
@@ -448,6 +450,14 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.QIO_DRIVE_ARRAY, MekanismLang.DESCRIPTION_QIO_DRIVE_ARRAY)
           .withGui(() -> MekanismContainerTypes.QIO_DRIVE_ARRAY)
           .with(new AttributeStateFacing(), new AttributeSecurity(), new AttributeInventory())
+          .build();
+    // QIO Dashboard
+    public static final BlockTypeTile<TileEntityQIODashboard> QIO_DASHBOARD = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.QIO_DASHBOARD, MekanismLang.DESCRIPTION_QIO_DASHBOARD)
+          .withGui(() -> MekanismContainerTypes.QIO_DASHBOARD)
+          .withCustomShape(BlockShapes.QIO_DASHBOARD)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeStateActive())
+          .withCustomContainerProvider((tile) -> (i, inv, player) -> new QIODashboardContainer(i, inv, (TileEntityQIODashboard) tile))
           .build();
 
     // Dynamic Tank
