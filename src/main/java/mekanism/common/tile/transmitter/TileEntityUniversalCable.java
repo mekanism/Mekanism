@@ -163,7 +163,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
             return false;
         }
         return EnergyCompatUtils.hasStrictEnergyHandlerAndListen(tile, side.getOpposite(), pos -> {
-            if (world != null && world.isBlockPresent(pos)) {
+            if (!isRemoved() && world != null && world.isBlockPresent(pos)) {
                 refreshConnections(side);
             }
         });

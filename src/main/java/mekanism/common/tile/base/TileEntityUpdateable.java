@@ -109,6 +109,8 @@ public abstract class TileEntityUpdateable extends TileEntity {
     public void sendUpdatePacket(TileEntity tracking) {
         if (isRemote()) {
             Mekanism.logger.warn("Update packet call requested from client side", new Exception());
+        } else if (isRemoved()) {
+            Mekanism.logger.warn("Update packet call requested for removed tile", new Exception());
         } else {
             //Note: We use our own update packet/channel to avoid chunk trashing and minecraft attempting to rerender
             // the entire chunk when most often we are just updating a TileEntityRenderer, so the chunk itself

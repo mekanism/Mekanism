@@ -226,10 +226,10 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
             //If the capability is present
             if (!isRemote()) {
                 //And we are on the server, add a listener so that once it gets invalidated we recheck that side
-                // assuming that the world and position is still loaded
+                // assuming that the world and position is still loaded and our tile has not been removed
                 BlockPos pos = tile.getPos();
                 lazyOptional.addListener(invalidated -> {
-                    if (world != null && world.isBlockPresent(pos)) {
+                    if (!isRemoved() && world != null && world.isBlockPresent(pos)) {
                         refreshConnections(side);
                     }
                 });
