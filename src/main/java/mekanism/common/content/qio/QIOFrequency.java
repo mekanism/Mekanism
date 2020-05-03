@@ -19,6 +19,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.PacketQIOItemViewerGuiSync;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -221,7 +222,7 @@ public class QIOFrequency extends Frequency {
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        color = EnumColor.byIndexStatic(nbtTags.getInt(NBTConstants.COLOR));
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, (value) -> color = value);
     }
 
     public void addDrive(QIODriveKey key) {

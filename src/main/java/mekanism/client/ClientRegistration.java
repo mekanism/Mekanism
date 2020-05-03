@@ -386,7 +386,7 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
         ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), (state, world, pos, tintIndex) -> {
-            TileEntity tile = world.getTileEntity(pos);
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof TileEntityQIOComponent) {
                 EnumColor color = ((TileEntityQIOComponent) tile).getColor();
                 return color != null ? MekanismRenderer.getColorARGB(color, 1) : -1;

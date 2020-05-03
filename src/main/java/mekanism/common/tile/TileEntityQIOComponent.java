@@ -48,7 +48,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         super.handleUpdateTag(tag);
         EnumColor prev = lastColor;
         if (tag.contains(NBTConstants.COLOR)) {
-            lastColor = EnumColor.values()[tag.getInt(NBTConstants.COLOR)];
+            lastColor = EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR));
         } else {
             lastColor = null;
         }

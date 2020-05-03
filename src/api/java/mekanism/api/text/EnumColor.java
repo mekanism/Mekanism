@@ -1,5 +1,6 @@
 package mekanism.api.text;
 
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.MathUtils;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.DyeColor;
@@ -15,7 +16,7 @@ import net.minecraftforge.common.Tags;
  *
  * @author AidanBrady
  */
-public enum EnumColor {
+public enum EnumColor implements IIncrementalEnum<EnumColor> {
     BLACK("\u00a70", APILang.COLOR_BLACK, "Black", "Black", "black", new int[]{0, 0, 0}, TextFormatting.BLACK, DyeColor.BLACK),
     DARK_BLUE("\u00a71", APILang.COLOR_DARK_BLUE, "Blue", "Blue", "blue", new int[]{0, 0, 170}, TextFormatting.DARK_BLUE, DyeColor.BLUE),
     DARK_GREEN("\u00a72", APILang.COLOR_DARK_GREEN, "Green", "Green", "green", new int[]{0, 170, 0}, TextFormatting.DARK_GREEN, DyeColor.GREEN),
@@ -86,14 +87,6 @@ public enum EnumColor {
         return dyeTag;
     }
 
-    public EnumColor increment() {
-        return byIndexStatic(ordinal() + 1);
-    }
-
-    public EnumColor decrement() {
-        return byIndexStatic(ordinal() - 1);
-    }
-
     /**
      * Gets the name of this color with it's color prefix code.
      *
@@ -137,5 +130,10 @@ public enum EnumColor {
 
     public static EnumColor byIndexStatic(int index) {
         return MathUtils.getByIndexMod(COLORS, index);
+    }
+
+    @Override
+    public EnumColor byIndex(int index) {
+        return byIndexStatic(index);
     }
 }

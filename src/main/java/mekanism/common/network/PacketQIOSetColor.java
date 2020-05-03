@@ -46,7 +46,7 @@ public class PacketQIOSetColor {
             if (freq == null || !freq.getOwner().equals(player.getUniqueID())) {
                 return;
             }
-            freq.setColor(message.extra == 0 ? freq.getColor().increment() : freq.getColor().decrement());
+            freq.setColor(message.extra == 0 ? freq.getColor().getNext() : freq.getColor().getPrevious());
             if (message.type == Type.ITEM) {
                 Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(message.currentHand, FrequencyType.QIO, player.getUniqueID(), freq), (ServerPlayerEntity) player);
             }
