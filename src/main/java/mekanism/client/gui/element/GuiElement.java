@@ -1,6 +1,7 @@
 package mekanism.client.gui.element;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
@@ -28,6 +29,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
+    private final List<GuiElement> children = new ArrayList<>();
+
     protected final IGuiWrapper guiObj;
 
     protected boolean playClickSound;
@@ -37,7 +40,20 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         guiObj = gui;
     }
 
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
+    protected void addChild(GuiElement element) {
+        children.add(element);
+    }
+
+    public void onRenderForeground(int mouseX, int mouseY) {
+        renderForeground(mouseX, mouseY);
+        children.forEach(child -> child.renderForeground(mouseX, mouseY));
+    }
+
+    public void renderForeground(int mouseX, int mouseY) {}
+
+    @Override
+    public void renderToolTip(int mouseX, int mouseY) {
+        children.forEach(child -> child.renderToolTip(mouseX, mouseY));
     }
 
     public void displayTooltip(ITextComponent component, int xAxis, int yAxis) {
@@ -46,6 +62,16 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     public void displayTooltips(List<ITextComponent> list, int xAxis, int yAxis) {
         guiObj.displayTooltips(list, xAxis, yAxis);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        boolean ret = false;
+        for (GuiElement element : children) {
+            ret |= element.mouseClicked(mouseX, mouseY, button);
+        }
+        ret |= super.mouseClicked(mouseX, mouseY, button);
+        return ret;
     }
 
     @Override
@@ -107,6 +133,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         drawButton(mouseX, mouseY);
+        children.forEach(child -> child.render(mouseX, mouseY, partialTicks));
     }
 
     //This method exists so that we don't have to rely on having a path to super.renderButton if we want to draw a background button

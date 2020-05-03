@@ -76,7 +76,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // first render general foregrounds
         for (Widget widget : this.buttons) {
             if (widget instanceof GuiElement) {
-                ((GuiElement) widget).renderForeground(mouseX, mouseY, xAxis, yAxis);
+                ((GuiElement) widget).onRenderForeground(mouseX, mouseY);
             }
         }
         // then render tooltips, so there's no clashing

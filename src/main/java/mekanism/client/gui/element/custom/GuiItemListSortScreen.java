@@ -28,8 +28,8 @@ public class GuiItemListSortScreen extends GuiInnerScreen {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
-        super.renderForeground(mouseX, mouseY, xAxis, yAxis);
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
         ListSortType type = sortTypeSupplier.get();
         drawScaledTextScaledBound(type.getShortName(), relativeX + 4, relativeY + 2, screenTextColor(), 30, 0.8F);
     }

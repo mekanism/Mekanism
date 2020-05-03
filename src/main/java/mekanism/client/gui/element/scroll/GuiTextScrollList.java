@@ -55,8 +55,8 @@ public class GuiTextScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
-        super.renderForeground(mouseX, mouseY, xAxis, yAxis);
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
         if (!textEntries.isEmpty()) {
             //Render the text into the entries
             int scrollIndex = getCurrentSelection();

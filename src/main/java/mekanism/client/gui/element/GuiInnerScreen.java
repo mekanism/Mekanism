@@ -66,8 +66,8 @@ public class GuiInnerScreen extends GuiScalableElement {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
-        super.renderForeground(mouseX, mouseY, xAxis, yAxis);
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
 
         if (renderStrings != null) {
             List<ITextComponent> list = renderStrings.get();

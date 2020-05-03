@@ -46,8 +46,8 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
-        super.renderForeground(mouseX, mouseY, xAxis, yAxis);
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
 
         drawScaledCenteredText(MekanismLang.ON.translate(), relativeX + 8, relativeY + 1, 0x101010, 0.5F);
         drawScaledCenteredText(MekanismLang.OFF.translate(), relativeX + 8, relativeY + 10, 0x101010, 0.5F);

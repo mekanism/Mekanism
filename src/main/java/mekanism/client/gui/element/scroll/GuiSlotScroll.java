@@ -1,11 +1,11 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.scroll;
 
 import java.util.List;
 import java.util.function.Supplier;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.scroll.GuiScrollBar;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.ISlotClickHandler;
@@ -60,9 +60,9 @@ public class GuiSlotScroll extends GuiTexturedElement {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
-        super.renderForeground(mouseX, mouseY, xAxis, yAxis);
-
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
+        int xAxis = mouseX - guiObj.getLeft(), yAxis = mouseY - guiObj.getTop();
         int slotX = (xAxis - relativeX) / 18, slotY = (yAxis - relativeY) / 18;
         if (slotX >= 0 && slotY >= 0 && slotX < xSlots && slotY < ySlots) {
             int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;

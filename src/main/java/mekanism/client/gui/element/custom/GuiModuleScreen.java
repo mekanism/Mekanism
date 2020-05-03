@@ -94,8 +94,8 @@ public class GuiModuleScreen extends GuiTexturedElement {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
-        super.renderForeground(mouseX, mouseY, xAxis, yAxis);
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
 
         if (currentModule != null) {
             int startY = relativeY + 4;

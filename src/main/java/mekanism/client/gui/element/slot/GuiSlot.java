@@ -88,7 +88,7 @@ public class GuiSlot extends GuiTexturedElement {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
+    public void renderForeground(int mouseX, int mouseY) {
         if (renderHover && isHovered()) {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
@@ -105,7 +105,7 @@ public class GuiSlot extends GuiTexturedElement {
         }
         if (isHovered()) {
             //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
-            renderToolTip(xAxis, yAxis);
+            renderToolTip(mouseX - guiObj.getLeft(), mouseY - guiObj.getTop());
         }
     }
 

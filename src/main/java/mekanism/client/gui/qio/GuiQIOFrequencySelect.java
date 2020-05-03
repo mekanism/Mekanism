@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiConfirmationDialog;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismButton;
@@ -26,6 +27,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends GuiMekanism<CONTAINER> {
 
@@ -58,6 +60,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
         addButton(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 17, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
+            GuiConfirmationDialog.show(this, new StringTextComponent("Are you sure you want to do this?"), () -> System.out.println("COMPLETE"));
         }));
         addButton(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 119, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();

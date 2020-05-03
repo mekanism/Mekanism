@@ -43,8 +43,8 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
-        super.renderForeground(mouseX, mouseY, xAxis, yAxis);
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
         GasStack gasStack = oreInfo.getInputGas();
         if (!gasStack.isEmpty()) {
             drawString(TextComponentUtil.build(gasStack), 33, 15, screenTextColor());

@@ -61,8 +61,8 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
-        super.renderForeground(mouseX, mouseY, xAxis, yAxis);
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
         // first render text
         for (int i = 0; i < getFocusedElements(); i++) {
@@ -85,7 +85,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
             Upgrade upgrade = upgrades[index];
             int multipliedElement = elementHeight * i;
             if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
-                guiObj.displayTooltip(upgrade.getDescription(), xAxis, yAxis, guiObj.getWidth());
+                guiObj.displayTooltip(upgrade.getDescription(), mouseX - guiObj.getLeft(), mouseY - guiObj.getTop(), guiObj.getWidth());
             }
         }
     }

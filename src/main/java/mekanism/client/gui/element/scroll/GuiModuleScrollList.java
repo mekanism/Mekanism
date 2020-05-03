@@ -92,8 +92,8 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
-        super.renderForeground(mouseX, mouseY, xAxis, yAxis);
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
         ItemStack stack = itemSupplier.get();
         if (!ItemStack.areItemStacksEqual(currentItem, stack)) {
             updateList(stack, false);
@@ -123,7 +123,7 @@ public class GuiModuleScrollList extends GuiScrollList {
             int multipliedElement = elementHeight * i;
             if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
                 ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
-                guiObj.displayTooltip(MekanismLang.MODULE_INSTALLED.translate(t), xAxis, yAxis, guiObj.getWidth());
+                guiObj.displayTooltip(MekanismLang.MODULE_INSTALLED.translate(t), mouseX - guiObj.getLeft(), mouseY - guiObj.getTop(), guiObj.getWidth());
             }
         }
     }

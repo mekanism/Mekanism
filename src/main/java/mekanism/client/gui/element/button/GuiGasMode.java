@@ -40,7 +40,7 @@ public class GuiGasMode extends MekanismImageButton {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
+    public void renderForeground(int mouseX, int mouseY) {
         //Draw the text next to the button
         ITextComponent component = gasModeSupplier.get().getTextComponent();
         int xPos = x - guiObj.getLeft();
@@ -50,6 +50,6 @@ public class GuiGasMode extends MekanismImageButton {
         } else {
             drawScaledText(component, xPos + width + 5, yPos + 1, titleTextColor(), 66);
         }
-        super.renderForeground(mouseX, mouseY, xAxis, yAxis);
+        super.renderForeground(mouseX, mouseY);
     }
 }
