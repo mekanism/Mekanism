@@ -100,9 +100,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                     fluidTank.setStack(net.getBuffer());
                 } else if (fluidTank.isFluidEqual(net.fluidTank.getFluid())) {
                     int amount = net.fluidTank.getFluidAmount();
-                    if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
-                        MekanismUtils.logMismatchedStackSize();
-                    }
+                    MekanismUtils.logMismatchedStackSize(fluidTank.growStack(amount, Action.EXECUTE), amount);
                 }
                 net.fluidTank.setEmpty();
             }
@@ -129,9 +127,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             fluidTank.setStack(fluid.copy());
         } else if (fluidTank.isFluidEqual(fluid)) {
             int amount = fluid.getAmount();
-            if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
-                MekanismUtils.logMismatchedStackSize();
-            }
+            MekanismUtils.logMismatchedStackSize(fluidTank.growStack(amount, Action.EXECUTE), amount);
         }
     }
 
@@ -140,9 +136,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         if (!fluidTank.isEmpty()) {
             int capacity = getCapacityAsInt();
             if (fluidTank.getFluidAmount() > capacity) {
-                if (fluidTank.setStackSize(capacity, Action.EXECUTE) != capacity) {
-                    MekanismUtils.logMismatchedStackSize();
-                }
+                MekanismUtils.logMismatchedStackSize(fluidTank.setStackSize(capacity, Action.EXECUTE), capacity);
             }
         }
     }
@@ -231,9 +225,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 prevTransferAmount = 0;
             } else {
                 prevTransferAmount = tickEmit(fluidTank.getFluid());
-                if (fluidTank.shrinkStack(prevTransferAmount, Action.EXECUTE) != prevTransferAmount) {
-                    MekanismUtils.logMismatchedStackSize();
-                }
+                MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(prevTransferAmount, Action.EXECUTE), prevTransferAmount);
             }
         }
     }

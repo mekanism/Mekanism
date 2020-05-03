@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import com.mojang.authlib.GameProfile;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -101,12 +100,19 @@ public final class MekanismUtils {
 
     public static final Direction[] SIDE_DIRS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
 
-    public static final Map<String, Class<?>> classesFound = new Object2ObjectOpenHashMap<>();
-
     private static final List<UUID> warnedFails = new ArrayList<>();
 
-    public static void logMismatchedStackSize() {
-        Mekanism.logger.error("Stack size changed by a different amount than requested.", new Exception());
+    //TODO - V10: Add an extra optional param to shrink and grow stack that allows for logging if it is mismatched. Defaults to false
+    public static void logMismatchedStackSize(long actual, long expected) {
+        if (expected != actual) {
+            Mekanism.logger.error("Stack size changed by a different amount (" + actual + ") than requested (" + expected + ").", new Exception());
+        }
+    }
+
+    public static void logExpectedZero(FloatingLong actual) {
+        if (!actual.isZero()) {
+            Mekanism.logger.error("Energy value changed by a different amount (" + actual + ") than requested (zero).", new Exception());
+        }
     }
 
     /**

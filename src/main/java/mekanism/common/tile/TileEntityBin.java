@@ -91,9 +91,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 }
                 if (!response.isEmpty() && tier != BinTier.CREATIVE) {
                     int sendingAmount = response.getSendingAmount();
-                    if (binSlot.shrinkStack(sendingAmount, Action.EXECUTE) != sendingAmount) {
-                        MekanismUtils.logMismatchedStackSize();
-                    }
+                    MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(sendingAmount, Action.EXECUTE), sendingAmount);
                 }
                 delayTicks = 10;
             }

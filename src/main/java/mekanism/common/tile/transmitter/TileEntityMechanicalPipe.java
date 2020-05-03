@@ -231,9 +231,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
             FluidNetwork network = getTransmitter().getTransmitterNetwork();
             if (!network.fluidTank.isEmpty() && !lastWrite.isEmpty()) {
                 int amount = lastWrite.getAmount();
-                if (network.fluidTank.shrinkStack(amount, Action.EXECUTE) != amount) {
-                    MekanismUtils.logMismatchedStackSize();
-                }
+                MekanismUtils.logMismatchedStackSize(network.fluidTank.shrinkStack(amount, Action.EXECUTE), amount);
                 buffer.setStack(lastWrite);
             }
         }

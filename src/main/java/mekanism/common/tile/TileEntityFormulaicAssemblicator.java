@@ -347,9 +347,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
             for (IInventorySlot craftingSlot : craftingGridSlots) {
                 if (!craftingSlot.isEmpty()) {
-                    if (craftingSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                        MekanismUtils.logMismatchedStackSize();
-                    }
+                    MekanismUtils.logMismatchedStackSize(craftingSlot.shrinkStack(1, Action.EXECUTE), 1);
                 }
             }
             if (formula != null) {
@@ -392,9 +390,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                         ItemStack stockStack = stockSlot.getStack();
                         if (formula.isIngredientInPos(world, stockStack, i)) {
                             recipeSlot.setStack(StackUtils.size(stockStack, 1));
-                            if (stockSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                                MekanismUtils.logMismatchedStackSize();
-                            }
+                            MekanismUtils.logMismatchedStackSize(stockSlot.shrinkStack(1, Action.EXECUTE), 1);
                             markDirty(false);
                             found = true;
                             break;
@@ -482,13 +478,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                         if (InventoryUtils.areItemsStackable(stockStack, compareStack)) {
                             int newCount = compareStack.getCount() + stockStack.getCount();
                             int newCompareSize = Math.min(maxCompareSize, newCount);
-                            if (compareSlot.setStackSize(newCompareSize, Action.EXECUTE) != newCompareSize) {
-                                MekanismUtils.logMismatchedStackSize();
-                            }
+                            MekanismUtils.logMismatchedStackSize(compareSlot.setStackSize(newCompareSize, Action.EXECUTE), newCompareSize);
                             int newStockSize = Math.max(0, newCount - maxCompareSize);
-                            if (stockSlot.setStackSize(newStockSize, Action.EXECUTE) != newStockSize) {
-                                MekanismUtils.logMismatchedStackSize();
-                            }
+                            MekanismUtils.logMismatchedStackSize(stockSlot.setStackSize(newStockSize, Action.EXECUTE), newStockSize);
                             markDirty(false);
                             return;
                         }

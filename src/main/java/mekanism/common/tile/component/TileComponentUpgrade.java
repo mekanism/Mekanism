@@ -64,9 +64,7 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
                     } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
                         upgradeTicks = 0;
                         addUpgrade(type);
-                        if (upgradeSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                            MekanismUtils.logMismatchedStackSize();
-                        }
+                        MekanismUtils.logMismatchedStackSize(upgradeSlot.shrinkStack(1, Action.EXECUTE), 1);
                         if (type == Upgrade.MUFFLING) {
                             //Send an update packet to the client to update the number of muffling upgrades installed
                             tile.sendUpdatePacket();

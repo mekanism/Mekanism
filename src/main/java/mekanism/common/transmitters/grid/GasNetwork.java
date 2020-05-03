@@ -106,9 +106,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                     gasTank.setStack(net.getBuffer());
                 } else if (gasTank.isTypeEqual(net.gasTank.getType())) {
                     long amount = net.gasTank.getStored();
-                    if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
-                        MekanismUtils.logMismatchedStackSize();
-                    }
+                    MekanismUtils.logMismatchedStackSize(gasTank.growStack(amount, Action.EXECUTE), amount);
                 }
                 net.gasTank.setEmpty();
             }
@@ -135,9 +133,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             gasTank.setStack(gas.copy());
         } else if (gas.isTypeEqual(gasTank.getType())) {
             long amount = gas.getAmount();
-            if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
-                MekanismUtils.logMismatchedStackSize();
-            }
+            MekanismUtils.logMismatchedStackSize(gasTank.growStack(amount, Action.EXECUTE), amount);
         }
     }
 
@@ -146,9 +142,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         if (!gasTank.isEmpty()) {
             long capacity = getCapacity();
             if (gasTank.getStored() > capacity) {
-                if (gasTank.setStackSize(capacity, Action.EXECUTE) != capacity) {
-                    MekanismUtils.logMismatchedStackSize();
-                }
+                MekanismUtils.logMismatchedStackSize(gasTank.setStackSize(capacity, Action.EXECUTE), capacity);
             }
         }
     }
@@ -222,9 +216,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 prevTransferAmount = 0;
             } else {
                 prevTransferAmount = tickEmit(gasTank.getStack());
-                if (gasTank.shrinkStack(prevTransferAmount, Action.EXECUTE) != prevTransferAmount) {
-                    MekanismUtils.logMismatchedStackSize();
-                }
+                MekanismUtils.logMismatchedStackSize(gasTank.shrinkStack(prevTransferAmount, Action.EXECUTE), prevTransferAmount);
             }
         }
     }

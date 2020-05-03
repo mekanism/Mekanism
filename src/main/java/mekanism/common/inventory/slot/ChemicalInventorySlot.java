@@ -146,13 +146,9 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                     //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
                     if (!output.isEmpty() && chemicalTank.insert(output, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
                         //If we can accept it all, then add it and decrease our input
-                        if (!chemicalTank.insert(output, Action.EXECUTE, AutomationType.MANUAL).isEmpty()) {
-                            MekanismUtils.logMismatchedStackSize();
-                        }
+                        MekanismUtils.logMismatchedStackSize(chemicalTank.insert(output, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
                         int amountUsed = conversion.getFirst().getCount();
-                        if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
-                            MekanismUtils.logMismatchedStackSize();
-                        }
+                        MekanismUtils.logMismatchedStackSize(shrinkStack(amountUsed, Action.EXECUTE), amountUsed);
                     }
                 }
             }
@@ -191,9 +187,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                         STACK extractedChemical = wrapper.extractChemical(tank, chemicalInItemAmount - remainder, Action.EXECUTE);
                         if (!extractedChemical.isEmpty()) {
                             //If we were able to actually extract it from the item, then insert it into our chemical tank
-                            if (!chemicalTank.insert(extractedChemical, Action.EXECUTE, AutomationType.INTERNAL).isEmpty()) {
-                                MekanismUtils.logMismatchedStackSize();
-                            }
+                            MekanismUtils.logMismatchedStackSize(chemicalTank.insert(extractedChemical, Action.EXECUTE, AutomationType.INTERNAL).getAmount(), 0);
                             //and mark that we were able to transfer at least some of it
                             didTransfer = true;
                             if (chemicalTank.getNeeded() == 0) {
@@ -231,9 +225,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                     STACK extractedChemical = chemicalTank.extract(amount - remainder, Action.EXECUTE, AutomationType.INTERNAL);
                     if (!extractedChemical.isEmpty()) {
                         //If we were able to actually extract it from our tank, then insert it into the item
-                        if (!wrapper.insertChemical(extractedChemical, Action.EXECUTE).isEmpty()) {
-                            MekanismUtils.logMismatchedStackSize();
-                        }
+                        MekanismUtils.logMismatchedStackSize(wrapper.insertChemical(extractedChemical, Action.EXECUTE).getAmount(), 0);
                         onContentsChanged();
                     }
                 }

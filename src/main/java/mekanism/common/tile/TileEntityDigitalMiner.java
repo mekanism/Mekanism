@@ -459,9 +459,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         for (IInventorySlot slot : mainSlots) {
             if (filter.replaceStackMatches(slot.getStack())) {
-                if (slot.shrinkStack(1, Action.EXECUTE) != 1) {
-                    MekanismUtils.logMismatchedStackSize();
-                }
+                MekanismUtils.logMismatchedStackSize(slot.shrinkStack(1, Action.EXECUTE), 1);
                 return StackUtils.size(filter.replaceStack, 1);
             }
         }

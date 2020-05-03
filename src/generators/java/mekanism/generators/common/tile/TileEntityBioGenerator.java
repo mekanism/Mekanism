@@ -62,9 +62,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         if (MekanismUtils.canFunction(this) && !bioFuelTank.isEmpty() &&
             getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.SIMULATE, AutomationType.INTERNAL).isZero()) {
             setActive(true);
-            if (bioFuelTank.shrinkStack(1, Action.EXECUTE) != 1) {
-                MekanismUtils.logMismatchedStackSize();
-            }
+            MekanismUtils.logMismatchedStackSize(bioFuelTank.shrinkStack(1, Action.EXECUTE), 1);
             getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.EXECUTE, AutomationType.INTERNAL);
             float fluidScale = MekanismUtils.getScale(lastFluidScale, bioFuelTank);
             if (fluidScale != lastFluidScale) {

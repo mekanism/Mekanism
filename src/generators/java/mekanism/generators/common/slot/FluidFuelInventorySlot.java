@@ -105,9 +105,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                         setStack(current.getContainerItem());
                     } else {
                         //Otherwise shrink the size of the stack by one
-                        if (shrinkStack(1, Action.EXECUTE) != 1) {
-                            MekanismUtils.logMismatchedStackSize();
-                        }
+                        MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);
                     }
                 }
             }
