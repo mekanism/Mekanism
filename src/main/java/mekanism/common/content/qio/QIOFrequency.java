@@ -13,11 +13,13 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.TagCache;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.lib.BiMultimap;
 import mekanism.common.network.PacketQIOItemViewerGuiSync;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -34,6 +36,8 @@ public class QIOFrequency extends Frequency {
     private Map<QIODriveKey, QIODriveData> driveMap = new LinkedHashMap<>();
     private Map<HashedItem, QIOItemTypeData> itemDataMap = new LinkedHashMap<>();
     private Set<IQIODriveHolder> driveHolders = new HashSet<>();
+    // efficiently keep track of the tags utilized by the items stored
+    private BiMultimap<String, HashedItem> tagLookupMap = new BiMultimap<>();
 
     private Set<HashedItem> updatedItems = new HashSet<>();
     private Set<ServerPlayerEntity> playersViewingItems = new HashSet<>();
@@ -64,8 +68,18 @@ public class QIOFrequency extends Frequency {
         // and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
         if (totalCount == totalCountCapacity || (!itemDataMap.containsKey(type) && itemDataMap.size() == totalTypeCapacity))
             return stack;
+        // at this point we're guaranteed at least part of the input stack will be inserted
         QIOItemTypeData data = itemDataMap.computeIfAbsent(type, t -> new QIOItemTypeData(type));
+        tagLookupMap.putAll(TagCache.getItemTags(stack), type);
         return type.createStack((int) data.add(stack.getCount()));
+    }
+
+    public ItemStack removeItem(int amount) {
+        return removeByType(null, amount);
+    }
+
+    public ItemStack removeItem(ItemStack stack, int amount) {
+        return removeByType(new HashedItem(stack), amount);
     }
 
     public ItemStack removeByType(@Nullable HashedItem itemType, int amount) {
@@ -84,17 +98,19 @@ public class QIOFrequency extends Frequency {
 
         ItemStack removed = data.remove(amount);
         // remove this item type if it's now empty
-        if (data.count == 0)
+        if (data.count == 0) {
             itemDataMap.remove(data.itemType);
+            tagLookupMap.removeValue(data.itemType);
+        }
         return removed;
     }
 
-    public ItemStack removeItem(int amount) {
-        return removeByType(null, amount);
-    }
-
-    public ItemStack removeItem(ItemStack stack, int amount) {
-        return removeByType(new HashedItem(stack), amount);
+    public ItemStack removeByTag(String tag, int amount) {
+        Set<HashedItem> items = tagLookupMap.getValues(tag);
+        if (!items.isEmpty()) {
+            return removeByType(items.iterator().next(), amount);
+        }
+        return ItemStack.EMPTY;
     }
 
     public void openItemViewer(ServerPlayerEntity player) {
