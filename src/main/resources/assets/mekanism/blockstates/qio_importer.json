@@ -1,28 +1,28 @@
 {
   "variants": {
     "facing=up": {
-      "model": "mekanism:block/qio_dashboard"
+      "model": "mekanism:block/qio_importer"
     },
     "facing=down": {
-      "model": "mekanism:block/qio_dashboard",
+      "model": "mekanism:block/qio_importer",
       "x": 180
     },
     "facing=north": {
-      "model": "mekanism:block/qio_dashboard",
+      "model": "mekanism:block/qio_importer",
       "x": 90
     },
     "facing=south": {
-      "model": "mekanism:block/qio_dashboard",
+      "model": "mekanism:block/qio_importer",
       "x": 90,
       "y": 180
     },
     "facing=east": {
-      "model": "mekanism:block/qio_dashboard",
+      "model": "mekanism:block/qio_importer",
       "x": 90,
       "y": 90
     },
     "facing=west": {
-      "model": "mekanism:block/qio_dashboard",
+      "model": "mekanism:block/qio_importer",
       "x": 90,
       "y": -90
     }

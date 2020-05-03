@@ -44,6 +44,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         children.add(element);
     }
 
+    public void tick() {}
+
     public void onRenderForeground(int mouseX, int mouseY) {
         RenderSystem.pushMatrix();
         // fix render offset

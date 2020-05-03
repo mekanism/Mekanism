@@ -6,6 +6,8 @@ import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MMaterialFilter;
 import mekanism.common.content.miner.MModIDFilter;
 import mekanism.common.content.miner.MTagFilter;
+import mekanism.common.content.qio.filter.QIOItemStackFilter;
+import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TMaterialFilter;
 import mekanism.common.content.transporter.TModIDFilter;
@@ -21,8 +23,10 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     @Override
     public abstract FILTER clone();
 
+    @Override
     public abstract int hashCode();
 
+    @Override
     public abstract boolean equals(Object o);
 
     @Override
@@ -77,6 +81,10 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
                 return new TTagFilter();
             case OREDICTIONIFICATOR:
                 return new OredictionificatorFilter();
+            case QIO_ITEMSTACK_FILTER:
+                return new QIOItemStackFilter();
+            case QIO_TAG_FILTER:
+                return new QIOTagFilter();
             default:
                 return null;
         }

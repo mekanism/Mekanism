@@ -1,7 +1,9 @@
 package mekanism.common.content.blocktype;
 
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -10,6 +12,7 @@ import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
@@ -81,6 +84,11 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
 
         public T withEmptyContainer(ContainerTypeRegistryObject<?> container) {
             return withCustomContainerProvider((tile) -> ((i, inv, player) -> new EmptyTileContainer<>(container, i, inv, tile)));
+        }
+
+        public T withSupportedUpgrades(Set<Upgrade> upgrades) {
+            holder.add(new AttributeUpgradeSupport(upgrades));
+            return getThis();
         }
     }
 }

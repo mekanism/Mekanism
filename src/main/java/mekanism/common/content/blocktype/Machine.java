@@ -1,7 +1,6 @@
 package mekanism.common.content.blocktype;
 
 import java.util.EnumSet;
-import java.util.Set;
 import java.util.function.Supplier;
 import mekanism.api.Pos3D;
 import mekanism.api.Upgrade;
@@ -57,11 +56,6 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE
         public static <TILE extends TileEntityMekanism> MachineBuilder<FactoryMachine<TILE>, TILE, ?> createFactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
               MekanismLang description, FactoryType factoryType) {
             return new MachineBuilder<>(new FactoryMachine<>(tileEntityRegistrar, description, factoryType));
-        }
-
-        public T withSupportedUpgrades(Set<Upgrade> upgrades) {
-            holder.add(new AttributeUpgradeSupport(upgrades));
-            return getThis();
         }
     }
 }

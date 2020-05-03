@@ -11,7 +11,9 @@ public enum FilterType {
     SORTER_MATERIAL_FILTER,
     SORTER_MODID_FILTER,
     SORTER_TAG_FILTER,
-    OREDICTIONIFICATOR;
+    OREDICTIONIFICATOR,
+    QIO_ITEMSTACK_FILTER,
+    QIO_TAG_FILTER;
 
     private static final FilterType[] FILTERS = values();
 

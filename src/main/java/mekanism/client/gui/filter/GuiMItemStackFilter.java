@@ -1,6 +1,5 @@
 package mekanism.client.gui.filter;
 
-import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -14,8 +13,8 @@ import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
-import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.network.PacketNewFilter;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerInventory;

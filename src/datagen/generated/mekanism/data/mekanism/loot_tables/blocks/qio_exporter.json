@@ -1,0 +1,42 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "componentSecurity.ownerMost",
+                  "target": "mekData.ownerMost",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentSecurity.ownerLeast",
+                  "target": "mekData.ownerLeast",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentSecurity.securityMode",
+                  "target": "mekData.securityMode",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
+          "name": "mekanism:qio_exporter"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

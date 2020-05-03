@@ -166,6 +166,11 @@ public class QIOFrequency extends Frequency {
     public int getTotalItemTypes(boolean remote) { return remote ? clientTypes : itemDataMap.size(); }
     public int getTotalItemTypeCapacity() { return totalTypeCapacity; }
 
+    public long getStored(HashedItem itemType) {
+        QIOItemTypeData data = itemDataMap.get(itemType);
+        return data != null ? data.count : 0;
+    }
+
     @Override
     public void tick() {
         super.tick();

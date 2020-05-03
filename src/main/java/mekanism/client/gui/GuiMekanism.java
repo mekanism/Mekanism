@@ -55,6 +55,16 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        for (Widget widget : this.buttons) {
+            if (widget instanceof GuiElement) {
+                ((GuiElement) widget).tick();
+            }
+        }
+    }
+
     protected void initPreSlots() {
     }
 
@@ -102,6 +112,28 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        boolean ret = super.keyPressed(keyCode, scanCode, modifiers);
+        for (int i = buttons.size() - 1; i >= 0; i--) {
+            if (buttons.get(i) instanceof GuiElement) {
+                ret |= ((GuiElement) buttons.get(i)).keyPressed(keyCode, scanCode, modifiers);
+            }
+        }
+        return ret;
+    }
+
+    @Override
+    public boolean charTyped(char c, int keyCode) {
+        boolean ret = super.charTyped(c, keyCode);
+        for (int i = buttons.size() - 1; i >= 0; i--) {
+            if (buttons.get(i) instanceof GuiElement) {
+                ret |= ((GuiElement) buttons.get(i)).charTyped(c, keyCode);
+            }
+        }
+        return ret;
     }
 
     /**

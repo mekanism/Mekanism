@@ -78,6 +78,9 @@ import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.TileEntityQIODashboard;
 import mekanism.common.tile.TileEntityQIODriveArray;
+import mekanism.common.tile.TileEntityQIOExporter;
+import mekanism.common.tile.TileEntityQIOImporter;
+import mekanism.common.tile.TileEntityQIORedstoneAdapter;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -445,6 +448,7 @@ public class MekanismBlockTypes {
         .withSound(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER)
         .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
         .build();
+
     // QIO Drive Array
     public static final BlockTypeTile<TileEntityQIODriveArray> QIO_DRIVE_ARRAY = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.QIO_DRIVE_ARRAY, MekanismLang.DESCRIPTION_QIO_DRIVE_ARRAY)
@@ -456,8 +460,29 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.QIO_DASHBOARD, MekanismLang.DESCRIPTION_QIO_DASHBOARD)
           .withGui(() -> MekanismContainerTypes.QIO_DASHBOARD)
           .withCustomShape(BlockShapes.QIO_DASHBOARD)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeStateActive())
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity())
           .withCustomContainerProvider((tile) -> (i, inv, player) -> new QIODashboardContainer(i, inv, (TileEntityQIODashboard) tile))
+          .build();
+    // QIO Importer
+    public static final BlockTypeTile<TileEntityQIOImporter> QIO_IMPORTER = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.QIO_IMPORTER, MekanismLang.DESCRIPTION_QIO_IMPORTER)
+          .withCustomShape(BlockShapes.QIO_DASHBOARD)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity())
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
+          .build();
+    // QIO Exporter
+    public static final BlockTypeTile<TileEntityQIOExporter> QIO_EXPORTER = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.QIO_EXPORTER, MekanismLang.DESCRIPTION_QIO_EXPORTER)
+          .withCustomShape(BlockShapes.QIO_DASHBOARD)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity())
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
+          .build();
+    // QIO Redstone Adapter
+    public static final BlockTypeTile<TileEntityQIORedstoneAdapter> QIO_REDSTONE_ADAPTER = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.QIO_REDSTONE_ADAPTER, MekanismLang.DESCRIPTION_QIO_REDSTONE_ADAPTER)
+          .withCustomShape(BlockShapes.QIO_DASHBOARD)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeStateActive())
+          .with(new AttributeRedstoneEmitter<>((tile) -> tile.isPowering() ? 15 : 0))
           .build();
 
     // Dynamic Tank

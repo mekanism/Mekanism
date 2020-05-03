@@ -157,7 +157,6 @@ public interface IFancyFontRenderer {
             // ignore spacing if this is the first word of the line
             float spacingLength = lineBuilder.length() == 0 ? 0 : SPACE_LENGTH;
             if (lineLength + spacingLength + wordLength > maxLength) {
-                System.out.println("Adding line " + lineBuilder.toString() + " " + lineLength);
                 linesToDraw.add(Pair.of(lineBuilder.toString(), lineLength));
                 lineBuilder = new StringBuilder(wordBuilder);
                 lineLength = wordLength;
