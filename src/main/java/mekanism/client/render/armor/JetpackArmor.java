@@ -28,9 +28,9 @@ public class JetpackArmor extends CustomArmor {
         }
         if (isChild) {
             matrix.push();
-            float f1 = 1.0F / field_228225_h_;
+            float f1 = 1.0F / childBodyScale;
             matrix.scale(f1, f1, f1);
-            matrix.translate(0.0D, field_228226_i_ / 16.0F, 0.0D);
+            matrix.translate(0.0D, childBodyOffsetY / 16.0F, 0.0D);
             renderJetpack(matrix, renderer, light, overlayLight, hasEffect);
             matrix.pop();
         } else {

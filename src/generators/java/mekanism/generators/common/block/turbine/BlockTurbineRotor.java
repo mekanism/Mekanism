@@ -59,7 +59,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         }
         ItemStack stack = player.getHeldItem(hand);
         TileEntityTurbineRotor rod = (TileEntityTurbineRotor) tile;
-        if (!player.isShiftKeyDown()) {
+        if (!player.isSneaking()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
                 if (rod.addBlade()) {
                     if (!player.isCreative()) {

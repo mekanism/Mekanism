@@ -120,7 +120,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
         ItemStack stack = player.getHeldItem(hand);
         if (getBucketMode(stack)) {
             if (SecurityUtils.canAccess(player, stack)) {
-                RayTraceResult rayTraceResult = rayTrace(world, player, !player.isShiftKeyDown() ? FluidMode.SOURCE_ONLY : FluidMode.NONE);
+                RayTraceResult rayTraceResult = rayTrace(world, player, !player.isSneaking() ? FluidMode.SOURCE_ONLY : FluidMode.NONE);
                 //It can be null if there is nothing in range
                 if (rayTraceResult.getType() == Type.BLOCK) {
                     BlockRayTraceResult result = (BlockRayTraceResult) rayTraceResult;
@@ -143,7 +143,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         //If something went wrong and we don't have a fluid tank fail
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
-                    if (!player.isShiftKeyDown()) {
+                    if (!player.isSneaking()) {
                         if (!player.canPlayerEdit(pos, result.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }

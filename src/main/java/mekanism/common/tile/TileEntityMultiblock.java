@@ -148,7 +148,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (player.isShiftKeyDown() || structure == null) {
+        if (player.isSneaking() || structure == null) {
             return ActionResultType.PASS;
         }
         return openGui(player);

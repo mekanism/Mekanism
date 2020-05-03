@@ -57,7 +57,7 @@ public class ItemConfigurationCard extends Item {
             if (CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
                 if (SecurityUtils.canAccess(player, tile)) {
                     ItemStack stack = player.getHeldItem(context.getHand());
-                    if (player.isShiftKeyDown()) {
+                    if (player.isSneaking()) {
                         Optional<ISpecialConfigData> configData = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side));
                         CompoundNBT data = configData.isPresent() ? configData.get().getConfigurationData(getBaseData(tile)) : getBaseData(tile);
                         if (data != null) {

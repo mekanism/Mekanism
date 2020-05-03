@@ -37,7 +37,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
     @Nonnull
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (!world.isRemote && player.isShiftKeyDown()) {
+        if (!world.isRemote && player.isSneaking()) {
             TileEntityCardboardBox box = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
             if (box != null && box.storedData != null) {
                 BlockData data = box.storedData;
@@ -56,7 +56,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                 spawnAsEntity(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
             }
         }
-        return player.isShiftKeyDown() ? ActionResultType.SUCCESS : ActionResultType.PASS;
+        return player.isSneaking() ? ActionResultType.SUCCESS : ActionResultType.PASS;
     }
 
     @Nonnull

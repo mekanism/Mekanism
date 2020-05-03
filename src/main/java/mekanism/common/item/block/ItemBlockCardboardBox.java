@@ -66,7 +66,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         }
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        if (getBlockData(stack) == null && !player.isShiftKeyDown() && !world.isAirBlock(pos)) {
+        if (getBlockData(stack) == null && !player.isSneaking() && !world.isAirBlock(pos)) {
             BlockState state = world.getBlockState(pos);
             if (!world.isRemote && state.getBlockHardness(world, pos) != -1) {
                 if (state.isIn(MekanismTags.Blocks.CARDBOARD_BLACKLIST) || MekanismConfig.general.cardboardModBlacklist.get().contains(state.getBlock().getRegistryName().getNamespace())) {

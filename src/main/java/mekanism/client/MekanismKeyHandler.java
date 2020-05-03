@@ -60,19 +60,19 @@ public class MekanismKeyHandler extends MekKeyHandler {
         }
         if (kb == modeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND)) {
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, player.isShiftKeyDown()));
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, player.isSneaking()));
             } else if (IModeItem.isModeItem(player, EquipmentSlotType.OFFHAND)) {
                 //Otherwise try their offhand
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.OFFHAND, player.isShiftKeyDown()));
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.OFFHAND, player.isSneaking()));
             }
         } else if (kb == armorModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.CHEST)) {
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.CHEST, player.isShiftKeyDown()));
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.CHEST, player.isSneaking()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         } else if (kb == freeRunnerModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.FEET)) {
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.FEET, player.isShiftKeyDown()));
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.FEET, player.isSneaking()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         }

@@ -72,7 +72,7 @@ public class CommonPlayerTickHandler {
     public static boolean isFreeRunnerOn(PlayerEntity player) {
         ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
         if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
-            return ((ItemFreeRunners) stack.getItem()).getMode(stack) == FreeRunnerMode.NORMAL && !player.isShiftKeyDown();
+            return ((ItemFreeRunners) stack.getItem()).getMode(stack) == FreeRunnerMode.NORMAL && !player.isSneaking();
         }
         return false;
     }

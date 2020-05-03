@@ -45,7 +45,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                 BinInventorySlot binSlot = bin.getBinSlot();
                 if (!binSlot.isEmpty()) {
                     ItemStack stack;
-                    if (player.isShiftKeyDown()) {
+                    if (player.isSneaking()) {
                         stack = StackUtils.size(binSlot.getStack(), 1);
                         MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(1, Action.EXECUTE), 1);
                     } else {

@@ -41,7 +41,7 @@ public class BlockSecurityDesk extends BlockTileModel<TileEntitySecurityDesk, Bl
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         TileEntitySecurityDesk tile = MekanismUtils.getTileEntity(TileEntitySecurityDesk.class, world, pos);
         if (tile != null) {
-            if (!player.isShiftKeyDown()) {
+            if (!player.isSneaking()) {
                 if (!world.isRemote) {
                     UUID ownerUUID = tile.ownerUUID;
                     if (ownerUUID == null || player.getUniqueID().equals(ownerUUID)) {
