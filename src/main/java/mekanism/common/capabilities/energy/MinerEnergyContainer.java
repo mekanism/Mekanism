@@ -6,7 +6,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

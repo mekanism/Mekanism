@@ -9,7 +9,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.block.attribute.AttributeEnergy;
-import mekanism.common.tile.TileEntityResistiveHeater;
+import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 

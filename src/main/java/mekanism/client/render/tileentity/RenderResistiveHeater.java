@@ -5,7 +5,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.model.ModelResistiveHeater;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.tile.TileEntityResistiveHeater;
+import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;

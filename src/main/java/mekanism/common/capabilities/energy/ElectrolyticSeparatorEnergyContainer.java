@@ -10,7 +10,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.block.attribute.AttributeEnergy;
-import mekanism.common.tile.TileEntityElectrolyticSeparator;
+import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

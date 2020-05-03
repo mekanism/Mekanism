@@ -14,8 +14,8 @@ import mekanism.common.content.miner.MTagFilter;
 import mekanism.common.inventory.container.tile.filter.DMTagFilterContainer;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.network.PacketNewFilter;
-import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 

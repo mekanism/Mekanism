@@ -6,7 +6,7 @@ import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;

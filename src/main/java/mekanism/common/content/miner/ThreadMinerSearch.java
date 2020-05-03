@@ -11,7 +11,7 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

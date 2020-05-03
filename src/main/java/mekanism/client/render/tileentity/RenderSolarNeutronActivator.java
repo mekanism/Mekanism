@@ -6,7 +6,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.model.ModelSolarNeutronActivator;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.tile.TileEntitySolarNeutronActivator;
+import mekanism.common.tile.machine.TileEntitySolarNeutronActivator;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;

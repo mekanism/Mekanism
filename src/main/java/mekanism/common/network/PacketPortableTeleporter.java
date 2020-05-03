@@ -3,7 +3,7 @@ package mekanism.common.network;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import mekanism.client.gui.GuiPortableTeleporter;
+import mekanism.client.gui.item.GuiPortableTeleporter;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.frequency.Frequency;
 import net.minecraft.client.Minecraft;

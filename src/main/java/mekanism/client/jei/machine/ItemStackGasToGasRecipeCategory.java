@@ -16,7 +16,7 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
+import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;

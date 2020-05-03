@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 
 public final class MinerVisualRenderer {

@@ -13,7 +13,7 @@ import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.tile.TileEntitySolarNeutronActivator;
+import mekanism.common.tile.machine.TileEntitySolarNeutronActivator;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;

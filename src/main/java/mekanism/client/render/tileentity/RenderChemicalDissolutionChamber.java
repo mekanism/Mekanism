@@ -5,7 +5,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.model.ModelChemicalDissolutionChamber;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
+import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;

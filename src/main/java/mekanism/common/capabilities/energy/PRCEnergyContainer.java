@@ -10,7 +10,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.block.attribute.AttributeEnergy;
-import mekanism.common.tile.TileEntityPressurizedReactionChamber;
+import mekanism.common.tile.machine.TileEntityPressurizedReactionChamber;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

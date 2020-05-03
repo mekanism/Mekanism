@@ -7,7 +7,7 @@ import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MinerVisualRenderer;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;

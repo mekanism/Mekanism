@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container.tile;
 
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.tile.TileEntityAntiprotonicNucleosynthesizer;
+import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 

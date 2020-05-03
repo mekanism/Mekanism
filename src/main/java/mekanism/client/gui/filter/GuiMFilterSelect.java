@@ -2,7 +2,7 @@ package mekanism.client.gui.filter;
 
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
-import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 

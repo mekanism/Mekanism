@@ -1,8 +1,8 @@
 package mekanism.common.inventory.container.tile.filter;
 
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.tile.TileEntityOredictionificator;
-import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
+import mekanism.common.tile.machine.TileEntityOredictionificator;
+import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 

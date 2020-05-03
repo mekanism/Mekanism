@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.tile.filter;
 
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 

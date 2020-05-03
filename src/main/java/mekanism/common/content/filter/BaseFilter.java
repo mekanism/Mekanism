@@ -10,7 +10,7 @@ import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TMaterialFilter;
 import mekanism.common.content.transporter.TModIDFilter;
 import mekanism.common.content.transporter.TTagFilter;
-import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
+import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.Constants.NBT;
