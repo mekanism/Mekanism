@@ -1,12 +1,12 @@
 package mekanism.client.gui;
 
 import java.util.List;
-import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
@@ -40,7 +40,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
     public void init() {
         super.init();
         addButton(new GuiSlot(SlotType.NORMAL, this, 12, 136));
-        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
 

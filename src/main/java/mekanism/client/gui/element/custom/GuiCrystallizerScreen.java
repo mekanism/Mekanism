@@ -1,4 +1,4 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.custom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,8 @@ import mekanism.api.chemical.gas.Slurry;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.tags.MekanismTags;

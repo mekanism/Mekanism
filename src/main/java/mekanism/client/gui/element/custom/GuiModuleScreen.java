@@ -1,10 +1,12 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.custom;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;

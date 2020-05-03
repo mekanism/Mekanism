@@ -1,7 +1,7 @@
 package mekanism.client.gui.qio;
 
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.element.GuiQIOFrequencyDataScreen;
+import mekanism.client.gui.element.custom.GuiQIOFrequencyDataScreen;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;

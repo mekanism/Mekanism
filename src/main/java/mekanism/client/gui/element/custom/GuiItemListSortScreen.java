@@ -1,8 +1,9 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.custom;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;

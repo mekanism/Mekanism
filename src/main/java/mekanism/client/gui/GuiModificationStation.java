@@ -1,13 +1,13 @@
 package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.scroll.GuiModuleScrollList;
+import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -34,9 +34,9 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         super.init();
 
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 154, 40));
-        addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
+        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 34, getGuiTop() + 96, 108, 17, MekanismLang.BUTTON_REMOVE, () -> {
             Mekanism.packetHandler.sendToServer(new PacketRemoveModule(Coord4D.get(getTileEntity()), selectedModule.getData()));

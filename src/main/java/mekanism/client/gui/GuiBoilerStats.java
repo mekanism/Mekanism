@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import java.util.Collections;
 import mekanism.client.gui.element.GuiGraph;
-import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.tab.GuiBoilerTab;
+import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -28,7 +28,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
     public void init() {
         super.init();
         addButton(new GuiBoilerTab(this, tile, BoilerTab.MAIN));
-        addButton(new GuiHeatInfo(() -> {
+        addButton(new GuiHeatTab(() -> {
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));

@@ -1,7 +1,8 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.tab;
 
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
@@ -12,14 +13,14 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiRedstoneControl extends GuiInsetElement<TileEntityMekanism> {
+public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
     private static final ResourceLocation DISABLED = MekanismUtils.getResource(ResourceType.GUI, "gun_powder.png");
     private static final ResourceLocation HIGH = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_high.png");
     private static final ResourceLocation LOW = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_low.png");
     private static final ResourceLocation PULSE = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_pulse.png");
 
-    public GuiRedstoneControl(IGuiWrapper gui, TileEntityMekanism tile) {
+    public GuiRedstoneControlTab(IGuiWrapper gui, TileEntityMekanism tile) {
         super(DISABLED, gui, tile, gui.getWidth(), 138, 26, 18);
     }
 

@@ -3,10 +3,10 @@ package mekanism.client.gui.machine;
 import java.util.Arrays;
 import java.util.Collections;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.progress.GuiFlame;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
+import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -42,7 +42,7 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
             }
         }, this, 144, 31));
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiHeatInfo(() -> {
+        addButton(new GuiHeatTab(() -> {
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));

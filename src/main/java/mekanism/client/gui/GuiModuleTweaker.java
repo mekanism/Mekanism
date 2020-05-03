@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.glfw.GLFW;
-import mekanism.client.gui.element.GuiModuleScreen;
+import mekanism.client.gui.element.custom.GuiModuleScreen;
 import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;

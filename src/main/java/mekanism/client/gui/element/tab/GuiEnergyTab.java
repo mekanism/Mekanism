@@ -1,9 +1,11 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.tab;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.element.GuiTexturedElement.IInfoHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
@@ -12,16 +14,16 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiEnergyInfo extends GuiTexturedElement {
+public class GuiEnergyTab extends GuiTexturedElement {
 
     private final IInfoHandler infoHandler;
 
-    public GuiEnergyInfo(IInfoHandler handler, IGuiWrapper gui) {
+    public GuiEnergyTab(IInfoHandler handler, IGuiWrapper gui) {
         super(MekanismUtils.getResource(ResourceType.GUI, "energy_info.png"), gui, -26, 138, 26, 26);
         infoHandler = handler;
     }
 
-    public GuiEnergyInfo(MachineEnergyContainer<?> energyContainer, IGuiWrapper gui) {
+    public GuiEnergyTab(MachineEnergyContainer<?> energyContainer, IGuiWrapper gui) {
         this(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))), gui);
     }

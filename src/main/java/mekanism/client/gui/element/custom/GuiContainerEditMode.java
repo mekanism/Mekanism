@@ -1,7 +1,8 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.custom;
 
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;

@@ -1,7 +1,9 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.custom;
 
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElementHolder;
+import mekanism.client.gui.element.GuiInnerScreen;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiRobitScreen extends GuiElementHolder {

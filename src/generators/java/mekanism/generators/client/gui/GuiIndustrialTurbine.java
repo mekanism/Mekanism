@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -14,6 +13,7 @@ import mekanism.client.gui.element.bar.GuiVerticalRateBar;
 import mekanism.client.gui.element.button.GuiGasMode;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -91,7 +91,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         }, 40, 13));
         addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.gasTank,
               () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.MEDIUM, this, 6, 13));
-        addButton(new GuiEnergyInfo(() -> {
+        addButton(new GuiEnergyTab(() -> {
             EnergyDisplay storing;
             EnergyDisplay producing;
             if (tile.structure == null) {

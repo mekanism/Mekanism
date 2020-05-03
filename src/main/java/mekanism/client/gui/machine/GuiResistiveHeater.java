@@ -6,12 +6,12 @@ import javax.annotation.Nonnull;
 import org.lwjgl.glfw.GLFW;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.element.tab.GuiHeatTab;
+import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -47,9 +47,9 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         addButton(new GuiInnerScreen(this, 115, 50, 13, 13));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiRedstoneControl(this, tile));
-        addButton(new GuiEnergyInfo(tile.getEnergyContainer(), this));
-        addButton(new GuiHeatInfo(() -> {
+        addButton(new GuiRedstoneControlTab(this, tile));
+        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        addButton(new GuiHeatTab(() -> {
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));

@@ -1,9 +1,10 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.custom;
 
 import java.util.function.BooleanSupplier;
 import mekanism.api.functions.ByteSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

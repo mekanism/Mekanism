@@ -4,7 +4,7 @@ import java.util.Arrays;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
@@ -28,7 +28,7 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
     public void init() {
         super.init();
         addButton(new GuiTurbineTab(this, tile, TurbineTab.MAIN));
-        addButton(new GuiEnergyInfo(() -> {
+        addButton(new GuiEnergyTab(() -> {
             EnergyDisplay storing;
             EnergyDisplay producing;
             if (tile.structure == null) {

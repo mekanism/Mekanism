@@ -4,7 +4,7 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.util.MekanismUtils;
@@ -28,7 +28,7 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.energyContainer.getEnergy(), tile.energyContainer.getMaxEnergy())),
+        addButton(new GuiEnergyTab(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.energyContainer.getEnergy(), tile.energyContainer.getMaxEnergy())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
               this));
         addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));

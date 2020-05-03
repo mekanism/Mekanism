@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import mekanism.client.gui.element.GuiContainerEditMode;
+import mekanism.client.gui.element.custom.GuiContainerEditMode;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
