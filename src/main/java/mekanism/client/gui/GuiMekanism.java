@@ -23,6 +23,7 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.RenderHelper;
@@ -85,6 +86,22 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 ((GuiElement) widget).renderToolTip(xAxis, yAxis);
             }
         }
+    }
+
+    // override this to traverse in reverse order (so stacked or overlaying GUI elements receive clicks first)
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (int i = children().size() - 1; i >= 0; i--) {
+            IGuiEventListener listener = children().get(i);
+            if (listener.mouseClicked(mouseX, mouseY, button)) {
+                setFocused(listener);
+                if (button == 0) {
+                    setDragging(true);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

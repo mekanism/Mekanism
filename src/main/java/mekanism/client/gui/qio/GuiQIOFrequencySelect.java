@@ -8,6 +8,7 @@ import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiConfirmationDialog;
+import mekanism.client.gui.element.GuiConfirmationDialog.DialogType;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismButton;
@@ -27,7 +28,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
 public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends GuiMekanism<CONTAINER> {
 
@@ -60,7 +60,6 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
         addButton(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 17, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
-            GuiConfirmationDialog.show(this, new StringTextComponent("Are you sure you want to do this?"), () -> System.out.println("COMPLETE"));
         }));
         addButton(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 119, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
@@ -71,13 +70,15 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             updateButtons();
         }));
         addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 79, getGuiTop() + 119, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
-            int selection = scrollList.getSelection();
-            if (selection != -1) {
-                Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
-                sendRemoveFrequency(freq.getIdentity());
-                scrollList.clearSelection();
-            }
-            updateButtons();
+            GuiConfirmationDialog.show(this, MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
+                int selection = scrollList.getSelection();
+                if (selection != -1) {
+                    Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
+                    sendRemoveFrequency(freq.getIdentity());
+                    scrollList.clearSelection();
+                }
+                updateButtons();
+            }, DialogType.DANGER);
         }));
         addButton(new GuiSlot(SlotType.NORMAL, this, 131, 119));
         addButton(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 120, 16, 16,

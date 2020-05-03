@@ -45,6 +45,10 @@ public class BiMultimap<K, V> {
         return changed;
     }
 
+    public Set<K> getAllKeys() {
+        return map.keySet();
+    }
+
     public Set<V> getValues(K key) {
         return map.get(key);
     }

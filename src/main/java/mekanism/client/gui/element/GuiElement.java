@@ -45,11 +45,20 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     public void onRenderForeground(int mouseX, int mouseY) {
+        RenderSystem.pushMatrix();
+        // fix render offset
+        RenderSystem.translatef(-guiObj.getLeft(), -guiObj.getTop(), 0);
+        // render background overlay and children above everything else
+        renderBackgroundOverlay(mouseX, mouseY);
+        children.forEach(child -> child.render(mouseX, mouseY, 0));
+        RenderSystem.popMatrix();
         renderForeground(mouseX, mouseY);
         children.forEach(child -> child.renderForeground(mouseX, mouseY));
     }
 
     public void renderForeground(int mouseX, int mouseY) {}
+
+    public void renderBackgroundOverlay(int mouseX, int mouseY) {}
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
@@ -133,7 +142,6 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         drawButton(mouseX, mouseY);
-        children.forEach(child -> child.render(mouseX, mouseY, partialTicks));
     }
 
     //This method exists so that we don't have to rely on having a path to super.renderButton if we want to draw a background button

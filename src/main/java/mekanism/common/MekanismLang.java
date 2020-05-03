@@ -172,6 +172,7 @@ public enum MekanismLang implements ILangEntry {
     //Frequency
     FREQUENCY("frequency", "format"),
     NO_FREQUENCY("frequency", "none"),
+    FREQUENCY_DELETE_CONFIRM("frequency", "delete_confirm"),
     //Owner
     NOW_OWN("owner", "now_own"),
     OWNER("owner", "format"),
@@ -355,6 +356,7 @@ public enum MekanismLang implements ILangEntry {
     BUTTON_STOP("button", "stop"),
     BUTTON_CONFIG("button", "config"),
     BUTTON_REMOVE("button", "remove"),
+    BUTTON_CANCEL("button", "cancel"),
     BUTTON_SAVE("button", "save"),
     BUTTON_SET("button", "set"),
     BUTTON_DELETE("button", "delete"),

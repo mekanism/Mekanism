@@ -9,6 +9,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
@@ -20,6 +22,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.BiMultimap;
+import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.network.PacketQIOItemViewerGuiSync;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -38,6 +41,8 @@ public class QIOFrequency extends Frequency {
     private Set<IQIODriveHolder> driveHolders = new HashSet<>();
     // efficiently keep track of the tags utilized by the items stored
     private BiMultimap<String, HashedItem> tagLookupMap = new BiMultimap<>();
+    // a sensitive cache for wildcard tag lookups (wildcard -> [matching tags])
+    private SetMultimap<String, String> tagWildcardCache = HashMultimap.create();
 
     private Set<HashedItem> updatedItems = new HashSet<>();
     private Set<ServerPlayerEntity> playersViewingItems = new HashSet<>();
@@ -69,8 +74,11 @@ public class QIOFrequency extends Frequency {
         if (totalCount == totalCountCapacity || (!itemDataMap.containsKey(type) && itemDataMap.size() == totalTypeCapacity))
             return stack;
         // at this point we're guaranteed at least part of the input stack will be inserted
-        QIOItemTypeData data = itemDataMap.computeIfAbsent(type, t -> new QIOItemTypeData(type));
-        tagLookupMap.putAll(TagCache.getItemTags(stack), type);
+        QIOItemTypeData data = itemDataMap.computeIfAbsent(type, t -> {
+            tagLookupMap.putAll(TagCache.getItemTags(stack), t);
+            tagWildcardCache.clear();
+            return new QIOItemTypeData(t);
+        });
         return type.createStack((int) data.add(stack.getCount()));
     }
 
@@ -101,6 +109,7 @@ public class QIOFrequency extends Frequency {
         if (data.count == 0) {
             itemDataMap.remove(data.itemType);
             tagLookupMap.removeValue(data.itemType);
+            tagWildcardCache.clear();
         }
         return removed;
     }
@@ -111,6 +120,25 @@ public class QIOFrequency extends Frequency {
             return removeByType(items.iterator().next(), amount);
         }
         return ItemStack.EMPTY;
+    }
+
+    public ItemStack removeByWildcard(String wildcard, int amount) {
+        if (!tagWildcardCache.containsKey(wildcard)) {
+            buildWildcardMapping(wildcard);
+        }
+        Set<String> matchingTags = tagWildcardCache.get(wildcard);
+        if (!matchingTags.isEmpty()) {
+            return removeByTag(matchingTags.iterator().next(), amount);
+        }
+        return ItemStack.EMPTY;
+    }
+
+    private void buildWildcardMapping(String wildcard) {
+        for (String tag : tagLookupMap.getAllKeys()) {
+            if (WildcardMatcher.matches(wildcard, tag)) {
+                tagWildcardCache.put(wildcard, tag);
+            }
+        }
     }
 
     public void openItemViewer(ServerPlayerEntity player) {

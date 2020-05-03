@@ -544,6 +544,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Frequency
         add(MekanismLang.FREQUENCY, "Frequency: %s");
         add(MekanismLang.NO_FREQUENCY, "No frequency");
+        add(MekanismLang.FREQUENCY_DELETE_CONFIRM, "Are you sure you want to delete this frequency? This can't be undone.");
         //Owner
         add(MekanismLang.NOW_OWN, "You now own this item.");
         add(MekanismLang.OWNER, "Owner: %s");
@@ -736,6 +737,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BUTTON_STOP, "Stop");
         add(MekanismLang.BUTTON_CONFIG, "Config");
         add(MekanismLang.BUTTON_REMOVE, "Remove");
+        add(MekanismLang.BUTTON_CANCEL, "Cancel");
         add(MekanismLang.BUTTON_SAVE, "Save");
         add(MekanismLang.BUTTON_SET, "Set");
         add(MekanismLang.BUTTON_DELETE, "Delete");

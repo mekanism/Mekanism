@@ -1,5 +1,8 @@
 package mekanism.client.render;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.gui.FontRenderer;
@@ -107,5 +110,65 @@ public interface IFancyFontRenderer {
         drawString(text, 0, 0, color);
         RenderSystem.popMatrix();
         MekanismRenderer.resetColor();
+    }
+
+    default void drawWrappedCenteredText(String text, float x, float y, int color, float maxLength) {
+        new WrappedTextRenderer(this).render(text, x, y, color, maxLength);
+    }
+
+    // efficient tool to draw word-by-word wrapped text based on a horizontal bound. looks intimidating but runs in O(n)
+    class WrappedTextRenderer {
+
+        IFancyFontRenderer font;
+        List<Pair<String, Float>> linesToDraw = new ArrayList<>();
+        StringBuilder lineBuilder = new StringBuilder(), wordBuilder = new StringBuilder();
+        float lineLength = 0, wordLength = 0;
+        final float SPACE_LENGTH;
+
+        WrappedTextRenderer(IFancyFontRenderer font) {
+            this.font = font;
+            SPACE_LENGTH = font.getFont().getCharWidth(' ');
+        }
+
+        void render(String text, float x, float y, int color, float maxLength) {
+            for (char c : text.toCharArray()) {
+                float charLength = font.getFont().getCharWidth(c);
+                if (c == ' ') {
+                    addWord(maxLength);
+                    continue;
+                }
+                wordBuilder.append(c);
+                wordLength += charLength;
+            }
+            if (wordBuilder.length() > 0) {
+                addWord(maxLength);
+            }
+            if (lineBuilder.length() > 0) {
+                linesToDraw.add(Pair.of(lineBuilder.toString(), lineLength));
+            }
+            float startY = y;
+            for (Pair<String, Float> p : linesToDraw) {
+                font.drawTextExact(p.getLeft(), x - p.getRight() / 2, startY, color);
+                startY += 9;
+            }
+        }
+
+        void addWord(float maxLength) {
+            // ignore spacing if this is the first word of the line
+            float spacingLength = lineBuilder.length() == 0 ? 0 : SPACE_LENGTH;
+            if (lineLength + spacingLength + wordLength > maxLength) {
+                System.out.println("Adding line " + lineBuilder.toString() + " " + lineLength);
+                linesToDraw.add(Pair.of(lineBuilder.toString(), lineLength));
+                lineBuilder = new StringBuilder(wordBuilder);
+                lineLength = wordLength;
+            } else {
+                if (spacingLength > 0)
+                    lineBuilder.append(" ");
+                lineBuilder.append(wordBuilder);
+                lineLength += spacingLength + wordLength;
+            }
+            wordLength = 0;
+            wordBuilder = new StringBuilder();
+        }
     }
 }
