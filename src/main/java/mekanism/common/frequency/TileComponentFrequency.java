@@ -1,10 +1,10 @@
 package mekanism.common.frequency;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
@@ -19,11 +19,11 @@ public class TileComponentFrequency implements ITileComponent {
 
     private TileEntityMekanism tile;
 
-    private Map<FrequencyType<?>, Frequency> heldFrequencies = new Object2ObjectOpenHashMap<>();
-    private Map<FrequencyType<?>, FrequencyTrackingData> supportedFrequencies = new Object2ObjectOpenHashMap<>();
+    private Map<FrequencyType<?>, Frequency> heldFrequencies = new LinkedHashMap<>();
+    private Map<FrequencyType<?>, FrequencyTrackingData> supportedFrequencies = new LinkedHashMap<>();
 
-    private Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> publicCache = new Object2ObjectOpenHashMap<>();
-    private Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> privateCache = new Object2ObjectOpenHashMap<>();
+    private Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> publicCache = new LinkedHashMap<>();
+    private Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> privateCache = new LinkedHashMap<>();
 
     private boolean didNotify;
 
@@ -91,8 +91,9 @@ public class TileComponentFrequency implements ITileComponent {
             }
             if (frequency != null) {
                 frequency = manager.update(tile, frequency);
-                if (frequency == null)
+                if (frequency == null) {
                     notifyNeighbors(type);
+                }
             }
         } else {
             frequency = null;
@@ -103,10 +104,13 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     private void notifyNeighbors(FrequencyType<?> type) {
+        FrequencyTrackingData data = supportedFrequencies.get(type);
         if (!didNotify && supportedFrequencies.get(type).notifyNeighbors) {
-            MekanismUtils.notifyLoadedNeighborsOfTileChange(tile.getWorld(), tile.getPos());
-            tile.invalidateCachedCapabilities();
-            tile.markDirty(false);
+            if (data.notifyNeighbors) {
+                MekanismUtils.notifyLoadedNeighborsOfTileChange(tile.getWorld(), tile.getPos());
+                tile.invalidateCachedCapabilities();
+                tile.markDirty(false);
+            }
             didNotify = true;
         }
     }
@@ -175,7 +179,7 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void trackForMainContainer(MekanismContainer container) {
         for (Map.Entry<FrequencyType<?>, FrequencyTrackingData> entry : supportedFrequencies.entrySet()) {
-            if (entry.getValue().needsSync) {
+            if (entry.getValue().needsContainerSync) {
                 container.track(SyncableFrequency.create(() -> heldFrequencies.get(entry.getKey()), value -> heldFrequencies.put(entry.getKey(), value)));
             }
             if (entry.getValue().needsListCache) {
@@ -200,12 +204,12 @@ public class TileComponentFrequency implements ITileComponent {
     public void readFromUpdateTag(CompoundNBT updateTag) {}
 
     private static class FrequencyTrackingData {
-        private final boolean needsSync;
+        private final boolean needsContainerSync;
         private final boolean needsListCache;
         private final boolean notifyNeighbors;
 
-        public FrequencyTrackingData(boolean needsSync, boolean needsListCache, boolean notifyNeighbors) {
-            this.needsSync = needsSync;
+        public FrequencyTrackingData(boolean needsContainerSync, boolean needsListCache, boolean notifyNeighbors) {
+            this.needsContainerSync = needsContainerSync;
             this.needsListCache = needsListCache;
             this.notifyNeighbors = notifyNeighbors;
         }

@@ -7,10 +7,13 @@ import javax.annotation.Nonnull;
 import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.scroll.GuiTextScrollList;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.frequency.Frequency;
@@ -31,7 +34,10 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     private MekanismButton deleteButton;
     private GuiTextScrollList scrollList;
     private TextFieldWidget frequencyField;
+    private ColorButton colorButton;
     private boolean privateMode;
+
+    private boolean init = false;
 
     public GuiQIOFrequencySelect(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -41,19 +47,19 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 48, 102, 89, 13));
-        addButton(new GuiInnerScreen(this, 136, 102, 13, 13));
-        addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
+        addButton(new GuiInnerScreen(this, 48, 105, 89, 13));
+        addButton(new GuiInnerScreen(this, 136, 105, 13, 13));
+        addButton(scrollList = new GuiTextScrollList(this, 27, 39, 122, 42));
 
-        addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
+        addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 17, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 14, 60, 20, MekanismLang.PRIVATE, () -> {
+        addButton(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 17, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
+        addButton(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 119, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
@@ -61,7 +67,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
+        addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 79, getGuiTop() + 119, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
@@ -70,10 +76,15 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             }
             updateButtons();
         }));
-        addButton(frequencyField = new TextFieldWidget(font, getGuiLeft() + 50, getGuiTop() + 104, 86, 11, ""));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 131, 119));
+        addButton(colorButton = new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 120, 16, 16,
+            () -> getFrequency() != null ? getFrequency().getColor() : null,
+            () -> sendColorUpdate(0),
+            () -> sendColorUpdate(1)));
+        addButton(frequencyField = new TextFieldWidget(font, getGuiLeft() + 50, getGuiTop() + 107, 86, 11, ""));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        addButton(new MekanismImageButton(this, getGuiLeft() + 137, getGuiTop() + 103, 11, 12, getButtonLocation("checkmark"), () -> {
+        addButton(new MekanismImageButton(this, getGuiLeft() + 137, getGuiTop() + 106, 11, 12, getButtonLocation("checkmark"), () -> {
             setFrequency(frequencyField.getText());
             frequencyField.setText("");
             updateButtons();
@@ -137,6 +148,11 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     @Override
     public void tick() {
         super.tick();
+        Frequency freq = getFrequency();
+        if (!init && getFrequency() != null) {
+            init = true;
+            privateMode = freq.isPrivate();
+        }
         updateButtons();
         frequencyField.tick();
     }
@@ -179,26 +195,27 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawTitleText(MekanismLang.QIO_FREQUENCY_SELECT.translate(), 5);
-        drawString(OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, 142, titleTextColor());
+        drawString(OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, 143, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
-        drawString(frequencyComponent, 32, 81, titleTextColor());
+        drawString(frequencyComponent, 32, 84, titleTextColor());
         ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
-        drawString(securityComponent, 32, 91, titleTextColor());
+        drawString(securityComponent, 32, 94, titleTextColor());
         Frequency frequency = getFrequency();
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (frequency == null) {
-            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
-            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
+            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 84, 0x797979);
+            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 94, 0x797979);
         } else {
-            drawTextScaledBound(frequency.getName(), 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
-            drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
+            drawTextScaledBound(frequency.getName(), 32 + frequencyOffset, 84, 0x797979, xSize - 32 - frequencyOffset - 4);
+            drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 94, 0x797979);
         }
-        drawScaledText(MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
+        drawScaledText(MekanismLang.SET.translate(), 27, 107, titleTextColor(), 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     public abstract void sendSetFrequency(FrequencyIdentity identity);
     public abstract void sendRemoveFrequency(FrequencyIdentity identity);
+    public abstract void sendColorUpdate(int extra);
 
     public abstract QIOFrequency getFrequency();
 

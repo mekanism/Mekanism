@@ -180,7 +180,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public void handleBatchUpdate(Map<HashedItem, Long> itemMap, long countCapacity, int typeCapacity) {
-        System.out.println("HANDLE BATCH");
         cachedInventory = itemMap;
         cachedCountCapacity = countCapacity;
         cachedTypeCapacity = typeCapacity;

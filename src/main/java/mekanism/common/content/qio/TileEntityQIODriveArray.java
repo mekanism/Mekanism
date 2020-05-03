@@ -9,16 +9,15 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.TileEntityQIOComponent;
 import net.minecraft.nbt.CompoundNBT;
 
-public class TileEntityQIODriveArray extends TileEntityMekanism implements IQIODriveHolder {
+public class TileEntityQIODriveArray extends TileEntityQIOComponent implements IQIODriveHolder {
 
     private List<IInventorySlot> driveSlots;
 
     public TileEntityQIODriveArray() {
         super(MekanismBlocks.QIO_DRIVE_ARRAY);
-        frequencyComponent.track(FrequencyType.QIO, true, true, true);
     }
 
     @Nonnull

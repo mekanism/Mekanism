@@ -13,6 +13,7 @@ import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketGuiSetFrequency;
 import mekanism.common.network.PacketGuiSetFrequency.FrequencyUpdate;
+import mekanism.common.network.PacketQIOSetColor;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
@@ -42,6 +43,14 @@ public class GuiQIOTileFrequencySelect extends GuiQIOFrequencySelect<QIOFrequenc
     @Override
     public void sendRemoveFrequency(FrequencyIdentity identity) {
         Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, FrequencyType.QIO, identity, tile.getPos()));
+    }
+
+    @Override
+    public void sendColorUpdate(int extra) {
+        QIOFrequency freq = getFrequency();
+        if (freq != null) {
+            Mekanism.packetHandler.sendToServer(PacketQIOSetColor.create(tile.getPos(), freq, extra));
+        }
     }
 
     @Override

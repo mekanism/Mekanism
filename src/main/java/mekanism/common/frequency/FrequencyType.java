@@ -9,6 +9,7 @@ import mekanism.api.NBTConstants;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.teleporter.TeleporterFrequency;
+import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.security.SecurityFrequency;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -90,6 +91,14 @@ public class FrequencyType<FREQ extends Frequency> {
 
     public FrequencyManager<FREQ> getFrequencyManager(FREQ freq) {
         return freq.isPrivate() ? getManagerWrapper().getPrivateManager(freq.getOwner()) : getManagerWrapper().getPublicManager();
+    }
+
+    public FrequencyManager<FREQ> getManager(FrequencyIdentity identity, UUID owner) {
+        return identity.isPublic() ? getManagerWrapper().getPublicManager() : getManagerWrapper().getPrivateManager(owner);
+    }
+
+    public FREQ getFrequency(FrequencyIdentity identity, UUID owner) {
+        return getManager(identity, owner).getFrequency(identity.getKey());
     }
 
     public IdentitySerializer getIdentitySerializer() {

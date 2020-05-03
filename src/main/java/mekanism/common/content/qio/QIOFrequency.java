@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import mekanism.api.NBTConstants;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.transporter.HashedItem;
@@ -19,6 +21,7 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.PacketQIOItemViewerGuiSync;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -43,6 +46,8 @@ public class QIOFrequency extends Frequency {
     private int totalTypeCapacity;
     // only used on client side, for server side we can just look at itemDataMap.size()
     private int clientTypes;
+
+    private EnumColor color = EnumColor.INDIGO;
 
     public QIOFrequency(String n, UUID uuid) {
         super(FrequencyType.QIO, n, uuid);
@@ -100,6 +105,14 @@ public class QIOFrequency extends Frequency {
 
     public void closeItemViewer(ServerPlayerEntity player) {
         playersViewingItems.remove(player);
+    }
+
+    public EnumColor getColor() {
+        return color;
+    }
+
+    public void setColor(EnumColor color) {
+        this.color = color;
     }
 
     // utility methods for accessing descriptors
@@ -175,6 +188,7 @@ public class QIOFrequency extends Frequency {
         code = 31 * code + Long.hashCode(totalCountCapacity);
         code = 31 * code + itemDataMap.size();
         code = 31 * code + totalTypeCapacity;
+        code = 31 * code + color.ordinal();
         return code;
     }
 
@@ -185,6 +199,7 @@ public class QIOFrequency extends Frequency {
         buf.writeVarLong(totalCountCapacity);
         buf.writeVarInt(itemDataMap.size());
         buf.writeVarInt(totalTypeCapacity);
+        buf.writeVarInt(color.ordinal());
     }
 
     @Override
@@ -194,6 +209,19 @@ public class QIOFrequency extends Frequency {
         totalCountCapacity = buf.readVarLong();
         clientTypes = buf.readVarInt();
         totalTypeCapacity = buf.readVarInt();
+        color = EnumColor.byIndexStatic(buf.readVarInt());
+    }
+
+    @Override
+    public void write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt(NBTConstants.COLOR, color.ordinal());
+    }
+
+    @Override
+    protected void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        color = EnumColor.byIndexStatic(nbtTags.getInt(NBTConstants.COLOR));
     }
 
     public void addDrive(QIODriveKey key) {

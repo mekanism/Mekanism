@@ -12,6 +12,7 @@ import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedItemButton;
 import mekanism.common.network.PacketGuiSetFrequency;
 import mekanism.common.network.PacketGuiSetFrequency.FrequencyUpdate;
+import mekanism.common.network.PacketQIOSetColor;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -36,6 +37,14 @@ public class GuiQIOItemFrequencySelect extends GuiQIOFrequencySelect<QIOFrequenc
     @Override
     public void sendRemoveFrequency(FrequencyIdentity identity) {
         Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_ITEM, FrequencyType.QIO, identity, container.getHand()));
+    }
+
+    @Override
+    public void sendColorUpdate(int extra) {
+        QIOFrequency freq = getFrequency();
+        if (freq != null) {
+            Mekanism.packetHandler.sendToServer(PacketQIOSetColor.create(container.getHand(), freq, extra));
+        }
     }
 
     @Override

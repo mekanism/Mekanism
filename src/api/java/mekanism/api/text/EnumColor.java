@@ -86,6 +86,14 @@ public enum EnumColor {
         return dyeTag;
     }
 
+    public EnumColor increment() {
+        return byIndexStatic(ordinal() + 1);
+    }
+
+    public EnumColor decrement() {
+        return byIndexStatic(ordinal() - 1);
+    }
+
     /**
      * Gets the name of this color with it's color prefix code.
      *
@@ -119,7 +127,7 @@ public enum EnumColor {
      * @return the color value
      */
     public float getColor(int index) {
-        return (float) rgbCode[index] / 255F;
+        return rgbCode[index] / 255F;
     }
 
     @Override
