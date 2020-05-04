@@ -85,6 +85,7 @@ public class GuiInnerScreen extends GuiScalableElement {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
+        super.renderToolTip(mouseX, mouseY);
         if (tooltipStrings != null) {
             List<ITextComponent> list = tooltipStrings.get();
             if (list == null || list.isEmpty())

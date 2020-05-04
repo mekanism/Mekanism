@@ -7,6 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismButton;
+import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -14,13 +15,15 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.TagCache;
+import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.network.PacketEditFilter;
-import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.item.ItemStack;
 
@@ -30,13 +33,13 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
     protected TextFieldWidget text;
     protected GuiSequencedSlotDisplay slotDisplay;
 
-    public <TILE extends TileEntityMekanism & ITileFilterHolder<QIOTagFilter>>
-    GuiTagFilterDialog(IGuiWrapper gui, int x, int y, TILE tile) {
-        super(gui, x, y, 116, 90, MekanismLang.TAG_FILTER.translate());
+    private <TILE extends TileEntityMekanism & ITileFilterHolder<QIOFilter<?>>>
+    GuiTagFilterDialog(IGuiWrapper gui, int x, int y, TILE tile, QIOTagFilter origFilter) {
+        super(gui, x, y, 152, 90, MekanismLang.TAG_FILTER.translate(), origFilter);
 
-        addChild(new GuiSlot(SlotType.NORMAL, gui, 11, 18).setRenderHover(true));
-        addChild(new GuiInnerScreen(gui, 33, 18, 111, 43));
-        addChild(new TranslationButton(gui, gui.getLeft() + 27, gui.getTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
+        addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 7, relativeY + 18).setRenderHover(true));
+        addChild(new GuiInnerScreen(gui, relativeX + 29, relativeY + 18, 111, 43));
+        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + 23, gui.getTop() + relativeY + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -46,44 +49,67 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
                 } else {
                     Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), false, origFilter, filter));
                 }
-                Mekanism.packetHandler.sendToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
+                gui.removeElement(this);
             } else {
                 status = MekanismLang.TAG_FILTER_NO_TAG.translateColored(EnumColor.DARK_RED);
                 ticker = 20;
             }
         }));
-        addChild(new TranslationButton(gui, gui.getLeft() + 89, gui.getTop() + 62, 60, 20, isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
-            Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
+        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + 85, gui.getTop() + relativeY + 62, 60, 20, isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
+            if (origFilter != null) {
+                Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
+            }
             gui.removeElement(this);
         }));
-        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, relativeX + 12, relativeY + 19, this::getRenderStacks));
+        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, relativeX + 8, relativeY + 19, this::getRenderStacks).setZOffset(100));
 
-        text = new TextFieldWidget(getFont(), gui.getLeft() + 35, gui.getTop() + 47, 95, 12, "");
+        text = new TextFieldWidget(getFont(), gui.getLeft() + relativeX + 31, gui.getTop() + relativeY + 47, 95, 12, "");
+        text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
+        text.setEnabled(true);
+        text.setFocused2(true);
+
+        addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 127, gui.getTop() + relativeY + 47, 12, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"),
+            this::setText));
 
         if (filter.getTagName() != null && !filter.getTagName().isEmpty()) {
             slotDisplay.updateStackList();
         }
     }
 
+    public static <TILE extends TileEntityMekanism & ITileFilterHolder<QIOFilter<?>>> GuiTagFilterDialog create(IGuiWrapper gui, TILE tile) {
+        return new GuiTagFilterDialog(gui, gui.getWidth() / 2 - 152 / 2, 15, tile, null);
+    }
+
+    public static <TILE extends TileEntityMekanism & ITileFilterHolder<QIOFilter<?>>> GuiTagFilterDialog edit(IGuiWrapper gui, TILE tile, QIOTagFilter filter) {
+        return new GuiTagFilterDialog(gui, gui.getWidth() / 2 - 152 / 2, 15, tile, filter);
+    }
+
     @Override
-    public void renderBackgroundOverlay(int mouseX, int mouseY) {
-        super.renderBackgroundOverlay(mouseX, mouseY);
+    public QIOTagFilter createNewFilter() {
+        return new QIOTagFilter();
+    }
+
+    @Override
+    public void renderBackgroundOverlayPost(int mouseX, int mouseY) {
+        super.renderBackgroundOverlayPost(mouseX, mouseY);
         text.renderButton(mouseX, mouseY, 0);
     }
 
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
-        drawScaledText(MekanismLang.TAG_FILTER_TAG.translate(filter.getTagName()), 35, 32, screenTextColor(), 107);
+        drawScaledText(MekanismLang.TAG_FILTER_TAG.translate(filter.getTagName()), relativeX + 32, relativeY + 32, screenTextColor(), 106);
     }
 
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {
             status = MekanismLang.TAG_FILTER_NO_TAG.translateColored(EnumColor.DARK_RED);
+            ticker = 20;
             return;
         } else if (name.equals(filter.getTagName())) {
             status = MekanismLang.TAG_FILTER_SAME_TAG.translateColored(EnumColor.DARK_RED);
+            ticker = 20;
             return;
         }
         filter.setTagName(name);
@@ -113,7 +139,8 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
                 setText();
                 return true;
             }
-            return text.keyPressed(keyCode, scanCode, modifiers);
+            text.keyPressed(keyCode, scanCode, modifiers);
+            return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }

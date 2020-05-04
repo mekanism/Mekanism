@@ -1,4 +1,5 @@
 {
+	"parent": "mekanism:block/flat_model",
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "mekanism:block/models/qio_dashboard",

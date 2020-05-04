@@ -42,7 +42,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             List<ITextComponent> list = new ArrayList<>();
             FrequencyIdentity freq = getFrequency();
             if (freq != null) {
-                list.add(MekanismLang.FREQUENCY.translate(getFrequency().getKey()));
+                list.add(MekanismLang.FREQUENCY.translate(freq.getKey()));
             } else {
                 list.add(MekanismLang.NO_FREQUENCY.translate());
             }

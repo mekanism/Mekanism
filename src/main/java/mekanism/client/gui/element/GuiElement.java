@@ -55,6 +55,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         // render background overlay and children above everything else
         renderBackgroundOverlay(mouseX, mouseY);
         children.forEach(child -> child.render(mouseX, mouseY, 0));
+        renderBackgroundOverlayPost(mouseX, mouseY);
         RenderSystem.popMatrix();
         renderForeground(mouseX, mouseY);
         children.forEach(child -> child.renderForeground(mouseX, mouseY));
@@ -63,6 +64,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     public void renderForeground(int mouseX, int mouseY) {}
 
     public void renderBackgroundOverlay(int mouseX, int mouseY) {}
+    public void renderBackgroundOverlayPost(int mouseX, int mouseY) {}
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {

@@ -25,6 +25,21 @@
                   "source": "componentSecurity.securityMode",
                   "target": "mekData.securityMode",
                   "op": "replace"
+                },
+                {
+                  "source": "componentUpgrade",
+                  "target": "mekData.componentUpgrade",
+                  "op": "replace"
+                },
+                {
+                  "source": "filters",
+                  "target": "mekData.filters",
+                  "op": "replace"
+                },
+                {
+                  "source": "controlType",
+                  "target": "mekData.controlType",
+                  "op": "replace"
                 }
               ]
             }

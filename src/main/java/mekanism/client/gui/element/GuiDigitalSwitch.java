@@ -16,14 +16,16 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     private static final ResourceLocation SWITCH = MekanismUtils.getResource(ResourceType.GUI, "switch/switch.png");
     private static final int BUTTON_SIZE_X = 15, BUTTON_SIZE_Y = 8;
 
+    private final SwitchType type;
     private final ResourceLocation icon;
     private final BooleanSupplier stateSupplier;
     private final ITextComponent tooltip;
     private final Runnable onToggle;
 
     public GuiDigitalSwitch(IGuiWrapper gui, int x, int y, ResourceLocation icon, BooleanSupplier stateSupplier, ITextComponent tooltip,
-          Runnable onToggle) {
-        super(SWITCH, gui, x, y, BUTTON_SIZE_X, 40);
+          Runnable onToggle, SwitchType type) {
+        super(SWITCH, gui, x, y, type.sizeX, type.sizeY);
+        this.type = type;
         this.icon = icon;
         this.stateSupplier = stateSupplier;
         this.tooltip = tooltip;
@@ -38,11 +40,13 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        blit(x, y, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-        blit(x, y + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        blit(x + type.switchX, y + type.switchY, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        blit(x + type.switchX, y + type.switchY + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
 
-        minecraft.textureManager.bindTexture(icon);
-        blit(x + 6, y + 21, 0, 0, 5, 5, 5, 5);
+        if (type != SwitchType.NO_ICON) {
+            minecraft.textureManager.bindTexture(icon);
+            blit(x + 6, y + 21, 0, 0, 5, 5, 5, 5);
+        }
     }
 
     @Override
@@ -57,5 +61,20 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     public void onClick(double mouseX, double mouseY) {
         Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
         onToggle.run();
+    }
+
+    public enum SwitchType {
+        LOWER_ICON(BUTTON_SIZE_X, 40, 0, 0),
+        NO_ICON(40, BUTTON_SIZE_Y * 2, 10, 0);
+
+        private int sizeX, sizeY;
+        private int switchX, switchY;
+
+        private SwitchType(int sizeX, int sizeY, int switchX, int switchY) {
+            this.sizeX = sizeX;
+            this.sizeY = sizeY;
+            this.switchX = switchX;
+            this.switchY = switchY;
+        }
     }
 }

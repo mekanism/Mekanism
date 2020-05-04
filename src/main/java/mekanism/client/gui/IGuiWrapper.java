@@ -9,6 +9,7 @@ import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
@@ -72,6 +73,8 @@ public interface IGuiWrapper {
     }
 
     void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale);
+
+    ItemRenderer getItemRenderer();
 
     default void renderItemTooltip(@Nonnull ItemStack stack, int xAxis, int yAxis) {
         Mekanism.logger.error("Tried to call 'renderItemTooltip' but unsupported in " + this);

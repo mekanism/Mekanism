@@ -13,10 +13,16 @@ public class GuiSequencedSlotDisplay extends GuiTexturedElement {
     private int stackSwitchTicker;
     private ItemStack renderStack = ItemStack.EMPTY;
     private Supplier<List<ItemStack>> stackListSupplier;
+    private float zOffset;
 
     public GuiSequencedSlotDisplay(IGuiWrapper gui, int x, int y, Supplier<List<ItemStack>> stackListSupplier) {
         super(null, gui, x, y, 16, 16);
         this.stackListSupplier = stackListSupplier;
+    }
+
+    public GuiSequencedSlotDisplay setZOffset(float zOffset) {
+        this.zOffset = zOffset;
+        return this;
     }
 
     @Override
@@ -43,7 +49,9 @@ public class GuiSequencedSlotDisplay extends GuiTexturedElement {
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
         if (renderStack != null) {
+            guiObj.getItemRenderer().zLevel += zOffset;
             guiObj.renderItem(renderStack, relativeX, relativeY);
+            guiObj.getItemRenderer().zLevel -= zOffset;
         }
     }
 

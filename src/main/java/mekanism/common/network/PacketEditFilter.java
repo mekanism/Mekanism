@@ -4,12 +4,14 @@ import java.util.function.Supplier;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.lib.HashList;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
+import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -63,6 +65,15 @@ public class PacketEditFilter {
                     filters.remove(index);
                     if (!message.delete) {
                         filters.add(index, (OredictionificatorFilter) message.edited);
+                    }
+                }
+            } else if (message.filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {
+                HashList<QIOFilter<?>> filters = ((TileEntityQIOFilterHandler) tile).getFilters();
+                int index = filters.indexOf(message.filter);
+                if (index != -1) {
+                    filters.remove(index);
+                    if (!message.delete) {
+                        filters.add(index, (QIOFilter<?>) message.edited);
                     }
                 }
             }

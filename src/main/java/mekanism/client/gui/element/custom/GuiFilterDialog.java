@@ -7,7 +7,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiFilterDialog<FILTER extends IFilter<FILTER>> extends GuiOverlayDialog {
+public abstract class GuiFilterDialog<FILTER extends IFilter<FILTER>> extends GuiOverlayDialog {
 
     protected ITextComponent status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
     protected FILTER origFilter;
@@ -17,16 +17,24 @@ public class GuiFilterDialog<FILTER extends IFilter<FILTER>> extends GuiOverlayD
 
     private ITextComponent filterName;
 
-    public GuiFilterDialog(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName) {
+    public GuiFilterDialog(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, FILTER origFilter) {
         super(gui, x, y, width, height);
+        this.origFilter = origFilter;
         this.filterName = filterName;
+
+        if (origFilter == null) {
+            isNew = true;
+            filter = createNewFilter();
+        } else {
+            filter = origFilter.clone();
+        }
     }
 
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
-        drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), 43, 6, titleTextColor());
-        drawString(MekanismLang.STATUS.translate(status), 35, 20, screenTextColor());
+        drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), relativeX + 39, relativeY + 6, titleTextColor());
+        drawString(MekanismLang.STATUS.translate(status), relativeX + 32, relativeY + 20, screenTextColor());
     }
 
     @Override
@@ -38,4 +46,11 @@ public class GuiFilterDialog<FILTER extends IFilter<FILTER>> extends GuiOverlayD
             status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
         }
     }
+
+    @Override
+    protected boolean renderOverlay() {
+        return false;
+    }
+
+    public abstract FILTER createNewFilter();
 }

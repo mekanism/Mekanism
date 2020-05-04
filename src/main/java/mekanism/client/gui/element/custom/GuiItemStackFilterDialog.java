@@ -9,25 +9,25 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 
 public class GuiItemStackFilterDialog extends GuiFilterDialog<QIOItemStackFilter> {
 
-    public <TILE extends TileEntityMekanism & ITileFilterHolder<QIOItemStackFilter>>
-    GuiItemStackFilterDialog(IGuiWrapper gui, int x, int y, int width, int height, TILE tile) {
-        super(gui, x, y, width, height, MekanismLang.ITEM_FILTER.translate());
+    private <TILE extends TileEntityMekanism & ITileFilterHolder<QIOFilter<?>>>
+    GuiItemStackFilterDialog(IGuiWrapper gui, int x, int y, TILE tile, QIOItemStackFilter origFilter) {
+        super(gui, x, y, 152, 90, MekanismLang.ITEM_FILTER.translate(), origFilter);
 
-        addChild(new GuiSlot(SlotType.NORMAL, gui, 11, 18).setRenderHover(true));
-        addChild(new GuiInnerScreen(gui, 33, 18, 111, 43));
-        addChild(new TranslationButton(gui, gui.getLeft() + 27, gui.getTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
+        addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 7, relativeY + 18).setRenderHover(true));
+        addChild(new GuiInnerScreen(gui, relativeX + 29, relativeY + 18, 111, 43));
+        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + 23, gui.getTop() + relativeY + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!filter.getItemStack().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(tile.getPos(), filter));
@@ -40,40 +40,55 @@ public class GuiItemStackFilterDialog extends GuiFilterDialog<QIOItemStackFilter
                 ticker = 20;
             }
         }));
-        addChild(new TranslationButton(gui, gui.getLeft() + 89, gui.getTop() + 62, 60, 20, isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
-            Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
+        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + 85, gui.getTop() + relativeY + 62, 60, 20, isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
+            if (origFilter != null) {
+                Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
+            }
             gui.removeElement(this);
         }));
+    }
+
+    public static <TILE extends TileEntityMekanism & ITileFilterHolder<QIOFilter<?>>> GuiItemStackFilterDialog create(IGuiWrapper gui, TILE tile) {
+        return new GuiItemStackFilterDialog(gui, gui.getWidth() / 2 - 152 / 2, 15, tile, null);
+    }
+
+    public static <TILE extends TileEntityMekanism & ITileFilterHolder<QIOFilter<?>>> GuiItemStackFilterDialog edit(IGuiWrapper gui, TILE tile, QIOItemStackFilter filter) {
+        return new GuiItemStackFilterDialog(gui, gui.getWidth() / 2 - 152 / 2, 15, tile, filter);
+    }
+
+    @Override
+    public QIOItemStackFilter createNewFilter() {
+        return new QIOItemStackFilter();
     }
 
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
         if (!filter.getItemStack().isEmpty()) {
-            drawScaledText(filter.getItemStack().getDisplayName(), 35, 41, screenTextColor(), 107);
+            drawScaledText(filter.getItemStack().getDisplayName(), relativeX + 32, relativeY + 41, screenTextColor(), 106);
         }
-        guiObj.renderItem(filter.getItemStack(), 12, 19);
+        guiObj.getItemRenderer().zLevel += 100;
+        guiObj.renderItem(filter.getItemStack(), relativeX + 8, relativeY + 19);
+        guiObj.getItemRenderer().zLevel -= 100;
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
             double xAxis = mouseX - guiObj.getLeft();
             double yAxis = mouseY - guiObj.getTop();
-            if (xAxis >= 12 && xAxis < 28 && yAxis >= 19 && yAxis < 35) {
+            if (xAxis >= relativeX + 8 && xAxis < relativeX + 24 && yAxis >= relativeY + 19 && yAxis < relativeY + 35) {
                 ItemStack stack = minecraft.player.inventory.getItemStack();
                 if (!stack.isEmpty() && !Screen.hasShiftDown()) {
-                    if (stack.getItem() instanceof BlockItem) {
-                        filter.setItemStack(stack.copy());
-                        filter.getItemStack().setCount(1);
-                    }
+                    filter.setItemStack(stack.copy());
+                    filter.getItemStack().setCount(1);
                 } else if (stack.isEmpty() && Screen.hasShiftDown()) {
                     filter.setItemStack(ItemStack.EMPTY);
                 }
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                return true;
             }
         }
-        return true;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

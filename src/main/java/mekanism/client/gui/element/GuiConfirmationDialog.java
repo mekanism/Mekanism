@@ -30,13 +30,6 @@ public class GuiConfirmationDialog extends GuiOverlayDialog {
     }
 
     @Override
-    public void renderBackgroundOverlay(int mouseX, int mouseY) {
-        super.renderBackgroundOverlay(mouseX, mouseY);
-        minecraft.textureManager.bindTexture(getResource());
-        renderBackgroundTexture(getResource(), 4, 4);
-    }
-
-    @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
         drawWrappedCenteredText(title.getString(), relativeX + (width / 2), relativeY + 10, titleTextColor(), width - 10);

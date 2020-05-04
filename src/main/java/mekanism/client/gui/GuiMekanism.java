@@ -1,6 +1,8 @@
 package mekanism.client.gui;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -8,6 +10,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
+import mekanism.client.gui.element.GuiOverlayDialog;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -22,10 +25,12 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -41,6 +46,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     public static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
+    protected List<GuiOverlayDialog> overlays = new ArrayList<>();
 
     protected GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -81,6 +87,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
+    public void resize(Minecraft minecraft, int sizeX, int sizeY) {
+        init(minecraft, sizeX, sizeY);
+        overlays.forEach(overlay -> addElement(overlay));
+    }
+
+    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
@@ -91,9 +103,13 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             }
         }
         // then render tooltips, so there's no clashing
-        for (Widget widget : this.buttons) {
+        for (int i = buttons.size() - 1; i >= 0; i--) {
+            Widget widget = buttons.get(i);
             if (widget instanceof GuiElement && widget.isMouseOver(mouseX, mouseY)) {
                 ((GuiElement) widget).renderToolTip(xAxis, yAxis);
+            }
+            if (widget instanceof GuiOverlayDialog) {
+                break;
             }
         }
     }
@@ -116,24 +132,26 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        boolean ret = super.keyPressed(keyCode, scanCode, modifiers);
         for (int i = buttons.size() - 1; i >= 0; i--) {
             if (buttons.get(i) instanceof GuiElement) {
-                ret |= ((GuiElement) buttons.get(i)).keyPressed(keyCode, scanCode, modifiers);
+                if (((GuiElement) buttons.get(i)).keyPressed(keyCode, scanCode, modifiers)) {
+                    return true;
+                }
             }
         }
-        return ret;
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        boolean ret = super.charTyped(c, keyCode);
         for (int i = buttons.size() - 1; i >= 0; i--) {
             if (buttons.get(i) instanceof GuiElement) {
-                ret |= ((GuiElement) buttons.get(i)).charTyped(c, keyCode);
+                if (((GuiElement) buttons.get(i)).charTyped(c, keyCode)) {
+                    return true;
+                }
             }
         }
-        return ret;
+        return super.charTyped(c, keyCode);
     }
 
     /**
@@ -269,6 +287,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         renderTooltip(stack, xAxis, yAxis);
     }
 
+    @Override
+    public ItemRenderer getItemRenderer() {
+        return itemRenderer;
+    }
+
     protected static String formatInt(long l) {
         return intFormatter.format(l);
     }
@@ -276,12 +299,18 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void addElement(GuiTexturedElement e) {
         addButton(e);
+        if (e instanceof GuiOverlayDialog) {
+            overlays.add((GuiOverlayDialog) e);
+        }
     }
 
     @Override
     public void removeElement(GuiTexturedElement e) {
         buttons.remove(e);
         children.remove(e);
+        if (e instanceof GuiOverlayDialog) {
+            overlays.remove(e);
+        }
     }
 
     //Some blit param namings

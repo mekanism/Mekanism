@@ -26,6 +26,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -128,6 +129,11 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
             }
         }
+    }
+
+    @Override
+    public ItemRenderer getItemRenderer() {
+        return Minecraft.getInstance().getItemRenderer();
     }
 
     @Override
