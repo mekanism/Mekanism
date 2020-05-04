@@ -17,12 +17,13 @@ import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiOredictionificatorFilter extends GuiTextFilterBase<OredictionificatorFilter, TileEntityOredictionificator, OredictionificatorFilterContainer> {
 
-    private GuiSlot slot;
+    private ItemStack renderStack = ItemStack.EMPTY;
 
     public GuiOredictionificatorFilter(OredictionificatorFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -40,7 +41,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     @Override
     protected void addButtons() {
         addButton(new GuiInnerScreen(this, 129, 47, 14, 14));
-        addButton(slot = new GuiSlot(SlotType.NORMAL, this, 44, 18));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 44, 18));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 31, getGuiTop() + 62, 54, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {
                 setText();

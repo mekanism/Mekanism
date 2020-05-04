@@ -111,7 +111,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 return true;
             }
         }
-        return false;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

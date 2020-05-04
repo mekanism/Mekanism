@@ -1,6 +1,7 @@
 package mekanism.client.gui.filter;
 
-import mekanism.api.Coord4D;
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.ColorButton;
@@ -19,6 +20,7 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogisticalSorter, LSModIDFilterContainer> {
@@ -31,10 +33,11 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
     }
 
     @Override
-    protected void updateStackList(String modName) {
-        iterStacks = TagCache.getModIDStacks(modName, false);
-        stackSwitch = 0;
-        stackIndex = -1;
+    public List<ItemStack> getRenderStacks() {
+        if (filter.getModID() == null || filter.getModID().isEmpty()) {
+            return Collections.emptyList();
+        }
+        return TagCache.getBlockTagStacks(filter.getModID());
     }
 
     @Override

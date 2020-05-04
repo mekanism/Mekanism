@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.custom;
 
+import java.util.Collections;
 import java.util.List;
 import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
@@ -7,6 +8,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
@@ -24,12 +26,9 @@ import net.minecraft.item.ItemStack;
 
 public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
 
-    protected List<ItemStack> iterStacks;
-    protected int stackSwitch;
-    protected int stackIndex;
     protected MekanismButton checkboxButton;
-    protected ItemStack renderStack = ItemStack.EMPTY;
     protected TextFieldWidget text;
+    protected GuiSequencedSlotDisplay slotDisplay;
 
     public <TILE extends TileEntityMekanism & ITileFilterHolder<QIOTagFilter>>
     GuiTagFilterDialog(IGuiWrapper gui, int x, int y, TILE tile) {
@@ -57,11 +56,12 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
             gui.removeElement(this);
         }));
+        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, relativeX + 12, relativeY + 19, this::getRenderStacks));
 
         text = new TextFieldWidget(getFont(), gui.getLeft() + 35, gui.getTop() + 47, 95, 12, "");
 
         if (filter.getTagName() != null && !filter.getTagName().isEmpty()) {
-            updateStackList(filter.getTagName());
+            slotDisplay.updateStackList();
         }
     }
 
@@ -75,7 +75,6 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
         drawScaledText(MekanismLang.TAG_FILTER_TAG.translate(filter.getTagName()), 35, 32, screenTextColor(), 107);
-        guiObj.renderItem(renderStack, 12, 19);
     }
 
     protected void setText() {
@@ -87,15 +86,9 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
             status = MekanismLang.TAG_FILTER_SAME_TAG.translateColored(EnumColor.DARK_RED);
             return;
         }
-        updateStackList(name);
         filter.setTagName(name);
+        slotDisplay.updateStackList();
         text.setText("");
-    }
-
-    protected void updateStackList(String oreName) {
-        iterStacks = TagCache.getItemTagStacks(oreName);
-        stackSwitch = 0;
-        stackIndex = -1;
     }
 
     @Override
@@ -106,20 +99,6 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
             ticker--;
         } else {
             status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
-        }
-        if (stackSwitch > 0) {
-            stackSwitch--;
-        }
-        if (stackSwitch == 0 && iterStacks != null && !iterStacks.isEmpty()) {
-            stackSwitch = 20;
-            if (stackIndex == -1 || stackIndex == iterStacks.size() - 1) {
-                stackIndex = 0;
-            } else if (stackIndex < iterStacks.size() - 1) {
-                stackIndex++;
-            }
-            renderStack = iterStacks.get(stackIndex);
-        } else if (iterStacks != null && iterStacks.isEmpty()) {
-            renderStack = ItemStack.EMPTY;
         }
     }
 
@@ -154,5 +133,12 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         boolean ret = text.mouseClicked(mouseX, mouseY, button);
         return ret || super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private List<ItemStack> getRenderStacks() {
+        if (filter.getTagName() == null || filter.getTagName().isEmpty()) {
+            return Collections.emptyList();
+        }
+        return TagCache.getItemTagStacks(filter.getTagName());
     }
 }

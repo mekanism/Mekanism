@@ -1,11 +1,14 @@
 package mekanism.client.gui.element.button;
 
+import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
@@ -15,20 +18,25 @@ import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.lib.HashList;
+import net.minecraft.item.ItemStack;
 
 public class MovableFilterButton extends FilterButton {
 
     private final FilterSelectButton upButton;
     private final FilterSelectButton downButton;
+    private final GuiSequencedSlotDisplay slotDisplay;
+    private IFilter<?> prevFilter;
 
     public MovableFilterButton(IGuiWrapper gui, int x, int y, int index, IntSupplier filterIndex, Supplier<HashList<? extends IFilter<?>>> filters,
-          IntConsumer upButtonPress, IntConsumer downButtonPress, BiConsumer<IFilter<?>, Integer> onPress) {
+          IntConsumer upButtonPress, IntConsumer downButtonPress, BiConsumer<IFilter<?>, Integer> onPress,
+          Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
         super(gui, x, y, TEXTURE_WIDTH, TEXTURE_HEIGHT / 2, index, filterIndex, filters, onPress);
         int arrowX = this.x + TEXTURE_WIDTH - 12;
         upButton = new FilterSelectButton(gui, arrowX, this.y + 1, false, () -> upButtonPress.accept(index + filterIndex.getAsInt()),
               (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_UP.translate(), xAxis, yAxis));
         downButton = new FilterSelectButton(gui, arrowX, this.y + 21, true, () -> downButtonPress.accept(index + filterIndex.getAsInt()),
               (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis));
+        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, x + 3, y + 3, () -> renderStackSupplier.apply(filters.get().getOrNull(filterIndex.getAsInt() + index))));
     }
 
     @Override
@@ -52,9 +60,13 @@ public class MovableFilterButton extends FilterButton {
         } else {
             super.renderForeground(mouseX, mouseY);
         }
+        IFilter<?> filter = filters.get().getOrNull(filterIndex.getAsInt() + index);
+        if (filter != prevFilter) {
+            slotDisplay.updateStackList();
+            prevFilter = filter;
+        }
         int x = this.x - guiObj.getLeft();
         int y = this.y - guiObj.getTop();
-        IFilter<?> filter = filters.get().getOrNull(filterIndex.getAsInt() + index);
         if (filter instanceof IItemStackFilter) {
             drawScaledText(MekanismLang.ITEM_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
         } else if (filter instanceof ITagFilter) {

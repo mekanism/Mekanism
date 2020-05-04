@@ -21,11 +21,9 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
         super.init();
 
         if (filter.getModID() != null && !filter.getModID().isEmpty()) {
-            updateStackList(filter.getModID());
+            updateRenderStacks();
         }
     }
-
-    protected abstract void updateStackList(String modName);
 
     @Override
     protected void setText() {
@@ -37,8 +35,8 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             status = MekanismLang.MODID_FILTER_SAME_ID.translateColored(EnumColor.DARK_RED);
             return;
         }
-        updateStackList(name);
         filter.setModID(name);
+        updateRenderStacks();
         text.setText("");
     }
 

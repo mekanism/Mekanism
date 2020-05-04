@@ -17,17 +17,6 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
     }
 
     @Override
-    public void init() {
-        super.init();
-
-        if (filter.getTagName() != null && !filter.getTagName().isEmpty()) {
-            updateStackList(filter.getTagName());
-        }
-    }
-
-    protected abstract void updateStackList(String oreName);
-
-    @Override
     protected boolean wasTextboxKey(char c, int i) {
         return super.wasTextboxKey(c, i) || c == ':' || c == '/';
     }
@@ -42,8 +31,8 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
             status = MekanismLang.TAG_FILTER_SAME_TAG.translateColored(EnumColor.DARK_RED);
             return;
         }
-        updateStackList(name);
         filter.setTagName(name);
+        updateRenderStacks();
         text.setText("");
     }
 

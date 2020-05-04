@@ -1,6 +1,8 @@
 package mekanism.client.gui.filter;
 
-import mekanism.api.Coord4D;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -13,9 +15,10 @@ import mekanism.common.content.miner.MMaterialFilter;
 import mekanism.common.inventory.container.tile.filter.DMMaterialFilterContainer;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
-import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.network.PacketNewFilter;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileEntityDigitalMiner, DMMaterialFilterContainer> {
@@ -60,7 +63,15 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
         if (!filter.getMaterialItem().isEmpty()) {
             drawScaledText(filter.getMaterialItem().getDisplayName(), 35, 41, screenTextColor(), 107);
         }
-        drawMinerForegroundLayer(filter.getMaterialItem());
+        drawMinerForegroundLayer();
+    }
+
+    @Override
+    public List<ItemStack> getRenderStacks() {
+        if (filter.getMaterialItem() == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(filter.getMaterialItem());
     }
 
     @Override

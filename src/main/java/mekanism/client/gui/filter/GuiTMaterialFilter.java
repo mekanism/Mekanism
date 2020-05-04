@@ -1,6 +1,8 @@
 package mekanism.client.gui.filter;
 
-import mekanism.api.Coord4D;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.ColorButton;
@@ -18,6 +20,7 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileEntityLogisticalSorter, LSMaterialFilterContainer> {
@@ -31,7 +34,7 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
 
     @Override
     protected void addButtons() {
-        addButton(new GuiInnerScreen(this, 33, 18, 93, 43));
+        addButton(new GuiInnerScreen(this, 33, 18, 111, 43));
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18).setRenderHover(true));
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 43));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 47, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
@@ -52,11 +55,11 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
         addButton(new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"),
-              () -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 64, 11, getButtonLocation("default"),
-              () -> filter.allowDefault = !filter.allowDefault, getOnHover(MekanismLang.FILTER_ALLOW_DEFAULT)));
-        addButton(new ColorButton(this, getGuiLeft() + 12, getGuiTop() + 44, 16, 16, () -> filter.color,
-              () -> filter.color = hasShiftDown() ? null : TransporterUtils.increment(filter.color), () -> filter.color = TransporterUtils.decrement(filter.color)));
+            () -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
+        addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 64, 11, getButtonLocation("default"), () -> filter.allowDefault = !filter.allowDefault,
+            getOnHover(MekanismLang.FILTER_ALLOW_DEFAULT)));
+        addButton(new ColorButton(this, getGuiLeft() + 12, getGuiTop() + 44, 16, 16, () -> filter.color, () -> filter.color = hasShiftDown() ? null : TransporterUtils.increment(filter.color),
+            () -> filter.color = TransporterUtils.decrement(filter.color)));
     }
 
     @Override
@@ -64,7 +67,15 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
         if (!filter.getMaterialItem().isEmpty()) {
             drawScaledText(filter.getMaterialItem().getDisplayName(), 35, 41, screenTextColor(), 107);
         }
-        drawTransporterForegroundLayer(filter.getMaterialItem());
+        drawTransporterForegroundLayer();
+    }
+
+    @Override
+    public List<ItemStack> getRenderStacks() {
+        if (filter.getMaterialItem() == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(filter.getMaterialItem());
     }
 
     @Override

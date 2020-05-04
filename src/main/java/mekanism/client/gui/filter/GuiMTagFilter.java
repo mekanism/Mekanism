@@ -1,6 +1,7 @@
 package mekanism.client.gui.filter;
 
-import mekanism.api.Coord4D;
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -14,9 +15,10 @@ import mekanism.common.content.miner.MTagFilter;
 import mekanism.common.inventory.container.tile.filter.DMTagFilterContainer;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
-import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.network.PacketNewFilter;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiMTagFilter extends GuiTagFilter<MTagFilter, TileEntityDigitalMiner, DMTagFilterContainer> {
@@ -62,9 +64,10 @@ public class GuiMTagFilter extends GuiTagFilter<MTagFilter, TileEntityDigitalMin
     }
 
     @Override
-    protected void updateStackList(String oreName) {
-        iterStacks = TagCache.getBlockTagStacks(oreName);
-        stackSwitch = 0;
-        stackIndex = -1;
+    public List<ItemStack> getRenderStacks() {
+        if (filter.getTagName() == null || filter.getTagName().isEmpty()) {
+            return Collections.emptyList();
+        }
+        return TagCache.getBlockTagStacks(filter.getTagName());
     }
 }

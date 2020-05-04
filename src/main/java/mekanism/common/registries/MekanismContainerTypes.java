@@ -96,6 +96,7 @@ import mekanism.common.tile.machine.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
+import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 
 public class MekanismContainerTypes {
 
@@ -160,6 +161,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<QIODashboardContainer> QIO_DASHBOARD = CONTAINER_TYPES.register(MekanismBlocks.QIO_DASHBOARD, QIODashboardContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIOImporter>> QIO_IMPORTER = CONTAINER_TYPES.register(MekanismBlocks.QIO_IMPORTER, TileEntityQIOImporter.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIOExporter>> QIO_EXPORTER = CONTAINER_TYPES.register(MekanismBlocks.QIO_EXPORTER, TileEntityQIOExporter.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIORedstoneAdapter>> QIO_REDSTONE_ADAPTER = CONTAINER_TYPES.register(MekanismBlocks.QIO_REDSTONE_ADAPTER, TileEntityQIORedstoneAdapter.class);
 
     //Named
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFactory<?>>> FACTORY = CONTAINER_TYPES.register("factory", FactoryContainer::new);

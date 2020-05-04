@@ -54,6 +54,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
         } else if (stack.isEmpty() && hasShiftDown()) {
             filter.setMaterialItem(ItemStack.EMPTY);
         }
+        updateRenderStacks();
         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
     }
 }

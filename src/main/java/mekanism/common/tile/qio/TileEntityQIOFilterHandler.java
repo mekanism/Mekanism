@@ -13,6 +13,7 @@ import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.lib.HashList;
+import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
@@ -20,7 +21,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ISpecialConfigData, ISustainedData, ITileFilterHolder<QIOFilter<?>> {
+public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ISpecialConfigData, ISustainedData, ITileFilterHolder<QIOFilter<?>>,
+      IHasSortableFilters {
 
     private HashList<QIOFilter<?>> filters = new HashList<>();
 
@@ -117,5 +119,17 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
                 filters = new HashList<>(value);
             }
         }));
+    }
+
+    @Override
+    public void moveUp(int filterIndex) {
+        filters.swap(filterIndex, filterIndex - 1);
+        markDirty(false);
+    }
+
+    @Override
+    public void moveDown(int filterIndex) {
+        filters.swap(filterIndex, filterIndex + 1);
+        markDirty(false);
     }
 }

@@ -1,9 +1,11 @@
 package mekanism.client.gui.filter;
 
-import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElement.IHoverable;
 import mekanism.client.gui.element.button.MekanismButton;
+import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
@@ -34,10 +36,11 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
     protected MekanismButton saveButton;
     protected MekanismButton deleteButton;
 
+    protected GuiSequencedSlotDisplay slotDisplay;
+
     protected GuiFilterBase(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        //TODO: Set filter stuff here
     }
 
     @Override
@@ -46,25 +49,33 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
         if (isNew) {
             deleteButton.active = false;
         }
+        addButton(slotDisplay = new GuiSequencedSlotDisplay(this, 12, 19, this::getRenderStacks));
+        updateRenderStacks();
     }
 
     protected IHoverable getOnHoverReplace(MinerFilter<?> filter) {
         return getOnHover(() -> MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(filter.requireStack)));
     }
 
-    protected void drawMinerForegroundLayer(ItemStack stack) {
+    protected List<ItemStack> getRenderStacks() {
+        return Collections.emptyList();
+    }
+
+    public void updateRenderStacks() {
+        slotDisplay.updateStackList();
+    }
+
+    protected void drawMinerForegroundLayer() {
         if (filter instanceof MinerFilter) {
             MinerFilter<?> mFilter = (MinerFilter<?>) filter;
-            renderItem(stack, 12, 19);
             renderItem(mFilter.replaceStack, 149, 19);
         }
     }
 
-    protected void drawTransporterForegroundLayer(@Nonnull ItemStack stack) {
+    protected void drawTransporterForegroundLayer() {
         if (filter instanceof TransporterFilter) {
             TransporterFilter<?> tFilter = (TransporterFilter<?>) filter;
             drawString(OnOff.of(tFilter.allowDefault).getTextComponent(), 24, 66, titleTextColor());
-            renderItem(stack, 12, 19);
         }
     }
 

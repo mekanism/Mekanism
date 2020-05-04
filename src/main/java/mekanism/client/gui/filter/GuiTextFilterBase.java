@@ -1,6 +1,7 @@
 package mekanism.client.gui.filter;
 
 import javax.annotation.Nonnull;
+import org.lwjgl.glfw.GLFW;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
@@ -9,14 +10,11 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiTextFilterBase<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
       FilterContainer<FILTER, TILE>> extends GuiFilterBase<FILTER, TILE, CONTAINER> {
 
-    protected ItemStack renderStack = ItemStack.EMPTY;
     protected TextFieldWidget text;
 
     protected GuiTextFilterBase(CONTAINER container, PlayerInventory inv, ITextComponent title) {

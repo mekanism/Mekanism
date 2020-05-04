@@ -3,6 +3,7 @@ package mekanism.client.gui.qio;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.custom.GuiQIOFrequencyDataScreen;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
+import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.frequency.FrequencyType;
@@ -24,6 +25,7 @@ public class GuiQIOImporter extends GuiMekanismTile<TileEntityQIOImporter, Mekan
         super.init();
         addButton(new GuiQIOFrequencyTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiQIOFrequencyDataScreen(this, 15, 19, xSize - 32, 46, () -> tile.getFrequency(FrequencyType.QIO)));
     }
 

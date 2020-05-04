@@ -1,6 +1,5 @@
 package mekanism.client.gui.filter;
 
-import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.common.MekanismLang;
@@ -14,15 +13,11 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
       FilterContainer<FILTER, TILE>> extends GuiTextFilterBase<FILTER, TILE, CONTAINER> {
 
-    protected List<ItemStack> iterStacks;
-    protected int stackSwitch;
-    protected int stackIndex;
     protected MekanismButton checkboxButton;
 
     protected GuiTextFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
@@ -47,28 +42,14 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         } else {
             status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
         }
-        if (stackSwitch > 0) {
-            stackSwitch--;
-        }
-        if (stackSwitch == 0 && iterStacks != null && !iterStacks.isEmpty()) {
-            stackSwitch = 20;
-            if (stackIndex == -1 || stackIndex == iterStacks.size() - 1) {
-                stackIndex = 0;
-            } else if (stackIndex < iterStacks.size() - 1) {
-                stackIndex++;
-            }
-            renderStack = iterStacks.get(stackIndex);
-        } else if (iterStacks != null && iterStacks.isEmpty()) {
-            renderStack = ItemStack.EMPTY;
-        }
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         if (tile instanceof TileEntityDigitalMiner) {
-            drawMinerForegroundLayer(renderStack);
+            drawMinerForegroundLayer();
         } else if (tile instanceof TileEntityLogisticalSorter) {
-            drawTransporterForegroundLayer(renderStack);
+            drawTransporterForegroundLayer();
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

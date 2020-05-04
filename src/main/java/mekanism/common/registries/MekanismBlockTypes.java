@@ -467,14 +467,14 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityQIOImporter> QIO_IMPORTER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.QIO_IMPORTER, MekanismLang.DESCRIPTION_QIO_IMPORTER)
           .withCustomShape(BlockShapes.QIO_DASHBOARD)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity())
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeRedstone())
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
           .build();
     // QIO Exporter
     public static final BlockTypeTile<TileEntityQIOExporter> QIO_EXPORTER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.QIO_EXPORTER, MekanismLang.DESCRIPTION_QIO_EXPORTER)
           .withCustomShape(BlockShapes.QIO_DASHBOARD)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity())
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeRedstone())
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
           .build();
     // QIO Redstone Adapter

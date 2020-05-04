@@ -1,6 +1,7 @@
 package mekanism.client.gui.filter;
 
-import mekanism.api.Coord4D;
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.ColorButton;
@@ -19,6 +20,7 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiTTagFilter extends GuiTagFilter<TTagFilter, TileEntityLogisticalSorter, LSTagFilterContainer> {
@@ -67,9 +69,10 @@ public class GuiTTagFilter extends GuiTagFilter<TTagFilter, TileEntityLogistical
     }
 
     @Override
-    protected void updateStackList(String oreName) {
-        iterStacks = TagCache.getItemTagStacks(oreName);
-        stackSwitch = 0;
-        stackIndex = -1;
+    public List<ItemStack> getRenderStacks() {
+        if (filter.getTagName() == null || filter.getTagName().isEmpty()) {
+            return Collections.emptyList();
+        }
+        return TagCache.getItemTagStacks(filter.getTagName());
     }
 }

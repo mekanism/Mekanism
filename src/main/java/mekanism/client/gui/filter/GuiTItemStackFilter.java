@@ -2,7 +2,7 @@ package mekanism.client.gui.filter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
+import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.ColorButton;
@@ -27,7 +27,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, TileEntityLogisticalSorter, LSItemStackFilterContainer> {
 
@@ -163,16 +162,16 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
             drawString(OnOff.of(filter.sizeMode).getTextComponent(), 141, 46, titleTextColor());
         }
         drawString(OnOff.of(filter.fuzzyMode).getTextComponent(), 24, 74, titleTextColor());
-        drawTransporterForegroundLayer(filter.getItemStack());
+        drawTransporterForegroundLayer();
         if (!filter.getItemStack().isEmpty()) {
             drawScaledText(filter.getItemStack().getDisplayName(), 35, 41, screenTextColor(), 89);
         }
     }
 
     @Override
-    protected void drawTransporterForegroundLayer(@Nonnull ItemStack stack) {
+    protected void drawTransporterForegroundLayer() {
         drawString(OnOff.of(filter.allowDefault).getTextComponent(), 24, 64, titleTextColor());
-        renderItem(stack, 12, 19);
+        renderItem(filter.getItemStack(), 12, 19);
     }
 
     @Override
