@@ -110,7 +110,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 }
                 return ActionResultType.SUCCESS;
             }
-            if (player.isShiftKeyDown() && MekanismAPI.debug) {
+            if (player.isSneaking() && MekanismAPI.debug) {
                 MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "----------",
                       MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.DEBUG_TITLE));
                 for (ITextComponent component : TransmitterNetworkRegistry.getInstance().toComponents()) {

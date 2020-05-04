@@ -79,24 +79,24 @@ public class MekanismKeyHandler extends MekKeyHandler {
         }
         if (kb == handModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND)) {
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, player.isShiftKeyDown()));
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, player.isSneaking()));
             } else if (IModeItem.isModeItem(player, EquipmentSlotType.OFFHAND)) {
                 //Otherwise try their offhand
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.OFFHAND, player.isShiftKeyDown()));
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.OFFHAND, player.isSneaking()));
             }
         } else if (kb == headModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.HEAD)) {
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.HEAD, player.isShiftKeyDown()));
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.HEAD, player.isSneaking()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         } else if (kb == chestModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.CHEST)) {
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.CHEST, player.isShiftKeyDown()));
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.CHEST, player.isSneaking()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         } else if (kb == feetModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.FEET)) {
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.FEET, player.isShiftKeyDown()));
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.FEET, player.isSneaking()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         } else if (kb == moduleTweakerKey) {

@@ -230,9 +230,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
             GasNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
             if (!transmitterNetwork.gasTank.isEmpty() && !lastWrite.isEmpty()) {
                 long amount = lastWrite.getAmount();
-                if (transmitterNetwork.gasTank.shrinkStack(amount, Action.EXECUTE) != amount) {
-                    MekanismUtils.logMismatchedStackSize();
-                }
+                MekanismUtils.logMismatchedStackSize(transmitterNetwork.gasTank.shrinkStack(amount, Action.EXECUTE), amount);
                 buffer.setStack(lastWrite);
             }
         }

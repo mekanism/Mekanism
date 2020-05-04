@@ -19,10 +19,10 @@ import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
-import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
+import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
@@ -82,7 +82,7 @@ public class CommonPlayerTickHandler {
 
     public static boolean isStepBoostOn(PlayerEntity player) {
         ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
-        if (!stack.isEmpty() && !player.isShiftKeyDown()) {
+        if (!stack.isEmpty() && !player.isSneaking()) {
             if (stack.getItem() instanceof ItemFreeRunners) {
                 ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
                 return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;

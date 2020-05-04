@@ -66,7 +66,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
             if (wrenchHandler != null) {
                 if (wrenchHandler.canUseWrench(stack, player, hit.getPos())) {
                     if (SecurityUtils.canAccess(player, tile)) {
-                        if (player.isShiftKeyDown()) {
+                        if (player.isSneaking()) {
                             MekanismUtils.dismantleBlock(state, world, pos);
                             return ActionResultType.SUCCESS;
                         }

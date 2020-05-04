@@ -22,11 +22,11 @@ public class ScubaMaskArmor extends CustomArmor {
         }
         if (isChild) {
             matrix.push();
-            if (field_228221_a_) {
-                float f = 1.5F / field_228224_g_;
+            if (isChildHeadScaled) {
+                float f = 1.5F / childHeadScale;
                 matrix.scale(f, f, f);
             }
-            matrix.translate(0.0D, field_228222_b_ / 16.0F, field_228223_f_ / 16.0F);
+            matrix.translate(0.0D, childHeadOffsetY / 16.0F, childHeadOffsetZ / 16.0F);
             renderMask(matrix, renderer, light, overlayLight, hasEffect);
             matrix.pop();
         } else {

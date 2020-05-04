@@ -44,7 +44,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             setOn(itemStack, !getOn(itemStack));
             return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
         }

@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
@@ -161,6 +162,15 @@ public class NBTUtils {
     public static void setItemStackIfPresent(CompoundNBT nbt, String key, Consumer<ItemStack> setter) {
         if (nbt.contains(key, NBT.TAG_COMPOUND)) {
             setter.accept(ItemStack.read(nbt.getCompound(key)));
+        }
+    }
+
+    public static void setResourceLocationIfPresent(CompoundNBT nbt, String key, Consumer<ResourceLocation> setter) {
+        if (nbt.contains(key, NBT.TAG_STRING)) {
+            String value = nbt.getString(key);
+            if (ResourceLocation.isResouceNameValid(value)) {
+                setter.accept(new ResourceLocation(value));
+            }
         }
     }
 

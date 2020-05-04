@@ -157,18 +157,14 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                             //Mark that we are currently draining
                             setDraining(true);
                             //Actually remove the fluid from our handler
-                            if (getFluidTank().shrinkStack(toDrain, Action.EXECUTE) != toDrain) {
-                                MekanismUtils.logMismatchedStackSize();
-                            }
+                            MekanismUtils.logMismatchedStackSize(getFluidTank().shrinkStack(toDrain, Action.EXECUTE), toDrain);
                             return;
                         }
                     }
                     //If we can move it to the output slot then actually drain our tank
                     if (moveItem(outputSlot, fluidHandlerItem.getContainer())) {
                         //Actually remove the fluid from our handler
-                        if (getFluidTank().shrinkStack(toDrain, Action.EXECUTE) != toDrain) {
-                            MekanismUtils.logMismatchedStackSize();
-                        }
+                        MekanismUtils.logMismatchedStackSize(getFluidTank().shrinkStack(toDrain, Action.EXECUTE), toDrain);
                         //Mark we are no longer draining (as we have moved the item to the output slot)
                         setDraining(false);
                     }
@@ -248,14 +244,10 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                 //We won't be able to move our container to the output slot so exit
                 return false;
             }
-            if (outputSlot.growStack(1, Action.EXECUTE) != 1) {
-                MekanismUtils.logMismatchedStackSize();
-            }
+            MekanismUtils.logMismatchedStackSize(outputSlot.growStack(1, Action.EXECUTE), 1);
         }
         //Note: We do not need to call onContentsChanged, because it will be done due to the stack changing from calling shrinkStack
-        if (shrinkStack(1, Action.EXECUTE) != 1) {
-            MekanismUtils.logMismatchedStackSize();
-        }
+        MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);
         return true;
     }
 

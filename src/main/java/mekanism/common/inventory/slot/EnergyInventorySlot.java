@@ -145,13 +145,9 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                         //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
                         if (!output.isZero() && energyContainer.insert(output, Action.SIMULATE, AutomationType.MANUAL).isZero()) {
                             //If we can accept it all, then add it and decrease our input
-                            if (!energyContainer.insert(output, Action.EXECUTE, AutomationType.MANUAL).isZero()) {
-                                MekanismUtils.logMismatchedStackSize();
-                            }
+                            MekanismUtils.logExpectedZero(energyContainer.insert(output, Action.EXECUTE, AutomationType.MANUAL));
                             int amountUsed = itemInput.getCount();
-                            if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
-                                MekanismUtils.logMismatchedStackSize();
-                            }
+                            MekanismUtils.logMismatchedStackSize(shrinkStack(amountUsed, Action.EXECUTE), amountUsed);
                         }
                     }
                 }
@@ -188,9 +184,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                         FloatingLong extractedEnergy = itemHandler.extractEnergy(container, energyInItem.subtract(simulatedRemainder), Action.EXECUTE);
                         if (!extractedEnergy.isZero()) {
                             //If we were able to actually extract it from the item, then insert it into our energy container
-                            if (!energyContainer.insert(extractedEnergy, Action.EXECUTE, AutomationType.INTERNAL).isZero()) {
-                                MekanismUtils.logMismatchedStackSize();
-                            }
+                            MekanismUtils.logExpectedZero(energyContainer.insert(extractedEnergy, Action.EXECUTE, AutomationType.INTERNAL));
                             //and mark that we were able to transfer at least some of it
                             didTransfer = true;
                             if (energyContainer.getNeeded().isZero()) {
@@ -225,9 +219,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                     FloatingLong extractedEnergy = energyContainer.extract(storedEnergy.subtract(simulatedRemainder), Action.EXECUTE, AutomationType.INTERNAL);
                     if (!extractedEnergy.isZero()) {
                         //If we were able to actually extract it from our energy container, then insert it into the item
-                        if (!itemHandler.insertEnergy(extractedEnergy, Action.EXECUTE).isZero()) {
-                            MekanismUtils.logMismatchedStackSize();
-                        }
+                        MekanismUtils.logExpectedZero(itemHandler.insertEnergy(extractedEnergy, Action.EXECUTE));
                         onContentsChanged();
                     }
                 }

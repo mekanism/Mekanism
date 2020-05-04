@@ -147,6 +147,7 @@ public final class NBTConstants {
     public static final String ROUND_ROBIN = "roundRobin";
     public static final String RUNNING = "running";
     public static final String SECURITY_MODE = "securityMode";
+    public static final String SELECTED = "selected";
     public static final String SIDE = "side";
     public static final String SILK_TOUCH = "silkTouch";
     public static final String SINGLE_ITEM = "singleItem";

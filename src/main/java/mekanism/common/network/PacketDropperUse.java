@@ -183,9 +183,7 @@ public class PacketDropperUse {
                 STACK extractedChemical = drainTank.extract(amount - remainder, Action.EXECUTE, AutomationType.MANUAL);
                 if (!extractedChemical.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
-                    if (!fillTank.insert(extractedChemical, Action.EXECUTE, AutomationType.MANUAL).isEmpty()) {
-                        MekanismUtils.logMismatchedStackSize();
-                    }
+                    MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedChemical, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
                     ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                 }
             }
@@ -203,9 +201,7 @@ public class PacketDropperUse {
                 FluidStack extractedFluid = drainTank.extract(amount - remainder, Action.EXECUTE, AutomationType.MANUAL);
                 if (!extractedFluid.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
-                    if (!fillTank.insert(extractedFluid, Action.EXECUTE, AutomationType.MANUAL).isEmpty()) {
-                        MekanismUtils.logMismatchedStackSize();
-                    }
+                    MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedFluid, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
                     ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                 }
             }

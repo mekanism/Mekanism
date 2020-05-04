@@ -200,7 +200,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (player.isShiftKeyDown() || structure == null) {
+        if (player.isSneaking() || structure == null) {
             return ActionResultType.PASS;
         }
         return openGui(player);

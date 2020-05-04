@@ -66,7 +66,7 @@ public class ItemCraftingFormula extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             if (!world.isRemote) {
                 setInventory(stack, null);
                 setInvalid(stack, false);

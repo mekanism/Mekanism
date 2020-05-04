@@ -25,7 +25,7 @@ public class ItemDosimeter extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (!player.isShiftKeyDown() && !world.isRemote()) {
+        if (!player.isSneaking() && !world.isRemote()) {
             player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
                 player.sendMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(c.getRadiation()),
                     UnitDisplayUtils.getDisplayShort(c.getRadiation(), RadiationUnit.SV, 3)));

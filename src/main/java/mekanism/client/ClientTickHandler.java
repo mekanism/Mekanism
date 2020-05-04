@@ -180,7 +180,7 @@ public class ClientTickHandler {
             UUID playerUUID = minecraft.player.getUniqueID();
             boolean stepBoostOn = CommonPlayerTickHandler.isStepBoostOn(minecraft.player);
 
-            if (stepBoostOn && !minecraft.player.isShiftKeyDown()) {
+            if (stepBoostOn && !minecraft.player.isSneaking()) {
                 minecraft.player.stepHeight = 1.002F;
             } else if (minecraft.player.stepHeight == 1.002F) {
                 minecraft.player.stepHeight = 0.6F;
@@ -310,7 +310,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void onMouseEvent(MouseScrollEvent event) {
-        if (MekanismConfig.client.allowModeScroll.get() && minecraft.player != null && minecraft.player.isShiftKeyDown()) {
+        if (MekanismConfig.client.allowModeScroll.get() && minecraft.player != null && minecraft.player.isSneaking()) {
             int shift = (int) event.getScrollDelta();
             if (shift != 0 && IModeItem.isModeItem(minecraft.player, EquipmentSlotType.MAINHAND)) {
                 RenderTickHandler.modeSwitchTimer = 100;

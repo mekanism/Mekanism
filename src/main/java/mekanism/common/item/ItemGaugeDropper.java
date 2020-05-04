@@ -70,7 +70,7 @@ public class ItemGaugeDropper extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (player.isShiftKeyDown() && !world.isRemote) {
+        if (player.isSneaking() && !world.isRemote) {
             Optional<IGasHandler> gasCapability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
             if (gasCapability.isPresent()) {
                 IGasHandler gasHandlerItem = gasCapability.get();

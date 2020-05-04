@@ -54,7 +54,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTile<TileEntityRadioactive
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         TileEntityRadioactiveWasteBarrel tile = MekanismUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
-        if (!player.isShiftKeyDown()) {
+        if (!player.isSneaking()) {
             return ActionResultType.PASS;
         }
         if (!world.isRemote()) {

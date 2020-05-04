@@ -45,9 +45,7 @@ public class InputHelper {
                 }
                 if (!recipeInput.isEmpty()) {
                     int amount = recipeInput.getCount() * operations;
-                    if (inventorySlot.shrinkStack(amount, Action.EXECUTE) != amount) {
-                        MekanismAPI.logger.error("Stack size changed by a different amount than requested.", new Exception());
-                    }
+                    logMismatchedStackSize(inventorySlot.shrinkStack(amount, Action.EXECUTE), amount);
                 }
             }
 
@@ -102,9 +100,7 @@ public class InputHelper {
                 STACK inputGas = getInput();
                 if (!inputGas.isEmpty()) {
                     long amount = recipeInput.getAmount() * operations;
-                    if (tank.shrinkStack(amount, Action.EXECUTE) != amount) {
-                        MekanismAPI.logger.error("Stack size changed by a different amount than requested.", new Exception());
-                    }
+                    logMismatchedStackSize(tank.shrinkStack(amount, Action.EXECUTE), amount);
                 }
             }
 
@@ -159,9 +155,7 @@ public class InputHelper {
                 FluidStack inputFluid = getInput();
                 if (!inputFluid.isEmpty()) {
                     int amount = recipeInput.getAmount() * operations;
-                    if (fluidTank.shrinkStack(amount, Action.EXECUTE) != amount) {
-                        MekanismAPI.logger.error("Stack size changed by a different amount than requested.", new Exception());
-                    }
+                    logMismatchedStackSize(fluidTank.shrinkStack(amount, Action.EXECUTE), amount);
                 }
             }
 
@@ -181,5 +175,11 @@ public class InputHelper {
                 return Math.min(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier), currentMax);
             }
         };
+    }
+
+    private static void logMismatchedStackSize(long actual, long expected) {
+        if (expected != actual) {
+            MekanismAPI.logger.error("Stack size changed by a different amount (" + actual + ") than requested (" + expected + ").", new Exception());
+        }
     }
 }

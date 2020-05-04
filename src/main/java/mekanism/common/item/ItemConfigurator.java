@@ -86,7 +86,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
                     if (info != null) {
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getOrientation(), side);
                         DataType dataType = info.getDataType(relativeSide);
-                        if (!player.isShiftKeyDown()) {
+                        if (!player.isSneaking()) {
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(), dataType,
                                         dataType.getColor().getColoredName())));
@@ -114,7 +114,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
                     Optional<IConfigurable> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side));
                     if (capability.isPresent()) {
                         IConfigurable config = capability.get();
-                        if (player.isShiftKeyDown()) {
+                        if (player.isSneaking()) {
                             return config.onSneakRightClick(player, side);
                         }
                         return config.onRightClick(player, side);
@@ -158,9 +158,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
                 if (tile instanceof TileEntityMekanism) {
                     if (SecurityUtils.canAccess(player, tile)) {
                         TileEntityMekanism tileMekanism = (TileEntityMekanism) tile;
-                        if (!player.isShiftKeyDown()) {
+                        if (!player.isSneaking()) {
                             tileMekanism.setFacing(side);
-                        } else if (player.isShiftKeyDown()) {
+                        } else if (player.isSneaking()) {
                             tileMekanism.setFacing(side.getOpposite());
                         }
                     } else {

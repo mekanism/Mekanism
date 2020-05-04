@@ -37,15 +37,19 @@ import mekanism.common.tile.machine.TileEntityOredictionificator.Oredictionifica
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 //TODO - V10: Make this support other tag types, such as fluids
 public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ISpecialConfigData, ISustainedData, ITileFilterHolder<OredictionificatorFilter> {
@@ -129,14 +133,9 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         if (resource == null) {
             return ItemStack.EMPTY;
         }
-
         for (OredictionificatorFilter filter : filters) {
             if (filter.filterMatches(resource)) {
-                List<Item> matchingItems = filter.getMatchingItems();
-                if (matchingItems.size() - 1 >= filter.index) {
-                    return new ItemStack(matchingItems.get(filter.index), 1);
-                }
-                return ItemStack.EMPTY;
+                return filter.getResult();
             }
         }
         return ItemStack.EMPTY;
@@ -240,17 +239,31 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         }));
     }
 
+    //TODO - V10: Rewrite this to be more efficient and also cache various values, with support for tags for fluids and other types
     public static class OredictionificatorFilter extends BaseFilter<OredictionificatorFilter> {
 
         private ResourceLocation filterLocation;
-        public int index;
+        private Tag<Item> filterTag;
+        @Nonnull
+        private Item selectedOutput = Items.AIR;
 
         public String getFilterText() {
             return filterLocation.toString();
         }
 
         public void setFilter(ResourceLocation location) {
+            setFilterLocation(location);
+            List<Item> matchingItems = getMatchingItems();
+            if (matchingItems.isEmpty()) {
+                selectedOutput = Items.AIR;
+            } else {
+                selectedOutput = matchingItems.get(0);
+            }
+        }
+
+        private void setFilterLocation(ResourceLocation location) {
             filterLocation = location;
+            filterTag = new ItemTags.Wrapper(filterLocation);
         }
 
         public boolean filterMatches(ResourceLocation location) {
@@ -261,42 +274,115 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         public CompoundNBT write(CompoundNBT nbtTags) {
             super.write(nbtTags);
             nbtTags.putString(NBTConstants.FILTER, getFilterText());
-            nbtTags.putInt(NBTConstants.INDEX, index);
+            if (selectedOutput != Items.AIR) {
+                nbtTags.putString(NBTConstants.SELECTED, selectedOutput.getRegistryName().toString());
+            }
             return nbtTags;
         }
 
         @Override
         public void read(CompoundNBT nbtTags) {
-            filterLocation = new ResourceLocation(nbtTags.getString(NBTConstants.FILTER));
-            index = nbtTags.getInt(NBTConstants.INDEX);
+            setFilterLocation(new ResourceLocation(nbtTags.getString(NBTConstants.FILTER)));
+            NBTUtils.setResourceLocationIfPresent(nbtTags, NBTConstants.SELECTED, this::setSelectedOrAir);
         }
 
         @Override
         public void write(PacketBuffer buffer) {
             super.write(buffer);
             buffer.writeResourceLocation(filterLocation);
-            buffer.writeVarInt(index);
+            buffer.writeResourceLocation(selectedOutput.getRegistryName());
         }
 
         @Override
         public void read(PacketBuffer dataStream) {
-            filterLocation = dataStream.readResourceLocation();
-            index = dataStream.readVarInt();
+            setFilterLocation(dataStream.readResourceLocation());
+            setSelectedOrAir(dataStream.readResourceLocation());
+        }
+
+        private void setSelectedOrAir(@Nonnull ResourceLocation resourceLocation) {
+            Item output = ForgeRegistries.ITEMS.getValue(resourceLocation);
+            selectedOutput = output == null ? Items.AIR : output;
         }
 
         public List<Item> getMatchingItems() {
             if (hasFilter()) {
-                //TODO: Cache the wrapper and maybe elements also
-                return new ArrayList<>(new ItemTags.Wrapper(filterLocation).getAllElements());
+                return new ArrayList<>(filterTag.getAllElements());
             }
             return Collections.emptyList();
+        }
+
+        public int getIndex() {
+            List<Item> matchingItems = getMatchingItems();
+            if (selectedOutput == Items.AIR) {
+                return 0;
+            }
+            int index = matchingItems.indexOf(selectedOutput);
+            if (index == -1) {
+                //If the tag is empty properly handle it
+                return 0;
+            }
+            return index;
+        }
+
+        public void next() {
+            List<Item> matchingItems = getMatchingItems();
+            int size = matchingItems.size();
+            if (size > 1) {
+                if (selectedOutput == Items.AIR) {
+                    selectedOutput = matchingItems.get(1);
+                } else {
+                    int index = matchingItems.indexOf(selectedOutput);
+                    if (index < size - 1) {
+                        index++;
+                    } else {
+                        index = 0;
+                    }
+                    selectedOutput = matchingItems.get(index);
+                }
+            }
+        }
+
+        public void previous() {
+            List<Item> matchingItems = getMatchingItems();
+            int size = matchingItems.size();
+            if (size > 0) {
+                if (selectedOutput == Items.AIR) {
+                    selectedOutput = matchingItems.get(size - 1);
+                } else {
+                    int index = matchingItems.indexOf(selectedOutput);
+                    if (index == -1) {
+                        index = 0;
+                    } else if (index > 0) {
+                        index--;
+                    } else {
+                        index = size - 1;
+                    }
+                    selectedOutput = matchingItems.get(index);
+                }
+            }
+        }
+
+        public ItemStack getResult() {
+            if (!hasFilter()) {
+                return ItemStack.EMPTY;
+            }
+            List<Item> matchingItems = getMatchingItems();
+            if (matchingItems.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+            if (selectedOutput == Items.AIR || !matchingItems.contains(selectedOutput)) {
+                //Fallback to the first element if we don't have an output selected/it isn't in our possible outputs
+                selectedOutput = matchingItems.get(0);
+            }
+            return new ItemStack(selectedOutput);
         }
 
         @Override
         public OredictionificatorFilter clone() {
             OredictionificatorFilter newFilter = new OredictionificatorFilter();
             newFilter.filterLocation = filterLocation;
-            newFilter.index = index;
+            newFilter.filterTag = filterTag;
+            newFilter.selectedOutput = selectedOutput;
             return newFilter;
         }
 

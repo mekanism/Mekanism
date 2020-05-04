@@ -1,6 +1,5 @@
 package mekanism.client.gui.machine;
 
-import java.util.List;
 import java.util.Map;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.gui.GuiMekanismTile;
@@ -24,7 +23,6 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
@@ -103,20 +101,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     private void updateRenderStacks() {
         renderStacks.clear();
         for (OredictionificatorFilter filter : getFilters()) {
-            if (!filter.hasFilter()) {
-                renderStacks.put(filter, ItemStack.EMPTY);
-                continue;
-            }
-            List<Item> matchingItems = filter.getMatchingItems();
-            if (matchingItems.isEmpty()) {
-                renderStacks.put(filter, ItemStack.EMPTY);
-                continue;
-            }
-            if (matchingItems.size() - 1 >= filter.index) {
-                renderStacks.put(filter, new ItemStack(matchingItems.get(filter.index)));
-            } else {
-                renderStacks.put(filter, ItemStack.EMPTY);
-            }
+            renderStacks.put(filter, filter.getResult());
         }
     }
 }

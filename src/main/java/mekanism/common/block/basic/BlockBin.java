@@ -45,15 +45,13 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                 BinInventorySlot binSlot = bin.getBinSlot();
                 if (!binSlot.isEmpty()) {
                     ItemStack stack;
-                    if (player.isShiftKeyDown()) {
+                    if (player.isSneaking()) {
                         stack = StackUtils.size(binSlot.getStack(), 1);
-                        if (binSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                            MekanismUtils.logMismatchedStackSize();
-                        }
+                        MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(1, Action.EXECUTE), 1);
                     } else {
                         stack = binSlot.getBottomStack();
-                        if (!stack.isEmpty() && binSlot.shrinkStack(stack.getCount(), Action.EXECUTE) != stack.getCount()) {
-                            MekanismUtils.logMismatchedStackSize();
+                        if (!stack.isEmpty()) {
+                            MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(stack.getCount(), Action.EXECUTE), stack.getCount());
                         }
                     }
                     if (!player.inventory.addItemStackToInventory(stack)) {

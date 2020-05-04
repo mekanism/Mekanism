@@ -91,7 +91,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
 
     private ActionResultType tillAOE(ItemUseContext context, Map<Block, BlockState> lookup, ToIntFunction<ItemUseContext> onItemUse, SoundEvent sound, FloatingLong energyUsage) {
         PlayerEntity player = context.getPlayer();
-        if (player == null || player.isShiftKeyDown()) {
+        if (player == null || player.isSneaking()) {
             //Skip if we don't have a player or they are sneaking
             return ActionResultType.PASS;
         }
@@ -189,7 +189,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
 
     private ActionResultType stripLogsAOE(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        if (player == null || player.isShiftKeyDown()) {
+        if (player == null || player.isSneaking()) {
             //Skip if we don't have a player or they are sneaking
             return ActionResultType.PASS;
         }

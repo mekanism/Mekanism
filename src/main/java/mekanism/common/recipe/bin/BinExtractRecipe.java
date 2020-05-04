@@ -87,9 +87,7 @@ public class BinExtractRecipe extends BinRecipe {
                     //Don't attempt to do anything if there is no items to try and remove
                     break;
                 }
-                if (slot.shrinkStack(bottomStack.getCount(), Action.EXECUTE) != bottomStack.getCount()) {
-                    MekanismUtils.logMismatchedStackSize();
-                }
+                MekanismUtils.logMismatchedStackSize(slot.shrinkStack(bottomStack.getCount(), Action.EXECUTE), bottomStack.getCount());
                 remaining.set(i, binStack);
                 break;
             }

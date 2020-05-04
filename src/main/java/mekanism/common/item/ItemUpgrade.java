@@ -51,7 +51,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        if (player != null && player.isShiftKeyDown()) {
+        if (player != null && player.isSneaking()) {
             World world = context.getWorld();
             TileEntity tile = MekanismUtils.getTileEntity(world, context.getPos());
             ItemStack stack = player.getHeldItem(context.getHand());

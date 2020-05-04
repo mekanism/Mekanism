@@ -145,9 +145,7 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
             coolantHeated = (int) (HeatUtils.getSteamEnergyEfficiency() * caseCoolantHeat / HeatUtils.getWaterThermalEnthalpy());
             coolantHeated = Math.max(0, Math.min(coolantHeated, fluidCoolantTank.getFluidAmount()));
             if (coolantHeated > 0) {
-                if (fluidCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE) != coolantHeated) {
-                    MekanismUtils.logMismatchedStackSize();
-                }
+                MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE), coolantHeated);
                 // extra steam is dumped
                 heatedCoolantTank.insert(MekanismGases.STEAM.getGasStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
                 caseCoolantHeat = coolantHeated * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
@@ -160,9 +158,7 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
                 coolantHeated = (int) (caseCoolantHeat / coolantType.getThermalEnthalpy());
                 coolantHeated = Math.max(0, Math.min(coolantHeated, gasCoolantTank.getStored()));
                 if (coolantHeated > 0) {
-                    if (gasCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE) != coolantHeated) {
-                        MekanismUtils.logMismatchedStackSize();
-                    }
+                    MekanismUtils.logMismatchedStackSize(gasCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE), coolantHeated);
                     heatedCoolantTank.insert(coolantType.getHeatedGas().getGasStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
                     caseCoolantHeat = coolantHeated * coolantType.getThermalEnthalpy();
                     heatCapacitor.handleHeat(-caseCoolantHeat);
