@@ -37,18 +37,11 @@ import mekanism.common.content.blocktype.Machine;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.content.blocktype.Machine.MachineBuilder;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.AntiprotonicNucleosynthesizerContainer;
-import mekanism.common.inventory.container.tile.DigitalMinerContainer;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.ModificationStationContainer;
-import mekanism.common.inventory.container.tile.OredictionificatorContainer;
-import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
-import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
-import mekanism.common.inventory.container.tile.SecurityDeskContainer;
-import mekanism.common.inventory.container.tile.TeleporterContainer;
 import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -273,7 +266,6 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.DIGITAL_MINER)
           .withEnergyConfig(MekanismConfig.usage.digitalMiner, MekanismConfig.storage.digitalMiner)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR))
-          .withCustomContainerProvider((tile) -> (i, inv, player) -> new DigitalMinerContainer(i, inv, (TileEntityDigitalMiner) tile))
           .withCustomShape(BlockShapes.DIGITAL_MINER)
           .with(new AttributeCustomSelectionBox())
           .build();
@@ -317,7 +309,6 @@ public class MekanismBlockTypes {
           .withEnergyConfig(() -> TELEPORTER_USAGE, MekanismConfig.storage.teleporter)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .without(AttributeStateActive.class, AttributeStateFacing.class, AttributeParticleFX.class)
-          .withCustomContainerProvider((tile) -> (i, inv, player) -> new TeleporterContainer(i, inv, (TileEntityTeleporter) tile))
           .build();
     // Chargepad
     public static final BlockTypeTile<TileEntityChargepad> CHARGEPAD = BlockTileBuilder
@@ -368,7 +359,6 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityPersonalChest> PERSONAL_CHEST = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.PERSONAL_CHEST, MekanismLang.DESCRIPTION_PERSONAL_CHEST)
           .withGui(() -> MekanismContainerTypes.PERSONAL_CHEST_BLOCK)
-          .withCustomContainerProvider((tile) -> (i, inv, player) -> new PersonalChestTileContainer(i, inv, (TileEntityPersonalChest) tile))
           .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
           .withCustomShape(BlockShapes.PERSONAL_CHEST)
           .build();
@@ -384,7 +374,6 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityOredictionificator> OREDICTIONIFICATOR = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.OREDICTIONIFICATOR, MekanismLang.DESCRIPTION_OREDICTIONIFICATOR)
           .withGui(() -> MekanismContainerTypes.OREDICTIONIFICATOR)
-          .withCustomContainerProvider((tile) -> (i, inv, player) -> new OredictionificatorContainer(i, inv, (TileEntityOredictionificator) tile))
           .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeRedstone())
           .build();
     // Quantum Entangloporter
@@ -396,7 +385,6 @@ public class MekanismBlockTypes {
           .with(new AttributeStateFacing(BlockStateProperties.FACING))
           .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeRedstone.class, AttributeComparator.class)
           .withCustomShape(BlockShapes.QUANTUM_ENTANGLOPORTER)
-          .withCustomContainerProvider((tile) -> (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, (TileEntityQuantumEntangloporter) tile))
           .build();
     // Logistical Sorter
     public static final Machine<TileEntityLogisticalSorter> LOGISTICAL_SORTER = MachineBuilder
@@ -412,7 +400,6 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntitySecurityDesk> SECURITY_DESK = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SECURITY_DESK, MekanismLang.DESCRIPTION_SECURITY_DESK)
           .withGui(() -> MekanismContainerTypes.SECURITY_DESK)
-          .withCustomContainerProvider((tile) -> (i, inv, player) -> new SecurityDeskContainer(i, inv, (TileEntitySecurityDesk) tile))
           .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeCustomResistance(-1F), new AttributeSecurity())
           .withCustomShape(BlockShapes.SECURITY_DESK)
           .with(new AttributeCustomSelectionBox())
@@ -443,7 +430,6 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityAntiprotonicNucleosynthesizer> ANTIPROTONIC_NUCLEOSYNTHESIZER = MachineBuilder
         .createMachine(() -> MekanismTileEntityTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismLang.DESCRIPTION_ANTIPROTONIC_NUCLEOSYNTHESIZER)
         .withGui(() -> MekanismContainerTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER)
-        .withCustomContainerProvider((tile) -> (i, inv, player) -> new AntiprotonicNucleosynthesizerContainer(i, inv, (TileEntityAntiprotonicNucleosynthesizer) tile))
         .withEnergyConfig(MekanismConfig.usage.antiprotonicNucleosynthesizer, MekanismConfig.storage.antiprotonicNucleosynthesizer)
         .withSound(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER)
         .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))

@@ -48,4 +48,46 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<Conta
     public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(String name, IContainerFactory<CONTAINER> factory) {
         return register(name, () -> IForgeContainerType.create(factory), ContainerTypeRegistryObject::new);
     }
+
+    public <TILE extends TileEntityMekanism> ContainerBuilder<TILE> custom(INamedEntry nameProvider, Class<TILE> tileClass) {
+        return new ContainerBuilder<>(nameProvider.getInternalRegistryName(), tileClass);
+    }
+
+    public <TILE extends TileEntityMekanism> ContainerBuilder<TILE> custom(String name, Class<TILE> tileClass) {
+        return new ContainerBuilder<>(name, tileClass);
+    }
+
+    public class ContainerBuilder<TILE extends TileEntityMekanism> {
+
+        private String name;
+        private Class<TILE> tileClass;
+        private int offsetX, offsetY;
+
+        private ContainerBuilder(String name, Class<TILE> tileClass) {
+            this.name = name;
+            this.tileClass = tileClass;
+        }
+
+        public ContainerBuilder<TILE> offset(int offsetX, int offsetY) {
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+            return this;
+        }
+
+        public ContainerTypeRegistryObject<MekanismTileContainer<TILE>> build() {
+            ContainerTypeRegistryObject<MekanismTileContainer<TILE>> registryObject = new ContainerTypeRegistryObject<>(null);
+            IContainerFactory<MekanismTileContainer<TILE>> factory = (id, inv, buf) ->
+                new MekanismTileContainer<TILE>(registryObject, id, inv, MekanismTileContainer.getTileFromBuf(buf, tileClass)) {
+                    @Override
+                    protected int getInventoryXOffset() {
+                        return super.getInventoryXOffset() + offsetX;
+                    }
+                    @Override
+                    protected int getInventoryYOffset() {
+                        return super.getInventoryYOffset() + offsetY;
+                    }
+                };
+            return register(name, () -> IForgeContainerType.create(factory), registryObject::setRegistryObject);
+        }
+    }
 }
