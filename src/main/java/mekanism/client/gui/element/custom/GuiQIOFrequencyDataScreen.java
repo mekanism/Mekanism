@@ -14,15 +14,11 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
 
     private Supplier<QIOFrequency> frequencySupplier;
 
-    private GuiDigitalBar countBar, typeBar;
-
     public GuiQIOFrequencyDataScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<QIOFrequency> frequencySupplier) {
         super(gui, x, y, width, height);
         this.frequencySupplier = frequencySupplier;
-    }
 
-    public void addBars(IGuiWrapper gui) {
-        guiObj.addElement(countBar = new GuiDigitalBar(gui, new IBarInfoHandler() {
+        addChild(new GuiDigitalBar(gui, new IBarInfoHandler() {
             @Override
             public double getLevel() {
                 QIOFrequency freq = frequencySupplier.get();
@@ -35,7 +31,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
                       QIOFrequency.formatItemCount(freq.getTotalItemCount()), QIOFrequency.formatItemCount(freq.getTotalItemCountCapacity())) : null;
             }
         }, relativeX + (width / 4) - (50 / 2), relativeY + 20, 50));
-        guiObj.addElement(typeBar = new GuiDigitalBar(gui, new IBarInfoHandler() {
+        addChild(new GuiDigitalBar(gui, new IBarInfoHandler() {
             @Override
             public double getLevel() {
                 QIOFrequency freq = frequencySupplier.get();

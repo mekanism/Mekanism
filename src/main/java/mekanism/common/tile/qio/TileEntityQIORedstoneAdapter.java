@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.qio;
 
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
@@ -72,6 +72,11 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     public long getCount() {
         return count;
+    }
+
+    @Override
+    public boolean renderUpdate() {
+        return true;
     }
 
     @Override

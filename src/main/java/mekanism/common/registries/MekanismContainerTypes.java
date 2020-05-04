@@ -56,7 +56,6 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.tile.TileEntityPersonalChest;
-import mekanism.common.tile.TileEntityQIODriveArray;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntityTeleporter;
@@ -94,6 +93,9 @@ import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.tile.machine.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.machine.TileEntitySeismicVibrator;
 import mekanism.common.tile.machine.TileEntitySolarNeutronActivator;
+import mekanism.common.tile.qio.TileEntityQIODriveArray;
+import mekanism.common.tile.qio.TileEntityQIOExporter;
+import mekanism.common.tile.qio.TileEntityQIOImporter;
 
 public class MekanismContainerTypes {
 
@@ -156,6 +158,8 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> ANTIPROTONIC_NUCLEOSYNTHESIZER = CONTAINER_TYPES.register(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, AntiprotonicNucleosynthesizerContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIODriveArray>> QIO_DRIVE_ARRAY = CONTAINER_TYPES.register(MekanismBlocks.QIO_DRIVE_ARRAY, QIODriveArrayContainer::new);
     public static final ContainerTypeRegistryObject<QIODashboardContainer> QIO_DASHBOARD = CONTAINER_TYPES.register(MekanismBlocks.QIO_DASHBOARD, QIODashboardContainer::new);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIOImporter>> QIO_IMPORTER = CONTAINER_TYPES.register(MekanismBlocks.QIO_IMPORTER, TileEntityQIOImporter.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIOExporter>> QIO_EXPORTER = CONTAINER_TYPES.register(MekanismBlocks.QIO_EXPORTER, TileEntityQIOExporter.class);
 
     //Named
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFactory<?>>> FACTORY = CONTAINER_TYPES.register("factory", FactoryContainer::new);

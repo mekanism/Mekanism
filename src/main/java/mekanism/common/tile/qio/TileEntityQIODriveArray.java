@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.qio;
 
 import java.util.ArrayList;
 import java.util.List;

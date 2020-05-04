@@ -5,7 +5,7 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.tile.TileEntityQIODashboard;
+import mekanism.common.tile.qio.TileEntityQIODashboard;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;

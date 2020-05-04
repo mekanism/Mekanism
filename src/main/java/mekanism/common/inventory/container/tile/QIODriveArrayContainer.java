@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container.tile;
 
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.tile.TileEntityQIODriveArray;
+import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 

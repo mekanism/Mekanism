@@ -71,6 +71,8 @@ import mekanism.client.gui.machine.GuiSolarNeutronActivator;
 import mekanism.client.gui.qio.GuiPortableQIODashboard;
 import mekanism.client.gui.qio.GuiQIODashboard;
 import mekanism.client.gui.qio.GuiQIODriveArray;
+import mekanism.client.gui.qio.GuiQIOExporter;
+import mekanism.client.gui.qio.GuiQIOImporter;
 import mekanism.client.gui.qio.GuiQIOItemFrequencySelect;
 import mekanism.client.gui.qio.GuiQIOTileFrequencySelect;
 import mekanism.client.gui.robit.GuiRobitCrafting;
@@ -142,7 +144,7 @@ import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
-import mekanism.common.tile.TileEntityQIOComponent;
+import mekanism.common.tile.qio.TileEntityQIOComponent;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -303,6 +305,8 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER, GuiThermalEvaporationController::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_DRIVE_ARRAY, GuiQIODriveArray::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_DASHBOARD, GuiQIODashboard::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_IMPORTER, GuiQIOImporter::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_EXPORTER, GuiQIOExporter::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FACTORY, GuiFactory::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.GAS_TANK, GuiGasTank::new);
