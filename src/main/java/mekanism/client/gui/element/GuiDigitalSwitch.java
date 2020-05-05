@@ -13,8 +13,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiDigitalSwitch extends GuiTexturedElement {
 
-    private static final ResourceLocation SWITCH = MekanismUtils.getResource(ResourceType.GUI, "switch/switch.png");
-    private static final int BUTTON_SIZE_X = 15, BUTTON_SIZE_Y = 8;
+    public static final ResourceLocation SWITCH = MekanismUtils.getResource(ResourceType.GUI, "switch/switch.png");
+    public static final int BUTTON_SIZE_X = 15, BUTTON_SIZE_Y = 8;
 
     private final SwitchType type;
     private final ResourceLocation icon;
@@ -43,10 +43,8 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
         blit(x + type.switchX, y + type.switchY, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
         blit(x + type.switchX, y + type.switchY + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
 
-        if (type != SwitchType.NO_ICON) {
-            minecraft.textureManager.bindTexture(icon);
-            blit(x + 6, y + 21, 0, 0, 5, 5, 5, 5);
-        }
+        minecraft.textureManager.bindTexture(icon);
+        blit(x + 6, y + 21, 0, 0, 5, 5, 5, 5);
     }
 
     @Override
@@ -64,8 +62,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     }
 
     public enum SwitchType {
-        LOWER_ICON(BUTTON_SIZE_X, 40, 0, 0),
-        NO_ICON(40, BUTTON_SIZE_Y * 2, 10, 0);
+        LOWER_ICON(BUTTON_SIZE_X, 40, 0, 0);
 
         private int sizeX, sizeY;
         private int switchX, switchY;

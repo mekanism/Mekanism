@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.custom;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -18,6 +20,7 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiItemStackFilterDialog extends GuiFilterDialog<QIOItemStackFilter> {
 
@@ -26,8 +29,21 @@ public class GuiItemStackFilterDialog extends GuiFilterDialog<QIOItemStackFilter
         super(gui, x, y, 152, 90, MekanismLang.ITEM_FILTER.translate(), origFilter);
 
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 7, relativeY + 18).setRenderHover(true));
-        addChild(new GuiInnerScreen(gui, relativeX + 29, relativeY + 18, 111, 43));
-        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + 23, gui.getTop() + relativeY + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
+        addChild(new GuiInnerScreen(gui, relativeX + 29, relativeY + 18, width - 29 - 7, 43, () -> {
+            List<ITextComponent> list = new ArrayList<>();
+            list.add(MekanismLang.STATUS.translate(status));
+            if (!filter.getItemStack().isEmpty()) {
+                list.add(filter.getItemStack().getDisplayName());
+            }
+            return list;
+        }).clearFormat());
+        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + width / 2 - 61, gui.getTop() + relativeY + 63, 60, 20, isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
+            if (origFilter != null) {
+                Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
+            }
+            gui.removeElement(this);
+        }));
+        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + width / 2 + 1, gui.getTop() + relativeY + 63, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!filter.getItemStack().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(tile.getPos(), filter));
@@ -39,12 +55,6 @@ public class GuiItemStackFilterDialog extends GuiFilterDialog<QIOItemStackFilter
                 status = MekanismLang.ITEM_FILTER_NO_ITEM.translateColored(EnumColor.DARK_RED);
                 ticker = 20;
             }
-        }));
-        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + 85, gui.getTop() + relativeY + 62, 60, 20, isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
-            if (origFilter != null) {
-                Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
-            }
-            gui.removeElement(this);
         }));
     }
 
@@ -64,12 +74,9 @@ public class GuiItemStackFilterDialog extends GuiFilterDialog<QIOItemStackFilter
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
-        if (!filter.getItemStack().isEmpty()) {
-            drawScaledText(filter.getItemStack().getDisplayName(), relativeX + 32, relativeY + 41, screenTextColor(), 106);
-        }
-        guiObj.getItemRenderer().zLevel += 100;
+        guiObj.getItemRenderer().zLevel += 200;
         guiObj.renderItem(filter.getItemStack(), relativeX + 8, relativeY + 19);
-        guiObj.getItemRenderer().zLevel -= 100;
+        guiObj.getItemRenderer().zLevel -= 200;
     }
 
     @Override

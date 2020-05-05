@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.custom;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.lwjgl.glfw.GLFW;
@@ -26,6 +27,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
 
@@ -38,8 +40,19 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
         super(gui, x, y, 152, 90, MekanismLang.TAG_FILTER.translate(), origFilter);
 
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 7, relativeY + 18).setRenderHover(true));
-        addChild(new GuiInnerScreen(gui, relativeX + 29, relativeY + 18, 111, 43));
-        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + 23, gui.getTop() + relativeY + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
+        addChild(new GuiInnerScreen(gui, relativeX + 29, relativeY + 18, width - 29 - 7, 43, () -> {
+            List<ITextComponent> list = new ArrayList<>();
+            list.add(MekanismLang.STATUS.translate(status));
+            list.add(MekanismLang.TAG_FILTER_TAG.translate(filter.getTagName()));
+            return list;
+        }).clearFormat());
+        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + width / 2 - 61, gui.getTop() + relativeY + 63, 60, 20, isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
+            if (origFilter != null) {
+                Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
+            }
+            gui.removeElement(this);
+        }));
+        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + width / 2 + 1, gui.getTop() + relativeY + 63, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -55,20 +68,14 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
                 ticker = 20;
             }
         }));
-        addChild(new TranslationButton(gui, gui.getLeft() + relativeX + 85, gui.getTop() + relativeY + 62, 60, 20, isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
-            if (origFilter != null) {
-                Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
-            }
-            gui.removeElement(this);
-        }));
-        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, relativeX + 8, relativeY + 19, this::getRenderStacks).setZOffset(100));
+        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, relativeX + 8, relativeY + 19, this::getRenderStacks).setZOffset(200));
 
-        text = new TextFieldWidget(getFont(), gui.getLeft() + relativeX + 31, gui.getTop() + relativeY + 47, 95, 12, "");
+        text = new TextFieldWidget(getFont(), gui.getLeft() + relativeX + 31, gui.getTop() + relativeY + 47, width - 31 - 9 - 12, 12, "");
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
         text.setEnabled(true);
         text.setFocused2(true);
 
-        addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 127, gui.getTop() + relativeY + 47, 12, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"),
+        addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + width - 8 - 12, gui.getTop() + relativeY + 47, 12, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"),
             this::setText));
 
         if (filter.getTagName() != null && !filter.getTagName().isEmpty()) {
@@ -93,12 +100,6 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
     public void renderBackgroundOverlayPost(int mouseX, int mouseY) {
         super.renderBackgroundOverlayPost(mouseX, mouseY);
         text.renderButton(mouseX, mouseY, 0);
-    }
-
-    @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
-        drawScaledText(MekanismLang.TAG_FILTER_TAG.translate(filter.getTagName()), relativeX + 32, relativeY + 32, screenTextColor(), 106);
     }
 
     protected void setText() {

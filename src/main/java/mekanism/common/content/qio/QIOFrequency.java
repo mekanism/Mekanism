@@ -67,6 +67,14 @@ public class QIOFrequency extends Frequency {
         super(FrequencyType.QIO);
     }
 
+    /**
+     * Dangerous function. Don't mess with this map.
+     * @return core item data map, tracking item types + their respective counts and containing drives
+     */
+    public Map<HashedItem, QIOItemTypeData> getItemDataMap() {
+        return itemDataMap;
+    }
+
     public ItemStack addItem(ItemStack stack) {
         HashedItem type = new HashedItem(stack);
         // these checks are extremely important; they prevent us from wasting CPU searching for a place to put the new items,
@@ -114,23 +122,21 @@ public class QIOFrequency extends Frequency {
         return removed;
     }
 
-    public ItemStack removeByTag(String tag, int amount) {
+    public Map<HashedItem, Long> getStacksByTag(String tag) {
         Set<HashedItem> items = tagLookupMap.getValues(tag);
-        if (!items.isEmpty()) {
-            return removeByType(items.iterator().next(), amount);
-        }
-        return ItemStack.EMPTY;
+        Map<HashedItem, Long> ret = new Object2ObjectOpenHashMap<>();
+        items.forEach(item -> ret.put(item, getStored(item)));
+        return ret;
     }
 
-    public ItemStack removeByWildcard(String wildcard, int amount) {
+    public Map<HashedItem, Long> getStacksByWildcard(String wildcard) {
         if (!tagWildcardCache.containsKey(wildcard)) {
             buildWildcardMapping(wildcard);
         }
         Set<String> matchingTags = tagWildcardCache.get(wildcard);
-        if (!matchingTags.isEmpty()) {
-            return removeByTag(matchingTags.iterator().next(), amount);
-        }
-        return ItemStack.EMPTY;
+        Map<HashedItem, Long> ret = new Object2ObjectOpenHashMap<>();
+        matchingTags.forEach(tag -> ret.putAll(getStacksByTag(tag)));
+        return ret;
     }
 
     private void buildWildcardMapping(String wildcard) {
@@ -417,6 +423,10 @@ public class QIOFrequency extends Frequency {
             totalCount -= ret.getCount();
             setNeedsUpdate(itemType);
             return ret;
+        }
+
+        public long getCount() {
+            return count;
         }
     }
 

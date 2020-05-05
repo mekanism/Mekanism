@@ -74,6 +74,7 @@ import mekanism.client.gui.qio.GuiQIODriveArray;
 import mekanism.client.gui.qio.GuiQIOExporter;
 import mekanism.client.gui.qio.GuiQIOImporter;
 import mekanism.client.gui.qio.GuiQIOItemFrequencySelect;
+import mekanism.client.gui.qio.GuiQIORedstoneAdapter;
 import mekanism.client.gui.qio.GuiQIOTileFrequencySelect;
 import mekanism.client.gui.robit.GuiRobitCrafting;
 import mekanism.client.gui.robit.GuiRobitInventory;
@@ -307,6 +308,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_DASHBOARD, GuiQIODashboard::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_IMPORTER, GuiQIOImporter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_EXPORTER, GuiQIOExporter::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_REDSTONE_ADAPTER, GuiQIORedstoneAdapter::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FACTORY, GuiFactory::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.GAS_TANK, GuiGasTank::new);

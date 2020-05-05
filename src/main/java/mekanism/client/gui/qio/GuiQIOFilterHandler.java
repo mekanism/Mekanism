@@ -97,7 +97,6 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
             () -> addButton(GuiItemStackFilterDialog.create(this, tile))));
         addButton(new TranslationButton(this, getGuiLeft() + 81, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_TAG_FILTER,
             () -> addButton(GuiTagFilterDialog.create(this, tile))));
-        addButton(new GuiInnerScreen(this, 9, 122, xSize - 18, 20));
     }
 
     protected void onClick(IFilter<?> filter, int index) {

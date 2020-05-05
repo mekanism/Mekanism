@@ -408,6 +408,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.QIO_TYPES_DETAIL, "Types: %s / %s");
         add(MekanismLang.QIO_ITEMS, "Items");
         add(MekanismLang.QIO_TYPES, "Types");
+        add(MekanismLang.QIO_TRIGGER_COUNT, "Trigger count: %s");
+        add(MekanismLang.QIO_STORED_COUNT, "Stored count: %s");
+        add(MekanismLang.QIO_ITEM_TYPE_UNDEFINED, "Item type undefined");
+        add(MekanismLang.QIO_IMPORT_WITHOUT_FILTER, "Import Without Filter:");
+        add(MekanismLang.QIO_EXPORT_WITHOUT_FILTER, "Export Without Filter:");
         add(MekanismLang.LIST_SORT_NAME_ASCENDING, "Sort items by name in ascending order.");
         add(MekanismLang.LIST_SORT_NAME_DESCENDING, "Sort items by name in descending order.");
         add(MekanismLang.LIST_SORT_COUNT_ASCENDING, "Sort items by count in ascending order.");

@@ -44,6 +44,7 @@ public class PacketNewFilter {
             } else if (message.filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {
                 ((TileEntityQIOFilterHandler) tile).getFilters().add((QIOFilter<?>) message.filter);
             }
+            tile.markDirty();
         });
         context.get().setPacketHandled(true);
     }

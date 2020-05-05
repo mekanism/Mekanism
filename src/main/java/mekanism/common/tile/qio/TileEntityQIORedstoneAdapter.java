@@ -18,6 +18,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     private boolean prevPowering;
     private HashedItem itemType = null;
     private long count = 0;
+    private long clientStoredCount = 0;
 
     public TileEntityQIORedstoneAdapter() {
         super(MekanismBlocks.QIO_REDSTONE_ADAPTER);
@@ -32,6 +33,16 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             return freq.getStored(itemType) >= count;
         }
         return false;
+    }
+
+    public void handleStackChange(ItemStack stack) {
+        itemType = stack.isEmpty() ? null : new HashedItem(stack);
+        markDirty(false);
+    }
+
+    public void handleCountChange(int count) {
+        this.count = count;
+        markDirty(false);
     }
 
     @Override
@@ -74,6 +85,10 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         return count;
     }
 
+    public long getStoredCount() {
+        return clientStoredCount;
+    }
+
     @Override
     public boolean renderUpdate() {
         return true;
@@ -90,5 +105,9 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             }
         }));
         container.track(SyncableLong.create(this::getCount, (value) -> count = value));
+        container.track(SyncableLong.create(() -> {
+            QIOFrequency freq = getQIOFrequency();
+            return freq != null && itemType != null ? freq.getStored(itemType) : 0;
+        }, (value) -> clientStoredCount = value));
     }
 }

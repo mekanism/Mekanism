@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.TriConsumer;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -19,10 +20,14 @@ import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
+import mekanism.common.tile.qio.TileEntityQIOExporter;
+import mekanism.common.tile.qio.TileEntityQIOImporter;
+import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -33,9 +38,13 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
  */
 public class PacketGuiInteract {
 
+    private Type interactionType;
+
     private GuiInteraction interaction;
+    private GuiInteractionItem itemInteraction;
     private BlockPos tilePosition;
     private int extra;
+    private ItemStack extraItem;
 
     public PacketGuiInteract(GuiInteraction interaction, TileEntity tile) {
         this(interaction, tile.getPos());
@@ -50,9 +59,21 @@ public class PacketGuiInteract {
     }
 
     public PacketGuiInteract(GuiInteraction interaction, BlockPos tilePosition, int extra) {
+        this.interactionType = Type.INT;
         this.interaction = interaction;
         this.tilePosition = tilePosition;
         this.extra = extra;
+    }
+
+    public PacketGuiInteract(GuiInteractionItem interaction, TileEntity tile, ItemStack stack) {
+        this(interaction, tile.getPos(), stack);
+    }
+
+    public PacketGuiInteract(GuiInteractionItem interaction, BlockPos tilePosition, ItemStack stack) {
+        this.interactionType = Type.ITEM;
+        this.itemInteraction = interaction;
+        this.tilePosition = tilePosition;
+        this.extraItem = stack;
     }
 
     public static void handle(PacketGuiInteract message, Supplier<Context> context) {
@@ -63,23 +84,74 @@ public class PacketGuiInteract {
         context.get().enqueueWork(() -> {
             TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
             if (tile != null) {
-                message.interaction.consume(tile, player, message.extra);
+                if (message.interactionType == Type.INT) {
+                    message.interaction.consume(tile, player, message.extra);
+                } else if (message.interactionType == Type.ITEM) {
+                    message.itemInteraction.consume(tile, player, message.extraItem);
+                }
             }
         });
         context.get().setPacketHandled(true);
     }
 
     public static void encode(PacketGuiInteract pkt, PacketBuffer buf) {
-        buf.writeEnumValue(pkt.interaction);
-        buf.writeBlockPos(pkt.tilePosition);
-        buf.writeVarInt(pkt.extra);
+        buf.writeEnumValue(pkt.interactionType);
+        if (pkt.interactionType == Type.INT) {
+            buf.writeEnumValue(pkt.interaction);
+            buf.writeBlockPos(pkt.tilePosition);
+            buf.writeVarLong(pkt.extra);
+        } else if (pkt.interactionType == Type.ITEM) {
+            buf.writeEnumValue(pkt.itemInteraction);
+            buf.writeBlockPos(pkt.tilePosition);
+            buf.writeItemStack(pkt.extraItem);
+        }
     }
 
     public static PacketGuiInteract decode(PacketBuffer buf) {
-        return new PacketGuiInteract(buf.readEnumValue(GuiInteraction.class), buf.readBlockPos(), buf.readVarInt());
+        Type type = buf.readEnumValue(Type.class);
+        if (type == Type.INT) {
+            return new PacketGuiInteract(buf.readEnumValue(GuiInteraction.class), buf.readBlockPos(), buf.readVarInt());
+        } else if (type == Type.ITEM) {
+            return new PacketGuiInteract(buf.readEnumValue(GuiInteractionItem.class), buf.readBlockPos(), buf.readItemStack());
+        }
+        Mekanism.logger.error("Received malformed GUI interaction packet.");
+        return null;
+    }
+
+    public enum GuiInteractionItem {
+        QIO_REDSTONE_ADAPTER_STACK((tile, player, stack) -> {
+            if (tile instanceof TileEntityQIORedstoneAdapter) {
+                ((TileEntityQIORedstoneAdapter) tile).handleStackChange(stack);
+            }
+        });
+
+        private TriConsumer<TileEntityMekanism, PlayerEntity, ItemStack> consumerForTile;
+
+        GuiInteractionItem(TriConsumer<TileEntityMekanism, PlayerEntity, ItemStack> consumerForTile) {
+            this.consumerForTile = consumerForTile;
+        }
+
+        public void consume(TileEntityMekanism tile, PlayerEntity player, ItemStack stack) {
+            consumerForTile.accept(tile, player, stack);
+        }
     }
 
     public enum GuiInteraction {//TODO: Cleanup this enum/the elements in it as it is rather disorganized order wise currently
+        QIO_REDSTONE_ADAPTER_COUNT((tile, player, extra) -> {
+            if (tile instanceof TileEntityQIORedstoneAdapter) {
+                ((TileEntityQIORedstoneAdapter) tile).handleCountChange(extra);
+            }
+        }),
+        QIO_TOGGLE_IMPORT_WITHOUT_FILTER((tile, player, extra) -> {
+            if (tile instanceof TileEntityQIOImporter) {
+                ((TileEntityQIOImporter) tile).toggleImportWithoutFilter();
+            }
+        }),
+        QIO_TOGGLE_EXPORT_WITHOUT_FILTER((tile, player, extra) -> {
+            if (tile instanceof TileEntityQIOExporter) {
+                ((TileEntityQIOExporter) tile).toggleExportWithoutFilter();
+            }
+        }),
         AUTO_SORT_BUTTON((tile, player, extra) -> {
             if (tile instanceof TileEntityFactory<?>) {
                 ((TileEntityFactory<?>) tile).toggleSorting();
@@ -262,5 +334,10 @@ public class PacketGuiInteract {
         public void consume(TileEntityMekanism tile, PlayerEntity player, int extra) {
             consumerForTile.accept(tile, player, extra);
         }
+    }
+
+    private enum Type {
+        ITEM,
+        INT;
     }
 }

@@ -58,7 +58,11 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         renderBackgroundOverlayPost(mouseX, mouseY);
         RenderSystem.popMatrix();
         renderForeground(mouseX, mouseY);
+        // move z level forward to prevent clashing
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0, 0, 100);
         children.forEach(child -> child.renderForeground(mouseX, mouseY));
+        RenderSystem.popMatrix();
     }
 
     public void renderForeground(int mouseX, int mouseY) {}

@@ -34,7 +34,6 @@ public abstract class GuiFilterDialog<FILTER extends IFilter<FILTER>> extends Gu
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
         drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), relativeX + 39, relativeY + 6, titleTextColor());
-        drawString(MekanismLang.STATUS.translate(status), relativeX + 32, relativeY + 20, screenTextColor());
     }
 
     @Override

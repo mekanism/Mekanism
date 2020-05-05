@@ -77,6 +77,7 @@ public class PacketEditFilter {
                     }
                 }
             }
+            tile.markDirty();
         });
         context.get().setPacketHandled(true);
     }

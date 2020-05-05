@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
+import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.content.filter.BaseFilter;
@@ -131,5 +132,15 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     public void moveDown(int filterIndex) {
         filters.swap(filterIndex, filterIndex + 1);
         markDirty(false);
+    }
+
+    protected int getMaxTransitCount() {
+        // 64 to 320 items
+        return 64 + 32 * upgradeComponent.getUpgrades(Upgrade.SPEED);
+    }
+
+    protected int getMaxTransitTypes() {
+        // 1 to 5 types
+        return Math.round(1F + upgradeComponent.getUpgrades(Upgrade.SPEED) / 2F);
     }
 }
