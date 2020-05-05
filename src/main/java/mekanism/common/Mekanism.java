@@ -284,10 +284,6 @@ public class Mekanism {
         hooks.hookCommonSetup();
         Capabilities.registerCapabilities();
 
-        //TODO: Make recipes be done from JSON
-        //Fuel Gases
-        FuelHandler.addGas(MekanismGases.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
-
         //Register the mod's world generators
         GenHandler.setupWorldGeneration();
 

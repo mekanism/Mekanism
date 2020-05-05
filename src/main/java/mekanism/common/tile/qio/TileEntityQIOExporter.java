@@ -140,6 +140,11 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
      * of a certain item type will use a uniform probability distribution based on a predetermined 'max eject
      * attempt' constant to see if the ejection should take place. This makes sure we will eventually eject each
      * item type, but not attempt every item in the frequency each operation.
+     *
+     * Abstracting us away from the item map (using the type/count suppliers) allows us to interface directly with
+     * the entries of the QIO's item data map when running a filterless ejection, rather then recreating the whole
+     * map each ejection operation.
+     *
      * Complexity: O(k * s), where 'k' is our max eject attempts constant and 's' is the size of the inventory.
      *
      * @author aidancbrady

@@ -6,10 +6,12 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.Slurry;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
+import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.GasDeferredRegister;
 import mekanism.common.registration.impl.GasRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
@@ -21,7 +23,7 @@ public class MekanismGases {
 
     public static final Map<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> PROCESSED_RESOURCE_SLURRIES = new LinkedHashMap<>();
 
-    public static final GasRegistryObject<Gas> HYDROGEN = GASES.register(ChemicalConstants.HYDROGEN);
+    public static final GasRegistryObject<Gas> HYDROGEN = GASES.register(ChemicalConstants.HYDROGEN, new Fuel(1, MekanismConfig.general.FROM_H2.get()));
     public static final GasRegistryObject<Gas> OXYGEN = GASES.register(ChemicalConstants.OXYGEN);
     public static final GasRegistryObject<Gas> STEAM = GASES.register("steam", () -> new Gas(GasBuilder.builder(Mekanism.rl("liquid/steam"))));
     public static final GasRegistryObject<Gas> WATER_VAPOR = GASES.register("water_vapor", () -> new Gas(GasBuilder.builder(Mekanism.rl("liquid/steam"))));

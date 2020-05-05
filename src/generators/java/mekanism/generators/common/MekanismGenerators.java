@@ -1,6 +1,6 @@
 package mekanism.generators.common;
 
-import mekanism.common.FuelHandler;
+import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
@@ -11,8 +11,8 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorCache;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
-import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.content.turbine.TurbineCache;
+import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.network.GeneratorsPacketHandler;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
@@ -75,10 +75,13 @@ public class MekanismGenerators implements IModule {
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        //TODO: Move recipes to JSON
         //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
-        FuelHandler.addGas(MekanismGases.ETHENE, MekanismConfig.general.ETHENE_BURN_TIME.get(),
-              MekanismConfig.general.FROM_H2.get().add(MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get())));
+        if (MekanismGases.ETHENE.get() != null) {
+            MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismConfig.general.ETHENE_BURN_TIME.get(),
+                  MekanismConfig.general.FROM_H2.get().add(MekanismGeneratorsConfig.generators.bioGeneration.get()
+                  .multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get()))));
+        }
+
 
         MinecraftForge.EVENT_BUS.register(this);
 

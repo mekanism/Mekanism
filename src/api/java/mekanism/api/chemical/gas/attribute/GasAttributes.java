@@ -3,6 +3,7 @@ package mekanism.api.chemical.gas.attribute;
 import java.util.List;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -123,6 +124,33 @@ public class GasAttributes {
 
         public Gas getCooledGas() {
             return cooledGas.getGas();
+        }
+    }
+
+    /**
+     * Defines a fuel which can be processed by a Gas-Burning Generator to produce energy. Fuels
+     * have two primary values: 'burn ticks,' defining how many ticks one mB of fuel can be burned
+     * for before being depleted, and 'energyPerTick,' defining how much energy is generated from
+     * burning one mB of this fuel for one tick.
+     * @author aidancbrady
+     *
+     */
+    public static class Fuel extends ChemicalAttribute {
+
+        private int burnTicks;
+        private FloatingLong energyPerTick;
+
+        public Fuel(int duration, FloatingLong energyDensity) {
+            burnTicks = duration;
+            energyPerTick = duration == 0 ? energyDensity : energyDensity.divide(duration);
+        }
+
+        public int getBurnTicks() {
+            return burnTicks;
+        }
+
+        public FloatingLong getEnergyPerTick() {
+            return energyPerTick;
         }
     }
 }

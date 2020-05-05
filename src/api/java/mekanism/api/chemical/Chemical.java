@@ -62,6 +62,15 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
     }
 
     /**
+     * Adds an attribute to this chemical's attribute map. Will overwrite any existing
+     * attribute with the same type.
+     * @param attribute attribute to add to this chemical
+     */
+    public void addAttribute(ChemicalAttribute attribute) {
+        attributeMap.put(attribute.getClass(), attribute);
+    }
+
+    /**
      * Gets all attribute instances associated with this chemical type.
      * @return collection of attribute instances
      */
