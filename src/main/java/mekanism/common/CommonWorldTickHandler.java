@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -25,6 +26,7 @@ public class CommonWorldTickHandler {
     private static final long maximumDeltaTimeNanoSecs = 16_000_000; // 16 milliseconds
 
     private Map<ResourceLocation, Queue<ChunkPos>> chunkRegenMap;
+    public static boolean flushTagCaches;
 
     public void addRegenChunk(DimensionType dimension, ChunkPos chunkCoord) {
         if (chunkRegenMap == null) {
@@ -58,18 +60,30 @@ public class CommonWorldTickHandler {
     }
 
     @SubscribeEvent
+    public void onTick(ServerTickEvent event) {
+        if (event.side.isServer() && event.phase == Phase.END) {
+            serverTick();
+        }
+    }
+
+    @SubscribeEvent
     public void onTick(WorldTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
             tickEnd(event.world);
         }
     }
 
-    public void tickEnd(World world) {
+    private void serverTick() {
+        FrequencyManager.tick();
+        Mekanism.radiationManager.tickServer();
+    }
+
+    private void tickEnd(World world) {
         if (!world.isRemote) {
             MultiblockManager.tick(world);
-            FrequencyManager.tick(world);
-            Mekanism.radiationManager.tickServer(world);
+            Mekanism.radiationManager.tickServerWorld(world);
             ChunkManager.tick((ServerWorld) world);
+            flushTagCaches = false;
 
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;

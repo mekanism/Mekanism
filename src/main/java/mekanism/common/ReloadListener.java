@@ -1,15 +1,15 @@
-package mekanism.common.recipe;
+package mekanism.common;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
 import mekanism.common.network.PacketClearRecipeCache;
+import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IResourceManager;
 
-public class RecipeCacheManager implements IFutureReloadListener {
+public class ReloadListener implements IFutureReloadListener {
 
     @Nonnull
     @Override
@@ -19,6 +19,7 @@ public class RecipeCacheManager implements IFutureReloadListener {
         return CompletableFuture.runAsync(() -> {
             MekanismRecipeType.clearCache();
             Mekanism.packetHandler.sendToAll(new PacketClearRecipeCache());
+            CommonWorldTickHandler.flushTagCaches = true;
         }, gameExecutor).thenCompose(stage::markCompleteAwaitingOthers);
     }
 }

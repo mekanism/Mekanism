@@ -9,10 +9,9 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.FuelHandler;
-import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -79,9 +78,9 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         if (operate && getEnergyContainer().insert(generationRate, Action.SIMULATE, AutomationType.INTERNAL).isZero()) {
             setActive(true);
             if (!fuelTank.isEmpty()) {
-                FuelGas fuel = FuelHandler.getFuel(fuelTank.getType());
-                maxBurnTicks = fuel.burnTicks;
-                generationRate = fuel.energyPerTick;
+                Fuel fuel = fuelTank.getType().get(Fuel.class);
+                maxBurnTicks = fuel.getBurnTicks();
+                generationRate = fuel.getEnergyPerTick();
             }
 
             long toUse = getToUse();
@@ -153,7 +152,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     private class FuelTank extends BasicGasTank {
 
         protected FuelTank(@Nullable IMekanismGasHandler gasHandler) {
-            super(MAX_GAS, notExternal, alwaysTrueBi, gas -> !FuelHandler.getFuel(gas).isEmpty(), gasHandler);
+            super(MAX_GAS, notExternal, alwaysTrueBi, gas -> gas.has(Fuel.class), gasHandler);
         }
 
         @Override
@@ -161,7 +160,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             boolean wasEmpty = isEmpty();
             super.setStack(stack);
             if (wasEmpty && !stack.isEmpty()) {
-                output = FuelHandler.getFuel(getType()).energyPerTick.multiply(2);
+                output = getType().get(Fuel.class).getEnergyPerTick().multiply(2);
             }
         }
 
@@ -170,7 +169,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             boolean wasEmpty = isEmpty();
             super.setStackUnchecked(stack);
             if (wasEmpty && !stack.isEmpty()) {
-                output = FuelHandler.getFuel(getType()).energyPerTick.multiply(2);
+                output = getType().get(Fuel.class).getEnergyPerTick().multiply(2);
             }
         }
     }

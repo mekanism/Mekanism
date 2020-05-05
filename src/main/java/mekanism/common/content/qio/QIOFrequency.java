@@ -14,6 +14,7 @@ import com.google.common.collect.SetMultimap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
+import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.TagCache;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
@@ -202,6 +203,12 @@ public class QIOFrequency extends Frequency {
             saveAll();
             isDirty = false;
         }
+
+        if (CommonWorldTickHandler.flushTagCaches) {
+            tagLookupMap.clear();
+            tagWildcardCache.clear();
+            itemDataMap.values().forEach(item -> tagLookupMap.putAll(TagCache.getItemTags(item.itemType.getStack()), item.itemType));
+        }
     }
 
     @Override
@@ -292,7 +299,11 @@ public class QIOFrequency extends Frequency {
             totalTypeCapacity += data.getTypeCapacity();
             driveMap.put(key, data);
             data.getItemMap().entrySet().forEach(entry -> {
-                itemDataMap.computeIfAbsent(entry.getKey(), e -> new QIOItemTypeData(entry.getKey())).addFromDrive(data, entry.getValue());
+                itemDataMap.computeIfAbsent(entry.getKey(), e -> {
+                    tagWildcardCache.clear();
+                    tagLookupMap.putAll(TagCache.getItemTags(entry.getKey().getStack()), entry.getKey());
+                    return new QIOItemTypeData(entry.getKey());
+                }).addFromDrive(data, entry.getValue());
                 updatedItems.add(entry.getKey());
             });
             setNeedsUpdate();
@@ -313,6 +324,7 @@ public class QIOFrequency extends Frequency {
                     // remove this entry from the item data map if it's now empty
                     if (itemData.containingDrives.isEmpty() || itemData.count == 0) {
                         itemDataMap.remove(entry.getKey());
+                        tagWildcardCache.clear();
                     }
                     updatedItems.add(entry.getKey());
                 }

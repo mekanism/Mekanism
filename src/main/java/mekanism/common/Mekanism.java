@@ -36,7 +36,6 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketHandler;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.radiation.RadiationManager;
-import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
@@ -150,7 +149,7 @@ public class Mekanism {
     public static Set<Coord4D> activeVibrators = new ObjectOpenHashSet<>();
 
     private MekanismTagManager mekanismTagManager;
-    private RecipeCacheManager recipeCacheManager;
+    private ReloadListener recipeCacheManager;
 
     public Mekanism() {
         instance = this;
@@ -214,14 +213,14 @@ public class Mekanism {
         return mekanismTagManager;
     }
 
-    public void setRecipeCacheManager(RecipeCacheManager manager) {
+    public void setRecipeCacheManager(ReloadListener manager) {
         if (recipeCacheManager == null) {
             recipeCacheManager = manager;
         }
         //TODO: Else throw error
     }
 
-    public RecipeCacheManager getRecipeCacheManager() {
+    public ReloadListener getRecipeCacheManager() {
         return recipeCacheManager;
     }
 

@@ -64,4 +64,9 @@ public class BiMultimap<K, V> {
     public Set<Entry<V, K>> getReverseEntries() {
         return reverseMap.entries();
     }
+
+    public void clear() {
+        map.clear();
+        reverseMap.clear();
+    }
 }

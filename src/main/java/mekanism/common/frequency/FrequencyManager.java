@@ -18,7 +18,6 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
@@ -66,11 +65,11 @@ public class FrequencyManager<FREQ extends Frequency> {
         }
     }
 
-    public static void tick(World world) {
-        if (!loaded && !world.isRemote()) {
+    public static void tick() {
+        if (!loaded) {
             load();
         }
-        managers.forEach(manager -> manager.tickSelf(world));
+        managers.forEach(manager -> manager.tickSelf());
     }
 
     public static void reset() {
@@ -171,7 +170,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         return frequencyType;
     }
 
-    private void tickSelf(World world) {
+    private void tickSelf() {
         getFrequencies().forEach(freq -> freq.tick());
     }
 

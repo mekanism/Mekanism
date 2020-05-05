@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.IntSupplier;
@@ -69,6 +70,7 @@ public class RadiationManager {
 
     private static final String DATA_HANDLER_NAME = "radiation_manager";
     private static final IntSupplier MAX_RANGE = () -> MekanismConfig.general.radiationChunkCheckRadius.get() * 16;
+    private static final Random RAND = new Random();
 
     public static final double BASELINE = 0.0000001; // 100 nSv/h
     public static final double MIN_MAGNITUDE = 0.00001; // 10 uSv/h
@@ -209,7 +211,7 @@ public class RadiationManager {
         player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.update(player));
     }
 
-    public void tickServer(World world) {
+    public void tickServerWorld(World world) {
         // terminate early if we're disabled
         if (!MekanismConfig.general.radiationEnabled.get()) {
             return;
@@ -218,8 +220,24 @@ public class RadiationManager {
             createOrLoad();
         }
 
+        // update meltdowns
+        if (meltdowns.containsKey(world.dimension.getType().getId())) {
+            for (Iterator<Meltdown> iter = meltdowns.get(world.dimension.getType().getId()).iterator(); iter.hasNext();) {
+                Meltdown meltdown = iter.next();
+                if (meltdown.update()) {
+                    iter.remove();
+                }
+            }
+        }
+    }
+
+    public void tickServer() {
+        // terminate early if we're disabled
+        if (!MekanismConfig.general.radiationEnabled.get()) {
+            return;
+        }
         // each tick, there's a 1/20 chance we'll decay radiation sources (averages to 1 decay operation per second)
-        if (world.getRandom().nextInt(20) == 0) {
+        if (RAND.nextInt(20) == 0) {
             for (Map<Coord4D, RadiationSource> set : radiationMap.values()) {
                 for (Iterator<Map.Entry<Coord4D, RadiationSource>> iter = set.entrySet().iterator(); iter.hasNext();) {
                     Map.Entry<Coord4D, RadiationSource> entry = iter.next();
@@ -229,15 +247,6 @@ public class RadiationManager {
                     }
 
                     dataHandler.markDirty();
-                }
-            }
-        }
-        // update meltdowns
-        if (meltdowns.containsKey(world.dimension.getType().getId())) {
-            for (Iterator<Meltdown> iter = meltdowns.get(world.dimension.getType().getId()).iterator(); iter.hasNext();) {
-                Meltdown meltdown = iter.next();
-                if (meltdown.update()) {
-                    iter.remove();
                 }
             }
         }

@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.tags.MekanismTagManager;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraftforge.event.RegistryEvent;
@@ -22,6 +21,6 @@ public class Registration {
     @SubscribeEvent
     public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         MekanismRecipeType.registerRecipeTypes(event.getRegistry());
-        Mekanism.instance.setRecipeCacheManager(new RecipeCacheManager());
+        Mekanism.instance.setRecipeCacheManager(new ReloadListener());
     }
 }
