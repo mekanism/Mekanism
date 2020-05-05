@@ -1,9 +1,11 @@
 package mekanism.api.chemical.gas.attribute;
 
 import java.util.List;
+import java.util.function.IntSupplier;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -130,27 +132,27 @@ public class GasAttributes {
     /**
      * Defines a fuel which can be processed by a Gas-Burning Generator to produce energy. Fuels
      * have two primary values: 'burn ticks,' defining how many ticks one mB of fuel can be burned
-     * for before being depleted, and 'energyPerTick,' defining how much energy is generated from
-     * burning one mB of this fuel for one tick.
+     * for before being depleted, and 'energyDensity,' defining how much energy is stored in one mB
+     * of fuel.
      * @author aidancbrady
      *
      */
     public static class Fuel extends ChemicalAttribute {
 
-        private int burnTicks;
-        private FloatingLong energyPerTick;
+        private IntSupplier burnTicks;
+        private FloatingLongSupplier energyDensity;
 
-        public Fuel(int duration, FloatingLong energyDensity) {
-            burnTicks = duration;
-            energyPerTick = duration == 0 ? energyDensity : energyDensity.divide(duration);
+        public Fuel(IntSupplier burnTicks, FloatingLongSupplier energyDensity) {
+            this.burnTicks = burnTicks;
+            this.energyDensity = energyDensity;
         }
 
         public int getBurnTicks() {
-            return burnTicks;
+            return burnTicks.getAsInt();
         }
 
         public FloatingLong getEnergyPerTick() {
-            return energyPerTick;
+            return getBurnTicks() == 0 ? energyDensity.get() : energyDensity.get().divide(getBurnTicks());
         }
     }
 }
