@@ -168,7 +168,6 @@ minecraft {
     runs {
         client {
             workingDirectory project.file("run")
-            properties 'fml.earlyprogresswindow': 'false'
 
             //The below if statements are to add args to your gradle.properties file in user home
             // (DO NOT add them directly to the gradle.properties file for this project)

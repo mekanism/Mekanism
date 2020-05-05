@@ -48,14 +48,9 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
                     MekanismUtils.notifyNeighborofChange(world, offset, pos);
                 }
             }
+            invalidateCachedCapabilities();
         }
         prevMaster = master != null;
-    }
-
-    @Override
-    public void controllerGone() {
-        super.controllerGone();
-        invalidateCachedCapabilities();
     }
 
     @Override
