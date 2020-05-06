@@ -30,7 +30,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         }
         QIOFrequency freq = getQIOFrequency();
         if (freq != null && itemType != null) {
-            return freq.getStored(itemType) >= count;
+            long stored = freq.getStored(itemType);
+            return stored > 0 && stored >= count;
         }
         return false;
     }
