@@ -105,7 +105,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         for (int i = buttons.size() - 1; i >= 0; i--) {
             Widget widget = buttons.get(i);
             if (widget instanceof GuiElement && widget.isMouseOver(mouseX, mouseY)) {
+                RenderSystem.translated(0, 0, 400);
                 ((GuiElement) widget).renderToolTip(xAxis, yAxis);
+                RenderSystem.translated(0, 0, -400);
             }
             if (widget instanceof GuiOverlayDialog) {
                 break;
