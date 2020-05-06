@@ -10,6 +10,8 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.custom.GuiItemListSortScreen;
+import mekanism.client.gui.element.custom.GuiResizeControls;
+import mekanism.client.gui.element.custom.GuiResizeControls.ResizeType;
 import mekanism.client.gui.element.scroll.GuiSlotScroll;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -68,6 +70,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
               () -> container.getQIOItemList(), container));
         addButton(new GuiItemListSortScreen(this, xSize - 9 - 50, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               container::getSortType, container::setSortType));
+        addButton(new GuiResizeControls(this, 100, this::resize));
     }
 
     @Override
@@ -156,11 +159,4 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     public abstract GuiQIOItemViewer<CONTAINER> recreate(CONTAINER container);
-
-    private enum ResizeType {
-        EXPAND_X,
-        EXPAND_Y,
-        SHRINK_X,
-        SHRINK_Y;
-    }
 }

@@ -123,23 +123,22 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private void doDoubleClickTransfer(PlayerEntity player) {
         QIOFrequency freq = getFrequency();
         mainInventorySlots.forEach(slot -> {
-            if (slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
+            if (slot.getHasStack() && slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
                 updateSlot(player, slot, freq.addItem(slot.getStack()));
             }
         });
         hotBarSlots.forEach(slot -> {
-            if (slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
+            if (slot.getHasStack() && slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
                 updateSlot(player, slot, freq.addItem(slot.getStack()));
             }
         });
-        ((ServerPlayerEntity) player).sendContainerToPlayer(this);
     }
 
     @Nonnull
     @Override
     public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
         Slot currentSlot = inventorySlots.get(slotID);
-        if (currentSlot == null || !currentSlot.getHasStack()) {
+        if (currentSlot == null) {
             return ItemStack.EMPTY;
         }
         ItemStack slotStack = currentSlot.getStack().copy();
@@ -154,10 +153,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                         return ItemStack.EMPTY;
                     }
 
-                    ItemStack newStack = updateSlot(player, currentSlot, ret);
-                    // update the client
-                    ((ServerPlayerEntity) player).sendContainerToPlayer(this);
-                    return newStack;
+                    return updateSlot(player, currentSlot, ret);
                 } else {
                     if (slotID == lastSlot && !lastStack.isEmpty()) {
                         doDoubleClickTransfer(player);

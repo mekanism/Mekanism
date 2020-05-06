@@ -109,12 +109,14 @@ public class GuiUtils {
     public static void blitTiled(int x, int y, int width, int height, int texX, int texY, int texDrawWidth, int texDrawHeight, int textureWidth, int textureHeight) {
         int xTiles = (int) Math.ceil((float) width / texDrawWidth), yTiles = (int) Math.ceil((float) height / texDrawHeight);
 
+        int drawWidth = width, drawHeight = height;
         for (int tileX = 0; tileX < xTiles; tileX++) {
             for (int tileY = 0; tileY < yTiles; tileY++) {
-                AbstractGui.blit(x + texDrawWidth * tileX, y + texDrawHeight * tileY, texX, texY, Math.min(width, texDrawWidth), Math.min(height, texDrawHeight), textureWidth, textureHeight);
-                width -= texDrawWidth;
-                height -= texDrawHeight;
+                AbstractGui.blit(x + texDrawWidth * tileX, y + texDrawHeight * tileY, texX, texY, Math.min(drawWidth, texDrawWidth), Math.min(drawHeight, texDrawHeight), textureWidth, textureHeight);
+                drawHeight -= texDrawHeight;
             }
+            drawWidth -= texDrawWidth;
+            drawHeight = height;
         }
     }
 

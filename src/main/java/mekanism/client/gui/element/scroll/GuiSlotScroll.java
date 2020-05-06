@@ -36,7 +36,7 @@ public class GuiSlotScroll extends GuiTexturedElement {
         this.slotList = slotList;
         this.clickHandler = clickHandler;
 
-        gui.addElement(scrollBar = new GuiScrollBar(gui, relativeX + xSlots * 18 + 4, y, ySlots * 18,
+        addChild(scrollBar = new GuiScrollBar(gui, relativeX + xSlots * 18 + 4, y, ySlots * 18,
               () -> getSlotList() == null ? 0 : (int) Math.ceil((double) getSlotList().size() / xSlots), () -> ySlots));
     }
 
@@ -83,11 +83,13 @@ public class GuiSlotScroll extends GuiTexturedElement {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        super.mouseScrolled(mouseX, mouseY, delta);
         return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        super.mouseReleased(mouseX, mouseY, button);
         IScrollableSlot slot = getSlot(mouseX, mouseY, x, y);
         clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.inventory.getItemStack());
         return true;

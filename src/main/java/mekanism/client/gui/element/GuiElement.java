@@ -94,6 +94,18 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
+    public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
+        children.forEach(element -> element.onDrag(mouseX, mouseY, mouseXOld, mouseYOld));
+        super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
+    }
+
+    @Override
+    public void onRelease(double mouseX, double mouseY) {
+        children.forEach(element -> element.onRelease(mouseX, mouseY));
+        super.onRelease(mouseX, mouseY);
+    }
+
+    @Override
     public FontRenderer getFont() {
         return guiObj.getFont();
     }
