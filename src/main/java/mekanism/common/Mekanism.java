@@ -18,6 +18,8 @@ import mekanism.client.ModelLoaderRegisterHelper;
 import mekanism.common.base.IModule;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.command.CommandMek;
+import mekanism.common.command.builders.BuildCommand;
+import mekanism.common.command.builders.Builders.BoilerBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
@@ -253,6 +255,7 @@ public class Mekanism {
     }
 
     private void serverStarting(FMLServerStartingEvent event) {
+        BuildCommand.register("boiler", new BoilerBuilder());
         event.getCommandDispatcher().register(CommandMek.register());
         Modules.processSupportedContainers();
     }

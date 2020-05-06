@@ -174,7 +174,7 @@ public class GeneratorsBlockTypes {
     // Fission Fuel Assembly
     public static final BlockTypeTile<TileEntityFissionFuelAssembly> FISSION_FUEL_ASSEMBLY = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_FUEL_ASSEMBLY, GeneratorsLang.DESCRIPTION_FISSION_FUEL_ASSEMBLY)
-          .with(new AttributeStateActive(), new AttributeMultiblock())
+          .with(new AttributeMultiblock())
           .build();
     // Control Rod Assembly
     public static final BlockTypeTile<TileEntityControlRodAssembly> CONTROL_ROD_ASSEMBLY = BlockTileBuilder

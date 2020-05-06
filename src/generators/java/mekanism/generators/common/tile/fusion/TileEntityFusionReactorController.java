@@ -270,8 +270,8 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
         FusionReactor reactor = getReactor();
         if (formed) {
             if (reactor == null || !reactor.isFormed()) {
-                BlockPos corner = getPos().subtract(new Vec3i(2, 4, 2));
-                Mekanism.proxy.doMultiblockSparkle(this, corner, 5, 5, 6, tile -> tile instanceof TileEntityFusionReactorBlock);
+                BlockPos corner = getPos().subtract(new Vec3i(2, 2, 2));
+                Mekanism.proxy.doMultiblockSparkle(this, corner, 4, 4, 3);
             }
             if (reactor == null) {
                 setReactor(reactor = new FusionReactor(this));

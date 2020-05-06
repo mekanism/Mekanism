@@ -538,9 +538,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                     // Calculate the two corners of the evap tower using the render location as basis (which is the
                     // lowest rightmost corner inside the tower, relative to the controller).
                     BlockPos corner1 = getRenderLocation().west().north().down();
-                    BlockPos corner2 = corner1.east(3).south(3).up(height - 1);
+                    BlockPos corner2 = corner1.east(3).south(3).up(height - 2);
                     // Use the corners to spin up the sparkle
-                    Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2, tile -> tile instanceof TileEntityThermalEvaporationBlock);
+                    Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2);
                 }
             }
         });

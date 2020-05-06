@@ -45,8 +45,8 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
     public static final int WATER_PER_VOLUME = 16_000;
     public static final long STEAM_PER_VOLUME = 160_000;
 
-    public static final int SUPERHEATED_COOLANT_PER_VOLUME = 64_000;
-    public static final int COOLED_COOLANT_PER_VOLUME = 64_000;
+    public static final int SUPERHEATED_COOLANT_PER_VOLUME = 256_000;
+    public static final int COOLED_COOLANT_PER_VOLUME = 256_000;
 
     public static final double COOLANT_COOLING_EFFICIENCY = 0.4;
 

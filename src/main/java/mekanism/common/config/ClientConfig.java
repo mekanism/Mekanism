@@ -17,7 +17,6 @@ public class ClientConfig extends BaseMekanismConfig {
 
     public final CachedBooleanValue enablePlayerSounds;
     public final CachedBooleanValue enableMachineSounds;
-    public final CachedBooleanValue dynamicTankEasterEgg;
     public final CachedBooleanValue holidays;
     public final CachedFloatValue baseSoundVolume;
     public final CachedBooleanValue machineEffects;
@@ -47,8 +46,6 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("enablePlayerSounds", true));
         enableMachineSounds = CachedBooleanValue.wrap(this, builder.comment("If enabled machines play their sounds while running.")
               .define("enableMachineSounds", true));
-        dynamicTankEasterEgg = CachedBooleanValue.wrap(this, builder.comment("Audible sparkles.")
-              .define("dynamicTankEasterEgg", false));
         holidays = CachedBooleanValue.wrap(this, builder.comment("Christmas/New Years greetings in chat.")
               .define("holidays", true));
         baseSoundVolume = CachedFloatValue.wrap(this, builder.comment("Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.")

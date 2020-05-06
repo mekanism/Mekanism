@@ -3,7 +3,6 @@ package mekanism.common;
 import java.lang.ref.WeakReference;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import mekanism.client.SparkleAnimation.INodeChecker;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -39,13 +38,13 @@ public class CommonProxy {
     /**
      * Does the multiblock creation animation, starting from the rendering block.
      */
-    public void doMultiblockSparkle(TileEntity tile, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
+    public void doMultiblockSparkle(TileEntity tile, BlockPos corner1, BlockPos corner2) {
     }
 
     /**
      * Does the multiblock creation animation, starting from the rendering block.
      */
-    public void doMultiblockSparkle(TileEntity tile, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
+    public void doMultiblockSparkle(TileEntity tile, BlockPos renderLoc, int length, int width, int height) {
     }
 
     public double getReach(PlayerEntity player) {

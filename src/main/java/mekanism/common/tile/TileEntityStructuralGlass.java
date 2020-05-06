@@ -56,21 +56,21 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
     }
 
     @Override
-    public void doUpdate(BlockPos neighborPos) {
+    public void doUpdate(BlockPos neighborPos, boolean force) {
         if (!shouldUpdate(neighborPos)) {
             return;
         }
         if (master != null) {
             TileEntity masterTile = MekanismUtils.getTileEntity(getWorld(), master.getPos());
             if (masterTile instanceof IMultiblock) {
-                ((IMultiblock<?>) masterTile).doUpdate(neighborPos);
+                ((IMultiblock<?>) masterTile).doUpdate(neighborPos, true);
             } else {
                 master = null;
             }
         } else {
             IMultiblock<?> multiblock = new ControllerFinder().find();
             if (multiblock != null) {
-                multiblock.doUpdate(neighborPos);
+                multiblock.doUpdate(neighborPos, true);
             }
         }
     }
@@ -89,7 +89,7 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
     @Override
     public void onPlace() {
         if (!world.isRemote()) {
-            doUpdate(null);
+            doUpdate(null, false);
         }
     }
 

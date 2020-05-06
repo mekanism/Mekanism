@@ -17,16 +17,6 @@ public class MekanismSoundProvider extends BaseSoundProvider {
         addItemSoundEvents();
         addHolidaySoundEvents();
         addGuiSoundEvents();
-        addSoundEvent(SoundEventBuilder.create(MekanismSounds.CJ_EASTER_EGG).addSounds(this::createSoundBuilder,
-              Mekanism.rl("cj/cj_1"),
-              Mekanism.rl("cj/cj_2"),
-              Mekanism.rl("cj/cj_3"),
-              Mekanism.rl("cj/cj_4"),
-              Mekanism.rl("cj/cj_5"),
-              Mekanism.rl("cj/cj_6"),
-              Mekanism.rl("cj/cj_7"),
-              Mekanism.rl("cj/cj_8")
-        ));
     }
 
     private void addTileSoundEvents() {

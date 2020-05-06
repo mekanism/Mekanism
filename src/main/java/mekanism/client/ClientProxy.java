@@ -3,7 +3,6 @@ package mekanism.client;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
-import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
@@ -28,10 +27,10 @@ public class ClientProxy extends CommonProxy {
 
     private void doSparkle(TileEntity tile, SparkleAnimation anim) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        //If player is within 20 blocks (400 = 20^2), show the status message/sparkles
-        if (tile.getPos().distanceSq(player.getPosition()) <= 400) {
+        //If player is within 40 blocks (1600 = 40^2), show the status message/sparkles
+        if (tile.getPos().distanceSq(player.getPosition()) <= 1_600) {
             if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
-                anim.start();
+                anim.run();
             } else {
                 player.sendStatusMessage(MekanismLang.MULTIBLOCK_FORMED_CHAT.translateColored(EnumColor.INDIGO), true);
             }
@@ -39,13 +38,13 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void doMultiblockSparkle(TileEntity tile, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
-        doSparkle(tile, new SparkleAnimation(tile, renderLoc, length, width, height, checker));
+    public void doMultiblockSparkle(TileEntity tile, BlockPos renderLoc, int length, int width, int height) {
+        doSparkle(tile, new SparkleAnimation(tile, renderLoc, length, width, height));
     }
 
     @Override
-    public void doMultiblockSparkle(TileEntity tile, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
-        doSparkle(tile, new SparkleAnimation(tile, corner1, corner2, checker));
+    public void doMultiblockSparkle(TileEntity tile, BlockPos corner1, BlockPos corner2) {
+        doSparkle(tile, new SparkleAnimation(tile, corner1, corner2));
     }
 
     @Override

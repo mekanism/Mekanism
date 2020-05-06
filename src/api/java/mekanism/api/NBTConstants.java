@@ -84,6 +84,7 @@ public final class NBTConstants {
     public static final String FREQUENCY = "frequency";
     public static final String FREQUENCY_LIST = "freqList";
     public static final String FROM_RECIPE = "fromRecipe";
+    public static final String ASSEMBLIES = "assemblies";
     public static final String FUZZY_MODE = "fuzzyMode";
     public static final String GAS_NAME = "gasName";
     public static final String GAS_STORED = "gas";

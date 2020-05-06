@@ -159,18 +159,6 @@
       "mekanism:holiday/nutcracker1"
     ]
   },
-  "etc.cj": {
-    "sounds": [
-      "mekanism:cj/cj_2",
-      "mekanism:cj/cj_1",
-      "mekanism:cj/cj_4",
-      "mekanism:cj/cj_3",
-      "mekanism:cj/cj_6",
-      "mekanism:cj/cj_5",
-      "mekanism:cj/cj_8",
-      "mekanism:cj/cj_7"
-    ]
-  },
   "tile.christmas.3": {
     "sounds": [
       "mekanism:holiday/nutcracker3"

@@ -119,7 +119,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
                 getManager().updateCache(this, false);
             }
             if (ticker == 5 && !initialUpdate) {
-                doUpdate(null);
+                doUpdate(null, false);
             }
             if (prevStructure) {
                 structureChanged();
@@ -165,7 +165,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
     public void onPlace() {
         super.onPlace();
         if (!world.isRemote()) {
-            doUpdate(null);
+            doUpdate(null, false);
             initialUpdate = true;
         }
     }
@@ -176,8 +176,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
     }
 
     @Override
-    public void doUpdate(BlockPos neighborPos) {
-        if (!isRemote() && shouldUpdate(neighborPos) && !protocolUpdateThisTick && (structure == null || !structure.didTick)) {
+    public void doUpdate(BlockPos neighborPos, boolean force) {
+        if (!isRemote() && (force || shouldUpdate(neighborPos)) && !protocolUpdateThisTick && (structure == null || !structure.didTick)) {
             if (structure != null && structure.inventoryID != null) {
                 // update the cache before we destroy the multiblock
                 cachedData.sync(structure);
@@ -266,15 +266,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
                     structure.inventoryID = null;
                 }
                 if (structure.renderLocation != null && !prevStructure) {
-                    Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength, structure.volWidth, structure.volHeight,
-                          tile -> MultiblockManager.areCompatible(this, tile, false));
+                    Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength - 1, structure.volWidth - 1, structure.volHeight - 1);
                 }
             } else {
                 // this will consecutively be set on the server
                 isRendering = false;
             }
-            prevStructure = clientHasStructure;
         }
+        prevStructure = clientHasStructure;
     }
 
     @Override

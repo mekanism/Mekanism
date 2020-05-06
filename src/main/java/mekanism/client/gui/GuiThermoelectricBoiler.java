@@ -10,8 +10,8 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.tab.GuiBoilerTab;
-import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
+import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -35,14 +35,14 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
         super.init();
         addButton(new GuiInnerScreen(this, 60, 23, 96, 40, () -> Arrays.asList(
             MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
-            MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()),
-            MekanismLang.MAX_BOIL_RATE.translate(tile.getLastMaxBoil())
+            MekanismLang.BOIL_RATE.translate(formatInt(tile.getLastBoilRate())),
+            MekanismLang.MAX_BOIL_RATE.translate(formatInt(tile.getLastMaxBoil()))
         )));
         addButton(new GuiBoilerTab(this, tile, BoilerTab.STAT));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate());
+                return MekanismLang.BOIL_RATE.translate(formatInt(tile.getLastBoilRate()));
             }
 
             @Override
@@ -53,7 +53,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return MekanismLang.MAX_BOIL_RATE.translate(tile.getLastMaxBoil());
+                return MekanismLang.MAX_BOIL_RATE.translate(formatInt(tile.getLastMaxBoil()));
             }
 
             @Override

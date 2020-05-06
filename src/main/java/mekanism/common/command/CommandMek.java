@@ -13,6 +13,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
@@ -38,6 +39,7 @@ public class CommandMek {
               .then(TpCommand.register())
               .then(TppopCommand.register())
               .then(ChunkCommand.register())
+              .then(BuildCommand.COMMAND)
               .then(RadiationCommand.register());
     }
 

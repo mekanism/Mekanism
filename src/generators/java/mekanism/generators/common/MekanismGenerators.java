@@ -3,6 +3,7 @@ package mekanism.generators.common;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
+import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
@@ -15,6 +16,8 @@ import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.network.GeneratorsPacketHandler;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.registries.GeneratorsBuilders.FissionReactorBuilder;
+import mekanism.generators.common.registries.GeneratorsBuilders.TurbineBuilder;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
@@ -28,7 +31,6 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismGenerators.MODID)
@@ -57,8 +59,6 @@ public class MekanismGenerators implements IModule {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
 
-        MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
-
         GeneratorsItems.ITEMS.register(modEventBus);
         GeneratorsBlocks.BLOCKS.register(modEventBus);
         GeneratorsFluids.FLUIDS.register(modEventBus);
@@ -85,14 +85,13 @@ public class MekanismGenerators implements IModule {
 
         MinecraftForge.EVENT_BUS.register(this);
 
+        BuildCommand.register("turbine", new TurbineBuilder());
+        BuildCommand.register("fission", new FissionReactorBuilder());
+
         packetHandler.initialize();
 
         //Finalization
         Mekanism.logger.info("Loaded 'Mekanism Generators' module.");
-    }
-
-    private void serverStopped(FMLServerStoppedEvent event) {
-        FissionReactorMultiblockData.burningMap.clear();
     }
 
     @Override

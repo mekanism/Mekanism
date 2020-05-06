@@ -23,9 +23,12 @@ import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol;
+import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol.FormedAssembly;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> implements IValveHandler {
@@ -60,7 +63,6 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
             if (structure.isBurning() != structure.clientBurning) {
                 needsPacket = true;
                 structure.clientBurning = structure.isBurning();
-                FissionReactorMultiblockData.burningMap.put(structure.inventoryID, structure.clientBurning);
             }
             // handle coolant heating (water -> steam)
             structure.handleCoolant();
@@ -175,6 +177,9 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
                 updateTag.put(NBTConstants.GAS_STORED_ALT, structure.heatedCoolantTank.getStack().write(new CompoundNBT()));
                 updateTag.put(NBTConstants.GAS_STORED_ALT_2, structure.wasteTank.getStack().write(new CompoundNBT()));
                 writeValves(updateTag);
+                ListNBT list = new ListNBT();
+                structure.assemblies.forEach(assembly -> list.add(assembly.write()));
+                updateTag.put(NBTConstants.ASSEMBLIES, list);
             }
         }
         return updateTag;
@@ -197,6 +202,13 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
                 NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> structure.heatedCoolantTank.setStack(value));
                 NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> structure.wasteTank.setStack(value));
                 readValves(tag);
+                structure.assemblies.clear();
+                if (tag.contains(NBTConstants.ASSEMBLIES)) {
+                    ListNBT list = tag.getList(NBTConstants.ASSEMBLIES, NBT.TAG_COMPOUND);
+                    for (int i = 0; i < list.size(); i++) {
+                        structure.assemblies.add(FormedAssembly.read(list.getCompound(i)));
+                    }
+                }
             }
         }
     }

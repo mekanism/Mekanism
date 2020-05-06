@@ -355,7 +355,6 @@ public class MekanismRenderer {
         RenderFluidTankItem.resetCachedModels();
         RenderMechanicalPipe.onStitch();
         RenderTickHandler.resetCachedOverlays();
-        MinerVisualRenderer.resetCachedVisuals();
         RenderTeleporter.resetCachedModels();
     }
 

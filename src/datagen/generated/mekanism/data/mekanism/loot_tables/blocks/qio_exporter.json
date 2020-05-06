@@ -37,6 +37,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "auto",
+                  "target": "mekData.auto",
+                  "op": "replace"
+                },
+                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"

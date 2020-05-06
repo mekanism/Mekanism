@@ -6,10 +6,10 @@ import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.util.EnumUtils;
 
 public enum TubeTier implements ITier {
-    BASIC(BaseTier.BASIC, 1_000, 256),
-    ADVANCED(BaseTier.ADVANCED, 16_000, 1_000),
-    ELITE(BaseTier.ELITE, 128_000, 16_000),
-    ULTIMATE(BaseTier.ULTIMATE, 1_024_000, 128_000);
+    BASIC(BaseTier.BASIC, 8_000, 1_000),
+    ADVANCED(BaseTier.ADVANCED, 64_000, 4_000),
+    ELITE(BaseTier.ELITE, 1_000_000, 128_000),
+    ULTIMATE(BaseTier.ULTIMATE, 16_000_000, 1_024_000);
 
     private final long baseCapacity;
     private final long basePull;

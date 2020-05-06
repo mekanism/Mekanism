@@ -2,13 +2,11 @@ package mekanism.generators.common.content.fission;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
@@ -34,6 +32,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
@@ -59,9 +58,8 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
     public static final long BURN_PER_ASSEMBLY = 1;
     private static final double EXPLOSION_CHANCE = 1D / (512_000);
 
-    public static Object2BooleanMap<UUID> burningMap = new Object2BooleanOpenHashMap<>();
-
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
+    public Set<FormedAssembly> assemblies = new LinkedHashSet<>();
     public int fuelAssemblies, surfaceArea;
 
     public MultiblockGasTank<TileEntityFissionReactorCasing> gasCoolantTank;

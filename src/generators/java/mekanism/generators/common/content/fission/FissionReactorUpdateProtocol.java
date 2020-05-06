@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
@@ -18,6 +19,7 @@ import mekanism.generators.common.tile.fission.TileEntityControlRodAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -91,6 +93,7 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
             if (!result.isFormed()) {
                 return result;
             }
+            structure.assemblies.add(assembly.build());
         }
 
         structure.fuelAssemblies = assemblyCount;
@@ -117,7 +120,7 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
     }
 
     public static class FuelAssembly {
-        public Set<Coord4D> fuelAssemblies = new TreeSet<>((pos1, pos2) -> pos1.y - pos2.y);
+        public TreeSet<Coord4D> fuelAssemblies = new TreeSet<>((pos1, pos2) -> pos1.y - pos2.y);
         public Coord4D controlRodAssembly;
 
         public FuelAssembly(Coord4D start, boolean isControlRod) {
@@ -144,6 +147,44 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
                 return FormationResult.fail(GeneratorsLang.FISSION_INVALID_BAD_CONTROL_ROD, controlRodAssembly.getPos());
             }
             return FormationResult.SUCCESS;
+        }
+
+        public FormedAssembly build() {
+            Coord4D base = fuelAssemblies.first();
+            return new FormedAssembly(new BlockPos(base.x, base.y, base.z), fuelAssemblies.size());
+        }
+    }
+
+    public static class FormedAssembly {
+
+        BlockPos pos;
+        int height;
+
+        public FormedAssembly(BlockPos pos, int height) {
+            this.pos = pos;
+            this.height = height;
+        }
+
+        public CompoundNBT write() {
+            CompoundNBT ret = new CompoundNBT();
+            ret.putInt(NBTConstants.X, pos.getX());
+            ret.putInt(NBTConstants.Y, pos.getY());
+            ret.putInt(NBTConstants.Z, pos.getZ());
+            ret.putInt(NBTConstants.HEIGHT, height);
+            return ret;
+        }
+
+        public BlockPos getPos() {
+            return pos;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public static FormedAssembly read(CompoundNBT nbt) {
+            return new FormedAssembly(new BlockPos(nbt.getInt(NBTConstants.X), nbt.getInt(NBTConstants.Y), nbt.getInt(NBTConstants.Z)),
+                                      nbt.getInt(NBTConstants.HEIGHT));
         }
     }
 
