@@ -14,5 +14,7 @@ public interface ISlotClickHandler {
         public long getCount();
 
         public String getDisplayName();
+
+        public String getModID();
     }
 }

@@ -75,4 +75,8 @@ public class Color {
     public static Color rgb(int color) {
         return rgb((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
     }
+
+    public static int packOpaque(int rgb) {
+        return rgb | (0xFF << 24);
+    }
 }

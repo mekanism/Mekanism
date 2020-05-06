@@ -166,6 +166,13 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);
     }
 
+    @Override
+    protected boolean isPointInRegion(int x, int y, int width, int height, double mouseX, double mouseY) {
+        // overridden to prevent slot interactions when a GuiElement is blocking
+        return super.isPointInRegion(x, y, width, height, mouseX, mouseY) &&
+              !buttons.stream().anyMatch(button -> button.isMouseOver(mouseX, mouseY));
+    }
+
     protected void addSlots() {
         int size = container.inventorySlots.size();
         for (int i = 0; i < size; i++) {

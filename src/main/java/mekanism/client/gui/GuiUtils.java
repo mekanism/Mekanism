@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.lib.Color;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -14,7 +15,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiUtils {
 
-    //Note: Does not validate that the passed in dimensions are valid
+    // Note: Does not validate that the passed in dimensions are valid
+    // this strategy starts with a small texture and will expand it (by scaling) to meet the size requirements. good for small widgets
+    // where the background texture is a single color
     public static void renderExtendedTexture(ResourceLocation resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
         int textureWidth = 2 * sideWidth + 1;
         int textureHeight = 2 * sideHeight + 1;
@@ -58,6 +61,8 @@ public class GuiUtils {
         AbstractGui.blit(rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
     }
 
+    // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture; small textures will tank FPS due
+    // to tiling
     public static void renderBackgroundTexture(ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width, int height, int textureWidth, int textureHeight) {
         // render as much side as we can, based on element dimensions
         int sideWidth = Math.min(texSideWidth, width / 2);
@@ -118,6 +123,19 @@ public class GuiUtils {
             drawWidth -= texDrawWidth;
             drawHeight = height;
         }
+    }
+
+    public static void drawOutline(int x, int y, int width, int height, int color) {
+        fill(x, y, width, 1, color);
+        fill(x, y + height - 1, width, 1, color);
+        if (height > 2) {
+            fill(x, y + 1, 1, height - 2, color);
+            fill(x + width - 1, y + 1, 1, height - 2, color);
+        }
+    }
+
+    public static void fill(int x, int y, int width, int height, int color) {
+        AbstractGui.fill(x, y, x + width, y + height, Color.packOpaque(color));
     }
 
     public static void drawTiledSprite(int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite, int textureWidth,

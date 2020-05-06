@@ -15,7 +15,7 @@ public class GuiTextField extends GuiTexturedElement {
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
         super(null, gui, x, y, width, height);
 
-        textField = new TextFieldWidget(getFont(), gui.getLeft() + x, gui.getTop() + y, width, height, "");
+        textField = new TextFieldWidget(getFont(), this.x, this.y, width, height, "");
     }
 
     @Override

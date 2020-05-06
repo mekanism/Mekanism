@@ -413,12 +413,15 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.QIO_ITEM_TYPE_UNDEFINED, "Item type undefined");
         add(MekanismLang.QIO_IMPORT_WITHOUT_FILTER, "Import Without Filter:");
         add(MekanismLang.QIO_EXPORT_WITHOUT_FILTER, "Export Without Filter:");
-        add(MekanismLang.LIST_SORT_NAME_ASCENDING, "Sort items by name in ascending order.");
-        add(MekanismLang.LIST_SORT_NAME_DESCENDING, "Sort items by name in descending order.");
-        add(MekanismLang.LIST_SORT_COUNT_ASCENDING, "Sort items by count in ascending order.");
-        add(MekanismLang.LIST_SORT_COUNT_DESCENDING, "Sort items by count in descending order.");
+        add(MekanismLang.QIO_COMPENSATE_TOOLTIP, "What are you trying to compensate for?");
         add(MekanismLang.LIST_SORT_COUNT, "Count");
         add(MekanismLang.LIST_SORT_NAME, "Name");
+        add(MekanismLang.LIST_SORT_MOD, "Mod");
+        add(MekanismLang.LIST_SORT_NAME_DESC, "Sort items by name.");
+        add(MekanismLang.LIST_SORT_COUNT_DESC, "Sort items by count.");
+        add(MekanismLang.LIST_SORT_MOD_DESC, "Sort items by mod.");
+        add(MekanismLang.LIST_SORT_ASCENDING_DESC, "Sort items in ascending order.");
+        add(MekanismLang.LIST_SORT_DESCENDING_DESC, "Sort items in descending order.");
         add(MekanismLang.LIST_SEARCH, "Search:");
         add(MekanismLang.LIST_SORT, "Sort:");
         //JEI

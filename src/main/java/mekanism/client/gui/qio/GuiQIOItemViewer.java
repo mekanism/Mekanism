@@ -7,9 +7,10 @@ import org.lwjgl.glfw.GLFW;
 import com.google.common.collect.Sets;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiDigitalIconToggle;
+import mekanism.client.gui.element.GuiDropdown;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.custom.GuiItemListSortScreen;
 import mekanism.client.gui.element.custom.GuiResizeControls;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeType;
 import mekanism.client.gui.element.scroll.GuiSlotScroll;
@@ -18,6 +19,9 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
+import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resources.I18n;
@@ -27,7 +31,7 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> {
 
     private TextFieldWidget searchField;
-    private Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.');
+    private Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '@');
 
     protected GuiQIOItemViewer(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -68,9 +72,11 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         searchField.setTextColor(0xFFFFFF);
         addButton(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
               () -> container.getQIOItemList(), container));
-        addButton(new GuiItemListSortScreen(this, xSize - 9 - 50, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
-              container::getSortType, container::setSortType));
-        addButton(new GuiResizeControls(this, 100, this::resize));
+        addButton(new GuiDropdown<>(this, xSize - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+              41, ListSortType.class, container::getSortType, container::setSortType));
+        addButton(new GuiDigitalIconToggle<>(this, xSize - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+              12, 12, SortDirection.class, container::getSortDirection, container::setSortDirection));
+        addButton(new GuiResizeControls(this, (minecraft.getMainWindow().getScaledHeight() / 2) - 20 - getGuiTop(), this::resize));
     }
 
     @Override
@@ -79,7 +85,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         drawString(MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor());
         ITextComponent text = MekanismLang.LIST_SORT.translate();
         int width = getStringWidth(text);
-        drawString(text, xSize - 62 - width, (getYSize() - 96) + 4, titleTextColor());
+        drawString(text, xSize - 66 - width, (getYSize() - 96) + 4, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -93,6 +99,14 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     public void tick() {
         super.tick();
         searchField.tick();
+    }
+
+    @Override
+    public void resize(Minecraft minecraft, int sizeX, int sizeY) {
+        String text = searchField.getText();
+        super.resize(minecraft, sizeX, sizeY);
+        searchField.setText(text);
+        container.updateSearch(text);
     }
 
     @Override
@@ -152,10 +166,11 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         @SuppressWarnings("unchecked")
         CONTAINER c = (CONTAINER) container.recreate();
         GuiQIOItemViewer<CONTAINER> s = recreate(c);
-        // TODO set search box
         minecraft.currentScreen = null;
         minecraft.player.openContainer = ((IHasContainer<?>)s).getContainer();
-        minecraft.displayGuiScreen(recreate(c));
+        minecraft.displayGuiScreen(s);
+        s.searchField.setText(searchField.getText());
+        c.updateSearch(searchField.getText());
     }
 
     public abstract GuiQIOItemViewer<CONTAINER> recreate(CONTAINER container);

@@ -12,18 +12,23 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.transporter.HashedItem;
+import mekanism.common.inventory.GuiComponents.IDropdownEnum;
+import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.network.PacketGuiItemDataRequest;
 import mekanism.common.network.PacketQIOItemViewerSlotInteract;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
@@ -34,6 +39,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private static final int DOUBLE_CLICK_TRANSFER_DURATION = 20;
 
     private ListSortType sortType = MekanismConfig.client.qioItemViewerSortType.get();
+    private SortDirection sortDirection = MekanismConfig.client.qioItemViewerSortDirection.get();
 
     private Map<HashedItem, Long> cachedInventory = new Object2ObjectOpenHashMap<>();
     private long cachedCountCapacity;
@@ -220,7 +226,18 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private void sortItemList() {
         if (itemList == null)
             return;
-        sortType.sort(itemList);
+        sortType.sort(itemList, sortDirection);
+    }
+
+    public void setSortDirection(SortDirection sortDirection) {
+        this.sortDirection = sortDirection;
+        MekanismConfig.client.qioItemViewerSortDirection.set(sortDirection);
+        MekanismConfig.client.getConfigSpec().save();
+        sortItemList();
+    }
+
+    public SortDirection getSortDirection() {
+        return sortDirection;
     }
 
     public void setSortType(ListSortType sortType) {
@@ -323,39 +340,70 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
 
         @Override
+        public String getModID() {
+            return getItem().getStack().getItem().getRegistryName().getNamespace();
+        }
+
+        @Override
         public String getDisplayName() {
             return getItem().getStack().getDisplayName().getString();
         }
     }
 
-    public enum ListSortType {
-        NAME_ASCENDING(MekanismLang.LIST_SORT_NAME_ASCENDING, (a, b) -> a.getDisplayName().compareTo(b.getDisplayName())),
-        NAME_DESCENDING(MekanismLang.LIST_SORT_NAME_DESCENDING, (a, b) -> b.getDisplayName().compareTo(a.getDisplayName())),
-        SIZE_ASCENDING(MekanismLang.LIST_SORT_COUNT_ASCENDING, (a, b) -> Long.compare(a.getCount(), b.getCount())),
-        SIZE_DESCENDING(MekanismLang.LIST_SORT_COUNT_DESCENDING, (a, b) -> Long.compare(b.getCount(), a.getCount()));
+    public enum SortDirection implements IToggleEnum {
+        ASCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_up.png"), MekanismLang.LIST_SORT_ASCENDING_DESC),
+        DESCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_down.png"), MekanismLang.LIST_SORT_DESCENDING_DESC);
 
-        private ILangEntry langEntry;
-        private Comparator<IScrollableSlot> comparator;
+        private ResourceLocation icon;
+        private ILangEntry tooltip;
 
-        private ListSortType(ILangEntry langEntry, Comparator<IScrollableSlot> comparator) {
-            this.langEntry = langEntry;
-            this.comparator = comparator;
+        private SortDirection(ResourceLocation icon, ILangEntry tooltip) {
+            this.icon = icon;
+            this.tooltip = tooltip;
         }
 
-        public void sort(List<IScrollableSlot> list) {
-            list.sort(comparator);
+        @Override
+        public ResourceLocation getIcon() {
+            return icon;
         }
 
+        @Override
         public ITextComponent getTooltip() {
-            return langEntry.translate();
-        }
-
-        public ITextComponent getShortName() {
-            return this == NAME_ASCENDING || this == NAME_DESCENDING ? MekanismLang.LIST_SORT_NAME.translate() : MekanismLang.LIST_SORT_COUNT.translate();
+            return tooltip.translate();
         }
 
         public boolean isAscending() {
-            return this == NAME_ASCENDING || this == SIZE_ASCENDING;
+            return this == ASCENDING;
+        }
+    }
+
+    public enum ListSortType implements IDropdownEnum {
+        NAME(MekanismLang.LIST_SORT_NAME, MekanismLang.LIST_SORT_NAME_DESC, (a, b) -> a.getDisplayName().compareTo(b.getDisplayName())),
+        SIZE(MekanismLang.LIST_SORT_COUNT, MekanismLang.LIST_SORT_COUNT_DESC, (a, b) -> Long.compare(a.getCount(), b.getCount())),
+        MOD(MekanismLang.LIST_SORT_MOD, MekanismLang.LIST_SORT_MOD_DESC, (a, b) -> a.getModID().compareTo(b.getModID()));
+
+        private ILangEntry name;
+        private ILangEntry tooltip;
+        private Comparator<IScrollableSlot> comparator;
+
+        private ListSortType(ILangEntry name, ILangEntry tooltip, Comparator<IScrollableSlot> comparator) {
+            this.name = name;
+            this.tooltip = tooltip;
+            this.comparator = comparator;
+        }
+
+        public void sort(List<IScrollableSlot> list, SortDirection direction) {
+            list.sort(direction.isAscending() ? comparator : comparator.reversed());
+        }
+
+        @Override
+        public ITextComponent getTooltip() {
+            return tooltip.translate();
+        }
+
+        @Override
+        public ITextComponent getShortName() {
+            return name.translate();
         }
     }
 }

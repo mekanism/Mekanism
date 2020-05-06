@@ -5,6 +5,7 @@ import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
+import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -35,6 +36,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedIntValue guiScreenTextColor;
 
     public final CachedEnumValue<ListSortType> qioItemViewerSortType;
+    public final CachedEnumValue<SortDirection> qioItemViewerSortDirection;
     public final CachedIntValue qioItemViewerSlotsX;
     public final CachedIntValue qioItemViewerSlotsY;
 
@@ -82,7 +84,9 @@ public class ClientConfig extends BaseMekanismConfig {
 
         builder.comment("QIO Config").push(QIO_CATEGORY);
         qioItemViewerSortType = CachedEnumValue.wrap(this, builder.comment("Sorting strategy when viewing items in a QIO Item Viewer.")
-              .defineEnum("itemViewerSortType", ListSortType.NAME_ASCENDING));
+              .defineEnum("itemViewerSortType", ListSortType.NAME));
+        qioItemViewerSortDirection = CachedEnumValue.wrap(this, builder.comment("Sorting direction when viewing items in a QIO Item Viewer.")
+            .defineEnum("itemViewerSortDirection", SortDirection.ASCENDING));
         qioItemViewerSlotsX = CachedIntValue.wrap(this, builder.comment("Number of slots to view horizontally on a QIO Item Viewer.")
               .defineInRange("itemViewerSlotsX", 8, 8, 16));
         qioItemViewerSlotsY = CachedIntValue.wrap(this, builder.comment("Number of slots to view vertically on a QIO Item Viewer.")
