@@ -43,14 +43,10 @@ public class GuiSequencedSlotDisplay extends GuiTexturedElement {
     }
 
     @Override
-    public void drawButton(int mouseX, int mouseY) {}
-
-    @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
+    public void drawButton(int mouseX, int mouseY) {
         if (renderStack != null) {
             guiObj.getItemRenderer().zLevel += zOffset;
-            guiObj.renderItem(renderStack, relativeX, relativeY);
+            guiObj.renderItem(renderStack, x, y);
             guiObj.getItemRenderer().zLevel -= zOffset;
         }
     }

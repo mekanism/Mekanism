@@ -1,5 +1,6 @@
 package mekanism.client.gui.element;
 
+import org.lwjgl.glfw.GLFW;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
@@ -11,6 +12,10 @@ public class GuiOverlayDialog extends GuiTexturedElement {
 
     private static final Color OVERLAY_COLOR = Color.rgba(60, 60, 60, 128);
 
+    private boolean dragging = false;
+    private double dragX, dragY;
+    private int prevDX, prevDY;
+
     public GuiOverlayDialog(IGuiWrapper gui, int x, int y, int width, int height) {
        super(GuiMekanism.BASE_BACKGROUND, gui, x, y, width, height);
        active = true;
@@ -18,17 +23,52 @@ public class GuiOverlayDialog extends GuiTexturedElement {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        // always return true to prevent background clicking
-        if (guiObj instanceof GuiMekanism && ((GuiMekanism<?>) guiObj).getContainer() != null) {
-            Container c = ((GuiMekanism<?>) guiObj).getContainer();
-            if (!(c instanceof IEmptyContainer)) {
-                if (mouseX >= guiObj.getLeft() && mouseX < guiObj.getLeft() + guiObj.getWidth() && mouseY >= guiObj.getTop() + guiObj.getHeight() - 90) {
-                    return false;
+        // drag 'safe area'
+        if (isMouseOver(mouseX, mouseY)) {
+            if (mouseY < y + 15) {
+                dragging = true;
+                dragX = mouseX; dragY = mouseY;
+                prevDX = 0; prevDY = 0;
+            }
+            super.mouseClicked(mouseX, mouseY, button);
+        } else {
+            if (guiObj instanceof GuiMekanism && ((GuiMekanism<?>) guiObj).getContainer() != null) {
+                Container c = ((GuiMekanism<?>) guiObj).getContainer();
+                if (!(c instanceof IEmptyContainer)) {
+                    if (mouseX >= guiObj.getLeft() && mouseX < guiObj.getLeft() + guiObj.getWidth() && mouseY >= guiObj.getTop() + guiObj.getHeight() - 90) {
+                        return false;
+                    }
                 }
             }
         }
+        // always return true to prevent background clicking
         return true;
+    }
+
+    @Override
+    public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
+        if (dragging) {
+            int newDX = (int) Math.round(mouseX - dragX), newDY = (int) Math.round(mouseY - dragY);
+            int changeX = Math.max(-x, Math.min(minecraft.getMainWindow().getScaledWidth() - (x + width), newDX - prevDX));
+            int changeY = Math.max(-y, Math.min(minecraft.getMainWindow().getScaledHeight() - (y + height), newDY - prevDY));
+            prevDX = newDX; prevDY = newDY;
+            x += changeX; y += changeY;
+            relativeX += changeX; relativeY += changeY;
+            children.forEach(child -> {
+                child.x += changeX; child.y += changeY;
+                if (child instanceof GuiTexturedElement) {
+                    ((GuiTexturedElement) child).relativeX += changeX;
+                    ((GuiTexturedElement) child).relativeY += changeY;
+                }
+                child.onMove();
+            });
+        }
+    }
+
+    @Override
+    public void onRelease(double mouseX, double mouseY) {
+        super.onRelease(mouseX, mouseY);
+        dragging = false;
     }
 
     @Override
@@ -43,8 +83,20 @@ public class GuiOverlayDialog extends GuiTexturedElement {
         renderBackgroundTexture(getResource(), 4, 4);
     }
 
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            close();
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
     protected void close() {
         guiObj.removeElement(this);
+        if (guiObj instanceof GuiMekanism) {
+            ((GuiMekanism<?>) guiObj).setFocused(null);
+        }
     }
 
     protected boolean renderOverlay() {

@@ -89,7 +89,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void resize(Minecraft minecraft, int sizeX, int sizeY) {
         init(minecraft, sizeX, sizeY);
-        overlays.forEach(overlay -> addElement(overlay));
     }
 
     @Override
@@ -299,18 +298,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void addElement(GuiTexturedElement e) {
         addButton(e);
-        if (e instanceof GuiOverlayDialog) {
-            overlays.add((GuiOverlayDialog) e);
-        }
     }
 
     @Override
     public void removeElement(GuiTexturedElement e) {
         buttons.remove(e);
         children.remove(e);
-        if (e instanceof GuiOverlayDialog) {
-            overlays.remove(e);
-        }
     }
 
     //Some blit param namings

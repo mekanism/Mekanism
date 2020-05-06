@@ -29,7 +29,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
-    private final List<GuiElement> children = new ArrayList<>();
+    protected final List<GuiElement> children = new ArrayList<>();
 
     protected final IGuiWrapper guiObj;
 
@@ -48,19 +48,23 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         children.forEach(child -> child.tick());
     }
 
+    public void onMove() {}
+
+    // in the future we should
     public void onRenderForeground(int mouseX, int mouseY) {
         RenderSystem.pushMatrix();
-        // fix render offset
+        // fix render offset for background drawing
         RenderSystem.translatef(-guiObj.getLeft(), -guiObj.getTop(), 0);
         // render background overlay and children above everything else
         renderBackgroundOverlay(mouseX, mouseY);
+        RenderSystem.translatef(0, 0, 200);
         children.forEach(child -> child.render(mouseX, mouseY, 0));
-        renderBackgroundOverlayPost(mouseX, mouseY);
-        RenderSystem.popMatrix();
+        RenderSystem.translatef(0, 0, -200);
+        RenderSystem.translatef(guiObj.getLeft(), guiObj.getTop(), 0);
+        // translate back to top right corner and forward to render foregrounds
+        RenderSystem.translatef(0, 0, 400);
         renderForeground(mouseX, mouseY);
-        // move z level forward to prevent clashing
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(0, 0, 100);
+        RenderSystem.translatef(0, 0, 200);
         children.forEach(child -> child.renderForeground(mouseX, mouseY));
         RenderSystem.popMatrix();
     }
@@ -68,7 +72,6 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     public void renderForeground(int mouseX, int mouseY) {}
 
     public void renderBackgroundOverlay(int mouseX, int mouseY) {}
-    public void renderBackgroundOverlayPost(int mouseX, int mouseY) {}
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
@@ -89,8 +92,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         for (GuiElement element : children) {
             ret |= element.mouseClicked(mouseX, mouseY, button);
         }
-        ret |= super.mouseClicked(mouseX, mouseY, button);
-        return ret;
+        return ret || super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -209,8 +211,10 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         //Only attempt to draw the message if we have a message to draw
         if (!message.isEmpty()) {
             //TODO: Improve the math for this so that it calculates the y value better
+            RenderSystem.translatef(0, 0, 400);
             drawCenteredString(getFont(), message, x + halfWidthLeft, y + (height - 8) / 2,
                   getFGColor() | MathHelper.ceil(alpha * 255.0F) << 24);
+            RenderSystem.translatef(0, 0, -400);
         }
         RenderSystem.disableBlend();
     }

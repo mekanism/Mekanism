@@ -83,7 +83,6 @@ public class GuiSlotScroll extends GuiTexturedElement {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        super.mouseScrolled(mouseX, mouseY, delta);
         return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 

@@ -131,6 +131,8 @@ public enum MekanismLang implements ILangEntry {
     FLAMETHROWER_STORED("tooltip", "stored.flamethrower"),
     JETPACK_STORED("tooltip", "stored.jetpack"),
     //Gui stuff
+    HEIGHT("gui", "height"),
+    WIDTH("gui", "width"),
     PROGRESS("gui", "progress"),
     PROCESS_RATE("gui", "process_rate"),
     TICKS_REQUIRED("gui", "ticks_required"),
@@ -185,7 +187,7 @@ public enum MekanismLang implements ILangEntry {
     //Tab
     MAIN_TAB("tab", "main"),
     //Evaporation
-    HEIGHT("evaporation", "height"),
+    EVAPORATION_HEIGHT("evaporation", "height"),
     FLUID_PRODUCTION("evaporation", "fluid_production"),
     //Configuration
     TRANSPORTER_CONFIG("configuration", "transporter"),

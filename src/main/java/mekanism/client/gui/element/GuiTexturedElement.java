@@ -8,8 +8,8 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiTexturedElement extends GuiElement {
 
     protected final ResourceLocation resource;
-    protected final int relativeX;
-    protected final int relativeY;
+    protected int relativeX;
+    protected int relativeY;
 
     public GuiTexturedElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height) {
         super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, "");

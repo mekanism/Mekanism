@@ -4,10 +4,10 @@ import java.util.function.Consumer;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 
 public class GuiResizeControls extends GuiSideHolder {
 
@@ -25,8 +25,8 @@ public class GuiResizeControls extends GuiSideHolder {
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
-        drawScaledCenteredText(new StringTextComponent("Height"), relativeX + 13.5F, relativeY + 5, titleTextColor(), 0.7F);
-        drawScaledCenteredText(new StringTextComponent("Width"), relativeX + 13.5F, relativeY + 24, titleTextColor(), 0.7F);
+        drawScaledCenteredText(MekanismLang.HEIGHT.translate(), relativeX + 13.5F, relativeY + 5, titleTextColor(), 0.7F);
+        drawScaledCenteredText(MekanismLang.WIDTH.translate(), relativeX + 13.5F, relativeY + 24, titleTextColor(), 0.7F);
     }
 
     public enum ResizeType {

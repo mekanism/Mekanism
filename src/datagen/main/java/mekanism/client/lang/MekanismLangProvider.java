@@ -509,6 +509,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.PROCESS_RATE, "Process Rate: %s");
         add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %s");
         //Gui stuff
+        add(MekanismLang.WIDTH, "Width");
+        add(MekanismLang.HEIGHT, "Height");
         add(MekanismLang.MIN, "Min: %s");
         add(MekanismLang.MAX, "Max: %s");
         add(MekanismLang.INFINITE, "Infinite");
@@ -560,7 +562,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Tab
         add(MekanismLang.MAIN_TAB, "Main");
         //Evaporation
-        add(MekanismLang.HEIGHT, "Height: %s");
+        add(MekanismLang.EVAPORATION_HEIGHT, "Height: %s");
         add(MekanismLang.FLUID_PRODUCTION, "Production: %s mB/t");
         //Configuration
         add(MekanismLang.TRANSPORTER_CONFIG, "Transporter Config");

@@ -7,6 +7,7 @@ import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -25,14 +26,13 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
 
     protected MekanismButton checkboxButton;
-    protected TextFieldWidget text;
+    protected GuiTextField text;
     protected GuiSequencedSlotDisplay slotDisplay;
 
     private <TILE extends TileEntityMekanism & ITileFilterHolder<QIOFilter<?>>>
@@ -70,7 +70,7 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
         }));
         addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, relativeX + 8, relativeY + 19, this::getRenderStacks).setZOffset(200));
 
-        text = new TextFieldWidget(getFont(), gui.getLeft() + relativeX + 31, gui.getTop() + relativeY + 47, width - 31 - 9 - 12, 12, "");
+        addChild(text = new GuiTextField(gui, relativeX + 31, relativeY + 47, width - 31 - 9 - 12, 12));
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
         text.setEnabled(true);
         text.setFocused2(true);
@@ -96,12 +96,6 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
         return new QIOTagFilter();
     }
 
-    @Override
-    public void renderBackgroundOverlayPost(int mouseX, int mouseY) {
-        super.renderBackgroundOverlayPost(mouseX, mouseY);
-        text.renderButton(mouseX, mouseY, 0);
-    }
-
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {
@@ -121,7 +115,6 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
     @Override
     public void tick() {
         super.tick();
-        text.tick();
         if (ticker > 0) {
             ticker--;
         } else {
@@ -155,12 +148,6 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
             return false;
         }
         return super.charTyped(c, keyCode);
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        boolean ret = text.mouseClicked(mouseX, mouseY, button);
-        return ret || super.mouseClicked(mouseX, mouseY, button);
     }
 
     private List<ItemStack> getRenderStacks() {
