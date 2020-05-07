@@ -40,7 +40,7 @@ public abstract class TileEntityUpdateable extends TileEntity {
     /**
      * Used for checking if we need to update comparators. Note only called on the server
      */
-    protected void markDirtyComparator() {
+    public void markDirtyComparator() {
     }
 
     @Override

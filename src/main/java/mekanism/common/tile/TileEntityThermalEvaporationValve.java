@@ -49,6 +49,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
                 }
             }
             invalidateCachedCapabilities();
+            markDirtyComparator();
         }
         prevMaster = master != null;
     }
@@ -73,6 +74,6 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         if (controller == null) {
             return 0;
         }
-        return MekanismUtils.redstoneLevelFromContents(controller.inputTank.getFluidAmount(), controller.inputTank.getCapacity());
+        return controller.getCurrentRedstoneLevel();
     }
 }

@@ -1003,8 +1003,8 @@ public final class MekanismUtils {
      *
      * @return A redstone level based on the percentage of the amount stored.
      */
-    public static int redstoneLevelFromContents(double amount, double capacity) {
-        double fractionFull = capacity == 0 ? 0 : amount / capacity;
+    public static int redstoneLevelFromContents(long amount, long capacity) {
+        double fractionFull = capacity == 0 ? 0 : amount / (double) capacity;
         return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
     }
 

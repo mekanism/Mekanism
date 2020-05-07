@@ -36,6 +36,10 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
             structure.tick();
             structure.energyInputSlot.drainContainer();
             structure.energyOutputSlot.fillContainerOrConvert();
+            if (!structure.getLastInput().isZero() || !structure.getLastOutput().isZero()) {
+                //If the stored energy changed, update the comparator
+                structure.markDirtyComparator(world);
+            }
         }
     }
 

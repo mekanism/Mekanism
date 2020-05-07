@@ -19,6 +19,7 @@ import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
@@ -82,44 +83,42 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
             }
 
             Set<Coord4D> locations = new ObjectOpenHashSet<>();
+            Set<ValveData> valves = new ObjectOpenHashSet<>();
             boolean isValid = true;
 
-            int minX = origX + xmin;
-            int maxX = origX + xmax;
-            int minY = origY + ymin;
-            int maxY = origY + ymax;
-            int minZ = origZ + zmin;
-            int maxZ = origZ + zmax;
+            int minX = origX + xmin, maxX = origX + xmax;
+            int minY = origY + ymin, maxY = origY + ymax;
+            int minZ = origZ + zmin, maxZ = origZ + zmax;
+            outer:
             for (int x = xmin; x <= xmax; x++) {
-                int xPos = origX + x;
                 for (int y = ymin; y <= ymax; y++) {
-                    int yPos = origY + y;
                     for (int z = zmin; z <= zmax; z++) {
-                        int zPos = origZ + z;
+                        BlockPos pos = new BlockPos(origX + x, origY + y, origZ + z);
                         if (x == xmin || x == xmax || y == ymin || y == ymax || z == zmin || z == zmax) {
-                            if (!checkNode(xPos, yPos, zPos) || isFrame(coord.translate(x, y, z), minX, maxX, minY, maxY, minZ, maxZ) && !isValidFrame(xPos, yPos, zPos)) {
+                            CasingType type = getCasingType(pos);
+                            if (!checkNode(pos) || isFramePos(coord.translate(x, y, z), minX, maxX, minY, maxY, minZ, maxZ) && !type.isFrame()) {
                                 //If it is not a valid node or if it is supposed to be a frame but is invalid
                                 // then we are not valid over all
                                 isValid = false;
-                                prevResult = FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, new BlockPos(xPos, yPos, zPos));
-                                break;
+                                prevResult = FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos);
+                                break outer;
                             } else {
                                 locations.add(coord.translate(x, y, z));
+                                if (type.isValve()) {
+                                    ValveData data = new ValveData();
+                                    data.location = coord.translate(x, y, z);
+                                    data.side = getSide(data.location, minX, maxX, minY, maxY, minZ, maxZ);
+                                    valves.add(data);
+                                }
                             }
-                        } else if (!isValidInnerNode(xPos, yPos, zPos)) {
+                        } else if (!isValidInnerNode(pos)) {
                             isValid = false;
-                            prevResult = FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, new BlockPos(xPos, yPos, zPos));
-                            break;
-                        } else if (!isAir(xPos, yPos, zPos)) {
-                            innerNodes.add(new Coord4D(xPos, yPos, zPos, pointer.getWorld().getDimension().getType()));
+                            prevResult = FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos);
+                            break outer;
+                        } else if (!pointer.getWorld().isAirBlock(pos)) {
+                            innerNodes.add(new Coord4D(pos, pointer.getWorld().getDimension().getType()));
                         }
                     }
-                    if (!isValid) {
-                        break;
-                    }
-                }
-                if (!isValid) {
-                    break;
                 }
             }
 
@@ -131,6 +130,7 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
                 if (length <= 18 && height <= 18 && width <= 18) {
                     T structure = getNewStructure();
                     structure.locations = locations;
+                    structure.valves = valves;
                     structure.volLength = length;
                     structure.volHeight = height;
                     structure.volWidth = width;
@@ -189,19 +189,8 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
         return null;
     }
 
-    /**
-     * @param x - x coordinate
-     * @param y - y coordinate
-     * @param z - z coordinate
-     *
-     * @return Whether or not the block at the specified location is an air block.
-     */
-    protected boolean isAir(int x, int y, int z) {
-        return pointer.getWorld().isAirBlock(new BlockPos(x, y, z));
-    }
-
-    protected boolean isValidInnerNode(int x, int y, int z) {
-        return isAir(x, y, z);
+    protected boolean isValidInnerNode(BlockPos pos) {
+        return pointer.getWorld().isAirBlock(pos);
     }
 
     /**
@@ -283,21 +272,14 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
      *
      * @return Whether or not the block at the specified location is considered a frame on the multiblock structure.
      */
-    private boolean isFrame(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
+    private boolean isFramePos(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
         boolean xMatches = obj.x == xmin || obj.x == xmax;
         boolean yMatches = obj.y == ymin || obj.y == ymax;
         boolean zMatches = obj.z == zmin || obj.z == zmax;
         return xMatches && yMatches || xMatches && zMatches || yMatches && zMatches;
     }
 
-    /**
-     * @param x - x coordinate
-     * @param y - y coordinate
-     * @param z - z coordinate
-     *
-     * @return Whether or not the block at the specified location serves as a frame for a multiblock structure.
-     */
-    protected abstract boolean isValidFrame(int x, int y, int z);
+    protected abstract CasingType getCasingType(BlockPos pos);
 
     protected abstract MultiblockManager<T> getManager();
 
@@ -535,6 +517,21 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
             }
             loop(coord);
             return iterated.size();
+        }
+    }
+
+    public enum CasingType {
+        FRAME,
+        VALVE,
+        OTHER,
+        INVALID;
+
+        boolean isFrame() {
+            return this == FRAME;
+        }
+
+        boolean isValve() {
+            return this == VALVE;
         }
     }
 }

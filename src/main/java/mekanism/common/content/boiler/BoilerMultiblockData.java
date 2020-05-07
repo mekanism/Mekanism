@@ -3,13 +3,11 @@ package mekanism.common.content.boiler;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
@@ -26,11 +24,11 @@ import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.HeatUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 
@@ -72,7 +70,6 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
 
     public Coord4D upperRenderLocation;
 
-    public Set<ValveData> valves = new ObjectOpenHashSet<>();
     private List<IExtendedFluidTank> fluidTanks;
     private List<IGasTank> gasTanks;
     private List<IHeatCapacitor> heatCapacitors;
@@ -99,8 +96,14 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
 
     @Override
     public void onCreated() {
+        super.onCreated();
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY * locations.size(), true);
+    }
+
+    @Override
+    protected int getMultiblockRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(waterTank.getFluidAmount(), waterTank.getCapacity());
     }
 
     public double getHeatAvailable() {
