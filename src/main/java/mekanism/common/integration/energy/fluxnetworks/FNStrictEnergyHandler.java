@@ -47,8 +47,11 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
     @Override
     public FloatingLong insertEnergy(int container, FloatingLong amount, @Nonnull Action action) {
         if (container == 0 && storage.canReceiveL()) {
-            long toInsert = EnergyType.FORGE.convertToAsLong(amount);
-            return EnergyType.FORGE.convertFrom(toInsert - storage.receiveEnergyL(toInsert, action.simulate()));
+            long inserted = storage.receiveEnergyL(EnergyType.FORGE.convertToAsLong(amount), action.simulate());
+            if (inserted > 0) {
+                //Only bother converting back if any was able to be inserted
+                return amount.subtract(EnergyType.FORGE.convertFrom(inserted));
+            }
         }
         return amount;
     }

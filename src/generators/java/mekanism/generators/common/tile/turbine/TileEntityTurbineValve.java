@@ -10,7 +10,6 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 
 public class TileEntityTurbineValve extends TileEntityTurbineCasing {
@@ -50,6 +49,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
 
     @Override
     public int getRedstoneLevel() {
-        return structure == null ? 0 : MekanismUtils.redstoneLevelFromContents(structure.gasTank.getStored(), structure.gasTank.getCapacity());
+        return structure == null ? 0 : structure.getCurrentRedstoneLevel();
     }
 }

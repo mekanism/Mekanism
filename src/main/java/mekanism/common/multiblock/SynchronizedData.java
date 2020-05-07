@@ -12,8 +12,11 @@ import mekanism.api.Coord4D;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.multiblock.IValveHandler.ValveData;
+import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 
 public abstract class SynchronizedData<T extends SynchronizedData<T>> implements IMekanismInventory {
 
@@ -36,6 +39,8 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
     public Coord4D minLocation, maxLocation;
 
     public boolean destroyed;
+
+    private int currentRedstoneLevel;
 
     @Nonnull
     @Override
@@ -91,5 +96,37 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
         this.volume = volume;
     }
 
-    public void onCreated() {}
+    public void onCreated() {
+        forceUpdateComparatorLevel();
+    }
+
+    // Only call from the server
+    public void markDirtyComparator(World world) {
+        int newRedstoneLevel = getMultiblockRedstoneLevel();
+        if (newRedstoneLevel != currentRedstoneLevel) {
+            //Update the comparator value if it changed
+            currentRedstoneLevel = newRedstoneLevel;
+            //And inform all the valves that the level they should be supplying changed
+            notifyAllUpdateComparator(world);
+        }
+    }
+
+    public void notifyAllUpdateComparator(World world) {
+        for (ValveData valve : valves) {
+            TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, valve.location.getPos());
+            if (tile != null) {
+                tile.markDirtyComparator();
+            }
+        }
+    }
+
+    public void forceUpdateComparatorLevel() {
+        currentRedstoneLevel = getMultiblockRedstoneLevel();
+    }
+
+    protected abstract int getMultiblockRedstoneLevel();
+
+    public int getCurrentRedstoneLevel() {
+        return currentRedstoneLevel;
+    }
 }

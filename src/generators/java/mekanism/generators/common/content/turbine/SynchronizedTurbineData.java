@@ -22,6 +22,7 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.tags.FluidTags;
@@ -105,6 +106,11 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     public void setVolume(int volume) {
         super.setVolume(volume);
         energyCapacity = FloatingLong.createConst(getVolume() * 16_000_000L); //16 MJ energy capacity per volume
+    }
+
+    @Override
+    protected int getMultiblockRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getCapacity());
     }
 
     @Nonnull

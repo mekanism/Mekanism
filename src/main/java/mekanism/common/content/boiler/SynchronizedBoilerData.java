@@ -24,6 +24,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
@@ -76,8 +77,14 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     @Override
     public void onCreated() {
+        super.onCreated();
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY * locations.size(), true);
+    }
+
+    @Override
+    protected int getMultiblockRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(waterTank.getFluidAmount(), waterTank.getCapacity());
     }
 
     public void setFluidTankData(@Nonnull List<IExtendedFluidTank> toCopy) {

@@ -13,7 +13,6 @@ import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
@@ -75,6 +74,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(getEnergy(), getMaxEnergy());
+        return structure == null ? 0 : structure.getCurrentRedstoneLevel();
     }
 }

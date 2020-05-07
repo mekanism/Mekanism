@@ -58,8 +58,11 @@ public class MultiblockGasTank<MULTIBLOCK extends TileEntityMultiblock<?>> exten
     @Override
     public void onContentsChanged() {
         super.onContentsChanged();
-        if (multiblock.hasWorld() && !multiblock.isRemote() && multiblock.isRendering) {
+        if (multiblock.hasWorld() && !multiblock.isRemote()) {
             multiblock.markDirty(false);
+            if (multiblock.structure != null) {
+                multiblock.structure.markDirtyComparator(multiblock.getWorld());
+            }
         }
     }
 }

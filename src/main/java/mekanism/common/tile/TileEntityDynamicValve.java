@@ -7,7 +7,6 @@ import mekanism.api.Coord4D;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -50,6 +49,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
 
     @Override
     public int getRedstoneLevel() {
-        return structure == null ? 0 : MekanismUtils.redstoneLevelFromContents(structure.fluidTank.getFluidAmount(), structure.fluidTank.getCapacity());
+        return structure == null ? 0 : structure.getCurrentRedstoneLevel();
     }
 }

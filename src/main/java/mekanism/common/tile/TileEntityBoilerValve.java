@@ -13,7 +13,6 @@ import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -61,7 +60,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     @Override
     public int getRedstoneLevel() {
-        return structure == null ? 0 : MekanismUtils.redstoneLevelFromContents(structure.waterTank.getFluidAmount(), structure.waterTank.getCapacity());
+        return structure == null ? 0 : structure.getCurrentRedstoneLevel();
     }
 
     @Override
