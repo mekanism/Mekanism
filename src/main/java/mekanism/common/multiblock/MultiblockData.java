@@ -11,19 +11,21 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.multiblock.IValveHandler.ValveData;
+import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public abstract class MultiblockData<T extends MultiblockData<T>> implements IMekanismInventory {
 
     public Set<Coord4D> locations = new ObjectOpenHashSet<>();
     public Set<Coord4D> internalLocations = new ObjectOpenHashSet<>();
+    public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
-    public int volLength;
-    public int volWidth;
-    public int volHeight;
-
+    public int volLength, volWidth, volHeight;
     private int volume;
 
     public UUID inventoryID;
@@ -35,10 +37,11 @@ public abstract class MultiblockData<T extends MultiblockData<T>> implements IMe
     @Nullable//may be null if structure has not been fully sent
     public Coord4D renderLocation;
 
-    public Coord4D minLocation;
-    public Coord4D maxLocation;
+    public Coord4D minLocation, maxLocation;
 
     public boolean destroyed;
+
+    private int currentRedstoneLevel;
 
     @Nonnull
     @Override
@@ -106,7 +109,39 @@ public abstract class MultiblockData<T extends MultiblockData<T>> implements IMe
         this.volume = volume;
     }
 
-    public void onCreated() {}
+    public void onCreated() {
+        forceUpdateComparatorLevel();
+    }
+
+    // Only call from the server
+    public void markDirtyComparator(World world) {
+        int newRedstoneLevel = getMultiblockRedstoneLevel();
+        if (newRedstoneLevel != currentRedstoneLevel) {
+            //Update the comparator value if it changed
+            currentRedstoneLevel = newRedstoneLevel;
+            //And inform all the valves that the level they should be supplying changed
+            notifyAllUpdateComparator(world);
+        }
+    }
+
+    public void notifyAllUpdateComparator(World world) {
+        for (ValveData valve : valves) {
+            TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, valve.location.getPos());
+            if (tile != null) {
+                tile.markDirtyComparator();
+            }
+        }
+    }
+
+    public void forceUpdateComparatorLevel() {
+        currentRedstoneLevel = getMultiblockRedstoneLevel();
+    }
+
+    protected abstract int getMultiblockRedstoneLevel();
+
+    public int getCurrentRedstoneLevel() {
+        return currentRedstoneLevel;
+    }
 
     public enum BlockLocation {
         INSIDE,

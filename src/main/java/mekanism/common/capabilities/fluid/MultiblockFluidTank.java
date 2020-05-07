@@ -59,6 +59,9 @@ public class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultiblock<?>> ext
         super.onContentsChanged();
         if (multiblock.hasWorld() && !multiblock.isRemote()) {
             multiblock.markDirty(false);
+            if (multiblock.structure != null) {
+                multiblock.structure.markDirtyComparator(multiblock.getWorld());
+            }
         }
     }
 }

@@ -16,6 +16,7 @@ import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 
 public class MatrixMultiblockData extends MultiblockData<MatrixMultiblockData> implements IMekanismStrictEnergyHandler {
@@ -56,6 +57,11 @@ public class MatrixMultiblockData extends MultiblockData<MatrixMultiblockData> i
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return inventorySlots;
+    }
+
+    @Override
+    protected int getMultiblockRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(getEnergy(), getStorageCap());
     }
 
     public void addCell(Coord4D coord, TileEntityInductionCell cell) {

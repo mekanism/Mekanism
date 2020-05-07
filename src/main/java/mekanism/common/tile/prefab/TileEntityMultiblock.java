@@ -146,6 +146,10 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
         if (structure != null && !structure.hasRenderer) {
             structure.hasRenderer = true;
             isRendering = true;
+            //Force update the structure's comparator level as it may be incorrect due to not having a capacity while unformed
+            structure.forceUpdateComparatorLevel();
+            //If we are the block that is rendering the structure make sure to tell all the valves to update their comparator levels
+            structure.notifyAllUpdateComparator(world);
         }
         Coord4D thisCoord = Coord4D.get(this);
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -159,6 +163,11 @@ public abstract class TileEntityMultiblock<T extends MultiblockData<T>> extends 
             }
         }
         sendUpdatePacket();
+        if (structure == null) {
+            //If we have no structure just mark the comparator as dirty for each block,
+            // this will only perform neighbor updates if the block supports comparators
+            markDirtyComparator();
+        }
     }
 
     @Override

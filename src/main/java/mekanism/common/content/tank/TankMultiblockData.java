@@ -3,10 +3,8 @@ package mekanism.common.content.tank;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
@@ -19,9 +17,9 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.HybridInventorySlot;
-import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 
 public class TankMultiblockData extends MultiblockData<TankMultiblockData> implements IMekanismFluidHandler, IMekanismGasHandler {
@@ -30,7 +28,6 @@ public class TankMultiblockData extends MultiblockData<TankMultiblockData> imple
     public MultiblockGasTank<TileEntityDynamicTank> gasTank;
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
-    public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
     @Nonnull
     private List<IInventorySlot> inventorySlots;
@@ -72,6 +69,11 @@ public class TankMultiblockData extends MultiblockData<TankMultiblockData> imple
     public void setVolume(int volume) {
         super.setVolume(volume);
         tankCapacity = getVolume() * TankUpdateProtocol.FLUID_PER_TANK;
+    }
+
+    @Override
+    protected int getMultiblockRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 
     @Nonnull

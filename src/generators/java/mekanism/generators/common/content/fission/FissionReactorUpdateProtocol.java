@@ -19,6 +19,7 @@ import mekanism.generators.common.tile.fission.TileEntityControlRodAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -31,16 +32,24 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
     }
 
     @Override
-    protected boolean isValidFrame(int x, int y, int z) {
-        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), GeneratorsBlockTypes.FISSION_REACTOR_CASING);
+    protected CasingType getCasingType(BlockPos pos) {
+        Block block = pointer.getWorld().getBlockState(pos).getBlock();
+        if (BlockTypeTile.is(block, GeneratorsBlockTypes.FISSION_REACTOR_CASING)) {
+            return CasingType.FRAME;
+        } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.FISSION_REACTOR_PORT)) {
+            return CasingType.VALVE;
+        } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.FISSION_REACTOR_LOGIC_ADAPTER)) {
+            return CasingType.OTHER;
+        }
+        return CasingType.INVALID;
     }
 
     @Override
-    protected boolean isValidInnerNode(int x, int y, int z) {
-        if (super.isValidInnerNode(x, y, z)) {
+    protected boolean isValidInnerNode(BlockPos pos) {
+        if (super.isValidInnerNode(pos)) {
             return true;
         }
-        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), new BlockPos(x, y, z));
+        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
         return tile instanceof TileEntityFissionFuelAssembly || tile instanceof TileEntityControlRodAssembly;
     }
 

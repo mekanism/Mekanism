@@ -223,8 +223,14 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
 
     @Override
     public void onCreated() {
+        super.onCreated();
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
+    }
+
+    @Override
+    protected int getMultiblockRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getCapacity());
     }
 
     @Nonnull

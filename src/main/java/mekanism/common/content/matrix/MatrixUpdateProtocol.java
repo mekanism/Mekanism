@@ -11,6 +11,7 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
@@ -21,16 +22,22 @@ public class MatrixUpdateProtocol extends UpdateProtocol<MatrixMultiblockData> {
     }
 
     @Override
-    protected boolean isValidFrame(int x, int y, int z) {
-        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.INDUCTION_CASING);
+    protected CasingType getCasingType(BlockPos pos) {
+        Block block = pointer.getWorld().getBlockState(pos).getBlock();
+        if (BlockTypeTile.is(block, MekanismBlockTypes.INDUCTION_CASING)) {
+            return CasingType.FRAME;
+        } else if (BlockTypeTile.is(block, MekanismBlockTypes.INDUCTION_PORT)) {
+            return CasingType.VALVE;
+        }
+        return CasingType.INVALID;
     }
 
     @Override
-    public boolean isValidInnerNode(int x, int y, int z) {
-        if (super.isValidInnerNode(x, y, z)) {
+    public boolean isValidInnerNode(BlockPos pos) {
+        if (super.isValidInnerNode(pos)) {
             return true;
         }
-        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), new BlockPos(x, y, z));
+        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
         return tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider;
     }
 
