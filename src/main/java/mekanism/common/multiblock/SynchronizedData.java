@@ -11,19 +11,17 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 
 public abstract class SynchronizedData<T extends SynchronizedData<T>> implements IMekanismInventory {
 
     public Set<Coord4D> locations = new ObjectOpenHashSet<>();
+    public Set<ValveData> valves = new ObjectOpenHashSet<>();
+    public Set<Coord4D> internalLocations = new ObjectOpenHashSet<>();
 
-    public int volLength;
-
-    public int volWidth;
-
-    public int volHeight;
-
+    public int volLength, volWidth, volHeight;
     private int volume;
 
     public UUID inventoryID;
@@ -35,12 +33,9 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> implements
     @Nullable//may be null if structure has not been fully sent
     public Coord4D renderLocation;
 
-    public Coord4D minLocation;
-    public Coord4D maxLocation;
+    public Coord4D minLocation, maxLocation;
 
     public boolean destroyed;
-
-    public Set<Coord4D> internalLocations = new ObjectOpenHashSet<>();
 
     @Nonnull
     @Override

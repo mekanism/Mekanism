@@ -21,6 +21,7 @@ import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -36,16 +37,24 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     }
 
     @Override
-    protected boolean isValidFrame(int x, int y, int z) {
-        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), GeneratorsBlockTypes.TURBINE_CASING);
+    protected CasingType getCasingType(BlockPos pos) {
+        Block block = pointer.getWorld().getBlockState(pos).getBlock();
+        if (BlockTypeTile.is(block, GeneratorsBlockTypes.TURBINE_CASING)) {
+            return CasingType.FRAME;
+        } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.TURBINE_VALVE)) {
+            return CasingType.VALVE;
+        } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.TURBINE_VENT)) {
+            return CasingType.OTHER;
+        }
+        return CasingType.INVALID;
     }
 
     @Override
-    protected boolean isValidInnerNode(int x, int y, int z) {
-        if (super.isValidInnerNode(x, y, z)) {
+    protected boolean isValidInnerNode(BlockPos pos) {
+        if (super.isValidInnerNode(pos)) {
             return true;
         }
-        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), new BlockPos(x, y, z));
+        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
         return tile instanceof TileEntityTurbineRotor || tile instanceof TileEntityRotationalComplex || tile instanceof TileEntityPressureDisperser ||
                tile instanceof TileEntityElectromagneticCoil || tile instanceof TileEntitySaturatingCondenser;
     }

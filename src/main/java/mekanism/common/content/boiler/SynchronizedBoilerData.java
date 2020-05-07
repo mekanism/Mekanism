@@ -2,13 +2,11 @@ package mekanism.common.content.boiler;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
@@ -23,7 +21,6 @@ import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -59,7 +56,6 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public Coord4D upperRenderLocation;
 
-    public Set<ValveData> valves = new ObjectOpenHashSet<>();
     private final List<IExtendedFluidTank> fluidTanks;
     private final List<IGasTank> gasTanks;
     private final List<IHeatCapacitor> heatCapacitors;

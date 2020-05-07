@@ -2,19 +2,16 @@ package mekanism.common.content.tank;
 
 import java.util.List;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.tile.TileEntityDynamicValve;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
@@ -27,8 +24,14 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     }
 
     @Override
-    protected boolean isValidFrame(int x, int y, int z) {
-        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.DYNAMIC_TANK);
+    protected CasingType getCasingType(BlockPos pos) {
+        Block block = pointer.getWorld().getBlockState(pos).getBlock();
+        if (BlockTypeTile.is(block, MekanismBlockTypes.DYNAMIC_TANK)) {
+            return CasingType.FRAME;
+        } else if (BlockTypeTile.is(block, MekanismBlockTypes.DYNAMIC_VALVE)) {
+            return CasingType.VALVE;
+        }
+        return CasingType.INVALID;
     }
 
     @Override
@@ -64,18 +67,6 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
         super.onFormed();
         if (!structureFound.fluidTank.isEmpty()) {
             structureFound.fluidTank.setStackSize(Math.min(structureFound.fluidTank.getFluidAmount(), structureFound.getTankCapacity()), Action.EXECUTE);
-        }
-    }
-
-    @Override
-    protected void onStructureCreated(SynchronizedTankData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
-        for (Coord4D obj : structure.locations) {
-            if (MekanismUtils.getTileEntity(TileEntityDynamicValve.class, pointer.getWorld(), obj.getPos()) != null) {
-                ValveData data = new ValveData();
-                data.location = obj;
-                data.side = getSide(obj, origX + xmin, origX + xmax, origY + ymin, origY + ymax, origZ + zmin, origZ + zmax);
-                structure.valves.add(data);
-            }
         }
     }
 }

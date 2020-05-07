@@ -7,17 +7,16 @@ import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityBoilerCasing;
-import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -32,16 +31,22 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     }
 
     @Override
-    protected boolean isValidFrame(int x, int y, int z) {
-        return BlockTypeTile.is(pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock(), MekanismBlockTypes.BOILER_CASING);
+    protected CasingType getCasingType(BlockPos pos) {
+        Block block = pointer.getWorld().getBlockState(pos).getBlock();
+        if (BlockTypeTile.is(block, MekanismBlockTypes.BOILER_CASING)) {
+            return CasingType.FRAME;
+        } else if (BlockTypeTile.is(block, MekanismBlockTypes.BOILER_VALVE)) {
+            return CasingType.VALVE;
+        }
+        return CasingType.INVALID;
     }
 
     @Override
-    protected boolean isValidInnerNode(int x, int y, int z) {
-        if (super.isValidInnerNode(x, y, z)) {
+    protected boolean isValidInnerNode(BlockPos pos) {
+        if (super.isValidInnerNode(pos)) {
             return true;
         }
-        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), new BlockPos(x, y, z));
+        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
         return tile instanceof TileEntityPressureDisperser || tile instanceof TileEntitySuperheatingElement;
     }
 
@@ -181,18 +186,6 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         }
         if (!structureFound.steamTank.isEmpty()) {
             structureFound.steamTank.setStackSize(Math.min(structureFound.steamTank.getStored(), structureFound.getSteamTankCapacity()), Action.EXECUTE);
-        }
-    }
-
-    @Override
-    protected void onStructureCreated(SynchronizedBoilerData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
-        for (Coord4D obj : structure.locations) {
-            if (MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos()) instanceof TileEntityBoilerValve) {
-                ValveData data = new ValveData();
-                data.location = obj;
-                data.side = getSide(obj, origX + xmin, origX + xmax, origY + ymin, origY + ymax, origZ + zmin, origZ + zmax);
-                structure.valves.add(data);
-            }
         }
     }
 }
