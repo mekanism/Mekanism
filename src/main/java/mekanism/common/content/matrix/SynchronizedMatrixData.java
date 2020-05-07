@@ -6,16 +6,17 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 
 public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixData> implements IMekanismStrictEnergyHandler {
@@ -56,6 +57,11 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return inventorySlots;
+    }
+
+    @Override
+    protected int getMultiblockRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(getEnergy(), getStorageCap());
     }
 
     public void setInventoryData(@Nonnull List<IInventorySlot> toCopy) {

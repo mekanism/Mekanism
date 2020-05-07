@@ -27,15 +27,14 @@ public class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultiblock<?>> ext
         this.multiblock = multiblock;
     }
 
-    protected void updateValveData() {
-    }
-
     @Override
     public void onContentsChanged() {
         super.onContentsChanged();
         if (multiblock.hasWorld() && !multiblock.isRemote()) {
-            updateValveData();
             multiblock.markDirty(false);
+            if (multiblock.structure != null) {
+                multiblock.structure.markDirtyComparator(multiblock.getWorld());
+            }
         }
     }
 }

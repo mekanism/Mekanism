@@ -65,7 +65,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public BasicHeatCapacitor heatCapacitor;
 
-    private Set<Coord4D> tankParts = new ObjectOpenHashSet<>();
+    private Set<BlockPos> tankParts = new ObjectOpenHashSet<>();
+    private Set<BlockPos> valves = new ObjectOpenHashSet<>();
     private IEvaporationSolar[] solars = new IEvaporationSolar[4];
 
     private boolean temperatureSet;
@@ -202,6 +203,24 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 }
             } else {
                 clearStructure();
+            }
+        }
+    }
+
+    @Override
+    public void markDirtyComparator() {
+        if (!getBlockState().isAir(world, pos)) {
+            int newRedstoneLevel = MekanismUtils.redstoneLevelFromContents(inputTank.getFluidAmount(), inputTank.getCapacity());
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                //Update the comparator value if it changed
+                currentRedstoneLevel = newRedstoneLevel;
+                //And inform all the valves that the level they should be supplying changed
+                for (BlockPos valvePos : valves) {
+                    TileEntityThermalEvaporationValve valve = MekanismUtils.getTileEntity(TileEntityThermalEvaporationValve.class, world, valvePos);
+                    if (valve != null) {
+                        valve.markDirtyComparator();
+                    }
+                }
             }
         }
     }
@@ -412,7 +431,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (tile instanceof TileEntityThermalEvaporationBlock && (tile == this || !(tile instanceof TileEntityThermalEvaporationController))) {
             if (tile != this) {
                 ((TileEntityThermalEvaporationBlock) tile).addToStructure(Coord4D.get(this));
-                tankParts.add(Coord4D.get(tile));
+                BlockPos pos = tile.getPos();
+                tankParts.add(pos);
+                if (tile instanceof TileEntityThermalEvaporationValve) {
+                    valves.add(pos);
+                }
             }
             return true;
         } else if (tile != this && tile instanceof TileEntityThermalEvaporationController) {
@@ -458,13 +481,14 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     private void clearStructure() {
-        for (Coord4D tankPart : tankParts) {
-            TileEntityThermalEvaporationBlock tile = MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, tankPart.getPos());
+        for (BlockPos tankPart : tankParts) {
+            TileEntityThermalEvaporationBlock tile = MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, tankPart);
             if (tile != null) {
                 tile.controllerGone();
             }
         }
         tankParts.clear();
+        valves.clear();
         solars = new IEvaporationSolar[]{null, null, null, null};
     }
 

@@ -1,12 +1,12 @@
 package mekanism.common.content.tank;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.IInventorySlot;
@@ -19,6 +19,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 
 public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData> implements IMekanismFluidHandler {
@@ -80,6 +81,11 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     public void setVolume(int volume) {
         super.setVolume(volume);
         tankCapacity = getVolume() * TankUpdateProtocol.FLUID_PER_TANK;
+    }
+
+    @Override
+    protected int getMultiblockRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 
     @Nonnull
