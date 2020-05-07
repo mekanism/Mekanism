@@ -84,7 +84,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                                 //If it is not a valid node or if it is supposed to be a frame but is invalid
                                 // then we are not valid over all
                                 isValid = false;
-                                break;
+                                break outer;
                             } else {
                                 locations.add(coord.translate(x, y, z));
                                 if (type.isValve()) {
@@ -95,6 +95,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                                 }
                             }
                         } else if (!isValidInnerNode(pos)) {
+                            isValid = false;
                             break outer;
                         } else if (!pointer.getWorld().isAirBlock(pos)) {
                             innerNodes.add(new Coord4D(pos, pointer.getWorld().getDimension().getType()));
