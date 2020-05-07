@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
@@ -35,17 +36,17 @@ public class CommonProxy {
         return false;
     }
 
-    /**
-     * Does the multiblock creation animation, starting from the rendering block.
-     */
-    public void doMultiblockSparkle(TileEntity tile, BlockPos corner1, BlockPos corner2) {
-    }
+    public void renderBolt(Object renderer, Vec3d from, Vec3d to, int segments) {}
 
     /**
      * Does the multiblock creation animation, starting from the rendering block.
      */
-    public void doMultiblockSparkle(TileEntity tile, BlockPos renderLoc, int length, int width, int height) {
-    }
+    public void doMultiblockSparkle(TileEntity tile, BlockPos corner1, BlockPos corner2) {}
+
+    /**
+     * Does the multiblock creation animation, starting from the rendering block.
+     */
+    public void doMultiblockSparkle(TileEntity tile, BlockPos renderLoc, int length, int width, int height) {}
 
     public double getReach(PlayerEntity player) {
         if (player instanceof ServerPlayerEntity) {

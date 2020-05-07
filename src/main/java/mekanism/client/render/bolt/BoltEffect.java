@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.Random;
 import org.apache.commons.lang3.tuple.Pair;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mekanism.client.render.bolt.BoltRenderer.BoltData;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.util.math.Vec3d;
@@ -81,33 +82,33 @@ public class BoltEffect {
         return this;
     }
 
-    public List<BoltQuads> generate(Vec3d start, Vec3d end, int count, int segments) {
+    public List<BoltQuads> generate(BoltData boltData) {
         List<BoltQuads> quads = new ArrayList<>();
-        Vec3d diff = end.subtract(start);
+        Vec3d diff = boltData.getEnd().subtract(boltData.getStart());
         float totalDistance = (float) diff.length();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < boltData.getCount(); i++) {
             Queue<BoltInstructions> drawQueue = new LinkedList<>();
-            drawQueue.add(new BoltInstructions(start, 0, new Vec3d(0, 0, 0), null, false));
+            drawQueue.add(new BoltInstructions(boltData.getStart(), 0, new Vec3d(0, 0, 0), null, false));
             while (!drawQueue.isEmpty()) {
                 BoltInstructions data = drawQueue.poll();
                 Vec3d perpendicularDist = data.perpendicularDist;
-                float progress = data.progress + (1F / segments) * (1 - parallelNoise + random.nextFloat() * parallelNoise * 2);
+                float progress = data.progress + (1F / boltData.getSegments()) * (1 - parallelNoise + random.nextFloat() * parallelNoise * 2);
                 Vec3d segmentEnd = null;
                 if (progress >= 1) {
-                    segmentEnd = end;
+                    segmentEnd = boltData.getEnd();
                 } else {
                     float segmentDiffScale = spreadFunction.getMaxSpread(progress);
                     float maxDiff = spreadFactor * segmentDiffScale * totalDistance * randomFunction.getRandom(random);
                     Vec3d randVec = findRandomOrthogonalVector(diff, random);
                     perpendicularDist = segmentSpreader.getSegmentAdd(perpendicularDist, randVec, maxDiff, segmentDiffScale, progress);
                     // new vector is original + current progress through segments + perpendicular change
-                    segmentEnd = start.add(diff.scale(progress)).add(perpendicularDist);
+                    segmentEnd = boltData.getStart().add(diff.scale(progress)).add(perpendicularDist);
                 }
                 float boltSize = size * (0.5F + (1 - progress) * 0.5F);
                 Pair<BoltQuads, QuadCache> quadData = createQuads(data.cache, data.start, segmentEnd, Color.rgba(red, green, blue, alpha), boltSize);
                 quads.add(quadData.getLeft());
 
-                if (segmentEnd == end)
+                if (segmentEnd == boltData.getEnd())
                     // break if we've reached the defined end point
                     break;
                 if (!data.isBranch) {

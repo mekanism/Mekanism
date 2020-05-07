@@ -14,6 +14,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -35,6 +36,11 @@ public class ClientProxy extends CommonProxy {
                 player.sendStatusMessage(MekanismLang.MULTIBLOCK_FORMED_CHAT.translateColored(EnumColor.INDIGO), true);
             }
         }
+    }
+
+    @Override
+    public void renderBolt(Object renderer, Vec3d from, Vec3d to, int segments) {
+        RenderTickHandler.renderBolt(renderer, from, to, segments);
     }
 
     @Override

@@ -19,6 +19,9 @@ import mekanism.client.MekanismClient;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.bolt.BoltEffect;
+import mekanism.client.render.bolt.BoltRenderer;
+import mekanism.client.render.bolt.BoltRenderer.BoltData;
 import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
@@ -52,6 +55,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
@@ -91,8 +95,23 @@ public class RenderTickHandler {
     public Minecraft minecraft = Minecraft.getInstance();
     public static double prevRadiation = 0;
 
+    private static BoltRenderer electricityRenderer = BoltRenderer.create(BoltEffect.ELECTRICITY);
+
     public static void resetCachedOverlays() {
         cachedOverlays.clear();
+    }
+
+    public static void renderBolt(Object renderer, Vec3d start, Vec3d end, int segments) {
+        electricityRenderer.update(renderer, new BoltData(start, end, segments, 1), MekanismRenderer.getPartialTick());
+    }
+
+    private void renderBolts() {
+        MatrixStack matrix = new MatrixStack();
+        matrix.push();
+        IRenderTypeBuffer.Impl renderer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+        electricityRenderer.render(minecraft.getRenderPartialTicks(), new MatrixStack(), renderer);
+        renderer.finish(RenderType.getLightning());
+        matrix.pop();
     }
 
     @SubscribeEvent
@@ -275,6 +294,8 @@ public class RenderTickHandler {
                         }
                     });
                 }
+
+                renderBolts();
             }
         }
     }

@@ -1,6 +1,7 @@
 package mekanism.client.gui.machine;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -19,7 +20,9 @@ import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.bolt.BoltEffect;
 import mekanism.client.render.bolt.BoltRenderer;
+import mekanism.client.render.bolt.BoltRenderer.BoltData;
 import mekanism.client.render.bolt.BoltRenderer.FadeFunction;
+import mekanism.client.render.bolt.BoltRenderer.SpawnFunction;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.Color;
@@ -36,7 +39,8 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntityAntiprotonicNucleosynthesizer, MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> {
 
     private static final Vec3d from = new Vec3d(47, 50, 0), to = new Vec3d(147, 50, 0);
-    private BoltRenderer bolt = BoltRenderer.create(BoltEffect.basic().withSize(1F).withColor(0.45F, 0.45F, 0.5F, 1), 2, 1, FadeFunction.NONE);
+    private BoltRenderer bolt = BoltRenderer.create(BoltEffect.basic().withSize(1F).withColor(0.45F, 0.45F, 0.5F, 1), 1, SpawnFunction.delay(1), FadeFunction.NONE).repeat();
+    private Supplier<BoltData> boltSupplier = () -> new BoltData(from, to, (int) Math.min(Math.ceil(tile.getProcessRate() / 8F), 20), 12);
 
     public GuiAntiprotonicNucleosynthesizer(MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -82,7 +86,8 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntity
         MatrixStack matrix = new MatrixStack();
         matrix.push();
         IRenderTypeBuffer.Impl renderer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-        bolt.render(tile, from, to, (int) Math.min(Math.ceil(tile.getProcessRate() / 8F), 20), 12, MekanismRenderer.getPartialTick(), matrix, renderer, MekanismRenderer.FULL_LIGHT);
+        bolt.update(this, boltSupplier.get(), MekanismRenderer.getPartialTick());
+        bolt.render(MekanismRenderer.getPartialTick(), matrix, renderer);
         renderer.finish(RenderType.getLightning());
         matrix.pop();
     }
