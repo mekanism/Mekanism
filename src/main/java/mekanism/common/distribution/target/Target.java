@@ -46,7 +46,6 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
         for (Direction side : needed.keySet()) {
             acceptAmount(handlers.get(side), splitInfo, splitInfo.getRemainderAmount());
-            splitInfo.updateRemainder();
         }
     }
 
