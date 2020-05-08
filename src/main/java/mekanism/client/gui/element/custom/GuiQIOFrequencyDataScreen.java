@@ -17,6 +17,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
     public GuiQIOFrequencyDataScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<QIOFrequency> frequencySupplier) {
         super(gui, x, y, width, height);
         this.frequencySupplier = frequencySupplier;
+        this.active = true;
 
         addChild(new GuiDigitalBar(gui, new IBarInfoHandler() {
             @Override

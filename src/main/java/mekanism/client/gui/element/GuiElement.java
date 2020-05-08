@@ -75,7 +75,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        children.forEach(child -> child.renderToolTip(mouseX, mouseY));
+        children.stream().filter(child -> child.isMouseOver(mouseX + guiObj.getLeft(), mouseY + guiObj.getTop()))
+              .forEach(child -> child.renderToolTip(mouseX, mouseY));
     }
 
     public void displayTooltip(ITextComponent component, int xAxis, int yAxis) {

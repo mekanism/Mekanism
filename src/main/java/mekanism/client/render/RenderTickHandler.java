@@ -22,6 +22,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.bolt.BoltEffect;
 import mekanism.client.render.bolt.BoltRenderer;
 import mekanism.client.render.bolt.BoltRenderer.BoltData;
+import mekanism.client.render.bolt.BoltRenderer.SpawnFunction;
 import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
@@ -55,7 +56,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
@@ -76,6 +76,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
@@ -95,21 +96,25 @@ public class RenderTickHandler {
     public Minecraft minecraft = Minecraft.getInstance();
     public static double prevRadiation = 0;
 
-    private static BoltRenderer electricityRenderer = BoltRenderer.create(BoltEffect.ELECTRICITY);
+    private static BoltRenderer electricityRenderer = BoltRenderer.create(BoltEffect.electricity(0.04F), 8, SpawnFunction.noise(8, 4));
 
     public static void resetCachedOverlays() {
         cachedOverlays.clear();
     }
 
     public static void renderBolt(Object renderer, Vec3d start, Vec3d end, int segments) {
-        electricityRenderer.update(renderer, new BoltData(start, end, segments, 1), MekanismRenderer.getPartialTick());
+        electricityRenderer.update(renderer, new BoltData(start, end, 1, segments), MekanismRenderer.getPartialTick());
     }
 
-    private void renderBolts() {
-        MatrixStack matrix = new MatrixStack();
+    @SubscribeEvent
+    public void renderWorld(RenderWorldLastEvent event) {
+        MatrixStack matrix = event.getMatrixStack();
         matrix.push();
-        IRenderTypeBuffer.Impl renderer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-        electricityRenderer.render(minecraft.getRenderPartialTicks(), new MatrixStack(), renderer);
+        // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
+        Vec3d camVec = minecraft.gameRenderer.getActiveRenderInfo().getProjectedView();
+        matrix.translate(-camVec.x, -camVec.y, -camVec.z);
+        IRenderTypeBuffer.Impl renderer = minecraft.getRenderTypeBuffers().getBufferSource();
+        electricityRenderer.render(minecraft.getRenderPartialTicks(), matrix, renderer);
         renderer.finish(RenderType.getLightning());
         matrix.pop();
     }
@@ -294,8 +299,6 @@ public class RenderTickHandler {
                         }
                     });
                 }
-
-                renderBolts();
             }
         }
     }

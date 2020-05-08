@@ -1,6 +1,7 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -15,6 +16,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -362,14 +364,14 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void tickClient(PlayerEntity player) {
             super.tickClient(player);
-            suckItems(player);
+            suckItems(player, true);
         }
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
-            suckItems(player);
+            suckItems(player, false);
         }
-        private void suckItems(PlayerEntity player) {
+        private void suckItems(PlayerEntity player, boolean client) {
             if (range.get() == Range.OFF) {
                 return;
             }
@@ -380,12 +382,15 @@ public abstract class ModuleMekaSuit extends Module {
                 if (!getContainerEnergy().greaterOrEqual(usage)) {
                     break;
                 }
-                if (item.getDistance(player) > 1.5) {
+                if (item.getDistance(player) > 0.1) {
                     useEnergy(player, usage);
                     Vec3d diff = player.getPositionVec().subtract(item.getPositionVec());
                     Vec3d motionNeeded = new Vec3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
                     Vec3d motionDiff = motionNeeded.subtract(player.getMotion());
                     item.setMotion(motionDiff.scale(0.2));
+                    if (client) {
+                        Mekanism.proxy.renderBolt(Objects.hash(player, item), player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int)(diff.length() * 4));
+                    }
                 }
             }
         }

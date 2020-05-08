@@ -15,8 +15,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class BoltEffect {
 
-    public static final BoltEffect ELECTRICITY = new BoltEffect().withColor(0.54F, 0.91F, 1F, 0.8F).withNoise(0.2F, 0.3F)
-          .withBranching(0.1F, 0.6F).withSpreader(SegmentSpreader.memory(0.85F));
+    public static final BoltEffect ELECTRICITY = electricity(0.1F);
 
     private Random random = new Random();
 
@@ -41,6 +40,11 @@ public class BoltEffect {
 
     public static BoltEffect basic() {
         return new BoltEffect();
+    }
+
+    public static BoltEffect electricity(float size) {
+        return new BoltEffect().withColor(0.54F, 0.91F, 1F, 0.8F).withNoise(0.2F, 0.3F).withBranching(0.1F, 0.6F)
+              .withSpreader(SegmentSpreader.memory(0.85F)).withSize(size);
     }
 
     protected BoltEffect() {
