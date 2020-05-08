@@ -25,6 +25,12 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
     }
 
     @Override
+    public void setEnergyPerTick(FloatingLong energyPerTick) {
+        super.setEnergyPerTick(energyPerTick);
+        this.minerEnergyPerTick = energyPerTick;
+    }
+
+    @Override
     public FloatingLong getEnergyPerTick() {
         return minerEnergyPerTick;
     }
