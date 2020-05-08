@@ -49,11 +49,11 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             // Add food exhaustion randomly
             double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
             if (severityScale > chance) {
-                player.getFoodStats().addExhaustion(8F);
+                player.getFoodStats().addExhaustion(1F);
             }
             // Hurt player randomly
             chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
-            if (severityScale > chance && rand.nextInt() % 3 == 0) {
+            if (severityScale > chance && rand.nextInt() % 2 == 0) {
                 player.attackEntityFrom(MekanismDamageSource.RADIATION, 1);
             }
         }
