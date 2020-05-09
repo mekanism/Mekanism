@@ -18,10 +18,11 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
         return new MinerEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), tile);
     }
 
-    private FloatingLong minerEnergyPerTick = FloatingLong.ZERO;
+    private FloatingLong minerEnergyPerTick;
 
     private MinerEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, TileEntityDigitalMiner tile) {
         super(maxEnergy, energyPerTick, notExternal, alwaysTrue, tile);
+        this.minerEnergyPerTick = getBaseEnergyPerTick();
     }
 
     @Override
