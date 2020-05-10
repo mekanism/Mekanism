@@ -471,7 +471,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             if (persists(SubstanceType.HEAT)) {
                 // update heat after server tick as we now have simulate changes
                 // we use persists, as only one reference should update
-                update(null);
+                updateHeatCapacitors(null);
             }
             lastEnergyReceived = FloatingLong.ZERO;
         }
