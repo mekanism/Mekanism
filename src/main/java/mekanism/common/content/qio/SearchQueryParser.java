@@ -2,6 +2,7 @@ package mekanism.common.content.qio;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,23 +10,21 @@ import java.util.function.BiPredicate;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.TagCache;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Advanced pattern searching, in use by QIO Item Viewers. Only use on client-side.
+ * @author aidancbrady
+ *
+ */
 public class SearchQueryParser {
 
     private static final ISearchQuery INVALID = (stack) -> false;
     private static final Set<Character> TERMINATORS = Sets.newHashSet('|', '(', '\"', '\'');
 
-    private String query;
-
-    private SearchQueryParser(String query) {
-        this.query = query;
-    }
-
-    private ISearchQuery parse() {
+    public static ISearchQuery parse(String query) {
         List<SearchQuery> ret = new ArrayList<>();
         SearchQuery curQuery = new SearchQuery();
 
@@ -33,7 +32,9 @@ public class SearchQueryParser {
             char c = query.charAt(i);
             // query split
             if (c == '|') {
-                ret.add(curQuery);
+                if (!curQuery.isEmpty()) {
+                    ret.add(curQuery);
+                }
                 curQuery = new SearchQuery();
                 continue;
             } else if (c == ' ') {
@@ -61,21 +62,23 @@ public class SearchQueryParser {
         return new SearchQueryList(ret);
     }
 
-    public static ISearchQuery parse(String query) {
-        return new SearchQueryParser(query).parse();
-    }
-
     private static Pair<Boolean, Integer> readKeyList(String query, int start, QueryType type, SearchQuery curQuery) {
+        // make sure the query doesn't begin out of string bounds
+        // if it does, it's just incomplete- we'll treat it as valid and just skip this key list
+        if (start >= query.length()) {
+            return Pair.of(true, start);
+        }
         int newIndex = -1;
         List<String> keys;
-        if (query.charAt(start) == '(') {
+        char qc = query.charAt(start);
+        if (qc == '(') {
             Pair<List<String>, Integer> listResult = readList(query, start);
             if (listResult == null) {
                 return Pair.of(false, -1);
             }
             keys = listResult.getLeft();
             newIndex = listResult.getRight();
-        } else if (query.charAt(start) == '\"' || query.charAt(start) == '\'') {
+        } else if (qc == '\"' || qc == '\'') {
             Pair<String, Integer> quoteResult = readQuote(query, start);
             if (quoteResult == null) {
                 return Pair.of(false, -1);
@@ -87,7 +90,9 @@ public class SearchQueryParser {
             keys = Arrays.asList(textResult.getLeft());
             newIndex = textResult.getRight();
         }
-        curQuery.queryStrings.put(type, keys);
+        if (!keys.isEmpty()) {
+            curQuery.queryStrings.put(type, keys);
+        }
         return Pair.of(true, newIndex);
     }
 
@@ -97,19 +102,20 @@ public class SearchQueryParser {
         StringBuilder sb = new StringBuilder();
 
         for (int i = start + 1; i < query.length(); i++) {
-            if (query.charAt(i) == ')') {
+            char qc = query.charAt(i);
+            if (qc == ')') {
                 String key = sb.toString().trim();
                 if (!key.isEmpty()) {
                     ret.add(key);
                 }
                 return Pair.of(ret, i);
-            } else if (query.charAt(i) == '|') {
+            } else if (qc == '|') {
                 String key = sb.toString().trim();
                 if (!key.isEmpty()) {
                     ret.add(key);
                 }
                 sb = new StringBuilder();
-            } else if (query.charAt(i) == '\"' || query.charAt(i) == '\'') {
+            } else if (qc == '\"' || qc == '\'') {
                 Pair<String, Integer> quoteResult = readQuote(query, i);
                 if (quoteResult == null) {
                     return null;
@@ -117,7 +123,7 @@ public class SearchQueryParser {
                 ret.add(quoteResult.getLeft());
                 i = quoteResult.getRight();
             } else {
-                sb.append(query.charAt(i));
+                sb.append(qc);
             }
         }
 
@@ -129,10 +135,11 @@ public class SearchQueryParser {
         char quoteChar = text.charAt(start);
         StringBuilder ret = new StringBuilder();
         for (int i = start + 1; i < text.length(); i++) {
-            if (text.charAt(i) == quoteChar) {
+            char tc = text.charAt(i);
+            if (tc == quoteChar) {
                 return Pair.of(ret.toString(), i);
             }
-            ret.append(text.charAt(i));
+            ret.append(tc);
         }
         return null;
     }
@@ -141,11 +148,12 @@ public class SearchQueryParser {
         StringBuilder sb = new StringBuilder();
         int i = start;
         for (; i < text.length(); i++) {
-            if (TERMINATORS.contains(text.charAt(i)) ||QueryType.get(text.charAt(i)) != null || (spaceTerminate && text.charAt(i) == ' ')) {
+            char tc = text.charAt(i);
+            if (TERMINATORS.contains(tc) ||QueryType.get(tc) != null || (spaceTerminate && tc == ' ')) {
                 i--; // back up so we don't include terminating char
                 break;
             }
-            sb.append(text.charAt(i));
+            sb.append(tc);
         }
         return Pair.of(sb.toString().trim(), i);
     }
@@ -169,6 +177,10 @@ public class SearchQueryParser {
             return charLookupMap.get(prefix);
         }
 
+        public static Set<Character> getPrefixChars() {
+            return charLookupMap.keySet();
+        }
+
         private char prefix;
         private BiPredicate<String, ItemStack> checker;
 
@@ -182,9 +194,9 @@ public class SearchQueryParser {
         }
     }
 
-    public class SearchQuery implements ISearchQuery {
+    public static class SearchQuery implements ISearchQuery {
 
-        private Map<QueryType, List<String>> queryStrings = new Object2ObjectOpenHashMap<>();
+        private Map<QueryType, List<String>> queryStrings = new LinkedHashMap<>();
 
         @Override
         public boolean matches(ItemStack stack) {
@@ -205,7 +217,7 @@ public class SearchQueryParser {
         }
     }
 
-    public class SearchQueryList implements ISearchQuery {
+    public static class SearchQueryList implements ISearchQuery {
 
         private List<SearchQuery> queries = new ArrayList<>();
 
@@ -215,7 +227,13 @@ public class SearchQueryParser {
 
         @Override
         public boolean matches(ItemStack stack) {
-            return queries.stream().anyMatch(query -> query.matches(stack));
+            // allow empty query lists to match all stacks
+            return queries.isEmpty() ? true : queries.stream().anyMatch(query -> query.matches(stack));
+        }
+
+        @Override
+        public String toString() {
+            return queries.toString();
         }
 
         protected List<SearchQuery> getQueries() {

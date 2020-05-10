@@ -17,6 +17,7 @@ import mekanism.client.gui.element.scroll.GuiSlotScroll;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.content.qio.SearchQueryParser.QueryType;
 import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
@@ -31,7 +32,11 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> {
 
     private TextFieldWidget searchField;
-    private Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '@', '\"', '\'', '|', '(', ')', '$', '#');
+    private Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '\"', '\'', '|', '(', ')', ':');
+    {
+        // include all search prefix chars
+        ALLOWED_SPECIAL_CHARS.addAll(QueryType.getPrefixChars());
+    }
 
     protected GuiQIOItemViewer(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
