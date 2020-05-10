@@ -11,6 +11,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.content.qio.SearchQueryParser;
+import mekanism.common.content.qio.SearchQueryParser.ISearchQuery;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
@@ -279,22 +281,23 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return stack;
     }
 
-    public void updateSearch(String query) {
-        List<IScrollableSlot> list = searchCache.get(query);
+    public void updateSearch(String queryText) {
+        List<IScrollableSlot> list = searchCache.get(queryText);
         if (list != null) {
             searchList = list;
-            searchQuery = query;
+            searchQuery = queryText;
             return;
         }
         list = new ArrayList<>();
+        ISearchQuery query = SearchQueryParser.parse(queryText);
         for (IScrollableSlot slot : itemList) {
-            if (slot.getDisplayName().toLowerCase().contains(query.toLowerCase())) {
+            if (query.matches(slot.getItem().getStack())) {
                 list.add(slot);
             }
         }
         searchList = list;
-        searchQuery = query;
-        searchCache.put(query, searchList);
+        searchQuery = queryText;
+        searchCache.put(queryText, searchList);
     }
 
     @Override

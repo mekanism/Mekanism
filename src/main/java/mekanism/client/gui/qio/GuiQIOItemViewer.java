@@ -31,7 +31,7 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> {
 
     private TextFieldWidget searchField;
-    private Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '@');
+    private Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '@', '\"', '\'', '|', '(', ')', '$', '#');
 
     protected GuiQIOItemViewer(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
