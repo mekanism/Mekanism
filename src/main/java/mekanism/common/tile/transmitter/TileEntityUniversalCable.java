@@ -162,11 +162,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
               TransmissionType.checkTransmissionType(transmitter, TransmissionType.ENERGY)).isPresent()) {
             return false;
         }
-        return EnergyCompatUtils.hasStrictEnergyHandlerAndListen(tile, side.getOpposite(), pos -> {
-            if (!isRemoved() && world != null && world.isBlockPresent(pos)) {
-                refreshConnections(side);
-            }
-        });
+        return EnergyCompatUtils.hasStrictEnergyHandlerAndListen(tile, side.getOpposite(), getRefreshListener(side));
     }
 
     @Override

@@ -39,6 +39,8 @@ public class FloatingLongSplitInfo extends SplitInfo<FloatingLong> {
 
     @Override
     public FloatingLong getRemainderAmount() {
+        //TODO: Decide if we want to try and adjust for the very small amount that may get lost/be a remainder
+        // currently we just ignore it
         return amountPerTarget;
     }
 

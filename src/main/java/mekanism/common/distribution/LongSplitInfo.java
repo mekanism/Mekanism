@@ -5,13 +5,11 @@ public class LongSplitInfo extends SplitInfo<Long> {
     private long amountToSplit;
     private long amountPerTarget;
     private long sentSoFar;
-    private long remainder;
 
     public LongSplitInfo(long amountToSplit, int totalTargets) {
         super(totalTargets);
         this.amountToSplit = amountToSplit;
         amountPerTarget = toSplitAmong == 0 ? 0 : amountToSplit / toSplitAmong;
-        remainder = toSplitAmong == 0 ? 0 : amountToSplit % toSplitAmong;
     }
 
     @Override
@@ -38,12 +36,10 @@ public class LongSplitInfo extends SplitInfo<Long> {
 
     @Override
     public Long getRemainderAmount() {
-        return amountPerTarget + (remainder > 0 ? 1 : 0);
-    }
-
-    @Override
-    public void updateRemainder() {
-        remainder = Math.max(0, remainder - 1);
+        //Add to the remainder amount the entire remainder so that we try to use it up if we can
+        // The remainder then if it cannot be fully accepted slowly shrinks across each target we are distributing to
+        //TODO: Evaluate making a more even distribution of the remainder
+        return toSplitAmong == 0 ? amountPerTarget : amountPerTarget + (amountToSplit % toSplitAmong);
     }
 
     @Override

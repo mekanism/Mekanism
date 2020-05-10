@@ -323,7 +323,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public void setSilkTouch(boolean newSilkTouch) {
         boolean changed = silkTouch != newSilkTouch;
         silkTouch = newSilkTouch;
-        if (changed) {
+        if (changed && (hasWorld() && !isRemote())) {
             energyContainer.updateMinerEnergyPerTick();
         }
     }
@@ -359,12 +359,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private void setRadius(int newRadius) {
         boolean changed = radius != newRadius;
         radius = newRadius;
-        if (changed) {
+        if (changed && (hasWorld() && !isRemote())) {
             energyContainer.updateMinerEnergyPerTick();
-            if (hasWorld() && !isRemote()) {
-                // If the radius changed and we're on the server, go ahead and refresh the chunk set
-                getChunkLoader().refreshChunkTickets();
-            }
+            // If the radius changed and we're on the server, go ahead and refresh the chunk set
+            getChunkLoader().refreshChunkTickets();
         }
     }
 
@@ -379,7 +377,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private void setMinY(int newMinY) {
         boolean changed = minY != newMinY;
         minY = newMinY;
-        if (changed) {
+        if (changed && (hasWorld() && !isRemote())) {
             energyContainer.updateMinerEnergyPerTick();
         }
     }
@@ -397,7 +395,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private void setMaxY(int newMaxY) {
         boolean changed = maxY != newMaxY;
         maxY = newMaxY;
-        if (changed) {
+        if (changed && (hasWorld() && !isRemote())) {
             energyContainer.updateMinerEnergyPerTick();
         }
     }

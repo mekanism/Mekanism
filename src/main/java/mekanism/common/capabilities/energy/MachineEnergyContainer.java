@@ -98,7 +98,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
         if (tile.supportsUpgrades()) {
             Set<Upgrade> supportedUpgrades = tile.getSupportedUpgrade();
             if (supportedUpgrades.contains(Upgrade.ENERGY) || supportedUpgrades.contains(Upgrade.SPEED)) {
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(tile, baseEnergyPerTick));
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(tile, getBaseEnergyPerTick()));
             }
         }
     }

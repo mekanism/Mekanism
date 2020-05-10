@@ -16,7 +16,4 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
     public abstract TYPE getRemainderAmount();
 
     public abstract TYPE getTotalSent();
-
-    public void updateRemainder() {
-    }
 }
