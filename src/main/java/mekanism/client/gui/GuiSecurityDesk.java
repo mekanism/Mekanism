@@ -207,7 +207,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         } else {
             drawString(MekanismLang.SECURITY_OFFLINE.translateColored(EnumColor.RED), 13, 103, titleTextColor());
         }
-        drawScaledText(MekanismLang.SECURITY_ADD.translate(), 13, 70, titleTextColor(), 20);
+        drawTextScaledBound(MekanismLang.SECURITY_ADD.translate(), 13, 70, titleTextColor(), 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

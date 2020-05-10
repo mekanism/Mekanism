@@ -12,8 +12,10 @@ import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
+import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -98,14 +100,14 @@ public class GuiModuleScreen extends GuiTexturedElement {
         super.renderForeground(mouseX, mouseY);
 
         if (currentModule != null) {
-            int startY = relativeY + 4;
+            int startY = relativeY + 5;
             if (currentModule.getData().isExclusive()) {
                 ITextComponent comp = MekanismLang.MODULE_EXCLUSIVE.translate();
-                drawString(comp, relativeX + 4, startY, 0x635BD4);
+                drawTextWithScale(comp, relativeX + 5, startY, 0x635BD4, 0.8F);
                 startY += 13;
             }
             if (currentModule.getData().getMaxStackSize() > 1) {
-                drawString(MekanismLang.MODULE_INSTALLED.translate(currentModule.getInstalledCount()), relativeX + 4, startY, TEXT_COLOR);
+                drawTextWithScale(MekanismLang.MODULE_INSTALLED.translate(currentModule.getInstalledCount()), relativeX + 5, startY, TEXT_COLOR, 0.8F);
                 startY += 13;
             }
         }
@@ -156,18 +158,20 @@ public class GuiModuleScreen extends GuiTexturedElement {
         }
         @Override
         public void renderForeground(int mouseX, int mouseY) {
-            drawString(data.getDescription().translate(), getRelativeX() + 2, getRelativeY(), TEXT_COLOR);
-            drawString(MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, TEXT_COLOR);
-            drawString(MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, TEXT_COLOR);
+            drawTextWithScale(data.getDescription().translate(), getRelativeX() + 3, getRelativeY(), TEXT_COLOR, 0.8F);
+            drawTextWithScale(MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, TEXT_COLOR, 0.8F);
+            drawTextWithScale(MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, TEXT_COLOR, 0.8F);
         }
         @Override
         public void click(double mouseX, double mouseY) {
             if (!data.get() && mouseX >= getX() + 4 && mouseX < getX() + 12 && mouseY >= getY() + 11 && mouseY < getY() + 19) {
                 data.set(true, callback);
+                minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
             }
 
             if (data.get() && mouseX >= getX() + 50 && mouseX < getX() + 58 && mouseY >= getY() + 11 && mouseY < getY() + 19) {
                 data.set(false, callback);
+                minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
             }
         }
     }
@@ -175,6 +179,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
     class EnumToggle extends MiniElement {
         final int BAR_LENGTH = getWidth() - 24;
         final int BAR_START = 10;
+        final float TEXT_SCALE = 0.7F;
         ModuleConfigItem<Enum<? extends IHasTextComponent>> data;
         boolean dragging = false;
 
@@ -186,26 +191,26 @@ public class GuiModuleScreen extends GuiTexturedElement {
         public void renderBackground(int mouseX, int mouseY) {
             minecraft.textureManager.bindTexture(SLIDER);
             int count = ((EnumData<?>) data.getData()).getSelectableCount();
-            int center = (BAR_LENGTH / (count-1)) * data.get().ordinal();
+            int center = (BAR_LENGTH / (count - 1)) * data.get().ordinal();
             blit(getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
             blit(getX() + BAR_START, getY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
         }
         @Override
         public void renderForeground(int mouseX, int mouseY) {
             EnumData<?> enumData = (EnumData<?>) data.getData();
-            drawString(data.getDescription().translate(), getRelativeX() + 2, getRelativeY(), TEXT_COLOR);
+            drawTextWithScale(data.getDescription().translate(), getRelativeX() + 3, getRelativeY(), TEXT_COLOR, 0.8F);
             Enum<? extends IHasTextComponent>[] arr = enumData.getEnums();
             int count = enumData.getSelectableCount();
             for (int i = 0; i < count; i++) {
-                int diffFromCenter = ((BAR_LENGTH / (count-1)) * i) - (BAR_LENGTH / 2);
-                float diffScale = 1 - (1 - enumData.getTextScale())/2F;
-                int textCenter = getRelativeX() + BAR_START + (BAR_LENGTH / 2) + (int)(diffFromCenter * diffScale);
-                drawScaledCenteredText(((IHasTextComponent) arr[i]).getTextComponent(), textCenter, getRelativeY() + 20, TEXT_COLOR, enumData.getTextScale());
+                int diffFromCenter = ((BAR_LENGTH / (count - 1)) * i) - (BAR_LENGTH / 2);
+                float diffScale = 1 - (1 - TEXT_SCALE) / 2F;
+                int textCenter = getRelativeX() + BAR_START + (BAR_LENGTH / 2) + (int) (diffFromCenter * diffScale);
+                drawScaledCenteredText(((IHasTextComponent) arr[i]).getTextComponent(), textCenter, getRelativeY() + 20, TEXT_COLOR, TEXT_SCALE);
             }
 
             if (dragging) {
-                int cur = (int)Math.round(((double)(mouseX - getX() - BAR_START) / (double)BAR_LENGTH) * (count-1));
-                cur = Math.min(count-1, Math.max(0, cur));
+                int cur = (int) Math.round(((double) (mouseX - getX() - BAR_START) / (double) BAR_LENGTH) * (count-1));
+                cur = Math.min(count - 1, Math.max(0, cur));
                 if (cur != data.get().ordinal()) {
                     data.set(arr[cur], callback);
                 }
@@ -215,7 +220,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
         public void click(double mouseX, double mouseY) {
             int count = ((EnumData<?>) data.getData()).getSelectableCount();
             if (!dragging) {
-                int center = (BAR_LENGTH / (count-1)) * data.get().ordinal();
+                int center = (BAR_LENGTH / (count - 1)) * data.get().ordinal();
                 if (mouseX >= getX() + BAR_START + center - 2 && mouseX < getX() + BAR_START + center + 3 && mouseY >= getY() + 11 && mouseY < getY() + 17) {
                     dragging = true;
                 }
@@ -223,8 +228,8 @@ public class GuiModuleScreen extends GuiTexturedElement {
             if (!dragging) {
                 Enum<? extends IHasTextComponent>[] arr = ((EnumData<?>) data.getData()).getEnums();
                 if (mouseX >= getX() + BAR_START && mouseX < getX() + BAR_START + BAR_LENGTH && mouseY >= getY() + 10 && mouseY < getY() + 22) {
-                    int cur = (int)Math.round(((mouseX - getX() - BAR_START) / BAR_LENGTH) * (count-1));
-                    cur = Math.min(count-1, Math.max(0, cur));
+                    int cur = (int)Math.round(((mouseX - getX() - BAR_START) / BAR_LENGTH) * (count - 1));
+                    cur = Math.min(count - 1, Math.max(0, cur));
                     if (cur != data.get().ordinal()) {
                         data.set(arr[cur], callback);
                     }

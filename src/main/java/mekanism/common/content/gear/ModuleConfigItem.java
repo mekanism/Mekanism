@@ -113,7 +113,6 @@ public class ModuleConfigItem<TYPE> {
         private Class<TYPE> enumClass;
         private TYPE value;
         private int selectableCount;
-        private float textScale = 1.0F;
 
         public EnumData(Class<TYPE> enumClass) {
             this(enumClass, enumClass.getEnumConstants().length);
@@ -122,11 +121,6 @@ public class ModuleConfigItem<TYPE> {
         public EnumData(Class<TYPE> enumClass, int selectableCount) {
             this.enumClass = enumClass;
             this.selectableCount = selectableCount;
-        }
-
-        public EnumData<TYPE> withScale(float textScale) {
-            this.textScale = textScale;
-            return this;
         }
 
         @Override
@@ -156,10 +150,6 @@ public class ModuleConfigItem<TYPE> {
 
         public int getSelectableCount() {
             return selectableCount;
-        }
-
-        public float getTextScale() {
-            return textScale;
         }
     }
 }

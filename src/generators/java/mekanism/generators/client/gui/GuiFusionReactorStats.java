@@ -40,27 +40,27 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
         renderTitleText(5);
         if (tile.isFormed()) {
             drawString(GeneratorsLang.REACTOR_PASSIVE.translateColored(EnumColor.DARK_GREEN), 6, 26, titleTextColor());
-            drawScaledText(GeneratorsLang.REACTOR_MIN_INJECTION.translate(tile.getReactor().getMinInjectionRate(false)), 16, 36, titleTextColor(), 156);
-            drawScaledText(GeneratorsLang.REACTOR_IGNITION.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getIgnitionTemperature(false),
+            drawTextScaledBound(GeneratorsLang.REACTOR_MIN_INJECTION.translate(tile.getReactor().getMinInjectionRate(false)), 16, 36, titleTextColor(), 156);
+            drawTextScaledBound(GeneratorsLang.REACTOR_IGNITION.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getIgnitionTemperature(false),
                   TemperatureUnit.KELVIN, true)), 16, 46, titleTextColor(), 156);
-            drawScaledText(GeneratorsLang.REACTOR_MAX_PLASMA.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getMaxPlasmaTemperature(false),
+            drawTextScaledBound(GeneratorsLang.REACTOR_MAX_PLASMA.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getMaxPlasmaTemperature(false),
                   TemperatureUnit.KELVIN, true)), 16, 56, titleTextColor(), 156);
-            drawScaledText(GeneratorsLang.REACTOR_MAX_CASING.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getMaxCasingTemperature(false),
+            drawTextScaledBound(GeneratorsLang.REACTOR_MAX_CASING.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getMaxCasingTemperature(false),
                   TemperatureUnit.KELVIN, true)), 16, 66, titleTextColor(), 156);
-            drawScaledText(GeneratorsLang.REACTOR_PASSIVE_RATE.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, false))),
+            drawTextScaledBound(GeneratorsLang.REACTOR_PASSIVE_RATE.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, false))),
                   16, 76, titleTextColor(), 156);
 
             drawString(GeneratorsLang.REACTOR_ACTIVE.translateColored(EnumColor.DARK_BLUE), 6, 92, titleTextColor());
-            drawScaledText(GeneratorsLang.REACTOR_MIN_INJECTION.translate(tile.getReactor().getMinInjectionRate(true)), 16, 102, titleTextColor(), 156);
-            drawScaledText(GeneratorsLang.REACTOR_IGNITION.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getIgnitionTemperature(true),
+            drawTextScaledBound(GeneratorsLang.REACTOR_MIN_INJECTION.translate(tile.getReactor().getMinInjectionRate(true)), 16, 102, titleTextColor(), 156);
+            drawTextScaledBound(GeneratorsLang.REACTOR_IGNITION.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getIgnitionTemperature(true),
                   TemperatureUnit.KELVIN, true)), 16, 112, titleTextColor(), 156);
-            drawScaledText(GeneratorsLang.REACTOR_MAX_PLASMA.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getMaxPlasmaTemperature(true),
+            drawTextScaledBound(GeneratorsLang.REACTOR_MAX_PLASMA.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getMaxPlasmaTemperature(true),
                   TemperatureUnit.KELVIN, true)), 16, 122, titleTextColor(), 156);
-            drawScaledText(GeneratorsLang.REACTOR_MAX_CASING.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getMaxCasingTemperature(true),
+            drawTextScaledBound(GeneratorsLang.REACTOR_MAX_CASING.translate(MekanismUtils.getTemperatureDisplay(tile.getReactor().getMaxCasingTemperature(true),
                   TemperatureUnit.KELVIN, true)), 16, 132, titleTextColor(), 156);
-            drawScaledText(GeneratorsLang.REACTOR_PASSIVE_RATE.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(true, false))),
+            drawTextScaledBound(GeneratorsLang.REACTOR_PASSIVE_RATE.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(true, false))),
                   16, 142, titleTextColor(), 156);
-            drawScaledText(GeneratorsLang.REACTOR_STEAM_PRODUCTION.translate(nf.format(tile.getReactor().getSteamPerTick(false))), 16, 152, titleTextColor(), 156);
+            drawTextScaledBound(GeneratorsLang.REACTOR_STEAM_PRODUCTION.translate(nf.format(tile.getReactor().getSteamPerTick(false))), 16, 152, titleTextColor(), 156);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

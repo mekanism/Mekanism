@@ -79,7 +79,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         int currentLayer = scrollBar.getCurrentSelection();
         //Render the layer text scaled, so that it does not start overlapping past 100
-        drawScaledText(APILang.GENERIC.translate(currentLayer), 111, 87, screenTextColor(), 13);
+        drawTextScaledBound(APILang.GENERIC.translate(currentLayer), 111, 87, screenTextColor(), 13);
 
         //TODO - V10: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
         //Render the item stacks
@@ -111,10 +111,10 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         if (currentLayer >= 0) {
             Block block = blockList.get(currentLayer).getBlock();
             ITextComponent displayName = block.getNameTextComponent();
-            drawScaledText(displayName, 10, 16, screenTextColor(), 57);
+            drawTextScaledBound(displayName, 10, 16, screenTextColor(), 57);
             frequency = frequencies.computeIntIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
         }
-        drawScaledText(MekanismLang.ABUNDANCY.translate(frequency), 10, 26, screenTextColor(), 57);
+        drawTextScaledBound(MekanismLang.ABUNDANCY.translate(frequency), 10, 26, screenTextColor(), 57);
         MekanismRenderer.resetColor();
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

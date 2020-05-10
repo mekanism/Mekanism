@@ -213,7 +213,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             drawTextScaledBound(frequency.getName(), 32 + frequencyOffset, 84, 0x797979, xSize - 32 - frequencyOffset - 4);
             drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 94, 0x797979);
         }
-        drawScaledText(MekanismLang.SET.translate(), 27, 107, titleTextColor(), 20);
+        drawTextScaledBound(MekanismLang.SET.translate(), 27, 107, titleTextColor(), 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

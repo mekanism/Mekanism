@@ -224,7 +224,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             drawTextScaledBound(frequency.getName(), 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
             drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
-        drawScaledText(MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
+        drawTextScaledBound(MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

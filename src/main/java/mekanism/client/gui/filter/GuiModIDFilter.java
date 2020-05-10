@@ -44,7 +44,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.MODID_FILTER), 43, 6, titleTextColor());
         drawString(MekanismLang.STATUS.translate(status), 35, 20, screenTextColor());
-        drawScaledText(MekanismLang.MODID_FILTER_ID.translate(filter.getModID()), 35, 32, screenTextColor(), 107);
+        drawTextScaledBound(MekanismLang.MODID_FILTER_ID.translate(filter.getModID()), 35, 32, screenTextColor(), 107);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

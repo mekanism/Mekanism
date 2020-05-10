@@ -206,7 +206,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
-        drawScaledText(MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
+        drawTextScaledBound(MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

@@ -170,11 +170,13 @@ public abstract class MekanismContainer extends Container {
         ItemStack stackToInsert = slotStack;
         if (currentSlot instanceof InventoryContainerSlot) {
             //Insert into stacks that already contain an item in the order hot bar -> main inventory
+            stackToInsert = insertItem(armorSlots, stackToInsert, true);
             stackToInsert = insertItem(hotBarSlots, stackToInsert, true);
             stackToInsert = insertItem(mainInventorySlots, stackToInsert, true);
             //If we still have any left then input into the empty stacks in the order of main inventory -> hot bar
             // Note: Even though we are doing the main inventory, we still need to do both, ignoring empty then not instead of
             // just directly inserting into the main inventory, in case there are empty slots before the one we can stack with
+            stackToInsert = insertItem(armorSlots, stackToInsert, false);
             stackToInsert = insertItem(hotBarSlots, stackToInsert, false);
             stackToInsert = insertItem(mainInventorySlots, stackToInsert, false);
         } else {

@@ -100,9 +100,8 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-
         drawTitleText(MekanismLang.MODULE_TWEAKER.translate(), 6);
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     private void select(int index) {

@@ -49,8 +49,8 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText(6);
-        drawScaledText(GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING.translate(EnumColor.RED, OnOff.of(tile.activeCooled)), 29, 20, titleTextColor(), 117);
-        drawScaledText(GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(EnumColor.RED, tile.logicType), 16, 123, titleTextColor(), 144);
+        drawTextScaledBound(GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING.translate(EnumColor.RED, OnOff.of(tile.activeCooled)), 29, 20, titleTextColor(), 117);
+        drawTextScaledBound(GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(EnumColor.RED, tile.logicType), 16, 123, titleTextColor(), 144);
         drawCenteredText(MekanismLang.STATUS.translate(EnumColor.RED, tile.checkMode() ? GeneratorsLang.REACTOR_LOGIC_OUTPUTTING : MekanismLang.IDLE),
               0, getXSize(), 136, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

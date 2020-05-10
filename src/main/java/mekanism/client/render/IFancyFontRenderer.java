@@ -92,7 +92,7 @@ public interface IFancyFontRenderer {
         MekanismRenderer.resetColor();
     }
 
-    default void drawScaledText(ITextComponent component, float x, float y, int color, float maxX) {
+    default void drawTextScaledBound(ITextComponent component, float x, float y, int color, float maxX) {
         drawTextScaledBound(component.getFormattedText(), x, y, color, maxX);
     }
 
@@ -100,6 +100,10 @@ public interface IFancyFontRenderer {
         float width = getStringWidth(text) * textScale;
         float scale = Math.min(1, maxX / width) * textScale;
         drawTextWithScale(text.getFormattedText(), x, y, color, scale);
+    }
+
+    default void drawTextWithScale(ITextComponent component, float x, float y, int color, float scale) {
+        drawTextWithScale(component.getFormattedText(), x, y, color, scale);
     }
 
     default void drawTextWithScale(String text, float x, float y, int color, float scale) {

@@ -209,7 +209,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void init() {
             super.init();
-            addConfigItem(sprintBoost = new ModuleConfigItem<>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class, getInstalledCount()+1).withScale(0.65F), SprintBoost.LOW));
+            addConfigItem(sprintBoost = new ModuleConfigItem<>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class, getInstalledCount()+1), SprintBoost.LOW));
         }
 
         @Override
@@ -277,7 +277,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void init() {
             super.init();
-            addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class, getInstalledCount()+1).withScale(0.8F), JumpBoost.LOW));
+            addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class, getInstalledCount()+1), JumpBoost.LOW));
         }
 
         public float getBoost() {

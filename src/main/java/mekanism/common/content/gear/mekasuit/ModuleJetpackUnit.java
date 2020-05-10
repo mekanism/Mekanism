@@ -21,7 +21,7 @@ public class ModuleJetpackUnit extends ModuleMekaSuit {
     @Override
     public void init() {
         super.init();
-        addConfigItem(jetpackMode = new ModuleConfigItem<JetpackMode>(this, "jetpack_mode", MekanismLang.MODULE_JETPACK_MODE, new EnumData<>(JetpackMode.class).withScale(0.6F), JetpackMode.NORMAL));
+        addConfigItem(jetpackMode = new ModuleConfigItem<JetpackMode>(this, "jetpack_mode", MekanismLang.MODULE_JETPACK_MODE, new EnumData<>(JetpackMode.class), JetpackMode.NORMAL));
     }
 
     @Override
