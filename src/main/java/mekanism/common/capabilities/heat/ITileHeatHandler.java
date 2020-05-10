@@ -19,7 +19,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 @MethodsReturnNonnullByDefault
 public interface ITileHeatHandler extends IMekanismHeatHandler {
 
-    default void update(@Nullable Direction side) {
+    default void updateHeatCapacitors(@Nullable Direction side) {
         for (IHeatCapacitor capacitor : getHeatCapacitors(side)) {
             if (capacitor instanceof BasicHeatCapacitor) {
                 ((BasicHeatCapacitor) capacitor).update();
@@ -43,7 +43,7 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
      * Simulate heat transfers
      */
     default HeatTransfer simulate() {
-        return new HeatTransfer(simulateEnvironment(), simulateAdjacent());
+        return new HeatTransfer(simulateAdjacent(), simulateEnvironment());
     }
 
     default double simulateEnvironment() {

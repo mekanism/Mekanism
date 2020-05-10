@@ -53,7 +53,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
         ITextComponent lost = MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN, false);
         return heatTransferred + heatLost == 0 ? MekanismLang.HEAT_NETWORK_FLOW.translate(transferred, lost)
                                                : MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY.translate(transferred, lost,
-                                                   heatTransferred / (heatTransferred + heatLost) * 100);
+                                                   (Math.round(heatTransferred / (heatTransferred + heatLost) * 10_000) / 100F) + "%");
     }
 
     @Override
@@ -85,7 +85,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
                     if (((TransmitterImpl<?, ?, ?>) transmitter).containingTile instanceof ITileHeatHandler) {
                         ITileHeatHandler heatTile = (ITileHeatHandler) ((TransmitterImpl<?, ?, ?>) transmitter).containingTile;
                         HeatTransfer transfer = heatTile.simulate();
-                        heatTile.update(null);
+                        heatTile.updateHeatCapacitors(null);
                         newHeatTransferred += transfer.getAdjacentTransfer();
                         newHeatLost += transfer.getEnvironmentTransfer();
                         newSumTemp += heatTile.getTotalTemperature();

@@ -59,7 +59,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
             // external heat dissipation
             HeatTransfer transfer = structure.simulate();
             // update temperature
-            structure.update(null);
+            structure.updateHeatCapacitors(null);
             structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer();
             // handle coolant heat transfer
             if (!structure.superheatedCoolantTank.isEmpty()) {
