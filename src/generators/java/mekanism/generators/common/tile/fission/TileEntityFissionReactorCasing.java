@@ -77,7 +77,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
                 }
             }
             // update temperature
-            structure.update(null);
+            structure.updateHeatCapacitors(null);
             structure.handleDamage(getWorld());
 
             // update scales

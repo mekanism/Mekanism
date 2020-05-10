@@ -25,7 +25,7 @@ public class TileComponentFrequency implements ITileComponent {
     private Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> publicCache = new LinkedHashMap<>();
     private Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> privateCache = new LinkedHashMap<>();
 
-    private boolean didNotify;
+    private boolean needsNotify;
 
     public TileComponentFrequency(TileEntityMekanism tile) {
         this.tile = tile;
@@ -35,10 +35,15 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void tick() {
         if (!tile.getWorld().isRemote()) {
-            didNotify = false;
-
             for (FrequencyType<?> type : heldFrequencies.keySet()) {
                 updateFrequency(type);
+            }
+
+            if (needsNotify) {
+                tile.invalidateCachedCapabilities();
+                MekanismUtils.notifyLoadedNeighborsOfTileChange(tile.getWorld(), tile.getPos());
+                tile.markDirty(false);
+                needsNotify = false;
             }
         }
     }
@@ -69,14 +74,14 @@ public class TileComponentFrequency implements ITileComponent {
         FREQ freq = manager.getOrCreateFrequency(data, tile.getSecurity().getOwnerUUID());
         freq.update(tile);
         setFrequency(type, freq);
-        notifyNeighbors(type);
+        setNeedsNotify(type);
     }
 
     public void removeFrequencyFromData(FrequencyType<?> type, FrequencyIdentity data) {
         FrequencyManager<?> manager = getManager(type, data);
         if (manager != null) {
             manager.remove(data.getKey(), tile.getSecurity().getOwnerUUID());
-            notifyNeighbors(type);
+            setNeedsNotify(type);
         }
     }
 
@@ -87,31 +92,25 @@ public class TileComponentFrequency implements ITileComponent {
         if (manager != null) {
             if (frequency != null && !frequency.isValid()) {
                 frequency = manager.validateFrequency(tile, frequency);
-                notifyNeighbors(type);
+                setNeedsNotify(type);
             }
             if (frequency != null) {
                 frequency = manager.update(tile, frequency);
                 if (frequency == null) {
-                    notifyNeighbors(type);
+                    setNeedsNotify(type);
                 }
             }
         } else {
             frequency = null;
             if (lastFreq != null)
-                notifyNeighbors(type);
+                setNeedsNotify(type);
         }
         setFrequency(type, frequency);
     }
 
-    private void notifyNeighbors(FrequencyType<?> type) {
-        FrequencyTrackingData data = supportedFrequencies.get(type);
-        if (!didNotify && supportedFrequencies.get(type).notifyNeighbors) {
-            if (data.notifyNeighbors) {
-                MekanismUtils.notifyLoadedNeighborsOfTileChange(tile.getWorld(), tile.getPos());
-                tile.invalidateCachedCapabilities();
-                tile.markDirty(false);
-            }
-            didNotify = true;
+    private void setNeedsNotify(FrequencyType<?> type) {
+        if (supportedFrequencies.get(type).notifyNeighbors) {
+            needsNotify = true;
         }
     }
 
