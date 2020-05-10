@@ -1,9 +1,11 @@
 package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -48,10 +50,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullConsumer;
 import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntitySidedPipe extends CapabilityTileEntity implements IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
 
+    private final Map<Direction, NonNullConsumer<LazyOptional<?>>> cachedListeners = new EnumMap<>(Direction.class);
     public byte currentAcceptorConnections = 0x00;
     public byte currentTransmitterConnections = 0x00;
 
@@ -227,16 +231,26 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
             if (!isRemote()) {
                 //And we are on the server, add a listener so that once it gets invalidated we recheck that side
                 // assuming that the world and position is still loaded and our tile has not been removed
-                BlockPos pos = tile.getPos();
-                lazyOptional.addListener(invalidated -> {
-                    if (!isRemoved() && world != null && world.isBlockPresent(pos)) {
-                        refreshConnections(side);
-                    }
-                });
+                CapabilityUtils.addListener(lazyOptional, getRefreshListener(side));
             }
             return true;
         }
         return false;
+    }
+
+    /**
+     * Gets the listener that will refresh connections on a given side.
+     */
+    protected NonNullConsumer<LazyOptional<?>> getRefreshListener(@Nonnull Direction side) {
+        return cachedListeners.computeIfAbsent(side, this::getUncachedRefreshListener);
+    }
+
+    private NonNullConsumer<LazyOptional<?>> getUncachedRefreshListener(@Nonnull Direction side) {
+        return ignored -> {
+            if (!isRemoved() && world != null && world.isBlockPresent(pos.offset(side))) {
+                refreshConnections(side);
+            }
+        };
     }
 
     @Override
@@ -448,6 +462,8 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
     public void remove() {
         onWorldSeparate();
         super.remove();
+        //Clear our cached listeners
+        cachedListeners.clear();
     }
 
     @Override

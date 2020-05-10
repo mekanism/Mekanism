@@ -2,7 +2,6 @@ package mekanism.common.integration.energy;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,10 +16,10 @@ import mekanism.common.util.CapabilityUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullConsumer;
 
 public class EnergyCompatUtils {
 
@@ -79,7 +78,7 @@ public class EnergyCompatUtils {
      * @apiNote This is a helper specifically for universal cables and is likely to be removed/changed in V10.
      */
     @Deprecated//TODO - V10: Re-evaluate this
-    public static boolean hasStrictEnergyHandlerAndListen(TileEntity tile, Direction side, Consumer<BlockPos> listener) {
+    public static boolean hasStrictEnergyHandlerAndListen(TileEntity tile, Direction side, NonNullConsumer<LazyOptional<?>> listener) {
         if (tile != null && tile.getWorld() != null) {
             if (tile.getWorld().isRemote()) {
                 //If we are on the client we don't end up adding any invalidation listeners
@@ -91,9 +90,8 @@ public class EnergyCompatUtils {
                     //Note: Capability should not be null due to us validating the compat is usable
                     LazyOptional<?> lazyOptional = CapabilityUtils.getCapability(tile, energyCompat.getCapability(), side);
                     if (lazyOptional.isPresent()) {
-                        BlockPos pos = tile.getPos();
                         //If the capability is present add a listener so that once it gets invalidated we recheck that side
-                        lazyOptional.addListener(invalidated -> listener.accept(pos));
+                        CapabilityUtils.addListener(lazyOptional, listener);
                         return true;
                     }
                 }
