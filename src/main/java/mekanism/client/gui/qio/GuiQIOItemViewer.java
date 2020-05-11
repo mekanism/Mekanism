@@ -95,12 +95,6 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-        searchField.render(mouseX, mouseY, partialTicks);
-    }
-
-    @Override
     public void resize(Minecraft minecraft, int sizeX, int sizeY) {
         super.resize(minecraft, sizeX, sizeY);
         container.updateSearch(searchField.getText());

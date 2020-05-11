@@ -8,7 +8,6 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
-import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
@@ -37,12 +36,10 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 48, 23, 80, 28, () -> Arrays.asList(
+        addButton(new GuiInnerScreen(this, 48, 23, 80, 42, () -> Arrays.asList(
             MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
             MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick()))
-        )));
-        addButton(new GuiInnerScreen(this, 48, 50, 68, 13));
-        addButton(new GuiInnerScreen(this, 115, 50, 13, 13));
+        )).clearFormat());
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
@@ -52,12 +49,12 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));
 
-        addButton(energyUsageField = new GuiTextField(this, 49, 51, 78, 11));
+        addButton(energyUsageField = new GuiTextField(this, 50, 51, 76, 12));
         energyUsageField.setText(energyUsageField != null ? energyUsageField.getText() : "");
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setInputValidator(InputValidator.DIGIT);
         energyUsageField.setEnterHandler(this::setEnergyUsage);
-        addButton(new MekanismImageButton(this, getGuiLeft() + 116, getGuiTop() + 51, 11, 12, getButtonLocation("checkmark"), this::setEnergyUsage));
+        energyUsageField.addCheckmarkButton(this::setEnergyUsage);
     }
 
     @Override

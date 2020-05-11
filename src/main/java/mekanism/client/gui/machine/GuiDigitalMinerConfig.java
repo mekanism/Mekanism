@@ -2,7 +2,6 @@ package mekanism.client.gui.machine;
 
 import java.util.List;
 import mekanism.client.gui.GuiFilterHolder;
-import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -39,30 +38,27 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 38, 66, 13, 13));
-        addButton(new GuiInnerScreen(this, 38, 91, 13, 13));
-        addButton(new GuiInnerScreen(this, 38, 116, 13, 13));
         addButton(new TranslationButton(this, getGuiLeft() + 56, getGuiTop() + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 141, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, tile)), getOnHover(MekanismLang.MINER_INVERSE)));
-        addButton(radiusField = new GuiTextField(this, 12, 67, 38, 11));
+        addButton(radiusField = new GuiTextField(this, 12, 67, 39, 11));
         radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
         radiusField.setEnterHandler(this::setRadius);
         radiusField.setInputValidator(InputValidator.DIGIT);
-        addButton(minField = new GuiTextField(this, 12, 92, 38, 11));
+        radiusField.addCheckmarkButton(this::setRadius);
+        addButton(minField = new GuiTextField(this, 12, 92, 39, 11));
         minField.setMaxStringLength(3);
         minField.setEnterHandler(this::setMinY);
         minField.setInputValidator(InputValidator.DIGIT);
-        addButton(maxField = new GuiTextField(this, 12, 117, 38, 11));
+        minField.addCheckmarkButton(this::setMinY);
+        addButton(maxField = new GuiTextField(this, 12, 117, 39, 11));
         maxField.setMaxStringLength(3);
         maxField.setEnterHandler(this::setMaxY);
         maxField.setInputValidator(InputValidator.DIGIT);
-        addButton(new MekanismImageButton(this, getGuiLeft() + 39, getGuiTop() + 67, 11, 12, getButtonLocation("checkmark"), this::setRadius));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 39, getGuiTop() + 92, 11, 12, getButtonLocation("checkmark"), this::setMinY));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 39, getGuiTop() + 117, 11, 12, getButtonLocation("checkmark"), this::setMaxY));
+        maxField.addCheckmarkButton(this::setMaxY);
     }
 
     @Override

@@ -41,7 +41,6 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
     @Override
     protected void addButtons() {
         addButton(new GuiInnerScreen(this, 33, 18, 111, 43));
-        addButton(new GuiInnerScreen(this, 130, 46, 14, 14));
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18));
         addButton(new GuiSlot(SlotType.NORMAL, this, 148, 18).setRenderHover(true));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
@@ -68,7 +67,5 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
               () -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 148, getGuiTop() + 45, 14, 16, getButtonLocation("exclamation"),
               () -> filter.requireStack = !filter.requireStack, getOnHoverReplace(filter)));
-        addButton(checkboxButton = new MekanismImageButton(this, getGuiLeft() + 131, getGuiTop() + 47, 12, getButtonLocation("checkmark"),
-              this::setText));
     }
 }

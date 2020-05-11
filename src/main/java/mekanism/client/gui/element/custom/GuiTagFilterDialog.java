@@ -9,7 +9,6 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.button.MekanismButton;
-import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -24,8 +23,6 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
@@ -68,17 +65,15 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
                 ticker = 20;
             }
         }));
-        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, relativeX + 8, relativeY + 19, this::getRenderStacks).setZOffset(200));
+        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, relativeX + 8, relativeY + 19, this::getRenderStacks));
 
-        addChild(text = new GuiTextField(gui, relativeX + 31, relativeY + 47, width - 31 - 9 - 12, 12));
+        addChild(text = new GuiTextField(gui, relativeX + 31, relativeY + 47, width - 31 - 9, 12));
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
         text.setEnterHandler(this::setText);
         text.setInputValidator(InputValidator.or(InputValidator.LETTER, InputValidator.DIGIT, InputValidator.FILTER_CHARS));
         text.setEnabled(true);
         text.setFocused(true);
-
-        addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + width - 8 - 12, gui.getTop() + relativeY + 47, 12, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"),
-            this::setText));
+        text.addCheckmarkButton(this::setText);
 
         if (filter.getTagName() != null && !filter.getTagName().isEmpty()) {
             slotDisplay.updateStackList();

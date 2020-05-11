@@ -52,16 +52,7 @@ public class GuiOverlayDialog extends GuiTexturedElement {
             int changeX = Math.max(-x, Math.min(minecraft.getMainWindow().getScaledWidth() - (x + width), newDX - prevDX));
             int changeY = Math.max(-y, Math.min(minecraft.getMainWindow().getScaledHeight() - (y + height), newDY - prevDY));
             prevDX = newDX; prevDY = newDY;
-            x += changeX; y += changeY;
-            relativeX += changeX; relativeY += changeY;
-            children.forEach(child -> {
-                child.x += changeX; child.y += changeY;
-                if (child instanceof GuiTexturedElement) {
-                    ((GuiTexturedElement) child).relativeX += changeX;
-                    ((GuiTexturedElement) child).relativeY += changeY;
-                }
-                child.onMove();
-            });
+            move(changeX, changeY);
         }
     }
 

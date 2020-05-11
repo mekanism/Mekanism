@@ -7,7 +7,6 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.GuiTextField.InputValidator;
-import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
@@ -72,12 +71,12 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             }
             return list;
         }).clearFormat());
-        addButton(text = new GuiTextField(this, 29, 70, xSize - 27 - 12, 12));
+        addButton(text = new GuiTextField(this, 29, 70, xSize - 39, 12));
         text.setMaxStringLength(10);
         text.setInputValidator(InputValidator.DIGIT);
         text.changeFocus(true);
         text.setEnterHandler(this::setCount);
-        addButton(new MekanismImageButton(this, getGuiLeft() + xSize - 10 - 12, getGuiTop() + 70, 12, getButtonLocation("checkmark"), this::setCount));
+        text.addCheckmarkButton(this::setCount);
     }
 
     private void setCount() {

@@ -34,5 +34,6 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter<FILTER>, TILE ext
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
         text.setEnterHandler(this::setText);
         text.changeFocus(true);
+        text.addCheckmarkButton(this::setText);
     }
 }

@@ -144,9 +144,13 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         // first render general foregrounds
+        int zOffset = 200;
         for (Widget widget : this.buttons) {
             if (widget instanceof GuiElement) {
-                ((GuiElement) widget).onRenderForeground(mouseX, mouseY);
+                if (widget instanceof GuiOverlayDialog) {
+                    zOffset += 200;
+                }
+                ((GuiElement) widget).onRenderForeground(mouseX, mouseY, zOffset);
             }
         }
         // then render tooltips, so there's no clashing

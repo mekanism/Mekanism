@@ -5,7 +5,6 @@ import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
-import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab.FissionReactorTab;
@@ -40,11 +39,11 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
                 return Math.min(1, tile.getLastBurnRate() / tile.getMaxBurnRate());
             }
         }, 5, 114, xSize - 12));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 114, getGuiTop() + 128, 11, 12, getButtonLocation("checkmark"), this::setRateLimit));
-        addButton(rateLimitField = new GuiTextField(this, 77, 128, 36, 11));
+        addButton(rateLimitField = new GuiTextField(this, 77, 128, 49, 12));
         rateLimitField.setEnterHandler(this::setRateLimit);
         rateLimitField.setInputValidator(InputValidator.DECIMAL);
         rateLimitField.setMaxStringLength(4);
+        rateLimitField.addCheckmarkButton(this::setRateLimit);
     }
 
     private void setRateLimit() {

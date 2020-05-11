@@ -2,7 +2,6 @@ package mekanism.client.gui.filter;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -40,7 +39,6 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
-        addButton(new GuiInnerScreen(this, 129, 47, 14, 14));
         addButton(new GuiSlot(SlotType.NORMAL, this, 44, 18));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 31, getGuiTop() + 62, 54, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {
@@ -73,7 +71,6 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 updateRenderStack();
             }
         }, getOnHover(MekanismLang.NEXT_ITEM)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 130, getGuiTop() + 48, 12, getButtonLocation("checkmark"), this::setText));
     }
 
     @Override
@@ -101,7 +98,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected GuiTextField createTextField() {
-        return new GuiTextField(this, 33, 48, 96, 12);
+        return new GuiTextField(this, 33, 48, 109, 12);
     }
 
     @Override

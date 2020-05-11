@@ -54,7 +54,14 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         super.setFocused(focused);
     }
 
-    public void onMove() {}
+    public void move(int changeX, int changeY) {
+        x += changeX; y += changeY;
+        if (this instanceof GuiTexturedElement) {
+            ((GuiTexturedElement) this).relativeX += changeX;
+            ((GuiTexturedElement) this).relativeY += changeY;
+        }
+        children.forEach(child -> child.move(changeX, changeY));
+    }
 
     public void onWindowClose() {
         children.forEach(child -> child.onWindowClose());
@@ -68,26 +75,26 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         children.forEach(child -> child.syncFrom(element));
     }
 
-    // in the future we should
-    public void onRenderForeground(int mouseX, int mouseY) {
+    public void onRenderForeground(int mouseX, int mouseY, int zOffset) {
         RenderSystem.pushMatrix();
+        RenderSystem.translatef(0, 0, zOffset);
         // fix render offset for background drawing
         RenderSystem.translatef(-guiObj.getLeft(), -guiObj.getTop(), 0);
         // render background overlay and children above everything else
         renderBackgroundOverlay(mouseX, mouseY);
-        RenderSystem.translatef(0, 0, 200);
+        // render children just above background overlay
         children.forEach(child -> child.render(mouseX, mouseY, 0));
-        RenderSystem.translatef(0, 0, -200);
-        RenderSystem.translatef(guiObj.getLeft(), guiObj.getTop(), 0);
         // translate back to top right corner and forward to render foregrounds
-        RenderSystem.translatef(0, 0, 400);
+        RenderSystem.translatef(guiObj.getLeft(), guiObj.getTop(), 0);
         renderForeground(mouseX, mouseY);
-        RenderSystem.translatef(0, 0, 200);
-        children.forEach(child -> child.renderForeground(mouseX, mouseY));
+        // translate forward to render child foreground
+        children.forEach(child -> child.onRenderForeground(mouseX, mouseY, 50));
         RenderSystem.popMatrix();
     }
 
-    public void renderForeground(int mouseX, int mouseY) {}
+    public void renderForeground(int mouseX, int mouseY) {
+        drawButtonText();
+    }
 
     public void renderBackgroundOverlay(int mouseX, int mouseY) {}
 
@@ -195,6 +202,17 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         drawButton(mouseX, mouseY);
     }
 
+    protected void drawButtonText() {
+        String message = getMessage();
+        //Only attempt to draw the message if we have a message to draw
+        if (!message.isEmpty()) {
+            //TODO: Improve the math for this so that it calculates the y value better
+            int halfWidthLeft = width / 2;
+            drawCenteredString(getFont(), message, x - guiObj.getLeft() + halfWidthLeft, y - guiObj.getTop() + (height - 8) / 2,
+                  getFGColor() | MathHelper.ceil(alpha * 255.0F) << 24);
+        }
+    }
+
     //This method exists so that we don't have to rely on having a path to super.renderButton if we want to draw a background button
     protected void drawButton(int mouseX, int mouseY) {
         if (resetColorBeforeRender()) {
@@ -232,17 +250,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         //TODO: Add support for buttons that are larger than 200x20 in either direction (most likely would be in the height direction
         // Can use a lot of the same logic as GuiMekanism does for its background
 
-        this.renderBg(minecraft, mouseX, mouseY);
-
-        String message = getMessage();
-        //Only attempt to draw the message if we have a message to draw
-        if (!message.isEmpty()) {
-            //TODO: Improve the math for this so that it calculates the y value better
-            RenderSystem.translatef(0, 0, 400);
-            drawCenteredString(getFont(), message, x + halfWidthLeft, y + (height - 8) / 2,
-                  getFGColor() | MathHelper.ceil(alpha * 255.0F) << 24);
-            RenderSystem.translatef(0, 0, -400);
-        }
+        renderBg(minecraft, mouseX, mouseY);
         RenderSystem.disableBlend();
     }
 

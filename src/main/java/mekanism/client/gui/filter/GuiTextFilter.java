@@ -2,7 +2,6 @@ package mekanism.client.gui.filter;
 
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiTextField;
-import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -18,8 +17,6 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
       FilterContainer<FILTER, TILE>> extends GuiTextFilterBase<FILTER, TILE, CONTAINER> {
 
-    protected MekanismButton checkboxButton;
-
     protected GuiTextFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
@@ -31,7 +28,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
 
     @Override
     protected GuiTextField createTextField() {
-        return new GuiTextField(this, 35, 47, 95, 12);
+        return new GuiTextField(this, 35, 47, 107, 12);
     }
 
     @Override
