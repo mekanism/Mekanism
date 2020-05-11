@@ -17,8 +17,8 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
     }
 
     @Override
-    protected boolean wasTextboxKey(char c, int i) {
-        return super.wasTextboxKey(c, i) || c == ':' || c == '/';
+    protected boolean wasTextboxKey(char c) {
+        return super.wasTextboxKey(c) || c == ':' || c == '/';
     }
 
     @Override

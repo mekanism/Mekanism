@@ -50,6 +50,14 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     public void onMove() {}
 
+    public boolean hasPersistentData() {
+        return children.stream().anyMatch(child -> child.hasPersistentData());
+    }
+
+    public void syncFrom(GuiElement element) {
+        children.forEach(child -> child.syncFrom(element));
+    }
+
     // in the future we should
     public void onRenderForeground(int mouseX, int mouseY) {
         RenderSystem.pushMatrix();
@@ -89,11 +97,19 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        boolean ret = false;
-        for (GuiElement element : children) {
-            ret |= element.mouseClicked(mouseX, mouseY, button);
-        }
-        return ret || super.mouseClicked(mouseX, mouseY, button);
+        return GuiUtils.checkChildren(children, (child) -> child.mouseClicked(mouseX, mouseY, button)) ||
+              super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        return GuiUtils.checkChildren(children, (child) -> child.keyPressed(keyCode, scanCode, modifiers)) ||
+              super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char c, int keyCode) {
+        return GuiUtils.checkChildren(children, (child) -> child.charTyped(c, keyCode)) || super.charTyped(c, keyCode);
     }
 
     @Override

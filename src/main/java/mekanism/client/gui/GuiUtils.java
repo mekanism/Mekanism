@@ -1,10 +1,14 @@
 package mekanism.client.gui;
 
+import java.util.List;
+import java.util.function.Predicate;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
@@ -188,5 +192,16 @@ public class GuiUtils {
         WorldVertexBufferUploader.draw(vertexBuffer);
         RenderSystem.disableAlphaTest();
         RenderSystem.disableBlend();
+    }
+
+    // reverse-order iteration over children w/ built-in GuiElement check, runs a basic anyMatch with checker
+    public static boolean checkChildren(List<? extends Widget> children, Predicate<GuiElement> checker) {
+        for (int i = children.size() - 1; i >= 0; i--) {
+            Object obj = children.get(i);
+            if (obj instanceof GuiElement && checker.test((GuiElement) obj)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

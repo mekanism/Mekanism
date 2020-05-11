@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
@@ -88,9 +89,25 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public void resize(Minecraft minecraft, int sizeX, int sizeY) {
+        List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
+        for (int i = 0; i < buttons.size(); i++) {
+            Widget widget = buttons.get(i);
+            if (widget instanceof GuiElement && ((GuiElement) widget).hasPersistentData()) {
+                prevElements.add(Pair.of(i, (GuiElement) widget));
+            }
+        }
         init(minecraft, sizeX, sizeY);
+        prevElements.forEach(e -> {
+            if (e.getLeft() < buttons.size()) {
+                Widget widget = buttons.get(e.getLeft());
+                // we're forced to assume that the children list is the same before and after the resize.
+                // for verification, we run a lightweight class equality check
+                if (widget.getClass() == e.getRight().getClass() && widget instanceof GuiElement) {
+                    ((GuiElement) widget).syncFrom(e.getRight());
+                }
+            }
+        });
     }
-
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         int xAxis = mouseX - getGuiLeft();
@@ -133,26 +150,13 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        for (int i = buttons.size() - 1; i >= 0; i--) {
-            if (buttons.get(i) instanceof GuiElement) {
-                if (((GuiElement) buttons.get(i)).keyPressed(keyCode, scanCode, modifiers)) {
-                    return true;
-                }
-            }
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return GuiUtils.checkChildren(buttons, (child) -> child.keyPressed(keyCode, scanCode, modifiers)) ||
+              super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        for (int i = buttons.size() - 1; i >= 0; i--) {
-            if (buttons.get(i) instanceof GuiElement) {
-                if (((GuiElement) buttons.get(i)).charTyped(c, keyCode)) {
-                    return true;
-                }
-            }
-        }
-        return super.charTyped(c, keyCode);
+        return GuiUtils.checkChildren(buttons, (child) -> child.charTyped(c, keyCode)) || super.charTyped(c, keyCode);
     }
 
     /**

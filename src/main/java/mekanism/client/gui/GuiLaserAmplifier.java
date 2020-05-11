@@ -1,9 +1,8 @@
 package mekanism.client.gui;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.lwjgl.glfw.GLFW;
 import mekanism.api.math.FloatingLong;
+import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiAmplifierTab;
@@ -19,16 +18,12 @@ import mekanism.common.network.PacketGuiSetEnergy.GuiEnergyValue;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier, MekanismTileContainer<TileEntityLaserAmplifier>> {
 
-    private TextFieldWidget minField;
-    private TextFieldWidget maxField;
-    private TextFieldWidget timerField;
+    private GuiTextField minField, maxField, timerField;
 
     public GuiLaserAmplifier(MekanismTileContainer<TileEntityLaserAmplifier> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -42,23 +37,18 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiAmplifierTab(this, tile));
-        addButton(timerField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 28, 36, 11, ""));
+        addButton(timerField = new GuiTextField(this, 96, 28, 36, 11));
         timerField.setMaxStringLength(4);
-        addButton(minField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 43, 72, 11, ""));
+        timerField.setEnterHandler(this::setTime);
+        timerField.setInputValidator(InputValidator.DIGIT);
+        addButton(minField = new GuiTextField(this, 96, 43, 72, 11));
         minField.setMaxStringLength(10);
-        addButton(maxField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 58, 72, 11, ""));
+        minField.setEnterHandler(this::setMinThreshold);
+        minField.setInputValidator(InputValidator.SCI_NOTATION);
+        addButton(maxField = new GuiTextField(this, 96, 58, 72, 11));
         maxField.setMaxStringLength(10);
-    }
-
-    @Override
-    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
-        String prevTime = timerField.getText();
-        String prevMin = minField.getText();
-        String prevMax = maxField.getText();
-        super.resize(minecraft, scaledWidth, scaledHeight);
-        timerField.setText(prevTime);
-        minField.setText(prevMin);
-        maxField.setText(prevMax);
+        maxField.setEnterHandler(this::setMaxThreshold);
+        maxField.setInputValidator(InputValidator.SCI_NOTATION);
     }
 
     @Override
@@ -73,62 +63,6 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         drawString(MekanismLang.MIN.translate(EnergyDisplay.of(tile.minThreshold)), 26, 45, titleTextColor());
         drawString(MekanismLang.MAX.translate(EnergyDisplay.of(tile.maxThreshold)), 26, 60, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        minField.tick();
-        maxField.tick();
-        timerField.tick();
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        TextFieldWidget focusedField = getFocusedField();
-        if (focusedField != null) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                //Manually handle hitting escape making the field lose focus
-                focusedField.setFocused2(false);
-                return true;
-            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                if (minField.canWrite()) {
-                    setMinThreshold();
-                } else if (maxField.canWrite()) {
-                    setMaxThreshold();
-                } else if (timerField.canWrite()) {
-                    setTime();
-                }
-                return true;
-            }
-            return focusedField.keyPressed(keyCode, scanCode, modifiers);
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char c, int keyCode) {
-        TextFieldWidget focusedField = getFocusedField();
-        if (focusedField != null) {
-            if (Character.isDigit(c) || ((c == '.' || c == 'E') && focusedField != timerField)) {
-                //Only allow a subset of characters to be entered
-                return focusedField.charTyped(c, keyCode);
-            }
-            return false;
-        }
-        return super.charTyped(c, keyCode);
-    }
-
-    @Nullable
-    private TextFieldWidget getFocusedField() {
-        if (minField.canWrite()) {
-            return minField;
-        } else if (maxField.canWrite()) {
-            return maxField;
-        } else if (timerField.canWrite()) {
-            return timerField;
-        }
-        return null;
     }
 
     private void setMinThreshold() {

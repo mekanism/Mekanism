@@ -1,6 +1,5 @@
 package mekanism.common.frequency;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,7 +26,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public class FrequencyManager<FREQ extends Frequency> {
 
     public static final int MAX_FREQ_LENGTH = 16;
-    public static final List<Character> SPECIAL_CHARS = Arrays.asList('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')', '?', '!', '/', '@', '$', '`', '~', ',', '.', '#');
 
     private static boolean loaded;
 

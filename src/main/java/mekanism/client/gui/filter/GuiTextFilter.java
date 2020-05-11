@@ -1,6 +1,7 @@
 package mekanism.client.gui.filter;
 
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
@@ -11,7 +12,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -25,13 +25,13 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     }
 
     @Override
-    protected boolean wasTextboxKey(char c, int i) {
-        return TransporterFilter.SPECIAL_CHARS.contains(c) || super.wasTextboxKey(c, i);
+    protected boolean wasTextboxKey(char c) {
+        return TransporterFilter.SPECIAL_CHARS.contains(c) || super.wasTextboxKey(c);
     }
 
     @Override
-    protected TextFieldWidget createTextField() {
-        return new TextFieldWidget(font, getGuiLeft() + 35, getGuiTop() + 47, 95, 12, "");
+    protected GuiTextField createTextField() {
+        return new GuiTextField(this, 35, 47, 95, 12);
     }
 
     @Override
@@ -57,7 +57,6 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
-        text.mouseClicked(mouseX, mouseY, button);
         if (button == 0 && tile instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
             minerFilterClickCommon(mouseX - getGuiLeft(), mouseY - getGuiTop(), (MinerFilter<?>) filter);
         }

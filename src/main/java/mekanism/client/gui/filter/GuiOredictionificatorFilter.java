@@ -3,6 +3,7 @@ package mekanism.client.gui.filter;
 import java.util.Collections;
 import java.util.List;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -15,7 +16,6 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -34,8 +34,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     @Override
-    protected boolean wasTextboxKey(char c, int i) {
-        return super.wasTextboxKey(c, i) || c == '_' || c == ':' || c == '/';
+    protected boolean wasTextboxKey(char c) {
+        return super.wasTextboxKey(c) || c == '_' || c == ':' || c == '/';
     }
 
     @Override
@@ -100,8 +100,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     @Override
-    protected TextFieldWidget createTextField() {
-        return new TextFieldWidget(font, getGuiLeft() + 33, getGuiTop() + 48, 96, 12, "");
+    protected GuiTextField createTextField() {
+        return new GuiTextField(this, 33, 48, 96, 12);
     }
 
     @Override

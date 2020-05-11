@@ -3,7 +3,6 @@ package mekanism.client.gui.qio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.lwjgl.glfw.GLFW;
 import com.google.common.collect.Sets;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
@@ -11,6 +10,7 @@ import mekanism.client.gui.element.GuiDigitalIconToggle;
 import mekanism.client.gui.element.GuiDropdown;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.custom.GuiResizeControls;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeType;
 import mekanism.client.gui.element.scroll.GuiSlotScroll;
@@ -24,14 +24,12 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> {
 
-    private TextFieldWidget searchField;
+    private GuiTextField searchField;
     private Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '\"', '\'', '|', '(', ')', ':');
     {
         // include all search prefix chars
@@ -69,7 +67,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             return list;
         }));
         addButton(new GuiElementHolder(this, 48, 15 + 12 + 2, xSize - 48 - 9, 12));
-        addButton(searchField = new TextFieldWidget(font, getGuiLeft() + 50, getGuiTop() + 15 + 12 + 4, xSize - 50 - 10, 9, I18n.format("itemGroup.search")));
+        addButton(searchField = new GuiTextField(this, 50, 15 + 12 + 4, xSize - 50 - 10, 9));
+        searchField.setInputValidator(this::isValidSearchChar);
+        searchField.setResponder(container::updateSearch);
         searchField.setMaxStringLength(50);
         searchField.setEnableBackgroundDrawing(false);
         searchField.setVisible(true);
@@ -101,17 +101,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        searchField.tick();
-    }
-
-    @Override
     public void resize(Minecraft minecraft, int sizeX, int sizeY) {
-        String text = searchField.getText();
         super.resize(minecraft, sizeX, sizeY);
-        searchField.setText(text);
-        container.updateSearch(text);
+        container.updateSearch(searchField.getText());
     }
 
     @Override
@@ -122,34 +114,6 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
 
     private boolean isValidSearchChar(char c) {
         return ALLOWED_SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isAlphabetic(c);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (searchField.canWrite()) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                //Manually handle hitting escape making the field lose focus
-                searchField.setFocused2(false);
-                return true;
-            }
-            boolean ret = searchField.keyPressed(keyCode, scanCode, modifiers);
-            container.updateSearch(searchField.getText());
-            return ret;
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char c, int keyCode) {
-        if (searchField.canWrite()) {
-            if (isValidSearchChar(c)) {
-                boolean ret = searchField.charTyped(c, keyCode);
-                container.updateSearch(searchField.getText());
-                return ret;
-            }
-            return false;
-        }
-        return super.charTyped(c, keyCode);
     }
 
     public abstract FrequencyIdentity getFrequency();

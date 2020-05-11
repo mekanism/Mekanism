@@ -3,11 +3,11 @@ package mekanism.client.gui.element.custom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -72,6 +72,8 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
 
         addChild(text = new GuiTextField(gui, relativeX + 31, relativeY + 47, width - 31 - 9 - 12, 12));
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
+        text.setEnterHandler(this::setText);
+        text.setInputValidator(InputValidator.or(InputValidator.LETTER, InputValidator.DIGIT, InputValidator.FILTER_CHARS));
         text.setEnabled(true);
         text.setFocused2(true);
 
@@ -120,34 +122,6 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
         } else {
             status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
         }
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (text.canWrite()) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                //Manually handle hitting escape making the field lose focus
-                text.setFocused2(false);
-                return true;
-            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                setText();
-                return true;
-            }
-            text.keyPressed(keyCode, scanCode, modifiers);
-            return true;
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char c, int keyCode) {
-        if (text.canWrite()) {
-            if (Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c) || c == ':' || c == '/') {
-                return text.charTyped(c, keyCode);
-            }
-            return false;
-        }
-        return super.charTyped(c, keyCode);
     }
 
     private List<ItemStack> getRenderStacks() {
