@@ -50,7 +50,7 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
             if (origFilter != null) {
                 Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
             }
-            gui.removeElement(this);
+            close();
         }));
         addChild(new TranslationButton(gui, gui.getLeft() + relativeX + width / 2 + 1, gui.getTop() + relativeY + 63, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {
@@ -62,7 +62,7 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
                 } else {
                     Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), false, origFilter, filter));
                 }
-                gui.removeElement(this);
+                close();
             } else {
                 status = MekanismLang.TAG_FILTER_NO_TAG.translateColored(EnumColor.DARK_RED);
                 ticker = 20;
@@ -75,7 +75,7 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
         text.setEnterHandler(this::setText);
         text.setInputValidator(InputValidator.or(InputValidator.LETTER, InputValidator.DIGIT, InputValidator.FILTER_CHARS));
         text.setEnabled(true);
-        text.setFocused2(true);
+        text.setFocused(true);
 
         addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + width - 8 - 12, gui.getTop() + relativeY + 47, 12, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"),
             this::setText));

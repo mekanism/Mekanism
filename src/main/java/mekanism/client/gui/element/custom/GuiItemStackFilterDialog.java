@@ -41,7 +41,7 @@ public class GuiItemStackFilterDialog extends GuiFilterDialog<QIOItemStackFilter
             if (origFilter != null) {
                 Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
             }
-            gui.removeElement(this);
+            close();
         }));
         addChild(new TranslationButton(gui, gui.getLeft() + relativeX + width / 2 + 1, gui.getTop() + relativeY + 63, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!filter.getItemStack().isEmpty()) {
@@ -50,7 +50,7 @@ public class GuiItemStackFilterDialog extends GuiFilterDialog<QIOItemStackFilter
                 } else {
                     Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), false, origFilter, filter));
                 }
-                gui.removeElement(this);
+                close();
             } else {
                 status = MekanismLang.ITEM_FILTER_NO_ITEM.translateColored(EnumColor.DARK_RED);
                 ticker = 20;

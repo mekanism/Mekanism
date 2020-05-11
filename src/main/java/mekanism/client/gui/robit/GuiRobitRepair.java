@@ -1,7 +1,8 @@
 package mekanism.client.gui.robit;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
+import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
@@ -16,7 +17,6 @@ import net.minecraft.network.play.client.CRenameItemPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IContainerListener {
 
@@ -93,7 +93,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
             if (flag) {
                 int width = getXSize() - 8 - getStringWidth(component) - 2;
                 fill(width - 2, 67, getXSize() - 8, 79, 0x4F000000);
-                font.drawStringWithShadow(component.getFormattedText(), (float) width, 69.0F, k);
+                font.drawStringWithShadow(component.getFormattedText(), width, 69.0F, k);
                 MekanismRenderer.resetColor();
             }
         }

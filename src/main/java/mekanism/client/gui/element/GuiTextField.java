@@ -23,6 +23,7 @@ public class GuiTextField extends GuiTexturedElement {
         super(null, gui, x, y, width, height);
 
         textField = new TextFieldWidget(getFont(), this.x, this.y, width, height, "");
+        guiObj.addFocusListener(this);
     }
 
     public GuiTextField setEnterHandler(Runnable enterHandler) {
@@ -33,6 +34,12 @@ public class GuiTextField extends GuiTexturedElement {
     public GuiTextField setInputValidator(InputValidator inputValidator) {
         this.inputValidator = inputValidator;
         return this;
+    }
+
+    @Override
+    public void onWindowClose() {
+        super.onWindowClose();
+        guiObj.removeFocusListener(this);
     }
 
     @Override
@@ -50,7 +57,13 @@ public class GuiTextField extends GuiTexturedElement {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return textField.mouseClicked(mouseX, mouseY, button) || super.mouseClicked(mouseX, mouseY, button);
+        boolean prevFocus = textField.isFocused();
+        boolean ret = textField.mouseClicked(mouseX, mouseY, button);
+        // detect if we're now focused
+        if (!prevFocus && textField.isFocused()) {
+            guiObj.focusChange(this);
+        }
+        return ret || super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -60,12 +73,13 @@ public class GuiTextField extends GuiTexturedElement {
 
     @Override
     public boolean hasPersistentData() {
-        return !textField.getText().isEmpty();
+        return true;
     }
 
     @Override
     public void syncFrom(GuiElement element) {
         textField.setText(((GuiTextField) element).getText());
+        setFocused(element.isFocused());
     }
 
     @Override
@@ -73,10 +87,13 @@ public class GuiTextField extends GuiTexturedElement {
         if (canWrite()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 //Manually handle hitting escape making the field lose focus
-                setFocused2(false);
+                setFocused(false);
                 return true;
             } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
                 enterHandler.run();
+                return true;
+            } else if (keyCode == GLFW.GLFW_KEY_TAB) {
+                guiObj.incrementFocus(this);
                 return true;
             }
             textField.keyPressed(keyCode, scanCode, modifiers);
@@ -120,7 +137,9 @@ public class GuiTextField extends GuiTexturedElement {
         textField.setEnabled(enabled);
     }
 
-    public void setFocused2(boolean focused) {
+    @Override
+    public void setFocused(boolean focused) {
+        super.setFocused(focused);
         textField.setFocused2(focused);
     }
 
@@ -141,7 +160,8 @@ public class GuiTextField extends GuiTexturedElement {
         public static final InputValidator ALL = (c) -> true;
         public static final InputValidator DIGIT = Character::isDigit;
         public static final InputValidator LETTER = Character::isLetter;
-        public static final InputValidator SCI_NOTATION = or(DIGIT, from('E', '.'));
+        public static final InputValidator DECIMAL = or(DIGIT, from('.'));
+        public static final InputValidator SCI_NOTATION = or(DECIMAL, from('E'));
 
         public static final InputValidator FILTER_CHARS = from('*', '-', ' ', '|', '_', '\'');
         public static final InputValidator FREQUENCY_CHARS = from('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')', '?', '!', '/', '@', '$', '`', '~', ',', '.', '#');

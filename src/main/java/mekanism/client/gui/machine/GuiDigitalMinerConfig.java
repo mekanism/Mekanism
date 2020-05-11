@@ -1,11 +1,10 @@
 package mekanism.client.gui.machine;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.lwjgl.glfw.GLFW;
 import mekanism.client.gui.GuiFilterHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.common.Mekanism;
@@ -25,28 +24,16 @@ import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileEntityDigitalMiner, EmptyTileContainer<TileEntityDigitalMiner>> {
 
-    private TextFieldWidget radiusField;
-    private TextFieldWidget minField;
-    private TextFieldWidget maxField;
+    private GuiTextField radiusField, minField, maxField;
 
     public GuiDigitalMinerConfig(EmptyTileContainer<TileEntityDigitalMiner> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        radiusField.tick();
-        minField.tick();
-        maxField.tick();
     }
 
     @Override
@@ -61,26 +48,21 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 141, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, tile)), getOnHover(MekanismLang.MINER_INVERSE)));
-        addButton(radiusField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 67, 38, 11, ""));
+        addButton(radiusField = new GuiTextField(this, 12, 67, 38, 11));
         radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
-        addButton(minField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 92, 38, 11, ""));
+        radiusField.setEnterHandler(this::setRadius);
+        radiusField.setInputValidator(InputValidator.DIGIT);
+        addButton(minField = new GuiTextField(this, 12, 92, 38, 11));
         minField.setMaxStringLength(3);
-        addButton(maxField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 117, 38, 11, ""));
+        minField.setEnterHandler(this::setMinY);
+        minField.setInputValidator(InputValidator.DIGIT);
+        addButton(maxField = new GuiTextField(this, 12, 117, 38, 11));
         maxField.setMaxStringLength(3);
+        maxField.setEnterHandler(this::setMaxY);
+        maxField.setInputValidator(InputValidator.DIGIT);
         addButton(new MekanismImageButton(this, getGuiLeft() + 39, getGuiTop() + 67, 11, 12, getButtonLocation("checkmark"), this::setRadius));
         addButton(new MekanismImageButton(this, getGuiLeft() + 39, getGuiTop() + 92, 11, 12, getButtonLocation("checkmark"), this::setMinY));
         addButton(new MekanismImageButton(this, getGuiLeft() + 39, getGuiTop() + 117, 11, 12, getButtonLocation("checkmark"), this::setMaxY));
-    }
-
-    @Override
-    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
-        String prevRad = radiusField.getText();
-        String prevMin = minField.getText();
-        String prevMax = maxField.getText();
-        super.resize(minecraft, scaledWidth, scaledHeight);
-        radiusField.setText(prevRad);
-        minField.setText(prevMin);
-        maxField.setText(prevMax);
     }
 
     @Override
@@ -106,53 +88,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         } else if (filter instanceof IModIDFilter) {
             Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MOD_ID, tile, index));
         }
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        TextFieldWidget focusedField = getFocusedField();
-        if (focusedField != null) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                //Manually handle hitting escape making the field lose focus
-                focusedField.setFocused2(false);
-                return true;
-            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                if (radiusField.canWrite()) {
-                    setRadius();
-                } else if (minField.canWrite()) {
-                    setMinY();
-                } else if (maxField.canWrite()) {
-                    setMaxY();
-                }
-                return true;
-            }
-            return focusedField.keyPressed(keyCode, scanCode, modifiers);
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char c, int keyCode) {
-        TextFieldWidget focusedField = getFocusedField();
-        if (focusedField != null) {
-            if (Character.isDigit(c)) {
-                return focusedField.charTyped(c, keyCode);
-            }
-            return false;
-        }
-        return super.charTyped(c, keyCode);
-    }
-
-    @Nullable
-    private TextFieldWidget getFocusedField() {
-        if (radiusField.canWrite()) {
-            return radiusField;
-        } else if (minField.canWrite()) {
-            return minField;
-        } else if (maxField.canWrite()) {
-            return maxField;
-        }
-        return null;
     }
 
     private void setRadius() {

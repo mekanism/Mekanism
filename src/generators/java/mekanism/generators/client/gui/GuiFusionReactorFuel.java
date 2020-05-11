@@ -2,8 +2,8 @@ package mekanism.generators.client.gui;
 
 import java.util.Arrays;
 import java.util.Collections;
-import javax.annotation.Nonnull;
-import org.lwjgl.glfw.GLFW;
+import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
@@ -19,14 +19,12 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
 
-    private TextFieldWidget injectionRateField;
+    private GuiTextField injectionRateField;
 
     public GuiFusionReactorFuel(EmptyTileContainer<TileEntityFusionReactorController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -45,16 +43,11 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
         addButton(new GuiProgress(() -> tile.isBurning() ? 1 : 0, ProgressType.SMALL_LEFT, this, 101, 76));
         addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
         addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
-        addButton(injectionRateField = new TextFieldWidget(font, getGuiLeft() + 98, getGuiTop() + 115, 26, 11, ""));
+        addButton(injectionRateField = new GuiTextField(this, 98, 115, 26, 11));
         injectionRateField.changeFocus(true);
+        injectionRateField.setInputValidator(InputValidator.DIGIT);
+        injectionRateField.setEnterHandler(this::setInjection);
         injectionRateField.setMaxStringLength(2);
-    }
-
-    @Override
-    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
-        String s = injectionRateField.getText();
-        super.resize(minecraft, scaledWidth, scaledHeight);
-        injectionRateField.setText(s);
     }
 
     @Override
@@ -64,40 +57,6 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
         drawCenteredText(GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getReactor() == null ? MekanismLang.NONE : tile.getReactor().getInjectionRate()),
               0, getXSize(), 35, titleTextColor());
         drawString(GeneratorsLang.REACTOR_EDIT_RATE.translate(), 50, 117, titleTextColor());
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        injectionRateField.tick();
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (injectionRateField.canWrite()) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                //Manually handle hitting escape making the field lose focus
-                injectionRateField.setFocused2(false);
-                return true;
-            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                setInjection();
-                return true;
-            }
-            return injectionRateField.keyPressed(keyCode, scanCode, modifiers);
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char c, int keyCode) {
-        if (injectionRateField.canWrite()) {
-            if (Character.isDigit(c)) {
-                //Only allow a subset of characters to be entered into the frequency text box
-                return injectionRateField.charTyped(c, keyCode);
-            }
-            return false;
-        }
-        return super.charTyped(c, keyCode);
     }
 
     private void setInjection() {

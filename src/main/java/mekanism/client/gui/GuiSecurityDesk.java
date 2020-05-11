@@ -3,12 +3,11 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSecurityLight;
+import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.GuiTextureOnlyElement;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -29,8 +28,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.OwnerDisplay;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -47,7 +44,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     private MekanismButton checkboxButton;
     private MekanismButton overrideButton;
     private GuiTextScrollList scrollList;
-    private TextFieldWidget trustedField;
+    private GuiTextField trustedField;
 
     public GuiSecurityDesk(MekanismTileContainer<TileEntitySecurityDesk> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -82,9 +79,11 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                 updateButtons();
             }
         }));
-        addButton(trustedField = new TextFieldWidget(font, getGuiLeft() + 35, getGuiTop() + 69, 86, 11, ""));
+        addButton(trustedField = new GuiTextField(this, 35, 69, 86, 11));
         trustedField.setMaxStringLength(PacketAddTrusted.MAX_NAME_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
+        trustedField.setEnterHandler(this::setTrusted);
+        trustedField.setInputValidator(c -> SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c));
         addButton(publicButton = new MekanismImageButton(this, getGuiLeft() + 13, getGuiTop() + 113, 40, 16, 40, 16, getButtonLocation("public"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PUBLIC.ordinal()));
@@ -101,11 +100,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                   updateButtons();
               }, getOnHover(MekanismLang.TRUSTED_MODE)));
         addButton(checkboxButton = new MekanismImageButton(this, getGuiLeft() + 123, getGuiTop() + 68, 11, 12, getButtonLocation("checkmark"),
-              () -> {
-                  addTrusted(trustedField.getText());
-                  trustedField.setText("");
-                  updateButtons();
-              }));
+              this::setTrusted));
         addButton(overrideButton = new MekanismImageButton(this, getGuiLeft() + 146, getGuiTop() + 59, 16, 16, getButtonLocation("exclamation"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, tile));
@@ -118,11 +113,10 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         updateButtons();
     }
 
-    @Override
-    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
-        String s = trustedField.getText();
-        super.resize(minecraft, scaledWidth, scaledHeight);
-        trustedField.setText(s);
+    private void setTrusted() {
+        addTrusted(trustedField.getText());
+        trustedField.setText("");
+        updateButtons();
     }
 
     private void addTrusted(String trusted) {
@@ -157,42 +151,12 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     public void tick() {
         super.tick();
         updateButtons();
-        trustedField.tick();
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         updateButtons();
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (trustedField.canWrite()) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                //Manually handle hitting escape making the field lose focus
-                trustedField.setFocused2(false);
-                return true;
-            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                addTrusted(trustedField.getText());
-                trustedField.setText("");
-                return true;
-            }
-            return trustedField.keyPressed(keyCode, scanCode, modifiers);
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char c, int keyCode) {
-        if (trustedField.canWrite()) {
-            if (SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c)) {
-                //Only allow a subset of characters to be entered into the trustedField text box
-                return trustedField.charTyped(c, keyCode);
-            }
-            return false;
-        }
-        return super.charTyped(c, keyCode);
     }
 
     @Override

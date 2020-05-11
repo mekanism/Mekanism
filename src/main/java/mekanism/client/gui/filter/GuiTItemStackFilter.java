@@ -1,10 +1,9 @@
 package mekanism.client.gui.filter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -21,8 +20,6 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
@@ -30,8 +27,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, TileEntityLogisticalSorter, LSItemStackFilterContainer> {
 
-    private TextFieldWidget minField;
-    private TextFieldWidget maxField;
+    private GuiTextField minField;
+    private GuiTextField maxField;
 
     public GuiTItemStackFilter(LSItemStackFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -99,57 +96,14 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     public void init() {
         super.init();
         addButton(new GuiInnerScreen(this, 33, 18, 93, 43));
-        addButton(minField = new TextFieldWidget(font, getGuiLeft() + 149, getGuiTop() + 19, 20, 11, ""));
+        addButton(minField = new GuiTextField(this, 149, 19, 20, 11));
         minField.setMaxStringLength(2);
+        minField.setInputValidator(InputValidator.DIGIT);
         minField.setText("" + filter.min);
-        addButton(maxField = new TextFieldWidget(font, getGuiLeft() + 149, getGuiTop() + 31, 20, 11, ""));
+        addButton(maxField = new GuiTextField(this, 149, 31, 20, 11));
         maxField.setMaxStringLength(2);
+        maxField.setInputValidator(InputValidator.DIGIT);
         maxField.setText("" + filter.max);
-    }
-
-    @Override
-    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
-        String min = minField.getText();
-        String max = maxField.getText();
-        super.resize(minecraft, scaledWidth, scaledHeight);
-        minField.setText(min);
-        maxField.setText(max);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        TextFieldWidget focusedField = getFocusedField();
-        if (focusedField != null) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                //Manually handle hitting escape making the field lose focus
-                focusedField.setFocused2(false);
-                return true;
-            }
-            return focusedField.keyPressed(keyCode, scanCode, modifiers);
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char c, int keyCode) {
-        TextFieldWidget focusedField = getFocusedField();
-        if (focusedField != null) {
-            if (Character.isDigit(c)) {
-                return focusedField.charTyped(c, keyCode);
-            }
-            return false;
-        }
-        return super.charTyped(c, keyCode);
-    }
-
-    @Nullable
-    private TextFieldWidget getFocusedField() {
-        if (minField.canWrite()) {
-            return minField;
-        } else if (maxField.canWrite()) {
-            return maxField;
-        }
-        return null;
     }
 
     @Override
@@ -172,13 +126,6 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     protected void drawTransporterForegroundLayer() {
         drawString(OnOff.of(filter.allowDefault).getTextComponent(), 24, 64, titleTextColor());
         renderItem(filter.getItemStack(), 12, 19);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        minField.tick();
-        maxField.tick();
     }
 
     @Override

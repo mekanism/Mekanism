@@ -48,7 +48,17 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         children.forEach(child -> child.tick());
     }
 
+    @Override
+    public void setFocused(boolean focused) {
+        // change access modifier to public
+        super.setFocused(focused);
+    }
+
     public void onMove() {}
+
+    public void onWindowClose() {
+        children.forEach(child -> child.onWindowClose());
+    }
 
     public boolean hasPersistentData() {
         return children.stream().anyMatch(child -> child.hasPersistentData());

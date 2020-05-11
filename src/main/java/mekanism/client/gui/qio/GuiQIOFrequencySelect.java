@@ -3,13 +3,13 @@ package mekanism.client.gui.qio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import org.lwjgl.glfw.GLFW;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiConfirmationDialog;
 import mekanism.client.gui.element.GuiConfirmationDialog.DialogType;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -23,8 +23,6 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.util.text.OwnerDisplay;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
@@ -36,7 +34,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     private MekanismButton setButton;
     private MekanismButton deleteButton;
     private GuiTextScrollList scrollList;
-    private TextFieldWidget frequencyField;
+    private GuiTextField frequencyField;
     private boolean privateMode;
 
     private boolean init = false;
@@ -85,22 +83,13 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             () -> getFrequency() != null ? getFrequency().getColor() : null,
             () -> sendColorUpdate(0),
             () -> sendColorUpdate(1)));
-        addButton(frequencyField = new TextFieldWidget(font, getGuiLeft() + 50, getGuiTop() + 107, 86, 11, ""));
+        addButton(frequencyField = new GuiTextField(this, 50, 107, 86, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        addButton(new MekanismImageButton(this, getGuiLeft() + 137, getGuiTop() + 106, 11, 12, getButtonLocation("checkmark"), () -> {
-            setFrequency(frequencyField.getText());
-            frequencyField.setText("");
-            updateButtons();
-        }));
+        frequencyField.setEnterHandler(this::setFrequency);
+        frequencyField.setInputValidator(InputValidator.or(InputValidator.DIGIT, InputValidator.LETTER, InputValidator.FREQUENCY_CHARS));
+        addButton(new MekanismImageButton(this, getGuiLeft() + 137, getGuiTop() + 106, 11, 12, getButtonLocation("checkmark"), this::setFrequency));
         updateButtons();
-    }
-
-    @Override
-    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
-        String s = frequencyField.getText();
-        super.resize(minecraft, scaledWidth, scaledHeight);
-        frequencyField.setText(s);
     }
 
     public void setFrequency(String freq) {
@@ -158,7 +147,6 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             privateMode = freq.isPrivate();
         }
         updateButtons();
-        frequencyField.tick();
     }
 
     @Override
@@ -167,33 +155,10 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (frequencyField.canWrite()) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                //Manually handle hitting escape making the field lose focus
-                frequencyField.setFocused2(false);
-                return true;
-            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                setFrequency(frequencyField.getText());
-                frequencyField.setText("");
-                return true;
-            }
-            return frequencyField.keyPressed(keyCode, scanCode, modifiers);
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char c, int keyCode) {
-        if (frequencyField.canWrite()) {
-            if (Character.isDigit(c) || Character.isLetter(c) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
-                //Only allow a subset of characters to be entered into the frequency text box
-                return frequencyField.charTyped(c, keyCode);
-            }
-            return false;
-        }
-        return super.charTyped(c, keyCode);
+    private void setFrequency() {
+        setFrequency(frequencyField.getText());
+        frequencyField.setText("");
+        updateButtons();
     }
 
     @Override

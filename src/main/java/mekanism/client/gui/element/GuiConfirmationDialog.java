@@ -17,11 +17,11 @@ public class GuiConfirmationDialog extends GuiOverlayDialog {
        active = true;
 
        addChild(new TranslationButton(gui, gui.getLeft() + x + width / 2 - 102 / 2, gui.getTop() + y + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, () -> {
-           gui.removeElement(this);
+           close();
        }));
        addChild(new TranslationButton(gui, gui.getLeft() + x + width / 2 + 1, gui.getTop() + y + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, () -> {
            onConfirm.run();
-           gui.removeElement(this);
+           close();
        }, null, type.getColorSupplier()));
     }
 

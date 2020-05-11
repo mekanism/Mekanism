@@ -1,9 +1,9 @@
 package mekanism.client.gui.robit;
 
-import javax.annotation.Nonnull;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiSideHolder;
+import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -18,17 +18,14 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedEntityButton;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     private final EntityRobit robit;
 
-    private TextFieldWidget nameChangeField;
+    private GuiTextField nameChangeField;
     private MekanismButton confirmName;
 
     public GuiRobitMain(MainRobitContainer container, PlayerInventory inv, ITextComponent title) {
@@ -40,7 +37,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     private void toggleNameChange() {
         nameChangeField.visible = !nameChangeField.visible;
         confirmName.visible = nameChangeField.visible;
-        nameChangeField.setFocused2(nameChangeField.visible);
+        nameChangeField.setFocused(nameChangeField.visible);
     }
 
     private void changeName() {
@@ -60,9 +57,10 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         addButton(confirmName = new TranslationButton(this, getGuiLeft() + 58, getGuiTop() + 47, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
         confirmName.visible = false;
 
-        addButton(nameChangeField = new TextFieldWidget(font, getGuiLeft() + 48, getGuiTop() + 21, 80, 12, ""));
+        addButton(nameChangeField = new GuiTextField(this, 48, 21, 80, 12));
         nameChangeField.setMaxStringLength(12);
-        nameChangeField.setFocused2(true);
+        nameChangeField.setFocused(true);
+        nameChangeField.setEnterHandler(this::changeName);
         nameChangeField.visible = false;
 
         addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 16, 18, getButtonLocation("home"), () -> {
@@ -95,37 +93,6 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     }
 
     @Override
-    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
-        String s = nameChangeField.getText();
-        super.resize(minecraft, scaledWidth, scaledHeight);
-        nameChangeField.setText(s);
-    }
-
-    @Override
-    public boolean charTyped(char c, int keyCode) {
-        if (nameChangeField.canWrite()) {
-            return nameChangeField.charTyped(c, keyCode);
-        }
-        return super.charTyped(c, keyCode);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (nameChangeField.canWrite()) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                //Manually handle hitting escape making the field lose focus
-                nameChangeField.setFocused2(false);
-                return true;
-            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                changeName();
-                return true;
-            }
-            return nameChangeField.keyPressed(keyCode, scanCode, modifiers);
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(MekanismLang.ROBIT.translate(), 76, 6, titleTextColor());
         if (!nameChangeField.visible) {
@@ -137,13 +104,5 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
             drawTextScaledBound(MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, screenTextColor(), 119);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (nameChangeField.visible) {
-            nameChangeField.tick();
-        }
     }
 }

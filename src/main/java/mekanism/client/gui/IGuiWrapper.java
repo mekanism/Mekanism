@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.FontRenderer;
@@ -82,5 +83,21 @@ public interface IGuiWrapper {
 
     default void renderItemWithOverlay(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
         Mekanism.logger.error("Tried to call 'renderItemWithOverlay' but unsupported in " + this);
+    }
+
+    default void addFocusListener(GuiElement element) {
+        Mekanism.logger.error("Tried to call 'addFocusListener' but unsupported in " + this);
+    }
+
+    default void removeFocusListener(GuiElement element) {
+        Mekanism.logger.error("Tried to call 'removeFocusListener' but unsupported in " + this);
+    }
+
+    default void focusChange(GuiElement changed) {
+        Mekanism.logger.error("Tried to call 'focusChange' but unsupported in " + this);
+    }
+
+    default void incrementFocus(GuiElement current) {
+        Mekanism.logger.error("Tried to call 'incrementFocus' but unsupported in " + this);
     }
 }

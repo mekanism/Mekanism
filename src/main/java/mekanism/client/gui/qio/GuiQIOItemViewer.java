@@ -73,8 +73,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         searchField.setMaxStringLength(50);
         searchField.setEnableBackgroundDrawing(false);
         searchField.setVisible(true);
-        searchField.setFocused2(true);
         searchField.setTextColor(0xFFFFFF);
+        searchField.setFocused(true);
         addButton(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
               () -> container.getQIOItemList(), container));
         addButton(new GuiDropdown<>(this, xSize - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,

@@ -1,7 +1,8 @@
 package mekanism.generators.client.gui;
 
-import org.lwjgl.glfw.GLFW;
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -13,13 +14,12 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionReactorCasing, EmptyTileContainer<TileEntityFissionReactorCasing>> {
 
-    private TextFieldWidget rateLimitField;
+    private GuiTextField rateLimitField;
 
     public GuiFissionReactorStats(EmptyTileContainer<TileEntityFissionReactorCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -41,7 +41,9 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
             }
         }, 5, 114, xSize - 12));
         addButton(new MekanismImageButton(this, getGuiLeft() + 114, getGuiTop() + 128, 11, 12, getButtonLocation("checkmark"), this::setRateLimit));
-        addButton(rateLimitField = new TextFieldWidget(font, getGuiLeft() + 77, getGuiTop() + 128, 36, 11, ""));
+        addButton(rateLimitField = new GuiTextField(this, 77, 128, 36, 11));
+        rateLimitField.setEnterHandler(this::setRateLimit);
+        rateLimitField.setInputValidator(InputValidator.DECIMAL);
         rateLimitField.setMaxStringLength(4);
     }
 
@@ -74,32 +76,5 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         drawTextScaledBound(GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 6, 104, titleTextColor(), xSize - 12);
         drawTextScaledBound(GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 6, 130, titleTextColor(), 69);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (rateLimitField.canWrite()) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                //Manually handle hitting escape making the field lose focus
-                rateLimitField.setFocused2(false);
-                return true;
-            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                setRateLimit();
-                return true;
-            }
-            return rateLimitField.keyPressed(keyCode, scanCode, modifiers);
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char c, int keyCode) {
-        if (rateLimitField.canWrite()) {
-            if (Character.isDigit(c) || c == '.') {
-                return rateLimitField.charTyped(c, keyCode);
-            }
-            return false;
-        }
-        return super.charTyped(c, keyCode);
     }
 }

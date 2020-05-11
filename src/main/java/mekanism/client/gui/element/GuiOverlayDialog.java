@@ -96,6 +96,7 @@ public class GuiOverlayDialog extends GuiTexturedElement {
     }
 
     protected void close() {
+        children.forEach(child -> child.onWindowClose());
         guiObj.removeElement(this);
         if (guiObj instanceof GuiMekanism) {
             ((GuiMekanism<?>) guiObj).setFocused(null);

@@ -48,6 +48,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
     protected List<GuiOverlayDialog> overlays = new ArrayList<>();
+    protected List<GuiElement> focusListeners = new ArrayList<>();
 
     protected GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -88,6 +89,35 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
+    public void addFocusListener(GuiElement element) {
+        focusListeners.add(element);
+    }
+
+    @Override
+    public void removeFocusListener(GuiElement element) {
+        focusListeners.remove(element);
+    }
+
+    @Override
+    public void focusChange(GuiElement changed) {
+        for (GuiElement element : focusListeners) {
+            if (element != changed) {
+                element.setFocused(false);
+            }
+        }
+    }
+
+    @Override
+    public void incrementFocus(GuiElement current) {
+        int index = focusListeners.indexOf(current);
+        if (index != -1) {
+            GuiElement next = focusListeners.get((index + 1) % focusListeners.size());
+            next.setFocused(true);
+            focusChange(next);
+        }
+    }
+
+    @Override
     public void resize(Minecraft minecraft, int sizeX, int sizeY) {
         List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
         for (int i = 0; i < buttons.size(); i++) {
@@ -96,6 +126,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 prevElements.add(Pair.of(i, (GuiElement) widget));
             }
         }
+        focusListeners.clear();
         init(minecraft, sizeX, sizeY);
         prevElements.forEach(e -> {
             if (e.getLeft() < buttons.size()) {
