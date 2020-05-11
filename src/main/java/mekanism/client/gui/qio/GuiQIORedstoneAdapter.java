@@ -74,9 +74,8 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         addButton(text = new GuiTextField(this, 29, 70, xSize - 39, 12));
         text.setMaxStringLength(10);
         text.setInputValidator(InputValidator.DIGIT);
-        text.changeFocus(true);
-        text.setEnterHandler(this::setCount);
-        text.addCheckmarkButton(this::setCount);
+        text.setFocused(true);
+        text.configureDigitalInput(this::setCount);
     }
 
     private void setCount() {

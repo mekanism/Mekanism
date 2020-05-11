@@ -24,10 +24,11 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
-    public static final ResourceLocation BUTTON_LOCATION = MekanismUtils.getResource(ResourceType.GUI, "button.png");
     private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60;
 
     public static final Minecraft minecraft = Minecraft.getInstance();
+
+    protected ButtonBackground buttonBackground = ButtonBackground.DEFAULT;
 
     protected final List<GuiElement> children = new ArrayList<>();
 
@@ -151,6 +152,10 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         return width;
     }
 
+    public void setButtonBackground(ButtonBackground buttonBackground) {
+        this.buttonBackground = buttonBackground;
+    }
+
     @Override
     protected boolean clicked(double mouseX, double mouseY) {
         //The code for clicked and isMouseOver is the same. Overriding it here lets us override isMouseOver in sub classes
@@ -221,7 +226,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         }
         //TODO: Convert this to being two different 16x48 images, one for with border and one for buttons without a black border?
         // And then make it so that they can stretch out to be any size (make this make use of the renderExtendedTexture method
-        MekanismRenderer.bindTexture(BUTTON_LOCATION);
+        MekanismRenderer.bindTexture(buttonBackground.getTexture());
         //TODO: This can use isHovered() once we fix the isHovered logic
         int i = getYImage(isMouseOver(mouseX, mouseY));
         RenderSystem.enableBlend();
@@ -275,6 +280,21 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     protected static String formatInt(long l) {
         return intFormatter.format(l);
+    }
+
+    public enum ButtonBackground {
+        DEFAULT(MekanismUtils.getResource(ResourceType.GUI, "button.png")),
+        DIGITAL(MekanismUtils.getResource(ResourceType.GUI, "button_digital.png"));
+
+        private ResourceLocation texture;
+
+        private ButtonBackground(ResourceLocation texture) {
+            this.texture = texture;
+        }
+
+        public ResourceLocation getTexture() {
+            return texture;
+        }
     }
 
     @FunctionalInterface

@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.GuiTextField.BackgroundType;
 import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.button.MekanismButton;
-import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.scroll.GuiTextScrollList;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
@@ -56,8 +55,6 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 48, 102, 89, 13));
-        addButton(new GuiInnerScreen(this, 136, 102, 13, 13));
         addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
@@ -89,12 +86,12 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             }
             updateButtons();
         }));
-        addButton(frequencyField = new GuiTextField(this, 50, 104, 86, 11));
+        addButton(frequencyField = new GuiTextField(this, 50, 103, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
-        frequencyField.setEnableBackgroundDrawing(false);
+        frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);
         frequencyField.setInputValidator(InputValidator.or(InputValidator.DIGIT, InputValidator.LETTER, InputValidator.FREQUENCY_CHARS));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 137, getGuiTop() + 103, 11, 12, getButtonLocation("checkmark"), this::setFrequency));
+        frequencyField.addCheckmarkButton(this::setFrequency);
         addButton(new GuiEnergyTab(() -> {
             EnergyDisplay storing = tile.getFreq() == null ? EnergyDisplay.ZERO : EnergyDisplay.of(tile.getFreq().storedEnergy.getEnergy(), tile.getFreq().storedEnergy.getMaxEnergy());
             EnergyDisplay rate = EnergyDisplay.of(tile.getInputRate());

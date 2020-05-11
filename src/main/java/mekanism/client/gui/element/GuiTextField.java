@@ -2,15 +2,18 @@ package mekanism.client.gui.element;
 
 import java.util.Arrays;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import org.lwjgl.glfw.GLFW;
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * GuiElement wrapper of TextFieldWidget for more control
@@ -27,7 +30,10 @@ public class GuiTextField extends GuiTexturedElement {
     private InputValidator inputValidator;
     private Consumer<String> responder;
 
-    private boolean manualDrawBackground;
+    private BackgroundType backgroundType = BackgroundType.DEFAULT;
+    private IconType iconType;
+
+    private int textOffsetX, textOffsetY;
 
     private MekanismImageButton checkmarkButton;
 
@@ -35,6 +41,7 @@ public class GuiTextField extends GuiTexturedElement {
         super(null, gui, x, y, width, height);
 
         textField = new TextFieldWidget(getFont(), this.x, this.y, width, height, "");
+        textField.setEnableBackgroundDrawing(false);
         textField.setResponder(s -> {
             if (responder != null) {
                 responder.accept(s);
@@ -44,6 +51,23 @@ public class GuiTextField extends GuiTexturedElement {
             }
         });
         guiObj.addFocusListener(this);
+        updateTextField();
+    }
+
+    public GuiTextField setOffset(int offsetX, int offsetY) {
+        this.textOffsetX = offsetX;
+        this.textOffsetY = offsetY;
+        updateTextField();
+        return this;
+    }
+
+    public GuiTextField configureDigitalInput(Runnable enterHandler) {
+        setBackground(BackgroundType.NONE);
+        setIcon(IconType.DIGITAL);
+        setTextColor(screenTextColor());
+        setEnterHandler(enterHandler);
+        addCheckmarkButton(ButtonType.DIGITAL, enterHandler);
+        return this;
     }
 
     public GuiTextField setEnterHandler(Runnable enterHandler) {
@@ -56,16 +80,32 @@ public class GuiTextField extends GuiTexturedElement {
         return this;
     }
 
-    public GuiTextField addCheckmarkButton(Runnable callback) {
-        addChild(checkmarkButton = new MekanismImageButton(guiObj, guiObj.getLeft() + relativeX + width - height, guiObj.getTop() + relativeY, height, 12,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"), callback));
-        checkmarkButton.active = false;
-        textField.setEnableBackgroundDrawing(false);
-        textField.setWidth(textField.getWidth() - 12);
-        textField.x += 2;
-        textField.y += 2;
-        manualDrawBackground = true;
+    public GuiTextField setBackground(BackgroundType backgroundType) {
+        this.backgroundType = backgroundType;
         return this;
+    }
+
+    public GuiTextField setIcon(IconType iconType) {
+        this.iconType = iconType;
+        updateTextField();
+        return this;
+    }
+
+    public GuiTextField addCheckmarkButton(Runnable callback) {
+        return addCheckmarkButton(ButtonType.NORMAL, callback);
+    }
+
+    public GuiTextField addCheckmarkButton(ButtonType type, Runnable callback) {
+        addChild(checkmarkButton = type.getButton(this, callback));
+        checkmarkButton.active = false;
+        updateTextField();
+        return this;
+    }
+
+    private void updateTextField() {
+        textField.setWidth(width - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - (iconType != null ? iconType.getOffsetX() : 0));
+        textField.x = x + textOffsetX + 2 + (iconType != null ? iconType.getOffsetX() : 0);
+        textField.y = y + textOffsetY + 2;
     }
 
     @Override
@@ -77,13 +117,7 @@ public class GuiTextField extends GuiTexturedElement {
     @Override
     public void move(int changeX, int changeY) {
         super.move(changeX, changeY);
-        textField.x = x;
-        textField.y = y;
-
-        if (manualDrawBackground) {
-            textField.x += 2;
-            textField.y += 2;
-        }
+        updateTextField();
     }
 
     @Override
@@ -105,12 +139,13 @@ public class GuiTextField extends GuiTexturedElement {
 
     @Override
     public void drawButton(int mouseX, int mouseY) {
-        if (manualDrawBackground) {
-            GuiUtils.fill(x - 1, y - 1, width + 2, height + 2, DEFAULT_BORDER_COLOR);
-            GuiUtils.fill(x, y, width, height, DEFAULT_BACKGROUND_COLOR);
-        }
-
+        backgroundType.render(this);
         textField.render(mouseX, mouseY, 0);
+        MekanismRenderer.resetColor();
+        if (iconType != null) {
+            minecraft.textureManager.bindTexture(iconType.getIcon());
+            blit(x + 2, y + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
+        }
     }
 
     @Override
@@ -157,10 +192,6 @@ public class GuiTextField extends GuiTexturedElement {
 
     public String getText() {
         return textField.getText();
-    }
-
-    public void setEnableBackgroundDrawing(boolean enable) {
-        textField.setEnableBackgroundDrawing(enable);
     }
 
     public void setVisible(boolean visible) {
@@ -232,6 +263,76 @@ public class GuiTextField extends GuiTexturedElement {
         @Override
         public boolean isValid(char c) {
             return validSet.contains(c);
+        }
+    }
+
+    public enum BackgroundType {
+        INNER_SCREEN(field -> GuiUtils.renderBackgroundTexture(GuiInnerScreen.SCREEN, 32, 32, field.x - 1, field.y - 1, field.width + 2, field.height + 2, 256, 256)),
+        ELEMENT_HOLDER(field -> GuiUtils.renderBackgroundTexture(GuiElementHolder.HOLDER, 2, 2, field.x - 1, field.y - 1, field.width + 2, field.height + 2, 256, 256)),
+        DEFAULT(field -> {
+            GuiUtils.fill(field.x - 1, field.y - 1, field.width + 2, field.height + 2, DEFAULT_BORDER_COLOR);
+            GuiUtils.fill(field.x, field.y, field.width, field.height, DEFAULT_BACKGROUND_COLOR);
+        }),
+        NONE(field -> {});
+
+        private Consumer<GuiTextField> renderFunction;
+
+        private BackgroundType(Consumer<GuiTextField> renderFunction) {
+            this.renderFunction = renderFunction;
+        }
+
+        public void render(GuiTextField field) {
+            renderFunction.accept(field);
+        }
+    }
+
+    public enum ButtonType {
+        NORMAL((field, callback) -> new MekanismImageButton(field.guiObj, field.guiObj.getLeft() + field.relativeX + field.width - field.height, field.guiObj.getTop() + field.relativeY, field.height, 12,
+              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"), callback)),
+        DIGITAL((field, callback) -> {
+            MekanismImageButton ret = new MekanismImageButton(field.guiObj, field.guiObj.getLeft() + field.relativeX + field.width - field.height, field.guiObj.getTop() + field.relativeY, field.height, 12,
+                MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark_digital.png"), callback);
+            ret.setButtonBackground(ButtonBackground.DIGITAL);
+            return ret;
+        });
+
+        private BiFunction<GuiTextField, Runnable, MekanismImageButton> buttonCreator;
+
+        private ButtonType(BiFunction<GuiTextField, Runnable, MekanismImageButton> buttonCreator) {
+            this.buttonCreator = buttonCreator;
+        }
+
+        public MekanismImageButton getButton(GuiTextField field, Runnable callback) {
+            return buttonCreator.apply(field, callback);
+        }
+    }
+
+    public enum IconType {
+        DIGITAL(MekanismUtils.getResource(ResourceType.GUI, "digital_text_input.png"), 4, 7);
+
+        private ResourceLocation icon;
+        private int xSize, ySize;
+
+        private IconType(ResourceLocation icon, int xSize, int ySize) {
+            this.icon = icon;
+            this.xSize = xSize;
+            this.ySize = ySize;
+        }
+
+        public ResourceLocation getIcon() {
+            return icon;
+        }
+
+        public int getWidth() {
+            return xSize;
+        }
+
+        public int getHeight() {
+            return ySize;
+        }
+
+        public int getOffsetX() {
+            return xSize + 4;
         }
     }
 }

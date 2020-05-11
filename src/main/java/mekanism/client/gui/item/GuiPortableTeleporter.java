@@ -8,8 +8,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.GuiTextField.BackgroundType;
 import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -70,8 +70,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 48, 102, 89, 13));
-        addButton(new GuiInnerScreen(this, 136, 102, 13, 13));
+        //addButton(new GuiInnerScreen(this, 48, 102, 89, 13));
+        //addButton(new GuiInnerScreen(this, 136, 102, 13, 13));
         addButton(new GuiTeleporterStatus(this, () -> clientFreq != null, () -> clientStatus));
         addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
@@ -126,7 +126,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }));
         addButton(frequencyField = new GuiTextField(this, 50, 104, 86, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
-        frequencyField.setEnableBackgroundDrawing(false);
+        frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);
         frequencyField.setInputValidator(InputValidator.or(InputValidator.DIGIT, InputValidator.LETTER, InputValidator.FREQUENCY_CHARS));
         addButton(new MekanismImageButton(this, getGuiLeft() + 137, getGuiTop() + 103, 11, 12, getButtonLocation("checkmark"), this::setFrequency));

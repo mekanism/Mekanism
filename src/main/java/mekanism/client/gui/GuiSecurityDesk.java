@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElementHolder;
-import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSecurityLight;
 import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.GuiTextField.BackgroundType;
 import mekanism.client.gui.element.GuiTextureOnlyElement;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -41,7 +41,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     private MekanismButton publicButton;
     private MekanismButton privateButton;
     private MekanismButton trustedButton;
-    private MekanismButton checkboxButton;
     private MekanismButton overrideButton;
     private GuiTextScrollList scrollList;
     private GuiTextField trustedField;
@@ -64,8 +63,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         super.init();
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 17));
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
-        addButton(new GuiInnerScreen(this, 34, 67, 89, 13));
-        addButton(new GuiInnerScreen(this, 122, 67, 13, 13));
         addButton(new GuiSecurityLight(this, 144, 77, () -> tile.getFreq() == null || tile.ownerUUID == null ||
                                                             !tile.ownerUUID.equals(minecraft.player.getUniqueID()) ? 2 : tile.getFreq().isOverridden() ? 0 : 1));
         addButton(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
@@ -79,11 +76,12 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                 updateButtons();
             }
         }));
-        addButton(trustedField = new GuiTextField(this, 35, 69, 86, 11));
+        addButton(trustedField = new GuiTextField(this, 35, 68, 99, 11));
         trustedField.setMaxStringLength(PacketAddTrusted.MAX_NAME_LENGTH);
-        trustedField.setEnableBackgroundDrawing(false);
+        trustedField.setBackground(BackgroundType.INNER_SCREEN);
         trustedField.setEnterHandler(this::setTrusted);
         trustedField.setInputValidator(c -> SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c));
+        trustedField.addCheckmarkButton(this::setTrusted);
         addButton(publicButton = new MekanismImageButton(this, getGuiLeft() + 13, getGuiTop() + 113, 40, 16, 40, 16, getButtonLocation("public"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PUBLIC.ordinal()));
@@ -99,8 +97,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.TRUSTED.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.TRUSTED_MODE)));
-        addButton(checkboxButton = new MekanismImageButton(this, getGuiLeft() + 123, getGuiTop() + 68, 11, 12, getButtonLocation("checkmark"),
-              this::setTrusted));
         addButton(overrideButton = new MekanismImageButton(this, getGuiLeft() + 146, getGuiTop() + 59, 16, 16, getButtonLocation("exclamation"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, tile));
@@ -114,9 +110,12 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     private void setTrusted() {
-        addTrusted(trustedField.getText());
-        trustedField.setText("");
-        updateButtons();
+        SecurityFrequency freq = tile.getFreq();
+        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(minecraft.player.getUniqueID())) {
+            addTrusted(trustedField.getText());
+            trustedField.setText("");
+            updateButtons();
+        }
     }
 
     private void addTrusted(String trusted) {
@@ -136,13 +135,11 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
             publicButton.active = freq.getSecurityMode() != SecurityMode.PUBLIC;
             privateButton.active = freq.getSecurityMode() != SecurityMode.PRIVATE;
             trustedButton.active = freq.getSecurityMode() != SecurityMode.TRUSTED;
-            checkboxButton.active = true;
             overrideButton.active = true;
         } else {
             publicButton.active = false;
             privateButton.active = false;
             trustedButton.active = false;
-            checkboxButton.active = false;
             overrideButton.active = false;
         }
     }

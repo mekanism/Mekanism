@@ -69,11 +69,10 @@ public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
 
         addChild(text = new GuiTextField(gui, relativeX + 31, relativeY + 47, width - 31 - 9, 12));
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
-        text.setEnterHandler(this::setText);
         text.setInputValidator(InputValidator.or(InputValidator.LETTER, InputValidator.DIGIT, InputValidator.FILTER_CHARS));
         text.setEnabled(true);
         text.setFocused(true);
-        text.addCheckmarkButton(this::setText);
+        text.configureDigitalInput(this::setText);
 
         if (filter.getTagName() != null && !filter.getTagName().isEmpty()) {
             slotDisplay.updateStackList();

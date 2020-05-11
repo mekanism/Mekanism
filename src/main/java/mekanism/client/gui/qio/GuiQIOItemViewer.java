@@ -8,9 +8,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiDigitalIconToggle;
 import mekanism.client.gui.element.GuiDropdown;
-import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.GuiTextField.BackgroundType;
 import mekanism.client.gui.element.custom.GuiResizeControls;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeType;
 import mekanism.client.gui.element.scroll.GuiSlotScroll;
@@ -66,12 +66,12 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             }
             return list;
         }));
-        addButton(new GuiElementHolder(this, 48, 15 + 12 + 2, xSize - 48 - 9, 12));
-        addButton(searchField = new GuiTextField(this, 50, 15 + 12 + 4, xSize - 50 - 10, 9));
+        addButton(searchField = new GuiTextField(this, 50, 15 + 12 + 3, xSize - 50 - 10, 10));
+        searchField.setOffset(0, -1);
         searchField.setInputValidator(this::isValidSearchChar);
         searchField.setResponder(container::updateSearch);
         searchField.setMaxStringLength(50);
-        searchField.setEnableBackgroundDrawing(false);
+        searchField.setBackground(BackgroundType.ELEMENT_HOLDER);
         searchField.setVisible(true);
         searchField.setTextColor(0xFFFFFF);
         searchField.setFocused(true);
