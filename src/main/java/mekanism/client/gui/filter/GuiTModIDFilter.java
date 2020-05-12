@@ -3,7 +3,6 @@ package mekanism.client.gui.filter;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -42,7 +41,7 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
 
     @Override
     protected void addButtons() {
-        addButton(new GuiInnerScreen(this, 33, 18, 111, 43));
+        super.addButtons();
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18));
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 43));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 47, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {

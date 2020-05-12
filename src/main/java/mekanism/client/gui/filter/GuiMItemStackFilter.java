@@ -1,5 +1,7 @@
 package mekanism.client.gui.filter;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -34,7 +36,15 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        addButton(new GuiInnerScreen(this, 33, 18, 111, 43));
+        addButton(new GuiInnerScreen(this, 33, 18, 111, 43, () -> {
+            List<ITextComponent> list = new ArrayList<>();
+            list.add(MekanismLang.STATUS.translate(status));
+            list.add(MekanismLang.ITEM_FILTER_DETAILS.translate());
+            if (!filter.getItemStack().isEmpty()) {
+                list.add(filter.getItemStack().getDisplayName());
+            }
+            return list;
+        }).clearFormat());
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18).setRenderHover(true));
         addButton(new GuiSlot(SlotType.NORMAL, this, 148, 18).setRenderHover(true));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
@@ -62,9 +72,6 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected void drawForegroundLayer(int mouseX, int mouseY) {
-        if (!filter.getItemStack().isEmpty()) {
-            drawTextScaledBound(filter.getItemStack().getDisplayName(), 35, 41, screenTextColor(), 107);
-        }
         renderItem(filter.getItemStack(), 12, 19);
         renderItem(filter.replaceStack, 149, 19);
     }

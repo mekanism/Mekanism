@@ -32,7 +32,7 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter<FILTER>, TILE ext
         addButton(text = createTextField());
         text.setInputValidator(this::wasTextboxKey);
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
-        text.changeFocus(true);
+        text.setFocused(true);
         text.configureDigitalInput(this::setText);
     }
 }

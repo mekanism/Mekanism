@@ -107,11 +107,15 @@ public interface IFancyFontRenderer {
     }
 
     default void drawTextWithScale(String text, float x, float y, int color, float scale) {
+        prepTextScale(() -> drawString(text, 0, 0, color), x, y, scale);
+    }
+
+    default void prepTextScale(Runnable runnable, float x, float y, float scale) {
         float yAdd = 4 - (scale * 8) / 2F;
         RenderSystem.pushMatrix();
         RenderSystem.translatef(x, y + yAdd, 0);
         RenderSystem.scalef(scale, scale, scale);
-        drawString(text, 0, 0, color);
+        runnable.run();
         RenderSystem.popMatrix();
         MekanismRenderer.resetColor();
     }

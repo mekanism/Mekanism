@@ -1,6 +1,8 @@
 package mekanism.client.gui.filter;
 
+import java.util.Arrays;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
@@ -26,13 +28,23 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     }
 
     @Override
+    protected void addButtons() {
+        addButton(new GuiInnerScreen(this, 33, 18, 111, 43, () -> Arrays.asList(
+            MekanismLang.STATUS.translate(status),
+            MekanismLang.MODID_FILTER_ID.translate(filter.getModID())
+        )).clearFormat());
+    }
+
+    @Override
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {
             status = MekanismLang.MODID_FILTER_NO_ID.translateColored(EnumColor.DARK_RED);
+            ticker = 20;
             return;
         } else if (name.equals(filter.getModID())) {
             status = MekanismLang.MODID_FILTER_SAME_ID.translateColored(EnumColor.DARK_RED);
+            ticker = 20;
             return;
         }
         filter.setModID(name);
@@ -43,8 +55,6 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.MODID_FILTER), 43, 6, titleTextColor());
-        drawString(MekanismLang.STATUS.translate(status), 35, 20, screenTextColor());
-        drawTextScaledBound(MekanismLang.MODID_FILTER_ID.translate(filter.getModID()), 35, 32, screenTextColor(), 107);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

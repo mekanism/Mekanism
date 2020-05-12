@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -32,7 +31,7 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
 
     @Override
     protected void addButtons() {
-        addButton(new GuiInnerScreen(this, 33, 18, 111, 43));
+        super.addButtons();
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18).setRenderHover(true));
         addButton(new GuiSlot(SlotType.NORMAL, this, 148, 18).setRenderHover(true));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {

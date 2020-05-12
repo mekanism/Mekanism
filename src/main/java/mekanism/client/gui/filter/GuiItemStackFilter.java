@@ -29,8 +29,6 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.ITEM_FILTER), 43, 6, titleTextColor());
-        drawString(MekanismLang.STATUS.translate(status), 35, 20, screenTextColor());
-        drawString(MekanismLang.ITEM_FILTER_DETAILS.translate(), 35, 32, screenTextColor());
         drawForegroundLayer(mouseX, mouseY);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

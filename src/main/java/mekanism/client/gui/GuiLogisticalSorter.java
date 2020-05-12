@@ -66,15 +66,15 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         // Write to info display
         renderTitleText();
-        drawString(MekanismLang.FILTERS.translate(), 11, 19, screenTextColor());
-        drawString(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 11, 28, screenTextColor());
-        drawString(MekanismLang.SORTER_SINGLE_ITEM.translate(), 12, 48, screenTextColor());
-        drawString(OnOff.of(tile.singleItem).getTextComponent(), 27, 60, screenTextColor());
-        drawString(MekanismLang.SORTER_ROUND_ROBIN.translate(), 12, 74, screenTextColor());
-        drawString(OnOff.of(tile.roundRobin).getTextComponent(), 27, 86, screenTextColor());
-        drawString(MekanismLang.SORTER_AUTO_EJECT.translate(), 12, 100, screenTextColor());
-        drawString(OnOff.of(tile.autoEject).getTextComponent(), 27, 112, screenTextColor());
-        drawString(MekanismLang.SORTER_DEFAULT.translate(), 12, 126, screenTextColor());
+        drawTextWithScale(MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 0.8F);
+        drawTextWithScale(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 14, 31, screenTextColor(), 0.8F);
+        drawTextWithScale(MekanismLang.SORTER_SINGLE_ITEM.translate(), 14, 48, screenTextColor(), 0.8F);
+        drawTextWithScale(OnOff.of(tile.singleItem).getTextComponent(), 27, 60, screenTextColor(), 0.8F);
+        drawTextWithScale(MekanismLang.SORTER_ROUND_ROBIN.translate(), 14, 74, screenTextColor(), 0.8F);
+        drawTextWithScale(OnOff.of(tile.roundRobin).getTextComponent(), 27, 86, screenTextColor(), 0.8F);
+        drawTextWithScale(MekanismLang.SORTER_AUTO_EJECT.translate(), 14, 100, screenTextColor(), 0.8F);
+        drawTextWithScale(OnOff.of(tile.autoEject).getTextComponent(), 27, 112, screenTextColor(), 0.8F);
+        drawTextWithScale(MekanismLang.SORTER_DEFAULT.translate(), 14, 126, screenTextColor(), 0.8F);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

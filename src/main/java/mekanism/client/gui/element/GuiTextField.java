@@ -4,12 +4,16 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.IntSupplier;
 import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.lib.Color;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -22,9 +26,6 @@ import net.minecraft.util.ResourceLocation;
  */
 public class GuiTextField extends GuiTexturedElement {
 
-    private static final int DEFAULT_BORDER_COLOR = 0xA0A0A0;
-    private static final int DEFAULT_BACKGROUND_COLOR = 0x000000;
-
     private TextFieldWidget textField;
     private Runnable enterHandler;
     private InputValidator inputValidator;
@@ -34,6 +35,7 @@ public class GuiTextField extends GuiTexturedElement {
     private IconType iconType;
 
     private int textOffsetX, textOffsetY;
+    private float textScale = 1.0F;
 
     private MekanismImageButton checkmarkButton;
 
@@ -54,6 +56,11 @@ public class GuiTextField extends GuiTexturedElement {
         updateTextField();
     }
 
+    public GuiTextField setScale(float textScale) {
+        this.textScale = textScale;
+        return this;
+    }
+
     public GuiTextField setOffset(int offsetX, int offsetY) {
         this.textOffsetX = offsetX;
         this.textOffsetY = offsetY;
@@ -67,6 +74,16 @@ public class GuiTextField extends GuiTexturedElement {
         setTextColor(screenTextColor());
         setEnterHandler(enterHandler);
         addCheckmarkButton(ButtonType.DIGITAL, enterHandler);
+        setScale(0.8F);
+        return this;
+    }
+
+    public GuiTextField configureDigitalBorderInput(Runnable enterHandler) {
+        setBackground(BackgroundType.DIGITAL);
+        setTextColor(screenTextColor());
+        setEnterHandler(enterHandler);
+        addCheckmarkButton(ButtonType.DIGITAL, enterHandler);
+        setScale(0.8F);
         return this;
     }
 
@@ -96,16 +113,20 @@ public class GuiTextField extends GuiTexturedElement {
     }
 
     public GuiTextField addCheckmarkButton(ButtonType type, Runnable callback) {
-        addChild(checkmarkButton = type.getButton(this, callback));
+        addChild(checkmarkButton = type.getButton(this, () -> {
+            callback.run();
+            setFocused(true);
+        }));
         checkmarkButton.active = false;
         updateTextField();
         return this;
     }
 
     private void updateTextField() {
-        textField.setWidth(width - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - (iconType != null ? iconType.getOffsetX() : 0));
+        // width is scaled based on text scale
+        textField.setWidth(Math.round((width - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - (iconType != null ? iconType.getOffsetX() : 0)) * (1 / textScale)));
         textField.x = x + textOffsetX + 2 + (iconType != null ? iconType.getOffsetX() : 0);
-        textField.y = y + textOffsetY + 2;
+        textField.y = y + textOffsetY + 1 + (int) ((height / 2F) - 4);
     }
 
     @Override
@@ -129,7 +150,12 @@ public class GuiTextField extends GuiTexturedElement {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         boolean prevFocus = textField.isFocused();
-        boolean ret = textField.mouseClicked(mouseX, mouseY, button);
+        double scaledX = mouseX;
+        // figure out the proper mouse placement based on text scaling
+        if (textScale != 1.0F && scaledX > textField.x) {
+            scaledX = Math.min(scaledX, textField.x) + (scaledX - textField.x) * (1F / textScale);
+        }
+        boolean ret = textField.mouseClicked(scaledX, mouseY, button);
         // detect if we're now focused
         if (!prevFocus && textField.isFocused()) {
             guiObj.focusChange(this);
@@ -140,7 +166,18 @@ public class GuiTextField extends GuiTexturedElement {
     @Override
     public void drawButton(int mouseX, int mouseY) {
         backgroundType.render(this);
-        textField.render(mouseX, mouseY, 0);
+        if (textScale != 1F) {
+            // hacky. we should write our own renderer at some point.
+            float reverse = (1 / textScale) - 1;
+            float yAdd = 4 - (textScale * 8) / 2F;
+            RenderSystem.pushMatrix();
+            RenderSystem.scalef(textScale, textScale, textScale);
+            RenderSystem.translated(textField.x * reverse, (textField.y) * reverse + yAdd * (1 / textScale), 0);
+            textField.render(mouseX, mouseY, 0);
+            RenderSystem.popMatrix();
+        } else {
+            textField.render(mouseX, mouseY, 0);
+        }
         MekanismRenderer.resetColor();
         if (iconType != null) {
             minecraft.textureManager.bindTexture(iconType.getIcon());
@@ -214,6 +251,9 @@ public class GuiTextField extends GuiTexturedElement {
     public void setFocused(boolean focused) {
         super.setFocused(focused);
         textField.setFocused2(focused);
+        if (focused) {
+            guiObj.focusChange(this);
+        }
     }
 
     public boolean canWrite() {
@@ -266,11 +306,21 @@ public class GuiTextField extends GuiTexturedElement {
         }
     }
 
+    private static final int DEFAULT_BORDER_COLOR = 0xA0A0A0;
+    private static final int DEFAULT_BACKGROUND_COLOR = 0x000000;
+
+    private static final IntSupplier SCREEN_COLOR = () -> Color.packOpaque(MekanismConfig.client.guiScreenTextColor.get());
+    private static final IntSupplier DARK_SCREEN_COLOR = () -> Color.argb(SCREEN_COLOR.getAsInt()).darken(0.4).argb();
+
     public enum BackgroundType {
         INNER_SCREEN(field -> GuiUtils.renderBackgroundTexture(GuiInnerScreen.SCREEN, 32, 32, field.x - 1, field.y - 1, field.width + 2, field.height + 2, 256, 256)),
         ELEMENT_HOLDER(field -> GuiUtils.renderBackgroundTexture(GuiElementHolder.HOLDER, 2, 2, field.x - 1, field.y - 1, field.width + 2, field.height + 2, 256, 256)),
         DEFAULT(field -> {
             GuiUtils.fill(field.x - 1, field.y - 1, field.width + 2, field.height + 2, DEFAULT_BORDER_COLOR);
+            GuiUtils.fill(field.x, field.y, field.width, field.height, DEFAULT_BACKGROUND_COLOR);
+        }),
+        DIGITAL(field -> {
+            GuiUtils.fill(field.x - 1, field.y - 1, field.width + 2, field.height + 2, field.textField.isFocused() ? SCREEN_COLOR.getAsInt() : DARK_SCREEN_COLOR.getAsInt());
             GuiUtils.fill(field.x, field.y, field.width, field.height, DEFAULT_BACKGROUND_COLOR);
         }),
         NONE(field -> {});

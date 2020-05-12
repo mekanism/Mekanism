@@ -40,6 +40,13 @@ public class Color {
                     (int) (a + (to.a - a) * scale));
     }
 
+    public Color darken(double amount) {
+        return rgba((int) (r * (1 - amount)),
+                    (int) (g * (1 - amount)),
+                    (int) (b * (1 - amount)),
+                    (int) (a * (1 - amount)));
+    }
+
     public static Color rgba(int r, int g, int b, int a) {
         return new Color(r, g, b, a);
     }

@@ -1,6 +1,9 @@
 package mekanism.client.gui.filter;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IMaterialFilter;
@@ -33,10 +36,21 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
     }
 
     @Override
+    protected void addButtons() {
+        addButton(new GuiInnerScreen(this, 33, 18, 111, 43, () -> {
+            List<ITextComponent> list = new ArrayList<>();
+            list.add(MekanismLang.STATUS.translate(status));
+            list.add(MekanismLang.MATERIAL_FILTER_DETAILS.translate());
+            if (!filter.getMaterialItem().isEmpty()) {
+                list.add(filter.getMaterialItem().getDisplayName());
+            }
+            return list;
+        }).clearFormat());
+    }
+
+    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.MATERIAL_FILTER), 43, 6, titleTextColor());
-        drawString(MekanismLang.STATUS.translate(status), 35, 20, screenTextColor());
-        drawString(MekanismLang.MATERIAL_FILTER_DETAILS.translate(), 35, 32, screenTextColor());
         drawForegroundLayer(mouseX, mouseY);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

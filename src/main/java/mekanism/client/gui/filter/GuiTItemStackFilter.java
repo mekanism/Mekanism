@@ -1,5 +1,7 @@
 package mekanism.client.gui.filter;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTextField;
@@ -95,7 +97,15 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 33, 18, 93, 43));
+        addButton(new GuiInnerScreen(this, 33, 18, 93, 43, () -> {
+            List<ITextComponent> list = new ArrayList<>();
+            list.add(MekanismLang.STATUS.translate(status));
+            list.add(MekanismLang.ITEM_FILTER_DETAILS.translate());
+            if (!filter.getItemStack().isEmpty()) {
+                list.add(filter.getItemStack().getDisplayName());
+            }
+            return list;
+        }).clearFormat());
         addButton(minField = new GuiTextField(this, 149, 19, 20, 11));
         minField.setMaxStringLength(2);
         minField.setInputValidator(InputValidator.DIGIT);
@@ -117,9 +127,6 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         }
         drawString(OnOff.of(filter.fuzzyMode).getTextComponent(), 24, 74, titleTextColor());
         drawTransporterForegroundLayer();
-        if (!filter.getItemStack().isEmpty()) {
-            drawTextScaledBound(filter.getItemStack().getDisplayName(), 35, 41, screenTextColor(), 89);
-        }
     }
 
     @Override

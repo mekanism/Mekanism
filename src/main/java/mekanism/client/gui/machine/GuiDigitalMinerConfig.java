@@ -44,32 +44,29 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 141, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, tile)), getOnHover(MekanismLang.MINER_INVERSE)));
-        addButton(radiusField = new GuiTextField(this, 12, 67, 39, 11));
+        addButton(radiusField = new GuiTextField(this, 13, 67, 38, 11));
         radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
-        radiusField.setEnterHandler(this::setRadius);
         radiusField.setInputValidator(InputValidator.DIGIT);
-        radiusField.addCheckmarkButton(this::setRadius);
-        addButton(minField = new GuiTextField(this, 12, 92, 39, 11));
+        radiusField.configureDigitalBorderInput(this::setRadius);
+        addButton(minField = new GuiTextField(this, 13, 92, 38, 11));
         minField.setMaxStringLength(3);
-        minField.setEnterHandler(this::setMinY);
         minField.setInputValidator(InputValidator.DIGIT);
-        minField.addCheckmarkButton(this::setMinY);
-        addButton(maxField = new GuiTextField(this, 12, 117, 39, 11));
+        minField.configureDigitalBorderInput(this::setMinY);
+        addButton(maxField = new GuiTextField(this, 13, 117, 38, 11));
         maxField.setMaxStringLength(3);
-        maxField.setEnterHandler(this::setMaxY);
         maxField.setInputValidator(InputValidator.DIGIT);
-        maxField.addCheckmarkButton(this::setMaxY);
+        maxField.configureDigitalBorderInput(this::setMaxY);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawTitleText(MekanismLang.MINER_CONFIG.translate(), 6);
-        drawString(MekanismLang.FILTERS.translate(), 11, 19, screenTextColor());
-        drawString(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 11, 28, screenTextColor());
-        drawString(MekanismLang.MINER_IS_INVERSE.translate(OnOff.of(tile.inverse)), 11, 131, screenTextColor());
-        drawString(MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 11, 58, screenTextColor());
-        drawString(MekanismLang.MIN.translate(tile.getMinY()), 11, 83, screenTextColor());
-        drawString(MekanismLang.MAX.translate(tile.getMaxY()), 11, 108, screenTextColor());
+        drawTextWithScale(MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 0.8F);
+        drawTextWithScale(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 14, 31, screenTextColor(), 0.8F);
+        drawTextWithScale(MekanismLang.MINER_IS_INVERSE.translate(OnOff.of(tile.inverse)), 14, 131, screenTextColor(), 0.8F);
+        drawTextWithScale(MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 58, screenTextColor(), 0.8F);
+        drawTextWithScale(MekanismLang.MIN.translate(tile.getMinY()), 14, 83, screenTextColor(), 0.8F);
+        drawTextWithScale(MekanismLang.MAX.translate(tile.getMaxY()), 14, 108, screenTextColor(), 0.8F);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
