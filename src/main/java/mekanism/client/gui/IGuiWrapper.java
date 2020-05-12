@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.element.GuiWindow;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -62,9 +62,13 @@ public interface IGuiWrapper {
         return 0;
     }
 
-    void addElement(GuiTexturedElement e);
+    default void addWindow(GuiWindow window) {
+        Mekanism.logger.error("Tried to call 'addWindow' but unsupported in " + this);
+    }
 
-    void removeElement(GuiTexturedElement e);
+    default void removeWindow(GuiWindow window) {
+        Mekanism.logger.error("Tried to call 'removeWindow' but unsupported in " + this);
+    }
 
     @Nullable
     FontRenderer getFont();

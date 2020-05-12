@@ -1,40 +1,53 @@
 package mekanism.client.gui.element;
 
 import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.button.GuiCloseButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.lib.Color;
 import net.minecraft.inventory.container.Container;
 
-public class GuiOverlayDialog extends GuiTexturedElement {
+public class GuiWindow extends GuiTexturedElement {
 
     private static final Color OVERLAY_COLOR = Color.rgba(60, 60, 60, 128);
+
+    private Runnable closeListener;
 
     private boolean dragging = false;
     private double dragX, dragY;
     private int prevDX, prevDY;
 
-    public GuiOverlayDialog(IGuiWrapper gui, int x, int y, int width, int height) {
-       super(GuiMekanism.BASE_BACKGROUND, gui, x, y, width, height);
-       active = true;
+    protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
+
+    public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height) {
+        super(GuiMekanism.BASE_BACKGROUND, gui, x, y, width, height);
+        isOverlay = true;
+        active = true;
+
+        if (!isFocusOverlay()) {
+            addChild(new GuiCloseButton(gui, gui.getLeft() + x + 6, gui.getTop() + y + 6, this));
+        }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        boolean ret = super.mouseClicked(mouseX, mouseY, button);
         // drag 'safe area'
         if (isMouseOver(mouseX, mouseY)) {
-            if (mouseY < y + 15) {
+            if (mouseY < y + 18) {
                 dragging = true;
                 dragX = mouseX; dragY = mouseY;
                 prevDX = 0; prevDY = 0;
             }
-            super.mouseClicked(mouseX, mouseY, button);
-        } else {
+        } else if (!ret && interactionStrategy.allowContainer()) {
             if (guiObj instanceof GuiMekanism && ((GuiMekanism<?>) guiObj).getContainer() != null) {
                 Container c = ((GuiMekanism<?>) guiObj).getContainer();
                 if (!(c instanceof IEmptyContainer)) {
+                    // allow interaction with slots
                     if (mouseX >= guiObj.getLeft() && mouseX < guiObj.getLeft() + guiObj.getWidth() && mouseY >= guiObj.getTop() + guiObj.getHeight() - 90) {
                         return false;
                     }
@@ -42,7 +55,7 @@ public class GuiOverlayDialog extends GuiTexturedElement {
             }
         }
         // always return true to prevent background clicking
-        return true;
+        return ret || !interactionStrategy.allowAll();
     }
 
     @Override
@@ -67,8 +80,14 @@ public class GuiOverlayDialog extends GuiTexturedElement {
 
     @Override
     public void renderBackgroundOverlay(int mouseX, int mouseY) {
-        if (renderOverlay()) {
+        if (isFocusOverlay()) {
             MekanismRenderer.renderColorOverlay(0, 0, minecraft.getMainWindow().getScaledWidth(), minecraft.getMainWindow().getScaledHeight(), OVERLAY_COLOR.rgba());
+        } else {
+            RenderSystem.color4f(1, 1, 1, 0.75F);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            GuiUtils.renderBackgroundTexture(GuiMekanism.SHADOW, 4, 4, getButtonX() - 3, getButtonY() - 3, getButtonWidth() + 6, getButtonHeight() + 6, 256, 256);
+            MekanismRenderer.resetColor();
         }
         minecraft.textureManager.bindTexture(getResource());
         renderBackgroundTexture(getResource(), 4, 4);
@@ -86,15 +105,43 @@ public class GuiOverlayDialog extends GuiTexturedElement {
         return false;
     }
 
-    protected void close() {
+    public void setListenerTab(GuiInsetElement<?> element) {
+        closeListener = () -> element.active = true;
+    }
+
+    public void renderBlur() {
+        RenderSystem.color4f(1, 1, 1, 0.3F);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        GuiUtils.renderBackgroundTexture(GuiMekanism.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
+        MekanismRenderer.resetColor();
+    }
+
+    public void close() {
         children.forEach(child -> child.onWindowClose());
-        guiObj.removeElement(this);
+        guiObj.removeWindow(this);
         if (guiObj instanceof GuiMekanism) {
             ((GuiMekanism<?>) guiObj).setFocused(null);
         }
+        if (closeListener != null)
+            closeListener.run();
     }
 
-    protected boolean renderOverlay() {
-        return true;
+    protected boolean isFocusOverlay() {
+        return false;
+    }
+
+    public enum InteractionStrategy {
+        NONE,
+        CONTAINER,
+        ALL;
+
+        boolean allowContainer() {
+            return this != NONE;
+        }
+
+        boolean allowAll() {
+            return this == ALL;
+        }
     }
 }

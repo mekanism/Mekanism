@@ -1,5 +1,6 @@
 package mekanism.common.tile.component;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +17,9 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
-import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
+import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -41,7 +43,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileComponentEjector implements ITileComponent, ITrackableContainer {
+public class TileComponentEjector implements ITileComponent, ISpecificContainerTracker {
 
     //TODO: Figure out why these limits for output rates are here/if there should be an upgrade that modifies the output rates
     private static final long GAS_OUTPUT = 256;
@@ -221,12 +223,14 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
     }
 
     @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        container.track(SyncableBoolean.create(this::hasStrictInput, input -> strictInput = input));
-        container.track(SyncableInt.create(() -> TransporterUtils.getColorIndex(outputColor), index -> outputColor = TransporterUtils.readColor(index)));
+    public List<ISyncableData> getSpecificSyncableData() {
+        List<ISyncableData> list = new ArrayList<>();
+        list.add(SyncableBoolean.create(this::hasStrictInput, input -> strictInput = input));
+        list.add(SyncableInt.create(() -> TransporterUtils.getColorIndex(outputColor), index -> outputColor = TransporterUtils.readColor(index)));
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
             int idx = i;
-            container.track(SyncableInt.create(() -> TransporterUtils.getColorIndex(inputColors[idx]), index -> inputColors[idx] = TransporterUtils.readColor(index)));
+            list.add(SyncableInt.create(() -> TransporterUtils.getColorIndex(inputColors[idx]), index -> inputColors[idx] = TransporterUtils.readColor(index)));
         }
+        return list;
     }
 }

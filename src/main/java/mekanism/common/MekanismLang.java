@@ -173,6 +173,7 @@ public enum MekanismLang implements ILangEntry {
     SET("gui", "set"),
     TRUE("gui", "true"),
     FALSE("gui", "false"),
+    CLOSE("gui", "close"),
     RADIATION_DOSE("gui", "radiation_dose"),
     RADIATION_EXPOSURE("gui", "radiation_exposure"),
     //Laser Amplifier

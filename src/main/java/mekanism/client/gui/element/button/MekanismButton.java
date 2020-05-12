@@ -40,7 +40,7 @@ public class MekanismButton extends GuiElement {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         //From AbstractButton
-        if (this.active && this.visible) {
+        if (this.active && this.visible && this.isFocused()) {
             if (keyCode == 257 || keyCode == 32 || keyCode == 335) {
                 playDownSound(Minecraft.getInstance().getSoundHandler());
                 onLeftClick();

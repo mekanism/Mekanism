@@ -1,18 +1,16 @@
 package mekanism.client.gui.element.tab;
 
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiInsetElement;
-import mekanism.common.Mekanism;
+import mekanism.client.gui.element.GuiWindow;
+import mekanism.client.gui.element.custom.GuiTransporterConfig;
 import mekanism.common.MekanismLang;
-import mekanism.common.network.PacketGuiButtonPress;
-import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.tileentity.TileEntity;
 
-public class GuiTransporterConfigTab extends GuiInsetElement<TileEntity> {
+public class GuiTransporterConfigTab extends GuiWindowCreatorTab {
 
-    public GuiTransporterConfigTab(IGuiWrapper gui, TileEntity tile) {
+    public GuiTransporterConfigTab(IGuiWrapper gui, TileEntityMekanism tile) {
         super(MekanismUtils.getResource(ResourceType.GUI, "transporter_config.png"), gui, tile, -26, 34, 26, 18);
     }
 
@@ -22,7 +20,7 @@ public class GuiTransporterConfigTab extends GuiInsetElement<TileEntity> {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.TRANSPORTER_CONFIGURATION, tile));
+    public GuiWindow createWindow() {
+        return new GuiTransporterConfig(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, tile);
     }
 }

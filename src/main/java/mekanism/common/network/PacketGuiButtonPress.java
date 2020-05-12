@@ -20,8 +20,6 @@ import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.MatrixStatsTabContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.QIOFrequencySelectTileContainer;
-import mekanism.common.inventory.container.tile.SideConfigurationContainer;
-import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
 import mekanism.common.inventory.container.tile.filter.DMFilterSelectContainer;
 import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
@@ -202,8 +200,6 @@ public class PacketGuiButtonPress {
             return null;
         }),
         QIO_FREQUENCY_SELECT((tile, extra) -> new ContainerProvider(MekanismLang.QIO_FREQUENCY_SELECT, (i, inv, player) -> new QIOFrequencySelectTileContainer(i, inv, tile))),
-        SIDE_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.SIDE_CONFIG, (i, inv, player) -> new SideConfigurationContainer(i, inv, tile))),
-        TRANSPORTER_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.TRANSPORTER_CONFIG, (i, inv, player) -> new TransporterConfigurationContainer(i, inv, tile))),
         UPGRADE_MANAGEMENT((tile, extra) -> new ContainerProvider(MekanismLang.UPGRADES, (i, inv, player) -> new UpgradeManagementContainer(i, inv, tile))),
         OREDICTIONIFICATOR_FILTER((tile, extra) -> {
             if (tile instanceof TileEntityOredictionificator) {

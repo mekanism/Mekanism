@@ -690,6 +690,7 @@
   "generic.mekanism.with_parenthesis": "%s (%s)",
   "gui.mekanism.chemical_dissolution_chamber.short": "C. Dissolution Chamber",
   "gui.mekanism.chemical_infuser.short": "C. Infuser",
+  "gui.mekanism.close": "Close",
   "gui.mekanism.delay": "Delay: %st",
   "gui.mekanism.dissipated": "Dissipated: %s/t",
   "gui.mekanism.dynamic_tank": "Dynamic Tank",

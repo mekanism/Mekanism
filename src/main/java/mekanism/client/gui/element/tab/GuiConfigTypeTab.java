@@ -3,9 +3,9 @@ package mekanism.client.gui.element.tab;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.gui.GuiSideConfiguration;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
+import mekanism.client.gui.element.custom.GuiSideConfiguration;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -15,9 +15,11 @@ import net.minecraft.util.ResourceLocation;
 public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
 
     private final TransmissionType transmission;
+    private final GuiSideConfiguration config;
 
-    public GuiConfigTypeTab(IGuiWrapper gui, TransmissionType type, int x, int y) {
+    public GuiConfigTypeTab(IGuiWrapper gui, TransmissionType type, int x, int y, GuiSideConfiguration config) {
         super(getResource(type), gui, null, x, y, 26, 18);
+        this.config = config;
         transmission = type;
     }
 
@@ -56,7 +58,7 @@ public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        ((GuiSideConfiguration) guiObj).setCurrentType(transmission);
-        ((GuiSideConfiguration) guiObj).updateTabs();
+        config.setCurrentType(transmission);
+        config.updateTabs();
     }
 }

@@ -22,9 +22,7 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.ModificationStationContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.inventory.container.tile.QIOFrequencySelectTileContainer;
-import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
-import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
 import mekanism.common.inventory.container.tile.filter.DMFilterSelectContainer;
 import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
@@ -169,8 +167,6 @@ public class MekanismContainerTypes {
 
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityBoilerCasing>> BOILER_STATS = CONTAINER_TYPES.registerEmpty("boiler_stats", TileEntityBoilerCasing.class);
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityInductionCasing>> MATRIX_STATS = CONTAINER_TYPES.register("matrix_stats", MatrixStatsTabContainer::new);
-    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityMekanism>> SIDE_CONFIGURATION = CONTAINER_TYPES.register("side_configuration", SideConfigurationContainer::new);
-    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityMekanism>> TRANSPORTER_CONFIGURATION = CONTAINER_TYPES.register("transporter_configuration", TransporterConfigurationContainer::new);
 
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityDigitalMiner>> DIGITAL_MINER_CONFIG = CONTAINER_TYPES.register("digital_miner_config", DigitalMinerConfigContainer::new);
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityLogisticalSorter>> LOGISTICAL_SORTER = CONTAINER_TYPES.registerEmpty(MekanismBlocks.LOGISTICAL_SORTER, TileEntityLogisticalSorter.class);

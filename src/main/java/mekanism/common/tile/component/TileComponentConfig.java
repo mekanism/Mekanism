@@ -13,8 +13,9 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
+import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -32,7 +33,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileComponentConfig implements ITileComponent, ITrackableContainer {
+public class TileComponentConfig implements ITileComponent, ISpecificContainerTracker {
 
     public TileEntityMekanism tile;
     private Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
@@ -277,11 +278,13 @@ public class TileComponentConfig implements ITileComponent, ITrackableContainer 
     }
 
     @Override
-    public void addContainerTrackers(MekanismContainer container) {
+    public List<ISyncableData> getSpecificSyncableData() {
+        List<ISyncableData> list = new ArrayList<>();
         List<TransmissionType> transmissions = getTransmissions();
         for (TransmissionType transmission : transmissions) {
             ConfigInfo info = configInfo.get(transmission);
-            container.track(SyncableBoolean.create(info::isEjecting, info::setEjecting));
+            list.add(SyncableBoolean.create(info::isEjecting, info::setEjecting));
         }
+        return list;
     }
 }

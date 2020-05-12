@@ -2,7 +2,9 @@ package mekanism.client.gui;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,8 +13,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
-import mekanism.client.gui.element.GuiOverlayDialog;
-import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.render.IFancyFontRenderer;
@@ -23,6 +24,7 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.lib.LRU;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -45,10 +47,14 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     public static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
+    public static final ResourceLocation SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
+    public static final ResourceLocation BLUR = MekanismUtils.getResource(ResourceType.GUI, "blur.png");
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
-    protected List<GuiOverlayDialog> overlays = new ArrayList<>();
+    protected LRU<GuiWindow> windows = new LRU<>();
     protected List<GuiElement> focusListeners = new ArrayList<>();
+
+    public static int maxZOffset;
 
     protected GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -66,11 +72,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void tick() {
         super.tick();
-        for (Widget widget : this.buttons) {
-            if (widget instanceof GuiElement) {
-                ((GuiElement) widget).tick();
-            }
-        }
+        children.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(child -> child.tick());
     }
 
     protected void initPreSlots() {
@@ -100,11 +102,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public void focusChange(GuiElement changed) {
-        for (GuiElement element : focusListeners) {
-            if (element != changed) {
-                element.setFocused(false);
-            }
-        }
+        focusListeners.stream().filter(e -> e != changed).forEach(e -> e.setFocused(false));
     }
 
     @Override
@@ -118,6 +116,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeftIn, int guiTopIn, int mouseButton) {
+        return !windows.stream().anyMatch(w -> w.isMouseOver(mouseX, mouseY)) &&
+               super.hasClickedOutside(mouseX, mouseY, guiLeftIn, guiTopIn, mouseButton);
+    }
+
+    @Override
     public void resize(Minecraft minecraft, int sizeX, int sizeY) {
         List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
         for (int i = 0; i < buttons.size(); i++) {
@@ -126,8 +130,16 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 prevElements.add(Pair.of(i, (GuiElement) widget));
             }
         }
-        focusListeners.clear();
+        // flush the focus listeners list unless it's an overlay
+        focusListeners.removeIf(element -> !element.isOverlay);
+        int prevLeft = getGuiLeft(), prevTop = getGuiTop();
         init(minecraft, sizeX, sizeY);
+
+        windows.forEach(window -> {
+            window.resize(prevLeft, prevTop, getGuiLeft(), getGuiTop());
+            children.add(window);
+        });
+
         prevElements.forEach(e -> {
             if (e.getLeft() < buttons.size()) {
                 Widget widget = buttons.get(e.getLeft());
@@ -144,34 +156,67 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         // first render general foregrounds
+        maxZOffset = 200;
         int zOffset = 200;
         for (Widget widget : this.buttons) {
             if (widget instanceof GuiElement) {
-                if (widget instanceof GuiOverlayDialog) {
-                    zOffset += 200;
-                }
-                ((GuiElement) widget).onRenderForeground(mouseX, mouseY, zOffset);
+                RenderSystem.pushMatrix();
+                ((GuiElement) widget).onRenderForeground(mouseX, mouseY, zOffset, zOffset);
+                RenderSystem.popMatrix();
             }
         }
-        // then render tooltips, so there's no clashing
-        for (int i = buttons.size() - 1; i >= 0; i--) {
-            Widget widget = buttons.get(i);
-            if (widget instanceof GuiElement && widget.isMouseOver(mouseX, mouseY)) {
-                RenderSystem.translated(0, 0, 400);
-                ((GuiElement) widget).renderToolTip(xAxis, yAxis);
-                RenderSystem.translated(0, 0, -400);
+        // now render overlays in reverse-order (i.e. back to front)
+        zOffset = maxZOffset;
+        for (LRU<GuiWindow>.LRUIterator iter = windows.descendingIterator(); iter.hasNext();) {
+            GuiWindow overlay = iter.next();
+            zOffset += 150;
+            RenderSystem.pushMatrix();
+            overlay.onRenderForeground(mouseX, mouseY, zOffset, zOffset);
+            if (iter.hasNext()) {
+                // if this isn't the focused window, render a 'blur' effect over it
+                overlay.renderBlur();
             }
-            if (widget instanceof GuiOverlayDialog) {
-                break;
+            RenderSystem.popMatrix();
+        }
+        // then render tooltips, translating above max z offset to prevent clashing
+        GuiElement tooltipElement = windows.stream().filter(window -> window.isMouseOver(mouseX, mouseY)).findFirst().orElse(null);
+        if (tooltipElement == null) {
+            for (int i = buttons.size() - 1; i >= 0; i--) {
+                Widget widget = buttons.get(i);
+                if (widget instanceof GuiElement && widget.isMouseOver(mouseX, mouseY)) {
+                    tooltipElement = (GuiElement) widget;
+                    break;
+                }
             }
+        }
+        if (tooltipElement != null) {
+            RenderSystem.translated(0, 0, maxZOffset + 50);
+            tooltipElement.renderToolTip(xAxis, yAxis);
+            RenderSystem.translated(0, 0, maxZOffset - 50);
         }
     }
 
-    // override this to traverse in reverse order (so stacked or overlaying GUI elements receive clicks first)
+    @Override
+    public Optional<IGuiEventListener> getEventListenerForPos(double mouseX, double mouseY) {
+        GuiWindow window = windows.stream().filter(w -> w.isMouseOver(mouseX, mouseY)).findFirst().orElse(null);
+        return window != null ? Optional.of(window) : super.getEventListenerForPos(mouseX, mouseY);
+     }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        for (int i = children().size() - 1; i >= 0; i--) {
-            IGuiEventListener listener = children().get(i);
+        // first try to send the mouse event to our overlays
+        GuiWindow focused = windows.stream().filter(overlay -> overlay.mouseClicked(mouseX, mouseY, button)).findFirst().orElse(null);
+        if (focused != null) {
+            setFocused(focused);
+            if (button == 0) {
+                setDragging(true);
+            }
+            windows.moveUp(focused);
+            return true;
+        }
+        // otherwise we send it to the current element
+        for (int i = buttons.size() - 1; i >= 0; i--) {
+            IGuiEventListener listener = buttons.get(i);
             if (listener.mouseClicked(mouseX, mouseY, button)) {
                 setFocused(listener);
                 if (button == 0) {
@@ -185,13 +230,16 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return GuiUtils.checkChildren(buttons, (child) -> child.keyPressed(keyCode, scanCode, modifiers)) ||
-              super.keyPressed(keyCode, scanCode, modifiers);
+        return windows.stream().anyMatch(window -> window.keyPressed(keyCode, scanCode, modifiers)) ||
+               GuiUtils.checkChildren(buttons, (child) -> child.keyPressed(keyCode, scanCode, modifiers)) ||
+               super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        return GuiUtils.checkChildren(buttons, (child) -> child.charTyped(c, keyCode)) || super.charTyped(c, keyCode);
+        return windows.stream().anyMatch(window -> window.charTyped(c, keyCode)) ||
+               GuiUtils.checkChildren(buttons, (child) -> child.charTyped(c, keyCode)) ||
+               super.charTyped(c, keyCode);
     }
 
     /**
@@ -211,7 +259,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     protected boolean isPointInRegion(int x, int y, int width, int height, double mouseX, double mouseY) {
         // overridden to prevent slot interactions when a GuiElement is blocking
         return super.isPointInRegion(x, y, width, height, mouseX, mouseY) &&
-              !buttons.stream().anyMatch(button -> button.isMouseOver(mouseX, mouseY));
+               !windows.stream().anyMatch(window -> window.isMouseOver(mouseX, mouseY)) &&
+               !buttons.stream().anyMatch(button -> button.isMouseOver(mouseX, mouseY));
     }
 
     protected void addSlots() {
@@ -283,9 +332,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground();
+        // shift back a whole lot so we can stack more windows
+        RenderSystem.translated(0, 0, -500D);
+        renderBackground();
         super.render(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
+        renderHoveredToolTip(mouseX, mouseY);
+        RenderSystem.translated(0, 0, 500D);
     }
 
     @Override
@@ -344,14 +396,17 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void addElement(GuiTexturedElement e) {
-        addButton(e);
+    public void addWindow(GuiWindow window) {
+        windows.add(window);
     }
 
     @Override
-    public void removeElement(GuiTexturedElement e) {
-        buttons.remove(e);
-        children.remove(e);
+    public void removeWindow(GuiWindow window) {
+        windows.remove(window);
+    }
+
+    public Collection<GuiWindow> getWindows() {
+        return windows;
     }
 
     //Some blit param namings

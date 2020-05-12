@@ -7,7 +7,7 @@ import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.common.MekanismLang;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiConfirmationDialog extends GuiOverlayDialog {
+public class GuiConfirmationDialog extends GuiWindow {
 
     private ITextComponent title;
 
@@ -26,13 +26,24 @@ public class GuiConfirmationDialog extends GuiOverlayDialog {
     }
 
     public static void show(IGuiWrapper gui, ITextComponent title, Runnable onConfirm, DialogType type) {
-        gui.addElement(new GuiConfirmationDialog(gui, gui.getWidth() / 2 - 140 / 2, gui.getHeight() / 2 - 64 / 2, 140, 64, title, onConfirm, type));
+        gui.addWindow(new GuiConfirmationDialog(gui, gui.getWidth() / 2 - 140 / 2, gui.getHeight() / 2 - 64 / 2, 140, 64, title, onConfirm, type));
     }
 
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
         drawWrappedCenteredText(title.getString(), relativeX + (width / 2), relativeY + 10, titleTextColor(), width - 10);
+    }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        // only allow clicks here
+        return true;
+    }
+
+    @Override
+    protected boolean isFocusOverlay() {
+        return true;
     }
 
     public enum DialogType {

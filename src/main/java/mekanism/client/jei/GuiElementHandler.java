@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.element.GuiWindow;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -22,6 +24,14 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
                 GuiTexturedElement element = (GuiTexturedElement) child;
                 //TODO: Only add this to the "extra areas" if it goes past the border
                 extraAreas.add(new Rectangle2d(element.x, element.y, element.getWidth(), element.getHeight()));
+            }
+        }
+        for (GuiWindow window : (Collection<GuiWindow>) gui.getWindows()) {
+            extraAreas.add(new Rectangle2d(window.x, window.y, window.getWidth(), window.getHeight()));
+            for (GuiElement element : window.children()) {
+                if (element instanceof GuiTexturedElement) {
+                    extraAreas.add(new Rectangle2d(element.x, element.y, element.getWidth(), element.getHeight()));
+                }
             }
         }
         return extraAreas;

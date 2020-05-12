@@ -3,9 +3,12 @@ package mekanism.client.gui.element;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
+import mekanism.api.text.ILangEntry;
+import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.IFancyFontRenderer;
@@ -35,6 +38,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     protected final IGuiWrapper guiObj;
 
     protected boolean playClickSound;
+    public boolean isOverlay;
 
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, String text) {
         super(x, y, width, height, text);
@@ -43,10 +47,23 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     protected void addChild(GuiElement element) {
         children.add(element);
+        if (isOverlay) {
+            element.isOverlay = true;
+        }
+    }
+
+    public List<GuiElement> children() {
+        return children;
     }
 
     public void tick() {
         children.forEach(child -> child.tick());
+    }
+
+    public void resize(int prevLeft, int prevTop, int left, int top) {
+        x = x - prevLeft + left;
+        y = y - prevTop + top;
+        children.forEach(child -> child.resize(prevLeft, prevTop, left, top));
     }
 
     @Override
@@ -68,6 +85,18 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         children.forEach(child -> child.onWindowClose());
     }
 
+    protected ResourceLocation getButtonLocation(String name) {
+        return MekanismUtils.getResource(ResourceType.GUI_BUTTON, name + ".png");
+    }
+
+    protected IHoverable getOnHover(ILangEntry translationHelper) {
+        return getOnHover((Supplier<ITextComponent>) translationHelper::translate);
+    }
+
+    protected IHoverable getOnHover(Supplier<ITextComponent> componentSupplier) {
+        return (onHover, xAxis, yAxis) -> displayTooltip(componentSupplier.get(), xAxis, yAxis);
+    }
+
     public boolean hasPersistentData() {
         return children.stream().anyMatch(child -> child.hasPersistentData());
     }
@@ -76,9 +105,10 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         children.forEach(child -> child.syncFrom(element));
     }
 
-    public void onRenderForeground(int mouseX, int mouseY, int zOffset) {
-        RenderSystem.pushMatrix();
+    public void onRenderForeground(int mouseX, int mouseY, int zOffset, int totalOffset) {
         RenderSystem.translatef(0, 0, zOffset);
+        // update the max total offset to prevent clashing of future overlays
+        GuiMekanism.maxZOffset = Math.max(totalOffset, GuiMekanism.maxZOffset);
         // fix render offset for background drawing
         RenderSystem.translatef(-guiObj.getLeft(), -guiObj.getTop(), 0);
         // render background overlay and children above everything else
@@ -89,8 +119,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         RenderSystem.translatef(guiObj.getLeft(), guiObj.getTop(), 0);
         renderForeground(mouseX, mouseY);
         // translate forward to render child foreground
-        children.forEach(child -> child.onRenderForeground(mouseX, mouseY, 50));
-        RenderSystem.popMatrix();
+        children.forEach(child -> child.onRenderForeground(mouseX, mouseY, 50, totalOffset + 50));
     }
 
     public void renderForeground(int mouseX, int mouseY) {

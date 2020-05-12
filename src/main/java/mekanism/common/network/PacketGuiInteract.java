@@ -6,6 +6,8 @@ import mekanism.api.Upgrade;
 import mekanism.api.functions.TriConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -137,6 +139,21 @@ public class PacketGuiInteract {
     }
 
     public enum GuiInteraction {//TODO: Cleanup this enum/the elements in it as it is rather disorganized order wise currently
+        CONTAINER_STOP_TRACKING((tile, player, extra) -> {
+            if (player.openContainer instanceof MekanismContainer) {
+                ((MekanismContainer) player.openContainer).stopTracking(extra);
+            }
+        }),
+        CONTAINER_TRACK_EJECTOR((tile, player, extra) -> {
+            if (player.openContainer instanceof MekanismContainer && tile instanceof ISideConfiguration) {
+                ((MekanismContainer) player.openContainer).startTracking(extra, ((ISideConfiguration) tile).getEjector());
+            }
+        }),
+        CONTAINER_TRACK_SIDE_CONFIG((tile, player, extra) -> {
+            if (player.openContainer instanceof MekanismContainer && tile instanceof ISideConfiguration) {
+                ((MekanismContainer) player.openContainer).startTracking(extra, ((ISideConfiguration) tile).getConfig());
+            }
+        }),
         QIO_REDSTONE_ADAPTER_COUNT((tile, player, extra) -> {
             if (tile instanceof TileEntityQIORedstoneAdapter) {
                 ((TileEntityQIORedstoneAdapter) tile).handleCountChange(extra);

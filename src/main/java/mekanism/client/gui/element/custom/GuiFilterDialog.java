@@ -2,12 +2,12 @@ package mekanism.client.gui.element.custom;
 
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiOverlayDialog;
+import mekanism.client.gui.element.GuiWindow;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class GuiFilterDialog<FILTER extends IFilter<FILTER>> extends GuiOverlayDialog {
+public abstract class GuiFilterDialog<FILTER extends IFilter<FILTER>> extends GuiWindow {
 
     protected ITextComponent status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
     protected FILTER origFilter;
@@ -44,11 +44,6 @@ public abstract class GuiFilterDialog<FILTER extends IFilter<FILTER>> extends Gu
         } else {
             status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
         }
-    }
-
-    @Override
-    protected boolean renderOverlay() {
-        return false;
     }
 
     public abstract FILTER createNewFilter();

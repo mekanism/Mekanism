@@ -94,16 +94,16 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                   }));
         }
         addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
-            () -> addButton(GuiItemStackFilterDialog.create(this, tile))));
+            () -> addWindow(GuiItemStackFilterDialog.create(this, tile))));
         addButton(new TranslationButton(this, getGuiLeft() + 81, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_TAG_FILTER,
-            () -> addButton(GuiTagFilterDialog.create(this, tile))));
+            () -> addWindow(GuiTagFilterDialog.create(this, tile))));
     }
 
     protected void onClick(IFilter<?> filter, int index) {
         if (filter instanceof IItemStackFilter) {
-            addElement(GuiItemStackFilterDialog.edit(this, tile, (QIOItemStackFilter) filter));
+            addWindow(GuiItemStackFilterDialog.edit(this, tile, (QIOItemStackFilter) filter));
         } else if (filter instanceof ITagFilter) {
-            addElement(GuiTagFilterDialog.edit(this, tile, (QIOTagFilter) filter));
+            addWindow(GuiTagFilterDialog.edit(this, tile, (QIOTagFilter) filter));
         }
     }
 

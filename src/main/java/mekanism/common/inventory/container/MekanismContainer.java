@@ -2,8 +2,10 @@ package mekanism.common.inventory.container;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -60,6 +62,7 @@ public abstract class MekanismContainer extends Container {
     protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
     protected final List<OffhandSlot> offhandSlots = new ArrayList<>();
     private final List<ISyncableData> trackedData = new ArrayList<>();
+    private Map<Object, List<ISyncableData>> specificTrackedData = new Object2ObjectOpenHashMap<>();
 
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv) {
         super(type.getContainerType(), id);
@@ -98,6 +101,20 @@ public abstract class MekanismContainer extends Container {
         if (inv != null) {
             addInventorySlots(inv);
             openInventory(inv);
+        }
+    }
+
+    public void startTracking(Object key, ISpecificContainerTracker tracker) {
+        List<ISyncableData> list = tracker.getSpecificSyncableData();
+        list.forEach(data -> track(data));
+        specificTrackedData.put(key, list);
+    }
+
+    public void stopTracking(Object key) {
+        List<ISyncableData> list = specificTrackedData.get(key);
+        if (list != null) {
+            list.forEach(data -> trackedData.remove(data));
+            specificTrackedData.remove(key);
         }
     }
 
@@ -460,4 +477,9 @@ public abstract class MekanismContainer extends Container {
         }
     }
     //End container sync management
+
+    public interface ISpecificContainerTracker {
+
+        List<ISyncableData> getSpecificSyncableData();
+    }
 }

@@ -548,6 +548,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SET, "Set:");
         add(MekanismLang.TRUE, "True");
         add(MekanismLang.FALSE, "False");
+        add(MekanismLang.CLOSE, "Close");
         add(MekanismLang.RADIATION_DOSE, "Radiation Dose: %s");
         add(MekanismLang.RADIATION_EXPOSURE, "Radiation Exposure: %s");
         //Laser Amplifier

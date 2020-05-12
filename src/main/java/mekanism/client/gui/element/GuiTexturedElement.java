@@ -26,4 +26,10 @@ public abstract class GuiTexturedElement extends GuiElement {
 
         List<ITextComponent> getInfo();
     }
+
+    @Override
+    public void drawCenteredTextScaledBound(ITextComponent text, float maxLength, float y, int color) {
+        float scale = Math.min(1, maxLength / getStringWidth(text));
+        drawScaledCenteredText(text, relativeX + getXSize() / 2F, relativeY + y, color, scale);
+    }
 }
