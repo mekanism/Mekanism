@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -130,9 +131,21 @@ public class ConfigInfo {
     }
 
     public Set<Direction> getSidesForData(@Nonnull DataType dataType) {
+        return getSides(type -> type.equals(dataType));
+    }
+
+    public Set<Direction> getSides(Predicate<DataType> predicate) {
         Direction facing = facingSupplier.get();
-        return sideConfig.entrySet().stream().filter(entry -> entry.getValue().equals(dataType)).map(entry ->
+        return sideConfig.entrySet().stream().filter(entry -> predicate.test(entry.getValue())).map(entry ->
               entry.getKey().getDirection(facing)).collect(Collectors.toCollection(() -> EnumSet.noneOf(Direction.class)));
+    }
+
+    public Set<Direction> getAllOutputtingSides() {
+        return getSides(type -> type.canOutput());
+    }
+
+    public Set<Direction> getSidesForOutput(DataType outputType) {
+        return getSides(type -> type.equals(outputType) || type.equals(DataType.INPUT_OUTPUT));
     }
 
     /**

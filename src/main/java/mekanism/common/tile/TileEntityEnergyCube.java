@@ -23,7 +23,6 @@ import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.component.config.DataType;
 import mekanism.common.upgrade.EnergyCubeUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CableUtils;
@@ -98,7 +97,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         if (!energyContainer.isEmpty() && MekanismUtils.canFunction(this)) {
             ConfigInfo info = configComponent.getConfig(TransmissionType.ENERGY);
             if (info != null && info.isEjecting()) {
-                CableUtils.emit(info.getSidesForData(DataType.OUTPUT), energyContainer, this, tier.getOutput());
+                CableUtils.emit(info.getAllOutputtingSides(), energyContainer, this, tier.getOutput());
             }
         }
         float newScale = MekanismUtils.getScale(prevScale, energyContainer);

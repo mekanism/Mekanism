@@ -1,6 +1,7 @@
 package mekanism.common.tile.component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             } else {
                 tickDelay--;
             }
+
             eject(TransmissionType.GAS);
             eject(TransmissionType.FLUID);
         }
@@ -86,13 +88,17 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private void eject(TransmissionType type) {
         ConfigInfo info = configInfo.get(type);
         if (info != null && info.isEjecting()) {
-            ISlotInfo slotInfo = info.getSlotInfo(DataType.OUTPUT);
-            if (slotInfo != null) {
-                Set<Direction> outputSides = info.getSidesForData(DataType.OUTPUT);
-                if (type == TransmissionType.GAS && slotInfo instanceof GasSlotInfo) {
-                    ((GasSlotInfo) slotInfo).getTanks().forEach(tank -> GasUtils.emit(outputSides, tank, tile, GAS_OUTPUT));
-                } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo) {
-                    ((FluidSlotInfo) slotInfo).getTanks().forEach(tank -> FluidUtils.emit(outputSides, tank, tile, FLUID_OUTPUT));
+            for (DataType dataType : info.getSupportedDataTypes()) {
+                if (dataType.canOutput()) {
+                    ISlotInfo slotInfo = info.getSlotInfo(dataType);
+                    if (slotInfo != null) {
+                        Set<Direction> outputSides = info.getSidesForData(dataType);
+                        if (type == TransmissionType.GAS && slotInfo instanceof GasSlotInfo) {
+                            ((GasSlotInfo) slotInfo).getTanks().forEach(tank -> GasUtils.emit(outputSides, tank, tile, GAS_OUTPUT));
+                        } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo) {
+                            ((FluidSlotInfo) slotInfo).getTanks().forEach(tank -> FluidUtils.emit(outputSides, tank, tile, FLUID_OUTPUT));
+                        }
+                    }
                 }
             }
         }
@@ -103,49 +109,56 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         if (info == null || !info.isEjecting()) {
             return;
         }
-        //TODO: Do we want to check ejecting for EACH data type that is there, if the slot allows outputting, or do we just want to then check DataType.OUTPUT
-        // For now just doing the specific output type because it makes more sense
-        ISlotInfo slotInfo = info.getSlotInfo(DataType.OUTPUT);
-        if (!(slotInfo instanceof InventorySlotInfo)) {
-            //We need it to be inventory slot info
-            return;
-        }
-        Set<Direction> outputs = info.getSidesForData(DataType.OUTPUT);
-        if (!outputs.isEmpty()) {
-            TransitRequest ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo);
-            if (!ejectMap.isEmpty()) {
-                for (Direction side : outputs) {
-                    TileEntity tile = MekanismUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
-                    if (tile == null) {
-                        //If the spot is not loaded just skip trying to eject to it
-                        continue;
-                    }
-                    TransitResponse response;
-                    Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()));
-                    if (capability.isPresent()) {
-                        response = capability.get().insert(this.tile, ejectMap, outputColor, true, 0);
-                    } else {
-                        response = InventoryUtils.putStackInInventory(tile, ejectMap, side, false);
-                    }
-                    if (!response.isEmpty()) {
-                        // use the items returned by the TransitResponse; will be visible next loop
-                        response.use(this.tile, side);
-                        if (ejectMap.isEmpty()) {
-                            //If we are out of items to eject, break
-                            break;
+        for (DataType dataType : info.getSupportedDataTypes()) {
+            if (!dataType.canOutput()) {
+                continue;
+            }
+            ISlotInfo slotInfo = info.getSlotInfo(dataType);
+            if (!(slotInfo instanceof InventorySlotInfo)) {
+                //We need it to be inventory slot info
+                return;
+            }
+            Set<Direction> outputs = info.getSidesForData(dataType);
+            if (!outputs.isEmpty()) {
+                TransitRequest ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo);
+                if (!ejectMap.isEmpty()) {
+                    for (Direction side : outputs) {
+                        TileEntity tile = MekanismUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
+                        if (tile == null) {
+                            //If the spot is not loaded just skip trying to eject to it
+                            continue;
+                        }
+                        TransitResponse response;
+                        Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()));
+                        if (capability.isPresent()) {
+                            response = capability.get().insert(this.tile, ejectMap, outputColor, true, 0);
+                        } else {
+                            response = InventoryUtils.putStackInInventory(tile, ejectMap, side, false);
+                        }
+                        if (!response.isEmpty()) {
+                            // use the items returned by the TransitResponse; will be visible next loop
+                            response.use(this.tile, side);
+                            if (ejectMap.isEmpty()) {
+                                //If we are out of items to eject, break
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
+
         tickDelay = 10;
     }
 
     private TransitRequest getEjectItemMap(InventorySlotInfo slotInfo) {
         TransitRequest request = new TransitRequest();
         List<IInventorySlot> slots = slotInfo.getSlots();
-        for (int index = 0; index < slots.size(); index++) {
-            IInventorySlot slot = slots.get(index);
+        // shuffle the order we look at our slots to avoid ejection patterns
+        List<IInventorySlot> shuffled = new ArrayList<>(slots);
+        Collections.shuffle(shuffled);
+        for (int index = 0; index < shuffled.size(); index++) {
+            IInventorySlot slot = shuffled.get(index);
             //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
             ItemStack simulatedExtraction = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.EXTERNAL);
             if (!simulatedExtraction.isEmpty()) {

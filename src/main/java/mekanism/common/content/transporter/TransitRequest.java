@@ -1,11 +1,11 @@
 package mekanism.common.content.transporter;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.util.InventoryUtils;
@@ -22,7 +22,7 @@ public class TransitRequest {
     /**
      * Maps item types to respective inventory slot data.
      */
-    private Map<HashedItem, SlotData> itemMap = new Object2ObjectOpenHashMap<>();
+    private Map<HashedItem, SlotData> itemMap = new LinkedHashMap<>();
 
     public static TransitRequest getFromTransport(TransporterStack stack) {
         return getFromStack(stack.itemStack);

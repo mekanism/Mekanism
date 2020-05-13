@@ -170,7 +170,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         if (hasFrequency()) {
             ConfigInfo info = configComponent.getConfig(TransmissionType.ENERGY);
             if (info != null && info.isEjecting()) {
-                CableUtils.emit(info.getSidesForData(DataType.OUTPUT), getFreq().storedEnergy, this);
+                CableUtils.emit(info.getAllOutputtingSides(), getFreq().storedEnergy, this);
             }
         }
         updateHeatCapacitors(null); // manually trigger heat capacitor update

@@ -1,6 +1,5 @@
 package mekanism.common.tile.machine;
 
-import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -42,7 +41,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 
 public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> {
@@ -172,7 +170,6 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
         }
         //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
         clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
-        GasUtils.emit(EnumSet.of(getDirection()), centerTank, this, gasOutput);
     }
 
     @Nonnull

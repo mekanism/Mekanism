@@ -46,7 +46,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.FluidUtils;
@@ -166,7 +165,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
             // emit
             ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
             if (config != null && config.isEjecting()) {
-                GasUtils.emit(config.getSidesForData(DataType.OUTPUT), gasTank, this, gasOutput);
+                GasUtils.emit(config.getAllOutputtingSides(), gasTank, this, gasOutput);
             }
         } else {//Gas to Fluid
             gasOutputSlot.fillTank();
@@ -174,7 +173,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
             // emit
             ConfigInfo config = configComponent.getConfig(TransmissionType.FLUID);
             if (config != null && config.isEjecting()) {
-                FluidUtils.emit(config.getSidesForData(DataType.OUTPUT), fluidTank, this, fluidOutput);
+                FluidUtils.emit(config.getAllOutputtingSides(), fluidTank, this, fluidOutput);
             }
         }
         FloatingLong prev = energyContainer.getEnergy().copyAsConst();

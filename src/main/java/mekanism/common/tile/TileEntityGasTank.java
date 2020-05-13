@@ -35,7 +35,6 @@ import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.upgrade.GasTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
@@ -114,7 +113,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
         if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
             ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
             if (config != null && config.isEjecting()) {
-                GasUtils.emit(config.getSidesForData(DataType.OUTPUT), gasTank, this, tier.getOutput());
+                GasUtils.emit(config.getAllOutputtingSides(), gasTank, this, tier.getOutput());
             }
         }
 

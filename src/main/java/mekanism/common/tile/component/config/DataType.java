@@ -46,6 +46,10 @@ public enum DataType implements IIncrementalEnum<DataType>, IHasTranslationKey {
         return byIndexStatic(index);
     }
 
+    public boolean canOutput() {
+        return this == OUTPUT || this == INPUT_OUTPUT || this == OUTPUT_1 || this == OUTPUT_2;
+    }
+
     public static DataType byIndexStatic(int index) {
         return MathUtils.getByIndexMod(TYPES, index);
     }
