@@ -129,4 +129,8 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         }
         heatCapacity = newCapacity;
     }
+
+    public void setHeatCapacityFromPacket(double newCapacity) {
+        heatCapacity = newCapacity;
+    }
 }

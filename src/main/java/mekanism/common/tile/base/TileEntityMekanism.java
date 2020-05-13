@@ -77,6 +77,7 @@ import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInfusionStack;
+import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
@@ -580,6 +581,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {
+        // setup dynamic container syncing
+        SyncMapper.setup(container, this);
+
         for (ITileComponent component : components) {
             component.trackForMainContainer(container);
         }

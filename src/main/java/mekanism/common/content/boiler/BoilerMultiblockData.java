@@ -24,6 +24,7 @@ import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -48,22 +49,28 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
 
     public static final double COOLANT_COOLING_EFFICIENCY = 0.4;
 
-    public MultiblockGasTank<TileEntityBoilerCasing> superheatedCoolantTank;
-    public MultiblockGasTank<TileEntityBoilerCasing> cooledCoolantTank;
-
+    @ContainerSync
+    public MultiblockGasTank<TileEntityBoilerCasing> superheatedCoolantTank, cooledCoolantTank;
+    @ContainerSync
     public MultiblockFluidTank<TileEntityBoilerCasing> waterTank;
+    @ContainerSync
     public MultiblockGasTank<TileEntityBoilerCasing> steamTank;
+    @ContainerSync
     public MultiblockHeatCapacitor<TileEntityBoilerCasing> heatCapacitor;
 
+    @ContainerSync
     public double lastEnvironmentLoss;
-    public int lastBoilRate;
-    public int lastMaxBoil;
+    @ContainerSync
+    public int lastBoilRate, lastMaxBoil;
 
     public boolean clientHot;
-
+    @ContainerSync
     public int superheatingElements;
 
-    private int waterVolume, steamVolume;
+    @ContainerSync(setter = "setWaterVolume")
+    private int waterVolume;
+    @ContainerSync(setter = "setSteamVolume")
+    private int steamVolume;
 
     private int waterTankCapacity;
     private long superheatedCoolantCapacity, steamTankCapacity, cooledCoolantCapacity;

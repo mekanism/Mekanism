@@ -16,10 +16,7 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
-import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.multiblock.IValveHandler;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
@@ -30,7 +27,6 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultiblockData> implements IValveHandler {
 
@@ -208,65 +204,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getWaterVolume(), value -> {
-            if (structure != null) {
-                structure.setWaterVolume(value);
-            }
-        }));
-        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getSteamVolume(), value -> {
-            if (structure != null) {
-                structure.setSteamVolume(value);
-            }
-        }));
-        container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.superheatedCoolantTank.getStack(), value -> {
-            if (structure != null) {
-                structure.superheatedCoolantTank.setStack(value);
-            }
-        }));
-        container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.waterTank.getFluid(), value -> {
-            if (structure != null) {
-                structure.waterTank.setStack(value);
-            }
-        }));
-        container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.steamTank.getStack(), value -> {
-            if (structure != null) {
-                structure.steamTank.setStack(value);
-            }
-        }));
-        container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.cooledCoolantTank.getStack(), value -> {
-            if (structure != null) {
-                structure.cooledCoolantTank.setStack(value);
-            }
-        }));
-        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> {
-            if (structure != null) {
-                structure.lastEnvironmentLoss = value;
-            }
-        }));
-        container.track(SyncableInt.create(this::getLastBoilRate, value -> {
-            if (structure != null) {
-                structure.lastBoilRate = value;
-            }
-        }));
-        container.track(SyncableInt.create(this::getSuperheatingElements, value -> {
-            if (structure != null) {
-                structure.superheatingElements = value;
-            }
-        }));
-        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.heatCapacitor.getHeat(), value -> {
-            if (structure != null) {
-                structure.heatCapacitor.setHeat(value);
-            }
-        }));
-        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.heatCapacitor.getHeatCapacity(), value -> {
-            if (structure != null) {
-                structure.heatCapacitor.setHeatCapacity(value, false);
-            }
-        }));
-        container.track(SyncableInt.create(this::getLastMaxBoil, value -> {
-            if (structure != null) {
-                structure.lastMaxBoil = value;
-            }
-        }));
+        SyncMapper.setupProxy(container, BoilerMultiblockData.class, () -> structure);
     }
 }

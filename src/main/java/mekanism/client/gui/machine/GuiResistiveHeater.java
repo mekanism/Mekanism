@@ -54,6 +54,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setInputValidator(InputValidator.DIGIT);
         energyUsageField.configureDigitalInput(this::setEnergyUsage);
+        energyUsageField.setFocused(true);
     }
 
     @Override
