@@ -1,6 +1,7 @@
 package mekanism.common.tile.component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
@@ -21,6 +26,10 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.BaseSlotInfo;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
+import mekanism.common.tile.component.config.slot.FluidSlotInfo;
+import mekanism.common.tile.component.config.slot.GasSlotInfo;
+import mekanism.common.tile.component.config.slot.HeatSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
@@ -124,31 +133,36 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return configInfo.get(type);
     }
 
-    public ConfigInfo setupInputConfig(TransmissionType type, BaseSlotInfo slotInfo) {
+    public ConfigInfo setupInputConfig(TransmissionType type, Object container) {
         ConfigInfo config = getConfig(type);
         if (config != null) {
-            config.addSlotInfo(DataType.INPUT, slotInfo);
+            config.addSlotInfo(DataType.INPUT, createInfo(type, true, false, container));
             config.fill(DataType.INPUT);
             config.setCanEject(false);
         }
         return config;
     }
 
-    public ConfigInfo setupOutputConfig(TransmissionType type, BaseSlotInfo slotInfo, RelativeSide... sides) {
+    public ConfigInfo setupOutputConfig(TransmissionType type, Object container, RelativeSide... sides) {
         ConfigInfo config = getConfig(type);
         if (config != null) {
-            config.addSlotInfo(DataType.OUTPUT, slotInfo);
+            config.addSlotInfo(DataType.OUTPUT, createInfo(type, false, true, container));
             config.setDataType(DataType.OUTPUT, sides);
             config.setEjecting(true);
         }
         return config;
     }
 
-    public ConfigInfo setupIOConfig(TransmissionType type, BaseSlotInfo inputInfo, BaseSlotInfo outputInfo, RelativeSide outputSide) {
+    public ConfigInfo setupIOConfig(TransmissionType type, Object inputInfo, Object outputInfo, RelativeSide outputSide) {
+        return setupIOConfig(type, inputInfo, outputInfo, outputSide, false);
+    }
+
+    public ConfigInfo setupIOConfig(TransmissionType type, Object inputContainer, Object outputContainer, RelativeSide outputSide, boolean alwaysAllow) {
         ConfigInfo gasConfig = getConfig(type);
         if (gasConfig != null) {
-            gasConfig.addSlotInfo(DataType.INPUT, inputInfo);
-            gasConfig.addSlotInfo(DataType.OUTPUT, outputInfo);
+            gasConfig.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow ? true : false, inputContainer));
+            gasConfig.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow ? true : false, true, outputContainer));
+            gasConfig.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, Arrays.asList(inputContainer, outputContainer)));
             gasConfig.fill(DataType.INPUT);
             gasConfig.setDataType(DataType.OUTPUT, outputSide);
         }
@@ -156,10 +170,17 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public ConfigInfo setupItemIOConfig(IInventorySlot inputSlot, IInventorySlot outputSlot, IInventorySlot energySlot) {
+        return setupItemIOConfig(Arrays.asList(inputSlot), Arrays.asList(outputSlot), energySlot, false);
+    }
+
+    public ConfigInfo setupItemIOConfig(List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, IInventorySlot energySlot, boolean alwaysAllow) {
         ConfigInfo itemConfig = getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, alwaysAllow ? true : false, inputSlots));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(alwaysAllow ? true : false, true, outputSlots));
+            List<IInventorySlot> ioSlots = new ArrayList<>(inputSlots);
+            ioSlots.addAll(outputSlots);
+            itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, ioSlots));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
             //Set default config directions
             itemConfig.setDefaults();
@@ -172,6 +193,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         if (itemConfig != null) {
             itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
             itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
+            itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, inputSlot, outputSlot));
             itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
             //Set default config directions
@@ -286,5 +308,26 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             list.add(SyncableBoolean.create(info::isEjecting, info::setEjecting));
         }
         return list;
+    }
+
+    public static BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, Object... containers) {
+        return createInfo(type, input, output, Arrays.asList(containers));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, List<?> containers) {
+        switch (type) {
+            case ITEM:
+                return new InventorySlotInfo(input, output, (List<IInventorySlot>) containers);
+            case FLUID:
+                return new FluidSlotInfo(input, output, (List<IExtendedFluidTank>) containers);
+            case GAS:
+                return new GasSlotInfo(input, output, (List<IGasTank>) containers);
+            case ENERGY:
+                return new EnergySlotInfo(input, output, (List<IEnergyContainer>) containers);
+            case HEAT:
+                return new HeatSlotInfo(input, output, (List<IHeatCapacitor>) containers);
+        }
+        return null;
     }
 }

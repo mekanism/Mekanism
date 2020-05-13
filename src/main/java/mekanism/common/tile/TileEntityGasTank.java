@@ -36,8 +36,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.component.config.slot.GasSlotInfo;
-import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.upgrade.GasTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
@@ -72,9 +70,9 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
     public TileEntityGasTank(IBlockProvider blockProvider) {
         super(blockProvider);
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.ITEM);
-        configComponent.setupIOConfig(TransmissionType.ITEM, new InventorySlotInfo(true, true, drainSlot), new InventorySlotInfo(true, true, fillSlot), RelativeSide.FRONT)
+        configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, RelativeSide.FRONT, true)
               .setCanEject(false);
-        configComponent.setupIOConfig(TransmissionType.GAS, new GasSlotInfo(true, false, gasTank), new GasSlotInfo(false, true, gasTank), RelativeSide.FRONT)
+        configComponent.setupIOConfig(TransmissionType.GAS, gasTank, gasTank, RelativeSide.FRONT)
               .setEjecting(true);
 
         dumping = GasMode.IDLE;

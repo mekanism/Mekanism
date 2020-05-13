@@ -39,7 +39,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
@@ -75,6 +74,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
             itemConfig.addSlotInfo(DataType.INPUT_1, new InventorySlotInfo(true, true, leftInputSlot));
             itemConfig.addSlotInfo(DataType.INPUT_2, new InventorySlotInfo(true, true, rightInputSlot));
             itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(true, true, outputSlot));
+            itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, leftInputSlot, rightInputSlot, outputSlot));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
             //Set default config directions
             itemConfig.setDataType(DataType.INPUT_1, RelativeSide.LEFT);
@@ -88,13 +88,14 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
             gasConfig.addSlotInfo(DataType.INPUT_1, new GasSlotInfo(true, false, leftTank));
             gasConfig.addSlotInfo(DataType.INPUT_2, new GasSlotInfo(true, false, rightTank));
             gasConfig.addSlotInfo(DataType.OUTPUT, new GasSlotInfo(false, true, centerTank));
+            gasConfig.addSlotInfo(DataType.INPUT_OUTPUT, new GasSlotInfo(true, true, leftTank, rightTank, centerTank));
             gasConfig.setDataType(DataType.INPUT_1, RelativeSide.LEFT);
             gasConfig.setDataType(DataType.INPUT_2, RelativeSide.RIGHT);
             gasConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
             gasConfig.setEjecting(true);
         }
 
-        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
+        configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS);

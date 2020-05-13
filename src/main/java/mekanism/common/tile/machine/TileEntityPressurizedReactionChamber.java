@@ -36,9 +36,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.component.config.slot.FluidSlotInfo;
-import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -66,10 +63,10 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, BASE_DURATION);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
-        configComponent.setupInputConfig(TransmissionType.FLUID, new FluidSlotInfo(true, false, inputFluidTank));
-        configComponent.setupIOConfig(TransmissionType.GAS, new GasSlotInfo(true, false, inputGasTank), new GasSlotInfo(false, true, outputGasTank), RelativeSide.RIGHT)
+        configComponent.setupInputConfig(TransmissionType.FLUID, inputFluidTank);
+        configComponent.setupIOConfig(TransmissionType.GAS, inputGasTank, outputGasTank, RelativeSide.RIGHT)
               .setEjecting(true);
-        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
+        configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS);

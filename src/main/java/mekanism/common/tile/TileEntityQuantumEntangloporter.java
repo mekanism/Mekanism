@@ -78,6 +78,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             Supplier<List<IInventorySlot>> slotSupplier = () -> hasFrequency() ? getFreq().getInventorySlots(null) : Collections.emptyList();
             itemConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Inventory(true, false, slotSupplier));
             itemConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Inventory(false, true, slotSupplier));
+            itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new ProxiedSlotInfo.Inventory(true, true, slotSupplier));
             //Set default config directions
             itemConfig.fill(DataType.INPUT);
             itemConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
@@ -88,6 +89,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             Supplier<List<IExtendedFluidTank>> tankSupplier = () -> hasFrequency() ? getFreq().getFluidTanks(null) : Collections.emptyList();
             fluidConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Fluid(true, false, tankSupplier));
             fluidConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Fluid(false, true, tankSupplier));
+            fluidConfig.addSlotInfo(DataType.INPUT_OUTPUT, new ProxiedSlotInfo.Fluid(true, true, tankSupplier));
             //Set default config directions
             fluidConfig.fill(DataType.INPUT);
             fluidConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
@@ -98,6 +100,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             Supplier<List<IGasTank>> tankSupplier = () -> hasFrequency() ? getFreq().getGasTanks(null) : Collections.emptyList();
             gasConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Gas(true, false, tankSupplier));
             gasConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Gas(false, true, tankSupplier));
+            gasConfig.addSlotInfo(DataType.INPUT_OUTPUT, new ProxiedSlotInfo.Gas(true, true, tankSupplier));
             //Set default config directions
             gasConfig.fill(DataType.INPUT);
             gasConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
@@ -108,6 +111,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             Supplier<List<IEnergyContainer>> containerSupplier = () -> hasFrequency() ? getFreq().getEnergyContainers(null) : Collections.emptyList();
             energyConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Energy(true, false, containerSupplier));
             energyConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Energy(false, true, containerSupplier));
+            energyConfig.addSlotInfo(DataType.INPUT_OUTPUT, new ProxiedSlotInfo.Energy(true, true, containerSupplier));
             //Set default config directions
             energyConfig.fill(DataType.INPUT);
             energyConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
@@ -116,9 +120,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
         if (heatConfig != null) {
             Supplier<List<IHeatCapacitor>> capacitorSupplier = () -> hasFrequency() ? getFreq().getHeatCapacitors(null) : Collections.emptyList();
-            heatConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Heat(true, false, capacitorSupplier));
+            heatConfig.addSlotInfo(DataType.INPUT_OUTPUT, new ProxiedSlotInfo.Heat(true, false, capacitorSupplier));
             //Set default config directions
-            heatConfig.fill(DataType.INPUT);
+            heatConfig.fill(DataType.INPUT_OUTPUT);
             heatConfig.setCanEject(false);
             //TODO - V10: look into allowing heat output config, modify getAdjacent as needed rather than just checking canInput
         }

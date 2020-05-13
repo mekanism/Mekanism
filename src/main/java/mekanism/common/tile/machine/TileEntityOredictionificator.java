@@ -31,7 +31,6 @@ import mekanism.common.lib.HashList;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
@@ -70,7 +69,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     public TileEntityOredictionificator() {
         super(MekanismBlocks.OREDICTIONIFICATOR);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
-        configComponent.setupIOConfig(TransmissionType.ITEM, new InventorySlotInfo(true, false, inputSlot), new InventorySlotInfo(false, true, outputSlot), RelativeSide.RIGHT);
+        configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot, RelativeSide.RIGHT);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);

@@ -1,5 +1,6 @@
 package mekanism.common.tile.machine;
 
+import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
@@ -46,15 +47,11 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.component.config.slot.FluidSlotInfo;
-import mekanism.common.tile.component.config.slot.GasSlotInfo;
-import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
+import mekanism.common.util.FluidUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.FluidUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -91,23 +88,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     public TileEntityRotaryCondensentrator() {
         super(MekanismBlocks.ROTARY_CONDENSENTRATOR);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID, TransmissionType.ENERGY);
-
-        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
-        if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, true, gasInputSlot, fluidInputSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(true, true, gasOutputSlot, fluidOutputSlot));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-            //Set default config directions
-            itemConfig.setDataType(DataType.INPUT, RelativeSide.LEFT);
-            itemConfig.setDataType(DataType.OUTPUT, RelativeSide.RIGHT);
-            itemConfig.setDataType(DataType.ENERGY, RelativeSide.BACK);
-        }
-
-        configComponent.setupIOConfig(TransmissionType.GAS, new GasSlotInfo(true, true, gasTank), new GasSlotInfo(true, true, gasTank), RelativeSide.LEFT)
+        configComponent.setupItemIOConfig(Arrays.asList(gasInputSlot, fluidInputSlot), Arrays.asList(gasOutputSlot, fluidOutputSlot), energySlot, true);
+        configComponent.setupIOConfig(TransmissionType.GAS, gasTank, gasTank, RelativeSide.LEFT, true)
               .setEjecting(true);
-        configComponent.setupIOConfig(TransmissionType.FLUID, new FluidSlotInfo(true, true, fluidTank), new FluidSlotInfo(true, true, fluidTank), RelativeSide.RIGHT)
+        configComponent.setupIOConfig(TransmissionType.FLUID, fluidTank, fluidTank, RelativeSide.RIGHT, true)
               .setEjecting(true);
-        configComponent.setupInputConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer));
+        configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);

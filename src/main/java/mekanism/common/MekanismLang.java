@@ -498,6 +498,7 @@ public enum MekanismLang implements ILangEntry {
     SIDE_DATA_OUTPUT("side_data", "output"),
     SIDE_DATA_OUTPUT_1("side_data", "output_1"),
     SIDE_DATA_OUTPUT_2("side_data", "output_2"),
+    SIDE_DATA_INPUT_OUTPUT("side_data", "input_output"),
     SIDE_DATA_ENERGY("side_data", "energy"),
     SIDE_DATA_EXTRA("side_data", "extra"),
     //Free runner modes

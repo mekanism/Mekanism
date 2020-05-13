@@ -18,8 +18,9 @@ public enum DataType implements IIncrementalEnum<DataType>, IHasTranslationKey {
     OUTPUT(MekanismLang.SIDE_DATA_OUTPUT, EnumColor.DARK_BLUE),
     OUTPUT_1(MekanismLang.SIDE_DATA_OUTPUT_1, EnumColor.DARK_BLUE),
     OUTPUT_2(MekanismLang.SIDE_DATA_OUTPUT_2, EnumColor.DARK_AQUA),
+    INPUT_OUTPUT(MekanismLang.SIDE_DATA_INPUT_OUTPUT, EnumColor.PURPLE),
     ENERGY(MekanismLang.SIDE_DATA_ENERGY, EnumColor.DARK_GREEN),
-    EXTRA(MekanismLang.SIDE_DATA_EXTRA, EnumColor.PURPLE);
+    EXTRA(MekanismLang.SIDE_DATA_EXTRA, EnumColor.YELLOW);
 
     private static final DataType[] TYPES = values();
     private final EnumColor color;

@@ -24,8 +24,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.upgrade.EnergyCubeUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CableUtils;
@@ -55,9 +53,9 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         super(blockProvider);
 
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
-        configComponent.setupIOConfig(TransmissionType.ITEM, new InventorySlotInfo(true, true, chargeSlot), new InventorySlotInfo(true, true, dischargeSlot), RelativeSide.FRONT)
+        configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, RelativeSide.FRONT, true)
               .setCanEject(false);
-        configComponent.setupIOConfig(TransmissionType.ENERGY, new EnergySlotInfo(true, false, energyContainer), new EnergySlotInfo(false, true, energyContainer), RelativeSide.FRONT)
+        configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer, energyContainer, RelativeSide.FRONT)
               .setEjecting(true);
 
         ejectorComponent = new TileComponentEjector(this);

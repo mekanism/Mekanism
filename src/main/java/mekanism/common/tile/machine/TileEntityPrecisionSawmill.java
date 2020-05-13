@@ -1,8 +1,8 @@
 package mekanism.common.tile.machine;
 
+import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
@@ -25,10 +25,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.MekanismUtils;
@@ -48,24 +44,8 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     public TileEntityPrecisionSawmill() {
         super(MekanismBlocks.PRECISION_SAWMILL, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
-
-        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
-        if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot, secondaryOutputSlot));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-            //Set default config directions
-            itemConfig.setDataType(DataType.INPUT, RelativeSide.TOP);
-            itemConfig.setDataType(DataType.OUTPUT, RelativeSide.RIGHT);
-            itemConfig.setDataType(DataType.ENERGY, RelativeSide.BOTTOM);
-        }
-
-        ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
-        if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false, energyContainer));
-            energyConfig.fill(DataType.INPUT);
-            energyConfig.setCanEject(false);
-        }
+        configComponent.setupItemIOConfig(Arrays.asList(inputSlot), Arrays.asList(outputSlot, secondaryOutputSlot), energySlot, false);
+        configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
