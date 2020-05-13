@@ -182,7 +182,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
                 CableUtils.emit(info.getSidesForData(DataType.OUTPUT), frequency.storedEnergy, this);
             }
         }
-
+        updateHeatCapacitors(null); // manually trigger heat capacitor update
         HeatTransfer loss = simulate();
         lastTransferLoss = loss.getAdjacentTransfer();
         lastEnvironmentLoss = loss.getEnvironmentTransfer();

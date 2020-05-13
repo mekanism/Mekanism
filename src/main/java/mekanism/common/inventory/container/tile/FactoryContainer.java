@@ -11,7 +11,6 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory<?>
 
     public FactoryContainer(int id, PlayerInventory inv, TileEntityFactory<?> tile) {
         super(MekanismContainerTypes.FACTORY, id, inv, tile);
-        tile.addContainerTrackers(this);
     }
 
     public FactoryContainer(int id, PlayerInventory inv, PacketBuffer buf) {

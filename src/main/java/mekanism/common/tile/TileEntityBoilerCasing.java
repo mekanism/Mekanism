@@ -58,7 +58,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             // external heat dissipation
             HeatTransfer transfer = structure.simulate();
             // update temperature
-            structure.update(null);
+            structure.updateHeatCapacitors(null);
             structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer();
             if (structure.getTotalTemperature() >= SynchronizedBoilerData.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
                 double heatAvailable = structure.getHeatAvailable();
