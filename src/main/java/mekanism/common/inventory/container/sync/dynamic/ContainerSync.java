@@ -12,4 +12,6 @@ public @interface ContainerSync {
     String getter() default "";
 
     String setter() default "";
+
+    String tag() default SyncMapper.DEFAULT_TAG;
 }

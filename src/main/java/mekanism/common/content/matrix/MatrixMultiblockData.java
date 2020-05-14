@@ -18,16 +18,24 @@ public class MatrixMultiblockData extends MultiblockData {
 
     @Nonnull
     private final MatrixEnergyContainer energyContainer;
+
     @ContainerSync(getter = "getLastOutput")
     private FloatingLong clientLastOutput = FloatingLong.ZERO;
     @ContainerSync(getter = "getLastInput")
     private FloatingLong clientLastInput = FloatingLong.ZERO;
+
     @ContainerSync(getter = "getEnergy")
     private FloatingLong clientEnergy = FloatingLong.ZERO;
+
+    @ContainerSync(tag = "stats", getter = "getTransferCap")
     private FloatingLong clientMaxTransfer = FloatingLong.ZERO;
+
     @ContainerSync(getter = "getStorageCap")
     private FloatingLong clientMaxEnergy = FloatingLong.ZERO;
+
+    @ContainerSync(tag = "stats", getter = "getProviderCount")
     private int clientProviders;
+    @ContainerSync(tag = "stats", getter = "getCellCount")
     private int clientCells;
 
     @Nonnull
@@ -110,17 +118,5 @@ public class MatrixMultiblockData extends MultiblockData {
 
     public int getProviderCount() {
         return remote.getAsBoolean() ? clientProviders : energyContainer.getProviders();
-    }
-
-    public void setClientMaxTransfer(FloatingLong transferCap) {
-        this.clientMaxTransfer = transferCap;
-    }
-
-    public void setClientCells(int cells) {
-        this.clientCells = cells;
-    }
-
-    public void setClientProviders(int providers) {
-        this.clientProviders = providers;
     }
 }

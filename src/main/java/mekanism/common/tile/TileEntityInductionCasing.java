@@ -6,8 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableFloatingLong;
-import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
@@ -42,23 +41,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
     }
 
     public void addStatsTabContainerTrackers(MekanismContainer container) {
-        container.track(SyncableFloatingLong.create(() -> getMultiblock().getTransferCap(), value -> {
-            getMultiblock().setClientMaxTransfer(value);
-        }));
-        container.track(SyncableInt.create(() -> getMultiblock().volHeight, value -> {
-            getMultiblock().volHeight = value;
-        }));
-        container.track(SyncableInt.create(() -> getMultiblock().volWidth, value -> {
-            getMultiblock().volWidth = value;
-        }));
-        container.track(SyncableInt.create(() -> getMultiblock().volLength, value -> {
-            getMultiblock().volLength = value;
-        }));
-        container.track(SyncableInt.create(() -> getMultiblock().getCellCount(), value -> {
-            getMultiblock().setClientCells(value);
-        }));
-        container.track(SyncableInt.create(() -> getMultiblock().getProviderCount(), value -> {
-            getMultiblock().setClientProviders(value);
-        }));
+        SyncMapper.setup(container, getMultiblock().getClass(), () -> getMultiblock(), "stats");
     }
 }

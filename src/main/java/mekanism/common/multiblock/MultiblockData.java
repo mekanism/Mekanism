@@ -36,7 +36,9 @@ public abstract class MultiblockData implements IMekanismInventory, IMekanismFlu
     public Set<Coord4D> internalLocations = new ObjectOpenHashSet<>();
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
+    @ContainerSync(tag = "stats")
     public int volLength, volWidth, volHeight;
+
     @ContainerSync(getter = "getVolume", setter = "setVolume")
     private int volume;
 

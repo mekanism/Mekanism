@@ -582,7 +582,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         // setup dynamic container syncing
-        SyncMapper.setup(container, this);
+        SyncMapper.setup(container, getClass(), () -> this);
 
         for (ITileComponent component : components) {
             component.trackForMainContainer(container);

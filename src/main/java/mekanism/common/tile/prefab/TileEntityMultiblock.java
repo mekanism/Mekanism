@@ -317,7 +317,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        SyncMapper.setupProxy(container, getMultiblock().getClass(), () -> getMultiblock());
+        SyncMapper.setup(container, getMultiblock().getClass(), () -> getMultiblock());
     }
 
     @Nonnull

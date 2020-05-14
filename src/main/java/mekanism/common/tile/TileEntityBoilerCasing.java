@@ -8,8 +8,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
-import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.multiblock.IValveHandler;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
@@ -116,11 +114,5 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
             NBTUtils.setBooleanIfPresent(tag, NBTConstants.HOT, value -> getMultiblock().clientHot = value);
             readValves(tag);
         }
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        SyncMapper.setupProxy(container, BoilerMultiblockData.class, () -> getMultiblock());
     }
 }

@@ -300,7 +300,6 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         if (shouldCap(CacheSubstance.GAS)) {
             for (IGasTank tank : structureFound.getGasTanks(null)) {
                 tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
-                System.out.println("Cap to " + tank.getCapacity());
             }
         }
         if (shouldCap(CacheSubstance.ENERGY)) {
