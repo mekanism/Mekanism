@@ -30,42 +30,42 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
         addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
             public FloatingLong getEnergy() {
-                return tile.getEnergy();
+                return tile.getMultiblock().getEnergy();
             }
 
             @Override
             public FloatingLong getMaxEnergy() {
-                return tile.getMaxEnergy();
+                return tile.getMultiblock().getStorageCap();
             }
         }, GaugeType.STANDARD, this, 6, 13));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return MekanismLang.MATRIX_RECEIVING_RATE.translate(EnergyDisplay.of(tile.getLastInput()));
+                return MekanismLang.MATRIX_RECEIVING_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput()));
             }
 
             @Override
             public double getLevel() {
-                return tile.structure == null ? 0 : tile.getLastInput().divideToLevel(tile.structure.getTransferCap());
+                return !tile.getMultiblock().isFormed() ? 0 : tile.getMultiblock().getLastInput().divideToLevel(tile.getMultiblock().getTransferCap());
             }
         }, 30, 13));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return MekanismLang.MATRIX_OUTPUTTING_RATE.translate(EnergyDisplay.of(tile.getLastOutput()));
+                return MekanismLang.MATRIX_OUTPUTTING_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput()));
             }
 
             @Override
             public double getLevel() {
-                if (tile.structure == null) {
+                if (!tile.getMultiblock().isFormed()) {
                     return 0;
                 }
-                return tile.getLastOutput().divideToLevel(tile.structure.getTransferCap());
+                return tile.getMultiblock().getLastOutput().divideToLevel(tile.getMultiblock().getTransferCap());
             }
         }, 38, 13));
-        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
-              MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))),
+        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getMultiblock().getEnergy(), tile.getMultiblock().getStorageCap())),
+              MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput())),
+              MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput()))),
               this));
     }
 
@@ -73,16 +73,16 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawTitleText(MekanismLang.MATRIX_STATS.translate(), 6);
         drawString(MekanismLang.MATRIX_INPUT_AMOUNT.translate(), 53, 26, 0x797979);
-        drawString(EnergyDisplay.of(tile.getLastInput(), tile.getTransferCap()).getTextComponent(), 59, 35, titleTextColor());
+        drawString(EnergyDisplay.of(tile.getMultiblock().getLastInput(), tile.getMultiblock().getTransferCap()).getTextComponent(), 59, 35, titleTextColor());
         drawString(MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(), 53, 46, 0x797979);
-        drawString(EnergyDisplay.of(tile.getLastOutput(), tile.getTransferCap()).getTextComponent(), 59, 55, titleTextColor());
+        drawString(EnergyDisplay.of(tile.getMultiblock().getLastOutput(), tile.getMultiblock().getTransferCap()).getTextComponent(), 59, 55, titleTextColor());
         drawString(MekanismLang.MATRIX_DIMENSIONS.translate(), 8, 82, 0x797979);
-        if (tile.structure != null) {
-            drawString(MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(tile.structure.volWidth, tile.structure.volHeight, tile.structure.volLength), 14, 91, titleTextColor());
+        if (tile.getMultiblock().isFormed()) {
+            drawString(MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(tile.getMultiblock().volWidth, tile.getMultiblock().volHeight, tile.getMultiblock().volLength), 14, 91, titleTextColor());
         }
         drawString(MekanismLang.MATRIX_CONSTITUENTS.translate(), 8, 102, 0x797979);
-        drawString(MekanismLang.MATRIX_CELLS.translate(tile.getCellCount()), 14, 111, titleTextColor());
-        drawString(MekanismLang.MATRIX_PROVIDERS.translate(tile.getProviderCount()), 14, 120, titleTextColor());
+        drawString(MekanismLang.MATRIX_CELLS.translate(tile.getMultiblock().getCellCount()), 14, 111, titleTextColor());
+        drawString(MekanismLang.MATRIX_PROVIDERS.translate(tile.getMultiblock().getProviderCount()), 14, 120, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

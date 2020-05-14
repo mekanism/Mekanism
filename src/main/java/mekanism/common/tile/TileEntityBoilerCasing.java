@@ -1,15 +1,8 @@
 package mekanism.common.tile;
 
 import java.util.Collection;
-import java.util.Collections;
 import javax.annotation.Nonnull;
-import mekanism.api.Action;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
-import mekanism.api.heat.HeatAPI.HeatTransfer;
-import mekanism.api.inventory.AutomationType;
-import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
@@ -20,18 +13,12 @@ import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.multiblock.IValveHandler;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.common.util.HeatUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultiblockData> implements IValveHandler {
-
-    public float prevWaterScale;
-    public float prevSteamScale;
 
     public TileEntityBoilerCasing() {
         this(MekanismBlocks.BOILER_CASING);
@@ -39,76 +26,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
 
     public TileEntityBoilerCasing(IBlockProvider blockProvider) {
         super(blockProvider);
-    }
-
-    @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (structure != null && isRendering) {
-            boolean needsPacket = needsValveUpdate();
-            boolean newHot = structure.getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP - 0.01;
-            if (newHot != structure.clientHot) {
-                needsPacket = true;
-                structure.clientHot = newHot;
-                BoilerMultiblockData.hotMap.put(structure.inventoryID, structure.clientHot);
-            }
-            // external heat dissipation
-            HeatTransfer transfer = structure.simulate();
-            // update temperature
-            structure.updateHeatCapacitors(null);
-            structure.lastEnvironmentLoss = transfer.getEnvironmentTransfer();
-            // handle coolant heat transfer
-            if (!structure.superheatedCoolantTank.isEmpty()) {
-                HeatedCoolant coolantType = structure.superheatedCoolantTank.getStack().get(HeatedCoolant.class);
-                if (coolantType != null) {
-                    long toCool = Math.round(BoilerMultiblockData.COOLANT_COOLING_EFFICIENCY * structure.superheatedCoolantTank.getStored());
-                    toCool *= 1 - structure.heatCapacitor.getTemperature() / HeatUtils.HEATED_COOLANT_TEMP;
-                    GasStack cooledCoolant = coolantType.getCooledGas().getGasStack(toCool);
-                    toCool = Math.min(toCool, toCool - structure.cooledCoolantTank.insert(cooledCoolant, Action.EXECUTE, AutomationType.INTERNAL).getAmount());
-                    if (toCool > 0) {
-                        double heatEnergy = toCool * coolantType.getThermalEnthalpy();
-                        structure.heatCapacitor.handleHeat(heatEnergy);
-                        structure.superheatedCoolantTank.shrinkStack(toCool, Action.EXECUTE);
-                    }
-                }
-            }
-            // handle water heat transfer
-            if (structure.getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
-                double heatAvailable = structure.getHeatAvailable();
-                structure.lastMaxBoil = (int) Math.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
-
-                int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterTank.getFluidAmount());
-                amountToBoil = Math.min(amountToBoil, MathUtils.clampToInt(structure.steamTank.getNeeded()));
-                if (!structure.waterTank.isEmpty()) {
-                    structure.waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
-                }
-                if (structure.steamTank.isEmpty()) {
-                    structure.steamTank.setStack(MekanismGases.STEAM.getGasStack(amountToBoil));
-                } else {
-                    structure.steamTank.growStack(amountToBoil, Action.EXECUTE);
-                }
-
-                structure.handleHeat(-amountToBoil * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency());
-                structure.lastBoilRate = amountToBoil;
-            } else {
-                structure.lastBoilRate = 0;
-                structure.lastMaxBoil = 0;
-            }
-            float waterScale = MekanismUtils.getScale(prevWaterScale, structure.waterTank);
-            if (waterScale != prevWaterScale) {
-                needsPacket = true;
-                prevWaterScale = waterScale;
-            }
-            float steamScale = MekanismUtils.getScale(prevSteamScale, structure.steamTank);
-            if (steamScale != prevSteamScale) {
-                needsPacket = true;
-                prevSteamScale = steamScale;
-            }
-            if (needsPacket) {
-                sendUpdatePacket();
-            }
-            markDirty(false);
-        }
     }
 
     @Nonnull
@@ -128,29 +45,29 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     }
 
     public double getLastEnvironmentLoss() {
-        return structure == null ? 0 : structure.lastEnvironmentLoss;
+        return getMultiblock().lastEnvironmentLoss;
     }
 
     public double getTemperature() {
-        return structure == null ? 0 : structure.getTotalTemperature();
+        return getMultiblock().getTotalTemperature();
     }
 
     public int getLastBoilRate() {
-        return structure == null ? 0 : structure.lastBoilRate;
+        return getMultiblock().lastBoilRate;
     }
 
     public int getLastMaxBoil() {
-        return structure == null ? 0 : structure.lastMaxBoil;
+        return getMultiblock().lastMaxBoil;
     }
 
     public int getSuperheatingElements() {
-        return structure == null ? 0 : structure.superheatingElements;
+        return getMultiblock().superheatingElements;
     }
 
     @Nonnull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
-        return side -> structure == null ? Collections.emptyList() : structure.getHeatCapacitors(side);
+        return side -> getMultiblock().getHeatCapacitors(side);
     }
 
     @Override
@@ -164,22 +81,22 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
 
     @Override
     public Collection<ValveData> getValveData() {
-        return structure != null ? structure.valves : null;
+        return getMultiblock().valves;
     }
 
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        if (structure != null && isRendering) {
-            updateTag.putFloat(NBTConstants.SCALE, prevWaterScale);
-            updateTag.putFloat(NBTConstants.SCALE_ALT, prevSteamScale);
-            updateTag.putInt(NBTConstants.VOLUME, structure.getWaterVolume());
-            updateTag.putInt(NBTConstants.LOWER_VOLUME, structure.getSteamVolume());
-            updateTag.put(NBTConstants.FLUID_STORED, structure.waterTank.getFluid().writeToNBT(new CompoundNBT()));
-            updateTag.put(NBTConstants.GAS_STORED, structure.steamTank.getStack().write(new CompoundNBT()));
-            updateTag.put(NBTConstants.RENDER_Y, structure.upperRenderLocation.write(new CompoundNBT()));
-            updateTag.putBoolean(NBTConstants.HOT, structure.clientHot);
+        if (getMultiblock().isFormed() && isRendering) {
+            updateTag.putFloat(NBTConstants.SCALE, getMultiblock().prevWaterScale);
+            updateTag.putFloat(NBTConstants.SCALE_ALT, getMultiblock().prevSteamScale);
+            updateTag.putInt(NBTConstants.VOLUME, getMultiblock().getWaterVolume());
+            updateTag.putInt(NBTConstants.LOWER_VOLUME, getMultiblock().getSteamVolume());
+            updateTag.put(NBTConstants.FLUID_STORED, getMultiblock().waterTank.getFluid().writeToNBT(new CompoundNBT()));
+            updateTag.put(NBTConstants.GAS_STORED, getMultiblock().steamTank.getStack().write(new CompoundNBT()));
+            updateTag.put(NBTConstants.RENDER_Y, getMultiblock().upperRenderLocation.write(new CompoundNBT()));
+            updateTag.putBoolean(NBTConstants.HOT, getMultiblock().clientHot);
             writeValves(updateTag);
         }
         return updateTag;
@@ -188,15 +105,15 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        if (clientHasStructure && isRendering && structure != null) {
-            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
-            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevSteamScale = scale);
-            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.setWaterVolume(value));
-            NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> structure.setSteamVolume(value));
-            NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.waterTank.setStack(value));
-            NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.steamTank.setStack(value));
-            NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_Y, value -> structure.upperRenderLocation = value);
-            NBTUtils.setBooleanIfPresent(tag, NBTConstants.HOT, value -> structure.clientHot = value);
+        if (isRendering && getMultiblock().isFormed()) {
+            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> getMultiblock().prevWaterScale = scale);
+            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> getMultiblock().prevSteamScale = scale);
+            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> getMultiblock().setWaterVolume(value));
+            NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> getMultiblock().setSteamVolume(value));
+            NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> getMultiblock().waterTank.setStack(value));
+            NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> getMultiblock().steamTank.setStack(value));
+            NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_Y, value -> getMultiblock().upperRenderLocation = value);
+            NBTUtils.setBooleanIfPresent(tag, NBTConstants.HOT, value -> getMultiblock().clientHot = value);
             readValves(tag);
         }
     }
@@ -204,6 +121,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        SyncMapper.setupProxy(container, BoilerMultiblockData.class, () -> structure);
+        SyncMapper.setupProxy(container, BoilerMultiblockData.class, () -> getMultiblock());
     }
 }

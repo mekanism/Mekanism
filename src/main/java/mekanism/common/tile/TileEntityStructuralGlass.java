@@ -76,11 +76,11 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
     }
 
     @Override
-    public MultiblockData<?> getMultiblockData() {
+    public MultiblockData getMultiblock() {
         if (master != null) {
             TileEntity masterTile = MekanismUtils.getTileEntity(getWorld(), master.getPos());
             if (masterTile instanceof IMultiblock) {
-                return ((IMultiblock<?>) masterTile).getMultiblockData();
+                return ((IMultiblock<?>) masterTile).getMultiblock();
             }
         }
         return null;
@@ -113,7 +113,7 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         if (!getWorld().isRemote() && master == null) {
             IMultiblock<?> multiblock = new ControllerFinder().find();
-            if (multiblock instanceof TileEntityMultiblock && multiblock.getMultiblockData() == null) {
+            if (multiblock instanceof TileEntityMultiblock && multiblock.getMultiblock() == null) {
                 FormationResult result = ((TileEntityMultiblock<?>) multiblock).getProtocol().doUpdate();
                 if (!result.isFormed() && result.getResultText() != null) {
                     player.sendMessage(result.getResultText());

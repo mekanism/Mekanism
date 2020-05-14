@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.gui.element.GuiDownArrow;
@@ -38,8 +37,8 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
         addButton(new GuiInnerScreen(this, 51, 23, 80, 42, () -> {
             List<ITextComponent> ret = new ArrayList<>();
-            FluidStack fluidStored = tile.structure == null ? FluidStack.EMPTY : tile.structure.fluidTank.getFluid();
-            GasStack gasStored = tile.structure == null ? GasStack.EMPTY : tile.structure.gasTank.getStack();
+            FluidStack fluidStored = tile.getMultiblock().fluidTank.getFluid();
+            GasStack gasStored = tile.getMultiblock().gasTank.getStack();
             if (fluidStored.isEmpty() && gasStored.isEmpty()) {
                 ret.add(MekanismLang.EMPTY.translate());
             } else {
@@ -48,13 +47,13 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
             }
             ret.add(MekanismLang.CAPACITY.translate(""));
             // capacity is the same for both fluid and gas tank
-            ret.add(MekanismLang.GENERIC_MB.translate(formatInt(tile.structure == null ? 0 : tile.structure.fluidTank.getCapacity())));
+            ret.add(MekanismLang.GENERIC_MB.translate(formatInt(tile.getMultiblock().fluidTank.getCapacity())));
             return ret;
         }).defaultFormat().spacing(2));
         addButton(new GuiDownArrow(this, 150, 39));
         addButton(new GuiContainerEditMode<>(this, tile));
-        addButton(new GuiHybridGauge(() -> tile.structure == null ? null : tile.structure.gasTank, () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null),
-                                     () -> tile.structure == null ? null : tile.structure.fluidTank, () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null),
+        addButton(new GuiHybridGauge(() -> tile.getMultiblock().gasTank, () -> tile.getMultiblock().getGasTanks(null),
+                                     () -> tile.getMultiblock().fluidTank, () -> tile.getMultiblock().getFluidTanks(null),
                                      GaugeType.MEDIUM, this, 7, 16, 34, 56));
     }
 

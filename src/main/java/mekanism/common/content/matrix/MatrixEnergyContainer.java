@@ -1,20 +1,19 @@
 package mekanism.common.content.matrix;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.ParametersAreNonnullByDefault;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.tier.InductionProviderTier;
-import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -40,10 +39,10 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     private FloatingLong transferCap = FloatingLong.ZERO;
     private FloatingLong storageCap = FloatingLong.ZERO;
 
-    private final TileEntityInductionCasing tile;
+    private final MatrixMultiblockData multiblock;
 
-    public MatrixEnergyContainer(TileEntityInductionCasing tile) {
-        this.tile = tile;
+    public MatrixEnergyContainer(MatrixMultiblockData multiblock) {
+        this.multiblock = multiblock;
     }
 
     public void addCell(Coord4D coord, TileEntityInductionCell cell) {
@@ -170,7 +169,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     @Override
     public FloatingLong insert(FloatingLong amount, Action action, AutomationType automationType) {
-        if (amount.isZero() || tile.structure == null) {
+        if (amount.isZero() || !multiblock.isFormed()) {
             return amount;
         }
         FloatingLong toAdd = amount.min(getRemainingInput()).min(getNeeded());
@@ -188,7 +187,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     @Override
     public FloatingLong extract(FloatingLong amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount.isZero() || tile.structure == null) {
+        if (isEmpty() || amount.isZero() || !multiblock.isFormed()) {
             return FloatingLong.ZERO;
         }
         //We limit it overall by the amount we can extract plus how much energy we have

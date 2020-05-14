@@ -53,10 +53,10 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
         TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile != null) {
             if (world instanceof IWorldReader ? !((IWorldReader) world).isRemote() : EffectiveSide.get().isServer()) {
-                if (tile.structure != null) {
+                if (tile.getMultiblock().isFormed()) {
                     return false;
                 }
-            } else if (tile.clientHasStructure) {
+            } else if (tile.getMultiblock().isFormed()) {
                 return false;
             }
         }

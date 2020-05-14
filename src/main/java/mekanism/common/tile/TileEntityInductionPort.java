@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
@@ -28,14 +27,14 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     protected IEnergyContainerHolder getInitialEnergyContainers() {
         //Don't allow inserting if we are on output mode, or extracting if we are on input mode
         return ProxiedEnergyContainerHolder.create(side -> !getActive(), side -> getActive(),
-              side -> structure == null ? Collections.emptyList() : structure.getEnergyContainers(side));
+              side -> getMultiblock().getEnergyContainers(side));
     }
 
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (structure != null && getActive()) {
-            CableUtils.emit(structure.getDirectionsToEmit(Coord4D.get(this)), structure.getEnergyContainer(), this);
+        if (getMultiblock().isFormed() && getActive()) {
+            CableUtils.emit(getMultiblock().getDirectionsToEmit(Coord4D.get(this)), getMultiblock().getEnergyContainer(), this);
         }
     }
 
@@ -66,6 +65,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     public int getRedstoneLevel() {
-        return structure == null ? 0 : structure.getCurrentRedstoneLevel();
+        return getMultiblock().getCurrentRedstoneLevel();
     }
 }

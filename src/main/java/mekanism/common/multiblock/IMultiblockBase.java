@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 
 public interface IMultiblockBase extends ITileNeighborCache {
 
-    MultiblockData<?> getMultiblockData();
+    MultiblockData getMultiblock();
 
     ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack);
 
@@ -36,8 +36,8 @@ public interface IMultiblockBase extends ITileNeighborCache {
             // if the cache existed and the block didn't actually change, we don't care about an update
             return false;
         }
-        MultiblockData<?> data = getMultiblockData();
-        if (data != null) {
+        MultiblockData data = getMultiblock();
+        if (data.isFormed()) {
             BlockLocation location = data.getBlockLocation(neighborPos);
             boolean isMultiblock = Attribute.has(state.getBlock(), AttributeMultiblock.class);
             // if the update occurred outside of the multiblock and it's not a multiblock-compatible block, we don't care

@@ -1,9 +1,9 @@
 package mekanism.common.multiblock;
 
-public interface IMultiblock<T extends MultiblockData<T>> extends IMultiblockBase {
+public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
 
     @Override
-    T getMultiblockData();
+    T getMultiblock();
 
     void markUpdated();
 }

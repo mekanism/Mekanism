@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
@@ -23,13 +22,13 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     @Nonnull
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
-        return side -> structure == null ? Collections.emptyList() : structure.getFluidTanks(side);
+        return side -> getMultiblock().getFluidTanks(side);
     }
 
     @Nonnull
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        return side -> structure == null ? Collections.emptyList() : structure.getGasTanks(side);
+        return side -> getMultiblock().getGasTanks(side);
     }
 
     @Override
@@ -45,9 +44,9 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
         if (ret.getAmount() < stack.getAmount() && action.execute()) {
-            if (structure != null) {
+            if (getMultiblock().isFormed()) {
                 Coord4D coord4D = Coord4D.get(this);
-                for (ValveData data : structure.valves) {
+                for (ValveData data : getMultiblock().valves) {
                     if (coord4D.equals(data.location)) {
                         data.onTransfer();
                     }
@@ -59,6 +58,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
 
     @Override
     public int getRedstoneLevel() {
-        return structure == null ? 0 : structure.getCurrentRedstoneLevel();
+        return getMultiblock().getCurrentRedstoneLevel();
     }
 }

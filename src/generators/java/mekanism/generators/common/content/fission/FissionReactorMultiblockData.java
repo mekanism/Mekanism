@@ -1,31 +1,23 @@
 package mekanism.generators.common.content.fission;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
+import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
@@ -35,12 +27,11 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class FissionReactorMultiblockData extends MultiblockData<FissionReactorMultiblockData> implements IMekanismFluidHandler, IMekanismGasHandler,
-      ITileHeatHandler {
+public class FissionReactorMultiblockData extends MultiblockData {
 
     public static final double INVERSE_INSULATION_COEFFICIENT = 100_000;
     public static final double INVERSE_CONDUCTION_COEFFICIENT = 10;
@@ -60,53 +51,107 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
 
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
     public Set<FormedAssembly> assemblies = new LinkedHashSet<>();
-    public int fuelAssemblies, surfaceArea;
+    @ContainerSync
+    public int fuelAssemblies = 1, surfaceArea;
 
-    public MultiblockGasTank<TileEntityFissionReactorCasing> gasCoolantTank;
-    public MultiblockFluidTank<TileEntityFissionReactorCasing> fluidCoolantTank;
-    public MultiblockGasTank<TileEntityFissionReactorCasing> fuelTank;
+    @ContainerSync public MultiblockGasTank<FissionReactorMultiblockData> gasCoolantTank;
+    @ContainerSync public MultiblockFluidTank<FissionReactorMultiblockData> fluidCoolantTank;
+    @ContainerSync public MultiblockGasTank<FissionReactorMultiblockData> fuelTank;
 
-    public MultiblockGasTank<TileEntityFissionReactorCasing> heatedCoolantTank;
-    public MultiblockGasTank<TileEntityFissionReactorCasing> wasteTank;
-    public MultiblockHeatCapacitor<TileEntityFissionReactorCasing> heatCapacitor;
+    @ContainerSync public MultiblockGasTank<FissionReactorMultiblockData> heatedCoolantTank;
+    @ContainerSync public MultiblockGasTank<FissionReactorMultiblockData> wasteTank;
+    @ContainerSync public MultiblockHeatCapacitor<FissionReactorMultiblockData> heatCapacitor;
 
-    private List<IExtendedFluidTank> fluidTanks;
-    private List<IGasTank> gasTanks;
-    private List<IHeatCapacitor> heatCapacitors;
-
+    @ContainerSync
     public double lastEnvironmentLoss = 0, lastTransferLoss = 0;
+    @ContainerSync
     public long lastBoilRate = 0;
+    @ContainerSync
     public double lastBurnRate = 0;
     public boolean clientBurning;
-
+    @ContainerSync
     public double reactorDamage = 0;
+    @ContainerSync
     public double rateLimit = 0.1;
     public double burnRemaining = 0, partialWaste = 0;
+    @ContainerSync
     private boolean active;
 
+    public float prevCoolantScale, prevFuelScale, prevHeatedCoolantScale, prevWasteScale;
+
     public FissionReactorMultiblockData(TileEntityFissionReactorCasing tile) {
-        fluidCoolantTank = MultiblockFluidTank.create(tile, () -> tile.structure == null ? 0 : getVolume() * COOLANT_PER_VOLUME,
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> tile.structure != null,
+        fluidCoolantTank = MultiblockFluidTank.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
             fluid -> fluid.getFluid().isIn(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
-        fluidTanks = Collections.singletonList(fluidCoolantTank);
-        gasCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : getVolume() * COOLANT_PER_VOLUME,
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> tile.structure != null,
+        fluidTanks.add(fluidCoolantTank);
+        gasCoolantTank = MultiblockGasTank.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
             gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty());
-        fuelTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : fuelAssemblies * FUEL_PER_ASSEMBLY,
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> tile.structure != null,
+        fuelTank = MultiblockGasTank.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
             gas -> gas == MekanismGases.FISSILE_FUEL.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
-        heatedCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : getVolume() * HEATED_COOLANT_PER_VOLUME,
-            (stack, automationType) -> tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
+        heatedCoolantTank = MultiblockGasTank.create(this, tile, () -> getVolume() * HEATED_COOLANT_PER_VOLUME,
+            (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
             gas -> gas == MekanismGases.STEAM.get() || gas.has(HeatedCoolant.class));
-        wasteTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : fuelAssemblies * FUEL_PER_ASSEMBLY,
-            (stack, automationType) -> tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
+        wasteTank = MultiblockGasTank.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
+            (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
             gas -> gas == MekanismGases.NUCLEAR_WASTE.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
-        gasTanks = Arrays.asList(fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank);
-        heatCapacitor = MultiblockHeatCapacitor.create(tile,
+        gasTanks.addAll(Arrays.asList(fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank));
+        heatCapacitor = MultiblockHeatCapacitor.create(this, tile,
             MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
             () -> INVERSE_INSULATION_COEFFICIENT,
             () -> INVERSE_INSULATION_COEFFICIENT);
-        heatCapacitors = Collections.singletonList(heatCapacitor);
+        heatCapacitors.add(heatCapacitor);
+    }
+
+    @Override
+    public void onCreated() {
+        super.onCreated();
+        // update the heat capacity now that we've read
+        heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
+    }
+
+    @Override
+    public boolean tick(World world) {
+        boolean needsPacket = super.tick(world);
+        // burn reactor fuel, create energy
+        if (isActive()) {
+            burnFuel();
+        } else {
+            lastBurnRate = 0;
+        }
+        if (isBurning() != clientBurning) {
+            needsPacket = true;
+            clientBurning = isBurning();
+        }
+        // handle coolant heating (water -> steam)
+        handleCoolant();
+        // external heat dissipation
+        lastEnvironmentLoss = simulateEnvironment();
+        // adjacent heat transfer
+        lastTransferLoss = 0;
+        for (ValveData valve : valves) {
+            TileEntity tile = world.getTileEntity(valve.location.getPos());
+            if (tile instanceof ITileHeatHandler) {
+                lastTransferLoss += ((ITileHeatHandler) tile).simulateAdjacent();
+            }
+        }
+        // update temperature
+        updateHeatCapacitors(null);
+        handleDamage(world);
+
+        // update scales
+        float coolantScale = MekanismUtils.getScale(prevCoolantScale, fluidCoolantTank);
+        float fuelScale = MekanismUtils.getScale(prevFuelScale, fuelTank);
+        float steamScale = MekanismUtils.getScale(prevHeatedCoolantScale, heatedCoolantTank), wasteScale = MekanismUtils.getScale(prevWasteScale, wasteTank);
+        if (coolantScale != prevCoolantScale || fuelScale != prevFuelScale || steamScale != prevHeatedCoolantScale || wasteScale != prevWasteScale) {
+            needsPacket = true;
+            prevCoolantScale = coolantScale;
+            prevFuelScale = fuelScale;
+            prevHeatedCoolantScale = steamScale;
+            prevWasteScale = wasteScale;
+        }
+        return needsPacket;
     }
 
     public void handleDamage(World world) {
@@ -222,32 +267,7 @@ public class FissionReactorMultiblockData extends MultiblockData<FissionReactorM
     }
 
     @Override
-    public void onCreated() {
-        super.onCreated();
-        // update the heat capacity now that we've read
-        heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
-    }
-
-    @Override
     protected int getMultiblockRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getCapacity());
-    }
-
-    @Nonnull
-    @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return fluidTanks;
-    }
-
-    @Nonnull
-    @Override
-    public List<IGasTank> getGasTanks(@Nullable Direction side) {
-        return gasTanks;
-    }
-
-    @Nonnull
-    @Override
-    public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
-        return heatCapacitors;
     }
 }

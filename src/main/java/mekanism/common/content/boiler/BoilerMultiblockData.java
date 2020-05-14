@@ -1,24 +1,20 @@
 package mekanism.common.content.boiler;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
-import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
@@ -31,9 +27,9 @@ import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 
-public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> implements IMekanismFluidHandler, IMekanismGasHandler, ITileHeatHandler {
+public class BoilerMultiblockData extends MultiblockData implements IMekanismFluidHandler, IMekanismGasHandler, ITileHeatHandler {
 
     public static Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
@@ -50,13 +46,13 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
     public static final double COOLANT_COOLING_EFFICIENCY = 0.4;
 
     @ContainerSync
-    public MultiblockGasTank<TileEntityBoilerCasing> superheatedCoolantTank, cooledCoolantTank;
+    public MultiblockGasTank<BoilerMultiblockData> superheatedCoolantTank, cooledCoolantTank;
     @ContainerSync
-    public MultiblockFluidTank<TileEntityBoilerCasing> waterTank;
+    public MultiblockFluidTank<BoilerMultiblockData> waterTank;
     @ContainerSync
-    public MultiblockGasTank<TileEntityBoilerCasing> steamTank;
+    public MultiblockGasTank<BoilerMultiblockData> steamTank;
     @ContainerSync
-    public MultiblockHeatCapacitor<TileEntityBoilerCasing> heatCapacitor;
+    public MultiblockHeatCapacitor<BoilerMultiblockData> heatCapacitor;
 
     @ContainerSync
     public double lastEnvironmentLoss;
@@ -77,28 +73,27 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
 
     public Coord4D upperRenderLocation;
 
-    private List<IExtendedFluidTank> fluidTanks;
-    private List<IGasTank> gasTanks;
-    private List<IHeatCapacitor> heatCapacitors;
+    public float prevWaterScale;
+    public float prevSteamScale;
 
     public BoilerMultiblockData(TileEntityBoilerCasing tile) {
-        superheatedCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getSuperheatedCoolantTankCapacity(),
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null,
+        superheatedCoolantTank = MultiblockGasTank.create(this, tile, () -> getSuperheatedCoolantTankCapacity(),
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(),
             gas -> gas.has(HeatedCoolant.class));
-        waterTank = MultiblockFluidTank.input(tile, () -> tile.structure == null ? 0 : tile.structure.getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
-        fluidTanks = Collections.singletonList(waterTank);
-        steamTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getSteamTankCapacity(),
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
+        waterTank = MultiblockFluidTank.input(this, tile, () -> getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
+        fluidTanks.add(waterTank);
+        steamTank = MultiblockGasTank.create(this, tile, () -> getSteamTankCapacity(),
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
             gas -> gas == MekanismGases.STEAM.getGas());
-        cooledCoolantTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getCooledCoolantTankCapacity(),
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, (stack, automationType) -> automationType != AutomationType.EXTERNAL,
+        cooledCoolantTank = MultiblockGasTank.create(this, tile, () -> getCooledCoolantTankCapacity(),
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
             gas -> gas.has(CooledCoolant.class));
-        gasTanks = Arrays.asList(steamTank, superheatedCoolantTank, cooledCoolantTank);
-        heatCapacitor = MultiblockHeatCapacitor.create(tile,
+        gasTanks.addAll(Arrays.asList(steamTank, superheatedCoolantTank, cooledCoolantTank));
+        heatCapacitor = MultiblockHeatCapacitor.create(this, tile,
             CASING_HEAT_CAPACITY,
             () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size(),
             () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size());
-        heatCapacitors = Collections.singletonList(heatCapacitor);
+        heatCapacitors.add(heatCapacitor);
     }
 
     @Override
@@ -106,6 +101,70 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
         super.onCreated();
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY * locations.size(), true);
+    }
+
+    @Override
+    public boolean tick(World world) {
+        boolean needsPacket = super.tick(world);
+        boolean newHot = getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP - 0.01;
+        if (newHot != clientHot) {
+            needsPacket = true;
+            clientHot = newHot;
+            BoilerMultiblockData.hotMap.put(inventoryID, clientHot);
+        }
+        // external heat dissipation
+        HeatTransfer transfer = simulate();
+        // update temperature
+        updateHeatCapacitors(null);
+        lastEnvironmentLoss = transfer.getEnvironmentTransfer();
+        // handle coolant heat transfer
+        if (!superheatedCoolantTank.isEmpty()) {
+            HeatedCoolant coolantType = superheatedCoolantTank.getStack().get(HeatedCoolant.class);
+            if (coolantType != null) {
+                long toCool = Math.round(BoilerMultiblockData.COOLANT_COOLING_EFFICIENCY * superheatedCoolantTank.getStored());
+                toCool *= 1 - heatCapacitor.getTemperature() / HeatUtils.HEATED_COOLANT_TEMP;
+                GasStack cooledCoolant = coolantType.getCooledGas().getGasStack(toCool);
+                toCool = Math.min(toCool, toCool - cooledCoolantTank.insert(cooledCoolant, Action.EXECUTE, AutomationType.INTERNAL).getAmount());
+                if (toCool > 0) {
+                    double heatEnergy = toCool * coolantType.getThermalEnthalpy();
+                    heatCapacitor.handleHeat(heatEnergy);
+                    superheatedCoolantTank.shrinkStack(toCool, Action.EXECUTE);
+                }
+            }
+        }
+        // handle water heat transfer
+        if (getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP && !waterTank.isEmpty()) {
+            double heatAvailable = getHeatAvailable();
+            lastMaxBoil = (int) Math.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
+
+            int amountToBoil = Math.min(lastMaxBoil, waterTank.getFluidAmount());
+            amountToBoil = Math.min(amountToBoil, MathUtils.clampToInt(steamTank.getNeeded()));
+            if (!waterTank.isEmpty()) {
+                waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
+            }
+            if (steamTank.isEmpty()) {
+                steamTank.setStack(MekanismGases.STEAM.getGasStack(amountToBoil));
+            } else {
+                steamTank.growStack(amountToBoil, Action.EXECUTE);
+            }
+
+            handleHeat(-amountToBoil * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency());
+            lastBoilRate = amountToBoil;
+        } else {
+            lastBoilRate = 0;
+            lastMaxBoil = 0;
+        }
+        float waterScale = MekanismUtils.getScale(prevWaterScale, waterTank);
+        if (waterScale != prevWaterScale) {
+            needsPacket = true;
+            prevWaterScale = waterScale;
+        }
+        float steamScale = MekanismUtils.getScale(prevSteamScale, steamTank);
+        if (steamScale != prevSteamScale) {
+            needsPacket = true;
+            prevSteamScale = steamScale;
+        }
+        return needsPacket;
     }
 
     @Override
@@ -163,23 +222,5 @@ public class BoilerMultiblockData extends MultiblockData<BoilerMultiblockData> i
 
         steamTankCapacity = getSteamVolume() * BoilerMultiblockData.STEAM_PER_VOLUME;
         cooledCoolantCapacity = getSteamVolume() * BoilerMultiblockData.COOLED_COOLANT_PER_VOLUME;
-    }
-
-    @Nonnull
-    @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return fluidTanks;
-    }
-
-    @Nonnull
-    @Override
-    public List<IGasTank> getGasTanks(@Nullable Direction side) {
-        return gasTanks;
-    }
-
-    @Nonnull
-    @Override
-    public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
-        return heatCapacitors;
     }
 }

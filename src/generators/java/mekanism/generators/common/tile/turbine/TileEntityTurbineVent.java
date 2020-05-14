@@ -16,14 +16,14 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     @Nonnull
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
-        return side -> structure == null ? Collections.emptyList() : structure.ventTanks;
+        return side -> !getMultiblock().isFormed() ? Collections.emptyList() : getMultiblock().ventTanks;
     }
 
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (structure != null) {
-            FluidUtils.emit(structure.ventTank, this);
+        if (getMultiblock().isFormed()) {
+            FluidUtils.emit(getMultiblock().ventTank, this);
         }
     }
 

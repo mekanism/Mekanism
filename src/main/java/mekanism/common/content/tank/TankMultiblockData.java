@@ -1,48 +1,40 @@
 package mekanism.common.content.tank;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.base.ContainerEditMode;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.HybridInventorySlot;
 import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 
-public class TankMultiblockData extends MultiblockData<TankMultiblockData> implements IMekanismFluidHandler, IMekanismGasHandler {
+public class TankMultiblockData extends MultiblockData {
 
-    public MultiblockFluidTank<TileEntityDynamicTank> fluidTank;
-    public MultiblockGasTank<TileEntityDynamicTank> gasTank;
+    @ContainerSync public MultiblockFluidTank<TankMultiblockData> fluidTank;
+    @ContainerSync public MultiblockGasTank<TankMultiblockData> gasTank;
 
+    @ContainerSync
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
-    @Nonnull
-    private List<IInventorySlot> inventorySlots;
-    private List<IExtendedFluidTank> fluidTanks;
-    private List<IGasTank> gasTanks;
     private int tankCapacity;
+    public float prevScale;
 
     public TankMultiblockData(TileEntityDynamicTank tile) {
-        fluidTank = MultiblockFluidTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getTankCapacity(), BasicFluidTank.alwaysTrueBi,
+        fluidTank = MultiblockFluidTank.create(this, tile, () -> getTankCapacity(), BasicFluidTank.alwaysTrueBi,
               (stack, automationType) -> gasTank.isEmpty(), BasicFluidTank.alwaysTrue, null);
-        fluidTanks = Collections.singletonList(fluidTank);
-        gasTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getTankCapacity(), BasicGasTank.alwaysTrueBi,
+        fluidTanks.add(fluidTank);
+        gasTank = MultiblockGasTank.create(this, tile, () -> getTankCapacity(), BasicGasTank.alwaysTrueBi,
               (stack, automationType) -> fluidTank.isEmpty(), BasicGasTank.alwaysTrue, null, null);
-        gasTanks = Collections.singletonList(gasTank);
-        inventorySlots = createBaseInventorySlots();
+        gasTanks.add(gasTank);
+        inventorySlots.addAll(createBaseInventorySlots());
     }
 
     private List<IInventorySlot> createBaseInventorySlots() {
@@ -55,10 +47,21 @@ public class TankMultiblockData extends MultiblockData<TankMultiblockData> imple
         return inventorySlots;
     }
 
-    @Nonnull
     @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        return inventorySlots;
+    public boolean tick(World world) {
+        boolean needsPacket = super.tick(world);
+        //TODO: No magic numbers??
+        HybridInventorySlot inputSlot = (HybridInventorySlot) inventorySlots.get(0);
+        HybridInventorySlot outputSlot = (HybridInventorySlot) inventorySlots.get(1);
+        inputSlot.handleTank(outputSlot, editMode);
+        inputSlot.drainGasTank();
+        outputSlot.fillGasTank();
+        float scale = Math.max(MekanismUtils.getScale(prevScale, fluidTank), MekanismUtils.getScale(prevScale, gasTank));
+        if (scale != prevScale) {
+            needsPacket = true;
+            prevScale = scale;
+        }
+        return needsPacket;
     }
 
     public int getTankCapacity() {
@@ -74,17 +77,5 @@ public class TankMultiblockData extends MultiblockData<TankMultiblockData> imple
     @Override
     protected int getMultiblockRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
-    }
-
-    @Nonnull
-    @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return fluidTanks;
-    }
-
-    @Nonnull
-    @Override
-    public List<IGasTank> getGasTanks(@Nullable Direction side) {
-        return gasTanks;
     }
 }

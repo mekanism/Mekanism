@@ -1,5 +1,6 @@
 package mekanism.common.multiblock;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -9,8 +10,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
+import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.capabilities.heat.ITileHeatHandler;
+import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
@@ -19,18 +29,20 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class MultiblockData<T extends MultiblockData<T>> implements IMekanismInventory {
+public abstract class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler,
+      IMekanismStrictEnergyHandler, ITileHeatHandler {
 
     public Set<Coord4D> locations = new ObjectOpenHashSet<>();
     public Set<Coord4D> internalLocations = new ObjectOpenHashSet<>();
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
     public int volLength, volWidth, volHeight;
+    @ContainerSync(getter = "getVolume", setter = "setVolume")
     private int volume;
 
     public UUID inventoryID;
 
-    public boolean didTick;
+    public boolean didUpdateThisTick;
 
     public boolean hasRenderer;
 
@@ -40,13 +52,62 @@ public abstract class MultiblockData<T extends MultiblockData<T>> implements IMe
     public Coord4D minLocation, maxLocation;
 
     public boolean destroyed;
+    @ContainerSync
+    private boolean formed;
 
     private int currentRedstoneLevel;
+
+    protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
+    protected final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
+    protected final List<IGasTank> gasTanks = new ArrayList<>();
+    protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
+    protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
+
+    /**
+     * Tick the multiblock.
+     * @return if we need an update packet
+     */
+    public boolean tick(World world) {
+        for (ValveData data : valves) {
+            if (data.activeTicks > 0) {
+                data.activeTicks--;
+            }
+            if (data.activeTicks > 0 != data.prevActive) {
+                return true;
+            }
+            data.prevActive = data.activeTicks > 0;
+        }
+        return false;
+    }
 
     @Nonnull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        return Collections.emptyList();
+        return isFormed() ? inventorySlots : Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+        return isFormed() ? fluidTanks : Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
+        return isFormed() ? gasTanks : Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+        return isFormed() ? energyContainers : Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
+        return isFormed() ? heatCapacitors : Collections.emptyList();
     }
 
     public Set<Direction> getDirectionsToEmit(Coord4D coord) {
@@ -78,7 +139,7 @@ public abstract class MultiblockData<T extends MultiblockData<T>> implements IMe
         if (obj == null || obj.getClass() != getClass()) {
             return false;
         }
-        MultiblockData<T> data = (MultiblockData<T>) obj;
+        MultiblockData data = (MultiblockData) obj;
         if (!data.locations.equals(locations)) {
             return false;
         }
@@ -101,6 +162,14 @@ public abstract class MultiblockData<T extends MultiblockData<T>> implements IMe
         return BlockLocation.WALLS;
     }
 
+    public boolean isFormed() {
+        return formed;
+    }
+
+    public void setFormed(boolean formed) {
+        this.formed = formed;
+    }
+
     public int getVolume() {
         return volume;
     }
@@ -115,6 +184,7 @@ public abstract class MultiblockData<T extends MultiblockData<T>> implements IMe
 
     // Only call from the server
     public void markDirtyComparator(World world) {
+        if (!isFormed()) return;
         int newRedstoneLevel = getMultiblockRedstoneLevel();
         if (newRedstoneLevel != currentRedstoneLevel) {
             //Update the comparator value if it changed

@@ -37,19 +37,6 @@ public interface IValveHandler {
         }
     }
 
-    public default boolean needsValveUpdate() {
-        for (ValveData data : getValveData()) {
-            if (data.activeTicks > 0) {
-                data.activeTicks--;
-            }
-            if (data.activeTicks > 0 != data.prevActive) {
-                return true;
-            }
-            data.prevActive = data.activeTicks > 0;
-        }
-        return false;
-    }
-
     public Collection<ValveData> getValveData();
 
     public static class ValveData {

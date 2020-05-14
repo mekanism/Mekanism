@@ -26,21 +26,21 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     protected void render(TileEntityDynamicTank tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null && tile.structure.volHeight > 2) {
+        if (tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null) {
             RenderData data = null;
-            if (!tile.structure.fluidTank.isEmpty()) {
+            if (!tile.getMultiblock().fluidTank.isEmpty()) {
                 data = new FluidRenderData();
-                ((FluidRenderData) data).fluidType = tile.structure.fluidTank.getFluid();
-            } else if (!tile.structure.gasTank.isEmpty()) {
+                ((FluidRenderData) data).fluidType = tile.getMultiblock().fluidTank.getFluid();
+            } else if (!tile.getMultiblock().gasTank.isEmpty()) {
                 data = new GasRenderData();
-                ((GasRenderData) data).gasType = tile.structure.gasTank.getStack();
+                ((GasRenderData) data).gasType = tile.getMultiblock().gasTank.getStack();
             }
 
             if (data != null) {
-                data.location = tile.structure.renderLocation;
-                data.height = tile.structure.volHeight - 2;
-                data.length = tile.structure.volLength;
-                data.width = tile.structure.volWidth;
+                data.location = tile.getMultiblock().renderLocation;
+                data.height = tile.getMultiblock().volHeight - 2;
+                data.length = tile.getMultiblock().volLength;
+                data.width = tile.getMultiblock().volWidth;
                 matrix.push();
 
                 IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
@@ -48,11 +48,11 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
                 matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                 int glow = data.calculateGlowLight(light);
                 Model3D fluidModel = ModelRenderer.getModel(data, 1);
-                MekanismRenderer.renderObject(fluidModel, matrix, buffer, data.getColorARGB(tile.prevScale), glow);
+                MekanismRenderer.renderObject(fluidModel, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevScale), glow);
                 matrix.pop();
 
                 if (data instanceof FluidRenderData) {
-                    MekanismRenderer.renderValves(matrix, buffer, tile.structure.valves, (FluidRenderData) data, pos, glow);
+                    MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, (FluidRenderData) data, pos, glow);
                 }
             }
         }
@@ -65,7 +65,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     public boolean isGlobalRenderer(TileEntityDynamicTank tile) {
-        return tile.clientHasStructure && tile.isRendering && tile.structure != null && (!tile.structure.fluidTank.isEmpty() || !tile.structure.gasTank.isEmpty()) &&
-              tile.structure.renderLocation != null && tile.structure.volHeight > 2;
+        return tile.isRendering && tile.getMultiblock().isFormed() && (!tile.getMultiblock().fluidTank.isEmpty() || !tile.getMultiblock().gasTank.isEmpty()) &&
+              tile.getMultiblock().renderLocation != null;
     }
 }

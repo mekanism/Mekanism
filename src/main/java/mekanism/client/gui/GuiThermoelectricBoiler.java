@@ -47,7 +47,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
 
             @Override
             public double getLevel() {
-                return tile.structure == null ? 0 : (double) tile.getLastBoilRate() / (double) tile.getLastMaxBoil();
+                return (double) tile.getLastBoilRate() / (double) tile.getLastMaxBoil();
             }
         }, 44, 13));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
@@ -58,21 +58,21 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
 
             @Override
             public double getLevel() {
-                return tile.structure == null ? 0 : tile.getLastMaxBoil() * HeatUtils.getWaterThermalEnthalpy() /
+                return tile.getLastMaxBoil() * HeatUtils.getWaterThermalEnthalpy() /
                       (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get());
             }
         }, 164, 13));
-        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.superheatedCoolantTank,
-              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 6, 13)
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().superheatedCoolantTank,
+              () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 6, 13)
               .setLabel(MekanismLang.BOILER_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE)));
-        addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.waterTank,
-              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null), GaugeType.STANDARD, this, 26, 13)
+        addButton(new GuiFluidGauge(() -> tile.getMultiblock().waterTank,
+              () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 26, 13)
               .setLabel(MekanismLang.BOILER_WATER_TANK.translateColored(EnumColor.INDIGO)));
-        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.steamTank,
-              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 172, 13)
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().steamTank,
+              () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 172, 13)
               .setLabel(MekanismLang.BOILER_STEAM_TANK.translateColored(EnumColor.GRAY)));
-        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.cooledCoolantTank,
-              () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 192, 13)
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().cooledCoolantTank,
+              () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 192, 13)
               .setLabel(MekanismLang.BOILER_COOLANT_TANK.translateColored(EnumColor.AQUA)));
         addButton(new GuiHeatTab(() -> {
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);

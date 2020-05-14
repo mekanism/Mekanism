@@ -12,17 +12,17 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class TurbineGasTank extends MultiblockGasTank<TileEntityTurbineCasing> {
+public class TurbineGasTank extends MultiblockGasTank<TurbineMultiblockData> {
 
-    public TurbineGasTank(TileEntityTurbineCasing tile) {
-        super(tile, () -> tile.structure == null ? 0 : tile.structure.getSteamCapacity(), gas -> gas == MekanismGases.STEAM.getGas());
+    public TurbineGasTank(TurbineMultiblockData multiblock, TileEntityTurbineCasing tile) {
+        super(multiblock, tile, () -> multiblock.getSteamCapacity(), gas -> gas == MekanismGases.STEAM.getGas());
     }
 
     @Override
     public GasStack insert(@Nonnull GasStack stack, Action action, AutomationType automationType) {
         GasStack returned = super.insert(stack, action, automationType);
-        if (action == Action.EXECUTE && multiblock.structure != null) {
-            multiblock.structure.newSteamInput += stack.getAmount() - returned.getAmount();
+        if (action == Action.EXECUTE && multiblock.isFormed()) {
+            multiblock.newSteamInput += stack.getAmount() - returned.getAmount();
         }
         return returned;
     }

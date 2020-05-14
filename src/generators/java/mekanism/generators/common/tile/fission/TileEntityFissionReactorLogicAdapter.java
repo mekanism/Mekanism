@@ -58,18 +58,18 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         if (isRemote()) {
             return prevStatus;
         }
-        if (structure != null) {
+        if (getMultiblock().isFormed()) {
             switch (logicType) {
                 case ACTIVATION:
                     return isPowered() ? RedstoneStatus.POWERED : RedstoneStatus.IDLE;
                 case TEMPERATURE:
-                    return structure.heatCapacitor.getTemperature() >= FissionReactorMultiblockData.MIN_DAMAGE_TEMPERATURE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
+                    return getMultiblock().heatCapacitor.getTemperature() >= FissionReactorMultiblockData.MIN_DAMAGE_TEMPERATURE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 case EXCESS_WASTE:
-                    return structure.wasteTank.getNeeded() == 0 ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
+                    return getMultiblock().wasteTank.getNeeded() == 0 ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 case DAMAGED:
-                    return structure.reactorDamage >= FissionReactorMultiblockData.MAX_DAMAGE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
+                    return getMultiblock().reactorDamage >= FissionReactorMultiblockData.MAX_DAMAGE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 case DEPLETED:
-                    return structure.fuelTank.isEmpty() ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
+                    return getMultiblock().fuelTank.isEmpty() ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 default: break;
             }
         }
@@ -84,9 +84,9 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     public void onPowerChange() {
         super.onPowerChange();
-        if (!isRemote() && structure != null) {
+        if (!isRemote() && getMultiblock().isFormed()) {
             if (logicType == FissionReactorLogic.ACTIVATION) {
-                structure.setActive(isPowered());
+                getMultiblock().setActive(isPowered());
             }
         }
     }

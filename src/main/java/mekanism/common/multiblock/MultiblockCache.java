@@ -36,7 +36,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class MultiblockCache<T extends MultiblockData<T>> implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler,
+public class MultiblockCache<T extends MultiblockData> implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler,
       IMekanismStrictEnergyHandler, IMekanismHeatHandler {
 
     private List<IInventorySlot> inventorySlots = new ArrayList<>();
@@ -135,20 +135,20 @@ public class MultiblockCache<T extends MultiblockData<T>> implements IMekanismIn
 
     public enum CacheSubstance {
         ITEMS(NBTConstants.ITEMS, (cache) -> cache.inventorySlots.add(BasicInventorySlot.at(cache, 0, 0)),
-            (holder) -> holder instanceof IMekanismInventory ? ((IMekanismInventory) holder).getInventorySlots(null) : null),
+            (holder) -> ((IMekanismInventory) holder).getInventorySlots(null)),
 
         FLUID(NBTConstants.FLUID_TANKS, (cache) -> cache.fluidTanks.add(BasicFluidTank.create(Integer.MAX_VALUE, cache)),
-            (holder) -> holder instanceof IMekanismFluidHandler ? ((IMekanismFluidHandler) holder).getFluidTanks(null) : null),
+            (holder) -> ((IMekanismFluidHandler) holder).getFluidTanks(null)),
 
         GAS(NBTConstants.GAS_TANKS, (cache) -> cache.gasTanks.add(BasicGasTank.create(Long.MAX_VALUE, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi,
               BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, cache)),
-            (holder) -> holder instanceof IMekanismGasHandler ? ((IMekanismGasHandler) holder).getGasTanks(null) : null),
+            (holder) -> ((IMekanismGasHandler) holder).getGasTanks(null)),
 
         ENERGY(NBTConstants.ENERGY_CONTAINERS, (cache) -> cache.energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, cache)),
-            (holder) -> holder instanceof IMekanismStrictEnergyHandler ? ((IMekanismStrictEnergyHandler) holder).getEnergyContainers(null) : null),
+            (holder) -> ((IMekanismStrictEnergyHandler) holder).getEnergyContainers(null)),
 
         HEAT(NBTConstants.HEAT_CAPACITORS, (cache) -> cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, cache)),
-            (holder) -> holder instanceof IMekanismHeatHandler ? ((IMekanismHeatHandler) holder).getHeatCapacitors(null) : null);
+            (holder) -> ((IMekanismHeatHandler) holder).getHeatCapacitors(null));
 
         private String tagKey;
         private Consumer<MultiblockCache<?>> defaultPrefab;

@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.turbine;
 
-import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.Gas;
@@ -21,20 +20,20 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     @Nonnull
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        return side -> structure == null ? Collections.emptyList() : structure.getGasTanks(side);
+        return side -> getMultiblock().getGasTanks(side);
     }
 
     @Nonnull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
-        return side -> structure == null ? Collections.emptyList() : structure.getEnergyContainers(side);
+        return side -> getMultiblock().getEnergyContainers(side);
     }
 
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (structure != null) {
-            CableUtils.emit(structure.getDirectionsToEmit(Coord4D.get(this)), structure.energyContainer, this);
+        if (getMultiblock().isFormed()) {
+            CableUtils.emit(getMultiblock().getDirectionsToEmit(Coord4D.get(this)), getMultiblock().energyContainer, this);
         }
     }
 
@@ -49,6 +48,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
 
     @Override
     public int getRedstoneLevel() {
-        return structure == null ? 0 : structure.getCurrentRedstoneLevel();
+        return getMultiblock().getCurrentRedstoneLevel();
     }
 }

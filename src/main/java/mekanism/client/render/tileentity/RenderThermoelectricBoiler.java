@@ -25,42 +25,42 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
 
     @Override
     protected void render(TileEntityBoilerCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null && tile.structure.upperRenderLocation != null) {
+        if (tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && tile.getMultiblock().upperRenderLocation != null) {
             BlockPos pos = tile.getPos();
             IVertexBuilder buffer = null;
-            if (!tile.structure.waterTank.isEmpty()) {
+            if (!tile.getMultiblock().waterTank.isEmpty()) {
                 FluidRenderData data = new FluidRenderData();
-                data.height = tile.structure.upperRenderLocation.y - 1 - tile.structure.renderLocation.y;
+                data.height = tile.getMultiblock().upperRenderLocation.y - 1 - tile.getMultiblock().renderLocation.y;
                 if (data.height >= 1) {
-                    data.location = tile.structure.renderLocation;
-                    data.length = tile.structure.volLength;
-                    data.width = tile.structure.volWidth;
-                    data.fluidType = tile.structure.waterTank.getFluid();
+                    data.location = tile.getMultiblock().renderLocation;
+                    data.length = tile.getMultiblock().volLength;
+                    data.width = tile.getMultiblock().volWidth;
+                    data.fluidType = tile.getMultiblock().waterTank.getFluid();
                     int glow = data.calculateGlowLight(light);
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
-                    MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.prevWaterScale), matrix, buffer, data.getColorARGB(tile.prevWaterScale), glow);
+                    MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.getMultiblock().prevWaterScale), matrix, buffer, data.getColorARGB(tile.getMultiblock().prevWaterScale), glow);
                     matrix.pop();
 
-                    MekanismRenderer.renderValves(matrix, buffer, tile.structure.valves, data, pos, glow);
+                    MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, data, pos, glow);
                 }
             }
-            if (!tile.structure.steamTank.isEmpty()) {
+            if (!tile.getMultiblock().steamTank.isEmpty()) {
                 GasRenderData data = new GasRenderData();
-                data.height = tile.structure.renderLocation.y + tile.structure.volHeight - 2 - tile.structure.upperRenderLocation.y;
+                data.height = tile.getMultiblock().renderLocation.y + tile.getMultiblock().volHeight - 2 - tile.getMultiblock().upperRenderLocation.y;
                 if (data.height >= 1) {
-                    data.location = tile.structure.upperRenderLocation;
-                    data.length = tile.structure.volLength;
-                    data.width = tile.structure.volWidth;
-                    data.gasType = tile.structure.steamTank.getStack();
+                    data.location = tile.getMultiblock().upperRenderLocation;
+                    data.length = tile.getMultiblock().volLength;
+                    data.width = tile.getMultiblock().volWidth;
+                    data.gasType = tile.getMultiblock().steamTank.getStack();
                     if (buffer == null) {
                         buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
                     }
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     Model3D gasModel = ModelRenderer.getModel(data, 1);
-                    MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.prevSteamScale), data.calculateGlowLight(light));
+                    MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevSteamScale), data.calculateGlowLight(light));
                     matrix.pop();
                 }
             }
@@ -74,6 +74,6 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
 
     @Override
     public boolean isGlobalRenderer(TileEntityBoilerCasing tile) {
-        return tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null && tile.structure.upperRenderLocation != null;
+        return tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && tile.getMultiblock().upperRenderLocation != null;
     }
 }

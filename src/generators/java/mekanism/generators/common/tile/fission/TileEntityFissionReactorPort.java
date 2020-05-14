@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.fission;
 
-import java.util.Collections;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -35,13 +34,13 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (structure != null) {
+        if (getMultiblock().isFormed()) {
             FissionPortMode mode = getMode();
 
             if (mode == FissionPortMode.OUTPUT_COOLANT) {
-                GasUtils.emit(structure.heatedCoolantTank, this);
+                GasUtils.emit(getMultiblock().heatedCoolantTank, this);
             } else if (mode == FissionPortMode.OUTPUT_WASTE) {
-                GasUtils.emit(structure.wasteTank, this);
+                GasUtils.emit(getMultiblock().wasteTank, this);
             }
         }
     }
@@ -61,19 +60,19 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     @Nonnull
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        return side -> structure == null ? Collections.emptyList() : structure.getGasTanks(side);
+        return side -> getMultiblock().getGasTanks(side);
     }
 
     @Nonnull
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
-        return side -> structure == null ? Collections.emptyList() : structure.getFluidTanks(side);
+        return side -> getMultiblock().getFluidTanks(side);
     }
 
     @Nonnull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
-        return side -> structure == null ? Collections.emptyList() : structure.getHeatCapacitors(side);
+        return side -> getMultiblock().getHeatCapacitors(side);
     }
 
     @Override
@@ -104,9 +103,9 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
         if (ret.getAmount() < stack.getAmount() && action.execute()) {
-            if (structure != null) {
+            if (getMultiblock().isFormed()) {
                 Coord4D coord4D = Coord4D.get(this);
-                for (ValveData data : structure.valves) {
+                for (ValveData data : getMultiblock().valves) {
                     if (coord4D.equals(data.location)) {
                         data.onTransfer();
                     }

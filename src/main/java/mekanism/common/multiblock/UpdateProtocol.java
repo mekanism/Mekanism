@@ -11,11 +11,8 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
@@ -31,7 +28,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class UpdateProtocol<T extends MultiblockData<T>> {
+public abstract class UpdateProtocol<T extends MultiblockData> {
 
     /**
      * The multiblock nodes that have already been iterated over.
@@ -295,18 +292,19 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
             }
         }
 
-        if (structureFound instanceof IMekanismFluidHandler && shouldCap(CacheSubstance.FLUID)) {
-            for (IExtendedFluidTank tank : ((IMekanismFluidHandler) structureFound).getFluidTanks(null)) {
+        if (shouldCap(CacheSubstance.FLUID)) {
+            for (IExtendedFluidTank tank : structureFound.getFluidTanks(null)) {
                 tank.setStackSize(Math.min(tank.getFluidAmount(), tank.getCapacity()), Action.EXECUTE);
             }
         }
-        if (structureFound instanceof IMekanismGasHandler && shouldCap(CacheSubstance.GAS)) {
-            for (IGasTank tank : ((IMekanismGasHandler) structureFound).getGasTanks(null)) {
+        if (shouldCap(CacheSubstance.GAS)) {
+            for (IGasTank tank : structureFound.getGasTanks(null)) {
                 tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
+                System.out.println("Cap to " + tank.getCapacity());
             }
         }
-        if (structureFound instanceof IMekanismStrictEnergyHandler && shouldCap(CacheSubstance.ENERGY)) {
-            for (IEnergyContainer container : ((IMekanismStrictEnergyHandler) structureFound).getEnergyContainers(null)) {
+        if (shouldCap(CacheSubstance.ENERGY)) {
+            for (IEnergyContainer container : structureFound.getEnergyContainers(null)) {
                 container.setEnergy(container.getEnergy().min(container.getMaxEnergy()));
             }
         }
@@ -350,7 +348,7 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
                     for (Coord4D newCoord : iteratedNodes) {
                         TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), newCoord.getPos());
                         if (tile instanceof TileEntityMultiblock) {
-                            ((TileEntityMultiblock<?>) tile).removeStructure();
+                            ((TileEntityMultiblock<?>) tile).removeMultiblock();
                         } else if (tile instanceof IStructuralMultiblock) {
                             ((IStructuralMultiblock) tile).setController(null);
                         }
@@ -361,6 +359,8 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
                     return FormationResult.FAIL;
                 }
             }
+
+            structureFound.setFormed(true);
 
             Set<UUID> idsFound = new HashSet<>();
             for (Coord4D obj : structureFound.locations) {
@@ -402,7 +402,7 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
             for (Coord4D obj : structureFound.locations) {
                 TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
                 if (tile instanceof TileEntityMultiblock) {
-                    ((TileEntityMultiblock<T>) tile).structure = structureFound;
+                    ((TileEntityMultiblock<T>) tile).setMultiblock(structureFound);
                     if (toUse == null) {
                         toUse = obj;
                     }
@@ -426,11 +426,11 @@ public abstract class UpdateProtocol<T extends MultiblockData<T>> {
                 TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
                 if (tile instanceof TileEntityMultiblock) {
                     TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) tile;
-                    if (tileEntity.structure != null && !tileEntity.structure.destroyed) {
-                        onStructureDestroyed(tileEntity.structure);
-                        tileEntity.structure.destroyed = true;
+                    if (tileEntity.getMultiblock().isFormed() && !tileEntity.getMultiblock().destroyed) {
+                        onStructureDestroyed(tileEntity.getMultiblock());
+                        tileEntity.getMultiblock().destroyed = true;
                     }
-                    tileEntity.removeStructure();
+                    tileEntity.removeMultiblock();
                 } else if (tile instanceof IStructuralMultiblock) {
                     ((IStructuralMultiblock) tile).setController(null);
                 }

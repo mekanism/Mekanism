@@ -55,18 +55,18 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
             GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
         )).defaultFormat().spacing(2));
         addButton(new GuiHybridGauge(
-            () -> tile.structure == null ? null : tile.structure.gasCoolantTank, () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null),
-            () -> tile.structure == null ? null : tile.structure.fluidCoolantTank, () -> tile.structure == null ? Collections.emptyList() : tile.structure.getFluidTanks(null),
+            () -> tile.getMultiblock().gasCoolantTank, () -> tile.getMultiblock().getGasTanks(null),
+            () -> tile.getMultiblock().fluidCoolantTank, () -> tile.getMultiblock().getFluidTanks(null),
             GaugeType.STANDARD, this, 6, 13)
             .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));
-        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.fuelTank,
-            () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 25, 13)
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().fuelTank,
+            () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 25, 13)
             .setLabel(GeneratorsLang.FISSION_FUEL_TANK.translateColored(EnumColor.DARK_GREEN)));
-        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.heatedCoolantTank,
-            () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 152, 13)
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().heatedCoolantTank,
+            () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 152, 13)
             .setLabel(GeneratorsLang.FISSION_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE)));
-        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.wasteTank,
-            () -> tile.structure == null ? Collections.emptyList() : tile.structure.getGasTanks(null), GaugeType.STANDARD, this, 171, 13)
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().wasteTank,
+            () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 171, 13)
             .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
         addButton(new GuiHeatTab(() -> {
             ITextComponent transfer = MekanismUtils.getTemperatureDisplay(tile.getLastTransferLoss(), TemperatureUnit.KELVIN, false);

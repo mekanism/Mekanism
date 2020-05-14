@@ -36,26 +36,27 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         super.init();
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
-        addButton(new GuiInnerScreen(this, 51, 23, 80, 42, () -> Arrays.asList(
-            MekanismLang.MATRIX_INPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastInput()))),
-            MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastOutput()))),
-            MekanismLang.CAPACITY.translate(EnergyDisplay.of(tile.getMaxEnergy()))
-        )).defaultFormat());
+        addButton(new GuiInnerScreen(this, 49, 21, 84, 46, () -> Arrays.asList(
+            MekanismLang.ENERGY.translate(EnergyDisplay.of(tile.getMultiblock().getEnergy())),
+            MekanismLang.CAPACITY.translate(EnergyDisplay.of(tile.getMultiblock().getStorageCap())),
+            MekanismLang.MATRIX_INPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput()))),
+            MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput())))
+        )).spacing(2));
         addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT));
         addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
             public FloatingLong getEnergy() {
-                return tile.getEnergy();
+                return tile.getMultiblock().getEnergy();
             }
 
             @Override
             public FloatingLong getMaxEnergy() {
-                return tile.getMaxEnergy();
+                return tile.getMultiblock().getStorageCap();
             }
         }, GaugeType.MEDIUM, this, 7, 16, 34, 56));
-        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
-              MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))
+        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getMultiblock().getEnergy(), tile.getMultiblock().getStorageCap())),
+              MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput())),
+              MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput()))
         ), this));
     }
 

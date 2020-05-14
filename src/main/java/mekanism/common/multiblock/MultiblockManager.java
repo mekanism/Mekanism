@@ -16,7 +16,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class MultiblockManager<T extends MultiblockData<T>> {
+public class MultiblockManager<T extends MultiblockData> {
 
     private static Set<MultiblockManager<?>> managers = new ObjectOpenHashSet<>();
 
@@ -46,7 +46,7 @@ public class MultiblockManager<T extends MultiblockData<T>> {
 
     @Nullable
     public static UUID getMultiblockID(TileEntityMultiblock<?> tile) {
-        return tile.structure == null ? null : tile.getMultiblockData().inventoryID;
+        return tile.getMultiblock().inventoryID;
     }
 
     public static boolean areCompatible(TileEntity tile1, TileEntity tile2, boolean markUpdated) {

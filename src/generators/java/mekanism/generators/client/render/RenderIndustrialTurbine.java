@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -27,9 +27,9 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
 
     @Override
     protected void render(TileEntityTurbineCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.complex != null && tile.structure.renderLocation != null) {
+        if (tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().complex != null && tile.getMultiblock().renderLocation != null) {
             BlockPos pos = tile.getPos();
-            BlockPos complexPos = tile.structure.complex.getPos();
+            BlockPos complexPos = tile.getMultiblock().complex.getPos();
             IVertexBuilder buffer = RenderTurbineRotor.INSTANCE.model.getBuffer(renderer);
             profiler.startSection(GeneratorsProfilerConstants.TURBINE_ROTOR);
             while (true) {
@@ -44,18 +44,18 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                 matrix.pop();
             }
             profiler.endSection();
-            if (!tile.structure.gasTank.isEmpty() && tile.structure.volLength > 0) {
+            if (!tile.getMultiblock().gasTank.isEmpty() && tile.getMultiblock().volLength > 0) {
                 GasRenderData data = new GasRenderData();
-                data.height = tile.structure.lowerVolume / (tile.structure.volLength * tile.structure.volWidth);
+                data.height = tile.getMultiblock().lowerVolume / (tile.getMultiblock().volLength * tile.getMultiblock().volWidth);
                 if (data.height >= 1) {
-                    data.location = tile.structure.renderLocation;
-                    data.length = tile.structure.volLength;
-                    data.width = tile.structure.volWidth;
-                    data.gasType = tile.structure.gasTank.getStack();
+                    data.location = tile.getMultiblock().renderLocation;
+                    data.length = tile.getMultiblock().volLength;
+                    data.width = tile.getMultiblock().volWidth;
+                    data.gasType = tile.getMultiblock().gasTank.getStack();
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     Model3D gasModel = ModelRenderer.getModel(data, 1);
-                    MekanismRenderer.renderObject(gasModel, matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()), data.getColorARGB(tile.prevSteamScale),
+                    MekanismRenderer.renderObject(gasModel, matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()), data.getColorARGB(tile.getMultiblock().prevSteamScale),
                           data.calculateGlowLight(light));
                     matrix.pop();
                 }
@@ -70,6 +70,6 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
 
     @Override
     public boolean isGlobalRenderer(TileEntityTurbineCasing tile) {
-        return tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.complex != null && tile.structure.renderLocation != null;
+        return tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().complex != null && tile.getMultiblock().renderLocation != null;
     }
 }

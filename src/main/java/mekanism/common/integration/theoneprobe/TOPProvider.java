@@ -75,13 +75,13 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     public void addProbeInfo(ProbeMode mode, IProbeInfo info, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
         TileEntity tile = MekanismUtils.getTileEntity(world, data.getPos());
         if (tile != null) {
-            MultiblockData<?> structure = getStructure(tile);
+            MultiblockData structure = getMultiblock(tile);
             Optional<IStrictEnergyHandler> energyCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null));
             if (energyCapability.isPresent()) {
                 displayEnergy(info, energyCapability.get());
             } else if (structure instanceof IMekanismStrictEnergyHandler) {
                 //Special handling to allow viewing the energy of multiblock's when looking at things other than the ports
-                displayEnergy(info, (IMekanismStrictEnergyHandler) structure);
+                displayEnergy(info, structure);
             }
             if (tankMode == ConfigMode.NOT) {
                 //Don't display tanks
@@ -96,7 +96,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
                         displayFluid(info, fluidCapability.get());
                     } else if (structure instanceof IMekanismFluidHandler) {
                         //Special handling to allow viewing the fluid in a multiblock when looking at things other than the ports
-                        displayFluid(info, (IMekanismFluidHandler) structure);
+                        displayFluid(info, structure);
                     }
                 }
                 //Gas
@@ -105,7 +105,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
                     addInfo(new GasHandlerWrapper(gasCapability.get()), info, GasElement::new, MekanismLang.GAS);
                 } else if (structure instanceof IMekanismGasHandler) {
                     //Special handling to allow viewing the gas in a multiblock when looking at things other than the ports
-                    addInfo(new GasHandlerWrapper((IMekanismGasHandler) structure), info, GasElement::new, MekanismLang.GAS);
+                    addInfo(new GasHandlerWrapper(structure), info, GasElement::new, MekanismLang.GAS);
                 }
                 //Infuse Type
                 Optional<IInfusionHandler> infusionCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.INFUSION_HANDLER_CAPABILITY, null));
@@ -120,16 +120,16 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     }
 
     @Nullable
-    private MultiblockData<?> getStructure(@Nonnull TileEntity tile) {
+    private MultiblockData getMultiblock(@Nonnull TileEntity tile) {
         if (tile instanceof TileEntityMultiblock<?>) {
-            return ((TileEntityMultiblock<?>) tile).structure;
+            return ((TileEntityMultiblock<?>) tile).getMultiblock();
         } else if (tile instanceof IStructuralMultiblock) {
             IStructuralMultiblock structuralMultiblock = (IStructuralMultiblock) tile;
             Coord4D controller = structuralMultiblock.getController();
             if (controller != null) {
                 TileEntity tileEntity = MekanismUtils.getTileEntity(tile.getWorld(), controller.getPos());
                 if (tileEntity instanceof TileEntityMultiblock<?>) {
-                    return ((TileEntityMultiblock<?>) tileEntity).structure;
+                    return ((TileEntityMultiblock<?>) tileEntity).getMultiblock();
                 }
             }
         }
