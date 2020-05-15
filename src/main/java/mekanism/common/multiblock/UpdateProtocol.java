@@ -1,15 +1,13 @@
 package mekanism.common.multiblock;
 
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -30,157 +28,103 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class UpdateProtocol<T extends MultiblockData> {
 
-    /**
-     * The multiblock nodes that have already been iterated over.
-     */
-    public Set<Coord4D> iteratedNodes = new ObjectOpenHashSet<>();
-
-    public Set<Coord4D> innerNodes = new ObjectOpenHashSet<>();
-
-    /**
-     * The structures found, all connected by some nodes to the pointer.
-     */
-    public T structureFound = null;
+    private static final int MAX_SIZE = 18;
 
     /**
      * The original block the calculation is getting run from.
      */
     public TileEntityMultiblock<T> pointer;
 
-    private FormationResult prevResult = FormationResult.FAIL;
-
     public UpdateProtocol(TileEntityMultiblock<T> tile) {
         pointer = tile;
     }
 
-    /**
-     * Recursively loops through each node connected to the given TileEntity.
-     *
-     * @param coord - coord to start with
-     * @param queue - the queue to add next nodes to to avoid recursion
-     */
-    public void loopThrough(Coord4D coord, Deque<Coord4D> queue) {
-        int origX = coord.x, origY = coord.y, origZ = coord.z;
-        if (isCorner(origX, origY, origZ)) {
-            int xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
-            if (checkNode(origX + 1, origY, origZ)) {
-                xmax = findViableNode(coord, 1, 0, 0);
-            } else {
-                xmin = findViableNode(coord, -1, 0, 0);
-            }
-            if (checkNode(origX, origY + 1, origZ)) {
-                ymax = findViableNode(coord, 0, 1, 0);
-            } else {
-                ymin = findViableNode(coord, 0, -1, 0);
-            }
-            if (checkNode(origX, origY, origZ + 1)) {
-                zmax = findViableNode(coord, 0, 0, 1);
-            } else {
-                zmin = findViableNode(coord, 0, 0, -1);
-            }
+    public StructureResult buildStructure(BlockPos corner) {
+        BlockPos min = corner, max = traverse(corner, 0, Direction.EAST, Direction.UP, Direction.SOUTH);
 
-            Set<Coord4D> locations = new ObjectOpenHashSet<>();
-            Set<ValveData> valves = new ObjectOpenHashSet<>();
-            boolean isValid = true;
+        Set<BlockPos> locations = new ObjectOpenHashSet<>();
+        Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
+        Set<ValveData> valves = new ObjectOpenHashSet<>();
 
-            int minX = origX + xmin, maxX = origX + xmax;
-            int minY = origY + ymin, maxY = origY + ymax;
-            int minZ = origZ + zmin, maxZ = origZ + zmax;
-            outer:
-            for (int x = xmin; x <= xmax; x++) {
-                for (int y = ymin; y <= ymax; y++) {
-                    for (int z = zmin; z <= zmax; z++) {
-                        BlockPos pos = new BlockPos(origX + x, origY + y, origZ + z);
-                        if (x == xmin || x == xmax || y == ymin || y == ymax || z == zmin || z == zmax) {
-                            CasingType type = getCasingType(pos);
-                            if (!checkNode(pos) || isFramePos(coord.translate(x, y, z), minX, maxX, minY, maxY, minZ, maxZ) && !type.isFrame()) {
-                                //If it is not a valid node or if it is supposed to be a frame but is invalid
-                                // then we are not valid over all
-                                isValid = false;
-                                prevResult = FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos);
-                                break outer;
-                            } else {
-                                locations.add(coord.translate(x, y, z));
-                                if (type.isValve()) {
-                                    ValveData data = new ValveData();
-                                    data.location = coord.translate(x, y, z);
-                                    data.side = getSide(data.location, minX, maxX, minY, maxY, minZ, maxZ);
-                                    valves.add(data);
-                                }
-                            }
-                        } else if (!isValidInnerNode(pos)) {
-                            isValid = false;
-                            prevResult = FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos);
-                            break outer;
-                        } else if (!pointer.getWorld().isAirBlock(pos)) {
-                            innerNodes.add(new Coord4D(pos, pointer.getWorld().getDimension().getType()));
-                        }
-                    }
-                }
-            }
-
-            if (isValid) {
-                //Check the boolean values before performing other calculations
-                int length = Math.abs(xmax - xmin) + 1;
-                int height = Math.abs(ymax - ymin) + 1;
-                int width = Math.abs(zmax - zmin) + 1;
-                if (length <= 18 && height <= 18 && width <= 18) {
-                    T structure = getNewStructure();
-                    structure.locations = locations;
-                    structure.valves = valves;
-                    structure.volLength = length;
-                    structure.volHeight = height;
-                    structure.volWidth = width;
-                    structure.setVolume(structure.volLength * structure.volHeight * structure.volWidth);
-                    structure.renderLocation = coord.translate(0, 1, 0);
-                    structure.minLocation = coord.translate(xmin, ymin, zmin);
-                    structure.maxLocation = coord.translate(xmax, ymax, zmax);
-
-                    if (structure.volLength >= 3 && structure.volHeight >= 3 && structure.volWidth >= 3) {
-                        onStructureCreated(structure, origX, origY, origZ, xmin, xmax, ymin, ymax, zmin, zmax);
-                        if (structure.locations.contains(Coord4D.get(pointer)) && isCorrectCorner(coord, minX, minY, minZ)) {
-                            prevResult = validate(structure);
-                            if (prevResult.isFormed()) {
-                                structureFound = structure;
-                                return;
+        for (int x = min.getX(); x <= max.getX(); x++) {
+            for (int y = min.getY(); y <= max.getY(); y++) {
+                for (int z = min.getZ(); z <= max.getZ(); z++) {
+                    BlockPos pos = new BlockPos(x, y, z);
+                    if (x == min.getX() || x == max.getX() || y == min.getY() || y == max.getY() || z == min.getZ() || z == max.getZ()) {
+                        CasingType type = getCasingType(pos);
+                        if (!checkNode(pos) || isFramePos(pos, min, max) && !type.isFrame()) {
+                            //If it is not a valid node or if it is supposed to be a frame but is invalid
+                            // then we are not valid over all
+                            return new StructureResult(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos));
+                        } else {
+                            locations.add(pos);
+                            if (type.isValve()) {
+                                ValveData data = new ValveData();
+                                data.location = pos;
+                                data.side = getSide(data.location, min, max);
+                                valves.add(data);
                             }
                         }
+                    } else if (!isValidInnerNode(pos)) {
+                        return new StructureResult(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos));
+                    } else if (!pointer.getWorld().isAirBlock(pos)) {
+                        innerNodes.add(pos);
                     }
                 }
             }
         }
 
-        innerNodes.clear();
-        iteratedNodes.add(coord);
+        int length = Math.abs(max.getX() - min.getX()) + 1;
+        int height = Math.abs(max.getY() - min.getY()) + 1;
+        int width = Math.abs(max.getZ() - min.getZ()) + 1;
+        T structure = getNewStructure();
+        structure.locations = locations;
+        structure.valves = valves;
+        structure.length = length;
+        structure.height = height;
+        structure.width = width;
+        structure.setVolume(structure.length * structure.height * structure.width);
+        structure.renderLocation = corner.offset(Direction.UP);
+        structure.minLocation = min;
+        structure.maxLocation = max;
 
-        if (iteratedNodes.size() > 2048) {
-            return;
-        }
-
-        for (Direction side : EnumUtils.DIRECTIONS) {
-            Coord4D sideCoord = coord.offset(side);
-            if (checkNode(sideCoord.getPos()) && !iteratedNodes.contains(sideCoord)) {
-                queue.addLast(sideCoord);
+        if (length >= 3 && length <= MAX_SIZE && height >= 3 && height <= MAX_SIZE && width >= 3 && width <= MAX_SIZE) {
+            if (validate(structure, innerNodes).isFormed()) {
+                return new StructureResult(structure);
             }
         }
+
+        return new StructureResult(FormationResult.FAIL);
     }
 
-    protected FormationResult validate(T structure) {
+    private BlockPos traverse(BlockPos orig, int dist, Direction... sides) {
+        if (dist + 1 > MAX_SIZE * 3)
+            return null;
+        for (Direction side : sides) {
+            BlockPos offset = orig.offset(side);
+            if (checkNode(offset)) {
+                return traverse(offset, dist + 1, sides);
+            }
+        }
+        return orig;
+    }
+
+    protected FormationResult validate(T structure, Set<BlockPos> innerNodes) {
         return FormationResult.SUCCESS;
     }
 
-    public Direction getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
-        if (obj.x == xmin) {
+    public Direction getSide(BlockPos pos, BlockPos min, BlockPos max) {
+        if (pos.getX() == min.getX()) {
             return Direction.WEST;
-        } else if (obj.x == xmax) {
+        } else if (pos.getX() == max.getX()) {
             return Direction.EAST;
-        } else if (obj.y == ymin) {
+        } else if (pos.getY() == min.getY()) {
             return Direction.DOWN;
-        } else if (obj.y == ymax) {
+        } else if (pos.getY() == max.getY()) {
             return Direction.UP;
-        } else if (obj.z == zmin) {
+        } else if (pos.getZ() == min.getZ()) {
             return Direction.NORTH;
-        } else if (obj.z == zmax) {
+        } else if (pos.getZ() == max.getZ()) {
             return Direction.SOUTH;
         }
         return null;
@@ -191,88 +135,20 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
     }
 
     /**
-     * Helper method for reducing duplicate code in loopThrough.
-     *
-     * @param orig   Starting position
-     * @param xShift Direction x is being changed, 1 is increasing, 0 means not changing, -1 means decreasing. Only one of xShift, yShift, and zShift should not be 0
-     *               during any call. A value of 1 also implies that it is a viable node so we start checking at 1 instead of 0.
-     * @param yShift Direction y is being changed, 1 is increasing, 0 means not changing, -1 means decreasing. Only one of xShift, yShift, and zShift should not be 0
-     *               during any call. A value of 1 also implies that it is a viable node so we start checking at 1 instead of 0.
-     * @param zShift Direction z is being changed, 1 is increasing, 0 means not changing, -1 means decreasing. Only one of xShift, yShift, and zShift should not be 0
-     *               during any call. A value of 1 also implies that it is a viable node so we start checking at 1 instead of 0.
-     *
-     * @return x, y, or z depending on which one is not zero.
-     */
-    private int findViableNode(Coord4D orig, int xShift, int yShift, int zShift) {
-        int x = xShift == 1 ? 1 : 0;
-        int y = yShift == 1 ? 1 : 0;
-        int z = zShift == 1 ? 1 : 0;
-        while (checkNode(orig.x + x + xShift, orig.y + y + yShift, orig.z + z + zShift)) {
-            x += xShift;
-            y += yShift;
-            z += zShift;
-        }
-        return x != 0 ? x : y != 0 ? y : z;
-    }
-
-    private boolean isCorner(int x, int y, int z) {
-        return (!checkNode(x + 1, y, z) || !checkNode(x - 1, y, z)) &&
-               (!checkNode(x, y + 1, z) || !checkNode(x, y - 1, z)) &&
-               (!checkNode(x, y, z + 1) || !checkNode(x, y, z - 1));
-    }
-
-    /**
-     * @param x - x coordinate
-     * @param y - y coordinate
-     * @param z - z coordinate
-     *
      * @return Whether or not the block at the specified location is a viable node for a multiblock structure.
      */
-    public boolean checkNode(int x, int y, int z) {
-        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), new BlockPos(x, y, z));
+    protected boolean checkNode(BlockPos pos) {
+        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
         if (tile instanceof IStructuralMultiblock && ((IStructuralMultiblock) tile).canInterface(pointer)) {
             return true;
         }
         return MultiblockManager.areCompatible(tile, pointer, true);
-
     }
 
-    /**
-     * @param pos - coordinates
-     *
-     * @return Whether or not the block at the specified location is a viable node for a multiblock structure.
-     */
-    public boolean checkNode(BlockPos pos) {
-        return checkNode(pos.getX(), pos.getY(), pos.getZ());
-    }
-
-    /**
-     * @param obj  - location to check
-     * @param xmin - minimum x value
-     * @param ymin - minimum y value
-     * @param zmin - minimum z value
-     *
-     * @return If the block at the specified location is on the minimum of all angles of this multiblock structure, and the one to use for the actual calculation.
-     */
-    private boolean isCorrectCorner(Coord4D obj, int xmin, int ymin, int zmin) {
-        return obj.x == xmin && obj.y == ymin && obj.z == zmin;
-    }
-
-    /**
-     * @param obj  - location to check
-     * @param xmin - minimum x value
-     * @param xmax - maximum x value
-     * @param ymin - minimum y value
-     * @param ymax - maximum y value
-     * @param zmin - minimum z value
-     * @param zmax - maximum z value
-     *
-     * @return Whether or not the block at the specified location is considered a frame on the multiblock structure.
-     */
-    private boolean isFramePos(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
-        boolean xMatches = obj.x == xmin || obj.x == xmax;
-        boolean yMatches = obj.y == ymin || obj.y == ymax;
-        boolean zMatches = obj.z == zmin || obj.z == zmax;
+    private boolean isFramePos(BlockPos obj, BlockPos min, BlockPos max) {
+        boolean xMatches = obj.getX() == min.getX() || obj.getX() == max.getX();
+        boolean yMatches = obj.getY() == min.getY() || obj.getY() == max.getY();
+        boolean zMatches = obj.getZ() == min.getZ() || obj.getZ() == max.getZ();
         return xMatches && yMatches || xMatches && zMatches || yMatches && zMatches;
     }
 
@@ -284,9 +160,9 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         return pointer.getNewStructure();
     }
 
-    protected void onFormed() {
-        for (Coord4D coord : structureFound.internalLocations) {
-            TileEntityInternalMultiblock tile = MekanismUtils.getTileEntity(TileEntityInternalMultiblock.class, pointer.getWorld(), coord.getPos());
+    protected void onFormed(T structureFound) {
+        for (BlockPos pos : structureFound.internalLocations) {
+            TileEntityInternalMultiblock tile = MekanismUtils.getTileEntity(TileEntityInternalMultiblock.class, pointer.getWorld(), pos);
             if (tile != null) {
                 tile.setMultiblock(structureFound.inventoryID);
             }
@@ -313,58 +189,25 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         return true;
     }
 
-    protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
-
-    protected void onStructureDestroyed(T structure) {
-        for (Coord4D coord : structure.internalLocations) {
-            killInnerNode(coord);
-        }
-    }
-
-    private void killInnerNode(Coord4D coord) {
-        TileEntityInternalMultiblock tile = MekanismUtils.getTileEntity(TileEntityInternalMultiblock.class, pointer.getWorld(), coord.getPos());
-        if (tile != null) {
-            tile.setMultiblock(null);
-        }
-    }
-
     /**
      * Runs the protocol and updates all nodes that make a part of the multiblock.
      */
     public FormationResult doUpdate() {
-        Deque<Coord4D> pathingQueue = new LinkedList<>();
-        pathingQueue.add(Coord4D.get(pointer));
-        while (pathingQueue.peek() != null) {
-            Coord4D next = pathingQueue.removeFirst();
-            if (!iteratedNodes.contains(next)) {
-                loopThrough(next, pathingQueue);
-            }
+        BlockPos corner = traverse(pointer.getPos(), 0, Direction.WEST, Direction.DOWN, Direction.NORTH);
+        if (corner == null) {
+            return FormationResult.FAIL;
         }
+        StructureResult result = buildStructure(corner);
+        T structureFound = result.structureFound;
 
-        if (structureFound != null) {
-            for (Coord4D coord : iteratedNodes) {
-                if (!structureFound.locations.contains(coord)) {
-                    for (Coord4D newCoord : iteratedNodes) {
-                        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), newCoord.getPos());
-                        if (tile instanceof TileEntityMultiblock) {
-                            ((TileEntityMultiblock<?>) tile).removeMultiblock();
-                        } else if (tile instanceof IStructuralMultiblock) {
-                            ((IStructuralMultiblock) tile).setController(null);
-                        }
-                    }
-                    for (Coord4D newCoord : innerNodes) {
-                        killInnerNode(newCoord);
-                    }
-                    return FormationResult.FAIL;
-                }
-            }
-
-            structureFound.setFormed(true);
+        if (structureFound != null && structureFound.locations.contains(pointer.getPos())) {
+            structureFound.form();
 
             Set<UUID> idsFound = new HashSet<>();
-            for (Coord4D obj : structureFound.locations) {
-                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
+            for (BlockPos obj : structureFound.locations) {
+                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj);
                 if (tile instanceof TileEntityMultiblock) {
+                    @SuppressWarnings("unchecked")
                     TileEntityMultiblock<T> multiblockTile = (TileEntityMultiblock<T>) tile;
                     UUID uuid = multiblockTile.getCacheID();
                     if (uuid != null && multiblockTile.getManager() == getManager()) {
@@ -396,58 +239,32 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
             structureFound.inventoryID = idToUse;
 
             List<IStructuralMultiblock> structures = new ArrayList<>();
-            Coord4D toUse = null;
+            BlockPos toUse = null;
 
-            for (Coord4D obj : structureFound.locations) {
-                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
-                if (tile instanceof TileEntityMultiblock) {
-                    ((TileEntityMultiblock<T>) tile).setMultiblock(structureFound);
+            for (BlockPos obj : structureFound.locations) {
+                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj);
+                if (tile instanceof IMultiblock) {
+                    ((IMultiblock<T>) tile).setMultiblock(structureFound);
                     if (toUse == null) {
                         toUse = obj;
                     }
                 } else if (tile instanceof IStructuralMultiblock) {
-                    structures.add((IStructuralMultiblock) tile);
+                    ((IStructuralMultiblock) tile).setMultiblock(structureFound);
                 }
             }
 
             structureFound.onCreated();
-            onFormed();
+            onFormed(structureFound);
 
             //Remove all structural multiblocks from locations, set controllers
             for (IStructuralMultiblock node : structures) {
-                node.setController(toUse);
-                structureFound.locations.remove(Coord4D.get((TileEntity) node));
+                structureFound.locations.remove(((TileEntity) node).getPos());
             }
 
             return FormationResult.SUCCESS;
         } else {
-            for (Coord4D coord : iteratedNodes) {
-                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
-                if (tile instanceof TileEntityMultiblock) {
-                    TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) tile;
-                    if (tileEntity.getMultiblock().isFormed() && !tileEntity.getMultiblock().destroyed) {
-                        onStructureDestroyed(tileEntity.getMultiblock());
-                        tileEntity.getMultiblock().destroyed = true;
-                    }
-                    tileEntity.removeMultiblock();
-                } else if (tile instanceof IStructuralMultiblock) {
-                    ((IStructuralMultiblock) tile).setController(null);
-                }
-            }
-            for (Coord4D coord : innerNodes) {
-                killInnerNode(coord);
-            }
-
-            return prevResult;
-        }
-    }
-
-    public static abstract class NodeChecker {
-
-        public abstract boolean isValid(final Coord4D coord);
-
-        public boolean shouldContinue(int iterated) {
-            return true;
+            pointer.getMultiblock().remove(pointer.getWorld());
+            return result.getFormationResult();
         }
     }
 
@@ -481,40 +298,59 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         }
     }
 
+    private class StructureResult {
+
+        private FormationResult result;
+        private T structureFound;
+
+        private StructureResult(FormationResult result, T structureFound) {
+            this.result = result;
+            this.structureFound = structureFound;
+        }
+
+        private StructureResult(T structureFound) {
+            this(FormationResult.SUCCESS, structureFound);
+        }
+
+        private StructureResult(FormationResult result) {
+            this(result, null);
+        }
+
+        private FormationResult getFormationResult() {
+            return result;
+        }
+    }
+
     protected static ITextComponent text(BlockPos pos) {
         return MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ());
     }
 
     public static class NodeCounter {
 
-        public Set<Coord4D> iterated = new ObjectOpenHashSet<>();
+        public Set<BlockPos> iterated = new ObjectOpenHashSet<>();
 
-        public NodeChecker checker;
+        public Predicate<BlockPos> checker;
 
-        public NodeCounter(NodeChecker c) {
+        public NodeCounter(Predicate<BlockPos> c) {
             checker = c;
         }
 
-        public void loop(Coord4D pos) {
+        public void loop(BlockPos pos) {
             iterated.add(pos);
 
-            if (!checker.shouldContinue(iterated.size())) {
-                return;
-            }
-
             for (Direction side : EnumUtils.DIRECTIONS) {
-                Coord4D coord = pos.offset(side);
-                if (!iterated.contains(coord) && checker.isValid(coord)) {
-                    loop(coord);
+                BlockPos offset = pos.offset(side);
+                if (!iterated.contains(offset) && checker.test(offset)) {
+                    loop(offset);
                 }
             }
         }
 
-        public int calculate(Coord4D coord) {
-            if (!checker.isValid(coord)) {
+        public int calculate(BlockPos pos) {
+            if (!checker.test(pos)) {
                 return 0;
             }
-            loop(coord);
+            loop(pos);
             return iterated.size();
         }
     }

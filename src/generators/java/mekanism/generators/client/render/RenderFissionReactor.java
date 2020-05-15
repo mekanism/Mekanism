@@ -3,6 +3,7 @@ package mekanism.generators.client.render;
 import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -50,11 +51,11 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
             }
             if (!tile.getMultiblock().fluidCoolantTank.isEmpty()) {
                 FluidRenderData data = new FluidRenderData();
-                data.height = tile.getMultiblock().volHeight - 2;
+                data.height = tile.getMultiblock().width - 2;
                 if (data.height >= 1) {
-                    data.location = tile.getMultiblock().renderLocation;
-                    data.length = tile.getMultiblock().volLength;
-                    data.width = tile.getMultiblock().volWidth;
+                    data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
+                    data.length = tile.getMultiblock().length;
+                    data.width = tile.getMultiblock().height;
                     data.fluidType = tile.getMultiblock().fluidCoolantTank.getFluid();
                     int glow = data.calculateGlowLight(light);
                     matrix.push();
@@ -66,11 +67,11 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
             }
             if (!tile.getMultiblock().heatedCoolantTank.isEmpty()) {
                 GasRenderData data = new GasRenderData();
-                data.height = tile.getMultiblock().volHeight - 2;
+                data.height = tile.getMultiblock().width - 2;
                 if (data.height >= 1) {
-                    data.location = tile.getMultiblock().renderLocation;
-                    data.length = tile.getMultiblock().volLength;
-                    data.width = tile.getMultiblock().volWidth;
+                    data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
+                    data.length = tile.getMultiblock().length;
+                    data.width = tile.getMultiblock().height;
                     data.gasType = tile.getMultiblock().heatedCoolantTank.getStack();
                     matrix.push();
                     matrix.scale(0.998F, 0.998F, 0.998F);

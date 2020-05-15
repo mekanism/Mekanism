@@ -13,19 +13,15 @@ import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.api.TextStyleClass;
-import mekanism.api.Coord4D;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandlerWrapper;
 import mekanism.api.chemical.gas.GasHandlerWrapper;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -79,7 +75,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
             Optional<IStrictEnergyHandler> energyCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null));
             if (energyCapability.isPresent()) {
                 displayEnergy(info, energyCapability.get());
-            } else if (structure instanceof IMekanismStrictEnergyHandler) {
+            } else if (structure.isFormed()) {
                 //Special handling to allow viewing the energy of multiblock's when looking at things other than the ports
                 displayEnergy(info, structure);
             }
@@ -94,7 +90,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
                     Optional<IFluidHandler> fluidCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null));
                     if (fluidCapability.isPresent()) {
                         displayFluid(info, fluidCapability.get());
-                    } else if (structure instanceof IMekanismFluidHandler) {
+                    } else if (structure.isFormed()) {
                         //Special handling to allow viewing the fluid in a multiblock when looking at things other than the ports
                         displayFluid(info, structure);
                     }
@@ -103,7 +99,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
                 Optional<IGasHandler> gasCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, null));
                 if (gasCapability.isPresent()) {
                     addInfo(new GasHandlerWrapper(gasCapability.get()), info, GasElement::new, MekanismLang.GAS);
-                } else if (structure instanceof IMekanismGasHandler) {
+                } else if (structure.isFormed()) {
                     //Special handling to allow viewing the gas in a multiblock when looking at things other than the ports
                     addInfo(new GasHandlerWrapper(structure), info, GasElement::new, MekanismLang.GAS);
                 }
@@ -111,7 +107,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
                 Optional<IInfusionHandler> infusionCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.INFUSION_HANDLER_CAPABILITY, null));
                 if (infusionCapability.isPresent()) {
                     addInfo(new InfusionHandlerWrapper(infusionCapability.get()), info, InfuseTypeElement::new, MekanismLang.INFUSE_TYPE);
-                } else if (structure instanceof IMekanismInfusionHandler) {
+                } else if (structure.isFormed()) {
                     //Special handling to allow viewing the infusion types in a multiblock when looking at things other than the ports
                     addInfo(new InfusionHandlerWrapper((IMekanismInfusionHandler) structure), info, InfuseTypeElement::new, MekanismLang.INFUSE_TYPE);
                 }
@@ -125,13 +121,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
             return ((TileEntityMultiblock<?>) tile).getMultiblock();
         } else if (tile instanceof IStructuralMultiblock) {
             IStructuralMultiblock structuralMultiblock = (IStructuralMultiblock) tile;
-            Coord4D controller = structuralMultiblock.getController();
-            if (controller != null) {
-                TileEntity tileEntity = MekanismUtils.getTileEntity(tile.getWorld(), controller.getPos());
-                if (tileEntity instanceof TileEntityMultiblock<?>) {
-                    return ((TileEntityMultiblock<?>) tileEntity).getMultiblock();
-                }
-            }
+            return structuralMultiblock.getMultiblock();
         }
         return null;
     }

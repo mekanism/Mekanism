@@ -1,8 +1,6 @@
 package mekanism.common.content.matrix;
 
-import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
@@ -12,6 +10,7 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class MatrixMultiblockData extends MultiblockData {
@@ -43,10 +42,8 @@ public class MatrixMultiblockData extends MultiblockData {
     @Nonnull
     public final EnergyInventorySlot energyOutputSlot;
 
-    private final BooleanSupplier remote;
-
     public MatrixMultiblockData(TileEntityInductionCasing tile) {
-        remote = () -> tile.isRemote();
+        super(tile);
         energyContainers.add(energyContainer = new MatrixEnergyContainer(this));
         inventorySlots.add(energyInputSlot = EnergyInventorySlot.drain(energyContainer, this, 146, 21));
         inventorySlots.add(energyOutputSlot = EnergyInventorySlot.fillOrConvert(energyContainer, tile::getWorld, this, 146, 51));
@@ -59,12 +56,12 @@ public class MatrixMultiblockData extends MultiblockData {
         return MekanismUtils.redstoneLevelFromContents(getEnergy(), getStorageCap());
     }
 
-    public void addCell(Coord4D coord, TileEntityInductionCell cell) {
-        energyContainer.addCell(coord, cell);
+    public void addCell(BlockPos pos, TileEntityInductionCell cell) {
+        energyContainer.addCell(pos, cell);
     }
 
-    public void addProvider(Coord4D coord, TileEntityInductionProvider provider) {
-        energyContainer.addProvider(coord, provider);
+    public void addProvider(BlockPos pos, TileEntityInductionProvider provider) {
+        energyContainer.addProvider(pos, provider);
     }
 
     @Nonnull
@@ -73,7 +70,7 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     public FloatingLong getEnergy() {
-        return remote.getAsBoolean() ? clientEnergy : energyContainer.getEnergy();
+        return isRemote() ? clientEnergy : energyContainer.getEnergy();
     }
 
     @Override
@@ -92,31 +89,33 @@ public class MatrixMultiblockData extends MultiblockData {
         return ret;
     }
 
-    public void invalidate() {
+    @Override
+    public void remove(World world) {
         energyContainer.invalidate();
+        super.remove(world);
     }
 
     public FloatingLong getStorageCap() {
-        return remote.getAsBoolean() ? clientMaxEnergy : energyContainer.getMaxEnergy();
+        return isRemote() ? clientMaxEnergy : energyContainer.getMaxEnergy();
     }
 
     public FloatingLong getTransferCap() {
-        return remote.getAsBoolean() ? clientMaxTransfer : energyContainer.getMaxTransfer();
+        return isRemote() ? clientMaxTransfer : energyContainer.getMaxTransfer();
     }
 
     public FloatingLong getLastInput() {
-        return remote.getAsBoolean() ? clientLastInput : energyContainer.getLastInput();
+        return isRemote() ? clientLastInput : energyContainer.getLastInput();
     }
 
     public FloatingLong getLastOutput() {
-        return remote.getAsBoolean() ? clientLastOutput : energyContainer.getLastOutput();
+        return isRemote() ? clientLastOutput : energyContainer.getLastOutput();
     }
 
     public int getCellCount() {
-        return remote.getAsBoolean() ? clientCells : energyContainer.getCells();
+        return isRemote() ? clientCells : energyContainer.getCells();
     }
 
     public int getProviderCount() {
-        return remote.getAsBoolean() ? clientProviders : energyContainer.getProviders();
+        return isRemote() ? clientProviders : energyContainer.getProviders();
     }
 }

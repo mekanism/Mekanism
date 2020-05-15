@@ -13,6 +13,7 @@ import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultiblockData> implements IHasGasMode {
 
@@ -56,7 +57,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
             updateTag.putInt(NBTConstants.VOLUME, getMultiblock().getVolume());
             updateTag.putInt(NBTConstants.LOWER_VOLUME, getMultiblock().lowerVolume);
             updateTag.put(NBTConstants.GAS_STORED, getMultiblock().gasTank.getStack().write(new CompoundNBT()));
-            updateTag.put(NBTConstants.COMPLEX, getMultiblock().complex.write(new CompoundNBT()));
+            updateTag.put(NBTConstants.COMPLEX, NBTUtil.writeBlockPos(getMultiblock().complex));
             updateTag.putFloat(NBTConstants.ROTATION, getMultiblock().clientRotation);
         }
         return updateTag;
@@ -70,7 +71,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> getMultiblock().setVolume(value));
             NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> getMultiblock().lowerVolume = value);
             NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> getMultiblock().gasTank.setStack(value));
-            NBTUtils.setCoord4DIfPresent(tag, NBTConstants.COMPLEX, value -> getMultiblock().complex = value);
+            NBTUtils.setBlockPosIfPresent(tag, NBTConstants.COMPLEX, value -> getMultiblock().complex = value);
             NBTUtils.setFloatIfPresent(tag, NBTConstants.ROTATION, value -> getMultiblock().clientRotation = value);
             TurbineMultiblockData.clientRotationMap.put(getMultiblock().inventoryID, getMultiblock().clientRotation);
         }

@@ -5,10 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.util.MekanismUtils;
@@ -18,7 +16,6 @@ import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.fission.TileEntityControlRodAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -54,14 +51,14 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
     }
 
     @Override
-    protected FormationResult validate(FissionReactorMultiblockData structure) {
+    protected FormationResult validate(FissionReactorMultiblockData structure, Set<BlockPos> innerNodes) {
         Map<AssemblyPos, FuelAssembly> map = new HashMap<>();
-        Set<Coord4D> fuelAssemblyCoords = new HashSet<>();
+        Set<BlockPos> fuelAssemblyCoords = new HashSet<>();
         int assemblyCount = 0, surfaceArea = 0;
 
-        for (Coord4D coord : innerNodes) {
-            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
-            AssemblyPos pos = new AssemblyPos(coord.x, coord.z);
+        for (BlockPos coord : innerNodes) {
+            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord);
+            AssemblyPos pos = new AssemblyPos(coord.getX(), coord.getZ());
             FuelAssembly assembly = map.get(pos);
 
             if (tile instanceof TileEntityFissionFuelAssembly) {
@@ -85,7 +82,7 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
                     map.put(pos, new FuelAssembly(coord, true));
                 } else if (assembly.controlRodAssembly != null) {
                     // only one control rod per assembly
-                    return FormationResult.fail(GeneratorsLang.FISSION_INVALID_EXTRA_CONTROL_ROD, coord.getPos());
+                    return FormationResult.fail(GeneratorsLang.FISSION_INVALID_EXTRA_CONTROL_ROD, coord);
                 } else {
                     assembly.controlRodAssembly = coord;
                 }
@@ -116,23 +113,11 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
         return MekanismGenerators.fissionReactorManager;
     }
 
-    @Override
-    protected void onStructureCreated(FissionReactorMultiblockData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
-        for (Coord4D obj : structure.locations) {
-            if (MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos()) instanceof TileEntityFissionReactorPort) {
-                ValveData data = new ValveData();
-                data.location = obj;
-                data.side = getSide(obj, origX + xmin, origX + xmax, origY + ymin, origY + ymax, origZ + zmin, origZ + zmax);
-                structure.valves.add(data);
-            }
-        }
-    }
-
     public static class FuelAssembly {
-        public TreeSet<Coord4D> fuelAssemblies = new TreeSet<>((pos1, pos2) -> pos1.y - pos2.y);
-        public Coord4D controlRodAssembly;
+        public TreeSet<BlockPos> fuelAssemblies = new TreeSet<>((pos1, pos2) -> pos1.getY() - pos2.getY());
+        public BlockPos controlRodAssembly;
 
-        public FuelAssembly(Coord4D start, boolean isControlRod) {
+        public FuelAssembly(BlockPos start, boolean isControlRod) {
             if (isControlRod) {
                 controlRodAssembly = start;
             } else {
@@ -145,22 +130,22 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
                 return FormationResult.fail(GeneratorsLang.FISSION_INVALID_BAD_FUEL_ASSEMBLY);
             }
             int prevY = -1;
-            for (Coord4D coord : fuelAssemblies) {
-                if (prevY != -1 && coord.y != prevY + 1) {
-                    return FormationResult.fail(GeneratorsLang.FISSION_INVALID_MALFORMED_FUEL_ASSEMBLY, coord.getPos());
+            for (BlockPos coord : fuelAssemblies) {
+                if (prevY != -1 && coord.getY() != prevY + 1) {
+                    return FormationResult.fail(GeneratorsLang.FISSION_INVALID_MALFORMED_FUEL_ASSEMBLY, coord);
                 }
-                prevY = coord.y;
+                prevY = coord.getY();
             }
 
-            if (controlRodAssembly.y != prevY + 1) {
-                return FormationResult.fail(GeneratorsLang.FISSION_INVALID_BAD_CONTROL_ROD, controlRodAssembly.getPos());
+            if (controlRodAssembly.getY() != prevY + 1) {
+                return FormationResult.fail(GeneratorsLang.FISSION_INVALID_BAD_CONTROL_ROD, controlRodAssembly);
             }
             return FormationResult.SUCCESS;
         }
 
         public FormedAssembly build() {
-            Coord4D base = fuelAssemblies.first();
-            return new FormedAssembly(new BlockPos(base.x, base.y, base.z), fuelAssemblies.size());
+            BlockPos base = fuelAssemblies.first();
+            return new FormedAssembly(base, fuelAssemblies.size());
         }
     }
 

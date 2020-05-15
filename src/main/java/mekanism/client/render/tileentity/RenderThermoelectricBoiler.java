@@ -3,6 +3,7 @@ package mekanism.client.render.tileentity;
 import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -30,11 +31,11 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
             IVertexBuilder buffer = null;
             if (!tile.getMultiblock().waterTank.isEmpty()) {
                 FluidRenderData data = new FluidRenderData();
-                data.height = tile.getMultiblock().upperRenderLocation.y - 1 - tile.getMultiblock().renderLocation.y;
+                data.height = tile.getMultiblock().upperRenderLocation.y - 1 - tile.getMultiblock().renderLocation.getY();
                 if (data.height >= 1) {
-                    data.location = tile.getMultiblock().renderLocation;
-                    data.length = tile.getMultiblock().volLength;
-                    data.width = tile.getMultiblock().volWidth;
+                    data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
+                    data.length = tile.getMultiblock().length;
+                    data.width = tile.getMultiblock().height;
                     data.fluidType = tile.getMultiblock().waterTank.getFluid();
                     int glow = data.calculateGlowLight(light);
                     matrix.push();
@@ -48,11 +49,11 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
             }
             if (!tile.getMultiblock().steamTank.isEmpty()) {
                 GasRenderData data = new GasRenderData();
-                data.height = tile.getMultiblock().renderLocation.y + tile.getMultiblock().volHeight - 2 - tile.getMultiblock().upperRenderLocation.y;
+                data.height = tile.getMultiblock().renderLocation.getY() + tile.getMultiblock().width - 2 - tile.getMultiblock().upperRenderLocation.y;
                 if (data.height >= 1) {
                     data.location = tile.getMultiblock().upperRenderLocation;
-                    data.length = tile.getMultiblock().volLength;
-                    data.width = tile.getMultiblock().volWidth;
+                    data.length = tile.getMultiblock().length;
+                    data.width = tile.getMultiblock().height;
                     data.gasType = tile.getMultiblock().steamTank.getStack();
                     if (buffer == null) {
                         buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());

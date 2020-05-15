@@ -6,7 +6,6 @@ import java.util.UUID;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
@@ -26,6 +25,7 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -50,7 +50,7 @@ public class TurbineMultiblockData extends MultiblockData {
     @ContainerSync
     public int lowerVolume;
 
-    public Coord4D complex;
+    public BlockPos complex;
 
     @ContainerSync
     public long lastSteamInput;
@@ -65,6 +65,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public float prevSteamScale;
 
     public TurbineMultiblockData(TileEntityTurbineCasing tile) {
+        super(tile);
         gasTanks.add(gasTank = new TurbineGasTank(this, tile));
         ventTank = VariableCapacityFluidTank.create(() -> !isFormed() ? 1_000 : condensers * MekanismGeneratorsConfig.generators.condenserRate.get(),
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), BasicFluidTank.internalOnly,
@@ -130,7 +131,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     public int getDispersers() {
-        return (volLength - 2) * (volWidth - 2) - 1;
+        return (length - 2) * (height - 2) - 1;
     }
 
     public long getSteamCapacity() {

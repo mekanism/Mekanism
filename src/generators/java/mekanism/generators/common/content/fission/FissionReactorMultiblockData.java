@@ -80,6 +80,7 @@ public class FissionReactorMultiblockData extends MultiblockData {
     public float prevCoolantScale, prevFuelScale, prevHeatedCoolantScale, prevWasteScale;
 
     public FissionReactorMultiblockData(TileEntityFissionReactorCasing tile) {
+        super(tile);
         fluidCoolantTank = MultiblockFluidTank.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
             (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
             fluid -> fluid.getFluid().isIn(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
@@ -131,7 +132,7 @@ public class FissionReactorMultiblockData extends MultiblockData {
         // adjacent heat transfer
         lastTransferLoss = 0;
         for (ValveData valve : valves) {
-            TileEntity tile = world.getTileEntity(valve.location.getPos());
+            TileEntity tile = world.getTileEntity(valve.location);
             if (tile instanceof ITileHeatHandler) {
                 lastTransferLoss += ((ITileHeatHandler) tile).simulateAdjacent();
             }
@@ -172,8 +173,8 @@ public class FissionReactorMultiblockData extends MultiblockData {
                     radiation += wasteTank.getStored() * wasteTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
                 }
                 radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
-                Mekanism.radiationManager.radiate(getCenter(), radiation);
-                Mekanism.radiationManager.createMeltdown(world, minLocation, maxLocation, heatCapacitor.getHeat(), EXPLOSION_CHANCE);
+                Mekanism.radiationManager.radiate(new Coord4D(getCenter(), getWorld()), radiation);
+                Mekanism.radiationManager.createMeltdown(world, new Coord4D(minLocation, getWorld()), new Coord4D(maxLocation, getWorld()), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
             }
         }
     }
@@ -225,9 +226,9 @@ public class FissionReactorMultiblockData extends MultiblockData {
 
     public boolean handlesSound(TileEntityFissionReactorCasing tile) {
         BlockPos pos = tile.getPos();
-        return (pos.getX() == minLocation.x || pos.getX() == maxLocation.x) &&
-               (pos.getY() == minLocation.y || pos.getY() == maxLocation.y) &&
-               (pos.getZ() == minLocation.z || pos.getZ() == maxLocation.z);
+        return (pos.getX() == minLocation.getX() || pos.getX() == maxLocation.getX()) &&
+               (pos.getY() == minLocation.getY() || pos.getY() == maxLocation.getY()) &&
+               (pos.getZ() == minLocation.getZ() || pos.getZ() == maxLocation.getZ());
 
     }
 
@@ -253,17 +254,19 @@ public class FissionReactorMultiblockData extends MultiblockData {
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0) {
                 double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();
-                Mekanism.radiationManager.radiate(getCenter(), leftoverWaste * radioactivity);
+                Mekanism.radiationManager.radiate(new Coord4D(getCenter(), getWorld()), leftoverWaste * radioactivity);
             }
         }
         // update previous burn
         lastBurnRate = toBurn;
     }
 
-    public Coord4D getCenter() {
+    public BlockPos getCenter() {
         if (minLocation == null || maxLocation == null)
             return null;
-        return new Coord4D((minLocation.x + maxLocation.x) / 2, (minLocation.y + maxLocation.y) / 2, (minLocation.z + maxLocation.z) / 2, minLocation.dimension);
+        return new BlockPos((minLocation.getX() + maxLocation.getX()) / 2,
+                           (minLocation.getY() + maxLocation.getY()) / 2,
+                           (minLocation.getZ() + maxLocation.getZ()) / 2);
     }
 
     @Override

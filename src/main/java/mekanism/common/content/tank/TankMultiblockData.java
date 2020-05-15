@@ -28,6 +28,7 @@ public class TankMultiblockData extends MultiblockData {
     public float prevScale;
 
     public TankMultiblockData(TileEntityDynamicTank tile) {
+        super(tile);
         fluidTank = MultiblockFluidTank.create(this, tile, () -> getTankCapacity(), BasicFluidTank.alwaysTrueBi,
               (stack, automationType) -> gasTank.isEmpty(), BasicFluidTank.alwaysTrue, null);
         fluidTanks.add(fluidTank);

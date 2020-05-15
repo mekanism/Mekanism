@@ -1,13 +1,13 @@
 package mekanism.client.render.data;
 
-import mekanism.api.Coord4D;
 import mekanism.common.multiblock.IValveHandler.ValveData;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 
 public class ValveRenderData extends FluidRenderData {
 
     public Direction side;
-    public Coord4D valveLocation;
+    public BlockPos valveLocation;
 
     public static ValveRenderData get(FluidRenderData renderData, ValveData valveData) {
         ValveRenderData data = new ValveRenderData();

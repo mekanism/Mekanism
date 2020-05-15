@@ -77,6 +77,7 @@ public class BoilerMultiblockData extends MultiblockData implements IMekanismFlu
     public float prevSteamScale;
 
     public BoilerMultiblockData(TileEntityBoilerCasing tile) {
+        super(tile);
         superheatedCoolantTank = MultiblockGasTank.create(this, tile, () -> getSuperheatedCoolantTankCapacity(),
             (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(),
             gas -> gas.has(HeatedCoolant.class));

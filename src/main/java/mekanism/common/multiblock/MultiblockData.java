@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -22,22 +23,24 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.multiblock.IValveHandler.ValveData;
+import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler,
+public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler,
       IMekanismStrictEnergyHandler, ITileHeatHandler {
 
-    public Set<Coord4D> locations = new ObjectOpenHashSet<>();
-    public Set<Coord4D> internalLocations = new ObjectOpenHashSet<>();
+    public Set<BlockPos> locations = new ObjectOpenHashSet<>();
+    public Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
     @ContainerSync(tag = "stats")
-    public int volLength, volWidth, volHeight;
+    public int length, height, width;
 
     @ContainerSync(getter = "getVolume", setter = "setVolume")
     private int volume;
@@ -49,21 +52,26 @@ public abstract class MultiblockData implements IMekanismInventory, IMekanismFlu
     public boolean hasRenderer;
 
     @Nullable//may be null if structure has not been fully sent
-    public Coord4D renderLocation;
+    public BlockPos renderLocation;
 
-    public Coord4D minLocation, maxLocation;
+    public BlockPos minLocation, maxLocation;
 
-    public boolean destroyed;
     @ContainerSync
     private boolean formed;
 
     private int currentRedstoneLevel;
+
+    private final Supplier<World> worldSupplier;
 
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
     protected final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
     protected final List<IGasTank> gasTanks = new ArrayList<>();
     protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
+
+    public MultiblockData(TileEntity tile) {
+        worldSupplier = () -> tile.getWorld();
+    }
 
     /**
      * Tick the multiblock.
@@ -80,6 +88,17 @@ public abstract class MultiblockData implements IMekanismInventory, IMekanismFlu
             data.prevActive = data.activeTicks > 0;
         }
         return false;
+    }
+
+    public void remove(World world) {
+        for (BlockPos pos : internalLocations) {
+            TileEntityInternalMultiblock tile = MekanismUtils.getTileEntity(TileEntityInternalMultiblock.class, world, pos);
+            if (tile != null) {
+                tile.setMultiblock(null);
+            }
+        }
+        inventoryID = null;
+        formed = false;
     }
 
     @Nonnull
@@ -129,9 +148,9 @@ public abstract class MultiblockData implements IMekanismInventory, IMekanismFlu
     public int hashCode() {
         int code = 1;
         code = 31 * code + locations.hashCode();
-        code = 31 * code + volLength;
-        code = 31 * code + volWidth;
-        code = 31 * code + volHeight;
+        code = 31 * code + length;
+        code = 31 * code + height;
+        code = 31 * code + width;
         code = 31 * code + getVolume();
         return code;
     }
@@ -145,30 +164,42 @@ public abstract class MultiblockData implements IMekanismInventory, IMekanismFlu
         if (!data.locations.equals(locations)) {
             return false;
         }
-        if (data.volLength != volLength || data.volWidth != volWidth || data.volHeight != volHeight) {
+        if (data.length != length || data.height != height || data.width != width) {
             return false;
         }
         return data.getVolume() == getVolume();
     }
 
     public BlockLocation getBlockLocation(BlockPos pos) {
-        if (pos.getX() > minLocation.x && pos.getX() < maxLocation.x &&
-            pos.getY() > minLocation.y && pos.getY() < maxLocation.y &&
-            pos.getZ() > minLocation.z && pos.getZ() < maxLocation.z) {
+        if (pos.getX() > minLocation.getX() && pos.getX() < maxLocation.getX() &&
+            pos.getY() > minLocation.getY() && pos.getY() < maxLocation.getY() &&
+            pos.getZ() > minLocation.getZ() && pos.getZ() < maxLocation.getZ()) {
             return BlockLocation.INSIDE;
-        } else if (pos.getX() < minLocation.x || pos.getX() > maxLocation.x ||
-                   pos.getY() < minLocation.y || pos.getY() > maxLocation.y ||
-                   pos.getZ() < minLocation.z || pos.getZ() > maxLocation.z) {
+        } else if (pos.getX() < minLocation.getX() || pos.getX() > maxLocation.getX() ||
+                   pos.getY() < minLocation.getY() || pos.getY() > maxLocation.getY() ||
+                   pos.getZ() < minLocation.getZ() || pos.getZ() > maxLocation.getZ()) {
             return BlockLocation.OUTSIDE;
         }
         return BlockLocation.WALLS;
+    }
+
+    public World getWorld() {
+        return worldSupplier.get();
+    }
+
+    public boolean isRemote() {
+        return getWorld().isRemote();
     }
 
     public boolean isFormed() {
         return formed;
     }
 
-    public void setFormed(boolean formed) {
+    public void form() {
+        formed = true;
+    }
+
+    public void setFormedForce(boolean formed) {
         this.formed = formed;
     }
 
@@ -198,7 +229,7 @@ public abstract class MultiblockData implements IMekanismInventory, IMekanismFlu
 
     public void notifyAllUpdateComparator(World world) {
         for (ValveData valve : valves) {
-            TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, valve.location.getPos());
+            TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, valve.location);
             if (tile != null) {
                 tile.markDirtyComparator();
             }
@@ -209,7 +240,9 @@ public abstract class MultiblockData implements IMekanismInventory, IMekanismFlu
         currentRedstoneLevel = getMultiblockRedstoneLevel();
     }
 
-    protected abstract int getMultiblockRedstoneLevel();
+    protected int getMultiblockRedstoneLevel() {
+        return 0;
+    }
 
     public int getCurrentRedstoneLevel() {
         return currentRedstoneLevel;

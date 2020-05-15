@@ -1,9 +1,9 @@
 package mekanism.client.render;
 
+import java.util.Map;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.data.RenderData;
 import mekanism.client.render.data.ValveRenderData;
@@ -120,7 +120,7 @@ public final class ModelRenderer {
     }
 
     private static int getValveFluidHeight(ValveRenderData data) {
-        return data.valveLocation.y - data.location.y;
+        return data.valveLocation.getY() - data.location.y;
     }
 
     public static void resetCachedModels() {

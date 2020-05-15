@@ -35,7 +35,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         super.init();
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
-        addButton(new GuiInnerScreen(this, 51, 23, 80, 42, () -> {
+        addButton(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {
             List<ITextComponent> ret = new ArrayList<>();
             FluidStack fluidStored = tile.getMultiblock().fluidTank.getFluid();
             GasStack gasStored = tile.getMultiblock().gasTank.getStack();

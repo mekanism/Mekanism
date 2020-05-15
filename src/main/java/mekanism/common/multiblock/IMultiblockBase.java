@@ -17,6 +17,8 @@ public interface IMultiblockBase extends ITileNeighborCache {
 
     MultiblockData getMultiblock();
 
+    void removeMultiblock();
+
     ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack);
 
     void doUpdate(BlockPos neighborPos, boolean force);
@@ -40,8 +42,8 @@ public interface IMultiblockBase extends ITileNeighborCache {
         if (data.isFormed()) {
             BlockLocation location = data.getBlockLocation(neighborPos);
             boolean isMultiblock = Attribute.has(state.getBlock(), AttributeMultiblock.class);
-            // if the update occurred outside of the multiblock and it's not a multiblock-compatible block, we don't care
-            if (location == BlockLocation.OUTSIDE && !isMultiblock) {
+            // if the update occurred outside of the multiblock, we don't care
+            if (location == BlockLocation.OUTSIDE) {
                 return false;
             // if it's a part of the multiblock and it's still there, we don't care either
             } else if (location == BlockLocation.WALLS && isMultiblock) {

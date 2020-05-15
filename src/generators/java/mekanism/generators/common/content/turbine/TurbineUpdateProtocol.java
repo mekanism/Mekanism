@@ -2,7 +2,6 @@ package mekanism.generators.common.content.turbine;
 
 import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import mekanism.api.Coord4D;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.MultiblockManager;
@@ -56,40 +55,40 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
     }
 
     @Override
-    protected FormationResult validate(TurbineMultiblockData structure) {
-        if (structure.volLength % 2 != 1 || structure.volWidth % 2 != 1) {
+    protected FormationResult validate(TurbineMultiblockData structure, Set<BlockPos> innerNodes) {
+        if (structure.length % 2 != 1 || structure.height % 2 != 1) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH);
         }
-        int centerX = structure.minLocation.x + (structure.volLength - 1) / 2;
-        int centerZ = structure.minLocation.z + (structure.volWidth - 1) / 2;
+        int centerX = structure.minLocation.getX() + (structure.length - 1) / 2;
+        int centerZ = structure.minLocation.getZ() + (structure.height - 1) / 2;
 
-        Coord4D complex = null;
+        BlockPos complex = null;
 
-        Set<Coord4D> turbines = new ObjectOpenHashSet<>();
-        Set<Coord4D> dispersers = new ObjectOpenHashSet<>();
-        Set<Coord4D> coils = new ObjectOpenHashSet<>();
-        Set<Coord4D> condensers = new ObjectOpenHashSet<>();
+        Set<BlockPos> turbines = new ObjectOpenHashSet<>();
+        Set<BlockPos> dispersers = new ObjectOpenHashSet<>();
+        Set<BlockPos> coils = new ObjectOpenHashSet<>();
+        Set<BlockPos> condensers = new ObjectOpenHashSet<>();
 
         //Scan for complex
-        for (Coord4D coord : innerNodes) {
-            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
+        for (BlockPos pos : innerNodes) {
+            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
             if (tile instanceof TileEntityRotationalComplex) {
-                if (complex != null || coord.x != centerX || coord.z != centerZ) {
-                    return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_BAD_COMPLEX, coord.getPos());
+                if (complex != null || pos.getX() != centerX || pos.getZ() != centerZ) {
+                    return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_BAD_COMPLEX, pos);
                 }
-                structure.internalLocations.add(coord);
-                complex = coord;
+                structure.internalLocations.add(pos);
+                complex = pos;
             } else if (tile instanceof TileEntityTurbineRotor) {
-                if (coord.x != centerX || coord.z != centerZ) {
-                    return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_BAD_ROTOR, coord.getPos());
+                if (pos.getX() != centerX || pos.getZ() != centerZ) {
+                    return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_BAD_ROTOR, pos);
                 }
-                turbines.add(coord);
+                turbines.add(pos);
             } else if (tile instanceof TileEntityPressureDisperser) {
-                dispersers.add(coord);
+                dispersers.add(pos);
             } else if (tile instanceof TileEntityElectromagneticCoil) {
-                coils.add(coord);
+                coils.add(pos);
             } else if (tile instanceof TileEntitySaturatingCondenser) {
-                condensers.add(coord);
+                condensers.add(pos);
             }
         }
 
@@ -98,21 +97,21 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_COMPLEX);
         }
 
-        int rotors = complex.y - structure.minLocation.y + 1;
-        int innerRadius = (Math.min(structure.volLength, structure.volWidth) - 3) / 2;
+        int rotors = complex.getY() - structure.minLocation.getY() + 1;
+        int innerRadius = (Math.min(structure.length, structure.height) - 3) / 2;
         if (innerRadius < rotors / 4) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_TOO_NARROW);
         }
 
         //Make sure a flat, horizontal plane of dispersers exists within the multiblock around the complex
-        for (int x = complex.x - innerRadius; x <= complex.x + innerRadius; x++) {
-            for (int z = complex.z - innerRadius; z <= complex.z + innerRadius; z++) {
+        for (int x = complex.getX() - innerRadius; x <= complex.getX() + innerRadius; x++) {
+            for (int z = complex.getZ() - innerRadius; z <= complex.getZ() + innerRadius; z++) {
                 if (x != centerX || z != centerZ) {
-                    TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, pointer.getWorld(), new BlockPos(x, complex.y, z));
+                    TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, pointer.getWorld(), new BlockPos(x, complex.getY(), z));
                     if (tile == null) {
-                        return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_DISPERSER, new BlockPos(x, complex.y, z));
+                        return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_DISPERSER, new BlockPos(x, complex.getY(), z));
                     }
-                    dispersers.remove(new Coord4D(x, complex.y, z, pointer.getWorld().getDimension().getType()));
+                    dispersers.remove(new BlockPos(x, complex.getY(), z));
                 }
             }
         }
@@ -123,9 +122,9 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
         }
 
         //Make sure all condensers are in proper locations
-        for (Coord4D coord : condensers) {
-            if (coord.y <= complex.y) {
-                return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_CONDENSER_BELOW_COMPLEX, coord.getPos());
+        for (BlockPos coord : condensers) {
+            if (coord.getY() <= complex.getY()) {
+                return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_CONDENSER_BELOW_COMPLEX, coord);
             }
         }
 
@@ -134,7 +133,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
         int blades = 0;
 
         // Starting from the complex, walk down and count the number of rotors/blades in the structure
-        for (int y = complex.y - 1; y > structure.minLocation.y; y--) {
+        for (int y = complex.getY() - 1; y > structure.minLocation.getY(); y--) {
             TileEntityTurbineRotor rotor = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, pointer.getWorld(), new BlockPos(centerX, y, centerZ));
             if (rotor == null) {
                 // Not a contiguous set of rotors
@@ -142,8 +141,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
             }
             turbineHeight++;
             blades += rotor.getHousedBlades();
-            structure.internalLocations.add(Coord4D.get(rotor));
-            turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorld().getDimension().getType()));
+            structure.internalLocations.add(rotor.getPos());
+            turbines.remove(new BlockPos(centerX, y, centerZ));
         }
 
         // If there are any rotors left over, they are in the wrong place in the structure
@@ -154,13 +153,10 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
         // Update the structure with number of blades found on rotors
         structure.blades = blades;
 
-        Coord4D startCoord = complex.offset(Direction.UP);
-        if (MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), startCoord.getPos()) != null) {
-            structure.coils = new NodeCounter(new NodeChecker() {
-                @Override
-                public boolean isValid(Coord4D coord) {
-                    return MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), coord.getPos()) != null;
-                }
+        BlockPos startCoord = complex.offset(Direction.UP);
+        if (MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), startCoord) != null) {
+            structure.coils = new NodeCounter(coord -> {
+                return MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), coord) != null;
             }).calculate(startCoord);
         }
 
@@ -168,15 +164,15 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MALFORMED_COILS);
         }
 
-        for (Coord4D coord : structure.locations) {
-            if (MekanismUtils.getTileEntity(TileEntityTurbineVent.class, pointer.getWorld(), coord.getPos()) != null) {
-                if (coord.y < complex.y) {
-                    return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_VENT_BELOW_COMPLEX, coord.getPos());
+        for (BlockPos coord : structure.locations) {
+            if (MekanismUtils.getTileEntity(TileEntityTurbineVent.class, pointer.getWorld(), coord) != null) {
+                if (coord.getY() < complex.getY()) {
+                    return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_VENT_BELOW_COMPLEX, coord);
                 }
                 structure.vents++;
             }
         }
-        structure.lowerVolume = structure.volLength * structure.volWidth * turbineHeight;
+        structure.lowerVolume = structure.length * structure.height * turbineHeight;
         structure.complex = complex;
         return FormationResult.SUCCESS;
     }

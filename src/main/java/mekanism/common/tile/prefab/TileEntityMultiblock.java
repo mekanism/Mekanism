@@ -31,6 +31,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -83,7 +84,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
+    @Override
     public void removeMultiblock() {
+        structure.remove(getWorld());
         structure = getNewStructure();
         invalidateCachedCapabilities();
     }
@@ -93,6 +96,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         return structure;
     }
 
+    @Override
     public void setMultiblock(T multiblock) {
         structure = multiblock;
     }
@@ -251,11 +255,11 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         updateTag.putBoolean(NBTConstants.RENDERING, isRendering);
         updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, structure.isFormed());
         if (structure.isFormed() && isRendering) {
-            updateTag.putInt(NBTConstants.HEIGHT, structure.volHeight);
-            updateTag.putInt(NBTConstants.WIDTH, structure.volWidth);
-            updateTag.putInt(NBTConstants.LENGTH, structure.volLength);
+            updateTag.putInt(NBTConstants.HEIGHT, structure.width);
+            updateTag.putInt(NBTConstants.WIDTH, structure.height);
+            updateTag.putInt(NBTConstants.LENGTH, structure.length);
             if (structure.renderLocation != null) {
-                updateTag.put(NBTConstants.RENDER_LOCATION, structure.renderLocation.write(new CompoundNBT()));
+                updateTag.put(NBTConstants.RENDER_LOCATION, NBTUtil.writeBlockPos(structure.renderLocation));
             }
             if (structure.inventoryID != null) {
                 updateTag.putUniqueId(NBTConstants.INVENTORY_ID, structure.inventoryID);
@@ -268,20 +272,20 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isRendering = value);
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> structure.setFormed(value));
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> structure.setFormedForce(value));
         if (isRendering) {
             if (structure.isFormed()) {
-                NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> structure.volHeight = value);
-                NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> structure.volWidth = value);
-                NBTUtils.setIntIfPresent(tag, NBTConstants.LENGTH, value -> structure.volLength = value);
-                NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> structure.renderLocation = value);
+                NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> structure.width = value);
+                NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> structure.height = value);
+                NBTUtils.setIntIfPresent(tag, NBTConstants.LENGTH, value -> structure.length = value);
+                NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> structure.renderLocation = value);
                 if (tag.hasUniqueId(NBTConstants.INVENTORY_ID)) {
                     structure.inventoryID = tag.getUniqueId(NBTConstants.INVENTORY_ID);
                 } else {
                     structure.inventoryID = null;
                 }
                 if (structure.renderLocation != null && !prevStructure) {
-                    Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength - 1, structure.volWidth - 1, structure.volHeight - 1);
+                    Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation, structure.length - 1, structure.height - 1, structure.width - 1);
                 }
             } else {
                 // this will consecutively be set on the server
@@ -325,9 +329,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public AxisAlignedBB getRenderBoundingBox() {
         if (getMultiblock().isFormed() && isRendering && structure.renderLocation != null) {
             //TODO: Eventually we may want to look into caching this
-            BlockPos corner1 = structure.renderLocation.getPos();
+            BlockPos corner1 = structure.renderLocation;
             //height - 2 up, but then we go up one further to take into account that block
-            BlockPos corner2 = corner1.east(structure.volLength + 1).south(structure.volWidth + 1).up(structure.volHeight - 1);
+            BlockPos corner2 = corner1.east(structure.length + 1).south(structure.height + 1).up(structure.width - 1);
             //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
             // how the specific multiblock wants to render, that it is being viewed
             return new AxisAlignedBB(corner1, corner2);

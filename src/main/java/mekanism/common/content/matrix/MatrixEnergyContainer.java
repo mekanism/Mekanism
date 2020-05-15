@@ -45,16 +45,16 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         this.multiblock = multiblock;
     }
 
-    public void addCell(Coord4D coord, TileEntityInductionCell cell) {
+    public void addCell(BlockPos pos, TileEntityInductionCell cell) {
         //As we already have the two different variables just pass them instead of accessing world to get tile again
         MachineEnergyContainer<TileEntityInductionCell> energyContainer = cell.getEnergyContainer();
-        cells.put(coord.getPos(), energyContainer);
+        cells.put(pos, energyContainer);
         storageCap = storageCap.plusEqual(energyContainer.getMaxEnergy());
         cachedTotal = cachedTotal.plusEqual(energyContainer.getEnergy());
     }
 
-    public void addProvider(Coord4D coord, TileEntityInductionProvider provider) {
-        providers.put(coord.getPos(), provider.tier);
+    public void addProvider(BlockPos pos, TileEntityInductionProvider provider) {
+        providers.put(pos, provider.tier);
         transferCap = transferCap.plusEqual(provider.tier.getOutput());
     }
 

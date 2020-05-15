@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
@@ -29,7 +28,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class TileEntityStructuralGlass extends CapabilityTileEntity implements IStructuralMultiblock, IConfigurable {
 
-    public Coord4D master;
+    private MultiblockData multiblock = new MultiblockData(this);
 
     private Map<BlockPos, BlockState> cachedNeighbors = new HashMap<>();
 
@@ -45,12 +44,9 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
+        IMultiblock<?> master = getMaster();
         if (master != null) {
-            TileEntity masterTile = MekanismUtils.getTileEntity(getWorld(), master.getPos());
-            if (masterTile instanceof IMultiblock) {
-                return ((IMultiblock<?>) masterTile).onActivate(player, hand, stack);
-            }
-            master = null;
+            return master.onActivate(player, hand, stack);
         }
         return ActionResultType.PASS;
     }
@@ -60,12 +56,10 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
         if (!shouldUpdate(neighborPos)) {
             return;
         }
-        if (master != null) {
-            TileEntity masterTile = MekanismUtils.getTileEntity(getWorld(), master.getPos());
-            if (masterTile instanceof IMultiblock) {
-                ((IMultiblock<?>) masterTile).doUpdate(neighborPos, true);
-            } else {
-                master = null;
+        if (multiblock.isFormed()) {
+            IMultiblock<?> master = getMaster();
+            if (master != null) {
+                master.doUpdate(neighborPos, true);
             }
         } else {
             IMultiblock<?> multiblock = new ControllerFinder().find();
@@ -75,15 +69,30 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
         }
     }
 
-    @Override
-    public MultiblockData getMultiblock() {
-        if (master != null) {
-            TileEntity masterTile = MekanismUtils.getTileEntity(getWorld(), master.getPos());
+    private IMultiblock<?> getMaster() {
+        if (multiblock.isFormed() && multiblock.minLocation != null) {
+            TileEntity masterTile = MekanismUtils.getTileEntity(getWorld(), multiblock.minLocation);
             if (masterTile instanceof IMultiblock) {
-                return ((IMultiblock<?>) masterTile).getMultiblock();
+                return (IMultiblock<?>) masterTile;
             }
         }
         return null;
+    }
+
+    @Override
+    public MultiblockData getMultiblock() {
+        return multiblock;
+    }
+
+    @Override
+    public void setMultiblock(MultiblockData multiblock) {
+        this.multiblock = multiblock;
+    }
+
+    @Override
+    public void removeMultiblock() {
+        multiblock.remove(getWorld());
+        multiblock = new MultiblockData(this);
     }
 
     @Override
@@ -93,25 +102,14 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
         }
     }
 
-    @Nullable
-    @Override
-    public Coord4D getController() {
-        return master;
-    }
-
     @Override
     public boolean canInterface(TileEntity controller) {
         return true;
     }
 
     @Override
-    public void setController(Coord4D coord) {
-        master = coord;
-    }
-
-    @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        if (!getWorld().isRemote() && master == null) {
+        if (!getWorld().isRemote() && !multiblock.isFormed()) {
             IMultiblock<?> multiblock = new ControllerFinder().find();
             if (multiblock instanceof TileEntityMultiblock && multiblock.getMultiblock() == null) {
                 FormationResult result = ((TileEntityMultiblock<?>) multiblock).getProtocol().doUpdate();

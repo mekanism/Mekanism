@@ -1,11 +1,13 @@
 package mekanism.common.multiblock;
 
 import java.util.Collection;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public interface IValveHandler {
@@ -15,7 +17,7 @@ public interface IValveHandler {
         for (ValveData valveData : getValveData()) {
             if (valveData.activeTicks > 0) {
                 CompoundNBT valveNBT = new CompoundNBT();
-                valveData.location.write(valveNBT);
+                valveNBT.put(NBTConstants.POSITION, NBTUtil.writeBlockPos(valveData.location));
                 valveNBT.putInt(NBTConstants.SIDE, valveData.side.ordinal());
                 valves.add(valveNBT);
             }
@@ -30,7 +32,7 @@ public interface IValveHandler {
             for (int i = 0; i < valves.size(); i++) {
                 CompoundNBT valveNBT = valves.getCompound(i);
                 ValveData data = new ValveData();
-                data.location = Coord4D.read(valveNBT);
+                NBTUtils.setBlockPosIfPresent(valveNBT, NBTConstants.POSITION, (pos) -> data.location = pos);
                 data.side = Direction.byIndex(valveNBT.getInt(NBTConstants.SIDE));
                 getValveData().add(data);
             }
@@ -42,7 +44,7 @@ public interface IValveHandler {
     public static class ValveData {
 
         public Direction side;
-        public Coord4D location;
+        public BlockPos location;
 
         public boolean prevActive;
         public int activeTicks;

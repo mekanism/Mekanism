@@ -127,7 +127,7 @@ public class MekanismRenderer {
     public static void renderValves(MatrixStack matrix, IVertexBuilder buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow) {
         for (ValveData valveData : valves) {
             matrix.push();
-            matrix.translate(valveData.location.x - pos.getX(), valveData.location.y - pos.getY(), valveData.location.z - pos.getZ());
+            matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
             MekanismRenderer.renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow);
             matrix.pop();
         }

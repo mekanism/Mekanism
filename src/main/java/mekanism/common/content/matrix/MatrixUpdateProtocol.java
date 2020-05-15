@@ -1,6 +1,6 @@
 package mekanism.common.content.matrix;
 
-import mekanism.api.Coord4D;
+import java.util.Set;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.multiblock.MultiblockCache.CacheSubstance;
@@ -47,25 +47,18 @@ public class MatrixUpdateProtocol extends UpdateProtocol<MatrixMultiblockData> {
     }
 
     @Override
-    protected void onStructureDestroyed(MatrixMultiblockData structure) {
-        //Save all energy changes before destroying the structure
-        structure.invalidate();
-        super.onStructureDestroyed(structure);
-    }
-
-    @Override
     protected boolean shouldCap(CacheSubstance type) {
         return type != CacheSubstance.ENERGY;
     }
 
     @Override
-    protected FormationResult validate(MatrixMultiblockData structure) {
-        for (Coord4D coord : innerNodes) {
-            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
+    protected FormationResult validate(MatrixMultiblockData structure, Set<BlockPos> innerNodes) {
+        for (BlockPos pos : innerNodes) {
+            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
             if (tile instanceof TileEntityInductionCell) {
-                structure.addCell(coord, (TileEntityInductionCell) tile);
+                structure.addCell(pos, (TileEntityInductionCell) tile);
             } else if (tile instanceof TileEntityInductionProvider) {
-                structure.addProvider(coord, (TileEntityInductionProvider) tile);
+                structure.addProvider(pos, (TileEntityInductionProvider) tile);
             }
         }
         return FormationResult.SUCCESS;
