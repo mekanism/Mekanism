@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.Collection;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
@@ -75,11 +74,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
             return false;
         }
         return super.persists(type);
-    }
-
-    @Override
-    public Collection<ValveData> getValveData() {
-        return getMultiblock().valves;
     }
 
     @Nonnull

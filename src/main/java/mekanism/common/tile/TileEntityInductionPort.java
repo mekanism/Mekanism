@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -34,7 +33,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (getMultiblock().isFormed() && getActive()) {
-            CableUtils.emit(getMultiblock().getDirectionsToEmit(Coord4D.get(this)), getMultiblock().getEnergyContainer(), this);
+            CableUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().getEnergyContainer(), this);
         }
     }
 

@@ -53,8 +53,21 @@ public class MultiblockManager<T extends MultiblockData> {
         }
     }
 
+    public void invalidate(IMultiblock<?> multiblock) {
+        MultiblockCache<T> cache = inventories.get(multiblock.getCacheID());
+        if (cache != null) {
+            cache.locations.remove(Coord4D.get((TileEntity) multiblock));
+            if (cache.locations.isEmpty()) {
+                inventories.remove(multiblock.getCacheID());
+            }
+        }
+    }
+
     /**
      * Grabs an inventory from the world's caches, and removes all the world's references to it.
+     * NOTE: this is not guaranteed to remove all references if somehow blocks with this inventory
+     * ID exist in unloaded chunks when the inventory is pulled. We should consider whether we
+     * should implement a way to mitigate this.
      *
      * @param world - world the cache is stored in
      * @param id    - inventory ID to pull

@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.Collection;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
@@ -77,11 +76,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
             return false;
         }
         return FluidUtils.handleTankInteraction(player, hand, itemStack, getMultiblock().fluidTank);
-    }
-
-    @Override
-    public Collection<ValveData> getValveData() {
-        return getMultiblock().valves;
     }
 
     @Nonnull

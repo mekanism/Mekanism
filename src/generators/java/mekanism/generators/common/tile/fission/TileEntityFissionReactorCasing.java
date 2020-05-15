@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.fission;
 
-import java.util.Collection;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
@@ -90,11 +89,6 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     @Override
     protected boolean canPlaySound() {
         return getMultiblock().isFormed() && getMultiblock().isBurning() && handleSound;
-    }
-
-    @Override
-    public Collection<ValveData> getValveData() {
-        return getMultiblock().valves;
     }
 
     @Nonnull

@@ -15,7 +15,6 @@ import mekanism.common.multiblock.IMultiblockBase.UpdateType;
 import mekanism.common.multiblock.IValveHandler.ValveData;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -37,6 +36,10 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
 
     public StructureResult buildStructure(BlockPos corner) {
         BlockPos min = corner, max = traverse(corner, 0, Direction.EAST, Direction.UP, Direction.SOUTH);
+        T structure = getNewStructure();
+        if (!structure.buildStructure(min, max)) {
+            return fail(FormationResult.FAIL);
+        }
 
         Set<BlockPos> locations = new ObjectOpenHashSet<>();
         Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
@@ -59,7 +62,6 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                             // then we are not valid over all
                             return fail(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos));
                         } else {
-                            locations.add(pos);
                             if (tile instanceof IMultiblock) {
                                 @SuppressWarnings("unchecked")
                                 IMultiblock<T> multiblockTile = (IMultiblock<T>) tile;
@@ -68,7 +70,12 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                                     getManager().updateCache(multiblockTile, false);
                                     idsFound.add(uuid);
                                 }
+                                multiblockTile.setMultiblock(structure);
+                                locations.add(pos);
+                            } else if (tile instanceof IStructuralMultiblock) {
+                                ((IStructuralMultiblock) tile).setMultiblock(structure);
                             }
+
                             if (type.isValve()) {
                                 ValveData data = new ValveData();
                                 data.location = pos;
@@ -85,15 +92,10 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
             }
         }
 
-        T structure = getNewStructure();
-        if (structure.form(min, max)) {
-            structure.locations = locations;
-            structure.valves = valves;
-            FormationResult result = validate(structure, innerNodes);
-            return result.isFormed() ? form(structure, idsFound) : fail(result);
-        }
-
-        return fail(FormationResult.FAIL);
+        structure.locations = locations;
+        structure.valves = valves;
+        FormationResult result = validate(structure, innerNodes);
+        return result.isFormed() ? form(structure, idsFound) : fail(result);
     }
 
     private BlockPos traverse(BlockPos orig, int dist, Direction... sides) {
@@ -176,6 +178,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         T structureFound = result.structureFound;
 
         if (structureFound != null && structureFound.locations.contains(pointer.getPos())) {
+            structureFound.setFormedForce(true);
             MultiblockCache<T> cache = getManager().getNewCache();
             MultiblockManager<T> manager = getManager();
             UUID idToUse = null;
@@ -196,26 +199,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
 
             cache.apply(structureFound);
             structureFound.inventoryID = idToUse;
-
-            List<BlockPos> structures = new ArrayList<>();
-            BlockPos toUse = null;
-
-            for (BlockPos obj : structureFound.locations) {
-                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj);
-                if (tile instanceof IMultiblock) {
-                    ((IMultiblock<T>) tile).setMultiblock(structureFound);
-                    if (toUse == null) {
-                        toUse = obj;
-                    }
-                } else if (tile instanceof IStructuralMultiblock) {
-                    ((IStructuralMultiblock) tile).setMultiblock(structureFound);
-                    structures.add(obj);
-                }
-            }
-
             structureFound.onCreated(pointer.getWorld());
-            // Remove all structural multiblocks from locations
-            structures.forEach(node -> structureFound.locations.remove(node));
             return FormationResult.SUCCESS;
         } else {
             pointer.getMultiblock().remove(pointer.getWorld());

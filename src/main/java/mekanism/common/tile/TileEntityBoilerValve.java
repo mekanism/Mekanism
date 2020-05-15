@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -87,14 +86,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
         if (ret.getAmount() < stack.getAmount() && action.execute()) {
-            if (getMultiblock().isFormed()) {
-                Coord4D coord4D = Coord4D.get(this);
-                for (ValveData data : getMultiblock().valves) {
-                    if (coord4D.equals(data.location)) {
-                        data.onTransfer();
-                    }
-                }
-            }
+            triggerValveTransfer();
         }
         return ret;
     }

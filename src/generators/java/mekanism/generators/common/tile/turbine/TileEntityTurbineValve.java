@@ -1,7 +1,6 @@
 package mekanism.generators.common.tile.turbine;
 
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -33,7 +32,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (getMultiblock().isFormed()) {
-            CableUtils.emit(getMultiblock().getDirectionsToEmit(Coord4D.get(this)), getMultiblock().energyContainer, this);
+            CableUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().energyContainer, this);
         }
     }
 

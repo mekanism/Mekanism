@@ -228,6 +228,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public abstract UpdateProtocol<T> getProtocol();
 
     @Override
+    public void remove() {
+        super.remove();
+        if (!world.isRemote() && cachedID != null) {
+            getManager().invalidate(this);
+        }
+    }
+
+    @Override
     public void resetCache() {
         cachedID = null;
         cachedData = getManager().getNewCache();

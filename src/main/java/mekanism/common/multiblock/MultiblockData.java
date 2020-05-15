@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.energy.IEnergyContainer;
@@ -80,20 +79,18 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
      * @return if we need an update packet
      */
     public boolean tick(World world) {
+        boolean ret = false;
         for (ValveData data : valves) {
-            if (data.activeTicks > 0) {
-                data.activeTicks--;
-            }
+            data.activeTicks = Math.max(0, data.activeTicks - 1);
             if (data.activeTicks > 0 != data.prevActive) {
-                return true;
+                ret = true;
             }
             data.prevActive = data.activeTicks > 0;
         }
-        return false;
+        return ret;
     }
 
-    public boolean form(BlockPos min, BlockPos max) {
-        formed = true;
+    public boolean buildStructure(BlockPos min, BlockPos max) {
         minLocation = min;
         maxLocation = max;
         renderLocation = min.offset(Direction.UP);
@@ -176,10 +173,10 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return isFormed() ? heatCapacitors : Collections.emptyList();
     }
 
-    public Set<Direction> getDirectionsToEmit(Coord4D coord) {
+    public Set<Direction> getDirectionsToEmit(BlockPos pos) {
         Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
         for (Direction direction : EnumUtils.DIRECTIONS) {
-            if (!locations.contains(coord.offset(direction))) {
+            if (!locations.contains(pos.offset(direction))) {
                 directionsToEmit.add(direction);
             }
         }

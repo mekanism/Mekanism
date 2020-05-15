@@ -3,7 +3,6 @@ package mekanism.generators.common.tile.fission;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -103,14 +102,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
         if (ret.getAmount() < stack.getAmount() && action.execute()) {
-            if (getMultiblock().isFormed()) {
-                Coord4D coord4D = Coord4D.get(this);
-                for (ValveData data : getMultiblock().valves) {
-                    if (coord4D.equals(data.location)) {
-                        data.onTransfer();
-                    }
-                }
-            }
+            triggerValveTransfer();
         }
         return ret;
     }
