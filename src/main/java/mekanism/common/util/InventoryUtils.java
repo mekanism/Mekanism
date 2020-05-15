@@ -7,6 +7,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
@@ -68,6 +69,25 @@ public final class InventoryUtils {
             return true;
         }
         return ItemHandlerHelper.canItemStacksStack(inSlot, toInsert);
+    }
+
+    public static InvStack takeTopStack(TileEntity tile, Direction side, Finder id, int amount) {
+        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
+        if (capability.isPresent()) {
+            IItemHandler inventory = capability.get();
+            InvStack ret = new InvStack(tile, side.getOpposite());
+            for (int slot = inventory.getSlots() - 1; slot >= 0; slot--) {
+                ItemStack stack = inventory.extractItem(slot, amount, true);
+                if (!stack.isEmpty() && id.modifies(stack) && (ret.getStack().isEmpty() || ItemHandlerHelper.canItemStacksStack(stack, ret.getStack()))) {
+                    ret.appendStack(slot, StackUtils.size(stack, Math.min(stack.getCount(), amount - ret.getCount())));
+                    if (ret.getCount() == amount) {
+                        return ret;
+                    }
+                }
+            }
+            return ret;
+        }
+        return null;
     }
 
     public static InvStack takeDefinedItem(TileEntity tile, Direction side, ItemStack type, int min, int max) {
