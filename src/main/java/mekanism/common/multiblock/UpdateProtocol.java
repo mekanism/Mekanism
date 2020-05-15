@@ -1,7 +1,6 @@
 package mekanism.common.multiblock;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -42,6 +41,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         Set<BlockPos> locations = new ObjectOpenHashSet<>();
         Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
         Set<ValveData> valves = new ObjectOpenHashSet<>();
+        Set<UUID> idsFound = new ObjectOpenHashSet<>();
 
         for (int x = min.getX(); x <= max.getX(); x++) {
             for (int y = min.getY(); y <= max.getY(); y++) {
@@ -60,6 +60,15 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                             return fail(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos));
                         } else {
                             locations.add(pos);
+                            if (tile instanceof IMultiblock) {
+                                @SuppressWarnings("unchecked")
+                                IMultiblock<T> multiblockTile = (IMultiblock<T>) tile;
+                                UUID uuid = multiblockTile.getCacheID();
+                                if (uuid != null && multiblockTile.getManager() == getManager()) {
+                                    getManager().updateCache(multiblockTile, false);
+                                    idsFound.add(uuid);
+                                }
+                            }
                             if (type.isValve()) {
                                 ValveData data = new ValveData();
                                 data.location = pos;
@@ -81,7 +90,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
             structure.locations = locations;
             structure.valves = valves;
             FormationResult result = validate(structure, innerNodes);
-            return result.isFormed() ? form(structure) : fail(result);
+            return result.isFormed() ? form(structure, idsFound) : fail(result);
         }
 
         return fail(FormationResult.FAIL);
@@ -167,28 +176,14 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         T structureFound = result.structureFound;
 
         if (structureFound != null && structureFound.locations.contains(pointer.getPos())) {
-            Set<UUID> idsFound = new HashSet<>();
-            for (BlockPos obj : structureFound.locations) {
-                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj);
-                if (tile instanceof TileEntityMultiblock) {
-                    @SuppressWarnings("unchecked")
-                    TileEntityMultiblock<T> multiblockTile = (TileEntityMultiblock<T>) tile;
-                    UUID uuid = multiblockTile.getCacheID();
-                    if (uuid != null && multiblockTile.getManager() == getManager()) {
-                        getManager().updateCache(multiblockTile, false);
-                        idsFound.add(uuid);
-                    }
-                }
-            }
-
             MultiblockCache<T> cache = getManager().getNewCache();
             MultiblockManager<T> manager = getManager();
             UUID idToUse = null;
-            if (idsFound.isEmpty()) {
+            if (result.idsFound.isEmpty()) {
                 idToUse = manager.getUniqueInventoryID();
             } else {
                 List<ItemStack> rejectedItems = new ArrayList<>();
-                for (UUID id : idsFound) {
+                for (UUID id : result.idsFound) {
                     if (manager.inventories.get(id) != null) {
                         cache.merge(manager.pullInventory(pointer.getWorld(), id), rejectedItems);
                         idToUse = id;
@@ -202,7 +197,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
             cache.apply(structureFound);
             structureFound.inventoryID = idToUse;
 
-            List<IStructuralMultiblock> structures = new ArrayList<>();
+            List<BlockPos> structures = new ArrayList<>();
             BlockPos toUse = null;
 
             for (BlockPos obj : structureFound.locations) {
@@ -214,12 +209,13 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                     }
                 } else if (tile instanceof IStructuralMultiblock) {
                     ((IStructuralMultiblock) tile).setMultiblock(structureFound);
+                    structures.add(obj);
                 }
             }
 
             structureFound.onCreated(pointer.getWorld());
             // Remove all structural multiblocks from locations
-            structures.forEach(node -> structureFound.locations.remove(((TileEntity) node).getPos()));
+            structures.forEach(node -> structureFound.locations.remove(node));
             return FormationResult.SUCCESS;
         } else {
             pointer.getMultiblock().remove(pointer.getWorld());
@@ -262,21 +258,23 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
     }
 
     private StructureResult fail(FormationResult result) {
-        return new StructureResult(result, null);
+        return new StructureResult(result, null, null);
     }
 
-    private StructureResult form(T structureFound) {
-        return new StructureResult(FormationResult.SUCCESS, structureFound);
+    private StructureResult form(T structureFound, Set<UUID> idsFound) {
+        return new StructureResult(FormationResult.SUCCESS, structureFound, idsFound);
     }
 
     private class StructureResult {
 
         private FormationResult result;
         private T structureFound;
+        private Set<UUID> idsFound;
 
-        private StructureResult(FormationResult result, T structureFound) {
+        private StructureResult(FormationResult result, T structureFound, Set<UUID> idsFound) {
             this.result = result;
             this.structureFound = structureFound;
+            this.idsFound = idsFound;
         }
 
         private FormationResult getFormationResult() {

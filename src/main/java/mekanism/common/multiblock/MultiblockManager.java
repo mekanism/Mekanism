@@ -1,9 +1,6 @@
 package mekanism.common.multiblock;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -32,12 +29,6 @@ public class MultiblockManager<T extends MultiblockData> {
         this.name = name;
         this.cacheSupplier = cacheSupplier;
         managers.add(this);
-    }
-
-    public static void tick(World world) {
-        for (MultiblockManager<?> manager : managers) {
-            manager.tickSelf(world);
-        }
     }
 
     public MultiblockCache<T> getNewCache() {
@@ -73,9 +64,9 @@ public class MultiblockManager<T extends MultiblockData> {
     public MultiblockCache<T> pullInventory(World world, UUID id) {
         MultiblockCache<T> toReturn = inventories.get(id);
         for (Coord4D obj : toReturn.locations) {
-            TileEntityMultiblock<T> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, obj.getPos());
-            if (tile != null) {
-                tile.resetCache();
+            TileEntity tile = MekanismUtils.getTileEntity(TileEntity.class, world, obj.getPos());
+            if (tile instanceof IMultiblock) {
+                ((IMultiblock<?>) tile).resetCache();
             }
         }
         inventories.remove(id);
@@ -91,29 +82,9 @@ public class MultiblockManager<T extends MultiblockData> {
         return UUID.randomUUID();
     }
 
-    public void tickSelf(World world) {
-        for (Iterator<Entry<UUID, MultiblockCache<T>>> entryIterator = inventories.entrySet().iterator(); entryIterator.hasNext();) {
-            Entry<UUID, MultiblockCache<T>> entry = entryIterator.next();
-            UUID inventoryID = entry.getKey();
-            for (Iterator<Coord4D> coordIterator = entry.getValue().locations.iterator(); coordIterator.hasNext();) {
-                Coord4D obj = coordIterator.next();
-                if (obj.dimension.equals(world.getDimension().getType()) && world.isBlockPresent(obj.getPos())) {
-                    TileEntity tile = MekanismUtils.getTileEntity(world, obj.getPos());
-                    if (!(tile instanceof TileEntityMultiblock) || ((TileEntityMultiblock<?>) tile).getManager() != this ||
-                        (getMultiblockID(((TileEntityMultiblock<?>) tile)) != null && !Objects.equals(getMultiblockID(((TileEntityMultiblock<?>) tile)), inventoryID))) {
-                        coordIterator.remove();
-                    }
-                }
-            }
-            if (entry.getValue().locations.isEmpty()) {
-                entryIterator.remove();
-            }
-        }
-    }
-
-    public void updateCache(TileEntityMultiblock<T> tile, boolean force) {
+    public void updateCache(IMultiblock<T> tile, boolean force) {
         if (!inventories.containsKey(tile.getCacheID())) {
-            tile.getCache().locations.add(Coord4D.get(tile));
+            tile.getCache().locations.add(Coord4D.get((TileEntity) tile));
             inventories.put(tile.getCacheID(), tile.getCache());
         } else {
             MultiblockCache<T> cache = inventories.get(tile.getCacheID());
@@ -122,7 +93,7 @@ public class MultiblockManager<T extends MultiblockData> {
                 inventories.put(tile.getCacheID(), tile.getCache());
                 cache = tile.getCache();
             }
-            cache.locations.add(Coord4D.get(tile));
+            cache.locations.add(Coord4D.get((TileEntity) tile));
         }
     }
 }

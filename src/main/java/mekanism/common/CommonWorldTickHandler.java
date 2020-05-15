@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
@@ -80,7 +79,6 @@ public class CommonWorldTickHandler {
 
     private void tickEnd(World world) {
         if (!world.isRemote) {
-            MultiblockManager.tick(world);
             Mekanism.radiationManager.tickServerWorld(world);
             ChunkManager.tick((ServerWorld) world);
             flushTagCaches = false;

@@ -6,7 +6,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
@@ -20,7 +19,6 @@ import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockData;
-import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.multiblock.UpdateProtocol.FormationResult;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -161,11 +159,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             //If we are the block that is rendering the structure make sure to tell all the valves to update their comparator levels
             structure.notifyAllUpdateComparator(world);
         }
-        Coord4D thisCoord = Coord4D.get(this);
         for (Direction side : EnumUtils.DIRECTIONS) {
-            Coord4D obj = thisCoord.offset(side);
-            if (!structure.isFormed() || (!structure.locations.contains(obj) && !structure.internalLocations.contains(obj))) {
-                BlockPos pos = obj.getPos();
+            BlockPos pos = getPos().offset(side);
+            if (!structure.isFormed() || (!structure.locations.contains(pos) && !structure.internalLocations.contains(pos))) {
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);
                 if (!world.isAirBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
                     MekanismUtils.notifyNeighborofChange(world, pos, getPos());
@@ -231,17 +227,18 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     public abstract UpdateProtocol<T> getProtocol();
 
-    public abstract MultiblockManager<T> getManager();
-
+    @Override
     public void resetCache() {
         cachedID = null;
         cachedData = getManager().getNewCache();
     }
 
+    @Override
     public UUID getCacheID() {
         return cachedID;
     }
 
+    @Override
     public MultiblockCache<T> getCache() {
         return cachedData;
     }
