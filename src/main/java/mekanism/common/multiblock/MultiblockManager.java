@@ -49,14 +49,9 @@ public class MultiblockManager<T extends MultiblockData> {
         return tile.getMultiblock().inventoryID;
     }
 
-    public static boolean areCompatible(TileEntity tile1, TileEntity tile2, boolean markUpdated) {
-        if (tile1 instanceof TileEntityMultiblock && tile2 instanceof TileEntityMultiblock) {
-            boolean valid = ((TileEntityMultiblock<?>) tile1).getManager() == ((TileEntityMultiblock<?>) tile2).getManager();
-            if (valid && markUpdated) {
-                ((TileEntityMultiblock<?>) tile1).markUpdated();
-                ((TileEntityMultiblock<?>) tile2).markUpdated();
-            }
-            return valid;
+    public static boolean areCompatible(TileEntity tile, TileEntity reference) {
+        if (tile instanceof TileEntityMultiblock && reference instanceof TileEntityMultiblock) {
+            return ((TileEntityMultiblock<?>) tile).getManager() == ((TileEntityMultiblock<?>) reference).getManager();
         }
         return false;
     }

@@ -21,9 +21,11 @@ public interface IMultiblockBase extends ITileNeighborCache {
 
     void markUpdated();
 
+    boolean updatedThisTick();
+
     ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack);
 
-    void doUpdate(BlockPos neighborPos, UpdateType type);
+    void requestUpdate(BlockPos neighborPos, UpdateType type);
 
     default boolean shouldUpdate(BlockPos neighborPos) {
         // if the update call wasn't from a neighbor, run the update

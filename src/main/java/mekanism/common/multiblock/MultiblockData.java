@@ -92,7 +92,19 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return false;
     }
 
-    public void form(World world) {
+    public boolean form(BlockPos min, BlockPos max) {
+        formed = true;
+        minLocation = min;
+        maxLocation = max;
+        renderLocation = min.offset(Direction.UP);
+        length = Math.abs(max.getX() - min.getX()) + 1;
+        height = Math.abs(max.getY() - min.getY()) + 1;
+        width = Math.abs(max.getZ() - min.getZ()) + 1;
+        setVolume(length * width * height);
+        return length >= 3 && length <= UpdateProtocol.MAX_SIZE && height >= 3 && height <= UpdateProtocol.MAX_SIZE && width >= 3 && width <= UpdateProtocol.MAX_SIZE;
+    }
+
+    public void onCreated(World world) {
         for (BlockPos pos : internalLocations) {
             TileEntityInternalMultiblock tile = MekanismUtils.getTileEntity(TileEntityInternalMultiblock.class, world, pos);
             if (tile != null) {
@@ -226,10 +238,6 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public boolean isFormed() {
         return formed;
-    }
-
-    public void form() {
-        formed = true;
     }
 
     public void setFormedForce(boolean formed) {

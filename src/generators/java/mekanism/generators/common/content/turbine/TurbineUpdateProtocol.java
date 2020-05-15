@@ -2,10 +2,12 @@ package mekanism.generators.common.content.turbine;
 
 import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
+import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
@@ -49,9 +51,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
         if (super.isValidInnerNode(pos)) {
             return true;
         }
-        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
-        return tile instanceof TileEntityTurbineRotor || tile instanceof TileEntityRotationalComplex || tile instanceof TileEntityPressureDisperser ||
-               tile instanceof TileEntityElectromagneticCoil || tile instanceof TileEntitySaturatingCondenser;
+        return BlockType.is(pointer.getWorld().getBlockState(pos).getBlock(), MekanismBlockTypes.PRESSURE_DISPERSER, GeneratorsBlockTypes.TURBINE_ROTOR,
+              GeneratorsBlockTypes.ROTATIONAL_COMPLEX, GeneratorsBlockTypes.ELECTROMAGNETIC_COIL, GeneratorsBlockTypes.SATURATING_CONDENSER);
     }
 
     @Override

@@ -6,7 +6,5 @@ public interface IStructuralMultiblock extends IMultiblockBase {
 
     boolean canInterface(TileEntity controller);
 
-    void onPlace();
-
     void setMultiblock(MultiblockData multiblock);
 }

@@ -69,6 +69,7 @@ import mekanism.common.tile.TileEntityIndustrialAlarm;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.tile.TileEntityPersonalChest;
+import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -501,6 +502,11 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
           .withNamedContainerProvider((tile) -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, (TileEntityBoilerCasing) tile)))
           .with(new AttributeInventory(), new AttributeComparator(), new AttributeStateBoilerValveMode(), new AttributeMultiblock())
+          .build();
+    // Pressure Disperser
+    public static final BlockTypeTile<TileEntityPressureDisperser> PRESSURE_DISPERSER =
+          BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.PRESSURE_DISPERSER, MekanismLang.DESCRIPTION_PRESSURE_DISPERSER)
+          .with(new AttributeMultiblock())
           .build();
     // Superheating Element
     public static final BlockTypeTile<TileEntitySuperheatingElement> SUPERHEATING_ELEMENT =

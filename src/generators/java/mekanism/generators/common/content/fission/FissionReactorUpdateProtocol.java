@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import mekanism.api.NBTConstants;
+import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
@@ -46,8 +47,7 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
         if (super.isValidInnerNode(pos)) {
             return true;
         }
-        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
-        return tile instanceof TileEntityFissionFuelAssembly || tile instanceof TileEntityControlRodAssembly;
+        return BlockType.is(pointer.getWorld().getBlockState(pos).getBlock(), GeneratorsBlockTypes.FISSION_FUEL_ASSEMBLY, GeneratorsBlockTypes.CONTROL_ROD_ASSEMBLY);
     }
 
     @Override

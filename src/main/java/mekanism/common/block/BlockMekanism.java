@@ -17,7 +17,6 @@ import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.SubstanceType;
@@ -152,10 +151,6 @@ public abstract class BlockMekanism extends Block {
             ((IBoundingBlock) tile).onPlace();
         }
         tile.onPlace();
-
-        if (tile instanceof IStructuralMultiblock) {
-            ((IStructuralMultiblock) tile).onPlace();
-        }
 
         //Handle item
         Item item = stack.getItem();

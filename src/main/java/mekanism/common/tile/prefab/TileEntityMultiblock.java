@@ -72,10 +72,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
      */
     private boolean protocolUpdateThisTick;
 
-    /**
-     * Whether we've run the initial multiblock protocol update; this will either happen when the block is placed, or a few ticks in on the server-side.
-     */
-    private boolean initialUpdate = false;
+    private UpdateType updateRequested;
 
     private Map<BlockPos, BlockState> cachedNeighbors = new HashMap<>();
 
@@ -118,16 +115,13 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             createNeighborCache();
         }
         if (!structure.isFormed()) {
-            if (!playersUsing.isEmpty()) {
-                for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
-                    player.closeScreen();
-                }
-            }
+            playersUsing.forEach(p -> p.closeScreen());
+
             if (cachedID != null) {
                 getManager().updateCache(this, false);
             }
-            if (ticker == 5 && !initialUpdate) {
-                doUpdate(null, UpdateType.INITIAL);
+            if (ticker == 3) {
+                updateRequested = UpdateType.INITIAL;
             }
             if (prevStructure) {
                 structureChanged();
@@ -152,6 +146,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             }
         }
 
+        if (ticker >= 5 && updateRequested != null) {
+            runUpdate();
+        }
         protocolUpdateThisTick = false;
     }
 
@@ -184,35 +181,36 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void onPlace() {
-        super.onPlace();
-        if (!world.isRemote()) {
-            doUpdate(null, UpdateType.NORMAL);
-            initialUpdate = true;
-        }
-    }
-
-    @Override
     public void markUpdated() {
         protocolUpdateThisTick = true;
     }
 
     @Override
-    public void doUpdate(BlockPos neighborPos, UpdateType type) {
-        if (!isRemote() && (type == UpdateType.FORCE || shouldUpdate(neighborPos)) && !protocolUpdateThisTick && (!structure.isFormed() || !structure.didUpdateThisTick)) {
+    public boolean updatedThisTick() {
+        return protocolUpdateThisTick;
+    }
+
+    @Override
+    public void requestUpdate(BlockPos neighborPos, UpdateType type) {
+        if (!isRemote() && (type == UpdateType.FORCE || shouldUpdate(neighborPos))) {
+            updateRequested = type;
+        }
+    }
+
+    private void runUpdate() {
+        if (!protocolUpdateThisTick && (!structure.isFormed() || !structure.didUpdateThisTick)) {
             if (structure.isFormed() && structure.inventoryID != null) {
                 // update the cache before we destroy the multiblock
                 cachedData.sync(structure);
                 cachedID = structure.inventoryID;
                 getManager().updateCache(this, true);
             }
-
-            getProtocol().doUpdate(type);
-
+            getProtocol().doUpdate(updateRequested);
             if (structure.isFormed()) {
                 structure.didUpdateThisTick = true;
             }
         }
+        updateRequested = null;
     }
 
     @Override

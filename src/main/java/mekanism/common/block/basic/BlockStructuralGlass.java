@@ -61,7 +61,7 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntit
                 ((TileEntityMekanism) tile).onNeighborChange(neighborBlock);
             }
             if (tile instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) tile).doUpdate(neighborPos, UpdateType.NORMAL);
+                ((IStructuralMultiblock) tile).requestUpdate(neighborPos, UpdateType.NORMAL);
             }
         }
     }

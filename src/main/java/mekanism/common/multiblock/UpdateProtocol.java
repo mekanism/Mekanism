@@ -25,7 +25,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class UpdateProtocol<T extends MultiblockData> {
 
-    private static final int MAX_SIZE = 18;
+    public static final int MAX_SIZE = 18;
 
     /**
      * The original block the calculation is getting run from.
@@ -49,10 +49,15 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                     BlockPos pos = new BlockPos(x, y, z);
                     if (x == min.getX() || x == max.getX() || y == min.getY() || y == max.getY() || z == min.getZ() || z == max.getZ()) {
                         CasingType type = getCasingType(pos);
-                        if (!checkNode(pos) || isFramePos(pos, min, max) && !type.isFrame()) {
+                        TileEntity tile = pointer.getWorld().getTileEntity(pos);
+                        // terminate if we encounter a node that already failed this tick
+                        if (tile instanceof IMultiblockBase && ((IMultiblockBase) tile).updatedThisTick()) {
+                            return fail(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos));
+                        }
+                        if (!checkNode(tile, true) || isFramePos(pos, min, max) && !type.isFrame()) {
                             //If it is not a valid node or if it is supposed to be a frame but is invalid
                             // then we are not valid over all
-                            return new StructureResult(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos));
+                            return fail(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos));
                         } else {
                             locations.add(pos);
                             if (type.isValve()) {
@@ -63,7 +68,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                             }
                         }
                     } else if (!isValidInnerNode(pos)) {
-                        return new StructureResult(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos));
+                        return fail(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos));
                     } else if (!pointer.getWorld().isAirBlock(pos)) {
                         innerNodes.add(pos);
                     }
@@ -71,27 +76,15 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
             }
         }
 
-        int length = Math.abs(max.getX() - min.getX()) + 1;
-        int height = Math.abs(max.getY() - min.getY()) + 1;
-        int width = Math.abs(max.getZ() - min.getZ()) + 1;
         T structure = getNewStructure();
-        structure.locations = locations;
-        structure.valves = valves;
-        structure.length = length;
-        structure.width = width;
-        structure.height = height;
-        structure.setVolume(structure.length * structure.width * structure.height);
-        structure.renderLocation = corner.offset(Direction.UP);
-        structure.minLocation = min;
-        structure.maxLocation = max;
-
-        if (length >= 3 && length <= MAX_SIZE && height >= 3 && height <= MAX_SIZE && width >= 3 && width <= MAX_SIZE) {
-            if (validate(structure, innerNodes).isFormed()) {
-                return new StructureResult(structure);
-            }
+        if (structure.form(min, max)) {
+            structure.locations = locations;
+            structure.valves = valves;
+            FormationResult result = validate(structure, innerNodes);
+            return result.isFormed() ? form(structure) : fail(result);
         }
 
-        return new StructureResult(FormationResult.FAIL);
+        return fail(FormationResult.FAIL);
     }
 
     private BlockPos traverse(BlockPos orig, int dist, Direction... sides) {
@@ -99,7 +92,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
             return null;
         for (Direction side : sides) {
             BlockPos offset = orig.offset(side);
-            if (checkNode(offset)) {
+            if (checkNode(pointer.getWorld().getTileEntity(offset), false)) {
                 return traverse(offset, dist + 1, sides);
             }
         }
@@ -132,17 +125,19 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
     }
 
     /**
-     * If the block at a given pos will function as a 'structural block' (casing or structural multiblock)
+     * If the TileEntity will function as a 'structural block' (casing or structural multiblock)
      * for this structure. This will also mark the tile in this position as having just received a multiblock
-     * update.
-     * @return Whether or not the block at the specified location is a viable node for a multiblock structure
+     * update if 'markUpdated' is true.
+     * @return Whether or not the tile is a viable node for a multiblock structure
      */
-    protected boolean checkNode(BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
+    protected boolean checkNode(TileEntity tile, boolean markUpdated) {
+        if (markUpdated && tile instanceof IMultiblockBase) {
+            ((IMultiblockBase) tile).markUpdated();
+        }
         if (tile instanceof IStructuralMultiblock && ((IStructuralMultiblock) tile).canInterface(pointer)) {
             return true;
         }
-        return MultiblockManager.areCompatible(tile, pointer, true);
+        return MultiblockManager.areCompatible(tile, pointer);
     }
 
     private boolean isFramePos(BlockPos obj, BlockPos min, BlockPos max) {
@@ -172,8 +167,6 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         T structureFound = result.structureFound;
 
         if (structureFound != null && structureFound.locations.contains(pointer.getPos())) {
-            structureFound.form();
-
             Set<UUID> idsFound = new HashSet<>();
             for (BlockPos obj : structureFound.locations) {
                 TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj);
@@ -224,7 +217,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                 }
             }
 
-            structureFound.form(pointer.getWorld());
+            structureFound.onCreated(pointer.getWorld());
             // Remove all structural multiblocks from locations
             structures.forEach(node -> structureFound.locations.remove(((TileEntity) node).getPos()));
             return FormationResult.SUCCESS;
@@ -232,7 +225,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
             pointer.getMultiblock().remove(pointer.getWorld());
             if (type == UpdateType.INITIAL) {
                 // run a traversal over connected multiblocks of the same type to make sure we don't re-run an update for every connected block
-                new Explorer(this::checkNode).explore(pointer.getPos());
+                new Explorer(pos -> checkNode(pointer.getWorld().getTileEntity(pos), true)).explore(pointer.getPos());
             }
             return result.getFormationResult();
         }
@@ -268,6 +261,14 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         }
     }
 
+    private StructureResult fail(FormationResult result) {
+        return new StructureResult(result, null);
+    }
+
+    private StructureResult form(T structureFound) {
+        return new StructureResult(FormationResult.SUCCESS, structureFound);
+    }
+
     private class StructureResult {
 
         private FormationResult result;
@@ -276,14 +277,6 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         private StructureResult(FormationResult result, T structureFound) {
             this.result = result;
             this.structureFound = structureFound;
-        }
-
-        private StructureResult(T structureFound) {
-            this(FormationResult.SUCCESS, structureFound);
-        }
-
-        private StructureResult(FormationResult result) {
-            this(result, null);
         }
 
         private FormationResult getFormationResult() {

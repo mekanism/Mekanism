@@ -54,19 +54,19 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
     }
 
     @Override
-    public void doUpdate(BlockPos neighborPos, UpdateType type) {
-        if (lastProtocolUpdate < getWorld().getGameTime() && !shouldUpdate(neighborPos)) {
+    public void requestUpdate(BlockPos neighborPos, UpdateType type) {
+        if (lastProtocolUpdate == getWorld().getGameTime() || !shouldUpdate(neighborPos)) {
             return;
         }
         if (multiblock.isFormed()) {
             IMultiblock<?> master = getMaster();
             if (master != null) {
-                master.doUpdate(neighborPos, UpdateType.FORCE);
+                master.requestUpdate(neighborPos, UpdateType.FORCE);
             }
         } else {
             IMultiblock<?> multiblock = new ControllerFinder().find();
             if (multiblock != null) {
-                multiblock.doUpdate(neighborPos, UpdateType.FORCE);
+                multiblock.requestUpdate(neighborPos, UpdateType.FORCE);
             }
         }
     }
@@ -74,6 +74,11 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
     @Override
     public void markUpdated() {
         lastProtocolUpdate = getWorld().getGameTime();
+    }
+
+    @Override
+    public boolean updatedThisTick() {
+        return lastProtocolUpdate == getWorld().getGameTime();
     }
 
     private IMultiblock<?> getMaster() {
@@ -103,13 +108,6 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
     }
 
     @Override
-    public void onPlace() {
-        if (!world.isRemote()) {
-            doUpdate(null, UpdateType.NORMAL);
-        }
-    }
-
-    @Override
     public boolean canInterface(TileEntity controller) {
         return true;
     }
@@ -118,7 +116,7 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         if (!getWorld().isRemote() && !multiblock.isFormed()) {
             IMultiblock<?> multiblock = new ControllerFinder().find();
-            if (multiblock instanceof TileEntityMultiblock && multiblock.getMultiblock() == null) {
+            if (multiblock instanceof TileEntityMultiblock && !multiblock.getMultiblock().isFormed()) {
                 FormationResult result = ((TileEntityMultiblock<?>) multiblock).getProtocol().doUpdate(UpdateType.NORMAL);
                 if (!result.isFormed() && result.getResultText() != null) {
                     player.sendMessage(result.getResultText());
