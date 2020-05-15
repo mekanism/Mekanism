@@ -3,7 +3,6 @@ package mekanism.common.content.matrix;
 import java.util.Set;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
@@ -44,11 +43,6 @@ public class MatrixUpdateProtocol extends UpdateProtocol<MatrixMultiblockData> {
     @Override
     protected MultiblockManager<MatrixMultiblockData> getManager() {
         return Mekanism.matrixManager;
-    }
-
-    @Override
-    protected boolean shouldCap(CacheSubstance type) {
-        return type != CacheSubstance.ENERGY;
     }
 
     @Override

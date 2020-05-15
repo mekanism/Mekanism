@@ -23,7 +23,7 @@ public interface IMultiblockBase extends ITileNeighborCache {
 
     ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack);
 
-    void doUpdate(BlockPos neighborPos, boolean force);
+    void doUpdate(BlockPos neighborPos, UpdateType type);
 
     default boolean shouldUpdate(BlockPos neighborPos) {
         // if the update call wasn't from a neighbor, run the update
@@ -56,5 +56,15 @@ public interface IMultiblockBase extends ITileNeighborCache {
             return false;
         }
         return true;
+    }
+
+    public enum UpdateType {
+        NORMAL,
+        INITIAL,
+        FORCE;
+
+        boolean force() {
+            return this == FORCE;
+        }
     }
 }

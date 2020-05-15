@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
@@ -23,6 +24,7 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.multiblock.IValveHandler.ValveData;
+import mekanism.common.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
@@ -88,6 +90,37 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
             data.prevActive = data.activeTicks > 0;
         }
         return false;
+    }
+
+    public void form(World world) {
+        for (BlockPos pos : internalLocations) {
+            TileEntityInternalMultiblock tile = MekanismUtils.getTileEntity(TileEntityInternalMultiblock.class, world, pos);
+            if (tile != null) {
+                tile.setMultiblock(inventoryID);
+            }
+        }
+
+        if (shouldCap(CacheSubstance.FLUID)) {
+            for (IExtendedFluidTank tank : getFluidTanks(null)) {
+                tank.setStackSize(Math.min(tank.getFluidAmount(), tank.getCapacity()), Action.EXECUTE);
+            }
+        }
+        if (shouldCap(CacheSubstance.GAS)) {
+            for (IGasTank tank : getGasTanks(null)) {
+                tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
+            }
+        }
+        if (shouldCap(CacheSubstance.ENERGY)) {
+            for (IEnergyContainer container : getEnergyContainers(null)) {
+                container.setEnergy(container.getEnergy().min(container.getMaxEnergy()));
+            }
+        }
+
+        forceUpdateComparatorLevel();
+    }
+
+    protected boolean shouldCap(CacheSubstance type) {
+        return true;
     }
 
     public void remove(World world) {
@@ -209,10 +242,6 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public void setVolume(int volume) {
         this.volume = volume;
-    }
-
-    public void onCreated() {
-        forceUpdateComparatorLevel();
     }
 
     // Only call from the server

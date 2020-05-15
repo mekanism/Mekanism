@@ -11,6 +11,7 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockType.BlockTypeBuilder;
+import mekanism.common.multiblock.IMultiblockBase.UpdateType;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityStructuralGlass;
@@ -60,7 +61,7 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntit
                 ((TileEntityMekanism) tile).onNeighborChange(neighborBlock);
             }
             if (tile instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) tile).doUpdate(neighborPos, false);
+                ((IStructuralMultiblock) tile).doUpdate(neighborPos, UpdateType.NORMAL);
             }
         }
     }

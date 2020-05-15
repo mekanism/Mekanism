@@ -56,9 +56,9 @@ public class BuildCommand {
         Set<BlockPos> traversed = new HashSet<>();
         Stack<BlockPos> openSet = new Stack<>();
         openSet.add(pos);
+        traversed.add(pos);
         while (!openSet.isEmpty()) {
             BlockPos ptr = openSet.pop();
-            traversed.add(ptr);
             BlockState state = world.getBlockState(ptr);
             if (state.getBlock().getRegistryName().getNamespace().contains("mekanism")) {
                 world.setBlockState(ptr, Blocks.AIR.getDefaultState());
@@ -66,6 +66,7 @@ public class BuildCommand {
                     BlockPos offset = ptr.offset(side);
                     if (!traversed.contains(offset)) {
                         openSet.add(offset);
+                        traversed.add(offset);
                     }
                 }
             }

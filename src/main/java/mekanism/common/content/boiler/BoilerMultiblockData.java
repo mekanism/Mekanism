@@ -98,8 +98,8 @@ public class BoilerMultiblockData extends MultiblockData implements IMekanismFlu
     }
 
     @Override
-    public void onCreated() {
-        super.onCreated();
+    public void form(World world) {
+        super.form(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY * locations.size(), true);
     }

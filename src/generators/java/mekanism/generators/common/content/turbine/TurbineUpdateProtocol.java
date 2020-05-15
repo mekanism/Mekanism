@@ -155,9 +155,9 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
 
         BlockPos startCoord = complex.offset(Direction.UP);
         if (MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), startCoord) != null) {
-            structure.coils = new NodeCounter(coord -> {
+            structure.coils = new Explorer(coord -> {
                 return MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), coord) != null;
-            }).calculate(startCoord);
+            }).explore(startCoord);
         }
 
         if (coils.size() > structure.coils) {

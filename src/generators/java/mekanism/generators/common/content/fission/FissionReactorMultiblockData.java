@@ -106,8 +106,8 @@ public class FissionReactorMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void onCreated() {
-        super.onCreated();
+    public void form(World world) {
+        super.form(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
     }

@@ -83,9 +83,9 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
         }
 
         if (!elements.isEmpty()) {
-            structure.superheatingElements = new NodeCounter(coord -> {
+            structure.superheatingElements = new Explorer(coord -> {
                 return coord.getY() < initDisperser.getY() && MekanismUtils.getTileEntity(TileEntitySuperheatingElement.class, pointer.getWorld(), coord) != null;
-            }).calculate(elements.iterator().next());
+            }).explore(elements.iterator().next());
         }
 
         if (elements.size() > structure.superheatingElements) {
@@ -112,7 +112,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
         final BlockPos renderLocation = structure.renderLocation;
         final int volLength = structure.length;
         final int volWidth = structure.width;
-        structure.setWaterVolume(new NodeCounter(coord -> {
+        structure.setWaterVolume(new Explorer(coord -> {
             int x = coord.getX();
             int y = coord.getY();
             int z = coord.getZ();
@@ -120,7 +120,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
                    x >= renderLocation.getX() && x < renderLocation.getX() + volLength &&
                    z >= renderLocation.getZ() && z < renderLocation.getZ() + volWidth &&
                    (pointer.getWorld().isAirBlock(coord) || checkNode(coord));
-        }).calculate(initAir));
+        }).explore(initAir));
 
         //Make sure all air blocks are connected
         if (totalAir > structure.getWaterVolume()) {

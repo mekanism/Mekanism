@@ -5,6 +5,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -54,6 +55,11 @@ public class MatrixMultiblockData extends MultiblockData {
     @Override
     protected int getMultiblockRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(getEnergy(), getStorageCap());
+    }
+
+    @Override
+    protected boolean shouldCap(CacheSubstance type) {
+        return type != CacheSubstance.ENERGY;
     }
 
     public void addCell(BlockPos pos, TileEntityInductionCell cell) {

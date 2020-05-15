@@ -39,8 +39,6 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
-
-
     @Override
     public Map<BlockPos, BlockState> getNeighborCache() {
         return cachedNeighbors;
@@ -56,19 +54,19 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
     }
 
     @Override
-    public void doUpdate(BlockPos neighborPos, boolean force) {
+    public void doUpdate(BlockPos neighborPos, UpdateType type) {
         if (lastProtocolUpdate < getWorld().getGameTime() && !shouldUpdate(neighborPos)) {
             return;
         }
         if (multiblock.isFormed()) {
             IMultiblock<?> master = getMaster();
             if (master != null) {
-                master.doUpdate(neighborPos, true);
+                master.doUpdate(neighborPos, UpdateType.FORCE);
             }
         } else {
             IMultiblock<?> multiblock = new ControllerFinder().find();
             if (multiblock != null) {
-                multiblock.doUpdate(neighborPos, true);
+                multiblock.doUpdate(neighborPos, UpdateType.FORCE);
             }
         }
     }
@@ -107,7 +105,7 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
     @Override
     public void onPlace() {
         if (!world.isRemote()) {
-            doUpdate(null, false);
+            doUpdate(null, UpdateType.NORMAL);
         }
     }
 
@@ -121,7 +119,7 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
         if (!getWorld().isRemote() && !multiblock.isFormed()) {
             IMultiblock<?> multiblock = new ControllerFinder().find();
             if (multiblock instanceof TileEntityMultiblock && multiblock.getMultiblock() == null) {
-                FormationResult result = ((TileEntityMultiblock<?>) multiblock).getProtocol().doUpdate();
+                FormationResult result = ((TileEntityMultiblock<?>) multiblock).getProtocol().doUpdate(UpdateType.NORMAL);
                 if (!result.isFormed() && result.getResultText() != null) {
                     player.sendMessage(result.getResultText());
                     return ActionResultType.SUCCESS;

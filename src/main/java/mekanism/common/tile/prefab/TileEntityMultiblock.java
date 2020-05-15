@@ -127,7 +127,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 getManager().updateCache(this, false);
             }
             if (ticker == 5 && !initialUpdate) {
-                doUpdate(null, false);
+                doUpdate(null, UpdateType.INITIAL);
             }
             if (prevStructure) {
                 structureChanged();
@@ -187,7 +187,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public void onPlace() {
         super.onPlace();
         if (!world.isRemote()) {
-            doUpdate(null, false);
+            doUpdate(null, UpdateType.NORMAL);
             initialUpdate = true;
         }
     }
@@ -198,8 +198,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void doUpdate(BlockPos neighborPos, boolean force) {
-        if (!isRemote() && (force || shouldUpdate(neighborPos)) && !protocolUpdateThisTick && (!structure.isFormed() || !structure.didUpdateThisTick)) {
+    public void doUpdate(BlockPos neighborPos, UpdateType type) {
+        if (!isRemote() && (type == UpdateType.FORCE || shouldUpdate(neighborPos)) && !protocolUpdateThisTick && (!structure.isFormed() || !structure.didUpdateThisTick)) {
             if (structure.isFormed() && structure.inventoryID != null) {
                 // update the cache before we destroy the multiblock
                 cachedData.sync(structure);
@@ -207,7 +207,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 getManager().updateCache(this, true);
             }
 
-            getProtocol().doUpdate();
+            getProtocol().doUpdate(type);
 
             if (structure.isFormed()) {
                 structure.didUpdateThisTick = true;
@@ -353,7 +353,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         if (!getWorld().isRemote() && !structure.isFormed()) {
-            FormationResult result = getProtocol().doUpdate();
+            FormationResult result = getProtocol().doUpdate(UpdateType.NORMAL);
             if (!result.isFormed() && result.getResultText() != null) {
                 player.sendMessage(result.getResultText());
                 return ActionResultType.SUCCESS;

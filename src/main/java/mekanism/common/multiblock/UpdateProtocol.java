@@ -2,21 +2,18 @@ package mekanism.common.multiblock;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import mekanism.api.Action;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.multiblock.IMultiblockBase.UpdateType;
 import mekanism.common.multiblock.IValveHandler.ValveData;
-import mekanism.common.multiblock.MultiblockCache.CacheSubstance;
-import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -135,7 +132,10 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
     }
 
     /**
-     * @return Whether or not the block at the specified location is a viable node for a multiblock structure.
+     * If the block at a given pos will function as a 'structural block' (casing or structural multiblock)
+     * for this structure. This will also mark the tile in this position as having just received a multiblock
+     * update.
+     * @return Whether or not the block at the specified location is a viable node for a multiblock structure
      */
     protected boolean checkNode(BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
@@ -160,40 +160,10 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         return pointer.getNewStructure();
     }
 
-    protected void onFormed(T structureFound) {
-        for (BlockPos pos : structureFound.internalLocations) {
-            TileEntityInternalMultiblock tile = MekanismUtils.getTileEntity(TileEntityInternalMultiblock.class, pointer.getWorld(), pos);
-            if (tile != null) {
-                tile.setMultiblock(structureFound.inventoryID);
-            }
-        }
-
-        if (shouldCap(CacheSubstance.FLUID)) {
-            for (IExtendedFluidTank tank : structureFound.getFluidTanks(null)) {
-                tank.setStackSize(Math.min(tank.getFluidAmount(), tank.getCapacity()), Action.EXECUTE);
-            }
-        }
-        if (shouldCap(CacheSubstance.GAS)) {
-            for (IGasTank tank : structureFound.getGasTanks(null)) {
-                tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
-            }
-        }
-        if (shouldCap(CacheSubstance.ENERGY)) {
-            for (IEnergyContainer container : structureFound.getEnergyContainers(null)) {
-                container.setEnergy(container.getEnergy().min(container.getMaxEnergy()));
-            }
-        }
-    }
-
-    protected boolean shouldCap(CacheSubstance type) {
-        return true;
-    }
-
     /**
      * Runs the protocol and updates all nodes that make a part of the multiblock.
      */
-    public FormationResult doUpdate() {
-        long time = System.nanoTime();
+    public FormationResult doUpdate(UpdateType type) {
         BlockPos corner = traverse(pointer.getPos(), 0, Direction.WEST, Direction.DOWN, Direction.NORTH);
         if (corner == null) {
             return FormationResult.FAIL;
@@ -254,17 +224,16 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                 }
             }
 
-            structureFound.onCreated();
-            onFormed(structureFound);
-
-            //Remove all structural multiblocks from locations, set controllers
-            for (IStructuralMultiblock node : structures) {
-                structureFound.locations.remove(((TileEntity) node).getPos());
-            }
-
+            structureFound.form(pointer.getWorld());
+            // Remove all structural multiblocks from locations
+            structures.forEach(node -> structureFound.locations.remove(((TileEntity) node).getPos()));
             return FormationResult.SUCCESS;
         } else {
             pointer.getMultiblock().remove(pointer.getWorld());
+            if (type == UpdateType.INITIAL) {
+                // run a traversal over connected multiblocks of the same type to make sure we don't re-run an update for every connected block
+                new Explorer(this::checkNode).explore(pointer.getPos());
+            }
             return result.getFormationResult();
         }
     }
@@ -326,33 +295,42 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         return MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public static class NodeCounter {
+    protected static class Explorer {
 
-        public Set<BlockPos> iterated = new ObjectOpenHashSet<>();
+        protected Predicate<BlockPos> checker;
+        protected int maxCount;
 
-        public Predicate<BlockPos> checker;
-
-        public NodeCounter(Predicate<BlockPos> c) {
-            checker = c;
+        public Explorer(Predicate<BlockPos> checker, int maxCount) {
+            this.checker = checker;
+            this.maxCount = maxCount;
         }
 
-        public void loop(BlockPos pos) {
-            iterated.add(pos);
-
-            for (Direction side : EnumUtils.DIRECTIONS) {
-                BlockPos offset = pos.offset(side);
-                if (!iterated.contains(offset) && checker.test(offset)) {
-                    loop(offset);
-                }
-            }
+        public Explorer(Predicate<BlockPos> checker) {
+           this(checker, MAX_SIZE * MAX_SIZE * MAX_SIZE);
         }
 
-        public int calculate(BlockPos pos) {
-            if (!checker.test(pos)) {
+        public int explore(BlockPos start) {
+            if (!checker.test(start)) {
                 return 0;
             }
-            loop(pos);
-            return iterated.size();
+
+            Queue<BlockPos> openSet = new LinkedList<>();
+            Set<BlockPos> traversed = new ObjectOpenHashSet<>();
+            openSet.add(start);
+            traversed.add(start);
+            while (!openSet.isEmpty()) {
+                BlockPos ptr = openSet.poll();
+                if (traversed.size() >= maxCount)
+                    return traversed.size();
+                for (Direction side : EnumUtils.DIRECTIONS) {
+                    BlockPos offset = ptr.offset(side);
+                    if (!traversed.contains(offset) && checker.test(offset)) {
+                        openSet.add(offset);
+                        traversed.add(offset);
+                    }
+                }
+            }
+            return traversed.size();
         }
     }
 
