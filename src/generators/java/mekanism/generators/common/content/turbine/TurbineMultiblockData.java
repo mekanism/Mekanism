@@ -131,7 +131,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     public int getDispersers() {
-        return (length - 2) * (height - 2) - 1;
+        return (length - 2) * (width - 2) - 1;
     }
 
     public long getSteamCapacity() {

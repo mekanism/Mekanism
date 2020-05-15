@@ -81,9 +81,9 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         structure.locations = locations;
         structure.valves = valves;
         structure.length = length;
-        structure.height = height;
         structure.width = width;
-        structure.setVolume(structure.length * structure.height * structure.width);
+        structure.height = height;
+        structure.setVolume(structure.length * structure.width * structure.height);
         structure.renderLocation = corner.offset(Direction.UP);
         structure.minLocation = min;
         structure.maxLocation = max;
@@ -193,6 +193,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
      * Runs the protocol and updates all nodes that make a part of the multiblock.
      */
     public FormationResult doUpdate() {
+        long time = System.nanoTime();
         BlockPos corner = traverse(pointer.getPos(), 0, Direction.WEST, Direction.DOWN, Direction.NORTH);
         if (corner == null) {
             return FormationResult.FAIL;

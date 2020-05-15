@@ -255,8 +255,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         updateTag.putBoolean(NBTConstants.RENDERING, isRendering);
         updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, structure.isFormed());
         if (structure.isFormed() && isRendering) {
-            updateTag.putInt(NBTConstants.HEIGHT, structure.width);
-            updateTag.putInt(NBTConstants.WIDTH, structure.height);
+            updateTag.putInt(NBTConstants.HEIGHT, structure.height);
+            updateTag.putInt(NBTConstants.WIDTH, structure.width);
             updateTag.putInt(NBTConstants.LENGTH, structure.length);
             if (structure.renderLocation != null) {
                 updateTag.put(NBTConstants.RENDER_LOCATION, NBTUtil.writeBlockPos(structure.renderLocation));
@@ -275,8 +275,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> structure.setFormedForce(value));
         if (isRendering) {
             if (structure.isFormed()) {
-                NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> structure.width = value);
-                NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> structure.height = value);
+                NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> structure.height = value);
+                NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> structure.width = value);
                 NBTUtils.setIntIfPresent(tag, NBTConstants.LENGTH, value -> structure.length = value);
                 NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> structure.renderLocation = value);
                 if (tag.hasUniqueId(NBTConstants.INVENTORY_ID)) {
@@ -285,7 +285,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                     structure.inventoryID = null;
                 }
                 if (structure.renderLocation != null && !prevStructure) {
-                    Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation, structure.length - 1, structure.height - 1, structure.width - 1);
+                    Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation, structure.length - 1, structure.width - 1, structure.height - 1);
                 }
             } else {
                 // this will consecutively be set on the server
@@ -331,7 +331,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             //TODO: Eventually we may want to look into caching this
             BlockPos corner1 = structure.renderLocation;
             //height - 2 up, but then we go up one further to take into account that block
-            BlockPos corner2 = corner1.east(structure.length + 1).south(structure.height + 1).up(structure.width - 1);
+            BlockPos corner2 = corner1.east(structure.length + 1).south(structure.width + 1).up(structure.height - 1);
             //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
             // how the specific multiblock wants to render, that it is being viewed
             return new AxisAlignedBB(corner1, corner2);

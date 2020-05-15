@@ -67,7 +67,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
         //Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
         BlockPos pos = new BlockPos(structure.renderLocation.getX(), initDisperser.getY(), structure.renderLocation.getZ());
         for (int x = 1; x < structure.length - 1; x++) {
-            for (int z = 1; z < structure.height - 1; z++) {
+            for (int z = 1; z < structure.width - 1; z++) {
                 BlockPos shifted = pos.add(x, 0, z);
                 TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, pointer.getWorld(), shifted);
                 if (tile == null) {
@@ -98,7 +98,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
         //Find the first available block in the structure for water storage (including casings)
         for (int x = structure.renderLocation.getX(); x < structure.renderLocation.getX() + structure.length; x++) {
             for (int y = structure.renderLocation.getY(); y < initDisperser.getY(); y++) {
-                for (int z = structure.renderLocation.getZ(); z < structure.renderLocation.getZ() + structure.height; z++) {
+                for (int z = structure.renderLocation.getZ(); z < structure.renderLocation.getZ() + structure.width; z++) {
                     BlockPos airPos = new BlockPos(x, y, z);
                     if (pointer.getWorld().isAirBlock(airPos) || checkNode(airPos)) {
                         initAir = airPos;
@@ -111,7 +111,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
         //Gradle build requires these fields to be final
         final BlockPos renderLocation = structure.renderLocation;
         final int volLength = structure.length;
-        final int volWidth = structure.height;
+        final int volWidth = structure.width;
         structure.setWaterVolume(new NodeCounter(coord -> {
             int x = coord.getX();
             int y = coord.getY();
@@ -127,8 +127,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
             return FormationResult.fail(MekanismLang.BOILER_INVALID_AIR_POCKETS);
         }
 
-        int steamHeight = (structure.renderLocation.getY() + structure.width - 2) - initDisperser.getY();
-        structure.setSteamVolume(structure.height * structure.length * steamHeight);
+        int steamHeight = (structure.renderLocation.getY() + structure.height - 2) - initDisperser.getY();
+        structure.setSteamVolume(structure.width * structure.length * steamHeight);
         structure.upperRenderLocation = new Coord4D(structure.renderLocation.getX(), initDisperser.getY() + 1, structure.renderLocation.getZ(), pointer.getWorld().getDimension().getType());
         return FormationResult.SUCCESS;
     }

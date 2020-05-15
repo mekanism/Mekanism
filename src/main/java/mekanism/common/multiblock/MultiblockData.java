@@ -40,7 +40,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
     @ContainerSync(tag = "stats")
-    public int length, height, width;
+    public int length, width, height;
 
     @ContainerSync(getter = "getVolume", setter = "setVolume")
     private int volume;
@@ -149,8 +149,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         int code = 1;
         code = 31 * code + locations.hashCode();
         code = 31 * code + length;
-        code = 31 * code + height;
         code = 31 * code + width;
+        code = 31 * code + height;
         code = 31 * code + getVolume();
         return code;
     }
@@ -164,7 +164,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         if (!data.locations.equals(locations)) {
             return false;
         }
-        if (data.length != length || data.height != height || data.width != width) {
+        if (data.length != length || data.width != width || data.height != height) {
             return false;
         }
         return data.getVolume() == getVolume();

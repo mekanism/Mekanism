@@ -32,10 +32,14 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
 
     private Map<BlockPos, BlockState> cachedNeighbors = new HashMap<>();
 
+    private long lastProtocolUpdate = -1;
+
     public TileEntityStructuralGlass() {
         super(MekanismTileEntityTypes.STRUCTURAL_GLASS.getTileEntityType());
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
+
+
 
     @Override
     public Map<BlockPos, BlockState> getNeighborCache() {
@@ -53,7 +57,7 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
 
     @Override
     public void doUpdate(BlockPos neighborPos, boolean force) {
-        if (!shouldUpdate(neighborPos)) {
+        if (lastProtocolUpdate < getWorld().getGameTime() && !shouldUpdate(neighborPos)) {
             return;
         }
         if (multiblock.isFormed()) {
@@ -67,6 +71,11 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
                 multiblock.doUpdate(neighborPos, true);
             }
         }
+    }
+
+    @Override
+    public void markUpdated() {
+        lastProtocolUpdate = getWorld().getGameTime();
     }
 
     private IMultiblock<?> getMaster() {

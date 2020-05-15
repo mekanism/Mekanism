@@ -19,6 +19,8 @@ public interface IMultiblockBase extends ITileNeighborCache {
 
     void removeMultiblock();
 
+    void markUpdated();
+
     ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack);
 
     void doUpdate(BlockPos neighborPos, boolean force);

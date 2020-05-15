@@ -39,9 +39,9 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
             if (data != null) {
                 data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
-                data.height = tile.getMultiblock().width - 2;
+                data.height = tile.getMultiblock().height - 2;
                 data.length = tile.getMultiblock().length;
-                data.width = tile.getMultiblock().height;
+                data.width = tile.getMultiblock().width;
                 matrix.push();
 
                 IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());

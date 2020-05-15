@@ -78,7 +78,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
         drawString(EnergyDisplay.of(tile.getMultiblock().getLastOutput(), tile.getMultiblock().getTransferCap()).getTextComponent(), 59, 55, titleTextColor());
         drawString(MekanismLang.MATRIX_DIMENSIONS.translate(), 8, 82, 0x797979);
         if (tile.getMultiblock().isFormed()) {
-            drawString(MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(tile.getMultiblock().height, tile.getMultiblock().width, tile.getMultiblock().length), 14, 91, titleTextColor());
+            drawString(MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(tile.getMultiblock().width, tile.getMultiblock().height, tile.getMultiblock().length), 14, 91, titleTextColor());
         }
         drawString(MekanismLang.MATRIX_CONSTITUENTS.translate(), 8, 102, 0x797979);
         drawString(MekanismLang.MATRIX_CELLS.translate(tile.getMultiblock().getCellCount()), 14, 111, titleTextColor());

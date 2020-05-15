@@ -56,11 +56,11 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
 
     @Override
     protected FormationResult validate(TurbineMultiblockData structure, Set<BlockPos> innerNodes) {
-        if (structure.length % 2 != 1 || structure.height % 2 != 1) {
+        if (structure.length % 2 != 1 || structure.width % 2 != 1) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH);
         }
         int centerX = structure.minLocation.getX() + (structure.length - 1) / 2;
-        int centerZ = structure.minLocation.getZ() + (structure.height - 1) / 2;
+        int centerZ = structure.minLocation.getZ() + (structure.width - 1) / 2;
 
         BlockPos complex = null;
 
@@ -98,7 +98,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
         }
 
         int rotors = complex.getY() - structure.minLocation.getY() + 1;
-        int innerRadius = (Math.min(structure.length, structure.height) - 3) / 2;
+        int innerRadius = (Math.min(structure.length, structure.width) - 3) / 2;
         if (innerRadius < rotors / 4) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_TOO_NARROW);
         }
@@ -172,7 +172,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
                 structure.vents++;
             }
         }
-        structure.lowerVolume = structure.length * structure.height * turbineHeight;
+        structure.lowerVolume = structure.length * structure.width * turbineHeight;
         structure.complex = complex;
         return FormationResult.SUCCESS;
     }

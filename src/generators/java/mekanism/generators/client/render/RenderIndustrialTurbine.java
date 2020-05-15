@@ -47,11 +47,11 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
             profiler.endSection();
             if (!tile.getMultiblock().gasTank.isEmpty() && tile.getMultiblock().length > 0) {
                 GasRenderData data = new GasRenderData();
-                data.height = tile.getMultiblock().lowerVolume / (tile.getMultiblock().length * tile.getMultiblock().height);
+                data.height = tile.getMultiblock().lowerVolume / (tile.getMultiblock().length * tile.getMultiblock().width);
                 if (data.height >= 1) {
                     data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
                     data.length = tile.getMultiblock().length;
-                    data.width = tile.getMultiblock().height;
+                    data.width = tile.getMultiblock().width;
                     data.gasType = tile.getMultiblock().gasTank.getStack();
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());

@@ -35,7 +35,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                 if (data.height >= 1) {
                     data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
                     data.length = tile.getMultiblock().length;
-                    data.width = tile.getMultiblock().height;
+                    data.width = tile.getMultiblock().width;
                     data.fluidType = tile.getMultiblock().waterTank.getFluid();
                     int glow = data.calculateGlowLight(light);
                     matrix.push();
@@ -49,11 +49,11 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
             }
             if (!tile.getMultiblock().steamTank.isEmpty()) {
                 GasRenderData data = new GasRenderData();
-                data.height = tile.getMultiblock().renderLocation.getY() + tile.getMultiblock().width - 2 - tile.getMultiblock().upperRenderLocation.y;
+                data.height = tile.getMultiblock().renderLocation.getY() + tile.getMultiblock().height - 2 - tile.getMultiblock().upperRenderLocation.y;
                 if (data.height >= 1) {
                     data.location = tile.getMultiblock().upperRenderLocation;
                     data.length = tile.getMultiblock().length;
-                    data.width = tile.getMultiblock().height;
+                    data.width = tile.getMultiblock().width;
                     data.gasType = tile.getMultiblock().steamTank.getStack();
                     if (buffer == null) {
                         buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
