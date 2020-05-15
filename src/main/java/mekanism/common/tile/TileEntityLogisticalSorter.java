@@ -1,10 +1,10 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -20,7 +20,6 @@ import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
-import mekanism.common.content.transporter.StackSearcher;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -89,29 +88,26 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 int min = 0;
 
                 for (TransporterFilter<?> filter : filters) {
-                    for (StackSearcher search = new StackSearcher(back, getOppositeDirection()); search.getSlotCount() >= 0; ) {
-                        InvStack invStack = filter.getStackFromInventory(search, singleItem);
-                        if (invStack == null) {
-                            break;
+                    InvStack invStack = filter.getStackFromInventory(back, getOppositeDirection(), singleItem);
+                    if (invStack == null || invStack.getStack().isEmpty()) {
+                        continue;
+                    }
+                    ItemStack itemStack = invStack.getStack();
+                    if (filter.canFilter(itemStack, !singleItem)) {
+                        if (!singleItem && filter instanceof TItemStackFilter) {
+                            TItemStackFilter itemFilter = (TItemStackFilter) filter;
+                            if (itemFilter.sizeMode) {
+                                min = itemFilter.min;
+                            }
                         }
-                        ItemStack itemStack = invStack.getStack();
-                        if (filter.canFilter(itemStack, !singleItem)) {
-                            if (!singleItem && filter instanceof TItemStackFilter) {
-                                TItemStackFilter itemFilter = (TItemStackFilter) filter;
-                                if (itemFilter.sizeMode) {
-                                    min = itemFilter.min;
-                                }
-                            }
-
-                            TransitRequest request = TransitRequest.getFromStack(itemStack);
-                            TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
-                            if (!response.isEmpty()) {
-                                invStack.use(response);
-                                MekanismUtils.saveChunk(back);
-                                setActive(true);
-                                sentItems = true;
-                                break;
-                            }
+                        TransitRequest request = TransitRequest.getFromStack(itemStack);
+                        TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
+                        if (!response.isEmpty()) {
+                            invStack.use(response);
+                            MekanismUtils.saveChunk(back);
+                            setActive(true);
+                            sentItems = true;
+                            break;
                         }
                     }
                 }

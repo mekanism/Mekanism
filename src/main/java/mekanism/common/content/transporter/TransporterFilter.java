@@ -5,11 +5,14 @@ import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.BaseFilter;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 
 public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>> extends BaseFilter<FILTER> {
 
@@ -27,8 +30,8 @@ public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>
 
     public abstract Finder getFinder();
 
-    public InvStack getStackFromInventory(StackSearcher searcher, boolean singleItem) {
-        return searcher.takeTopStack(getFinder(), singleItem ? 1 : 64);
+    public InvStack getStackFromInventory(TileEntity tile, Direction side, boolean singleItem) {
+        return InventoryUtils.takeTopStack(tile, side, getFinder(), singleItem ? 1 : 64);
     }
 
     @Override

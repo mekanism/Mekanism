@@ -124,6 +124,10 @@ public final class InvStack {
         use(getStack().getCount(), null);
     }
 
+    public int getCount() {
+        return itemCount;
+    }
+
     private static Int2IntMap getMap(int slotID, ItemStack stack) {
         Int2IntMap map = new Int2IntOpenHashMap();
         map.put(slotID, stack.getCount());

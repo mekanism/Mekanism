@@ -463,7 +463,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         if (doPull && getPullInv() != null) {
             InvStack stack = InventoryUtils.takeDefinedItem(getPullInv(), Direction.UP, filter.replaceStack.copy(), 1, 1);
-            if (stack != null) {
+            if (stack != null && !stack.getStack().isEmpty()) {
                 stack.useAll();
                 return StackUtils.size(filter.replaceStack, 1);
             }

@@ -5,9 +5,12 @@ import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.transporter.Finder.ItemStackFinder;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implements IItemStackFilter<TItemStackFilter> {
@@ -27,11 +30,11 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
     }
 
     @Override
-    public InvStack getStackFromInventory(StackSearcher searcher, boolean singleItem) {
+    public InvStack getStackFromInventory(TileEntity tile, Direction side, boolean singleItem) {
         if (sizeMode && !singleItem) {
-            return searcher.takeDefinedItem(itemType, min, max);
+            return InventoryUtils.takeDefinedItem(tile, side, itemType, min, max);
         }
-        return super.getStackFromInventory(searcher, singleItem);
+        return super.getStackFromInventory(tile, side, singleItem);
     }
 
     @Override
