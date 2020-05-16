@@ -1,18 +1,20 @@
 package mekanism.common.lib.inventory;
 
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import mekanism.common.Mekanism;
+import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 public abstract class TransitRequest {
@@ -57,6 +59,38 @@ public abstract class TransitRequest {
 
     public abstract Collection<? extends ItemData> getItemData();
 
+    public TransitResponse addToInventory(TileEntity tile, Direction side, boolean force) {
+        if (force && tile instanceof TileEntityLogisticalSorter) {
+            return ((TileEntityLogisticalSorter) tile).sendHome(this);
+        }
+        if (isEmpty()) {
+            return getEmptyResponse();
+        }
+        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
+        if (capability.isPresent()) {
+            IItemHandler inventory = capability.get();
+            for (ItemData data : getItemData()) {
+                ItemStack origInsert = StackUtils.size(data.getStack(), data.getTotalCount());
+                ItemStack toInsert = origInsert.copy();
+                for (int i = 0; i < inventory.getSlots(); i++) {
+                    // Check validation
+                    if (inventory.isItemValid(i, toInsert)) {
+                        // Do insert
+                        toInsert = inventory.insertItem(i, toInsert, false);
+                        // If empty, end
+                        if (toInsert.isEmpty()) {
+                            return createResponse(origInsert, data);
+                        }
+                    }
+                }
+                if (TransporterManager.didEmit(origInsert, toInsert)) {
+                    return createResponse(TransporterManager.getToUse(origInsert, toInsert), data);
+                }
+            }
+        }
+        return getEmptyResponse();
+    }
+
     public boolean isEmpty() {
         return getItemData().isEmpty();
     }
@@ -74,7 +108,7 @@ public abstract class TransitRequest {
         return EMPTY;
     }
 
-    public static class TransitResponse {
+    public class TransitResponse {
 
         private final ItemStack inserted;
         private final ItemData slotData;
@@ -153,83 +187,11 @@ public abstract class TransitRequest {
             return slotData;
         }
 
-        public static class SimpleItemData extends ItemData {
+        public class SimpleItemData extends ItemData {
 
             public SimpleItemData(ItemStack stack) {
                 super(new HashedItem(stack));
                 totalCount = stack.getCount();
-            }
-        }
-    }
-
-    public static class TileTransitRequest extends TransitRequest {
-
-        private final TileEntity tile;
-        private final Direction side;
-        private final Map<HashedItem, TileItemData> itemMap = new LinkedHashMap<>();
-
-        public TileTransitRequest(TileEntity tile, Direction side) {
-            this.tile = tile;
-            this.side = side;
-        }
-
-        public void addItem(ItemStack stack, int slot) {
-            HashedItem hashed = new HashedItem(stack);
-            itemMap.computeIfAbsent(hashed, TileItemData::new).addSlot(slot, stack);
-        }
-
-        public int getCount(HashedItem itemType) {
-            ItemData data = itemMap.get(itemType);
-            return data != null ? data.getTotalCount() : 0;
-        }
-
-        public Map<HashedItem, TileItemData> getItemMap() {
-            return itemMap;
-        }
-
-        @Override
-        public Collection<TileItemData> getItemData() {
-            return itemMap.values();
-        }
-
-        public class TileItemData extends ItemData {
-
-            private final Int2IntMap slotMap = new Int2IntOpenHashMap();
-
-            public TileItemData(HashedItem itemType) {
-                super(itemType);
-            }
-
-            public void addSlot(int id, ItemStack stack) {
-                slotMap.put(id, stack.getCount());
-                totalCount += stack.getCount();
-            }
-
-            @Override
-            public ItemStack use(int amount) {
-                IItemHandler handler = InventoryUtils.assertItemHandler("InvStack", tile, side);
-                if (handler != null) {
-                    for (Int2IntMap.Entry entry : slotMap.int2IntEntrySet()) {
-                        int toUse = Math.min(amount, entry.getIntValue());
-                        ItemStack ret = handler.extractItem(entry.getIntKey(), toUse, false);
-                        boolean stackable = InventoryUtils.areItemsStackable(getItemType().getStack(), ret);
-                        if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
-                            Mekanism.logger.warn("An inventory's returned content " + (!stackable ? "type" : "count") + " does not line up with InvStack's prediction.");
-                            Mekanism.logger.warn("InvStack item: " + getItemType().getStack() + ", ret: " + ret);
-                            Mekanism.logger.warn("Tile: " + tile + " " + tile.getPos());
-                        }
-                        amount -= toUse;
-                        totalCount -= amount;
-                        entry.setValue(totalCount - toUse);
-                        if (totalCount == 0) {
-                            itemMap.remove(getItemType());
-                        }
-                        if (amount == 0) {
-                            break;
-                        }
-                    }
-                }
-                return getStack();
             }
         }
     }

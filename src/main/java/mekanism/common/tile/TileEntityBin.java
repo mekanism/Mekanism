@@ -12,7 +12,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.inventory.slot.BinInventorySlot;
-import mekanism.common.lib.inventory.TransitRequest.TileTransitRequest;
+import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -20,7 +20,6 @@ import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.upgrade.BinUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -87,7 +86,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 if (capability.isPresent()) {
                     response = capability.get().insert(this, request, null, true, 0);
                 } else {
-                    response = InventoryUtils.putStackInInventory(tile, request, Direction.DOWN, false);
+                    response = request.addToInventory(tile, Direction.DOWN, false);
                 }
                 if (!response.isEmpty() && tier != BinTier.CREATIVE) {
                     int sendingAmount = response.getSendingAmount();

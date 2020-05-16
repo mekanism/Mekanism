@@ -26,7 +26,6 @@ import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
@@ -157,7 +156,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                             } else if (stack.getPathType() != Path.NONE) {
                                 TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
                                 if (tile != null) {
-                                    TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.simple(stack.itemStack), stack.getSide(this),
+                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this),
                                           stack.getPathType() == Path.HOME);
                                     // Nothing was rejected; remove the stack from the prediction tracker and
                                     // schedule this stack for deletion. Continue the loop thereafter

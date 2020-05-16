@@ -20,8 +20,8 @@ import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerT
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest;
-import mekanism.common.lib.inventory.TransitRequest.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -35,7 +35,6 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
@@ -134,7 +133,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         if (capability.isPresent()) {
                             response = capability.get().insert(this.tile, ejectMap, outputColor, true, 0);
                         } else {
-                            response = InventoryUtils.putStackInInventory(tile, ejectMap, side, false);
+                            response = ejectMap.addToInventory(tile, side, false);
                         }
                         if (!response.isEmpty()) {
                             // use the items returned by the TransitResponse; will be visible next loop
