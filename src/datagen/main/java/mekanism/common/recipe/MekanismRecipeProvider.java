@@ -1003,13 +1003,13 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Brick -> clay ball
         ItemStackGasToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(Tags.Items.INGOTS_BRICK),
-              GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
+              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY_BALL)
         ).build(consumer, Mekanism.rl(basePath + "brick_to_clay_ball"));
         //Dirt -> clay
         ItemStackGasToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(Items.DIRT),
-              GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
+              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY)
         ).build(consumer, Mekanism.rl(basePath + "dirt_to_clay"));
         //Gunpowder -> sulfur
@@ -1021,7 +1021,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Terracotta -> clay
         ItemStackGasToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(Items.TERRACOTTA),
-              GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
+              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY)
         ).build(consumer, Mekanism.rl(basePath + "terracotta_to_clay"));
         addChemicalInjectorConcreteRecipes(consumer, basePath + "concrete/");
@@ -1049,7 +1049,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     private void addChemicalInjectorConcreteRecipes(Consumer<IFinishedRecipe> consumer, String basePath, Item powder, Item concrete, String name) {
         ItemStackGasToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(powder),
-              GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
+              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(concrete)
         ).build(consumer, Mekanism.rl(basePath + name));
     }

@@ -10,7 +10,7 @@ import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ItemTags;
@@ -29,7 +29,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         //Mud brick -> mud ball
         ItemStackGasToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(BOPItems.mud_brick),
-              GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
+              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(BOPItems.mud_ball)
         ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "mud_brick_to_mud_ball"));

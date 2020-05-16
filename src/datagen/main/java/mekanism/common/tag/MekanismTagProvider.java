@@ -43,7 +43,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addShards();
         addCrystals();
         addFluids();
-        addSlurryTags(MekanismGases.IRON_SLURRY, MekanismGases.GOLD_SLURRY, MekanismGases.OSMIUM_SLURRY, MekanismGases.COPPER_SLURRY, MekanismGases.TIN_SLURRY);
+        addGasTags();
         addInfuseTags();
         getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
     }
@@ -269,6 +269,11 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Fluids.SULFUR_DIOXIDE, MekanismFluids.SULFUR_DIOXIDE);
         addToTag(MekanismTags.Fluids.SULFUR_TRIOXIDE, MekanismFluids.SULFUR_TRIOXIDE);
         addToTag(MekanismTags.Fluids.SULFURIC_ACID, MekanismFluids.SULFURIC_ACID);
+    }
+
+    private void addGasTags() {
+        addToTag(MekanismTags.Gases.WATER_VAPOR, MekanismGases.WATER_VAPOR, MekanismGases.STEAM);
+        addSlurryTags(MekanismGases.IRON_SLURRY, MekanismGases.GOLD_SLURRY, MekanismGases.OSMIUM_SLURRY, MekanismGases.COPPER_SLURRY, MekanismGases.TIN_SLURRY);
     }
 
     private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {

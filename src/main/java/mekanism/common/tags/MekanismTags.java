@@ -198,6 +198,7 @@ public class MekanismTags {
 
         public static final Tag<Gas> DIRTY_SLURRY = tag("dirty_slurry");
         public static final Tag<Gas> CLEAN_SLURRY = tag("clean_slurry");
+        public static final Tag<Gas> WATER_VAPOR = tag("water_vapor");
 
         private static Tag<Gas> tag(String name) {
             return new GasTags.Wrapper(Mekanism.rl(name));
