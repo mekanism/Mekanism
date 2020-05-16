@@ -4,8 +4,8 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.lib.security.ISecurityItem;
+import mekanism.common.lib.security.ISecurityTile.SecurityMode;
 import net.minecraft.item.ItemStack;
 
 @FieldsAreNonnullByDefault

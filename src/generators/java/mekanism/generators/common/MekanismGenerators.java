@@ -7,7 +7,7 @@ import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
-import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorCache;

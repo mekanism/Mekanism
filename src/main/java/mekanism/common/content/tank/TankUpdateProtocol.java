@@ -2,8 +2,8 @@ package mekanism.common.content.tank;
 
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.multiblock.UpdateProtocol;
+import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.multiblock.UpdateProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.block.Block;

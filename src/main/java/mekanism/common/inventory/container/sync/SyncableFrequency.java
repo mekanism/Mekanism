@@ -3,7 +3,7 @@ package mekanism.common.inventory.container.sync;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import mekanism.common.frequency.Frequency;
+import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.network.container.property.FrequencyPropertyData;
 import mekanism.common.network.container.property.PropertyData;
 

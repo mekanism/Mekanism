@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.base.ContainerEditMode;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.HybridInventorySlot;
-import mekanism.common.multiblock.MultiblockData;
+import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.World;
 

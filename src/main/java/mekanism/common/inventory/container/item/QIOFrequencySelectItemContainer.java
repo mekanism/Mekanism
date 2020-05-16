@@ -1,8 +1,8 @@
 package mekanism.common.inventory.container.item;
 
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.container.IEmptyContainer;
+import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;

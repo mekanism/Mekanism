@@ -10,17 +10,13 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.TItemStackFilter;
-import mekanism.common.content.transporter.TransitRequest;
-import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -28,9 +24,13 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.lib.HashList;
+import mekanism.common.lib.inventory.Finder;
+import mekanism.common.lib.inventory.TransitRequest;
+import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
+import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
@@ -181,7 +181,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     public boolean canSendHome(ItemStack stack) {
         TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
-        return InventoryUtils.canInsert(back, null, stack, getOppositeDirection(), true);
+        return TransporterUtils.canInsert(back, null, stack, getOppositeDirection(), true);
     }
 
     public boolean hasConnectedInventory() {

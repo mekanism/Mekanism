@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableByte;
@@ -23,6 +22,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.SyncableShort;
+import mekanism.common.lib.frequency.Frequency;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 

@@ -2,8 +2,8 @@ package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import net.minecraft.entity.player.PlayerEntity;

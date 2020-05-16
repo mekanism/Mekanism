@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import net.minecraft.entity.LivingEntity;

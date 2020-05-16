@@ -13,15 +13,15 @@ import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.transporter.TransitRequest;
-import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
+import mekanism.common.lib.inventory.TransitRequest;
+import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.network.PacketTransporterUpdate;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.InventoryNetwork;
@@ -211,7 +211,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     private boolean checkPath(TransporterStack stack, Path dest, boolean home) {
-        return stack.getPathType() == dest && (!checkSideForInsert(stack) || !InventoryUtils.canInsert(MekanismUtils.getTileEntity(world(), stack.getDest().getPos()),
+        return stack.getPathType() == dest && (!checkSideForInsert(stack) || !TransporterUtils.canInsert(MekanismUtils.getTileEntity(world(), stack.getDest().getPos()),
               stack.color, stack.itemStack, stack.getSide(this), home));
     }
 

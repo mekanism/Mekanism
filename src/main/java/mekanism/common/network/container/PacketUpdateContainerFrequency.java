@@ -1,8 +1,8 @@
 package mekanism.common.network.container;
 
 import javax.annotation.Nullable;
-import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.lib.frequency.Frequency;
 import net.minecraft.network.PacketBuffer;
 
 /**

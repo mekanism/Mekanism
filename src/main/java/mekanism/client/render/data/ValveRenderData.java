@@ -1,6 +1,6 @@
 package mekanism.client.render.data;
 
-import mekanism.common.multiblock.IValveHandler.ValveData;
+import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 

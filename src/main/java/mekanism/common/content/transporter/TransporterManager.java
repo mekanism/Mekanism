@@ -11,10 +11,11 @@ import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ISideConfiguration;
-import mekanism.common.content.transporter.TransitRequest.ItemTransitData;
-import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack.Path;
+import mekanism.common.lib.inventory.TransitRequest;
+import mekanism.common.lib.inventory.TransitRequest.ItemData;
+import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -203,7 +204,7 @@ public class TransporterManager {
         // Now for each of the items in the request, simulate the insert, using the state from all the in-flight
         // items to ensure we have an accurate model of what will happen in future. We try each stack in the
         // request; it might be possible to not send the first item, but the second could work, etc.
-        for (ItemTransitData data : request.getSlotData()) {
+        for (ItemData data : request.getItemData()) {
             // Create a sending ItemStack with the hashed item type and total item count within the request
             ItemStack stack = data.getStack();
             int numToSend = data.getTotalCount();

@@ -2,7 +2,7 @@ package mekanism.generators.common.content.fission;
 
 import java.util.List;
 import mekanism.api.NBTConstants;
-import mekanism.common.multiblock.MultiblockCache;
+import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

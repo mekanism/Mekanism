@@ -4,7 +4,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.IGuiItem;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.entity.EntityRobit;
@@ -32,6 +31,7 @@ import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
 import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
+import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityInductionCasing;

@@ -9,10 +9,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.common.security.IOwnerItem;
-import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile.SecurityMode;
-import mekanism.common.security.SecurityFrequency;
+import mekanism.common.lib.security.IOwnerItem;
+import mekanism.common.lib.security.ISecurityItem;
+import mekanism.common.lib.security.SecurityFrequency;
+import mekanism.common.lib.security.ISecurityTile.SecurityMode;
 import net.minecraft.item.ItemStack;
 
 @ParametersAreNonnullByDefault

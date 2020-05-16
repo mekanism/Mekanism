@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.common.item.IItemSustainedInventory;
+import mekanism.common.item.interfaces.IItemSustainedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 

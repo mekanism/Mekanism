@@ -10,7 +10,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.TagCache;
+import mekanism.common.base.TagCache;
 import mekanism.common.content.transporter.TModIDFilter;
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
 import mekanism.common.network.PacketEditFilter;

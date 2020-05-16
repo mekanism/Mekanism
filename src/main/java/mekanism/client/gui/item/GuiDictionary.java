@@ -6,7 +6,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.TagCache;
+import mekanism.common.base.TagCache;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.StackUtils;

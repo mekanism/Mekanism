@@ -4,8 +4,8 @@ import java.util.Set;
 import java.util.UUID;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
-import mekanism.common.frequency.Frequency;
-import mekanism.common.frequency.FrequencyType;
+import mekanism.common.lib.frequency.Frequency;
+import mekanism.common.lib.frequency.FrequencyType;
 import net.minecraft.tileentity.TileEntity;
 
 public class TeleporterFrequency extends Frequency {

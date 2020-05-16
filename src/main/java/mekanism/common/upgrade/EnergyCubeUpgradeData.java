@@ -2,9 +2,9 @@ package mekanism.common.upgrade;
 
 import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tile.component.ITileComponent;
+import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import net.minecraft.nbt.CompoundNBT;
 
 public class EnergyCubeUpgradeData implements IUpgradeData {

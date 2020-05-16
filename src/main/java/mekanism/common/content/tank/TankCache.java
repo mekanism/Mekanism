@@ -2,8 +2,8 @@ package mekanism.common.content.tank;
 
 import java.util.List;
 import mekanism.api.NBTConstants;
-import mekanism.common.base.ContainerEditMode;
-import mekanism.common.multiblock.MultiblockCache;
+import mekanism.common.lib.multiblock.MultiblockCache;
+import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

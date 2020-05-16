@@ -4,7 +4,7 @@ import java.util.Map;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
-import mekanism.common.content.transporter.HashedItem;
+import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.item.ItemStack;
 
 public class QIODriveData {

@@ -13,7 +13,7 @@ import mekanism.client.gui.element.custom.GuiTagFilterDialog;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.TagCache;
+import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.ITagFilter;

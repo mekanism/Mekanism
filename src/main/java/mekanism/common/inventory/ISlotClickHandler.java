@@ -1,6 +1,6 @@
 package mekanism.common.inventory;
 
-import mekanism.common.content.transporter.HashedItem;
+import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.item.ItemStack;
 
 public interface ISlotClickHandler {

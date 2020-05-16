@@ -8,8 +8,8 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
+import mekanism.common.lib.security.SecurityData;
 import mekanism.common.network.PacketKey;
-import mekanism.common.security.SecurityData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 

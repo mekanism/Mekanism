@@ -3,7 +3,7 @@ package mekanism.common.network.container.list;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.common.frequency.Frequency;
+import mekanism.common.lib.frequency.Frequency;
 import net.minecraft.network.PacketBuffer;
 
 public class PacketUpdateContainerFrequencyList<FREQUENCY extends Frequency> extends PacketUpdateContainerList<FREQUENCY> {

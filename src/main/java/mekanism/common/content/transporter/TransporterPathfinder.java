@@ -16,20 +16,21 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.PathfinderCache.CachedPath;
 import mekanism.common.content.transporter.PathfinderCache.PathData;
-import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.content.transporter.TransporterStack.Path;
+import mekanism.common.lib.inventory.TransitRequest;
+import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.transmitters.grid.InventoryNetwork.AcceptorData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -83,7 +84,7 @@ public final class TransporterPathfinder {
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
                 public boolean isValid(TransporterStack stack, Direction dir, TileEntity tile) {
-                    return InventoryUtils.canInsert(tile, stack.color, response.getStack(), dir, false);
+                    return TransporterUtils.canInsert(tile, stack.color, response.getStack(), dir, false);
                 }
             }, start.world(), dest, start.coord(), stack, chunkMap);
             List<Coord4D> path = p.getPath();
@@ -140,7 +141,7 @@ public final class TransporterPathfinder {
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
                 public boolean isValid(TransporterStack stack, Direction side, TileEntity tile) {
-                    return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
+                    return TransporterUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
                 }
             }, start.world(), stack.homeLocation, start.coord(), stack, chunkMap);
             List<Coord4D> path = p.getPath();

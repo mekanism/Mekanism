@@ -8,8 +8,8 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.common.base.IUpgradeItem;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.item.interfaces.IUpgradeItem;
 import net.minecraft.item.Item;
 
 @FieldsAreNonnullByDefault

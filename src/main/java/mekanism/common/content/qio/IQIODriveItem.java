@@ -2,7 +2,7 @@ package mekanism.common.content.qio;
 
 import java.util.Map;
 import mekanism.api.NBTConstants;
-import mekanism.common.content.transporter.HashedItem;
+import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

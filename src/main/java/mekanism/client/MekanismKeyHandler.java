@@ -2,9 +2,9 @@ package mekanism.client;
 
 import org.lwjgl.glfw.GLFW;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.KeySync;
 import mekanism.common.item.IModeItem;
 import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketOpenGui;

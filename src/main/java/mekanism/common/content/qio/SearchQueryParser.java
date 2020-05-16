@@ -10,7 +10,7 @@ import java.util.function.BiPredicate;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
-import mekanism.common.TagCache;
+import mekanism.common.base.TagCache;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 

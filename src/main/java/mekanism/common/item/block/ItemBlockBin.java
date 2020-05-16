@@ -9,7 +9,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.inventory.BinMekanismInventory;
 import mekanism.common.inventory.slot.BinInventorySlot;
-import mekanism.common.item.IItemSustainedInventory;
+import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.BinTier;
 import net.minecraft.item.ItemStack;

@@ -2,9 +2,9 @@ package mekanism.client.gui.qio;
 
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
+import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;

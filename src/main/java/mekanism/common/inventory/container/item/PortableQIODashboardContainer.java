@@ -2,13 +2,13 @@ package mekanism.common.inventory.container.item;
 
 import javax.annotation.Nonnull;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.frequency.FrequencyType;
-import mekanism.common.frequency.IFrequencyItem;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.item.ItemPortableQIODashboard;
+import mekanism.common.lib.frequency.FrequencyManager;
+import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

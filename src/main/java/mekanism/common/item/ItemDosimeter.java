@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import net.minecraft.entity.player.PlayerEntity;

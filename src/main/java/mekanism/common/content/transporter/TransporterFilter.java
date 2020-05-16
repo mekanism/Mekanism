@@ -5,6 +5,8 @@ import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.BaseFilter;
+import mekanism.common.lib.inventory.Finder;
+import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.nbt.CompoundNBT;

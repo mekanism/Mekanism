@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import mekanism.client.gui.item.GuiPortableTeleporter;
 import mekanism.common.content.teleporter.TeleporterFrequency;
-import mekanism.common.frequency.Frequency;
+import mekanism.common.lib.frequency.Frequency;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.network.PacketBuffer;

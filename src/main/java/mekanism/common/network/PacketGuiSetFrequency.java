@@ -2,12 +2,12 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
-import mekanism.common.frequency.Frequency;
-import mekanism.common.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.frequency.FrequencyType;
-import mekanism.common.frequency.IFrequencyHandler;
-import mekanism.common.frequency.IFrequencyItem;
+import mekanism.common.lib.frequency.Frequency;
+import mekanism.common.lib.frequency.FrequencyManager;
+import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.IFrequencyHandler;
+import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

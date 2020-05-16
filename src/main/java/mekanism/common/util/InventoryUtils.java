@@ -2,14 +2,11 @@ package mekanism.common.util;
 
 import java.util.Optional;
 import javax.annotation.Nullable;
-import mekanism.api.RelativeSide;
-import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ISideConfiguration;
-import mekanism.common.content.transporter.TransitRequest;
-import mekanism.common.content.transporter.TransitRequest.ItemTransitData;
-import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.lib.inventory.TransitRequest;
+import mekanism.common.lib.inventory.TransitRequest.ItemData;
+import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -30,7 +27,7 @@ public final class InventoryUtils {
         Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
         if (capability.isPresent()) {
             IItemHandler inventory = capability.get();
-            for (ItemTransitData data : request.getSlotData()) {
+            for (ItemData data : request.getItemData()) {
                 ItemStack origInsert = StackUtils.size(data.getStack(), data.getTotalCount());
                 ItemStack toInsert = origInsert.copy();
                 for (int i = 0; i < inventory.getSlots(); i++) {
@@ -65,37 +62,6 @@ public final class InventoryUtils {
             return true;
         }
         return ItemHandlerHelper.canItemStacksStack(inSlot, toInsert);
-    }
-
-    public static boolean canInsert(TileEntity tile, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
-        if (force && tile instanceof TileEntityLogisticalSorter) {
-            return ((TileEntityLogisticalSorter) tile).canSendHome(itemStack);
-        }
-        if (!force && tile instanceof ISideConfiguration) {
-            ISideConfiguration config = (ISideConfiguration) tile;
-            if (config.getEjector().hasStrictInput()) {
-                Direction tileSide = config.getOrientation();
-                EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(tileSide, side.getOpposite()));
-                if (configColor != null && configColor != color) {
-                    return false;
-                }
-            }
-        }
-        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
-        if (capability.isPresent()) {
-            IItemHandler inventory = capability.get();
-            for (int i = 0; i < inventory.getSlots(); i++) {
-                // Check validation
-                if (inventory.isItemValid(i, itemStack)) {
-                    // Simulate insert
-                    ItemStack rejects = inventory.insertItem(i, itemStack, true);
-                    if (TransporterManager.didEmit(itemStack, rejects)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     @Nullable

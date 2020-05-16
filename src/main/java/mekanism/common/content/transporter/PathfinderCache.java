@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
-import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import net.minecraft.util.Direction;
 

@@ -15,7 +15,7 @@ import mekanism.api.sustained.ISustainedInventory;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.security.ISecurityItem;
+import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;

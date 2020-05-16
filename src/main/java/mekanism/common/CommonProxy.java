@@ -3,6 +3,7 @@ package mekanism.common;
 import java.lang.ref.WeakReference;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import mekanism.common.base.MekFakePlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NonNull;
-import mekanism.common.frequency.Frequency;
+import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.network.container.property.list.FrequencyListPropertyData;
 import mekanism.common.network.container.property.list.ListPropertyData;
 

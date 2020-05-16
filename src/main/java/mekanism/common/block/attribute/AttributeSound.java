@@ -1,7 +1,7 @@
 package mekanism.common.block.attribute;
 
 import javax.annotation.Nonnull;
-import mekanism.common.HolidayManager;
+import mekanism.common.base.HolidayManager;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.util.SoundEvent;
 
