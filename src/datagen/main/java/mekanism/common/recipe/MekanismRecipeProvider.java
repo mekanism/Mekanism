@@ -1024,6 +1024,34 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY)
         ).build(consumer, Mekanism.rl(basePath + "terracotta_to_clay"));
+        addChemicalInjectorConcreteRecipes(consumer, basePath + "concrete/");
+    }
+
+    private void addChemicalInjectorConcreteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.BLACK_CONCRETE_POWDER, Items.BLACK_CONCRETE, "black");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.BLUE_CONCRETE_POWDER, Items.BLUE_CONCRETE, "blue");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.BROWN_CONCRETE_POWDER, Items.BROWN_CONCRETE, "brown");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.CYAN_CONCRETE_POWDER, Items.CYAN_CONCRETE, "cyan");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.GRAY_CONCRETE_POWDER, Items.GRAY_CONCRETE, "gray");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.GREEN_CONCRETE_POWDER, Items.GREEN_CONCRETE, "green");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.LIGHT_BLUE_CONCRETE_POWDER, Items.LIGHT_BLUE_CONCRETE, "light_blue");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.LIGHT_GRAY_CONCRETE_POWDER, Items.LIGHT_GRAY_CONCRETE, "light_gray");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.LIME_CONCRETE_POWDER, Items.LIME_CONCRETE, "lime");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.MAGENTA_CONCRETE_POWDER, Items.MAGENTA_CONCRETE, "magenta");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.ORANGE_CONCRETE_POWDER, Items.ORANGE_CONCRETE, "orange");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.PINK_CONCRETE_POWDER, Items.PINK_CONCRETE, "pink");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.PURPLE_CONCRETE_POWDER, Items.PURPLE_CONCRETE, "purple");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.RED_CONCRETE_POWDER, Items.RED_CONCRETE, "red");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.WHITE_CONCRETE_POWDER, Items.WHITE_CONCRETE, "white");
+        addChemicalInjectorConcreteRecipes(consumer, basePath, Items.YELLOW_CONCRETE_POWDER, Items.YELLOW_CONCRETE, "yellow");
+    }
+
+    private void addChemicalInjectorConcreteRecipes(Consumer<IFinishedRecipe> consumer, String basePath, Item powder, Item concrete, String name) {
+        ItemStackGasToItemStackRecipeBuilder.injecting(
+              ItemStackIngredient.from(powder),
+              GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
+              new ItemStack(concrete)
+        ).build(consumer, Mekanism.rl(basePath + name));
     }
 
     private void addMetallurgicInfuserRecipes(Consumer<IFinishedRecipe> consumer) {
