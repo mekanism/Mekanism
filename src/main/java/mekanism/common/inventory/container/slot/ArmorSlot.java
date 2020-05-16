@@ -15,7 +15,7 @@ public class ArmorSlot extends InsertableSlot {
 
     public static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] {PlayerContainer.EMPTY_ARMOR_SLOT_BOOTS, PlayerContainer.EMPTY_ARMOR_SLOT_LEGGINGS, PlayerContainer.EMPTY_ARMOR_SLOT_CHESTPLATE, PlayerContainer.EMPTY_ARMOR_SLOT_HELMET};
 
-    private EquipmentSlotType slotType;
+    private final EquipmentSlotType slotType;
 
     public ArmorSlot(PlayerInventory inventory, int index, int x, int y, EquipmentSlotType slotType) {
         super(inventory, index, x, y);
@@ -33,14 +33,17 @@ public class ArmorSlot extends InsertableSlot {
     }
 
     @Override
-    public boolean canTakeStack(PlayerEntity playerIn) {
+    public boolean canTakeStack(PlayerEntity player) {
         ItemStack itemstack = getStack();
-        return !itemstack.isEmpty() && !playerIn.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack) ? false : super.canTakeStack(playerIn);
+        if (!itemstack.isEmpty() && !player.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack)) {
+            return false;
+        }
+        return super.canTakeStack(player);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public Pair<ResourceLocation, ResourceLocation> func_225517_c_() {
+    public Pair<ResourceLocation, ResourceLocation> getBackground() {
         return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[slotType.getIndex()]);
     }
 }
