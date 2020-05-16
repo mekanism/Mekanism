@@ -32,14 +32,9 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
 
     protected CapabilityHandlerManager(@Nullable HOLDER holder, SIDED_HANDLER baseHandler, Capability<HANDLER> supportedCapability,
           ProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator, BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter) {
-        this(holder, true, baseHandler, supportedCapability, proxyCreator, containerGetter);
-    }
-
-    protected CapabilityHandlerManager(@Nullable HOLDER holder, boolean canHandle, SIDED_HANDLER baseHandler, Capability<HANDLER> supportedCapability,
-          ProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator, BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter) {
         this.supportedCapability = Collections.singletonList(supportedCapability);
         this.holder = holder;
-        this.canHandle = canHandle && this.holder != null;
+        this.canHandle = this.holder != null;
         this.baseHandler = baseHandler;
         this.proxyCreator = proxyCreator;
         this.containerGetter = containerGetter;

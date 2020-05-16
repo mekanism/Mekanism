@@ -14,7 +14,7 @@ import net.minecraftforge.items.IItemHandler;
  */
 public class ItemHandlerManager extends CapabilityHandlerManager<IInventorySlotHolder, IInventorySlot, IItemHandler, ISidedItemHandler> {
 
-    public ItemHandlerManager(@Nullable IInventorySlotHolder holder, boolean canHandle, @Nonnull ISidedItemHandler baseHandler) {
-        super(holder, canHandle, baseHandler, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, ProxyItemHandler::new, IInventorySlotHolder::getInventorySlots);
+    public ItemHandlerManager(@Nullable IInventorySlotHolder holder, @Nonnull ISidedItemHandler baseHandler) {
+        super(holder, baseHandler, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, ProxyItemHandler::new, IInventorySlotHolder::getInventorySlots);
     }
 }

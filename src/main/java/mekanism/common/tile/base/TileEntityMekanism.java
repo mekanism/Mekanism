@@ -228,7 +228,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(), this));
         capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(), this));
         capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(), this));
-        capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(getInitialInventory(), hasInventory, this));
+        capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(getInitialInventory(), this));
         for (ICapabilityHandlerManager<?> capabilityHandlerManager : capabilityHandlerManagers) {
             //Add all managers that we support in our tile, as capability resolvers
             if (capabilityHandlerManager.canHandle()) {
@@ -257,6 +257,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         supportsRedstone = Attribute.has(block, AttributeRedstone.class);
         hasSound = Attribute.has(block, AttributeSound.class);
         hasGui = Attribute.has(block, AttributeGui.class);
+        //TODO - V10: Evaluate removing the hasInventory thing as we base it on if there is a holder or not
         hasInventory = Attribute.has(block, AttributeInventory.class);
         hasSecurity = Attribute.has(block, AttributeSecurity.class);
         isActivatable = hasSound || Attribute.has(block, AttributeStateActive.class);
