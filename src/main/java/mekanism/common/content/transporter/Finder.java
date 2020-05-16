@@ -6,6 +6,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class Finder {
 
@@ -58,14 +59,24 @@ public abstract class Finder {
     public static class ItemStackFinder extends Finder {
 
         public ItemStack itemType;
+        private boolean strict;
 
-        public ItemStackFinder(ItemStack type) {
-            itemType = type;
+        public ItemStackFinder(ItemStack itemType, boolean strict) {
+            this.itemType = itemType;
+            this.strict = strict;
+        }
+
+        public static ItemStackFinder strict(ItemStack itemType) {
+            return new ItemStackFinder(itemType, true);
+        }
+
+        public static ItemStackFinder lenient(ItemStack itemType) {
+            return new ItemStackFinder(itemType, false);
         }
 
         @Override
         public boolean modifies(ItemStack stack) {
-            return itemType.getItem() == stack.getItem();
+            return strict ? ItemHandlerHelper.canItemStacksStack(itemType, stack) : ItemStack.areItemsEqual(itemType, stack);
         }
     }
 

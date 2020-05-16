@@ -5,18 +5,12 @@ import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
 import mekanism.common.network.BasePacketHandler;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
 public class TModIDFilter extends TransporterFilter<TModIDFilter> implements IModIDFilter<TModIDFilter> {
 
     private String modID;
-
-    @Override
-    public boolean canFilter(ItemStack itemStack, boolean strict) {
-        return super.canFilter(itemStack, strict) && new ModIDFinder(modID).modifies(itemStack);
-    }
 
     @Override
     public Finder getFinder() {

@@ -6,7 +6,6 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.transporter.Finder.MaterialFinder;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -17,11 +16,6 @@ public class TMaterialFilter extends TransporterFilter<TMaterialFilter> implemen
 
     public Material getMaterial() {
         return Block.getBlockFromItem(materialItem.getItem()).getDefaultState().getMaterial();
-    }
-
-    @Override
-    public boolean canFilter(ItemStack itemStack, boolean strict) {
-        return super.canFilter(itemStack, strict) && (itemStack.getItem() instanceof BlockItem) && new MaterialFinder(getMaterial()).modifies(itemStack);
     }
 
     @Override

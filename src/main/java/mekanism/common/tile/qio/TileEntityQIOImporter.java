@@ -96,7 +96,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             return true;
         for (QIOFilter<?> filter : getFilters()) {
             if (filter instanceof QIOItemStackFilter) {
-                if (new ItemStackFinder(((QIOItemStackFilter) filter).getItemStack()).modifies(stack)) {
+                if (ItemStackFinder.lenient(((QIOItemStackFilter) filter).getItemStack()).modifies(stack)) {
                     return true;
                 }
             } else if (filter instanceof QIOTagFilter) {

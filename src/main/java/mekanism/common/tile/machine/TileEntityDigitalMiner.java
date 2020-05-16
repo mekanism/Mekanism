@@ -40,7 +40,7 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
-import mekanism.common.content.transporter.InvStack;
+import mekanism.common.content.transporter.Finder.ItemStackFinder;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.integration.energy.EnergyCompatUtils;
@@ -462,9 +462,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             }
         }
         if (doPull && getPullInv() != null) {
-            InvStack stack = InventoryUtils.takeDefinedItem(getPullInv(), Direction.UP, filter.replaceStack.copy(), 1, 1);
-            if (stack != null && !stack.getStack().isEmpty()) {
-                stack.useAll();
+            TransitRequest request = TransitRequest.buildInventoryMap(getPullInv(), Direction.UP, 1, ItemStackFinder.strict(filter.replaceStack));
+            if (!request.isEmpty()) {
+                request.createSimpleResponse().use(getPullInv(), Direction.UP);
                 return StackUtils.size(filter.replaceStack, 1);
             }
         }

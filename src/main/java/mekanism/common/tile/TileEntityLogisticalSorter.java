@@ -18,7 +18,6 @@ import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.Finder;
-import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -88,27 +87,23 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 int min = 0;
 
                 for (TransporterFilter<?> filter : filters) {
-                    InvStack invStack = filter.getStackFromInventory(back, getOppositeDirection(), singleItem);
-                    if (invStack == null || invStack.getStack().isEmpty()) {
+                    TransitRequest request = filter.mapInventory(back, getOppositeDirection(), singleItem);
+                    if (request.isEmpty()) {
                         continue;
                     }
-                    ItemStack itemStack = invStack.getStack();
-                    if (filter.canFilter(itemStack, !singleItem)) {
-                        if (!singleItem && filter instanceof TItemStackFilter) {
-                            TItemStackFilter itemFilter = (TItemStackFilter) filter;
-                            if (itemFilter.sizeMode) {
-                                min = itemFilter.min;
-                            }
+                    if (!singleItem && filter instanceof TItemStackFilter) {
+                        TItemStackFilter itemFilter = (TItemStackFilter) filter;
+                        if (itemFilter.sizeMode) {
+                            min = itemFilter.min;
                         }
-                        TransitRequest request = TransitRequest.getFromStack(itemStack);
-                        TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
-                        if (!response.isEmpty()) {
-                            invStack.use(response);
-                            MekanismUtils.saveChunk(back);
-                            setActive(true);
-                            sentItems = true;
-                            break;
-                        }
+                    }
+                    TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
+                    if (!response.isEmpty()) {
+                        response.use(back, getOppositeDirection());
+                        MekanismUtils.saveChunk(back);
+                        setActive(true);
+                        sentItems = true;
+                        break;
                     }
                 }
 
@@ -330,7 +325,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
         @Override
         public boolean modifies(ItemStack stack) {
-            return filters.stream().noneMatch(filter -> filter.canFilter(stack, false) && !filter.allowDefault);
+            return filters.stream().noneMatch(filter -> filter.getFinder().modifies(stack) && !filter.allowDefault);
         }
     }
 }

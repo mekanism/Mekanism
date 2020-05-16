@@ -5,18 +5,12 @@ import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.transporter.Finder.TagFinder;
 import mekanism.common.network.BasePacketHandler;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
 public class TTagFilter extends TransporterFilter<TTagFilter> implements ITagFilter<TTagFilter> {
 
     private String tagName;
-
-    @Override
-    public boolean canFilter(ItemStack itemStack, boolean strict) {
-        return super.canFilter(itemStack, strict) && getFinder().modifies(itemStack);
-    }
 
     @Override
     public Finder getFinder() {

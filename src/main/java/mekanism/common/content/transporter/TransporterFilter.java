@@ -5,10 +5,8 @@ import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.BaseFilter;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -24,14 +22,10 @@ public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>
 
     public boolean allowDefault;
 
-    public boolean canFilter(ItemStack itemStack, boolean strict) {
-        return !itemStack.isEmpty();
-    }
-
     public abstract Finder getFinder();
 
-    public InvStack getStackFromInventory(TileEntity tile, Direction side, boolean singleItem) {
-        return InventoryUtils.takeTopStack(tile, side, getFinder(), singleItem ? 1 : 64);
+    public TransitRequest mapInventory(TileEntity tile, Direction side, boolean singleItem) {
+        return TransitRequest.buildInventoryMap(tile, side, singleItem ? 1 : 64, getFinder());
     }
 
     @Override

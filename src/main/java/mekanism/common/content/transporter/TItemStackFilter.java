@@ -5,13 +5,11 @@ import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.transporter.Finder.ItemStackFinder;
-import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implements IItemStackFilter<TItemStackFilter> {
 
@@ -24,22 +22,16 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
     private ItemStack itemType = ItemStack.EMPTY;
 
     @Override
-    public boolean canFilter(ItemStack itemStack, boolean strict) {
-        return super.canFilter(itemStack, strict) && !(strict && sizeMode && (max == 0 || itemStack.getCount() < min))
-               && (fuzzyMode ? ItemStack.areItemsEqual(itemType, itemStack) : ItemHandlerHelper.canItemStacksStack(itemType, itemStack));
-    }
-
-    @Override
-    public InvStack getStackFromInventory(TileEntity tile, Direction side, boolean singleItem) {
+    public TransitRequest mapInventory(TileEntity tile, Direction side, boolean singleItem) {
         if (sizeMode && !singleItem) {
-            return InventoryUtils.takeDefinedItem(tile, side, itemType, min, max);
+            return TransitRequest.buildInventoryMap(tile, side, min, max, getFinder());
         }
-        return super.getStackFromInventory(tile, side, singleItem);
+        return super.mapInventory(tile, side, singleItem);
     }
 
     @Override
     public Finder getFinder() {
-        return new ItemStackFinder(itemType);
+        return new ItemStackFinder(itemType, !fuzzyMode);
     }
 
     @Override

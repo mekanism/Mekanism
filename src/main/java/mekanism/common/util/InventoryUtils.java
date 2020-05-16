@@ -7,9 +7,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.HashedItem;
-import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.SlotData;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -69,53 +67,6 @@ public final class InventoryUtils {
             return true;
         }
         return ItemHandlerHelper.canItemStacksStack(inSlot, toInsert);
-    }
-
-    public static InvStack takeTopStack(TileEntity tile, Direction side, Finder id, int amount) {
-        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
-        if (capability.isPresent()) {
-            IItemHandler inventory = capability.get();
-            InvStack ret = new InvStack(tile, side.getOpposite());
-            for (int slot = inventory.getSlots() - 1; slot >= 0; slot--) {
-                ItemStack stack = inventory.extractItem(slot, amount, true);
-                if (!stack.isEmpty() && id.modifies(stack) && (ret.getStack().isEmpty() || ItemHandlerHelper.canItemStacksStack(stack, ret.getStack()))) {
-                    ret.appendStack(slot, StackUtils.size(stack, Math.min(stack.getCount(), amount - ret.getCount())));
-                    if (ret.getCount() == amount) {
-                        return ret;
-                    }
-                }
-            }
-            return ret;
-        }
-        return null;
-    }
-
-    public static InvStack takeDefinedItem(TileEntity tile, Direction side, ItemStack type, int min, int max) {
-        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
-        if (capability.isPresent()) {
-            InvStack ret = new InvStack(tile, side.getOpposite());
-            IItemHandler inventory = capability.get();
-            for (int i = inventory.getSlots() - 1; i >= 0; i--) {
-                ItemStack stack = inventory.extractItem(i, max, true);
-                if (!stack.isEmpty() && ItemHandlerHelper.canItemStacksStack(stack, type)) {
-                    int current = ret.getStack().getCount();
-                    if (current + stack.getCount() <= max) {
-                        ret.appendStack(i, stack.copy());
-                    } else {
-                        ItemStack copy = stack.copy();
-                        copy.setCount(max - current);
-                        ret.appendStack(i, copy);
-                    }
-                    if (!ret.getStack().isEmpty() && ret.getStack().getCount() == max) {
-                        return ret;
-                    }
-                }
-            }
-            if (!ret.getStack().isEmpty() && ret.getStack().getCount() >= min) {
-                return ret;
-            }
-        }
-        return null;
     }
 
     public static boolean canInsert(TileEntity tile, EnumColor color, ItemStack itemStack, Direction side, boolean force) {

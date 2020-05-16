@@ -1,11 +1,10 @@
 package mekanism.common.content.transporter;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.util.InventoryUtils;
@@ -38,16 +37,18 @@ public class TransitRequest {
         return buildInventoryMap(tile, side, amount, new FirstFinder());
     }
 
+    public static TransitRequest buildInventoryMap(TileEntity tile, Direction side, int amount, Finder finder) {
+        return buildInventoryMap(tile, side, 1, amount, finder);
+    }
+
     /**
      * Creates a TransitRequest based on a full inspection of an entire specified inventory from a given side. The algorithm will use the specified Finder to ensure the
      * resulting map will only capture desired items. The amount of each item type present in the resulting item type will cap at the given 'amount' parameter.
      *
      * @param side - the side from an adjacent connected inventory, *not* the inventory itself.
      */
-    public static TransitRequest buildInventoryMap(TileEntity tile, Direction side, int amount, Finder finder) {
+    public static TransitRequest buildInventoryMap(TileEntity tile, Direction side, int min, int max, Finder finder) {
         TransitRequest ret = new TransitRequest();
-        // so we can keep track of how many of each item type we have in this inventory mapping
-        Object2IntMap<HashedItem> itemCountMap = new Object2IntOpenHashMap<>();
         IItemHandler inventory = InventoryUtils.assertItemHandler("TransitRequest", tile, side.getOpposite());
         if (inventory == null) {
             return ret;
@@ -55,22 +56,22 @@ public class TransitRequest {
 
         // count backwards- we start from the bottom of the inventory and go back for consistency
         for (int i = inventory.getSlots() - 1; i >= 0; i--) {
-            ItemStack stack = inventory.extractItem(i, amount, true);
+            ItemStack stack = inventory.extractItem(i, max, true);
 
             if (!stack.isEmpty() && finder.modifies(stack)) {
                 HashedItem hashed = new HashedItem(stack);
-                int currentCount = itemCountMap.getOrDefault(hashed, -1);
-                int toUse = currentCount != -1 ? Math.min(stack.getCount(), amount - currentCount) : stack.getCount();
+                int toUse = Math.min(stack.getCount(), max - ret.getCount(hashed));
                 if (toUse == 0) {
                     continue; // continue if we don't need anymore of this item type
                 }
                 ret.addItem(StackUtils.size(stack, toUse), i);
-
-                if (currentCount != -1) {
-                    itemCountMap.put(hashed, currentCount + toUse);
-                } else {
-                    itemCountMap.put(hashed, toUse);
-                }
+            }
+        }
+        // remove items that we don't have enough of
+        for (Iterator<Map.Entry<HashedItem, SlotData>> iter = ret.getItemMap().entrySet().iterator(); iter.hasNext();) {
+            Map.Entry<HashedItem, SlotData> entry = iter.next();
+            if (entry.getValue().getTotalCount() < min) {
+                iter.remove();
             }
         }
 
@@ -98,8 +99,18 @@ public class TransitRequest {
         return itemMap.keySet().stream().anyMatch(item -> InventoryUtils.areItemsStackable(stack, item.getStack()));
     }
 
+    public int getCount(HashedItem type) {
+        SlotData data = itemMap.get(type);
+        return data != null ? data.getTotalCount() : 0;
+    }
+
     public TransitResponse createResponse(ItemStack toSend, SlotData slotData) {
         return new TransitResponse(toSend, slotData);
+    }
+
+    public TransitResponse createSimpleResponse() {
+        SlotData data = itemMap.values().stream().findFirst().orElse(null);
+        return data != null ? createResponse(data.itemType.createStack(data.totalCount), data) : null;
     }
 
     public TransitResponse getEmptyResponse() {
