@@ -59,7 +59,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      */
     public byte status = 0;
 
-    private TileComponentChunkLoader<TileEntityTeleporter> chunkLoaderComponent;
+    private final TileComponentChunkLoader<TileEntityTeleporter> chunkLoaderComponent;
 
     private MachineEnergyContainer<TileEntityTeleporter> energyContainer;
     private EnergyInventorySlot energySlot;

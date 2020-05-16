@@ -7,7 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public class FlamethrowerSound extends PlayerSound {
 
-    private boolean active;
+    private final boolean active;
 
     private FlamethrowerSound(@Nonnull PlayerEntity player, boolean active) {
         super(player, (active ? MekanismSounds.FLAMETHROWER_ACTIVE : MekanismSounds.FLAMETHROWER_IDLE).getSoundEvent());

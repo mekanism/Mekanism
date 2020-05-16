@@ -29,7 +29,7 @@ import net.minecraft.world.GameRules;
 
 public class CommandMek {
 
-    private static Map<UUID, Stack<BlockPos>> tpStack = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, Stack<BlockPos>> tpStack = new Object2ObjectOpenHashMap<>();
 
     public static LiteralArgumentBuilder<CommandSource> register() {
         return Commands.literal("mek")

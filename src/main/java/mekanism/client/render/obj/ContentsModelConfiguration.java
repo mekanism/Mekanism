@@ -52,6 +52,7 @@ public class ContentsModelConfiguration implements IModelConfiguration {
 
     @Nonnull
     @Override
+    @Deprecated
     public ItemCameraTransforms getCameraTransforms() {
         return ItemCameraTransforms.DEFAULT;
     }

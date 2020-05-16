@@ -8,14 +8,14 @@ public enum OreType {
     FLUORITE(MiscResource.FLUORITE, 6, 12, 0, 0, 32),
     LEAD(PrimaryResource.LEAD, 8, 8, 0, 0, 48);
 
-    private IResource resource;
-    private int perChunk;
-    private int maxVeinSize;
-    private int bottomOffset;
-    private int topOffset;
-    private int maxHeight;
+    private final IResource resource;
+    private final int perChunk;
+    private final int maxVeinSize;
+    private final int bottomOffset;
+    private final int topOffset;
+    private final int maxHeight;
 
-    private OreType(IResource resource, int perChunk, int maxVeinSize, int bottomOffset, int topOffset, int maxHeight) {
+    OreType(IResource resource, int perChunk, int maxVeinSize, int bottomOffset, int topOffset, int maxHeight) {
         this.resource = resource;
         this.perChunk = perChunk;
         this.maxVeinSize = maxVeinSize;

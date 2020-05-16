@@ -2,7 +2,7 @@ package mekanism.generators.common.base;
 
 public interface IReactorLogic<TYPE extends IReactorLogicMode> {
 
-    public TYPE getMode();
+    TYPE getMode();
 
-    public TYPE[] getModes();
+    TYPE[] getModes();
 }

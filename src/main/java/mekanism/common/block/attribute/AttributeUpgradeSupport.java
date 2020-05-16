@@ -6,7 +6,7 @@ import mekanism.api.Upgrade;
 
 public class AttributeUpgradeSupport implements Attribute {
 
-    private Set<Upgrade> supportedUpgrades;
+    private final Set<Upgrade> supportedUpgrades;
 
     public AttributeUpgradeSupport(Set<Upgrade> supportedUpgrades) {
         this.supportedUpgrades = supportedUpgrades;

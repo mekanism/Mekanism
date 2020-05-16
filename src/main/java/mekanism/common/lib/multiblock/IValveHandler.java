@@ -54,7 +54,7 @@ public interface IValveHandler extends IMultiblockBase {
         return getMultiblock().valves;
     }
 
-    public static class ValveData {
+    class ValveData {
 
         public Direction side;
         public BlockPos location;

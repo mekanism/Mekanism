@@ -354,9 +354,9 @@ public class ClientTickHandler {
 
     private static class TeleportData {
 
-        private Hand hand;
-        private TeleporterFrequency freq;
-        private long teleportTime;
+        private final Hand hand;
+        private final TeleporterFrequency freq;
+        private final long teleportTime;
 
         public TeleportData(Hand h, TeleporterFrequency f, long t) {
             hand = h;

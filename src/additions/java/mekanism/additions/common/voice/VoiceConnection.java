@@ -23,7 +23,7 @@ public class VoiceConnection extends Thread {
     private DataOutputStream output;
     private DataInputStream input;
     private boolean open = true;
-    private Socket socket;
+    private final Socket socket;
     private UUID uuid;
 
     public VoiceConnection(Socket s) {

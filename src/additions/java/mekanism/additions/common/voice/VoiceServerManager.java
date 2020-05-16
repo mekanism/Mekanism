@@ -10,7 +10,7 @@ import mekanism.common.Mekanism;
 
 public class VoiceServerManager {
 
-    private Set<VoiceConnection> connections = new ObjectOpenHashSet<>();
+    private final Set<VoiceConnection> connections = new ObjectOpenHashSet<>();
     private ServerSocket serverSocket;
     private Thread listenThread;
     private boolean foundLocal = false;

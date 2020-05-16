@@ -10,7 +10,7 @@ import net.minecraft.world.storage.loot.LootTable;
 
 public abstract class BaseEntityLootTables extends EntityLootTables {
 
-    private Set<EntityType<?>> knownEntityTypes = new ObjectOpenHashSet<>();
+    private final Set<EntityType<?>> knownEntityTypes = new ObjectOpenHashSet<>();
 
     @Override
     protected abstract void addTables();

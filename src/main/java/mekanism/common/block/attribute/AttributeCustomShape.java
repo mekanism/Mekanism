@@ -4,7 +4,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 
 public class AttributeCustomShape implements Attribute {
 
-    private VoxelShape[] bounds;
+    private final VoxelShape[] bounds;
 
     public AttributeCustomShape(VoxelShape[] bounds) {
         this.bounds = bounds;

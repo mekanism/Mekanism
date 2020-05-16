@@ -59,8 +59,8 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<Conta
 
     public class ContainerBuilder<TILE extends TileEntityMekanism> {
 
-        private String name;
-        private Class<TILE> tileClass;
+        private final String name;
+        private final Class<TILE> tileClass;
         private int offsetX, offsetY;
 
         private ContainerBuilder(String name, Class<TILE> tileClass) {

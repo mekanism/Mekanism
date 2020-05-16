@@ -36,12 +36,12 @@ public class PacketOpenGui {
         return new PacketOpenGui(GuiType.values()[buf.readInt()]);
     }
 
-    public static enum GuiType {
+    public enum GuiType {
         MODULE_TWEAKER(() -> new ContainerProvider(MekanismLang.MODULE_TWEAKER, (i, inv, p) -> new ModuleTweakerContainer(i, inv)));
 
-        private Supplier<INamedContainerProvider> containerSupplier;
+        private final Supplier<INamedContainerProvider> containerSupplier;
 
-        private GuiType(Supplier<INamedContainerProvider> containerSupplier) {
+        GuiType(Supplier<INamedContainerProvider> containerSupplier) {
             this.containerSupplier = containerSupplier;
         }
     }

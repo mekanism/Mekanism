@@ -20,7 +20,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 @MethodsReturnNonnullByDefault
 public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistryEntry<TYPE> implements IHasTextComponent, IHasTranslationKey {
 
-    private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
+    private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
 
     private final ResourceLocation iconLocation;
     private final int tint;

@@ -15,7 +15,7 @@ import net.minecraft.util.Direction;
 
 public interface Attribute {
 
-    public interface TileAttribute<TILE extends TileEntityMekanism> extends Attribute {}
+    interface TileAttribute<TILE extends TileEntityMekanism> extends Attribute {}
 
     static boolean has(Block block, Class<? extends Attribute> type) {
         return block instanceof ITypeBlock && ((ITypeBlock) block).getType().has(type);

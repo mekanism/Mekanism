@@ -9,7 +9,7 @@ import net.minecraft.particles.IParticleData;
 
 public class AttributeParticleFX implements Attribute {
 
-    private List<Function<Random, Particle>> particleFunctions = new ArrayList<>();
+    private final List<Function<Random, Particle>> particleFunctions = new ArrayList<>();
 
     public List<Function<Random, Particle>> getParticleFunctions() {
         return particleFunctions;
@@ -22,8 +22,8 @@ public class AttributeParticleFX implements Attribute {
 
     public static class Particle {
 
-        private IParticleData type;
-        private Pos3D pos;
+        private final IParticleData type;
+        private final Pos3D pos;
 
         public Particle(IParticleData type, Pos3D pos) {
             this.type = type;

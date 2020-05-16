@@ -36,7 +36,7 @@ public class BoltRenderer {
 
     private boolean repeat;
 
-    private Map<Object, BoltOwnerData> boltOwners = new Object2ObjectOpenHashMap<>();
+    private final Map<Object, BoltOwnerData> boltOwners = new Object2ObjectOpenHashMap<>();
 
     public static BoltRenderer create(BoltEffect boltEffect) {
         return create(boltEffect, 60);
@@ -114,7 +114,7 @@ public class BoltRenderer {
 
     public static class BoltOwnerData {
 
-        private Set<BoltInstance> bolts = new ObjectOpenHashSet<>();
+        private final Set<BoltInstance> bolts = new ObjectOpenHashSet<>();
         private BoltData lastBolt;
         private double lastBoltTimestamp;
         private double lastUpdateTimestamp;
@@ -122,10 +122,10 @@ public class BoltRenderer {
 
     public static class BoltData {
 
-        private Vec3d start;
-        private Vec3d end;
-        private int count;
-        private int segments;
+        private final Vec3d start;
+        private final Vec3d end;
+        private final int count;
+        private final int segments;
 
         public BoltData(Vec3d start, Vec3d end, int count, int segments) {
             this.start = start;
@@ -178,17 +178,17 @@ public class BoltRenderer {
     public interface SpawnFunction {
 
         /** Allow for bolts to be spawned each update call without any delay. */
-        public static SpawnFunction NO_DELAY = (rand) -> Pair.of(0F, 0F);
+        SpawnFunction NO_DELAY = (rand) -> Pair.of(0F, 0F);
 
         /** Spawn bolts with a specified constant delay. */
-        public static SpawnFunction delay(float delay) {
+        static SpawnFunction delay(float delay) {
             return (rand) -> Pair.of(delay, delay);
         }
 
         /**
          * Spawns bolts with a specified delay and specified noise value, which will be randomly applied at either end of the delay bounds.
          */
-        public static SpawnFunction noise(float delay, float noise) {
+        static SpawnFunction noise(float delay, float noise) {
             return (rand) -> Pair.of(delay - noise, delay + noise);
         }
 
@@ -203,10 +203,10 @@ public class BoltRenderer {
     public interface FadeFunction {
 
         /** No fade; render the bolts entirely throughout their lifespan. */
-        public static FadeFunction NONE = (totalBolts, lifeScale) -> Pair.of(0, totalBolts);
+        FadeFunction NONE = (totalBolts, lifeScale) -> Pair.of(0, totalBolts);
 
         /** Remder bolts with a segment-by-segment 'fade' in and out, with a specified fade duration (applied to start and finish). */
-        public static FadeFunction fade(float fade) {
+        static FadeFunction fade(float fade) {
             return (totalBolts, lifeScale) -> {
                 int start = lifeScale > (1 - fade) ? (int) (totalBolts * (lifeScale - (1 - fade)) / fade) : 0;
                 int end = lifeScale < fade ? (int) (totalBolts * (lifeScale / fade)) : totalBolts;

@@ -13,8 +13,8 @@ import net.minecraft.util.ResourceLocation;
 @MethodsReturnNonnullByDefault
 public class ChemicalBuilder<TYPE extends Chemical<TYPE>, BUILDER extends ChemicalBuilder<TYPE, BUILDER>> {
 
-    private Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
-    private ResourceLocation texture;
+    private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
+    private final ResourceLocation texture;
     private int color = 0xFFFFFF;
 
     protected ChemicalBuilder(ResourceLocation texture) {

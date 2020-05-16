@@ -8,7 +8,7 @@ import net.minecraft.network.PacketBuffer;
 
 public interface IdentitySerializer {
 
-    public static final IdentitySerializer NAME = new IdentitySerializer() {
+    IdentitySerializer NAME = new IdentitySerializer() {
         @Override
         public FrequencyIdentity read(PacketBuffer buf) {
             return new FrequencyIdentity(buf.readString(), buf.readBoolean());
@@ -37,7 +37,7 @@ public interface IdentitySerializer {
         }
     };
 
-    public static final IdentitySerializer UUID = new IdentitySerializer() {
+    IdentitySerializer UUID = new IdentitySerializer() {
         @Override
         public FrequencyIdentity read(PacketBuffer buf) {
             return new FrequencyIdentity(buf.readUniqueId(), buf.readBoolean());

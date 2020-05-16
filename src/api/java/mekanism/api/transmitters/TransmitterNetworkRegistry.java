@@ -26,14 +26,14 @@ public class TransmitterNetworkRegistry {
      */
     private static final Direction[] DIRECTIONS = Direction.values();
 
-    private static TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
+    private static final TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
     private static boolean loaderRegistered = false;
-    private static Logger logger = LogManager.getLogger("MekanismTransmitters");
-    private Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
-    private Set<DynamicNetwork<?, ?, ?>> networksToChange = new ObjectOpenHashSet<>();
-    private Set<IGridTransmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
+    private static final Logger logger = LogManager.getLogger("MekanismTransmitters");
+    private final Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
+    private final Set<DynamicNetwork<?, ?, ?>> networksToChange = new ObjectOpenHashSet<>();
+    private final Set<IGridTransmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
     private Map<Coord4D, IGridTransmitter<?, ?, ?>> orphanTransmitters = new Object2ObjectOpenHashMap<>();
-    private Map<Coord4D, IGridTransmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
+    private final Map<Coord4D, IGridTransmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
 
     private Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
 

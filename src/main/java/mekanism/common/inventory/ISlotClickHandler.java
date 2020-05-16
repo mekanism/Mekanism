@@ -5,16 +5,16 @@ import net.minecraft.item.ItemStack;
 
 public interface ISlotClickHandler {
 
-    public void onClick(IScrollableSlot slot, int button, boolean hasShiftDown, ItemStack heldItem);
+    void onClick(IScrollableSlot slot, int button, boolean hasShiftDown, ItemStack heldItem);
 
-    public interface IScrollableSlot {
+    interface IScrollableSlot {
 
-        public HashedItem getItem();
+        HashedItem getItem();
 
-        public long getCount();
+        long getCount();
 
-        public String getDisplayName();
+        String getDisplayName();
 
-        public String getModID();
+        String getModID();
     }
 }

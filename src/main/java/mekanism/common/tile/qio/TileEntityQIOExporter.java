@@ -152,8 +152,8 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
 
         private static final int MAX_EJECT_ATTEMPTS = 100;
 
-        private Function<T, HashedItem> typeSupplier;
-        private Function<T, Integer> countSupplier;
+        private final Function<T, HashedItem> typeSupplier;
+        private final Function<T, Integer> countSupplier;
 
         private EfficientEjector(Function<T, HashedItem> typeSupplier, Function<T, Integer> countSupplier) {
             this.typeSupplier = typeSupplier;

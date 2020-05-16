@@ -10,23 +10,23 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public interface IModuleContainerItem {
 
-    public default List<Module> getModules(ItemStack stack) {
+    default List<Module> getModules(ItemStack stack) {
         return Modules.loadAll(stack);
     }
 
-    public default <MODULE extends Module> MODULE getModule(ItemStack stack, ModuleData<MODULE> type) {
+    default <MODULE extends Module> MODULE getModule(ItemStack stack, ModuleData<MODULE> type) {
         return Modules.load(stack, type);
     }
 
-    public default boolean hasModule(ItemStack stack, ModuleData<?> type) {
+    default boolean hasModule(ItemStack stack, ModuleData<?> type) {
         return ItemDataUtils.getCompound(stack, NBTConstants.MODULES).contains(type.getName());
     }
 
-    public default boolean isModuleEnabled(ItemStack stack, ModuleData<?> type) {
+    default boolean isModuleEnabled(ItemStack stack, ModuleData<?> type) {
         return hasModule(stack, type) && getModule(stack, type).isEnabled();
     }
 
-    public default void removeModule(ItemStack stack, ModuleData<?> type) {
+    default void removeModule(ItemStack stack, ModuleData<?> type) {
         if (hasModule(stack, type)) {
             Module module = getModule(stack, type);
             if (module.getInstalledCount() > 1) {
@@ -40,7 +40,7 @@ public interface IModuleContainerItem {
         }
     }
 
-    public default void addModule(ItemStack stack, ModuleData<?> type) {
+    default void addModule(ItemStack stack, ModuleData<?> type) {
         if (hasModule(stack, type)) {
             Module module = getModule(stack, type);
             module.setInstalledCount(module.getInstalledCount() + 1);

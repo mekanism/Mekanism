@@ -36,8 +36,8 @@ import net.minecraftforge.items.IItemHandler;
 
 public abstract class BaseBlockLootTables extends BlockLootTables {
 
-    private Set<Block> knownBlocks = new ObjectOpenHashSet<>();
-    private Set<Block> toSkip = new ObjectOpenHashSet<>();
+    private final Set<Block> knownBlocks = new ObjectOpenHashSet<>();
+    private final Set<Block> toSkip = new ObjectOpenHashSet<>();
 
     @Override
     protected abstract void addTables();

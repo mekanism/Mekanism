@@ -9,8 +9,8 @@ import mekanism.common.Mekanism;
 
 public class VoiceInput extends Thread {
 
-    private VoiceClient voiceClient;
-    private DataLine.Info microphone;
+    private final VoiceClient voiceClient;
+    private final DataLine.Info microphone;
     private TargetDataLine targetLine;
 
     public VoiceInput(VoiceClient client) {

@@ -17,7 +17,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ChunkCommand {
 
-    private static LongSet chunkWatchers = new LongOpenHashSet();
+    private static final LongSet chunkWatchers = new LongOpenHashSet();
 
     static ArgumentBuilder<CommandSource, ?> register() {
         MinecraftForge.EVENT_BUS.register(ChunkCommand.class);

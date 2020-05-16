@@ -9,7 +9,7 @@ import net.minecraft.block.BlockState;
 
 public class AttributeUpgradeable implements Attribute {
 
-    private Supplier<BlockRegistryObject<?, ?>> upgradeBlock;
+    private final Supplier<BlockRegistryObject<?, ?>> upgradeBlock;
 
     public AttributeUpgradeable(Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         this.upgradeBlock = upgradeBlock;

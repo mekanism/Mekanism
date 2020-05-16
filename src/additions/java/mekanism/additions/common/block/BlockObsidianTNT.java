@@ -110,6 +110,7 @@ public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
 
     @Nonnull
     @Override
+    @Deprecated
     public BlockState updatePostPlacement(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         updateFluids(state, world, currentPos);

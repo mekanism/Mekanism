@@ -13,8 +13,8 @@ import mekanism.api.heat.IMekanismHeatHandler;
 @MethodsReturnNonnullByDefault
 public class VariableHeatCapacitor extends BasicHeatCapacitor {
 
-    private DoubleSupplier conductionCoefficientSupplier;
-    private DoubleSupplier insulationCoefficientSupplier;
+    private final DoubleSupplier conductionCoefficientSupplier;
+    private final DoubleSupplier insulationCoefficientSupplier;
 
     public static VariableHeatCapacitor create(double heatCapacity, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
         return new VariableHeatCapacitor(heatCapacity, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION, heatHandler);

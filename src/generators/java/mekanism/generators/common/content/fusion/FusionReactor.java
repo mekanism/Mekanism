@@ -40,20 +40,20 @@ public class FusionReactor {
 
     private static final int MAX_INJECTION = 98;//this is the effective cap in the GUI, as text field is limited to 2 chars
     //Reaction characteristics
-    private static double burnTemperature = 100_000_000;
-    private static double burnRatio = 1;
+    private static final double burnTemperature = 100_000_000;
+    private static final double burnRatio = 1;
     //Thermal characteristics
-    private static double plasmaHeatCapacity = 100;
-    public static double caseHeatCapacity = 1;
-    public static double inverseInsulation = 100_000;
-    private static double thermocoupleEfficiency = 0.05;
+    private static final double plasmaHeatCapacity = 100;
+    public static final double caseHeatCapacity = 1;
+    public static final double inverseInsulation = 100_000;
+    private static final double thermocoupleEfficiency = 0.05;
     //Heat transfer metrics
-    private static double plasmaCaseConductivity = 0.2;
-    private static double caseWaterConductivity = 0.3;
-    private static double caseAirConductivity = 0.1;
+    private static final double plasmaCaseConductivity = 0.2;
+    private static final double caseWaterConductivity = 0.3;
+    private static final double caseAirConductivity = 0.1;
     public TileEntityFusionReactorController controller;
-    private Set<TileEntityFusionReactorBlock> reactorBlocks = new ObjectOpenHashSet<>();
-    private Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
+    private final Set<TileEntityFusionReactorBlock> reactorBlocks = new ObjectOpenHashSet<>();
+    private final Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
     //Last values of temperature
     private double lastPlasmaTemperature = HeatAPI.AMBIENT_TEMP;
     private double lastCaseTemperature = HeatAPI.AMBIENT_TEMP;

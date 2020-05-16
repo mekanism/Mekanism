@@ -129,7 +129,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     public boolean clientRendering = false;
 
-    private TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
+    private final TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
 
     private MinerEnergyContainer energyContainer;
     private List<IInventorySlot> mainSlots;

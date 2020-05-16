@@ -53,7 +53,7 @@ public class TransmitterBakedModel implements IBakedModel {
     private final ResourceLocation modelLocation;
     private final IBakedModel bakedVariant;
 
-    private Int2ObjectMap<List<BakedQuad>> modelCache;
+    private final Int2ObjectMap<List<BakedQuad>> modelCache;
 
     public TransmitterBakedModel(OBJModel internal, @Nullable OBJModel glass, IModelConfiguration owner, ModelBakery bakery,
           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {

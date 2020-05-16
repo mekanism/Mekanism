@@ -12,7 +12,7 @@ import mekanism.common.Mekanism;
 
 public class VoiceClient extends Thread {
 
-    private AudioFormat format = new AudioFormat(16000F, 16, 1, true, true);
+    private final AudioFormat format = new AudioFormat(16000F, 16, 1, true, true);
     private VoiceOutput outputThread;
     private VoiceInput inputThread;
     private DataOutputStream output;

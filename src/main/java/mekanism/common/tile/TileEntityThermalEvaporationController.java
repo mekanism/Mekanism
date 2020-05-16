@@ -65,8 +65,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public BasicHeatCapacitor heatCapacitor;
 
-    private Set<BlockPos> tankParts = new ObjectOpenHashSet<>();
-    private Set<BlockPos> valves = new ObjectOpenHashSet<>();
+    private final Set<BlockPos> tankParts = new ObjectOpenHashSet<>();
+    private final Set<BlockPos> valves = new ObjectOpenHashSet<>();
     private IEvaporationSolar[] solars = new IEvaporationSolar[4];
 
     private boolean temperatureSet;

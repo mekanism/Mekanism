@@ -12,7 +12,7 @@ public interface IFluidContainerManager extends IHasMode {
 
     ContainerEditMode getContainerEditMode();
 
-    public enum ContainerEditMode implements IIncrementalEnum<ContainerEditMode>, IHasTextComponent {
+    enum ContainerEditMode implements IIncrementalEnum<ContainerEditMode>, IHasTextComponent {
         BOTH(MekanismLang.FLUID_CONTAINER_BOTH),
         FILL(MekanismLang.FLUID_CONTAINER_FILL),
         EMPTY(MekanismLang.FLUID_CONTAINER_EMPTY);

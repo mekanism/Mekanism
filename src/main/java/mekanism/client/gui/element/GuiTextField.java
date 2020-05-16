@@ -270,20 +270,20 @@ public class GuiTextField extends GuiTexturedElement {
 
     public interface InputValidator {
 
-        public static final InputValidator ALL = (c) -> true;
-        public static final InputValidator DIGIT = Character::isDigit;
-        public static final InputValidator LETTER = Character::isLetter;
-        public static final InputValidator DECIMAL = or(DIGIT, from('.'));
-        public static final InputValidator SCI_NOTATION = or(DECIMAL, from('E'));
+        InputValidator ALL = (c) -> true;
+        InputValidator DIGIT = Character::isDigit;
+        InputValidator LETTER = Character::isLetter;
+        InputValidator DECIMAL = or(DIGIT, from('.'));
+        InputValidator SCI_NOTATION = or(DECIMAL, from('E'));
 
-        public static final InputValidator FILTER_CHARS = from('*', '-', ' ', '|', '_', '\'', ':', '/');
-        public static final InputValidator FREQUENCY_CHARS = from('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')', '?', '!', '/', '@', '$', '`', '~', ',', '.', '#');
+        InputValidator FILTER_CHARS = from('*', '-', ' ', '|', '_', '\'', ':', '/');
+        InputValidator FREQUENCY_CHARS = from('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')', '?', '!', '/', '@', '$', '`', '~', ',', '.', '#');
 
-        public static InputValidator from(char... chars) {
+        static InputValidator from(char... chars) {
             return new SetInputValidator(chars);
         }
 
-        public static InputValidator or(InputValidator... validators) {
+        static InputValidator or(InputValidator... validators) {
             return (c) -> Arrays.stream(validators).anyMatch(v -> v.isValid(c));
         }
 
@@ -326,9 +326,9 @@ public class GuiTextField extends GuiTexturedElement {
         NONE(field -> {
         });
 
-        private Consumer<GuiTextField> renderFunction;
+        private final Consumer<GuiTextField> renderFunction;
 
-        private BackgroundType(Consumer<GuiTextField> renderFunction) {
+        BackgroundType(Consumer<GuiTextField> renderFunction) {
             this.renderFunction = renderFunction;
         }
 
@@ -347,9 +347,9 @@ public class GuiTextField extends GuiTexturedElement {
             return ret;
         });
 
-        private BiFunction<GuiTextField, Runnable, MekanismImageButton> buttonCreator;
+        private final BiFunction<GuiTextField, Runnable, MekanismImageButton> buttonCreator;
 
-        private ButtonType(BiFunction<GuiTextField, Runnable, MekanismImageButton> buttonCreator) {
+        ButtonType(BiFunction<GuiTextField, Runnable, MekanismImageButton> buttonCreator) {
             this.buttonCreator = buttonCreator;
         }
 
@@ -361,10 +361,10 @@ public class GuiTextField extends GuiTexturedElement {
     public enum IconType {
         DIGITAL(MekanismUtils.getResource(ResourceType.GUI, "digital_text_input.png"), 4, 7);
 
-        private ResourceLocation icon;
-        private int xSize, ySize;
+        private final ResourceLocation icon;
+        private final int xSize, ySize;
 
-        private IconType(ResourceLocation icon, int xSize, int ySize) {
+        IconType(ResourceLocation icon, int xSize, int ySize) {
             this.icon = icon;
             this.xSize = xSize;
             this.ySize = ySize;

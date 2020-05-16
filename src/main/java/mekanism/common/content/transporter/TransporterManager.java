@@ -29,7 +29,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public class TransporterManager {
 
-    private static Map<Coord4D, Set<TransporterStack>> flowingStacks = new Object2ObjectOpenHashMap<>();
+    private static final Map<Coord4D, Set<TransporterStack>> flowingStacks = new Object2ObjectOpenHashMap<>();
 
     public static void reset() {
         flowingStacks.clear();
@@ -224,8 +224,8 @@ public class TransporterManager {
 
     private static class InventoryInfo {
 
-        private NonNullList<ItemStack> inventory;
-        private IntList stackSizes = new IntArrayList();
+        private final NonNullList<ItemStack> inventory;
+        private final IntList stackSizes = new IntArrayList();
 
         public InventoryInfo(IItemHandler handler) {
             inventory = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);

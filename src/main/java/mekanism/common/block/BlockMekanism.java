@@ -129,6 +129,7 @@ public abstract class BlockMekanism extends Block {
 
     @Nonnull
     @Override
+    @Deprecated
     public BlockState updatePostPlacement(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
           @Nonnull BlockPos facingPos) {
         if (state.getBlock() instanceof IStateFluidLoggable) {
@@ -227,6 +228,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
+    @Deprecated
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         if (state.hasTileEntity() && state.getBlock() != newState.getBlock()) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);

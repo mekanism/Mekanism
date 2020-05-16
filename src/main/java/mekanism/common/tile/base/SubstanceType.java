@@ -15,10 +15,10 @@ public enum SubstanceType {
     INFUSION(NBTConstants.INFUSION_TANKS, (tile) -> tile.getInfusionTanks(null)),
     HEAT(NBTConstants.HEAT_CAPACITORS, (tile) -> tile.getHeatCapacitors(null));
 
-    private String containerTag;
-    private Function<TileEntityMekanism, List<? extends INBTSerializable<CompoundNBT>>> containerSupplier;
+    private final String containerTag;
+    private final Function<TileEntityMekanism, List<? extends INBTSerializable<CompoundNBT>>> containerSupplier;
 
-    private SubstanceType(String containerTag, Function<TileEntityMekanism, List<? extends INBTSerializable<CompoundNBT>>> containerSupplier) {
+    SubstanceType(String containerTag, Function<TileEntityMekanism, List<? extends INBTSerializable<CompoundNBT>>> containerSupplier) {
         this.containerTag = containerTag;
         this.containerSupplier = containerSupplier;
     }

@@ -34,8 +34,7 @@ public class RadiationSource {
     }
 
     public static RadiationSource load(CompoundNBT tag) {
-        RadiationSource source = new RadiationSource(Coord4D.read(tag), tag.getDouble(NBTConstants.RADIATION));
-        return source;
+        return new RadiationSource(Coord4D.read(tag), tag.getDouble(NBTConstants.RADIATION));
     }
 
     public void write(CompoundNBT tag) {

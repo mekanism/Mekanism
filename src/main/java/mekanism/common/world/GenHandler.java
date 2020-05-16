@@ -32,8 +32,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class GenHandler {
 
-    private static Map<OreType, ConfiguredFeature<?, ?>> ORES = new Object2ObjectOpenHashMap<>();
-    private static Map<OreType, ConfiguredFeature<?, ?>> ORE_RETROGENS = new Object2ObjectOpenHashMap<>();
+    private static final Map<OreType, ConfiguredFeature<?, ?>> ORES = new Object2ObjectOpenHashMap<>();
+    private static final Map<OreType, ConfiguredFeature<?, ?>> ORE_RETROGENS = new Object2ObjectOpenHashMap<>();
 
     private static ConfiguredFeature<?, ?> SALT_FEATURE;
     private static ConfiguredFeature<?, ?> SALT_RETROGEN_FEATURE;

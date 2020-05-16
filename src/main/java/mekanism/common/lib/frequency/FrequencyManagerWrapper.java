@@ -12,8 +12,8 @@ import net.minecraft.tileentity.TileEntity;
 
 public class FrequencyManagerWrapper<FREQ extends Frequency> {
 
-    private Type type;
-    private FrequencyType<FREQ> frequencyType;
+    private final Type type;
+    private final FrequencyType<FREQ> frequencyType;
     private FrequencyManager<FREQ> publicManager;
     private Map<UUID, FrequencyManager<FREQ>> privateManagers;
 
@@ -77,7 +77,7 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
         }
     }
 
-    public static enum Type {
+    public enum Type {
         PUBLIC_ONLY,
         PRIVATE_ONLY,
         PUBLIC_PRIVATE;

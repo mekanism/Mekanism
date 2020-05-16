@@ -87,13 +87,14 @@ public class ItemLayerWrapper implements IBakedModel {
 
     @Nonnull
     @Override
+    @Deprecated
     public TextureAtlasSprite getParticleTexture() {
         return internal.getParticleTexture();
     }
 
     @Nonnull
-    @Deprecated
     @Override
+    @Deprecated
     public ItemCameraTransforms getItemCameraTransforms() {
         return internal.getItemCameraTransforms();
     }

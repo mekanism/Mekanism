@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
@@ -126,26 +127,31 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     public void onContentsChanged() {
     }
 
+    @Nonnull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return inventorySlots;
     }
 
+    @Nonnull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
     }
 
+    @Nonnull
     @Override
     public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 
+    @Nonnull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return energyContainers;
     }
 
+    @Nonnull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
         return heatCapacitors;
@@ -168,11 +174,11 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         HEAT(NBTConstants.HEAT_CAPACITORS, (cache) -> cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, cache)),
               (holder) -> ((IMekanismHeatHandler) holder).getHeatCapacitors(null));
 
-        private String tagKey;
-        private Consumer<MultiblockCache<?>> defaultPrefab;
-        private Function<Object, List<? extends INBTSerializable<CompoundNBT>>> containerList;
+        private final String tagKey;
+        private final Consumer<MultiblockCache<?>> defaultPrefab;
+        private final Function<Object, List<? extends INBTSerializable<CompoundNBT>>> containerList;
 
-        private CacheSubstance(String tagKey, Consumer<MultiblockCache<?>> defaultPrefab, Function<Object, List<? extends INBTSerializable<CompoundNBT>>> containerList) {
+        CacheSubstance(String tagKey, Consumer<MultiblockCache<?>> defaultPrefab, Function<Object, List<? extends INBTSerializable<CompoundNBT>>> containerList) {
             this.tagKey = tagKey;
             this.defaultPrefab = defaultPrefab;
             this.containerList = containerList;

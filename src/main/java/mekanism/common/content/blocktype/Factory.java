@@ -20,7 +20,7 @@ import mekanism.common.util.EnumUtils;
 
 public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<TILE> {
 
-    private FactoryMachine<?> origMachine;
+    private final FactoryMachine<?> origMachine;
 
     public Factory(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<? extends MekanismContainer>> containerRegistrar, FactoryMachine<?> origMachine, FactoryTier tier) {
         super(tileEntityRegistrar, MekanismLang.DESCRIPTION_FACTORY, origMachine.get(AttributeFactoryType.class).getFactoryType());

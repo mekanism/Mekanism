@@ -99,6 +99,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
+    @Deprecated
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         //Remove the main block if a bounding block gets broken by being directly replaced
         // Note: We only do this if we don't go from bounding block to bounding block

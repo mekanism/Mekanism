@@ -217,8 +217,8 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         public static final FormationResult SUCCESS = new FormationResult(true, null);
         public static final FormationResult FAIL = new FormationResult(false, null);
 
-        private ITextComponent resultText;
-        private boolean formed;
+        private final ITextComponent resultText;
+        private final boolean formed;
 
         private FormationResult(boolean formed, ITextComponent resultText) {
             this.formed = formed;
@@ -252,9 +252,9 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
 
     private class StructureResult {
 
-        private FormationResult result;
-        private T structureFound;
-        private Set<UUID> idsFound;
+        private final FormationResult result;
+        private final T structureFound;
+        private final Set<UUID> idsFound;
 
         private StructureResult(FormationResult result, T structureFound, Set<UUID> idsFound) {
             this.result = result;

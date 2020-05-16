@@ -6,9 +6,9 @@ import net.minecraft.util.text.ITextComponent;
 
 public interface IReactorLogicMode {
 
-    public ITextComponent getDescription();
+    ITextComponent getDescription();
 
-    public ItemStack getRenderStack();
+    ItemStack getRenderStack();
 
-    public EnumColor getColor();
+    EnumColor getColor();
 }

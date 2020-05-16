@@ -60,12 +60,12 @@ public interface IMultiblockBase extends ITileNeighborCache {
         return true;
     }
 
-    public enum UpdateType {
+    enum UpdateType {
         NORMAL,
         INITIAL,
         FORCE;
 
-        boolean force() {
+        public boolean force() {
             return this == FORCE;
         }
     }

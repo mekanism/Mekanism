@@ -15,14 +15,14 @@ public enum PrimaryResource implements IResource {
     LEAD("lead", 0xFF3A404A, () -> MekanismTags.Items.ORES.get(OreType.LEAD), false, BlockResourceInfo.LEAD, false),
     URANIUM("uranium", 0xFF46664F, () -> MekanismTags.Items.ORES.get(OreType.URANIUM), false, BlockResourceInfo.URANIUM, false);
 
-    private String name;
-    private int tint;
-    private Supplier<Tag<Item>> oreTag;
-    private boolean isVanilla;
-    private BlockResourceInfo resourceBlockInfo;
-    private boolean textureOverride;
+    private final String name;
+    private final int tint;
+    private final Supplier<Tag<Item>> oreTag;
+    private final boolean isVanilla;
+    private final BlockResourceInfo resourceBlockInfo;
+    private final boolean textureOverride;
 
-    private PrimaryResource(String name, int tint, Supplier<Tag<Item>> oreTag, boolean isVanilla, BlockResourceInfo resourceBlockInfo, boolean textureOverride) {
+    PrimaryResource(String name, int tint, Supplier<Tag<Item>> oreTag, boolean isVanilla, BlockResourceInfo resourceBlockInfo, boolean textureOverride) {
         this.name = name;
         this.tint = tint;
         this.oreTag = oreTag;

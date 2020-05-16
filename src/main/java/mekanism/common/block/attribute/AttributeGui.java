@@ -12,7 +12,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 
 public class AttributeGui implements Attribute {
 
-    private Supplier<ContainerTypeRegistryObject<? extends MekanismContainer>> containerRegistrar;
+    private final Supplier<ContainerTypeRegistryObject<? extends MekanismContainer>> containerRegistrar;
     private Function<TileEntityMekanism, INamedContainerProvider> containerSupplier = (tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()),
           (i, inv, player) -> new MekanismTileContainer<>(getContainerType(), i, inv, tile));
 

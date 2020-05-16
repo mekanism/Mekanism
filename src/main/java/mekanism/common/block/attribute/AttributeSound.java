@@ -7,7 +7,7 @@ import net.minecraft.util.SoundEvent;
 
 public class AttributeSound implements Attribute {
 
-    private SoundEventRegistryObject<SoundEvent> soundRegistrar;
+    private final SoundEventRegistryObject<SoundEvent> soundRegistrar;
 
     public AttributeSound(SoundEventRegistryObject<SoundEvent> soundRegistrar) {
         this.soundRegistrar = soundRegistrar;

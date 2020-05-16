@@ -33,7 +33,7 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
-    private IGuiHelper guiHelper;
+    private final IGuiHelper guiHelper;
     protected ITickTimer timer;
     protected int xOffset;
     protected int yOffset;
@@ -41,7 +41,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     protected IDrawable fluidOverlaySmall;
     protected IDrawable fluidOverlaySmallMed;
     protected Set<GuiTexturedElement> guiElements = new ObjectOpenHashSet<>();
-    private IBaseProvider provider;
+    private final IBaseProvider provider;
 
     private final IDrawable background;
 

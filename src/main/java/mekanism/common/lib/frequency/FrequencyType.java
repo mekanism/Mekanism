@@ -39,12 +39,11 @@ public class FrequencyType<FREQ extends Frequency> {
           FrequencyManagerWrapper.Type.PUBLIC_PRIVATE,
           IdentitySerializer.NAME);
 
-    private String name;
-    private BiFunction<Object, UUID, FREQ> creationFunction;
-    private Supplier<FREQ> baseCreationFunction;
-    private IdentitySerializer identitySerializer;
-
-    private FrequencyManagerWrapper<FREQ> managerWrapper;
+    private final String name;
+    private final BiFunction<Object, UUID, FREQ> creationFunction;
+    private final Supplier<FREQ> baseCreationFunction;
+    private final IdentitySerializer identitySerializer;
+    private final FrequencyManagerWrapper<FREQ> managerWrapper;
 
     private static <FREQ extends Frequency> FrequencyType<FREQ> register(String name, BiFunction<Object, UUID, FREQ> creationFunction,
           Supplier<FREQ> baseCreationFunction, FrequencyManagerWrapper.Type managerType, IdentitySerializer identitySerializer) {

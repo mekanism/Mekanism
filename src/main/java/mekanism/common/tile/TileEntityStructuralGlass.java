@@ -30,7 +30,7 @@ public class TileEntityStructuralGlass extends CapabilityTileEntity implements I
 
     private MultiblockData multiblock = new MultiblockData(this);
 
-    private Map<BlockPos, BlockState> cachedNeighbors = new HashMap<>();
+    private final Map<BlockPos, BlockState> cachedNeighbors = new HashMap<>();
 
     private long lastProtocolUpdate = -1;
 

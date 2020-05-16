@@ -36,7 +36,7 @@ public class FissionReactorMultiblockData extends MultiblockData {
     public static final double INVERSE_INSULATION_COEFFICIENT = 100_000;
     public static final double INVERSE_CONDUCTION_COEFFICIENT = 10;
 
-    private static double waterConductivity = 0.5;
+    private static final double waterConductivity = 0.5;
 
     public static final int COOLANT_PER_VOLUME = 100_000;
     public static final long HEATED_COOLANT_PER_VOLUME = 1_000_000;

@@ -267,16 +267,17 @@ public abstract class ModuleMekaSuit extends Module {
             return sprintBoost.get().getBoost();
         }
 
-        public static enum SprintBoost implements IHasTextComponent {
+        public enum SprintBoost implements IHasTextComponent {
             OFF(0),
             LOW(0.05F),
             MED(0.1F),
             HIGH(0.25F),
             ULTRA(0.5F);
-            private float boost;
-            private ITextComponent label;
 
-            private SprintBoost(float boost) {
+            private final float boost;
+            private final ITextComponent label;
+
+            SprintBoost(float boost) {
                 this.boost = boost;
                 this.label = new StringTextComponent(Float.toString(boost));
             }
@@ -308,16 +309,17 @@ public abstract class ModuleMekaSuit extends Module {
             return jumpBoost.get().getBoost();
         }
 
-        public static enum JumpBoost implements IHasTextComponent {
+        public enum JumpBoost implements IHasTextComponent {
             OFF(0),
             LOW(0.5F),
             MED(1F),
             HIGH(3),
             ULTRA(5);
-            private float boost;
-            private ITextComponent label;
 
-            private JumpBoost(float boost) {
+            private final float boost;
+            private final ITextComponent label;
+
+            JumpBoost(float boost) {
                 this.boost = boost;
                 this.label = new StringTextComponent(Float.toString(boost));
             }

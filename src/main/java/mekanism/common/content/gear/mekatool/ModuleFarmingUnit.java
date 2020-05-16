@@ -68,16 +68,17 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         );
     }
 
-    public static enum FarmingRadius implements IHasTextComponent {
+    public enum FarmingRadius implements IHasTextComponent {
         OFF(0),
         LOW(1),
         MED(3),
         HIGH(5),
         ULTRA(7);
-        private int radius;
-        private ITextComponent label;
 
-        private FarmingRadius(int radius) {
+        private final int radius;
+        private final ITextComponent label;
+
+        FarmingRadius(int radius) {
             this.radius = radius;
             this.label = new StringTextComponent(Integer.toString(radius));
         }

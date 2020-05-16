@@ -35,7 +35,7 @@ public class VariableCapacityEnergyContainer extends BasicEnergyContainer {
         return new VariableCapacityEnergyContainer(maxEnergy, canExtract, canInsert, energyHandler);
     }
 
-    private FloatingLongSupplier maxEnergy;
+    private final FloatingLongSupplier maxEnergy;
 
     protected VariableCapacityEnergyContainer(FloatingLongSupplier maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           @Nullable IMekanismStrictEnergyHandler energyHandler) {

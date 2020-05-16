@@ -72,6 +72,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     }
 
     //TODO: Come up with a better way to have this "tick"/update
+    @Override
     public void tick() {
         Gas inputGas = oreInfo.getInputGas().getType();
         if (prevGas != inputGas) {

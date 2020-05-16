@@ -20,8 +20,8 @@ import org.jetbrains.annotations.Contract;
 
 public class AttributeStateFacing extends AttributeState {
 
-    private DirectionProperty facingProperty;
-    private FacePlacementType placementType;
+    private final DirectionProperty facingProperty;
+    private final FacePlacementType placementType;
 
     public AttributeStateFacing() {
         this(BlockStateProperties.HORIZONTAL_FACING);

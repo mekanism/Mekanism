@@ -27,7 +27,7 @@ import net.minecraft.util.SoundEvent;
 
 public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
 
-    private Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar;
+    private final Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar;
 
     public BlockTypeTile(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
         super(description);

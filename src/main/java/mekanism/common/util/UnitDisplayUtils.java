@@ -187,7 +187,7 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
 
         private final String symbol;
 
-        private RadiationUnit(String symbol) {
+        RadiationUnit(String symbol) {
             this.symbol = symbol;
         }
 

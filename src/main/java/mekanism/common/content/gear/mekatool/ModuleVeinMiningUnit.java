@@ -62,16 +62,17 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
         return found;
     }
 
-    public static enum ExcavationRange implements IHasTextComponent {
+    public enum ExcavationRange implements IHasTextComponent {
         OFF(0),
         LOW(2),
         MED(4),
         HIGH(6),
         EXTREME(8);
-        private int range;
-        private ITextComponent label;
 
-        private ExcavationRange(int range) {
+        private final int range;
+        private final ITextComponent label;
+
+        ExcavationRange(int range) {
             this.range = range;
             this.label = new StringTextComponent(Integer.toString(range));
         }

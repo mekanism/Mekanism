@@ -42,13 +42,13 @@ public enum PropertyType {
     LIST(ArrayList.class, Collections.emptyList(), (getter, setter) -> null /* not handled */),
     FLOATING_LONG(FloatingLong.class, FloatingLong.ZERO, (getter, setter) -> SyncableFloatingLong.create(() -> (FloatingLong) getter.get(), setter::accept));
 
-    private Class<?> type;
-    private Object defaultValue;
-    private BiFunction<Supplier<Object>, Consumer<Object>, ISyncableData> creatorFunction;
+    private final Class<?> type;
+    private final Object defaultValue;
+    private final BiFunction<Supplier<Object>, Consumer<Object>, ISyncableData> creatorFunction;
 
     private static final PropertyType[] VALUES = values();
 
-    private PropertyType(Class<?> type, Object defaultValue, BiFunction<Supplier<Object>, Consumer<Object>, ISyncableData> creatorFunction) {
+    PropertyType(Class<?> type, Object defaultValue, BiFunction<Supplier<Object>, Consumer<Object>, ISyncableData> creatorFunction) {
         this.type = type;
         this.defaultValue = defaultValue;
         this.creatorFunction = creatorFunction;

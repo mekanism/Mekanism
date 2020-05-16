@@ -2,6 +2,7 @@ package mekanism.generators.client.jei;
 
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.text.EnumColor;
@@ -29,11 +30,12 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
 
-    private List<FluidStack> waterInput = Collections.singletonList(new FluidStack(Fluids.WATER, 1_000));
-    private List<GasStack> steamOutput = Collections.singletonList(MekanismGases.STEAM.getGasStack(1_000));
+    //TODO - V10: Replace with FluidTags.WATER
+    private final List<FluidStack> waterInput = Collections.singletonList(new FluidStack(Fluids.WATER, 1_000));
+    private final List<GasStack> steamOutput = Collections.singletonList(MekanismGases.STEAM.getGasStack(1_000));
 
-    private ResourceLocation iconRL = MekanismUtils.getResource(ResourceType.GUI, "radioactive.png");
-    private IDrawable icon;
+    private final ResourceLocation iconRL = MekanismUtils.getResource(ResourceType.GUI, "radioactive.png");
+    private final IDrawable icon;
 
     public FissionReactorRecipeCategory(IGuiHelper helper) {
         super(helper, GeneratorsBlocks.FISSION_REACTOR_CASING, 3, 12, 189, 70);
@@ -55,16 +57,19 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
               .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
     }
 
+    @Nonnull
     @Override
     public String getTitle() {
         return GeneratorsLang.FISSION_REACTOR.translate().getFormattedText();
     }
 
+    @Nonnull
     @Override
     public IDrawable getIcon() {
         return icon;
     }
 
+    @Nonnull
     @Override
     public Class<? extends GasToGasRecipe> getRecipeClass() {
         return GasToGasRecipe.class;
@@ -78,7 +83,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, GasToGasRecipe recipe, IIngredients ingredients) {
+    public void setRecipe(IRecipeLayout recipeLayout, GasToGasRecipe recipe, @Nonnull IIngredients ingredients) {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         fluidStacks.init(0, true, 7 - xOffset, 14 - yOffset, 16, 58, 1, false, fluidOverlayLarge);

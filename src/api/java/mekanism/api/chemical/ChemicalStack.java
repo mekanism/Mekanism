@@ -18,7 +18,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     private boolean isEmpty;
     private long amount;
     @Nonnull
-    private IRegistryDelegate<CHEMICAL> chemicalDelegate;
+    private final IRegistryDelegate<CHEMICAL> chemicalDelegate;
 
     protected ChemicalStack(@Nonnull CHEMICAL chemical, long amount) {
         this.chemicalDelegate = getDelegate(chemical);

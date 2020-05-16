@@ -64,10 +64,10 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     public enum SwitchType {
         LOWER_ICON(BUTTON_SIZE_X, 40, 0, 0);
 
-        private int sizeX, sizeY;
-        private int switchX, switchY;
+        private final int sizeX, sizeY;
+        private final int switchX, switchY;
 
-        private SwitchType(int sizeX, int sizeY, int switchX, int switchY) {
+        SwitchType(int sizeX, int sizeY, int switchX, int switchY) {
             this.sizeX = sizeX;
             this.sizeY = sizeY;
             this.switchX = switchX;

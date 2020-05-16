@@ -44,14 +44,14 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
         }
     }
 
-    public static interface ColorFunction {
+    public interface ColorFunction {
 
-        public static final ColorFunction HEAT = (level) -> Color.rgba((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 255);
+        ColorFunction HEAT = (level) -> Color.rgba((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 255);
 
-        public static ColorFunction scale(Color from, Color to) {
+        static ColorFunction scale(Color from, Color to) {
             return (level) -> from.blend(to, level);
         }
 
-        public Color getColor(float level);
+        Color getColor(float level);
     }
 }

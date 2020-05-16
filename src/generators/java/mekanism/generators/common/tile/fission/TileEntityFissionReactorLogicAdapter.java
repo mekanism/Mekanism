@@ -167,9 +167,9 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
 
         private static final RedstoneStatus[] MODES = values();
 
-        private ILangEntry name;
+        private final ILangEntry name;
 
-        private RedstoneStatus(ILangEntry name) {
+        RedstoneStatus(ILangEntry name) {
             this.name = name;
         }
 

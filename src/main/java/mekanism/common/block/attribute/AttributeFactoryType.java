@@ -5,7 +5,7 @@ import mekanism.common.content.blocktype.FactoryType;
 
 public class AttributeFactoryType implements Attribute {
 
-    private FactoryType type;
+    private final FactoryType type;
 
     public AttributeFactoryType(FactoryType type) {
         this.type = type;

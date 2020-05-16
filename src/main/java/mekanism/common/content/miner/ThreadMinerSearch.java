@@ -29,9 +29,9 @@ public class ThreadMinerSearch extends Thread {
 
     public State state = State.IDLE;
 
-    private Map<ChunkPos, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
-    private Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
-    private Map<Block, MinerFilter<?>> acceptedItems = new Object2ObjectOpenHashMap<>();
+    private final Map<ChunkPos, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
+    private final Map<Block, MinerFilter<?>> acceptedItems = new Object2ObjectOpenHashMap<>();
     private Region chunkCache;
 
     public int found = 0;

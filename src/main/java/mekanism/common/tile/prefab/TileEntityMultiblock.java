@@ -72,7 +72,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     private UpdateType updateRequested;
 
-    private Map<BlockPos, BlockState> cachedNeighbors = new HashMap<>();
+    private final Map<BlockPos, BlockState> cachedNeighbors = new HashMap<>();
 
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);

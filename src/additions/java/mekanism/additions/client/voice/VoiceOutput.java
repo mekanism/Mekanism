@@ -8,8 +8,8 @@ import mekanism.common.Mekanism;
 
 public class VoiceOutput extends Thread {
 
-    private VoiceClient voiceClient;
-    private DataLine.Info speaker;
+    private final VoiceClient voiceClient;
+    private final DataLine.Info speaker;
     private SourceDataLine sourceLine;
 
     public VoiceOutput(VoiceClient client) {

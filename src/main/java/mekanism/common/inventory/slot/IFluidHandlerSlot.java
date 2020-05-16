@@ -343,7 +343,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     /**
      * Helper class to make comparing fluids ignoring amount easier
      */
-    static class FluidInfo {
+    class FluidInfo {
 
         private final FluidStack fluidStack;
 

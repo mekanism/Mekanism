@@ -13,9 +13,9 @@ import net.minecraft.util.math.shapes.VoxelShape;
 
 public class BlockType {
 
-    private ILangEntry description;
+    private final ILangEntry description;
 
-    private Map<Class<? extends Attribute>, Attribute> attributeMap = new HashMap<>();
+    private final Map<Class<? extends Attribute>, Attribute> attributeMap = new HashMap<>();
 
     public BlockType(ILangEntry description) {
         this.description = description;

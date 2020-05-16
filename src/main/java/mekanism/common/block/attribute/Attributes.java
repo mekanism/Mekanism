@@ -30,7 +30,7 @@ public class Attributes {
     /** If a block can emit redstone. */
     public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements TileAttribute<TILE> {
 
-        private Function<TILE, Integer> redstoneFunction;
+        private final Function<TILE, Integer> redstoneFunction;
 
         public AttributeRedstoneEmitter(Function<TILE, Integer> redstoneFunction) {
             this.redstoneFunction = redstoneFunction;
@@ -44,7 +44,7 @@ public class Attributes {
     /** Custom explosion resistance attribute. */
     public static class AttributeCustomResistance implements Attribute {
 
-        private float resistance;
+        private final float resistance;
 
         public AttributeCustomResistance(float resistance) {
             this.resistance = resistance;

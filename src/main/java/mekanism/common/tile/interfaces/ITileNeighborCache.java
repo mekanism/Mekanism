@@ -10,13 +10,13 @@ import net.minecraft.world.World;
 
 public interface ITileNeighborCache {
 
-    public default void createNeighborCache() {
+    default void createNeighborCache() {
         for (Direction side : Direction.values()) {
             updateNeighborCache(getPos().offset(side));
         }
     }
 
-    public default void updateNeighborCache(BlockPos neighborPos) {
+    default void updateNeighborCache(BlockPos neighborPos) {
         BlockState state = Blocks.AIR.getDefaultState();
         if (MekanismUtils.isBlockLoaded(getWorld(), neighborPos)) {
             state = getWorld().getBlockState(neighborPos);
@@ -24,9 +24,9 @@ public interface ITileNeighborCache {
         getNeighborCache().put(neighborPos, state);
     }
 
-    public BlockPos getPos();
+    BlockPos getPos();
 
-    public World getWorld();
+    World getWorld();
 
-    public Map<BlockPos, BlockState> getNeighborCache();
+    Map<BlockPos, BlockState> getNeighborCache();
 }

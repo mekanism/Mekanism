@@ -4,5 +4,5 @@ import mekanism.common.content.gear.Modules.ModuleData;
 
 public interface IModuleItem {
 
-    public ModuleData<?> getModuleData();
+    ModuleData<?> getModuleData();
 }

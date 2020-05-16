@@ -139,8 +139,8 @@ public abstract class Frequency {
 
     public static class FrequencyIdentity {
 
-        private Object key;
-        private boolean publicFreq;
+        private final Object key;
+        private final boolean publicFreq;
 
         public FrequencyIdentity(Object key, boolean publicFreq) {
             this.key = key;

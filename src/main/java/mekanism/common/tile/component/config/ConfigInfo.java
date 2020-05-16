@@ -30,10 +30,10 @@ public class ConfigInfo {
     //TODO: When can eject is false don't even show the auto eject button
     private boolean canEject;
     private boolean ejecting;
-    private Map<RelativeSide, DataType> sideConfig;
-    private Map<DataType, ISlotInfo> slotInfo;
+    private final Map<RelativeSide, DataType> sideConfig;
+    private final Map<DataType, ISlotInfo> slotInfo;
     // used so slot & tank GUIs can quickly reference which color overlay to render
-    private Map<Object, List<DataType>> containerTypeMapping;
+    private final Map<Object, List<DataType>> containerTypeMapping;
 
     public ConfigInfo(@Nonnull Supplier<Direction> facingSupplier) {
         this.facingSupplier = facingSupplier;

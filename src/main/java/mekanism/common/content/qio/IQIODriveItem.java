@@ -38,7 +38,7 @@ public interface IQIODriveItem {
 
     int getTypeCapacity(ItemStack stack);
 
-    public static class DriveMetadata {
+    class DriveMetadata {
 
         private long count;
         private int types;
