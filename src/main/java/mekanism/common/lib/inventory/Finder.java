@@ -21,7 +21,7 @@ public interface Finder {
 
     public static Finder tag(String tagName) {
         return stack -> {
-            if (!stack.isEmpty()) {
+            if (stack.isEmpty()) {
                 return false;
             }
             return stack.getItem().getTags().stream().anyMatch(tag -> WildcardMatcher.matches(tagName, tag.toString()));
