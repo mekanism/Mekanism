@@ -7,28 +7,34 @@ import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
 public enum PrimaryResource implements IResource {
-    IRON("iron", 0xFFAF8E77, () -> Tags.Items.ORES_IRON, true, null, true),
-    GOLD("gold", 0xFFF2CD67, () -> Tags.Items.ORES_GOLD, true, null, true),
-    OSMIUM("osmium", 0xFF1E79C3, () -> MekanismTags.Items.ORES.get(OreType.OSMIUM), false, BlockResourceInfo.OSMIUM, true),
-    COPPER("copper", 0xFFAA4B19, () -> MekanismTags.Items.ORES.get(OreType.COPPER), false, BlockResourceInfo.COPPER, true),
-    TIN("tin", 0xFFCCCCD9, () -> MekanismTags.Items.ORES.get(OreType.TIN), false, BlockResourceInfo.TIN, true),
-    LEAD("lead", 0xFF3A404A, () -> MekanismTags.Items.ORES.get(OreType.LEAD), false, BlockResourceInfo.LEAD, false),
-    URANIUM("uranium", 0xFF46664F, () -> MekanismTags.Items.ORES.get(OreType.URANIUM), false, BlockResourceInfo.URANIUM, false);
+    IRON("iron", 0xFFAF8E77, Tags.Items.ORES_IRON),
+    GOLD("gold", 0xFFF2CD67, Tags.Items.ORES_GOLD),
+    OSMIUM("osmium", 0xFF1E79C3, () -> MekanismTags.Items.ORES.get(OreType.OSMIUM), BlockResourceInfo.OSMIUM),
+    COPPER("copper", 0xFFAA4B19, () -> MekanismTags.Items.ORES.get(OreType.COPPER), BlockResourceInfo.COPPER),
+    TIN("tin", 0xFFCCCCD9, () -> MekanismTags.Items.ORES.get(OreType.TIN), BlockResourceInfo.TIN),
+    LEAD("lead", 0xFF3A404A, () -> MekanismTags.Items.ORES.get(OreType.LEAD), BlockResourceInfo.LEAD),
+    URANIUM("uranium", 0xFF46664F, () -> MekanismTags.Items.ORES.get(OreType.URANIUM), BlockResourceInfo.URANIUM);
 
     private final String name;
     private final int tint;
     private final Supplier<Tag<Item>> oreTag;
     private final boolean isVanilla;
     private final BlockResourceInfo resourceBlockInfo;
-    private final boolean textureOverride;
 
-    PrimaryResource(String name, int tint, Supplier<Tag<Item>> oreTag, boolean isVanilla, BlockResourceInfo resourceBlockInfo, boolean textureOverride) {
+    PrimaryResource(String name, int tint, Tag<Item> oreTag) {
+        this(name, tint, () -> oreTag, true, null);
+    }
+
+    PrimaryResource(String name, int tint, Supplier<Tag<Item>> oreTag, BlockResourceInfo resourceBlockInfo) {
+        this(name, tint, oreTag, false, resourceBlockInfo);
+    }
+
+    PrimaryResource(String name, int tint, Supplier<Tag<Item>> oreTag, boolean isVanilla, BlockResourceInfo resourceBlockInfo) {
         this.name = name;
         this.tint = tint;
         this.oreTag = oreTag;
         this.isVanilla = isVanilla;
         this.resourceBlockInfo = resourceBlockInfo;
-        this.textureOverride = textureOverride;
     }
 
     // TODO remove
@@ -59,9 +65,5 @@ public enum PrimaryResource implements IResource {
 
     public BlockResourceInfo getResourceBlockInfo() {
         return resourceBlockInfo;
-    }
-
-    public boolean hasTextureOverride() {
-        return textureOverride;
     }
 }

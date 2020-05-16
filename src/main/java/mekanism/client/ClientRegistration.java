@@ -149,6 +149,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
@@ -387,7 +389,9 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
-        ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), (state, world, pos, tintIndex) -> {
+        BlockColors blockColors = event.getBlockColors();
+        ItemColors itemColors = event.getItemColors();
+        ClientRegistrationUtil.registerBlockColorHandler(blockColors, (state, world, pos, tintIndex) -> {
                   if (pos != null) {
                       TileEntity tile = MekanismUtils.getTileEntity(world, pos);
                       if (tile instanceof TileEntityQIOComponent) {
@@ -398,7 +402,7 @@ public class ClientRegistration {
                   return -1;
               }, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
               MekanismBlocks.QIO_REDSTONE_ADAPTER);
-        ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, world, pos, tintIndex) -> {
+        ClientRegistrationUtil.registerBlockColorHandler(blockColors, itemColors, (state, world, pos, tintIndex) -> {
                   Block block = state.getBlock();
                   if (block instanceof IColoredBlock) {
                       return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
@@ -417,7 +421,7 @@ public class ClientRegistration {
               //Fluid Tank
               MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK);
-        ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), (state, world, pos, tintIndex) -> {
+        ClientRegistrationUtil.registerBlockColorHandler(blockColors, (state, world, pos, tintIndex) -> {
                   if (tintIndex == 1 && pos != null) {
                       TileEntityLogisticalTransporter transporter = MekanismUtils.getTileEntity(TileEntityLogisticalTransporter.class, world, pos);
                       if (transporter != null) {
@@ -432,17 +436,12 @@ public class ClientRegistration {
               MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
 
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
-            if (item.getColumnKey().hasTextureOverride()) {
-                continue;
-            }
-            event.getItemColors().register((stack, index) -> index == 0 || index == 2 ? item.getColumnKey().getTint() : 0xFFFFFFFF, item.getValue());
+            int tint = item.getColumnKey().getTint();
+            itemColors.register((stack, index) -> index == 1 ? tint : -1, item.getValue());
         }
         for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            if (entry.getKey().hasTextureOverride()) {
-                continue;
-            }
-            ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, world, pos, index) -> entry.getKey().getTint(),
-                  (stack, index) -> entry.getKey().getTint(), entry.getValue());
+            int tint = entry.getKey().getTint();
+            ClientRegistrationUtil.registerBlockColorHandler(blockColors, itemColors, (state, world, pos, index) -> tint, (stack, index) -> tint, entry.getValue());
         }
     }
 

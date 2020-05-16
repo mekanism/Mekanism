@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "mekanism:item/clump"
+    "layer0": "mekanism:item/clump_lead"
   }
 }

@@ -2,6 +2,7 @@ package mekanism.client.model;
 
 import javax.annotation.Nonnull;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockModelProvider;
@@ -24,5 +25,9 @@ public abstract class BaseBlockModelProvider extends BlockModelProvider {
               .texture("side", texture)
               .texture("bottom", texture)
               .texture("top", texture);
+    }
+
+    public boolean textureExists(ResourceLocation texture) {
+        return existingFileHelper.exists(texture, ResourcePackType.CLIENT_RESOURCES, ".png", "textures");
     }
 }

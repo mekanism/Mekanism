@@ -137,7 +137,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
           TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY));
 
-    private static List<CompatRecipeProvider> compatRecipeProviders = Arrays.asList(
+    private static final List<CompatRecipeProvider> compatRecipeProviders = Arrays.asList(
           new BiomesOPlentyRecipeProvider(),
           new ILikeWoodRecipeProvider()
     );

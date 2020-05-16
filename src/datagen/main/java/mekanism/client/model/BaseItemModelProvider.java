@@ -6,6 +6,7 @@ import mekanism.client.model.builder.BucketModelBuilder;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.BucketItem;
+import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
@@ -24,6 +25,10 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         return "Item model provider: " + modid;
     }
 
+    public boolean textureExists(ResourceLocation texture) {
+        return existingFileHelper.exists(texture, ResourcePackType.CLIENT_RESOURCES, ".png", "textures");
+    }
+
     protected ResourceLocation itemTexture(IItemProvider itemProvider) {
         return modLoc("item/" + itemProvider.getName());
     }
@@ -40,6 +45,20 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
 
     protected ItemModelBuilder generated(IItemProvider itemProvider, ResourceLocation texture) {
         return getBuilder(itemProvider.getName()).parent(new UncheckedModelFile("item/generated")).texture("layer0", texture);
+    }
+
+    protected ItemModelBuilder resource(IItemProvider itemProvider, String type) {
+        //TODO: Try to come up with a better solution to this. Currently we have an empty texture for layer zero so that we can set
+        // the tint only on layer one so that we only end up having the tint show for this fallback texture
+        ItemModelBuilder modelBuilder = getBuilder(itemProvider.getName()).parent(new UncheckedModelFile("item/generated"))
+              .texture("layer0", modLoc("item/empty"))
+              .texture("layer1", modLoc("item/" + type));
+        ResourceLocation overlay = modLoc("item/" + type + "_overlay");
+        if (textureExists(overlay)) {
+            //If we have an overlay type for that resource type then add that as another layer
+            modelBuilder = modelBuilder.texture("layer2", overlay);
+        }
+        return modelBuilder;
     }
 
     protected void registerHandheld(IItemProvider... itemProviders) {

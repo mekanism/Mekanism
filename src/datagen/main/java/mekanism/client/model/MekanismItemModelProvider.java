@@ -12,6 +12,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 
 public class MekanismItemModelProvider extends BaseItemModelProvider {
@@ -26,10 +27,12 @@ public class MekanismItemModelProvider extends BaseItemModelProvider {
         MekanismFluids.FLUIDS.getAllFluids().forEach(this::registerBucket);
 
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
-            if (!item.getColumnKey().hasTextureOverride()) {
-                generated(item.getValue(), modLoc("item/" + item.getRowKey().getRegistryPrefix()));
+            ResourceLocation texture = itemTexture(item.getValue());
+            if (textureExists(texture)) {
+                generated(item.getValue(), texture);
             } else {
-                generated(item.getValue());
+                //If the texture does not exist fallback to the default texture
+                resource(item.getValue(), item.getRowKey().getRegistryPrefix());
             }
         }
 

@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "mekanism:item/ingot"
+    "layer0": "mekanism:item/empty",
+    "layer1": "mekanism:item/ingot"
   }
 }

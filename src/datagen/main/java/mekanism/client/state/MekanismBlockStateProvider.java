@@ -9,6 +9,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ModelFile;
 
@@ -22,15 +23,25 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
     protected void registerStatesAndModels() {
         registerFluidBlockStates(MekanismFluids.FLUIDS.getAllFluids());
 
+        ResourceLocation basicCube = modLoc("block/basic_cube");
+
         // blocks
         for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            String texture = entry.getKey().hasTextureOverride() ? "block/block_" + entry.getKey().getName() : "block/resource_block";
-            ModelFile file = models().withExistingParent("block/storage/" + entry.getKey().getName(), modLoc("block/colored_cube"))
-                  .texture("all", modLoc(texture));
+            ResourceLocation texture = modLoc("block/block_" + entry.getKey().getName());
+            ModelFile file;
+            if (models().textureExists(texture)) {
+                //If we have an override we can just use a basic cube that has no color tints in it
+                file = models().withExistingParent("block/storage/" + entry.getKey().getName(), basicCube)
+                      .texture("all", texture);
+            } else {
+                //If the texture does not exist fallback to the default texture and use a colorable base model
+                file = models().withExistingParent("block/storage/" + entry.getKey().getName(), modLoc("block/colored_cube"))
+                      .texture("all", modLoc("block/resource_block"));
+            }
             simpleBlock(entry.getValue().getBlock(), file);
         }
         for (Map.Entry<OreType, BlockRegistryObject<?, ?>> entry : MekanismBlocks.ORES.entrySet()) {
-            ModelFile file = models().withExistingParent("block/ore/" + entry.getKey().getResource().getRegistrySuffix(), modLoc("block/basic_cube"))
+            ModelFile file = models().withExistingParent("block/ore/" + entry.getKey().getResource().getRegistrySuffix(), basicCube)
                   .texture("all", modLoc("block/" + entry.getValue().getName()));
             simpleBlock(entry.getValue().getBlock(), file);
         }
