@@ -50,8 +50,8 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.HashList;
 import mekanism.common.lib.chunkloading.IChunkLoader;
+import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
-import mekanism.common.lib.inventory.Finder.ItemStackFinder;
 import mekanism.common.lib.inventory.TransitRequest.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
@@ -466,7 +466,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             }
         }
         if (doPull && getPullInv() != null) {
-            TransitRequest request = TransitRequest.definedItem(getPullInv(), Direction.UP, 1, ItemStackFinder.strict(filter.replaceStack));
+            TransitRequest request = TransitRequest.definedItem(getPullInv(), Direction.UP, 1, Finder.strict(filter.replaceStack));
             if (!request.isEmpty()) {
                 return request.createSimpleResponse().useAll();
             }

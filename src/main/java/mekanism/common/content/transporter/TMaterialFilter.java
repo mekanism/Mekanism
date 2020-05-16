@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.lib.inventory.Finder;
-import mekanism.common.lib.inventory.Finder.MaterialFinder;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
@@ -21,7 +20,7 @@ public class TMaterialFilter extends TransporterFilter<TMaterialFilter> implemen
 
     @Override
     public Finder getFinder() {
-        return new MaterialFinder(getMaterial());
+        return Finder.material(getMaterial());
     }
 
     @Override

@@ -4,7 +4,6 @@ import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.lib.inventory.Finder;
-import mekanism.common.lib.inventory.Finder.ModIDFinder;
 import mekanism.common.network.BasePacketHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -15,7 +14,7 @@ public class TModIDFilter extends TransporterFilter<TModIDFilter> implements IMo
 
     @Override
     public Finder getFinder() {
-        return new ModIDFinder(modID);
+        return Finder.modID(modID);
     }
 
     @Override

@@ -9,7 +9,6 @@ import java.util.Map;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import mekanism.common.Mekanism;
-import mekanism.common.lib.inventory.Finder.FirstFinder;
 import mekanism.common.lib.inventory.TransitRequest.TileTransitRequest.TileItemData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
@@ -27,7 +26,7 @@ public abstract class TransitRequest {
     }
 
     public static TransitRequest anyItem(TileEntity tile, Direction side, int amount) {
-        return definedItem(tile, side, amount, new FirstFinder());
+        return definedItem(tile, side, amount, Finder.ANY);
     }
 
     public static TransitRequest definedItem(TileEntity tile, Direction side, int amount, Finder finder) {

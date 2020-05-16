@@ -6,7 +6,6 @@ import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
-import mekanism.common.lib.inventory.Finder.ItemStackFinder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -33,7 +32,7 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
 
     @Override
     public Finder getFinder() {
-        return new ItemStackFinder(itemType, !fuzzyMode);
+        return fuzzyMode ? Finder.item(itemType) : Finder.strict(itemType);
     }
 
     @Override

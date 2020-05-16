@@ -48,6 +48,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
       IHasSortableFilters {
 
     private HashList<TransporterFilter<?>> filters = new HashList<>();
+    private Finder strictFinder = stack -> filters.stream().noneMatch(filter -> filter.getFinder().modifies(stack) && !filter.allowDefault);
+
     public EnumColor color;
     public boolean autoEject;
     public boolean roundRobin;
@@ -108,7 +110,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 }
 
                 if (!sentItems && autoEject) {
-                    TransitRequest request = TransitRequest.definedItem(back, getOppositeDirection(), singleItem ? 1 : 64, new StrictFilterFinder());
+                    TransitRequest request = TransitRequest.definedItem(back, getOppositeDirection(), singleItem ? 1 : 64, strictFinder);
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
                     if (!response.isEmpty()) {
                         response.useAll();
@@ -319,13 +321,5 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 filters = new HashList<>(value);
             }
         }));
-    }
-
-    private class StrictFilterFinder extends Finder {
-
-        @Override
-        public boolean modifies(ItemStack stack) {
-            return filters.stream().noneMatch(filter -> filter.getFinder().modifies(stack) && !filter.allowDefault);
-        }
     }
 }

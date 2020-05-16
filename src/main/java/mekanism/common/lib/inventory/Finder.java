@@ -8,28 +8,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public abstract class Finder {
+public interface Finder {
 
-    public abstract boolean modifies(ItemStack stack);
+    public static final Finder ANY = stack -> true;
 
-    public static class FirstFinder extends Finder {
-
-        @Override
-        public boolean modifies(ItemStack stack) {
-            return true;
-        }
-    }
-
-    public static class TagFinder extends Finder {
-
-        public final String tagName;
-
-        public TagFinder(String name) {
-            tagName = name;
-        }
-
-        @Override
-        public boolean modifies(ItemStack stack) {
+    public static Finder tag(String tagName) {
+        return stack -> {
             Set<ResourceLocation> tags = stack.getItem().getTags();
             if (tags.isEmpty()) {
                 return false;
@@ -53,60 +37,28 @@ public abstract class Finder {
                 }
             }
             return false;
-        }
+        };
     }
 
-    public static class ItemStackFinder extends Finder {
-
-        public ItemStack itemType;
-        private boolean strict;
-
-        public ItemStackFinder(ItemStack itemType, boolean strict) {
-            this.itemType = itemType;
-            this.strict = strict;
-        }
-
-        public static ItemStackFinder strict(ItemStack itemType) {
-            return new ItemStackFinder(itemType, true);
-        }
-
-        public static ItemStackFinder lenient(ItemStack itemType) {
-            return new ItemStackFinder(itemType, false);
-        }
-
-        @Override
-        public boolean modifies(ItemStack stack) {
-            return strict ? ItemHandlerHelper.canItemStacksStack(itemType, stack) : ItemStack.areItemsEqual(itemType, stack);
-        }
+    public static Finder item(ItemStack itemType) {
+        return stack -> ItemStack.areItemsEqual(itemType, stack);
     }
 
-    public static class MaterialFinder extends Finder {
+    public static Finder strict(ItemStack itemType) {
+        return stack -> ItemHandlerHelper.canItemStacksStack(itemType, stack);
+    }
 
-        public Material materialType;
-
-        public MaterialFinder(Material type) {
-            materialType = type;
-        }
-
-        @Override
-        public boolean modifies(ItemStack stack) {
+    public static Finder material(Material materialType) {
+        return stack -> {
             if (stack.isEmpty() || !(stack.getItem() instanceof BlockItem)) {
                 return false;
             }
             return Block.getBlockFromItem(stack.getItem()).getDefaultState().getMaterial() == materialType;
-        }
+        };
     }
 
-    public static class ModIDFinder extends Finder {
-
-        public String modID;
-
-        public ModIDFinder(String mod) {
-            modID = mod;
-        }
-
-        @Override
-        public boolean modifies(ItemStack stack) {
+    public static Finder modID(String modID) {
+        return stack -> {
             if (stack.isEmpty()) {
                 return false;
             }
@@ -121,6 +73,8 @@ public abstract class Finder {
                 return id.contains(modID.substring(1, modID.length() - 1));
             }
             return false;
-        }
+        };
     }
+
+    boolean modifies(ItemStack stack);
 }

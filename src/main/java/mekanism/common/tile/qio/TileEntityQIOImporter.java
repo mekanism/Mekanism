@@ -13,9 +13,8 @@ import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.lib.inventory.Finder.ItemStackFinder;
-import mekanism.common.lib.inventory.Finder.TagFinder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
@@ -96,11 +95,11 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             return true;
         for (QIOFilter<?> filter : getFilters()) {
             if (filter instanceof QIOItemStackFilter) {
-                if (ItemStackFinder.lenient(((QIOItemStackFilter) filter).getItemStack()).modifies(stack)) {
+                if (Finder.item(((QIOItemStackFilter) filter).getItemStack()).modifies(stack)) {
                     return true;
                 }
             } else if (filter instanceof QIOTagFilter) {
-                if (new TagFinder(((QIOTagFilter) filter).getTagName()).modifies(stack)) {
+                if (Finder.tag(((QIOTagFilter) filter).getTagName()).modifies(stack)) {
                     return true;
                 }
             }
