@@ -6,7 +6,7 @@ public class WildcardMatcher {
         return matches(wildcard.toLowerCase(), text.toLowerCase(), 0, 0, false);
     }
 
-    public static boolean matches(String wildcard, String text, int wildcardStartIndex, int textIndex, boolean continueSearch) {
+    private static boolean matches(String wildcard, String text, int wildcardStartIndex, int textIndex, boolean continueSearch) {
         for (int wildcardIndex = wildcardStartIndex; wildcardIndex < wildcard.length(); wildcardIndex++) {
             char wc = wildcard.charAt(wildcardIndex);
             boolean fail = false;
