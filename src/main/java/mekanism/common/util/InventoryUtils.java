@@ -1,15 +1,13 @@
 package mekanism.common.util;
 
-import java.util.Map.Entry;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.content.transporter.TransitRequest;
-import mekanism.common.content.transporter.TransitRequest.SlotData;
+import mekanism.common.content.transporter.TransitRequest.ItemTransitData;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -24,16 +22,16 @@ public final class InventoryUtils {
 
     public static TransitResponse putStackInInventory(TileEntity tile, TransitRequest request, Direction side, boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter) {
-            return ((TileEntityLogisticalSorter) tile).sendHome(request.getSingleStack());
+            return ((TileEntityLogisticalSorter) tile).sendHome(request);
         }
-        if (request.getItemMap().isEmpty()) {
+        if (request.isEmpty()) {
             return request.getEmptyResponse();
         }
         Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
         if (capability.isPresent()) {
             IItemHandler inventory = capability.get();
-            for (Entry<HashedItem, SlotData> requestEntry : request.getItemMap().entrySet()) {
-                ItemStack origInsert = StackUtils.size(requestEntry.getKey().getStack(), requestEntry.getValue().getTotalCount());
+            for (ItemTransitData data : request.getSlotData()) {
+                ItemStack origInsert = StackUtils.size(data.getStack(), data.getTotalCount());
                 ItemStack toInsert = origInsert.copy();
                 for (int i = 0; i < inventory.getSlots(); i++) {
                     // Check validation
@@ -42,12 +40,12 @@ public final class InventoryUtils {
                         toInsert = inventory.insertItem(i, toInsert, false);
                         // If empty, end
                         if (toInsert.isEmpty()) {
-                            return request.createResponse(origInsert, requestEntry.getValue());
+                            return request.createResponse(origInsert, data);
                         }
                     }
                 }
                 if (TransporterManager.didEmit(origInsert, toInsert)) {
-                    return request.createResponse(TransporterManager.getToUse(origInsert, toInsert), requestEntry.getValue());
+                    return request.createResponse(TransporterManager.getToUse(origInsert, toInsert), data);
                 }
             }
         }

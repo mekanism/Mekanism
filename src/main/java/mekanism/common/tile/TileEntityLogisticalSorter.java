@@ -99,7 +99,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                     }
                     TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
                     if (!response.isEmpty()) {
-                        response.use(back, getOppositeDirection());
+                        response.useAll();
                         MekanismUtils.saveChunk(back);
                         setActive(true);
                         sentItems = true;
@@ -108,10 +108,10 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 }
 
                 if (!sentItems && autoEject) {
-                    TransitRequest request = TransitRequest.buildInventoryMap(back, getOppositeDirection(), singleItem ? 1 : 64, new StrictFilterFinder());
+                    TransitRequest request = TransitRequest.definedItem(back, getOppositeDirection(), singleItem ? 1 : 64, new StrictFilterFinder());
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
                     if (!response.isEmpty()) {
-                        response.use(back, getDirection());
+                        response.useAll();
                         MekanismUtils.saveChunk(back);
                         setActive(true);
                     }
@@ -189,9 +189,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         return TransporterUtils.isValidAcceptorOnSide(tile, getOppositeDirection());
     }
 
-    public TransitResponse sendHome(ItemStack stack) {
+    public TransitResponse sendHome(TransitRequest request) {
         TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
-        return InventoryUtils.putStackInInventory(back, TransitRequest.getFromStack(stack), getOppositeDirection(), true);
+        return InventoryUtils.putStackInInventory(back, request, getOppositeDirection(), true);
     }
 
     @Override

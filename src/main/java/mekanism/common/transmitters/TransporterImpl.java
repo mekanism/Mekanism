@@ -1,14 +1,14 @@
 package mekanism.common.transmitters;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.IntConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
@@ -157,11 +157,11 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                             } else if (stack.getPathType() != Path.NONE) {
                                 TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
                                 if (tile != null) {
-                                    TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromTransport(stack), stack.getSide(this),
+                                    TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.simple(stack.itemStack), stack.getSide(this),
                                           stack.getPathType() == Path.HOME);
                                     // Nothing was rejected; remove the stack from the prediction tracker and
                                     // schedule this stack for deletion. Continue the loop thereafter
-                                    ItemStack rejected = response.getRejected(stack.itemStack);
+                                    ItemStack rejected = response.getRejected();
                                     if (rejected.isEmpty()) {
                                         TransporterManager.remove(stack);
                                         deletes.add(stackId);
@@ -223,7 +223,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     private boolean recalculate(int stackId, TransporterStack stack, Coord4D from) {
         boolean noPath = stack.getPathType() == Path.NONE;
         if (!noPath) {
-            noPath = stack.recalculatePath(TransitRequest.getFromTransport(stack), this, 0).isEmpty();
+            noPath = stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
         }
         if (noPath && !stack.calculateIdle(this)) {
             TransporterUtils.drop(this, stack);

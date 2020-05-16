@@ -1,12 +1,16 @@
 package mekanism.common.content.transporter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.Finder.FirstFinder;
+import mekanism.common.content.transporter.TransitRequest.TileTransitRequest.TileItemData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
@@ -14,41 +18,24 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 
-public class TransitRequest {
+public abstract class TransitRequest {
 
-    private final TransitResponse EMPTY_RESPONSE = new TransitResponse();
+    private final TransitResponse EMPTY = new TransitResponse(ItemStack.EMPTY, null);
 
-    /**
-     * Maps item types to respective inventory slot data.
-     */
-    private Map<HashedItem, SlotData> itemMap = new LinkedHashMap<>();
-
-    public static TransitRequest getFromTransport(TransporterStack stack) {
-        return getFromStack(stack.itemStack);
+    public static SimpleTransitRequest simple(ItemStack stack) {
+        return new SimpleTransitRequest(stack);
     }
 
-    public static TransitRequest getFromStack(ItemStack stack) {
-        TransitRequest ret = new TransitRequest();
-        ret.addItem(stack, -1);
-        return ret;
+    public static TransitRequest anyItem(TileEntity tile, Direction side, int amount) {
+        return definedItem(tile, side, amount, new FirstFinder());
     }
 
-    public static TransitRequest buildInventoryMap(TileEntity tile, Direction side, int amount) {
-        return buildInventoryMap(tile, side, amount, new FirstFinder());
+    public static TransitRequest definedItem(TileEntity tile, Direction side, int amount, Finder finder) {
+        return definedItem(tile, side, 1, amount, finder);
     }
 
-    public static TransitRequest buildInventoryMap(TileEntity tile, Direction side, int amount, Finder finder) {
-        return buildInventoryMap(tile, side, 1, amount, finder);
-    }
-
-    /**
-     * Creates a TransitRequest based on a full inspection of an entire specified inventory from a given side. The algorithm will use the specified Finder to ensure the
-     * resulting map will only capture desired items. The amount of each item type present in the resulting item type will cap at the given 'amount' parameter.
-     *
-     * @param side - the side from an adjacent connected inventory, *not* the inventory itself.
-     */
-    public static TransitRequest buildInventoryMap(TileEntity tile, Direction side, int min, int max, Finder finder) {
-        TransitRequest ret = new TransitRequest();
+    public static TransitRequest definedItem(TileEntity tile, Direction side, int min, int max, Finder finder) {
+        TileTransitRequest ret = new TileTransitRequest(tile, side);
         IItemHandler inventory = InventoryUtils.assertItemHandler("TransitRequest", tile, side.getOpposite());
         if (inventory == null) {
             return ret;
@@ -68,8 +55,8 @@ public class TransitRequest {
             }
         }
         // remove items that we don't have enough of
-        for (Iterator<Map.Entry<HashedItem, SlotData>> iter = ret.getItemMap().entrySet().iterator(); iter.hasNext();) {
-            Map.Entry<HashedItem, SlotData> entry = iter.next();
+        for (Iterator<Map.Entry<HashedItem, TileItemData>> iter = ret.getItemMap().entrySet().iterator(); iter.hasNext();) {
+            Map.Entry<HashedItem, TileItemData> entry = iter.next();
             if (entry.getValue().getTotalCount() < min) {
                 iter.remove();
             }
@@ -78,142 +65,183 @@ public class TransitRequest {
         return ret;
     }
 
-    public Map<HashedItem, SlotData> getItemMap() {
-        return itemMap;
-    }
+    public abstract Collection<? extends ItemTransitData> getSlotData();
 
     public boolean isEmpty() {
-        return itemMap.isEmpty();
+        return getSlotData().isEmpty();
     }
 
-    public void addItem(ItemStack stack, int slot) {
-        HashedItem hashed = new HashedItem(stack);
-        itemMap.computeIfAbsent(hashed, SlotData::new).addSlot(slot, stack);
-    }
-
-    public ItemStack getSingleStack() {
-        return itemMap.keySet().iterator().next().getStack();
-    }
-
-    public boolean hasType(ItemStack stack) {
-        return itemMap.keySet().stream().anyMatch(item -> InventoryUtils.areItemsStackable(stack, item.getStack()));
-    }
-
-    public int getCount(HashedItem type) {
-        SlotData data = itemMap.get(type);
-        return data != null ? data.getTotalCount() : 0;
-    }
-
-    public TransitResponse createResponse(ItemStack toSend, SlotData slotData) {
-        return new TransitResponse(toSend, slotData);
+    public TransitResponse createResponse(ItemStack inserted, ItemTransitData data) {
+        return new TransitResponse(inserted, data);
     }
 
     public TransitResponse createSimpleResponse() {
-        SlotData data = itemMap.values().stream().findFirst().orElse(null);
+        ItemTransitData data = getSlotData().stream().findFirst().orElse(null);
         return data != null ? createResponse(data.itemType.createStack(data.totalCount), data) : null;
     }
 
     public TransitResponse getEmptyResponse() {
-        return EMPTY_RESPONSE;
+        return EMPTY;
     }
 
-    /**
-     * A TransitResponse contains information regarding the partial ItemStacks which were allowed entry into a destination inventory. Note that a TransitResponse should
-     * only contain a single item type, although it may be spread out across multiple slots.
-     *
-     * @author aidancbrady
-     */
     public class TransitResponse {
 
-        private ItemStack toSend = ItemStack.EMPTY;
+        private ItemStack inserted;
+        private ItemTransitData slotData;
 
-        private SlotData slotData;
-
-        private TransitResponse() {
-        }
-
-        public TransitResponse(ItemStack toSend, SlotData slotData) {
-            this.toSend = toSend;
+        public TransitResponse(ItemStack inserted, ItemTransitData slotData) {
+            this.inserted = inserted;
             this.slotData = slotData;
         }
 
-        public ItemStack getStack() {
-            return toSend;
-        }
-
         public int getSendingAmount() {
-            return toSend.getCount();
+            return inserted.getCount();
         }
 
-        public boolean use(int slot, int amount) {
-            boolean empty = slotData.use(slot, amount);
-            if (slotData.getTotalCount() == 0) {
-                itemMap.remove(slotData.itemType);
-            }
-            return empty;
+        public ItemTransitData getSlotData() {
+            return slotData;
+        }
+
+        public ItemStack getStack() {
+            return inserted;
         }
 
         public boolean isEmpty() {
-            return toSend.isEmpty() || slotData.getTotalCount() == 0;
+            return inserted.isEmpty() || slotData.getTotalCount() == 0;
         }
 
-        public ItemStack getRejected(ItemStack orig) {
-            return StackUtils.size(orig, orig.getCount() - getSendingAmount());
+        public ItemStack getRejected() {
+            return StackUtils.size(slotData.getStack(), slotData.getStack().getCount() - getSendingAmount());
         }
 
-        public void use(TileEntity tile, Direction side) {
-            // fail fast if the response is empty
-            if (isEmpty()) {
-                return;
-            }
-
-            InvStack stack = new InvStack(tile, toSend, slotData.slotCountMap, side);
-            stack.use(this);
+        public ItemStack use(int amount) {
+            return slotData.use(amount);
         }
 
-        public void removeSlot(int slot) {
-            slotData.slotCountMap.remove(slot);
+        public ItemStack useAll() {
+            return use(getSendingAmount());
         }
     }
 
-    /**
-     * SlotData reflects slot count information for a unique item type within an inventory.
-     *
-     * @author aidancbrady
-     */
-    public static class SlotData {
+    public class ItemTransitData {
 
         private HashedItem itemType;
-        private int totalCount = 0;
-        private Int2IntMap slotCountMap = new Int2IntOpenHashMap();
+        protected int totalCount;
 
-        public SlotData(HashedItem itemType) {
+        public ItemTransitData(HashedItem itemType) {
             this.itemType = itemType;
+        }
+
+        public HashedItem getItemType() {
+            return itemType;
         }
 
         public int getTotalCount() {
             return totalCount;
         }
 
-        public int getSlotCount(int slot) {
-            return slotCountMap.get(slot);
+        public ItemStack getStack() {
+            return getItemType().createStack(getTotalCount());
         }
 
-        public void addSlot(int slot, ItemStack stack) {
-            if (slotCountMap.containsKey(slot)) {
-                Mekanism.logger.error("Attempted to track an already-tracked slot in a new TransitRequest.");
-                Mekanism.logger.error("Item: " + stack.getDisplayName());
-                return;
+        public ItemStack use(int amount) {
+            Mekanism.logger.error("Can't 'use' with this type of TransitResponse: " + this);
+            return ItemStack.EMPTY;
+        }
+    }
+
+    public static class SimpleTransitRequest extends TransitRequest {
+
+        private final List<ItemTransitData> slotData = new ArrayList<>();
+
+        public SimpleTransitRequest(ItemStack stack) {
+            slotData.add(new SimpleItemData(stack));
+        }
+
+        @Override
+        public Collection<ItemTransitData> getSlotData() {
+            return slotData;
+        }
+
+        public class SimpleItemData extends ItemTransitData {
+
+            public SimpleItemData(ItemStack stack) {
+                super(new HashedItem(stack));
+                totalCount = stack.getCount();
             }
-            slotCountMap.put(slot, stack.getCount());
-            totalCount += stack.getCount();
+        }
+    }
+
+    public static class TileTransitRequest extends TransitRequest {
+
+        private TileEntity tile;
+        private Direction side;
+
+        private Map<HashedItem, TileItemData> itemMap = new LinkedHashMap<>();
+
+        public TileTransitRequest(TileEntity tile, Direction side) {
+            this.tile = tile;
+            this.side = side;
         }
 
-        public boolean use(int slot, int amount) {
-            int stored = getSlotCount(slot);
-            totalCount -= amount;
-            slotCountMap.put(slot, stored - amount);
-            return stored == amount;
+        public void addItem(ItemStack stack, int slot) {
+            HashedItem hashed = new HashedItem(stack);
+            itemMap.computeIfAbsent(hashed, TileItemData::new).addSlot(slot, stack);
+        }
+
+        public int getCount(HashedItem itemType) {
+            ItemTransitData data = itemMap.get(itemType);
+            return data != null ? data.getTotalCount() : 0;
+        }
+
+        public Map<HashedItem, TileItemData> getItemMap() {
+            return itemMap;
+        }
+
+        @Override
+        public Collection<TileItemData> getSlotData() {
+            return itemMap.values();
+        }
+
+        public class TileItemData extends ItemTransitData {
+
+            private Int2IntMap slotMap = new Int2IntOpenHashMap();
+
+            public TileItemData(HashedItem itemType) {
+                super(itemType);
+            }
+
+            public void addSlot(int id, ItemStack stack) {
+                slotMap.put(id, stack.getCount());
+                totalCount += stack.getCount();
+            }
+
+            @Override
+            public ItemStack use(int amount) {
+                IItemHandler handler = InventoryUtils.assertItemHandler("InvStack", tile, side);
+                if (handler != null) {
+                    for (Int2IntMap.Entry entry : slotMap.int2IntEntrySet()) {
+                        int toUse = Math.min(amount, entry.getIntValue());
+                        ItemStack ret = handler.extractItem(entry.getIntKey(), toUse, false);
+                        boolean stackable = InventoryUtils.areItemsStackable(getItemType().getStack(), ret);
+                        if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
+                            Mekanism.logger.warn("An inventory's returned content " + (!stackable ? "type" : "count") + " does not line up with InvStack's prediction.");
+                            Mekanism.logger.warn("InvStack item: " + getItemType().getStack() + ", ret: " + ret);
+                            Mekanism.logger.warn("Tile: " + tile + " " + tile.getPos());
+                        }
+                        amount -= toUse;
+                        totalCount -= amount;
+                        entry.setValue(totalCount - toUse);
+                        if (totalCount == 0) {
+                            itemMap.remove(getItemType());
+                        }
+                        if (amount == 0) {
+                            break;
+                        }
+                    }
+                }
+                return getStack();
+            }
         }
     }
 }

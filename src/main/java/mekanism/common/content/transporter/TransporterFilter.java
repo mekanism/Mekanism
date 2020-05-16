@@ -25,7 +25,7 @@ public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>
     public abstract Finder getFinder();
 
     public TransitRequest mapInventory(TileEntity tile, Direction side, boolean singleItem) {
-        return TransitRequest.buildInventoryMap(tile, side, singleItem ? 1 : 64, getFinder());
+        return TransitRequest.definedItem(tile, side, singleItem ? 1 : 64, getFinder());
     }
 
     @Override

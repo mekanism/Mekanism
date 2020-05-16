@@ -42,6 +42,7 @@ import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.content.transporter.Finder.ItemStackFinder;
 import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TileTransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.IEmptyContainer;
@@ -278,20 +279,23 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             setActive(false);
         }
 
-        TransitRequest ejectMap = getEjectItemMap();
-        if (doEject && delayTicks == 0 && !ejectMap.isEmpty()) {
+
+        if (doEject && delayTicks == 0) {
             TileEntity ejectInv = getEjectInv();
             TileEntity ejectTile = getEjectTile();
             if (ejectInv != null && ejectTile != null) {
-                TransitResponse response;
-                Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()));
-                if (capability.isPresent()) {
-                    response = capability.get().insert(ejectTile, ejectMap, null, true, 0);
-                } else {
-                    response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, getOppositeDirection(), false);
-                }
-                if (!response.isEmpty()) {
-                    response.use(ejectTile, getOppositeDirection());
+                TransitRequest ejectMap = getEjectItemMap(ejectTile, getOppositeDirection());
+                if (!ejectMap.isEmpty()) {
+                    TransitResponse response;
+                    Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()));
+                    if (capability.isPresent()) {
+                        response = capability.get().insert(ejectTile, ejectMap, null, true, 0);
+                    } else {
+                        response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, getOppositeDirection(), false);
+                    }
+                    if (!response.isEmpty()) {
+                        response.useAll();
+                    }
                 }
                 delayTicks = 10;
             }
@@ -462,17 +466,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             }
         }
         if (doPull && getPullInv() != null) {
-            TransitRequest request = TransitRequest.buildInventoryMap(getPullInv(), Direction.UP, 1, ItemStackFinder.strict(filter.replaceStack));
+            TransitRequest request = TransitRequest.definedItem(getPullInv(), Direction.UP, 1, ItemStackFinder.strict(filter.replaceStack));
             if (!request.isEmpty()) {
-                request.createSimpleResponse().use(getPullInv(), Direction.UP);
-                return StackUtils.size(filter.replaceStack, 1);
+                return request.createSimpleResponse().useAll();
             }
         }
         return ItemStack.EMPTY;
     }
 
-    private TransitRequest getEjectItemMap() {
-        TransitRequest request = new TransitRequest();
+    private TransitRequest getEjectItemMap(TileEntity tile, Direction side) {
+        TileTransitRequest request = new TileTransitRequest(tile, side);
         for (int i = mainSlots.size() - 1; i >= 0; i--) {
             IInventorySlot slot = mainSlots.get(i);
             //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end

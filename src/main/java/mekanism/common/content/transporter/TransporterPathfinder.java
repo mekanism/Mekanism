@@ -188,7 +188,7 @@ public final class TransporterPathfinder {
                 loopSide(chunkMap, ret, transportStack.idleDir, startTile);
                 return new Destination(ret, true, null, 0).setPathType(Path.NONE);
             }
-            TransitRequest request = TransitRequest.getFromTransport(transportStack);
+            TransitRequest request = TransitRequest.simple(transportStack.itemStack);
             Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(startTile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
             if (capability.isPresent()) {
                 Destination newPath = TransporterPathfinder.getNewBasePath(capability.get(), transportStack, request, 0);

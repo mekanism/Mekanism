@@ -24,7 +24,7 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
     @Override
     public TransitRequest mapInventory(TileEntity tile, Direction side, boolean singleItem) {
         if (sizeMode && !singleItem) {
-            return TransitRequest.buildInventoryMap(tile, side, min, max, getFinder());
+            return TransitRequest.definedItem(tile, side, min, max, getFinder());
         }
         return super.mapInventory(tile, side, singleItem);
     }

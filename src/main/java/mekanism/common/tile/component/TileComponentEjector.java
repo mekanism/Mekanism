@@ -17,6 +17,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TileTransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
@@ -120,7 +121,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             }
             Set<Direction> outputs = info.getSidesForData(dataType);
             if (!outputs.isEmpty()) {
-                TransitRequest ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo);
+                TransitRequest ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo, outputs.iterator().next());
                 if (!ejectMap.isEmpty()) {
                     for (Direction side : outputs) {
                         TileEntity tile = MekanismUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
@@ -137,7 +138,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         }
                         if (!response.isEmpty()) {
                             // use the items returned by the TransitResponse; will be visible next loop
-                            response.use(this.tile, side);
+                            response.useAll();
                             if (ejectMap.isEmpty()) {
                                 //If we are out of items to eject, break
                                 break;
@@ -151,8 +152,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         tickDelay = 10;
     }
 
-    private TransitRequest getEjectItemMap(InventorySlotInfo slotInfo) {
-        TransitRequest request = new TransitRequest();
+    private TransitRequest getEjectItemMap(InventorySlotInfo slotInfo, Direction side) {
+        TileTransitRequest request = new TileTransitRequest(tile, side);
         List<IInventorySlot> slots = slotInfo.getSlots();
         // shuffle the order we look at our slots to avoid ejection patterns
         List<IInventorySlot> shuffled = new ArrayList<>(slots);

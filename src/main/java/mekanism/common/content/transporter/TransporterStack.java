@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
@@ -23,7 +24,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class TransporterStack {
 

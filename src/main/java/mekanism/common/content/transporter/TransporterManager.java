@@ -1,19 +1,18 @@
 package mekanism.common.content.transporter;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.content.transporter.TransitRequest.SlotData;
+import mekanism.common.content.transporter.TransitRequest.ItemTransitData;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.util.CapabilityUtils;
@@ -204,10 +203,10 @@ public class TransporterManager {
         // Now for each of the items in the request, simulate the insert, using the state from all the in-flight
         // items to ensure we have an accurate model of what will happen in future. We try each stack in the
         // request; it might be possible to not send the first item, but the second could work, etc.
-        for (Entry<HashedItem, SlotData> requestEntry : request.getItemMap().entrySet()) {
+        for (ItemTransitData data : request.getSlotData()) {
             // Create a sending ItemStack with the hashed item type and total item count within the request
-            ItemStack stack = requestEntry.getKey().getStack();
-            int numToSend = requestEntry.getValue().getTotalCount();
+            ItemStack stack = data.getStack();
+            int numToSend = data.getTotalCount();
             //Directly pass the stack AND the actual amount we want, so that it does not need to copy the stack if there is no room
             int numLeftOver = simulateInsert(handler, inventoryInfo, stack, numToSend);
 
@@ -217,7 +216,7 @@ public class TransporterManager {
             }
 
             // Otherwise, construct the appropriately size stack to send and return that
-            return request.createResponse(StackUtils.size(stack, numToSend - numLeftOver), requestEntry.getValue());
+            return request.createResponse(StackUtils.size(stack, numToSend - numLeftOver), data);
         }
         return request.getEmptyResponse();
     }

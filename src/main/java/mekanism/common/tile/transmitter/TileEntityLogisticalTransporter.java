@@ -121,7 +121,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         for (Direction side : getConnections(ConnectionType.PULL)) {
             final TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
             if (tile != null) {
-                TransitRequest request = TransitRequest.buildInventoryMap(tile, side, tier.getPullAmount());
+                TransitRequest request = TransitRequest.anyItem(tile, side, tier.getPullAmount());
 
                 // There's a stack available to insert into the network...
                 if (!request.isEmpty()) {
@@ -129,7 +129,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
                     // If the insert succeeded, remove the inserted count and try again for another 10 ticks
                     if (!response.isEmpty()) {
-                        response.use(tile, side.getOpposite());
+                        response.useAll();
                         delay = 10;
                     } else {
                         // Insert failed; increment the backoff and calculate delay. Note that we cap retries

@@ -12,7 +12,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
-import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TileTransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.tier.BinTier;
@@ -24,7 +24,6 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -81,13 +80,14 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         if (delayTicks == 0) {
             if (getActive()) {
                 TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().down());
-                ItemStack bottomStack = binSlot.getBottomStack();
+                TileTransitRequest request = new TileTransitRequest(this, Direction.DOWN);
+                request.addItem(binSlot.getBottomStack(), 0);
                 TransitResponse response;
                 Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, Direction.UP));
                 if (capability.isPresent()) {
-                    response = capability.get().insert(this, TransitRequest.getFromStack(bottomStack), null, true, 0);
+                    response = capability.get().insert(this, request, null, true, 0);
                 } else {
-                    response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), Direction.DOWN, false);
+                    response = InventoryUtils.putStackInInventory(tile, request, Direction.DOWN, false);
                 }
                 if (!response.isEmpty() && tier != BinTier.CREATIVE) {
                     int sendingAmount = response.getSendingAmount();
