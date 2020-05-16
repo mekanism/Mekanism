@@ -39,16 +39,17 @@ public class AttributeStateBoilerValveMode extends AttributeState {
         OUTPUT_STEAM("output_steam", MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, EnumColor.GRAY),
         OUTPUT_COOLANT("output_coolant", MekanismLang.BOILER_VALVE_MODE_OUTPUT_COOLANT, EnumColor.DARK_AQUA);
 
-        private String name;
-        private ILangEntry langEntry;
-        private EnumColor color;
+        private final String name;
+        private final ILangEntry langEntry;
+        private final EnumColor color;
 
-        private BoilerValveMode(String name, ILangEntry langEntry, EnumColor color) {
+        BoilerValveMode(String name, ILangEntry langEntry, EnumColor color) {
             this.name = name;
             this.langEntry = langEntry;
             this.color = color;
         }
 
+        @Nonnull
         @Override
         public String getName() {
             return name;

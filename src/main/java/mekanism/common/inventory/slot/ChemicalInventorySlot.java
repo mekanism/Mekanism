@@ -168,7 +168,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void fillChemicalTank(IInventorySlot slot,
-          IChemicalTank<CHEMICAL, STACK> chemicalTank, IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper) {
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, @Nullable IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper) {
         if (!slot.isEmpty() && chemicalTank.getNeeded() > 0) {
             //Try filling from the tank's item
             fillChemicalTankFromItem(slot, chemicalTank, wrapper);
@@ -179,7 +179,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
      * @implNote Does not pre-check if the current stack is empty or that the chemical tank needs chemical
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean fillChemicalTankFromItem(IInventorySlot slot,
-          IChemicalTank<CHEMICAL, STACK> chemicalTank, IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper) {
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, @Nullable IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper) {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         // Note: None of Mekanism's chemical items stack so at the moment it doesn't fully matter
         if (wrapper != null) {
@@ -225,23 +225,21 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
      * Drains tank into slot
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void drainChemicalTank(IInventorySlot slot, IChemicalTank<CHEMICAL, STACK> chemicalTank,
-          IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper) {
+          @Nullable IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper) {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         // Note: None of Mekanism's chemical items stack so at the moment it doesn't fully matter
-        if (!slot.isEmpty() && !chemicalTank.isEmpty()) {
-            if (wrapper != null) {
-                STACK storedChemical = chemicalTank.getStack();
-                STACK simulatedRemainder = wrapper.insertChemical(storedChemical, Action.SIMULATE);
-                long remainder = simulatedRemainder.getAmount();
-                long amount = storedChemical.getAmount();
-                if (remainder < amount) {
-                    //We are able to fit at least some of the chemical from our tank into the item
-                    STACK extractedChemical = chemicalTank.extract(amount - remainder, Action.EXECUTE, AutomationType.INTERNAL);
-                    if (!extractedChemical.isEmpty()) {
-                        //If we were able to actually extract it from our tank, then insert it into the item
-                        MekanismUtils.logMismatchedStackSize(wrapper.insertChemical(extractedChemical, Action.EXECUTE).getAmount(), 0);
-                        slot.onContentsChanged();
-                    }
+        if (!slot.isEmpty() && !chemicalTank.isEmpty() && wrapper != null) {
+            STACK storedChemical = chemicalTank.getStack();
+            STACK simulatedRemainder = wrapper.insertChemical(storedChemical, Action.SIMULATE);
+            long remainder = simulatedRemainder.getAmount();
+            long amount = storedChemical.getAmount();
+            if (remainder < amount) {
+                //We are able to fit at least some of the chemical from our tank into the item
+                STACK extractedChemical = chemicalTank.extract(amount - remainder, Action.EXECUTE, AutomationType.INTERNAL);
+                if (!extractedChemical.isEmpty()) {
+                    //If we were able to actually extract it from our tank, then insert it into the item
+                    MekanismUtils.logMismatchedStackSize(wrapper.insertChemical(extractedChemical, Action.EXECUTE).getAmount(), 0);
+                    slot.onContentsChanged();
                 }
             }
         }

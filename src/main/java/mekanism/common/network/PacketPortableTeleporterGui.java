@@ -45,18 +45,17 @@ public class PacketPortableTeleporterGui {
         }
         context.get().enqueueWork(() -> {
             ItemStack stack = player.getHeldItem(message.currentHand);
-            World world = player.world;
             if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableTeleporter) {
                 ItemPortableTeleporter item = (ItemPortableTeleporter) stack.getItem();
                 switch (message.packetType) {
                     case DATA_REQUEST:
-                        sendDataResponse(message.frequency, world, player, item, stack, message.currentHand);
+                        sendDataResponse(message.frequency, player, stack, message.currentHand);
                         break;
                     case SET_FREQ:
                         FrequencyManager<TeleporterFrequency> manager1 = FrequencyType.TELEPORTER.getManager(message.frequency.isPublic() ? null : player.getUniqueID());
                         TeleporterFrequency toUse = manager1.getOrCreateFrequency(message.frequency.getIdentity(), player.getUniqueID());
                         item.setFrequency(stack, toUse);
-                        sendDataResponse(toUse, world, player, item, stack, message.currentHand);
+                        sendDataResponse(toUse, player, stack, message.currentHand);
                         break;
                     case DEL_FREQ:
                         FrequencyManager<TeleporterFrequency> manager = FrequencyType.TELEPORTER.getManager(message.frequency.isPublic() ? null : player.getUniqueID());
@@ -89,12 +88,12 @@ public class PacketPortableTeleporterGui {
                                         ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
                                     }
                                     player.closeScreen();
-                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.getPosition()), world, coords.getPos());
+                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.getPosition()), player.world, coords.getPos());
                                     TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
                                     if (player instanceof ServerPlayerEntity) {
                                         TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coords);
                                     }
-                                    world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                    player.world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), teleWorld, coords.getPos());
                                 } catch (Exception ignored) {
                                 }
@@ -131,7 +130,7 @@ public class PacketPortableTeleporterGui {
         return new PacketPortableTeleporterGui(packetType, currentHand, frequency);
     }
 
-    private static void sendDataResponse(TeleporterFrequency given, World world, PlayerEntity player, ItemPortableTeleporter item, ItemStack stack, Hand hand) {
+    private static void sendDataResponse(TeleporterFrequency given, PlayerEntity player, ItemStack stack, Hand hand) {
         FrequencyManager<TeleporterFrequency> publicManager = FrequencyType.TELEPORTER.getManager(null),
               privateManager = FrequencyType.TELEPORTER.getManager(player.getUniqueID());
         byte status = 3;
@@ -139,6 +138,7 @@ public class PacketPortableTeleporterGui {
             FrequencyManager<TeleporterFrequency> manager = FrequencyType.TELEPORTER.getFrequencyManager(given);
             TeleporterFrequency freq = manager.getFrequency(given.getName());
             if (freq != null && !freq.getActiveCoords().isEmpty()) {
+                status = 1;
                 if (!player.isCreative()) {
                     Coord4D coords = given.getClosestCoords(new Coord4D(player));
                     if (coords != null) {
@@ -149,7 +149,6 @@ public class PacketPortableTeleporterGui {
                         }
                     }
                 }
-                status = 1;
             }
         }
         Mekanism.packetHandler.sendTo(new PacketPortableTeleporter(hand, given, status, new ArrayList<>(publicManager.getFrequencies()),

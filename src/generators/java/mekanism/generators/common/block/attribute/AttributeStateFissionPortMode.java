@@ -41,16 +41,17 @@ public class AttributeStateFissionPortMode extends AttributeState {
         OUTPUT_WASTE("output_waste", GeneratorsLang.FISSION_PORT_MODE_OUTPUT_WASTE, EnumColor.BROWN),
         OUTPUT_COOLANT("output_coolant", GeneratorsLang.FISSION_PORT_MODE_OUTPUT_COOLANT, EnumColor.DARK_AQUA);
 
-        private String name;
-        private ILangEntry langEntry;
-        private EnumColor color;
+        private final String name;
+        private final ILangEntry langEntry;
+        private final EnumColor color;
 
-        private FissionPortMode(String name, ILangEntry langEntry, EnumColor color) {
+        FissionPortMode(String name, ILangEntry langEntry, EnumColor color) {
             this.name = name;
             this.langEntry = langEntry;
             this.color = color;
         }
 
+        @Nonnull
         @Override
         public String getName() {
             return name;

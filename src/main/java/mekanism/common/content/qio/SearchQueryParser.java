@@ -68,7 +68,7 @@ public class SearchQueryParser {
         if (start >= query.length()) {
             return Pair.of(true, start);
         }
-        int newIndex = -1;
+        int newIndex;
         List<String> keys;
         char qc = query.charAt(start);
         if (qc == '(') {
@@ -182,10 +182,10 @@ public class SearchQueryParser {
             return charLookupMap.keySet();
         }
 
-        private char prefix;
-        private BiPredicate<String, ItemStack> checker;
+        private final char prefix;
+        private final BiPredicate<String, ItemStack> checker;
 
-        private QueryType(char prefix, BiPredicate<String, ItemStack> checker) {
+        QueryType(char prefix, BiPredicate<String, ItemStack> checker) {
             this.prefix = prefix;
             this.checker = checker;
         }
@@ -197,7 +197,7 @@ public class SearchQueryParser {
 
     public static class SearchQuery implements ISearchQuery {
 
-        private Map<QueryType, List<String>> queryStrings = new LinkedHashMap<>();
+        private final Map<QueryType, List<String>> queryStrings = new LinkedHashMap<>();
 
         @Override
         public boolean matches(ItemStack stack) {
@@ -220,7 +220,7 @@ public class SearchQueryParser {
 
     public static class SearchQueryList implements ISearchQuery {
 
-        private List<SearchQuery> queries = new ArrayList<>();
+        private final List<SearchQuery> queries;
 
         private SearchQueryList(List<SearchQuery> queries) {
             this.queries = queries;
@@ -229,7 +229,7 @@ public class SearchQueryParser {
         @Override
         public boolean matches(ItemStack stack) {
             // allow empty query lists to match all stacks
-            return queries.isEmpty() ? true : queries.stream().anyMatch(query -> query.matches(stack));
+            return queries.isEmpty() || queries.stream().anyMatch(query -> query.matches(stack));
         }
 
         @Override

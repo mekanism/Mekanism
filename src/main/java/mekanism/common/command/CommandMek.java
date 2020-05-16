@@ -85,16 +85,18 @@ public class CommandMek {
                             CommandSource source = ctx.getSource();
                             Entity entity = source.getEntity();
                             // Save the current location on the stack
-                            UUID player = entity.getUniqueID();
-                            Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<>());
-                            playerLocations.push(entity.getPosition());
-                            tpStack.put(player, playerLocations);
+                            if (entity != null) {
+                                UUID player = entity.getUniqueID();
+                                Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<>());
+                                playerLocations.push(entity.getPosition());
+                                tpStack.put(player, playerLocations);
 
-                            ILocationArgument location = Vec3Argument.getLocation(ctx, "location");
-                            Vec3d position = location.getPosition(source);
-                            // Teleport user to new location
-                            teleport(entity, position.getX(), position.getY(), position.getZ());
-                            source.sendFeedback(MekanismLang.COMMAND_TP.translate(position.getX(), position.getY(), position.getZ()), true);
+                                ILocationArgument location = Vec3Argument.getLocation(ctx, "location");
+                                Vec3d position = location.getPosition(source);
+                                // Teleport user to new location
+                                teleport(entity, position.getX(), position.getY(), position.getZ());
+                                source.sendFeedback(MekanismLang.COMMAND_TP.translate(position.getX(), position.getY(), position.getZ()), true);
+                            }
                             return 0;
                         }));
         }

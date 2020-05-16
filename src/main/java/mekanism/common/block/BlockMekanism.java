@@ -138,7 +138,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, LivingEntity placer, @Nonnull ItemStack stack) {
         TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
             return;
@@ -203,20 +203,20 @@ public abstract class BlockMekanism extends Block {
     @Nonnull
     @Override
     @Deprecated
-    public BlockState rotate(@Nonnull BlockState state, Rotation rotation) {
+    public BlockState rotate(@Nonnull BlockState state, @Nonnull Rotation rotation) {
         return AttributeStateFacing.rotate(state, rotation);
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public BlockState mirror(@Nonnull BlockState state, Mirror mirror) {
+    public BlockState mirror(@Nonnull BlockState state, @Nonnull Mirror mirror) {
         return AttributeStateFacing.mirror(state, mirror);
     }
 
     @Override
     @Deprecated
-    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
+    public void onBlockAdded(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
         if (state.hasTileEntity() && oldState.getBlock() != state.getBlock()) {
             TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
@@ -238,12 +238,14 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    public boolean hasComparatorInputOverride(BlockState blockState) {
+    @Deprecated
+    public boolean hasComparatorInputOverride(@Nonnull BlockState blockState) {
         return Attribute.has(this, AttributeComparator.class);
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
+    @Deprecated
+    public int getComparatorInputOverride(@Nonnull BlockState blockState, @Nonnull World world, @Nonnull BlockPos pos) {
         if (hasComparatorInputOverride(blockState)) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             //Double check the tile actually has comparator support

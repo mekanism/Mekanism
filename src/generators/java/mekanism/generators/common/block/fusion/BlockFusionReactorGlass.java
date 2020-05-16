@@ -37,7 +37,8 @@ public class BlockFusionReactorGlass extends BlockMekanism implements IHasTileEn
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
+    public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
+          boolean isMoving) {
         if (!world.isRemote) {
             TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
@@ -53,7 +54,9 @@ public class BlockFusionReactorGlass extends BlockMekanism implements IHasTileEn
 
     @Nonnull
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    @Deprecated
+    public ActionResultType onBlockActivated(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+          @Nonnull BlockRayTraceResult hit) {
         if (world.isRemote) {
             return ActionResultType.SUCCESS;
         }
@@ -69,7 +72,7 @@ public class BlockFusionReactorGlass extends BlockMekanism implements IHasTileEn
 
     @Override
     @Deprecated
-    public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
+    public boolean isSideInvisible(@Nonnull BlockState state, BlockState adjacentBlockState, @Nonnull Direction side) {
         Block blockOffset = adjacentBlockState.getBlock();
         if (blockOffset instanceof BlockFusionReactorGlass || blockOffset instanceof BlockLaserFocusMatrix) {
             return true;
@@ -90,12 +93,12 @@ public class BlockFusionReactorGlass extends BlockMekanism implements IHasTileEn
 
     @Override
     @Deprecated
-    public float getAmbientOcclusionLightValue(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
+    public float getAmbientOcclusionLightValue(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
         return 1.0F;
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
+    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
         return true;
     }
 
@@ -107,7 +110,7 @@ public class BlockFusionReactorGlass extends BlockMekanism implements IHasTileEn
 
     @Override
     @Deprecated
-    public boolean isNormalCube(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+    public boolean isNormalCube(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         return false;
     }
 

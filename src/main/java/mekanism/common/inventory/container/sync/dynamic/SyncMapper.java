@@ -91,7 +91,7 @@ public class SyncMapper {
                 ContainerSync syncData = field.getAnnotation(ContainerSync.class);
                 PropertyType type = PropertyType.getFromType(field.getType());
                 SpecialPropertyHandler handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
-                PropertyField newField = null;
+                PropertyField newField;
                 if (handler != null) {
                     newField = createSpecialProperty(handler, field, clazz, syncData);
                 } else if (type != null) {

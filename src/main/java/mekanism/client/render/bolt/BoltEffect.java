@@ -97,7 +97,7 @@ public class BoltEffect {
                 BoltInstructions data = drawQueue.poll();
                 Vec3d perpendicularDist = data.perpendicularDist;
                 float progress = data.progress + (1F / boltData.getSegments()) * (1 - parallelNoise + random.nextFloat() * parallelNoise * 2);
-                Vec3d segmentEnd = null;
+                Vec3d segmentEnd;
                 if (progress >= 1) {
                     segmentEnd = boltData.getEnd();
                 } else {

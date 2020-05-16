@@ -1,5 +1,6 @@
 package mekanism.additions.common.block.plastic;
 
+import javax.annotation.Nonnull;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import net.minecraft.block.Block;
@@ -23,7 +24,7 @@ public class BlockPlasticRoad extends Block implements IColoredBlock {
     }
 
     @Override
-    public void onEntityWalk(World world, BlockPos pos, Entity entity) {
+    public void onEntityWalk(@Nonnull World world, @Nonnull BlockPos pos, Entity entity) {
         double boost = 1.6;
         Vec3d motion = entity.getMotion();
         double a = Math.atan2(motion.getX(), motion.getZ());

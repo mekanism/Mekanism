@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container.slot;
 
 import com.mojang.datafixers.util.Pair;
+import javax.annotation.Nonnull;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -35,7 +36,7 @@ public class ArmorSlot extends InsertableSlot {
     }
 
     @Override
-    public boolean canTakeStack(PlayerEntity player) {
+    public boolean canTakeStack(@Nonnull PlayerEntity player) {
         ItemStack itemstack = getStack();
         if (!itemstack.isEmpty() && !player.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack)) {
             return false;

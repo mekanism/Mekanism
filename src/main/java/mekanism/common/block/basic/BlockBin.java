@@ -34,7 +34,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
     }
 
     @Override
-    public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+    public void onBlockClicked(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
         if (!world.isRemote) {
             TileEntityBin bin = MekanismUtils.getTileEntity(TileEntityBin.class, world, pos);
             if (bin == null) {

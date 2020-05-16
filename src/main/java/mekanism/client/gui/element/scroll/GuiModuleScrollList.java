@@ -23,11 +23,10 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiModuleScrollList extends GuiScrollList {
 
-    private static ResourceLocation MODULE_SELECTION = MekanismUtils.getResource(ResourceType.GUI, "module_selection.png");
-    private static int TEXTURE_WIDTH = 100;
-    private static int TEXTURE_HEIGHT = 36;
+    private static final ResourceLocation MODULE_SELECTION = MekanismUtils.getResource(ResourceType.GUI, "module_selection.png");
+    private static final int TEXTURE_WIDTH = 100;
+    private static final int TEXTURE_HEIGHT = 36;
 
-    @Nullable
     private int selectIndex = -1;
 
     private Consumer<Module> callback;

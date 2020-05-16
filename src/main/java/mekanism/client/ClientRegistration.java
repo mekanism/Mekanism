@@ -388,10 +388,12 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
         ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), (state, world, pos, tintIndex) -> {
-                  TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-                  if (tile instanceof TileEntityQIOComponent) {
-                      EnumColor color = ((TileEntityQIOComponent) tile).getColor();
-                      return color != null ? MekanismRenderer.getColorARGB(color, 1) : -1;
+                  if (pos != null) {
+                      TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                      if (tile instanceof TileEntityQIOComponent) {
+                          EnumColor color = ((TileEntityQIOComponent) tile).getColor();
+                          return color != null ? MekanismRenderer.getColorARGB(color, 1) : -1;
+                      }
                   }
                   return -1;
               }, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,

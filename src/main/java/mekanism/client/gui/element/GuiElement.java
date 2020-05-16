@@ -7,6 +7,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
@@ -57,7 +58,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     public void tick() {
-        children.forEach(child -> child.tick());
+        children.forEach(GuiElement::tick);
     }
 
     public void resize(int prevLeft, int prevTop, int left, int top) {
@@ -83,7 +84,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     public void onWindowClose() {
-        children.forEach(child -> child.onWindowClose());
+        children.forEach(GuiElement::onWindowClose);
     }
 
     protected ResourceLocation getButtonLocation(String name) {
@@ -99,7 +100,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     public boolean hasPersistentData() {
-        return children.stream().anyMatch(child -> child.hasPersistentData());
+        return children.stream().anyMatch(GuiElement::hasPersistentData);
     }
 
     public void syncFrom(GuiElement element) {
@@ -299,7 +300,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
-    public void playDownSound(SoundHandler soundHandler) {
+    public void playDownSound(@Nonnull SoundHandler soundHandler) {
         if (playClickSound) {
             super.playDownSound(soundHandler);
         }
@@ -317,9 +318,9 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         DEFAULT(MekanismUtils.getResource(ResourceType.GUI, "button.png")),
         DIGITAL(MekanismUtils.getResource(ResourceType.GUI, "button_digital.png"));
 
-        private ResourceLocation texture;
+        private final ResourceLocation texture;
 
-        private ButtonBackground(ResourceLocation texture) {
+        ButtonBackground(ResourceLocation texture) {
             this.texture = texture;
         }
 

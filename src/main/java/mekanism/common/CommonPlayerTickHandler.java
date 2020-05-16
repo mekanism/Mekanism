@@ -109,8 +109,9 @@ public class CommonPlayerTickHandler {
         } else if (player.stepHeight == 1.002F) {
             player.stepHeight = 0.6F;
         }
-
-        Mekanism.radiationManager.tickServer((ServerPlayerEntity) player);
+        if (player instanceof ServerPlayerEntity) {
+            Mekanism.radiationManager.tickServer((ServerPlayerEntity) player);
+        }
 
         if (isFlamethrowerOn(player)) {
             player.world.addEntity(new EntityFlame(player));

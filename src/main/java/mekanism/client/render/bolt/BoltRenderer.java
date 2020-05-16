@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -154,7 +153,7 @@ public class BoltRenderer {
 
     public class BoltInstance {
 
-        private List<BoltQuads> renderQuads = new ArrayList<>();
+        private final List<BoltQuads> renderQuads;
         private final float lifespan;
         private int ticksExisted;
 

@@ -31,20 +31,22 @@ public class BlockRadioactiveWasteBarrel extends BlockTile<TileEntityRadioactive
     @Override
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityRadioactiveWasteBarrel tile = MekanismUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
-        int count = (int) (tile.getGasScale() * 10);
-        if (tile != null && count > 0) {
-            for (int i = 0; i < random.nextInt(count); i++) {
-                double randX = pos.getX() - 0.1 + random.nextDouble() * 1.2;
-                double randY = pos.getY() - 0.1 + random.nextDouble() * 1.2;
-                double randZ = pos.getZ() - 0.1 + random.nextDouble() * 1.2;
-                world.addParticle((BasicParticleType) MekanismParticleTypes.RADIATION.getParticleType(), randX, randY, randZ, 0, 0, 0);
+        if (tile != null) {
+            int count = (int) (10 * tile.getGasScale());
+            if (count > 0) {
+                for (int i = 0; i < random.nextInt(count); i++) {
+                    double randX = pos.getX() - 0.1 + random.nextDouble() * 1.2;
+                    double randY = pos.getY() - 0.1 + random.nextDouble() * 1.2;
+                    double randZ = pos.getZ() - 0.1 + random.nextDouble() * 1.2;
+                    world.addParticle((BasicParticleType) MekanismParticleTypes.RADIATION.getParticleType(), randX, randY, randZ, 0, 0, 0);
+                }
             }
         }
     }
 
     @Override
     @Deprecated
-    public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         float speed = super.getPlayerRelativeBlockHardness(state, player, world, pos);
         TileEntityRadioactiveWasteBarrel tile = MekanismUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
         return tile != null && tile.getGasScale() > 0 ? speed / 5F : speed;
@@ -52,14 +54,19 @@ public class BlockRadioactiveWasteBarrel extends BlockTile<TileEntityRadioactive
 
     @Nonnull
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        TileEntityRadioactiveWasteBarrel tile = MekanismUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
+    @Deprecated
+    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+          @Nonnull BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
+            return ActionResultType.PASS;
+        }
+        TileEntityRadioactiveWasteBarrel tile = MekanismUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
+        if (tile == null) {
             return ActionResultType.PASS;
         }
         if (!world.isRemote()) {
             GasStack stored = tile.getGas();
-            ITextComponent text = null;
+            ITextComponent text;
             if (stored.isEmpty()) {
                 text = MekanismLang.NO_GAS.translateColored(EnumColor.GRAY);
             } else {

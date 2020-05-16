@@ -157,10 +157,10 @@ public class StorageUtils {
     public static ITextComponent getEnergyPercent(ItemStack stack) {
         IEnergyContainer container = getEnergyContainer(stack, 0);
         double ratio = 0.0D;
-        EnumColor color = EnumColor.DARK_RED;
         if (container != null) {
             ratio = container.getEnergy().divideToLevel(container.getMaxEnergy());
         }
+        EnumColor color;
         if (ratio < 0.01F) {
             color = EnumColor.DARK_RED;
         } else if (ratio < 0.1F) {

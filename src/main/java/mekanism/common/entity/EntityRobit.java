@@ -301,7 +301,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     @Nonnull
     @Override
-    public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
+    public ActionResultType applyPlayerInteraction(PlayerEntity player, @Nonnull Vec3d vec, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
@@ -351,7 +351,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    public void writeAdditional(CompoundNBT nbtTags) {
+    public void writeAdditional(@Nonnull CompoundNBT nbtTags) {
         super.writeAdditional(nbtTags);
         if (getOwnerUUID() != null) {
             nbtTags.putUniqueId(NBTConstants.OWNER_UUID, getOwnerUUID());
@@ -367,7 +367,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    public void readAdditional(CompoundNBT nbtTags) {
+    public void readAdditional(@Nonnull CompoundNBT nbtTags) {
         super.readAdditional(nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
         setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));

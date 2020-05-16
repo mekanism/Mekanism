@@ -1,6 +1,9 @@
 package mekanism.common.inventory.slot;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.content.qio.IQIODriveHolder;
@@ -9,16 +12,16 @@ import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class QIODriveSlot extends BasicInventorySlot {
 
-    private IQIODriveHolder driveHolder;
-    private int slot;
+    private final IQIODriveHolder driveHolder;
+    private final int slot;
 
     public <TILE extends IMekanismInventory & IQIODriveHolder> QIODriveSlot(TILE inventory, int slot, int x, int y) {
-        super((stack, automationType) -> automationType != AutomationType.EXTERNAL,
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL,
-              (stack) -> stack.getItem() instanceof IQIODriveItem,
-              inventory, x, y);
+        super(notExternal, notExternal, (stack) -> stack.getItem() instanceof IQIODriveItem, inventory, x, y);
         this.driveHolder = inventory;
         this.slot = slot;
     }

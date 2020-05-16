@@ -117,12 +117,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeftIn, int guiTopIn, int mouseButton) {
-        return !windows.stream().anyMatch(w -> w.isMouseOver(mouseX, mouseY)) &&
-               super.hasClickedOutside(mouseX, mouseY, guiLeftIn, guiTopIn, mouseButton);
+        return windows.stream().noneMatch(w -> w.isMouseOver(mouseX, mouseY)) && super.hasClickedOutside(mouseX, mouseY, guiLeftIn, guiTopIn, mouseButton);
     }
 
     @Override
-    public void resize(Minecraft minecraft, int sizeX, int sizeY) {
+    public void resize(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
         List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
         for (int i = 0; i < buttons.size(); i++) {
             Widget widget = buttons.get(i);

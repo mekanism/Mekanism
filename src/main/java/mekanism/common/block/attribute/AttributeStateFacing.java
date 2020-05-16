@@ -78,7 +78,11 @@ public class AttributeStateFacing extends AttributeState {
 
     @Override
     @Contract("_, null, _, _, _, _ -> null")
-    public BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nullable PlayerEntity player, @Nonnull Direction face) {
+    public BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nullable PlayerEntity player,
+          @Nonnull Direction face) {
+        if (state == null) {
+            return null;
+        }
         AttributeStateFacing blockFacing = Attribute.get(block, AttributeStateFacing.class);
         Direction newDirection = Direction.SOUTH;
         if (blockFacing.getPlacementType() == FacePlacementType.PLAYER_LOCATION) {

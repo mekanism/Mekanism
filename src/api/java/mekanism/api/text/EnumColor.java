@@ -1,5 +1,6 @@
 package mekanism.api.text;
 
+import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.MathUtils;
 import net.minecraft.block.material.MaterialColor;
@@ -132,6 +133,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
         return MathUtils.getByIndexMod(COLORS, index);
     }
 
+    @Nonnull
     @Override
     public EnumColor byIndex(int index) {
         return byIndexStatic(index);
