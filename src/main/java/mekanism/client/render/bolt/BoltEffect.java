@@ -17,7 +17,7 @@ public class BoltEffect {
 
     public static final BoltEffect ELECTRICITY = electricity(0.1F);
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
     /** How large the individual bolts should render. */
     private float size = 0.1F;
@@ -34,8 +34,8 @@ public class BoltEffect {
 
     private float red = 0.45F, green = 0.45F, blue = 0.5F, alpha = 0.8F;
 
-    private SpreadFunction spreadFunction;
-    private RandomFunction randomFunction;
+    private final SpreadFunction spreadFunction;
+    private final RandomFunction randomFunction;
     private SegmentSpreader segmentSpreader = SegmentSpreader.NO_MEMORY;
 
     public static BoltEffect basic() {
@@ -161,7 +161,7 @@ public class BoltEffect {
 
     private static class QuadCache {
 
-        private Vec3d prevEnd, prevEndRight, prevEndBack;
+        private final Vec3d prevEnd, prevEndRight, prevEndBack;
 
         private QuadCache(Vec3d prevEnd, Vec3d prevEndRight, Vec3d prevEndBack) {
             this.prevEnd = prevEnd;
@@ -172,11 +172,11 @@ public class BoltEffect {
 
     protected static class BoltInstructions {
 
-        private Vec3d start;
-        private Vec3d perpendicularDist;
-        private QuadCache cache;
-        private float progress;
-        private boolean isBranch;
+        private final Vec3d start;
+        private final Vec3d perpendicularDist;
+        private final QuadCache cache;
+        private final float progress;
+        private final boolean isBranch;
 
         private BoltInstructions(Vec3d start, float progress, Vec3d perpendicularDist, QuadCache cache, boolean isBranch) {
             this.start = start;
@@ -189,8 +189,8 @@ public class BoltEffect {
 
     protected static class BoltQuads {
 
-        private Color color;
-        private List<Vec3d> vecs;
+        private final Color color;
+        private final List<Vec3d> vecs;
 
         protected BoltQuads(Color color) {
             this.color = color;
@@ -198,7 +198,7 @@ public class BoltEffect {
         }
 
         protected void addQuad(Vec3d... quadVecs) {
-            Arrays.stream(quadVecs).forEach(v -> vecs.add(v));
+            vecs.addAll(Arrays.asList(quadVecs));
         }
 
         protected void render(Matrix4f matrix, IVertexBuilder buffer, float alpha) {
@@ -211,19 +211,19 @@ public class BoltEffect {
     public interface SpreadFunction {
 
         /** A steady linear increase in perpendicular noise. */
-        public static final SpreadFunction LINEAR_ASCENT = (progress) -> progress;
+        SpreadFunction LINEAR_ASCENT = (progress) -> progress;
         /** A steady linear increase in perpendicular noise, followed by a steady decrease after the halfway point. */
-        public static final SpreadFunction LINEAR_ASCENT_DESCENT = (progress) -> (progress - Math.max(0, 2 * progress - 1)) / 0.5F;
+        SpreadFunction LINEAR_ASCENT_DESCENT = (progress) -> (progress - Math.max(0, 2 * progress - 1)) / 0.5F;
         /** Represents a unit sine wave from 0 to PI, scaled by progress. */
-        public static final SpreadFunction SINE = (progress) -> (float) Math.sin(Math.PI * progress);
+        SpreadFunction SINE = (progress) -> (float) Math.sin(Math.PI * progress);
 
         float getMaxSpread(float progress);
     }
 
     public interface RandomFunction {
 
-        public static final RandomFunction UNIFORM = (rand) -> rand.nextFloat();
-        public static final RandomFunction GAUSSIAN = (rand) -> (float) rand.nextGaussian();
+        RandomFunction UNIFORM = Random::nextFloat;
+        RandomFunction GAUSSIAN = rand -> (float) rand.nextGaussian();
 
         float getRandom(Random rand);
     }
@@ -231,12 +231,10 @@ public class BoltEffect {
     public interface SegmentSpreader {
 
         /** Don't remember where the last segment left off, just randomly move from the straight-line vector. */
-        public static final SegmentSpreader NO_MEMORY = (perpendicularDist, randVec, maxDiff, scale, progress) -> {
-            return randVec.scale(maxDiff);
-        };
+        SegmentSpreader NO_MEMORY = (perpendicularDist, randVec, maxDiff, scale, progress) -> randVec.scale(maxDiff);
 
         /** Move from where the previous segment ended by a certain memory factor. Higher memory will restrict perpendicular movement. */
-        public static SegmentSpreader memory(float memoryFactor) {
+        static SegmentSpreader memory(float memoryFactor) {
             return (perpendicularDist, randVec, maxDiff, spreadScale, progress) -> {
                 float nextDiff = maxDiff * (1 - memoryFactor);
                 Vec3d cur = randVec.scale(nextDiff);

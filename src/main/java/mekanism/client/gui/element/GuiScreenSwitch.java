@@ -4,7 +4,7 @@ import static mekanism.client.gui.element.GuiDigitalSwitch.BUTTON_SIZE_X;
 import static mekanism.client.gui.element.GuiDigitalSwitch.BUTTON_SIZE_Y;
 import static mekanism.client.gui.element.GuiDigitalSwitch.SWITCH;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
@@ -19,7 +19,7 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     private final Runnable onToggle;
 
     public GuiScreenSwitch(IGuiWrapper gui, int x, int y, int width, ITextComponent buttonName, BooleanSupplier stateSupplier, Runnable onToggle) {
-        super(gui, x, y, width, BUTTON_SIZE_Y * 2 + 5, () -> Arrays.asList(buttonName));
+        super(gui, x, y, width, BUTTON_SIZE_Y * 2 + 5, () -> Collections.singletonList(buttonName));
         this.stateSupplier = stateSupplier;
         this.onToggle = onToggle;
         active = true;

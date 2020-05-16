@@ -1,6 +1,5 @@
 package mekanism.client.gui.filter;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.EnumColor;
@@ -68,10 +67,10 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
 
     @Override
     public List<ItemStack> getRenderStacks() {
-        if (filter.getMaterialItem() == null) {
+        if (filter.getMaterialItem().isEmpty()) {
             return Collections.emptyList();
         }
-        return Arrays.asList(filter.getMaterialItem());
+        return Collections.singletonList(filter.getMaterialItem());
     }
 
     @Override

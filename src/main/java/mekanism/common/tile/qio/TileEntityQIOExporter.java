@@ -206,7 +206,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             for (Map.Entry<HashedItem, Integer> entry : removed.entrySet()) {
                 ItemStack ret = freq.removeByType(entry.getKey(), entry.getValue());
                 if (ret.getCount() != entry.getValue()) {
-                    Mekanism.logger.error("QIO ejection item removal didn't line up with prediction: removed %s, expected %s", ret.getCount(), entry.getValue());
+                    Mekanism.logger.error("QIO ejection item removal didn't line up with prediction: removed {}, expected {}", ret.getCount(), entry.getValue());
                 }
             }
         }

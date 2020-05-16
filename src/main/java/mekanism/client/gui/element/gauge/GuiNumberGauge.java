@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.gauge;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
@@ -38,7 +38,7 @@ public class GuiNumberGauge extends GuiGauge<Void> {
 
     @Override
     public List<ITextComponent> getTooltipText() {
-        return Arrays.asList(infoHandler.getText());
+        return Collections.singletonList(infoHandler.getText());
     }
 
     public interface INumberInfoHandler {

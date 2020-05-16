@@ -347,7 +347,7 @@ public class ClientTickHandler {
         if (evt.getEntity() instanceof PlayerEntity) {
             PlayerEntity entity = (PlayerEntity) evt.getEntity();
             if (entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
-                ((PlayerModel<?>) evt.getRenderer().getEntityModel()).bipedHead.showModel = false;
+                evt.getRenderer().getEntityModel().bipedHead.showModel = false;
             }
         }
     }

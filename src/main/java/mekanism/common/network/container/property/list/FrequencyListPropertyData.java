@@ -17,7 +17,7 @@ public class FrequencyListPropertyData<FREQUENCY extends Frequency> extends List
     public static <FREQUENCY extends Frequency> FrequencyListPropertyData<FREQUENCY> read(short property, int elements, PacketBuffer buffer) {
         List<FREQUENCY> values = new ArrayList<>(elements);
         for (int i = 0; i < elements; i++) {
-            values.add((FREQUENCY) Frequency.readFromPacket(buffer));
+            values.add(Frequency.readFromPacket(buffer));
         }
         return new FrequencyListPropertyData<>(property, values);
     }

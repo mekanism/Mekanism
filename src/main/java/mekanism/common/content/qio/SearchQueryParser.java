@@ -3,7 +3,7 @@ package mekanism.common.content.qio;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,11 +83,11 @@ public class SearchQueryParser {
             if (quoteResult == null) {
                 return Pair.of(false, -1);
             }
-            keys = Arrays.asList(quoteResult.getLeft());
+            keys = Collections.singletonList(quoteResult.getLeft());
             newIndex = quoteResult.getRight();
         } else {
             Pair<String, Integer> textResult = readUntilTermination(query, start, type != QueryType.NAME);
-            keys = Arrays.asList(textResult.getLeft());
+            keys = Collections.singletonList(textResult.getLeft());
             newIndex = textResult.getRight();
         }
         if (!keys.isEmpty()) {

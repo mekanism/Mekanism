@@ -21,7 +21,7 @@ public class PacketUpdateContainerFrequency<FREQUENCY extends Frequency> extends
     private PacketUpdateContainerFrequency(PacketBuffer buffer) {
         super(buffer);
         if (buffer.readBoolean()) {
-            this.value = (FREQUENCY) Frequency.readFromPacket(buffer);
+            this.value = Frequency.readFromPacket(buffer);
         } else {
             this.value = null;
         }

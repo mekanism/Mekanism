@@ -28,18 +28,18 @@ public class ItemGeigerCounter extends Item {
         addPropertyOverride(new ResourceLocation("radiation"), new IItemPropertyGetter() {
             @Override
             @OnlyIn(Dist.CLIENT)
-            public float call(ItemStack stack, @Nullable World world, @Nullable LivingEntity usingEntity) {
-                if (usingEntity == null || !(usingEntity instanceof PlayerEntity)) {
-                    return 0;
+            public float call(@Nonnull ItemStack stack, @Nullable World world, @Nullable LivingEntity usingEntity) {
+                if (usingEntity instanceof PlayerEntity) {
+                    return Mekanism.radiationManager.getClientScale().ordinal();
                 }
-                return Mekanism.radiationManager.getClientScale().ordinal();
+                return 0;
             }
         });
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!player.isSneaking() && !world.isRemote()) {
             double magnitude = Mekanism.radiationManager.getRadiationLevel(player);

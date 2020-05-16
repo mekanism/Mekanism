@@ -60,13 +60,13 @@ public class PacketDropperUse {
                     if (tile instanceof TileEntityMultiblock<?>) {
                         MultiblockData structure = ((TileEntityMultiblock<?>) tile).getMultiblock();
                         if (structure.isFormed()) {
-                            if (message.tankType == TankType.GAS_TANK && structure instanceof IMekanismGasHandler) {
-                                IGasTank tank = ((IMekanismGasHandler) structure).getGasTank(message.tankId, null);
+                            if (message.tankType == TankType.GAS_TANK) {
+                                IGasTank tank = structure.getGasTank(message.tankId, null);
                                 if (tank != null) {
                                     handleChemicalTank(player, stack, tank, message.action);
                                 }
-                            } else if (message.tankType == TankType.FLUID_TANK && structure instanceof IMekanismFluidHandler) {
-                                IExtendedFluidTank tank = ((IMekanismFluidHandler) structure).getFluidTank(message.tankId, null);
+                            } else if (message.tankType == TankType.FLUID_TANK) {
+                                IExtendedFluidTank tank = structure.getFluidTank(message.tankId, null);
                                 if (tank != null) {
                                     handleFluidTank(player, stack, tank, message.action);
                                 }

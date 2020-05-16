@@ -27,7 +27,7 @@
       "y": -90
     },
     "facing=up,active=true": {
-      "model": "mekanism:block/qio_redstone_adapter",
+      "model": "mekanism:block/qio_redstone_adapter"
     },
     "facing=down,active=true": {
       "model": "mekanism:block/qio_redstone_adapter",

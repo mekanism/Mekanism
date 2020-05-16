@@ -75,7 +75,6 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
                       .filter(transmitter -> TransmissionType.checkTransmissionType(transmitter, TransmissionType.HEAT)).isPresent()) {
                     adjacentTransfer += tempToTransfer;
                 }
-                continue;
             }
 
         }

@@ -63,7 +63,7 @@ class SearchQueryParserTest {
     @Test
     @DisplayName("Test random queries, trying to cause a crash")
     void testRandomQueries() {
-        SearchQueryParser.parse("|4434|\'f1419879182749182^?%#@*&$1@(#*$\"\'");
+        SearchQueryParser.parse("|4434|'f1419879182749182^?%#@*&$1@(#*$\"'");
     }
 
     private void queryAssert(String query, String mapResult) {

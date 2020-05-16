@@ -4,12 +4,10 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.common.Mekanism;
-import mekanism.common.lib.inventory.TransitRequest.TileTransitRequest.TileItemData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
@@ -53,13 +51,7 @@ public abstract class TransitRequest {
             }
         }
         // remove items that we don't have enough of
-        for (Iterator<Map.Entry<HashedItem, TileItemData>> iter = ret.getItemMap().entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry<HashedItem, TileItemData> entry = iter.next();
-            if (entry.getValue().getTotalCount() < min) {
-                iter.remove();
-            }
-        }
-
+        ret.getItemMap().entrySet().removeIf(entry -> entry.getValue().getTotalCount() < min);
         return ret;
     }
 
@@ -82,10 +74,10 @@ public abstract class TransitRequest {
         return EMPTY;
     }
 
-    public class TransitResponse {
+    public static class TransitResponse {
 
-        private ItemStack inserted;
-        private ItemData slotData;
+        private final ItemStack inserted;
+        private final ItemData slotData;
 
         public TransitResponse(ItemStack inserted, ItemData slotData) {
             this.inserted = inserted;
@@ -121,9 +113,9 @@ public abstract class TransitRequest {
         }
     }
 
-    public class ItemData {
+    public static class ItemData {
 
-        private HashedItem itemType;
+        private final HashedItem itemType;
         protected int totalCount;
 
         public ItemData(HashedItem itemType) {
@@ -161,7 +153,7 @@ public abstract class TransitRequest {
             return slotData;
         }
 
-        public class SimpleItemData extends ItemData {
+        public static class SimpleItemData extends ItemData {
 
             public SimpleItemData(ItemStack stack) {
                 super(new HashedItem(stack));
@@ -172,10 +164,9 @@ public abstract class TransitRequest {
 
     public static class TileTransitRequest extends TransitRequest {
 
-        private TileEntity tile;
-        private Direction side;
-
-        private Map<HashedItem, TileItemData> itemMap = new LinkedHashMap<>();
+        private final TileEntity tile;
+        private final Direction side;
+        private final Map<HashedItem, TileItemData> itemMap = new LinkedHashMap<>();
 
         public TileTransitRequest(TileEntity tile, Direction side) {
             this.tile = tile;
@@ -203,7 +194,7 @@ public abstract class TransitRequest {
 
         public class TileItemData extends ItemData {
 
-            private Int2IntMap slotMap = new Int2IntOpenHashMap();
+            private final Int2IntMap slotMap = new Int2IntOpenHashMap();
 
             public TileItemData(HashedItem itemType) {
                 super(itemType);

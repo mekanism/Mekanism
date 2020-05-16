@@ -2,6 +2,7 @@ package mekanism.common.tile.component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -160,8 +161,8 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     public ConfigInfo setupIOConfig(TransmissionType type, Object inputContainer, Object outputContainer, RelativeSide outputSide, boolean alwaysAllow) {
         ConfigInfo gasConfig = getConfig(type);
         if (gasConfig != null) {
-            gasConfig.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow ? true : false, inputContainer));
-            gasConfig.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow ? true : false, true, outputContainer));
+            gasConfig.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, inputContainer));
+            gasConfig.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, outputContainer));
             gasConfig.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, Arrays.asList(inputContainer, outputContainer)));
             gasConfig.fill(DataType.INPUT);
             gasConfig.setDataType(DataType.OUTPUT, outputSide);
@@ -170,14 +171,14 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public ConfigInfo setupItemIOConfig(IInventorySlot inputSlot, IInventorySlot outputSlot, IInventorySlot energySlot) {
-        return setupItemIOConfig(Arrays.asList(inputSlot), Arrays.asList(outputSlot), energySlot, false);
+        return setupItemIOConfig(Collections.singletonList(inputSlot), Collections.singletonList(outputSlot), energySlot, false);
     }
 
     public ConfigInfo setupItemIOConfig(List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, IInventorySlot energySlot, boolean alwaysAllow) {
         ConfigInfo itemConfig = getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, alwaysAllow ? true : false, inputSlots));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(alwaysAllow ? true : false, true, outputSlots));
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, alwaysAllow, inputSlots));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(alwaysAllow, true, outputSlots));
             List<IInventorySlot> ioSlots = new ArrayList<>(inputSlots);
             ioSlots.addAll(outputSlots);
             itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, ioSlots));

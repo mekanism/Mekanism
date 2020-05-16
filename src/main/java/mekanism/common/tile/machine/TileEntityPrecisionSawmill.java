@@ -1,6 +1,7 @@
 package mekanism.common.tile.machine;
 
 import java.util.Arrays;
+import java.util.Collections;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
@@ -44,7 +45,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     public TileEntityPrecisionSawmill() {
         super(MekanismBlocks.PRECISION_SAWMILL, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
-        configComponent.setupItemIOConfig(Arrays.asList(inputSlot), Arrays.asList(outputSlot, secondaryOutputSlot), energySlot, false);
+        configComponent.setupItemIOConfig(Collections.singletonList(inputSlot), Arrays.asList(outputSlot, secondaryOutputSlot), energySlot, false);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);

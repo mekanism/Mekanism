@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.gauge;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -69,9 +69,9 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
     @Override
     public List<ITextComponent> getTooltipText() {
         if (infoHandler.getEnergy().isZero()) {
-            return Arrays.asList(MekanismLang.EMPTY.translate());
+            return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
-        return Arrays.asList(EnergyDisplay.of(infoHandler.getEnergy(), infoHandler.getMaxEnergy()).getTextComponent());
+        return Collections.singletonList(EnergyDisplay.of(infoHandler.getEnergy(), infoHandler.getMaxEnergy()).getTextComponent());
     }
 
     public interface IEnergyInfoHandler {

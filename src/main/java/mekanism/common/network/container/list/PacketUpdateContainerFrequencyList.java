@@ -18,7 +18,7 @@ public class PacketUpdateContainerFrequencyList<FREQUENCY extends Frequency> ext
         int elements = buffer.readVarInt();
         List<FREQUENCY> values = new ArrayList<>(elements);
         for (int i = 0; i < elements; i++) {
-            values.add((FREQUENCY) Frequency.readFromPacket(buffer));
+            values.add(Frequency.readFromPacket(buffer));
         }
         return new PacketUpdateContainerFrequencyList<>(windowId, property, values);
     }

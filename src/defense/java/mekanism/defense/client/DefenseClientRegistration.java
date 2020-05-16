@@ -25,7 +25,6 @@ public class DefenseClientRegistration {
     }
 
     @SubscribeEvent
-    @SuppressWarnings("Convert2MethodRef")
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
     }
 

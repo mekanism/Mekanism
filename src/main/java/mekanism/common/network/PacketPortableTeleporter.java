@@ -76,11 +76,11 @@ public class PacketPortableTeleporter {
         byte status = buf.readByte();
         int amount = buf.readVarInt();
         for (int i = 0; i < amount; i++) {
-            publicCache.add((TeleporterFrequency) Frequency.readFromPacket(buf));
+            publicCache.add(Frequency.readFromPacket(buf));
         }
         amount = buf.readVarInt();
         for (int i = 0; i < amount; i++) {
-            privateCache.add((TeleporterFrequency) Frequency.readFromPacket(buf));
+            privateCache.add(Frequency.readFromPacket(buf));
         }
         return new PacketPortableTeleporter(currentHand, frequency, status, publicCache, privateCache);
     }

@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.gauge;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -116,18 +116,18 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     @Override
     public List<ITextComponent> getTooltipText() {
         if (dummy) {
-            return Arrays.asList(TextComponentUtil.build(dummyType));
+            return Collections.singletonList(TextComponentUtil.build(dummyType));
         }
         IExtendedFluidTank tank = getTank();
         if (tank == null || tank.isEmpty()) {
-            return Arrays.asList(MekanismLang.EMPTY.translate());
+            return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
         int amount = tank.getFluidAmount();
         FluidStack fluidStack = tank.getFluid();
         if (amount == Integer.MAX_VALUE) {
-            return Arrays.asList(MekanismLang.GENERIC_STORED.translate(fluidStack, MekanismLang.INFINITE));
+            return Collections.singletonList(MekanismLang.GENERIC_STORED.translate(fluidStack, MekanismLang.INFINITE));
         }
-        return Arrays.asList(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, formatInt(amount)));
+        return Collections.singletonList(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, formatInt(amount)));
     }
 
     @Override

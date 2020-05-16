@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.gauge;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -114,11 +114,11 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
     @Override
     public List<ITextComponent> getTooltipText() {
         if (dummy) {
-            return Arrays.asList(TextComponentUtil.build(dummyType));
+            return Collections.singletonList(TextComponentUtil.build(dummyType));
         }
         IGasTank tank = getTank();
         if (tank == null || tank.isEmpty()) {
-            return Arrays.asList(MekanismLang.EMPTY.translate());
+            return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
         List<ITextComponent> list = new ArrayList<>();
         long amount = tank.getStored();
