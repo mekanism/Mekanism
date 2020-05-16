@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.GuiWindow;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
@@ -20,16 +20,16 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
         List<Rectangle2d> extraAreas = new ArrayList<>();
         List<? extends IGuiEventListener> children = gui.children();
         for (IGuiEventListener child : children) {
-            if (child instanceof GuiTexturedElement) {
-                GuiTexturedElement element = (GuiTexturedElement) child;
-                //TODO: Only add this to the "extra areas" if it goes past the border
+            //TODO: Decide if we just want to do this for any GuiElement
+            if (child instanceof GuiRelativeElement) {
+                GuiRelativeElement element = (GuiRelativeElement) child;
                 extraAreas.add(new Rectangle2d(element.x, element.y, element.getWidth(), element.getHeight()));
             }
         }
         for (GuiWindow window : (Collection<GuiWindow>) gui.getWindows()) {
             extraAreas.add(new Rectangle2d(window.x, window.y, window.getWidth(), window.getHeight()));
             for (GuiElement element : window.children()) {
-                if (element instanceof GuiTexturedElement) {
+                if (element instanceof GuiRelativeElement) {
                     extraAreas.add(new Rectangle2d(element.x, element.y, element.getWidth(), element.getHeight()));
                 }
             }

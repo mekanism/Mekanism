@@ -2,11 +2,11 @@ package mekanism.client.gui.filter;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.client.gui.element.GuiTextField;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;

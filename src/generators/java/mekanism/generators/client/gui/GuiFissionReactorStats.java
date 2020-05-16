@@ -1,10 +1,10 @@
 package mekanism.generators.client.gui;
 
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.element.GuiTextField;
-import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
+import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab.FissionReactorTab;

@@ -1,6 +1,6 @@
 package mekanism.client.gui.filter;
 
-import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;

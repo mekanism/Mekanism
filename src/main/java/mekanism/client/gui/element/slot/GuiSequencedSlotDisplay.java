@@ -3,10 +3,10 @@ package mekanism.client.gui.element.slot;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.element.GuiRelativeElement;
 import net.minecraft.item.ItemStack;
 
-public class GuiSequencedSlotDisplay extends GuiTexturedElement {
+public class GuiSequencedSlotDisplay extends GuiRelativeElement {
 
     private List<ItemStack> iterStacks;
     private int stackIndex;
@@ -16,7 +16,7 @@ public class GuiSequencedSlotDisplay extends GuiTexturedElement {
     private float zOffset;
 
     public GuiSequencedSlotDisplay(IGuiWrapper gui, int x, int y, Supplier<List<ItemStack>> stackListSupplier) {
-        super(null, gui, x, y, 16, 16);
+        super(gui, x, y, 16, 16);
         this.stackListSupplier = stackListSupplier;
     }
 

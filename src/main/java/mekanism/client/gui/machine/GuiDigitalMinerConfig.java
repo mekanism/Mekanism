@@ -2,10 +2,10 @@ package mekanism.client.gui.machine;
 
 import java.util.List;
 import mekanism.client.gui.GuiFilterHolder;
-import mekanism.client.gui.element.GuiTextField;
-import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;

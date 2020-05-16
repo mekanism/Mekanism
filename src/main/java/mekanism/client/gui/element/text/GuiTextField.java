@@ -1,22 +1,17 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.text;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
-import it.unimi.dsi.fastutil.chars.CharSet;
-import java.util.Arrays;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
-import mekanism.client.gui.GuiUtils;
+import mekanism.api.functions.CharPredicate;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -24,11 +19,16 @@ import org.lwjgl.glfw.GLFW;
  *
  * @author aidancbrady
  */
-public class GuiTextField extends GuiTexturedElement {
+public class GuiTextField extends GuiRelativeElement {
+
+    public static final int DEFAULT_BORDER_COLOR = 0xA0A0A0;
+    public static final int DEFAULT_BACKGROUND_COLOR = 0x000000;
+    public static final IntSupplier SCREEN_COLOR = () -> Color.packOpaque(MekanismConfig.client.guiScreenTextColor.get());
+    public static final IntSupplier DARK_SCREEN_COLOR = () -> Color.argb(SCREEN_COLOR.getAsInt()).darken(0.4).argb();
 
     private TextFieldWidget textField;
     private Runnable enterHandler;
-    private InputValidator inputValidator;
+    private CharPredicate inputValidator;
     private Consumer<String> responder;
 
     private BackgroundType backgroundType = BackgroundType.DEFAULT;
@@ -40,7 +40,7 @@ public class GuiTextField extends GuiTexturedElement {
     private MekanismImageButton checkmarkButton;
 
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
-        super(null, gui, x, y, width, height);
+        super(gui, x, y, width, height);
 
         textField = new TextFieldWidget(getFont(), this.x, this.y, width, height, "");
         textField.setEnableBackgroundDrawing(false);
@@ -92,7 +92,7 @@ public class GuiTextField extends GuiTexturedElement {
         return this;
     }
 
-    public GuiTextField setInputValidator(InputValidator inputValidator) {
+    public GuiTextField setInputValidator(CharPredicate inputValidator) {
         this.inputValidator = inputValidator;
         return this;
     }
@@ -129,6 +129,10 @@ public class GuiTextField extends GuiTexturedElement {
         textField.y = y + textOffsetY + 1 + (int) ((height / 2F) - 4);
     }
 
+    public boolean isTextFieldFocused() {
+        return textField.isFocused();
+    }
+
     @Override
     public void onWindowClose() {
         super.onWindowClose();
@@ -149,7 +153,7 @@ public class GuiTextField extends GuiTexturedElement {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        boolean prevFocus = textField.isFocused();
+        boolean prevFocus = isTextFieldFocused();
         double scaledX = mouseX;
         // figure out the proper mouse placement based on text scaling
         if (textScale != 1.0F && scaledX > textField.x) {
@@ -157,7 +161,7 @@ public class GuiTextField extends GuiTexturedElement {
         }
         boolean ret = textField.mouseClicked(scaledX, mouseY, button);
         // detect if we're now focused
-        if (!prevFocus && textField.isFocused()) {
+        if (!prevFocus && isTextFieldFocused()) {
             guiObj.focusChange(this);
         }
         return ret || super.mouseClicked(mouseX, mouseY, button);
@@ -219,7 +223,7 @@ public class GuiTextField extends GuiTexturedElement {
     @Override
     public boolean charTyped(char c, int keyCode) {
         if (canWrite()) {
-            if (inputValidator == null || inputValidator.isValid(c)) {
+            if (inputValidator == null || inputValidator.test(c)) {
                 return textField.charTyped(c, keyCode);
             }
             return false;
@@ -266,124 +270,5 @@ public class GuiTextField extends GuiTexturedElement {
 
     public void setResponder(Consumer<String> responder) {
         this.responder = responder;
-    }
-
-    public interface InputValidator {
-
-        InputValidator ALL = (c) -> true;
-        InputValidator DIGIT = Character::isDigit;
-        InputValidator LETTER = Character::isLetter;
-        InputValidator DECIMAL = or(DIGIT, from('.'));
-        InputValidator SCI_NOTATION = or(DECIMAL, from('E'));
-
-        InputValidator FILTER_CHARS = from('*', '-', ' ', '|', '_', '\'', ':', '/');
-        InputValidator FREQUENCY_CHARS = from('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')', '?', '!', '/', '@', '$', '`', '~', ',', '.', '#');
-
-        static InputValidator from(char... chars) {
-            return new SetInputValidator(chars);
-        }
-
-        static InputValidator or(InputValidator... validators) {
-            return (c) -> Arrays.stream(validators).anyMatch(v -> v.isValid(c));
-        }
-
-        boolean isValid(char c);
-    }
-
-    private static class SetInputValidator implements InputValidator {
-
-        private final CharSet validSet = new CharOpenHashSet();
-
-        public SetInputValidator(char... chars) {
-            for (char c : chars) {
-                validSet.add(c);
-            }
-        }
-
-        @Override
-        public boolean isValid(char c) {
-            return validSet.contains(c);
-        }
-    }
-
-    private static final int DEFAULT_BORDER_COLOR = 0xA0A0A0;
-    private static final int DEFAULT_BACKGROUND_COLOR = 0x000000;
-
-    private static final IntSupplier SCREEN_COLOR = () -> Color.packOpaque(MekanismConfig.client.guiScreenTextColor.get());
-    private static final IntSupplier DARK_SCREEN_COLOR = () -> Color.argb(SCREEN_COLOR.getAsInt()).darken(0.4).argb();
-
-    public enum BackgroundType {
-        INNER_SCREEN(field -> GuiUtils.renderBackgroundTexture(GuiInnerScreen.SCREEN, 32, 32, field.x - 1, field.y - 1, field.width + 2, field.height + 2, 256, 256)),
-        ELEMENT_HOLDER(field -> GuiUtils.renderBackgroundTexture(GuiElementHolder.HOLDER, 2, 2, field.x - 1, field.y - 1, field.width + 2, field.height + 2, 256, 256)),
-        DEFAULT(field -> {
-            GuiUtils.fill(field.x - 1, field.y - 1, field.width + 2, field.height + 2, DEFAULT_BORDER_COLOR);
-            GuiUtils.fill(field.x, field.y, field.width, field.height, DEFAULT_BACKGROUND_COLOR);
-        }),
-        DIGITAL(field -> {
-            GuiUtils.fill(field.x - 1, field.y - 1, field.width + 2, field.height + 2, field.textField.isFocused() ? SCREEN_COLOR.getAsInt() : DARK_SCREEN_COLOR.getAsInt());
-            GuiUtils.fill(field.x, field.y, field.width, field.height, DEFAULT_BACKGROUND_COLOR);
-        }),
-        NONE(field -> {
-        });
-
-        private final Consumer<GuiTextField> renderFunction;
-
-        BackgroundType(Consumer<GuiTextField> renderFunction) {
-            this.renderFunction = renderFunction;
-        }
-
-        public void render(GuiTextField field) {
-            renderFunction.accept(field);
-        }
-    }
-
-    public enum ButtonType {
-        NORMAL((field, callback) -> new MekanismImageButton(field.guiObj, field.guiObj.getLeft() + field.relativeX + field.width - field.height, field.guiObj.getTop() + field.relativeY, field.height, 12,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"), callback)),
-        DIGITAL((field, callback) -> {
-            MekanismImageButton ret = new MekanismImageButton(field.guiObj, field.guiObj.getLeft() + field.relativeX + field.width - field.height, field.guiObj.getTop() + field.relativeY, field.height, 12,
-                  MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark_digital.png"), callback);
-            ret.setButtonBackground(ButtonBackground.DIGITAL);
-            return ret;
-        });
-
-        private final BiFunction<GuiTextField, Runnable, MekanismImageButton> buttonCreator;
-
-        ButtonType(BiFunction<GuiTextField, Runnable, MekanismImageButton> buttonCreator) {
-            this.buttonCreator = buttonCreator;
-        }
-
-        public MekanismImageButton getButton(GuiTextField field, Runnable callback) {
-            return buttonCreator.apply(field, callback);
-        }
-    }
-
-    public enum IconType {
-        DIGITAL(MekanismUtils.getResource(ResourceType.GUI, "digital_text_input.png"), 4, 7);
-
-        private final ResourceLocation icon;
-        private final int xSize, ySize;
-
-        IconType(ResourceLocation icon, int xSize, int ySize) {
-            this.icon = icon;
-            this.xSize = xSize;
-            this.ySize = ySize;
-        }
-
-        public ResourceLocation getIcon() {
-            return icon;
-        }
-
-        public int getWidth() {
-            return xSize;
-        }
-
-        public int getHeight() {
-            return ySize;
-        }
-
-        public int getOffsetX() {
-            return xSize + 4;
-        }
     }
 }

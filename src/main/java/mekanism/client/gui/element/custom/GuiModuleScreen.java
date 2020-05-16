@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
@@ -20,7 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiModuleScreen extends GuiTexturedElement {
+public class GuiModuleScreen extends GuiRelativeElement {
 
     private static final ResourceLocation RADIO = MekanismUtils.getResource(ResourceType.GUI, "radio_button.png");
     private static final ResourceLocation SLIDER = MekanismUtils.getResource(ResourceType.GUI, "slider.png");
@@ -34,7 +34,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
     private List<MiniElement> miniElements = new ArrayList<>();
 
     public GuiModuleScreen(IGuiWrapper gui, int x, int y, Consumer<ItemStack> callback) {
-        super(null, gui, x, y, 102, 134);
+        super(gui, x, y, 102, 134);
         this.callback = callback;
         background = new GuiInnerScreen(gui, x, y, 102, 134);
     }

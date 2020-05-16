@@ -5,17 +5,13 @@ import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class GuiTexturedElement extends GuiElement {
+public abstract class GuiTexturedElement extends GuiRelativeElement {
 
     protected final ResourceLocation resource;
-    protected int relativeX;
-    protected int relativeY;
 
     public GuiTexturedElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height) {
-        super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, "");
+        super(gui, x, y, width, height);
         this.resource = resource;
-        this.relativeX = x;
-        this.relativeY = y;
     }
 
     protected ResourceLocation getResource() {
@@ -25,11 +21,5 @@ public abstract class GuiTexturedElement extends GuiElement {
     public interface IInfoHandler {
 
         List<ITextComponent> getInfo();
-    }
-
-    @Override
-    public void drawCenteredTextScaledBound(ITextComponent text, float maxLength, float y, int color) {
-        float scale = Math.min(1, maxLength / getStringWidth(text));
-        drawScaledCenteredText(text, relativeX + getXSize() / 2F, relativeY + y, color, scale);
     }
 }

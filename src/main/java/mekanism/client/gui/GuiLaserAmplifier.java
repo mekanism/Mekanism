@@ -1,13 +1,13 @@
 package mekanism.client.gui;
 
 import mekanism.api.math.FloatingLong;
-import mekanism.client.gui.element.GuiTextField;
-import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiAmplifierTab;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
+import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;

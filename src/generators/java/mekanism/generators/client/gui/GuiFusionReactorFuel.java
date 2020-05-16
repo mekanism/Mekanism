@@ -2,13 +2,13 @@ package mekanism.generators.client.gui;
 
 import java.util.Arrays;
 import java.util.Collections;
-import mekanism.client.gui.element.GuiTextField;
-import mekanism.client.gui.element.GuiTextField.InputValidator;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.util.text.EnergyDisplay;

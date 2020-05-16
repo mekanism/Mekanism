@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.ISlotClickHandler;
@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiSlotScroll extends GuiTexturedElement {
+public class GuiSlotScroll extends GuiRelativeElement {
 
     private static final ResourceLocation SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
     private static final ResourceLocation SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
@@ -29,13 +29,11 @@ public class GuiSlotScroll extends GuiTexturedElement {
     private ISlotClickHandler clickHandler;
 
     public GuiSlotScroll(IGuiWrapper gui, int x, int y, int xSlots, int ySlots, Supplier<List<IScrollableSlot>> slotList, ISlotClickHandler clickHandler) {
-        super(null, gui, x, y, xSlots * 18 + 18, ySlots * 18);
-
+        super(gui, x, y, xSlots * 18 + 18, ySlots * 18);
         this.xSlots = xSlots;
         this.ySlots = ySlots;
         this.slotList = slotList;
         this.clickHandler = clickHandler;
-
         addChild(scrollBar = new GuiScrollBar(gui, relativeX + xSlots * 18 + 4, y, ySlots * 18,
               () -> getSlotList() == null ? 0 : (int) Math.ceil((double) getSlotList().size() / xSlots), () -> ySlots));
     }

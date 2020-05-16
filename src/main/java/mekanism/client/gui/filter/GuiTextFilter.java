@@ -1,7 +1,7 @@
 package mekanism.client.gui.filter;
 
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.GuiTextField;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;

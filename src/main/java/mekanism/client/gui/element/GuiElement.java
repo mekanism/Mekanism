@@ -53,6 +53,10 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         }
     }
 
+    public IGuiWrapper getGuiObj() {
+        return guiObj;
+    }
+
     public List<GuiElement> children() {
         return children;
     }
@@ -76,9 +80,9 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     public void move(int changeX, int changeY) {
         x += changeX;
         y += changeY;
-        if (this instanceof GuiTexturedElement) {
-            ((GuiTexturedElement) this).relativeX += changeX;
-            ((GuiTexturedElement) this).relativeY += changeY;
+        if (this instanceof GuiRelativeElement) {
+            ((GuiRelativeElement) this).relativeX += changeX;
+            ((GuiRelativeElement) this).relativeY += changeY;
         }
         children.forEach(child -> child.move(changeX, changeY));
     }
