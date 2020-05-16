@@ -1,5 +1,7 @@
 package mekanism.common.inventory.container;
 
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -43,7 +45,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private ListSortType sortType = MekanismConfig.client.qioItemViewerSortType.get();
     private SortDirection sortDirection = MekanismConfig.client.qioItemViewerSortDirection.get();
 
-    private Map<HashedItem, Long> cachedInventory = new Object2ObjectOpenHashMap<>();
+    private Object2LongMap<HashedItem> cachedInventory = new Object2LongOpenHashMap<>();
     private long cachedCountCapacity;
     private int cachedTypeCapacity;
     private long totalItems;
@@ -183,19 +185,20 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return newStack;
     }
 
-    public void handleBatchUpdate(Map<HashedItem, Long> itemMap, long countCapacity, int typeCapacity) {
+    public void handleBatchUpdate(Object2LongMap<HashedItem> itemMap, long countCapacity, int typeCapacity) {
         cachedInventory = itemMap;
         cachedCountCapacity = countCapacity;
         cachedTypeCapacity = typeCapacity;
         syncItemList();
     }
 
-    public void handleUpdate(Map<HashedItem, Long> itemMap, long countCapacity, int typeCapacity) {
-        itemMap.forEach((key, value) -> {
+    public void handleUpdate(Object2LongMap<HashedItem> itemMap, long countCapacity, int typeCapacity) {
+        itemMap.object2LongEntrySet().forEach(entry -> {
+            long value = entry.getLongValue();
             if (value == 0) {
-                cachedInventory.remove(key);
+                cachedInventory.removeLong(entry.getKey());
             } else {
-                cachedInventory.put(key, value);
+                cachedInventory.put(entry.getKey(), value);
             }
         });
         cachedCountCapacity = countCapacity;

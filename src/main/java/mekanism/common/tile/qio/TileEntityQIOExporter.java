@@ -1,12 +1,14 @@
 package mekanism.common.tile.qio;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
@@ -36,7 +38,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     private int delay = 0;
     private boolean exportWithoutFilter;
 
-    private final EfficientEjector<Map.Entry<HashedItem, Long>> filterEjector =
+    private final EfficientEjector<Object2LongMap.Entry<HashedItem>> filterEjector =
           new EfficientEjector<>(Entry::getKey, (e) -> (int) Math.min(Integer.MAX_VALUE, e.getValue()));
     private final EfficientEjector<Map.Entry<HashedItem, QIOItemTypeData>> filterlessEjector =
           new EfficientEjector<>(Entry::getKey, (e) -> (int) Math.min(Integer.MAX_VALUE, e.getValue().getCount()));
@@ -71,12 +73,12 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         if (exportWithoutFilter && getFilters().isEmpty()) {
             filterlessEjector.eject(freq, back, freq.getItemDataMap().entrySet());
         } else if (!getFilters().isEmpty()) {
-            filterEjector.eject(freq, back, getFilterEjectMap(back, freq).entrySet());
+            filterEjector.eject(freq, back, getFilterEjectMap(back, freq).object2LongEntrySet());
         }
     }
 
-    private Map<HashedItem, Long> getFilterEjectMap(TileEntity back, QIOFrequency freq) {
-        Map<HashedItem, Long> map = new Object2LongOpenHashMap<>();
+    private Object2LongMap<HashedItem> getFilterEjectMap(TileEntity back, QIOFrequency freq) {
+        Object2LongMap<HashedItem> map = new Object2LongOpenHashMap<>();
         for (QIOFilter<?> filter : getFilters()) {
             if (filter instanceof QIOItemStackFilter) {
                 HashedItem type = new HashedItem(((QIOItemStackFilter) filter).getItemStack());
@@ -153,9 +155,9 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         private static final int MAX_EJECT_ATTEMPTS = 100;
 
         private final Function<T, HashedItem> typeSupplier;
-        private final Function<T, Integer> countSupplier;
+        private final ToIntFunction<T> countSupplier;
 
-        private EfficientEjector(Function<T, HashedItem> typeSupplier, Function<T, Integer> countSupplier) {
+        private EfficientEjector(Function<T, HashedItem> typeSupplier, ToIntFunction<T> countSupplier) {
             this.typeSupplier = typeSupplier;
             this.countSupplier = countSupplier;
         }
@@ -183,7 +185,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
                         continue;
                     }
                     HashedItem type = typeSupplier.apply(obj);
-                    ItemStack origInsert = type.createStack(Math.min(maxCount - amountRemoved, countSupplier.apply(obj)));
+                    ItemStack origInsert = type.createStack(Math.min(maxCount - amountRemoved, countSupplier.applyAsInt(obj)));
                     ItemStack toInsert = origInsert.copy();
                     for (int i = 0; i < inventory.getSlots(); i++) {
                         // Check validation

@@ -1,7 +1,7 @@
 package mekanism.common.network;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.function.Supplier;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem;
@@ -11,23 +11,23 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketQIOItemViewerGuiSync {
 
-    private Type type;
-    private Map<HashedItem, Long> itemMap;
-    private long countCapacity;
-    private int typeCapacity;
+    private final Type type;
+    private final Object2LongMap<HashedItem> itemMap;
+    private final long countCapacity;
+    private final int typeCapacity;
 
-    private PacketQIOItemViewerGuiSync(Type type, Map<HashedItem, Long> itemMap, long countCapacity, int typeCapacity) {
+    private PacketQIOItemViewerGuiSync(Type type, Object2LongMap<HashedItem> itemMap, long countCapacity, int typeCapacity) {
         this.type = type;
         this.itemMap = itemMap;
         this.countCapacity = countCapacity;
         this.typeCapacity = typeCapacity;
     }
 
-    public static PacketQIOItemViewerGuiSync batch(Map<HashedItem, Long> itemMap, long countCapacity, int typeCapacity) {
+    public static PacketQIOItemViewerGuiSync batch(Object2LongMap<HashedItem> itemMap, long countCapacity, int typeCapacity) {
         return new PacketQIOItemViewerGuiSync(Type.BATCH, itemMap, countCapacity, typeCapacity);
     }
 
-    public static PacketQIOItemViewerGuiSync update(Map<HashedItem, Long> itemMap, long countCapacity, int typeCapacity) {
+    public static PacketQIOItemViewerGuiSync update(Object2LongMap<HashedItem> itemMap, long countCapacity, int typeCapacity) {
         return new PacketQIOItemViewerGuiSync(Type.UPDATE, itemMap, countCapacity, typeCapacity);
     }
 
@@ -76,11 +76,11 @@ public class PacketQIOItemViewerGuiSync {
         Type type = buf.readEnumValue(Type.class);
         long countCapacity = 0;
         int typeCapacity = 0;
-        Map<HashedItem, Long> map = null;
+        Object2LongMap<HashedItem> map = null;
         if (type == Type.BATCH || type == Type.UPDATE) {
             countCapacity = buf.readVarLong();
             typeCapacity = buf.readVarInt();
-            map = new Object2ObjectOpenHashMap<>();
+            map = new Object2LongOpenHashMap<>();
             int count = buf.readVarInt();
             for (int i = 0; i < count; i++) {
                 map.put(new HashedItem(buf.readItemStack()), buf.readVarLong());

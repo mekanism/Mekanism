@@ -1,8 +1,9 @@
 package mekanism.common.lib.radiation;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -70,10 +71,10 @@ public class RadiationManager {
 
     private boolean loaded;
 
-    private Map<Chunk3D, Map<Coord4D, RadiationSource>> radiationMap = new Object2ObjectOpenHashMap<>();
-    private Map<Integer, List<Meltdown>> meltdowns = new HashMap<>();
+    private final Map<Chunk3D, Map<Coord4D, RadiationSource>> radiationMap = new Object2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<List<Meltdown>> meltdowns = new Int2ObjectOpenHashMap<>();
 
-    private Map<UUID, RadiationScale> playerExposureMap = new Object2ObjectOpenHashMap<>();
+    private final Map<UUID, RadiationScale> playerExposureMap = new Object2ObjectOpenHashMap<>();
 
     // client fields
     private RadiationScale clientRadiationScale = RadiationScale.NONE;

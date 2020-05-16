@@ -11,7 +11,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class AdditionsKeyHandler extends MekKeyHandler {
 
-    public static KeyBinding voiceKey = new KeyBinding(AdditionsLang.KEY_VOICE.getTranslationKey(), GLFW.GLFW_KEY_U, MekanismLang.MEKANISM.getTranslationKey());
+    public static final KeyBinding voiceKey = new KeyBinding(AdditionsLang.KEY_VOICE.getTranslationKey(), GLFW.GLFW_KEY_U, MekanismLang.MEKANISM.getTranslationKey());
 
     private static final Builder BINDINGS = new Builder(1)
           .addBinding(voiceKey, true);

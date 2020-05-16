@@ -1,6 +1,6 @@
 package mekanism.common.content.qio;
 
-import java.util.Map;
+import it.unimi.dsi.fastutil.objects.Object2LongMap.Entry;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.ItemDataUtils;
@@ -25,10 +25,10 @@ public interface IQIODriveItem {
 
     default void writeItemMap(ItemStack stack, QIODriveData map) {
         ListNBT list = new ListNBT();
-        for (Map.Entry<HashedItem, Long> entry : map.getItemMap().entrySet()) {
+        for (Entry<HashedItem> entry : map.getItemMap().object2LongEntrySet()) {
             CompoundNBT tag = new CompoundNBT();
             tag.put(NBTConstants.ITEM, entry.getKey().getStack().write(new CompoundNBT()));
-            tag.putLong(NBTConstants.AMOUNT, entry.getValue());
+            tag.putLong(NBTConstants.AMOUNT, entry.getLongValue());
             list.add(tag);
         }
         ItemDataUtils.setList(stack, NBTConstants.QIO_ITEM_MAP, list);
@@ -40,8 +40,8 @@ public interface IQIODriveItem {
 
     class DriveMetadata {
 
-        private long count;
-        private int types;
+        private final long count;
+        private final int types;
 
         protected DriveMetadata(long count, int types) {
             this.count = count;

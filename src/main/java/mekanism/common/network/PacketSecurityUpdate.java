@@ -1,11 +1,11 @@
 package mekanism.common.network;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import mekanism.client.MekanismClient;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.SecurityData;
@@ -68,7 +68,7 @@ public class PacketSecurityUpdate {
                 pkt.securityData.write(buf);
             }
         } else {
-            List<SecurityFrequency> frequencies = FrequencyType.SECURITY.getManager(null).getFrequencies().stream().collect(Collectors.toList());
+            List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyType.SECURITY.getManager(null).getFrequencies());
             buf.writeVarInt(frequencies.size());
             for (SecurityFrequency frequency : frequencies) {
                 buf.writeUniqueId(frequency.getOwner());

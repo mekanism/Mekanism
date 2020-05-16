@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
-import java.util.ArrayList;
-import java.util.List;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import mekanism.client.gui.element.custom.GuiModuleScreen;
 import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -69,7 +69,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
         if (selected != -1) {
             int curIndex = -1;
-            List<Integer> selectable = new ArrayList<>();
+            IntList selectable = new IntArrayList();
             for (int index = 0; index < container.inventorySlots.size(); index++) {
                 if (isValidItem(index)) {
                     selectable.add(index);
@@ -81,10 +81,10 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
             if (key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_LEFT) {
                 curIndex = curIndex == 0 ? curIndex + selectable.size() - 1 : curIndex - 1;
-                select(selectable.get(curIndex % selectable.size()));
+                select(selectable.getInt(curIndex % selectable.size()));
                 return true;
             } else if (key == GLFW.GLFW_KEY_DOWN || key == GLFW.GLFW_KEY_RIGHT) {
-                select(selectable.get((curIndex + 1) % selectable.size()));
+                select(selectable.getInt((curIndex + 1) % selectable.size()));
                 return true;
             }
         }

@@ -2,7 +2,8 @@ package mekanism.common.content.qio;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -127,19 +128,19 @@ public class QIOFrequency extends Frequency {
         return removed;
     }
 
-    public Map<HashedItem, Long> getStacksByTag(String tag) {
+    public Object2LongMap<HashedItem> getStacksByTag(String tag) {
         Set<HashedItem> items = tagLookupMap.getValues(tag);
-        Map<HashedItem, Long> ret = new Object2ObjectOpenHashMap<>();
+        Object2LongMap<HashedItem> ret = new Object2LongOpenHashMap<>();
         items.forEach(item -> ret.put(item, getStored(item)));
         return ret;
     }
 
-    public Map<HashedItem, Long> getStacksByWildcard(String wildcard) {
+    public Object2LongMap<HashedItem> getStacksByWildcard(String wildcard) {
         if (!tagWildcardCache.containsKey(wildcard)) {
             buildWildcardMapping(wildcard);
         }
         Set<String> matchingTags = tagWildcardCache.get(wildcard);
-        Map<HashedItem, Long> ret = new Object2ObjectOpenHashMap<>();
+        Object2LongMap<HashedItem> ret = new Object2LongOpenHashMap<>();
         matchingTags.forEach(tag -> ret.putAll(getStacksByTag(tag)));
         return ret;
     }
@@ -154,7 +155,7 @@ public class QIOFrequency extends Frequency {
 
     public void openItemViewer(ServerPlayerEntity player) {
         playersViewingItems.add(player);
-        Map<HashedItem, Long> map = new Object2ObjectOpenHashMap<>();
+        Object2LongMap<HashedItem> map = new Object2LongOpenHashMap<>();
         itemDataMap.values().forEach(d -> map.put(d.itemType, d.count));
         Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.batch(map, totalCountCapacity, totalTypeCapacity), player);
     }
@@ -197,7 +198,7 @@ public class QIOFrequency extends Frequency {
     public void tick() {
         super.tick();
         if (!updatedItems.isEmpty() || needsUpdate) {
-            Map<HashedItem, Long> map = new Object2ObjectOpenHashMap<>();
+            Object2LongMap<HashedItem> map = new Object2LongOpenHashMap<>();
             updatedItems.forEach(type -> {
                 QIOItemTypeData data = itemDataMap.get(type);
                 map.put(type, data == null ? 0 : data.count);

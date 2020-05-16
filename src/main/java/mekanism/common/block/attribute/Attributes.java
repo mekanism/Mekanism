@@ -1,6 +1,6 @@
 package mekanism.common.block.attribute;
 
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.tile.base.TileEntityMekanism;
 
@@ -30,14 +30,14 @@ public class Attributes {
     /** If a block can emit redstone. */
     public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements TileAttribute<TILE> {
 
-        private final Function<TILE, Integer> redstoneFunction;
+        private final ToIntFunction<TILE> redstoneFunction;
 
-        public AttributeRedstoneEmitter(Function<TILE, Integer> redstoneFunction) {
+        public AttributeRedstoneEmitter(ToIntFunction<TILE> redstoneFunction) {
             this.redstoneFunction = redstoneFunction;
         }
 
         public int getRedstoneLevel(TILE tile) {
-            return redstoneFunction.apply(tile);
+            return redstoneFunction.applyAsInt(tile);
         }
     }
 

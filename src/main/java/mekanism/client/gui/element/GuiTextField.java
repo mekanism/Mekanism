@@ -2,8 +2,8 @@ package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
+import it.unimi.dsi.fastutil.chars.CharSet;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
@@ -292,7 +292,7 @@ public class GuiTextField extends GuiTexturedElement {
 
     private static class SetInputValidator implements InputValidator {
 
-        private Set<Character> validSet = new CharOpenHashSet();
+        private final CharSet validSet = new CharOpenHashSet();
 
         public SetInputValidator(char... chars) {
             for (char c : chars) {

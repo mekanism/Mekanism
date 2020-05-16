@@ -259,8 +259,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     protected boolean isPointInRegion(int x, int y, int width, int height, double mouseX, double mouseY) {
         // overridden to prevent slot interactions when a GuiElement is blocking
         return super.isPointInRegion(x, y, width, height, mouseX, mouseY) &&
-               !windows.stream().anyMatch(window -> window.isMouseOver(mouseX, mouseY)) &&
-               !buttons.stream().anyMatch(button -> button.isMouseOver(mouseX, mouseY));
+               windows.stream().noneMatch(window -> window.isMouseOver(mouseX, mouseY)) &&
+               buttons.stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
     }
 
     protected void addSlots() {

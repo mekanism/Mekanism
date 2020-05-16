@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import mekanism.common.inventory.container.item.FrequencyItemContainer;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -32,8 +31,8 @@ public class PacketFrequencyItemGuiUpdate<FREQ extends Frequency> {
 
     public static <FREQ extends Frequency> PacketFrequencyItemGuiUpdate<FREQ> update(Hand hand, FrequencyType<FREQ> type, UUID ownerUUID, FREQ freq) {
         return new PacketFrequencyItemGuiUpdate<>(hand, type, freq,
-              type.getManager(null).getFrequencies().stream().collect(Collectors.toList()),
-              type.getManager(ownerUUID).getFrequencies().stream().collect(Collectors.toList()));
+              new ArrayList<>(type.getManager(null).getFrequencies()),
+              new ArrayList<>(type.getManager(ownerUUID).getFrequencies()));
     }
 
     public static <FREQ extends Frequency> void handle(PacketFrequencyItemGuiUpdate<FREQ> message, Supplier<Context> context) {
