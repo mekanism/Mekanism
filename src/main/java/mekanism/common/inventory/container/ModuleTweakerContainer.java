@@ -28,12 +28,12 @@ public class ModuleTweakerContainer extends MekanismContainer {
             EquipmentSlotType slotType = EquipmentSlotType.values()[2 + inv.armorInventory.size() - index - 1];
             addSlot(new ArmorSlot(inv, 36 + slotType.ordinal() - 2, 8, 8 + index * 18, slotType) {
                 @Override
-                public boolean canTakeStack(PlayerEntity player) {
+                public boolean canTakeStack(@Nonnull PlayerEntity player) {
                     return false;
                 }
 
                 @Override
-                public boolean isItemValid(ItemStack stack) {
+                public boolean isItemValid(@Nonnull ItemStack stack) {
                     return false;
                 }
             });
@@ -41,24 +41,24 @@ public class ModuleTweakerContainer extends MekanismContainer {
         for (int slotY = 0; slotY < 9; slotY++) {
             addSlot(new HotBarSlot(inv, slotY, 43 + slotY * 18, 161) {
                 @Override
-                public boolean canTakeStack(PlayerEntity player) {
+                public boolean canTakeStack(@Nonnull PlayerEntity player) {
                     return false;
                 }
 
                 @Override
-                public boolean isItemValid(ItemStack stack) {
+                public boolean isItemValid(@Nonnull ItemStack stack) {
                     return false;
                 }
             });
         }
         addSlot(new OffhandSlot(inv, 40, 8, 16 + 18 * 4) {
             @Override
-            public boolean canTakeStack(PlayerEntity player) {
+            public boolean canTakeStack(@Nonnull PlayerEntity player) {
                 return false;
             }
 
             @Override
-            public boolean isItemValid(ItemStack stack) {
+            public boolean isItemValid(@Nonnull ItemStack stack) {
                 return false;
             }
         });

@@ -62,7 +62,7 @@ public class GuiModuleScreen extends GuiTexturedElement {
                     newElements.add(toggle);
                     startY += 34;
                     // allow the dragger to continue sliding, even when we reset the config element
-                    if (currentModule != null && module != null && currentModule.getData() == module.getData() && miniElements.get(i) instanceof EnumToggle) {
+                    if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(i) instanceof EnumToggle) {
                         toggle.dragging = ((EnumToggle) miniElements.get(i)).dragging;
                     }
                 }

@@ -51,7 +51,9 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
 
     @Nonnull
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    @Deprecated
+    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+          @Nonnull BlockRayTraceResult hit) {
         if (world.isRemote) {
             return ActionResultType.SUCCESS;
         }
@@ -94,7 +96,8 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
+    public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
+          boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof TileEntityMekanism) {

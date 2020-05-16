@@ -10,6 +10,8 @@ public class GeigerSound extends PlayerSound {
     private RadiationScale scale;
 
     public GeigerSound(@Nonnull PlayerEntity player, RadiationScale scale) {
+        //TODO - V10: FIXME This will cause a crash if RadiationScale is NONE due to returning a null sound event
+        // Having the sound not place should be handled in another way
         super(player, scale.getSoundEvent());
         this.scale = scale;
         setFade(1, 1);

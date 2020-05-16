@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -20,11 +21,13 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.HashList;
+import mekanism.common.lib.radiation.capability.IRadiationEntity;
 import mekanism.common.lib.radiation.capability.IRadiationShielding;
 import mekanism.common.network.PacketRadiationData;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -144,9 +147,9 @@ public class RadiationManager {
     private double getRadiationResistance(PlayerEntity player) {
         double resistance = 0;
         for (ItemStack stack : player.inventory.armorInventory) {
-            IRadiationShielding shielding = CapabilityUtils.getCapability(stack, Capabilities.RADIATION_SHIELDING_CAPABILITY, null).orElse(null);
-            if (shielding != null) {
-                resistance += shielding.getRadiationShielding();
+            Optional<IRadiationShielding> shielding = MekanismUtils.toOptional(CapabilityUtils.getCapability(stack, Capabilities.RADIATION_SHIELDING_CAPABILITY, null));
+            if (shielding.isPresent()) {
+                resistance += shielding.get().getRadiationShielding();
             }
         }
         return resistance;
@@ -191,7 +194,7 @@ public class RadiationManager {
                     c.radiate(added);
                 });
             }
-            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.decay());
+            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(IRadiationEntity::decay);
             RadiationScale scale = RadiationScale.get(magnitude);
             if (playerExposureMap.get(player.getUniqueID()) != scale) {
                 playerExposureMap.put(player.getUniqueID(), scale);
@@ -213,12 +216,7 @@ public class RadiationManager {
 
         // update meltdowns
         if (meltdowns.containsKey(world.dimension.getType().getId())) {
-            for (Iterator<Meltdown> iter = meltdowns.get(world.dimension.getType().getId()).iterator(); iter.hasNext(); ) {
-                Meltdown meltdown = iter.next();
-                if (meltdown.update()) {
-                    iter.remove();
-                }
-            }
+            meltdowns.get(world.dimension.getType().getId()).removeIf(Meltdown::update);
         }
     }
 
@@ -250,7 +248,7 @@ public class RadiationManager {
         if (dataHandler == null) {
             //Always associate the world with the over world as the frequencies are global
             DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD).getSavedData();
-            dataHandler = savedData.getOrCreate(() -> new RadiationDataHandler(), DATA_HANDLER_NAME);
+            dataHandler = savedData.getOrCreate(RadiationDataHandler::new, DATA_HANDLER_NAME);
             dataHandler.setManager(this);
             dataHandler.syncManager();
         }
@@ -274,7 +272,7 @@ public class RadiationManager {
         playerExposureMap.remove(uuid);
     }
 
-    public static enum RadiationScale {
+    public enum RadiationScale {
         NONE,
         LOW,
         MEDIUM,

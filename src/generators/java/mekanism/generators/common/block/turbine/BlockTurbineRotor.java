@@ -46,7 +46,9 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
 
     @Nonnull
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    @Deprecated
+    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+          @Nonnull BlockRayTraceResult hit) {
         if (world.isRemote) {
             return ActionResultType.SUCCESS;
         }
@@ -93,7 +95,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
     @Nonnull
     @Override
     @Deprecated
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
         return bounds;
     }
 }

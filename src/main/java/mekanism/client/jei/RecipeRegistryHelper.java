@@ -15,6 +15,7 @@ import mekanism.common.registries.MekanismGases;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -63,7 +64,8 @@ public class RecipeRegistryHelper {
     }
 
     public static void registerNutritionalLiquifier(IRecipeRegistration registry) {
-        registry.addRecipes(ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.isFood())
+        //TODO - V10: FIXME don't use a null recipe id
+        registry.addRecipes(ForgeRegistries.ITEMS.getValues().stream().filter(Item::isFood)
               .map(item -> new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getGasStack(item.getFood().getHealing() * 50)))
               .collect(Collectors.toList()), MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
     }

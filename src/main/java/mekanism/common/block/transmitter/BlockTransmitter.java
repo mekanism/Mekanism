@@ -67,7 +67,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull LivingEntity placer, @Nonnull ItemStack stack) {
         TileEntitySidedPipe tile = MekanismUtils.getTileEntity(TileEntitySidedPipe.class, world, pos);
         if (tile != null) {
             tile.onAdded();

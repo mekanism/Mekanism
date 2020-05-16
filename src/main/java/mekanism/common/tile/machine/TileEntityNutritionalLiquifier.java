@@ -81,6 +81,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @Nonnull
     @Override
     public MekanismRecipeType<ItemStackToGasRecipe> getRecipeType() {
+        //TODO - V10: FIXME
         return null;
     }
 
@@ -98,6 +99,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
             return null;
         }
         Food food = stack.getItem().getFood();
+        //TODO - V10: FIXME - no null recipe ids
         return new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(stack.getItem()), MekanismGases.NUTRITIONAL_PASTE.getGasStack(food.getHealing() * 50));
     }
 

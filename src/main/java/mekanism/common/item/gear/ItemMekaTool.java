@@ -134,7 +134,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity target, @Nonnull LivingEntity attacker) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
         FloatingLong energyCost = FloatingLong.ZERO;
@@ -259,7 +259,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     @Nonnull
     @Override
     @Deprecated
-    public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
+    public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType equipmentSlot) {
         Multimap<String, AttributeModifier> multiMap = super.getAttributeModifiers(equipmentSlot);
         if (equipmentSlot == EquipmentSlotType.MAINHAND) {
             multiMap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4D, Operation.ADDITION));

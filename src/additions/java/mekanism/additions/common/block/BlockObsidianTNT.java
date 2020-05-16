@@ -58,14 +58,14 @@ public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void fillStateContainer(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
         return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 
@@ -77,7 +77,7 @@ public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
     }
 
     @Override
-    public void catchFire(BlockState state, World world, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
+    public void catchFire(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
         if (!world.isRemote) {
             TNTEntity tnt = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
             world.addEntity(tnt);
@@ -97,20 +97,20 @@ public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
     @Nonnull
     @Override
     @Deprecated
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
         return bounds;
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public IFluidState getFluidState(BlockState state) {
+    public IFluidState getFluidState(@Nonnull BlockState state) {
         return getFluid(state);
     }
 
     @Nonnull
     @Override
-    public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+    public BlockState updatePostPlacement(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
         return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);

@@ -106,14 +106,14 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void fillStateContainer(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
         return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 

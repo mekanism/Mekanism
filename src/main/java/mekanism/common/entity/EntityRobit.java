@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -76,6 +77,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -529,5 +531,18 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.getContainerType()) {
             container.track(SyncableInt.create(() -> progress, value -> progress = value));
         }
+    }
+
+    public IWorldPosCallable getWorldPosCallable() {
+        //TODO: Decide if we want to cache this result
+        return new IWorldPosCallable() {
+            @Nonnull
+            @Override
+            public <T> Optional<T> apply(@Nonnull BiFunction<World, BlockPos, T> worldBlockPosTBiFunction) {
+                //Note: We use an anonymous class implementation rather than using IWorldPosCallable.of, so that if the robit moves
+                // this uses the proper updated position
+                return Optional.of(worldBlockPosTBiFunction.apply(getEntityWorld(), getPosition()));
+            }
+        };
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container.tile;
 
+import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,7 +28,10 @@ public class UpgradeManagementContainer extends MekanismTileContainer<TileEntity
     protected void addSlots() {
         //Add the upgrade slot
         if (tile != null && tile.supportsUpgrades()) {
-            addSlot(tile.getComponent().getUpgradeSlot().createContainerSlot());
+            InventoryContainerSlot containerSlot = tile.getComponent().getUpgradeSlot().createContainerSlot();
+            if (containerSlot != null) {
+                addSlot(containerSlot);
+            }
         }
     }
 }

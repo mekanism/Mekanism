@@ -438,7 +438,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 }
             }
             return true;
-        } else if (tile != this && tile instanceof TileEntityThermalEvaporationController) {
+        } else if (tile instanceof TileEntityThermalEvaporationController) {
             controllerConflict = true;
         }
         return false;

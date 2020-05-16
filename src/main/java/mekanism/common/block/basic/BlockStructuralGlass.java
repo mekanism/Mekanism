@@ -54,7 +54,8 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntit
 
     @Override
     @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
+    public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
+          boolean isMoving) {
         if (!world.isRemote) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof TileEntityMekanism) {
@@ -73,14 +74,16 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntit
 
     @Override
     @Deprecated
-    public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
+    public boolean isSideInvisible(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
         //Not structural glass
         return adjacentBlockState.getBlock() == this;
     }
 
     @Nonnull
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    @Deprecated
+    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+          @Nonnull BlockRayTraceResult hit) {
         TileEntityStructuralGlass tile = MekanismUtils.getTileEntity(TileEntityStructuralGlass.class, world, pos);
         if (tile != null) {
             if (world.isRemote) {
@@ -104,12 +107,12 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntit
 
     @Override
     @Deprecated
-    public float getAmbientOcclusionLightValue(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
+    public float getAmbientOcclusionLightValue(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
         return 1.0F;
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
+    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
         return true;
     }
 
@@ -121,7 +124,7 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntit
 
     @Override
     @Deprecated
-    public boolean isNormalCube(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+    public boolean isNormalCube(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         return false;
     }
 

@@ -104,7 +104,6 @@ public class GenHandler {
         Biome biome = world.getBiome(blockPos);
         boolean generated = false;
         if (isValidBiome(biome) && world.chunkExists(chunkX, chunkZ)) {
-            generated = false;
             for (OreType type : OreType.values()) {
                 generated |= placeFeature(ORE_RETROGENS.get(type), world, random, blockPos);
             }

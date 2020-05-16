@@ -29,7 +29,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTile<TileEntityRadioactive
     }
 
     @Override
-    public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
+    public void animateTick(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Random random) {
         TileEntityRadioactiveWasteBarrel tile = MekanismUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
         if (tile != null) {
             int count = (int) (10 * tile.getGasScale());

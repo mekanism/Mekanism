@@ -71,7 +71,9 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
 
     @Nonnull
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    @Deprecated
+    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+          @Nonnull BlockRayTraceResult hit) {
         TileEntityBin bin = MekanismUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
             return ActionResultType.PASS;

@@ -50,7 +50,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         }, this));
 
         addButton(energyUsageField = new GuiTextField(this, 50, 51, 76, 12));
-        energyUsageField.setText(energyUsageField != null ? energyUsageField.getText() : "");
+        energyUsageField.setText(energyUsageField.getText());
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setInputValidator(InputValidator.DIGIT);
         energyUsageField.configureDigitalInput(this::setEnergyUsage);

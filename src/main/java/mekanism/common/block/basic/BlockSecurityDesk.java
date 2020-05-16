@@ -38,7 +38,9 @@ public class BlockSecurityDesk extends BlockTileModel<TileEntitySecurityDesk, Bl
 
     @Nonnull
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    @Deprecated
+    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+          @Nonnull BlockRayTraceResult hit) {
         TileEntitySecurityDesk tile = MekanismUtils.getTileEntity(TileEntitySecurityDesk.class, world, pos);
         if (tile != null) {
             if (!player.isSneaking()) {

@@ -29,9 +29,9 @@ public class FrequencyManager<FREQ extends Frequency> {
 
     private static boolean loaded;
 
-    private static Set<FrequencyManager<?>> managers = new ObjectOpenHashSet<>();
+    private static final Set<FrequencyManager<?>> managers = new ObjectOpenHashSet<>();
 
-    private Map<Object, FREQ> frequencies = new LinkedHashMap<>();
+    private final Map<Object, FREQ> frequencies = new LinkedHashMap<>();
 
     /**
      * Note: This can and will be null on the client side
@@ -59,7 +59,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     public static void load() {
         if (!loaded) {
             loaded = true;
-            managers.forEach(manager -> manager.createOrLoad());
+            managers.forEach(FrequencyManager::createOrLoad);
         }
     }
 
@@ -67,7 +67,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         if (!loaded) {
             load();
         }
-        managers.forEach(manager -> manager.tickSelf());
+        managers.forEach(FrequencyManager::tickSelf);
     }
 
     public static void reset() {
@@ -169,7 +169,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     private void tickSelf() {
-        getFrequencies().forEach(freq -> freq.tick());
+        getFrequencies().forEach(Frequency::tick);
     }
 
     public String getName() {
@@ -195,13 +195,11 @@ public class FrequencyManager<FREQ extends Frequency> {
         @Override
         public void read(@Nonnull CompoundNBT nbtTags) {
             NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
-            Function<CompoundNBT, FREQ> creatorFunction = (nbt) -> frequencyType.create(nbt);
+            Function<CompoundNBT, FREQ> creatorFunction = frequencyType::create;
             ListNBT list = nbtTags.getList(NBTConstants.FREQUENCY_LIST, NBT.TAG_COMPOUND);
             loadedFrequencies = new HashList<>();
-            if (creatorFunction != null) {
-                for (int i = 0; i < list.size(); i++) {
-                    loadedFrequencies.add(creatorFunction.apply(list.getCompound(i)));
-                }
+            for (int i = 0; i < list.size(); i++) {
+                loadedFrequencies.add(creatorFunction.apply(list.getCompound(i)));
             }
         }
 

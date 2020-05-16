@@ -76,11 +76,9 @@ public class MekanismGenerators implements IModule {
 
     public void commonSetup(FMLCommonSetupEvent event) {
         //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
-        if (MekanismGases.ETHENE.get() != null) {
-            MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismConfig.general.ETHENE_BURN_TIME,
-                  () -> MekanismConfig.general.FROM_H2.get().add(MekanismGeneratorsConfig.generators.bioGeneration.get()
-                        .multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get()))));
-        }
+        MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismConfig.general.ETHENE_BURN_TIME,
+              () -> MekanismConfig.general.FROM_H2.get().add(MekanismGeneratorsConfig.generators.bioGeneration.get()
+                    .multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get()))));
 
         MinecraftForge.EVENT_BUS.register(this);
 

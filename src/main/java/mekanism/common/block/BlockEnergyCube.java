@@ -165,7 +165,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
     @Nonnull
     @Override
     @Deprecated
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
         TileEntityEnergyCube energyCube = MekanismUtils.getTileEntity(TileEntityEnergyCube.class, world, pos, true);
         int index;
         if (energyCube == null) {

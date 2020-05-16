@@ -54,7 +54,9 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
 
     @Nonnull
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    @Deprecated
+    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+          @Nonnull BlockRayTraceResult hit) {
         if (world.isRemote) {
             return ActionResultType.SUCCESS;
         }

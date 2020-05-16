@@ -33,6 +33,7 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.lib.radiation.capability.IRadiationEntity;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -378,8 +379,9 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
             PlayerEntity player = Minecraft.getInstance().player;
-            IRadiationEntity cap = player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).orElse(null);
-            if (cap != null) {
+            Optional<IRadiationEntity> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(player, Capabilities.RADIATION_ENTITY_CAPABILITY, null));
+            if (capability.isPresent()) {
+                IRadiationEntity cap = capability.get();
                 list.add(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(cap.getRadiation()),
                       UnitDisplayUtils.getDisplayShort(cap.getRadiation(), RadiationUnit.SV, 3)));
             }
@@ -432,7 +434,7 @@ public abstract class ModuleMekaSuit extends Module {
             }
         }
 
-        public static enum Range implements IHasTextComponent {
+        public enum Range implements IHasTextComponent {
             OFF(0),
             LOW(1F),
             MED(3F),
@@ -441,7 +443,7 @@ public abstract class ModuleMekaSuit extends Module {
             private float range;
             private ITextComponent label;
 
-            private Range(float boost) {
+            Range(float boost) {
                 this.range = boost;
                 this.label = new StringTextComponent(Float.toString(boost));
             }

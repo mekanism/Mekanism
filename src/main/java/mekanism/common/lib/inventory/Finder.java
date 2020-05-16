@@ -9,17 +9,17 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public interface Finder {
 
-    public static final Finder ANY = stack -> true;
+    Finder ANY = stack -> true;
 
-    public static Finder item(ItemStack itemType) {
+    static Finder item(ItemStack itemType) {
         return stack -> ItemStack.areItemsEqual(itemType, stack);
     }
 
-    public static Finder strict(ItemStack itemType) {
+    static Finder strict(ItemStack itemType) {
         return stack -> ItemHandlerHelper.canItemStacksStack(itemType, stack);
     }
 
-    public static Finder tag(String tagName) {
+    static Finder tag(String tagName) {
         return stack -> {
             if (stack.isEmpty()) {
                 return false;
@@ -28,7 +28,7 @@ public interface Finder {
         };
     }
 
-    public static Finder modID(String modID) {
+    static Finder modID(String modID) {
         return stack -> {
             if (stack.isEmpty()) {
                 return false;
@@ -37,7 +37,7 @@ public interface Finder {
         };
     }
 
-    public static Finder material(Material materialType) {
+    static Finder material(Material materialType) {
         return stack -> {
             if (stack.isEmpty() || !(stack.getItem() instanceof BlockItem)) {
                 return false;
