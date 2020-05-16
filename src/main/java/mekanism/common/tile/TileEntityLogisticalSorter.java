@@ -48,7 +48,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
       IHasSortableFilters {
 
     private HashList<TransporterFilter<?>> filters = new HashList<>();
-    private Finder strictFinder = stack -> filters.stream().noneMatch(filter -> filter.getFinder().modifies(stack) && !filter.allowDefault);
+    private Finder strictFinder = stack -> filters.stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().modifies(stack));
 
     public EnumColor color;
     public boolean autoEject;
