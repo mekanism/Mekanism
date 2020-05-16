@@ -1,11 +1,11 @@
 package mekanism.common.tile.qio;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
@@ -136,14 +136,12 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     }
 
     /**
-     * An efficient way to handle large (in item type) item ejections from a QIO frequency. Each eject attempt
-     * of a certain item type will use a uniform probability distribution based on a predetermined 'max eject
-     * attempt' constant to see if the ejection should take place. This makes sure we will eventually eject each
-     * item type, but not attempt every item in the frequency each operation.
+     * An efficient way to handle large (in item type) item ejections from a QIO frequency. Each eject attempt of a certain item type will use a uniform probability
+     * distribution based on a predetermined 'max eject attempt' constant to see if the ejection should take place. This makes sure we will eventually eject each item
+     * type, but not attempt every item in the frequency each operation.
      *
-     * Abstracting us away from the item map (using the type/count suppliers) allows us to interface directly with
-     * the entries of the QIO's item data map when running a filterless ejection, rather then recreating the whole
-     * map each ejection operation.
+     * Abstracting us away from the item map (using the type/count suppliers) allows us to interface directly with the entries of the QIO's item data map when running a
+     * filterless ejection, rather then recreating the whole map each ejection operation.
      *
      * Complexity: O(k * s), where 'k' is our max eject attempts constant and 's' is the size of the inventory.
      *
@@ -162,8 +160,9 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         }
 
         private void eject(QIOFrequency freq, TileEntity tile, Collection<T> ejectMap) {
-            if (ejectMap.isEmpty())
+            if (ejectMap.isEmpty()) {
                 return;
+            }
             double ejectChance = Math.min(1, (double) MAX_EJECT_ATTEMPTS / ejectMap.size());
             int maxTypes = getMaxTransitTypes(), maxCount = getMaxTransitCount();
             Map<HashedItem, Integer> removed = new Object2IntOpenHashMap<>();
@@ -175,11 +174,13 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
                 IItemHandler inventory = capability.get();
                 for (T obj : ejectMap) {
                     // break if we've reached our quota
-                    if (amountRemoved == maxCount || removed.size() == maxTypes)
+                    if (amountRemoved == maxCount || removed.size() == maxTypes) {
                         break;
+                    }
                     // skip randomly based on our eject chance
-                    if (getWorld().getRandom().nextDouble() > ejectChance)
+                    if (getWorld().getRandom().nextDouble() > ejectChance) {
                         continue;
+                    }
                     HashedItem type = typeSupplier.apply(obj);
                     ItemStack origInsert = type.createStack(Math.min(maxCount - amountRemoved, countSupplier.apply(obj)));
                     ItemStack toInsert = origInsert.copy();

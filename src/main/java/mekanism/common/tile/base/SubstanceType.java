@@ -41,11 +41,16 @@ public enum SubstanceType {
 
     public boolean canHandle(TileEntityMekanism tile) {
         switch (this) {
-            case ENERGY: return tile.canHandleEnergy();
-            case FLUID: return tile.canHandleFluid();
-            case GAS: return tile.canHandleGas();
-            case INFUSION: return tile.canHandleInfusion();
-            case HEAT: return tile.canHandleHeat();
+            case ENERGY:
+                return tile.canHandleEnergy();
+            case FLUID:
+                return tile.canHandleFluid();
+            case GAS:
+                return tile.canHandleGas();
+            case INFUSION:
+                return tile.canHandleInfusion();
+            case HEAT:
+                return tile.canHandleHeat();
         }
         return false;
     }

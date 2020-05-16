@@ -1,8 +1,8 @@
 package mekanism.common.integration.projecte;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.util.Collections;
 import java.util.List;
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;

@@ -64,8 +64,8 @@ public class RecipeRegistryHelper {
 
     public static void registerNutritionalLiquifier(IRecipeRegistration registry) {
         registry.addRecipes(ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.isFood())
-            .map(item -> new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getGasStack(item.getFood().getHealing() * 50)))
-            .collect(Collectors.toList()), MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
+              .map(item -> new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getGasStack(item.getFood().getHealing() * 50)))
+              .collect(Collectors.toList()), MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
     }
 
     private static ClientWorld getWorld() {

@@ -77,16 +77,17 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<Conta
         public ContainerTypeRegistryObject<MekanismTileContainer<TILE>> build() {
             ContainerTypeRegistryObject<MekanismTileContainer<TILE>> registryObject = new ContainerTypeRegistryObject<>(null);
             IContainerFactory<MekanismTileContainer<TILE>> factory = (id, inv, buf) ->
-                new MekanismTileContainer<TILE>(registryObject, id, inv, MekanismTileContainer.getTileFromBuf(buf, tileClass)) {
-                    @Override
-                    protected int getInventoryXOffset() {
-                        return super.getInventoryXOffset() + offsetX;
-                    }
-                    @Override
-                    protected int getInventoryYOffset() {
-                        return super.getInventoryYOffset() + offsetY;
-                    }
-                };
+                  new MekanismTileContainer<TILE>(registryObject, id, inv, MekanismTileContainer.getTileFromBuf(buf, tileClass)) {
+                      @Override
+                      protected int getInventoryXOffset() {
+                          return super.getInventoryXOffset() + offsetX;
+                      }
+
+                      @Override
+                      protected int getInventoryYOffset() {
+                          return super.getInventoryYOffset() + offsetY;
+                      }
+                  };
             return register(name, () -> IForgeContainerType.create(factory), registryObject::setRegistryObject);
         }
     }

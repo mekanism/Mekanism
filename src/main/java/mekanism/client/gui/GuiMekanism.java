@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,8 +9,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
@@ -41,6 +40,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import org.apache.commons.lang3.tuple.Pair;
 
 //TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
@@ -151,6 +151,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             }
         });
     }
+
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         int xAxis = mouseX - getGuiLeft();
@@ -167,7 +168,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
         // now render overlays in reverse-order (i.e. back to front)
         zOffset = maxZOffset;
-        for (LRU<GuiWindow>.LRUIterator iter = windows.descendingIterator(); iter.hasNext();) {
+        for (LRU<GuiWindow>.LRUIterator iter = windows.descendingIterator(); iter.hasNext(); ) {
             GuiWindow overlay = iter.next();
             zOffset += 150;
             RenderSystem.pushMatrix();
@@ -200,7 +201,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     public Optional<IGuiEventListener> getEventListenerForPos(double mouseX, double mouseY) {
         GuiWindow window = windows.stream().filter(w -> w.isMouseOver(mouseX, mouseY)).findFirst().orElse(null);
         return window != null ? Optional.of(window) : super.getEventListenerForPos(mouseX, mouseY);
-     }
+    }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {

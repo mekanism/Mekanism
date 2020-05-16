@@ -12,6 +12,6 @@ public class MekanismBlockModelProvider extends BaseBlockModelProvider {
 
     @Override
     protected void registerModels() {
-        
+
     }
 }

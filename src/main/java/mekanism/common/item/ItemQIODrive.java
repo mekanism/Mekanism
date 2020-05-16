@@ -31,7 +31,7 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
         tooltip.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
               QIOFrequency.formatItemCount(meta.getCount()), QIOFrequency.formatItemCount(getCountCapacity(stack))));
         tooltip.add(MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-            QIOFrequency.formatItemCount(meta.getTypes()), QIOFrequency.formatItemCount(getTypeCapacity(stack))));
+              QIOFrequency.formatItemCount(meta.getTypes()), QIOFrequency.formatItemCount(getTypeCapacity(stack))));
     }
 
     @Override

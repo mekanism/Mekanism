@@ -43,13 +43,22 @@ public enum SlotType {
 
     public static SlotType get(DataType type) {
         switch (type) {
-            case INPUT: case INPUT_1: return INPUT;
-            case INPUT_2: return INPUT_2;
-            case OUTPUT: case OUTPUT_1: return OUTPUT;
-            case OUTPUT_2: return OUTPUT_2;
-            case ENERGY: return POWER;
-            case EXTRA: return EXTRA;
-            default: return NORMAL;
+            case INPUT:
+            case INPUT_1:
+                return INPUT;
+            case INPUT_2:
+                return INPUT_2;
+            case OUTPUT:
+            case OUTPUT_1:
+                return OUTPUT;
+            case OUTPUT_2:
+                return OUTPUT_2;
+            case ENERGY:
+                return POWER;
+            case EXTRA:
+                return EXTRA;
+            default:
+                return NORMAL;
         }
     }
 }

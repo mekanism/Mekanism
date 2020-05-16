@@ -1,11 +1,11 @@
 package mekanism.common.content.gear.mekasuit;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -53,6 +53,7 @@ import net.minecraft.util.text.StringTextComponent;
 public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleElectrolyticBreathingUnit extends ModuleMekaSuit {
+
         @Override
         public void tickServer(PlayerEntity player) {
             FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
@@ -76,6 +77,7 @@ public abstract class ModuleMekaSuit extends Module {
     }
 
     public static class ModuleInhalationPurificationUnit extends ModuleMekaSuit {
+
         @Override
         public void tickServer(PlayerEntity player) {
             for (EffectInstance effect : player.getActivePotionEffects()) {
@@ -91,17 +93,20 @@ public abstract class ModuleMekaSuit extends Module {
     }
 
     public static class ModuleVisionEnhancementUnit extends ModuleMekaSuit {
+
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
             useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get());
         }
+
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
             ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
             list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.DARK_GRAY, MekanismLang.MODULE_VISION_ENHANCEMENT,
-                isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate()));
+                  isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate()));
         }
+
         @Override
         public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
             toggleEnabled(player, MekanismLang.MODULE_VISION_ENHANCEMENT.translate());
@@ -111,6 +116,7 @@ public abstract class ModuleMekaSuit extends Module {
     public static class ModuleRadiationShieldingUnit extends ModuleMekaSuit {}
 
     public static class ModuleGravitationalModulatingUnit extends ModuleMekaSuit {
+
         // we share with locomotive boosting unit
         private ModuleConfigItem<SprintBoost> speedBoost;
 
@@ -119,22 +125,26 @@ public abstract class ModuleMekaSuit extends Module {
             super.init();
             addConfigItem(speedBoost = new ModuleConfigItem<>(this, "speed_boost", MekanismLang.MODULE_SPEED_BOOST, new EnumData<>(SprintBoost.class), SprintBoost.LOW));
         }
+
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
             ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
             list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.DARK_GRAY, MekanismLang.MODULE_GRAVITATIONAL_MODULATION,
-                isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate()));
+                  isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate()));
         }
+
         @Override
         public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
             toggleEnabled(player, MekanismLang.MODULE_GRAVITATIONAL_MODULATION.translate());
         }
+
         public float getBoost() {
             return speedBoost.get().getBoost();
         }
     }
 
     public static class ModuleChargeDistributionUnit extends ModuleMekaSuit {
+
         private ModuleConfigItem<Boolean> chargeSuit;
         private ModuleConfigItem<Boolean> chargeInventory;
 
@@ -204,12 +214,13 @@ public abstract class ModuleMekaSuit extends Module {
     }
 
     public static class ModuleLocomotiveBoostingUnit extends ModuleMekaSuit {
+
         private ModuleConfigItem<SprintBoost> sprintBoost;
 
         @Override
         public void init() {
             super.init();
-            addConfigItem(sprintBoost = new ModuleConfigItem<>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class, getInstalledCount()+1), SprintBoost.LOW));
+            addConfigItem(sprintBoost = new ModuleConfigItem<>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class, getInstalledCount() + 1), SprintBoost.LOW));
         }
 
         @Override
@@ -218,8 +229,12 @@ public abstract class ModuleMekaSuit extends Module {
 
             if (canFunction(player)) {
                 float boost = getBoost();
-                if (!player.onGround) boost /= 5F; // throttle if we're in the air
-                if (player.isInWater()) boost /= 5F; // throttle if we're in the water
+                if (!player.onGround) {
+                    boost /= 5F; // throttle if we're in the air
+                }
+                if (player.isInWater()) {
+                    boost /= 5F; // throttle if we're in the water
+                }
                 player.moveRelative(boost, new Vec3d(0, 0, 1));
                 useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
             }
@@ -231,8 +246,12 @@ public abstract class ModuleMekaSuit extends Module {
 
             if (canFunction(player)) {
                 float boost = getBoost();
-                if (!player.onGround) boost /= 5F; // throttle if we're in the air
-                if (player.isInWater()) boost /= 5F; // throttle if we're in the water
+                if (!player.onGround) {
+                    boost /= 5F; // throttle if we're in the air
+                }
+                if (player.isInWater()) {
+                    boost /= 5F; // throttle if we're in the water
+                }
                 player.moveRelative(boost, new Vec3d(0, 0, 1));
                 // leave energy usage up to server
             }
@@ -255,14 +274,17 @@ public abstract class ModuleMekaSuit extends Module {
             ULTRA(0.5F);
             private float boost;
             private ITextComponent label;
+
             private SprintBoost(float boost) {
                 this.boost = boost;
                 this.label = new StringTextComponent(Float.toString(boost));
             }
+
             @Override
             public ITextComponent getTextComponent() {
                 return label;
             }
+
             public float getBoost() {
                 return boost;
             }
@@ -272,12 +294,13 @@ public abstract class ModuleMekaSuit extends Module {
     public static class ModuleHydraulicAbsorptionUnit extends ModuleMekaSuit {}
 
     public static class ModuleHydraulicPropulsionUnit extends ModuleMekaSuit {
+
         private ModuleConfigItem<JumpBoost> jumpBoost;
 
         @Override
         public void init() {
             super.init();
-            addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class, getInstalledCount()+1), JumpBoost.LOW));
+            addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class, getInstalledCount() + 1), JumpBoost.LOW));
         }
 
         public float getBoost() {
@@ -292,14 +315,17 @@ public abstract class ModuleMekaSuit extends Module {
             ULTRA(5);
             private float boost;
             private ITextComponent label;
+
             private JumpBoost(float boost) {
                 this.boost = boost;
                 this.label = new StringTextComponent(Float.toString(boost));
             }
+
             @Override
             public ITextComponent getTextComponent() {
                 return label;
             }
+
             public float getBoost() {
                 return boost;
             }
@@ -307,6 +333,7 @@ public abstract class ModuleMekaSuit extends Module {
     }
 
     public static class ModuleSolarRechargingUnit extends ModuleMekaSuit {
+
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
@@ -320,6 +347,7 @@ public abstract class ModuleMekaSuit extends Module {
     }
 
     public static class ModuleNutritionalInjectionUnit extends ModuleMekaSuit {
+
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
@@ -334,43 +362,52 @@ public abstract class ModuleMekaSuit extends Module {
                 }
             }
         }
+
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
-            if (!isEnabled()) return;
+            if (!isEnabled()) {
+                return;
+            }
             GasStack stored = ((ItemMekaSuitArmor) getContainer().getItem()).getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get());
             list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.NUTRITIONAL_PASTE, EnumColor.PINK, stored.getAmount()));
         }
     }
 
     public static class ModuleDosimeterUnit extends ModuleMekaSuit {
+
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
             PlayerEntity player = Minecraft.getInstance().player;
             IRadiationEntity cap = player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).orElse(null);
             if (cap != null) {
                 list.add(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(cap.getRadiation()),
-                    UnitDisplayUtils.getDisplayShort(cap.getRadiation(), RadiationUnit.SV, 3)));
+                      UnitDisplayUtils.getDisplayShort(cap.getRadiation(), RadiationUnit.SV, 3)));
             }
         }
     }
 
     public static class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
+
         private ModuleConfigItem<Range> range;
+
         @Override
         public void init() {
             super.init();
-            addConfigItem(range = new ModuleConfigItem<>(this, "range", MekanismLang.MODULE_RANGE, new EnumData<>(Range.class, getInstalledCount()+1), Range.LOW));
+            addConfigItem(range = new ModuleConfigItem<>(this, "range", MekanismLang.MODULE_RANGE, new EnumData<>(Range.class, getInstalledCount() + 1), Range.LOW));
         }
+
         @Override
         public void tickClient(PlayerEntity player) {
             super.tickClient(player);
             suckItems(player, true);
         }
+
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
             suckItems(player, false);
         }
+
         private void suckItems(PlayerEntity player, boolean client) {
             if (range.get() == Range.OFF) {
                 return;
@@ -389,11 +426,12 @@ public abstract class ModuleMekaSuit extends Module {
                     Vec3d motionDiff = motionNeeded.subtract(player.getMotion());
                     item.setMotion(motionDiff.scale(0.2));
                     if (client) {
-                        Mekanism.proxy.renderBolt(Objects.hash(player, item), player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int)(diff.length() * 4));
+                        Mekanism.proxy.renderBolt(Objects.hash(player, item), player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int) (diff.length() * 4));
                     }
                 }
             }
         }
+
         public static enum Range implements IHasTextComponent {
             OFF(0),
             LOW(1F),
@@ -402,14 +440,17 @@ public abstract class ModuleMekaSuit extends Module {
             ULTRA(10);
             private float range;
             private ITextComponent label;
+
             private Range(float boost) {
                 this.range = boost;
                 this.label = new StringTextComponent(Float.toString(boost));
             }
+
             @Override
             public ITextComponent getTextComponent() {
                 return label;
             }
+
             public float getRange() {
                 return range;
             }

@@ -1,11 +1,11 @@
 package mekanism.common.recipe;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
@@ -1162,7 +1162,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     private void addNuggetRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "nuggets/";
         addNuggetRecipe(consumer, MekanismItems.BRONZE_NUGGET, MekanismTags.Items.INGOTS_BRONZE, basePath, "bronze");
-        addNuggetRecipe(consumer, MekanismItems.REFINED_GLOWSTONE_NUGGET, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE,basePath, "refined_glowstone");
+        addNuggetRecipe(consumer, MekanismItems.REFINED_GLOWSTONE_NUGGET, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, basePath, "refined_glowstone");
         addNuggetRecipe(consumer, MekanismItems.REFINED_OBSIDIAN_NUGGET, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, basePath, "refined_obsidian");
         addNuggetRecipe(consumer, MekanismItems.STEEL_NUGGET, MekanismTags.Items.INGOTS_STEEL, basePath, "steel");
     }
@@ -1265,28 +1265,28 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         // Clump
         // from ore
         ItemStackGasToItemStackRecipeBuilder.purifying(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.OXYGEN, 1), clump.getItemStack(3))
-            .build(consumer, Mekanism.rl(basePath + "clump/from_ore"));
+              .build(consumer, Mekanism.rl(basePath + "clump/from_ore"));
         // from shard
         ItemStackGasToItemStackRecipeBuilder.purifying(ItemStackIngredient.from(shardTag), GasStackIngredient.from(MekanismGases.OXYGEN, 1), clump.getItemStack())
-            .build(consumer, Mekanism.rl(basePath + "clump/from_shard"));
+              .build(consumer, Mekanism.rl(basePath + "clump/from_shard"));
         // Crystal
         // from slurry
         GasToItemStackRecipeBuilder.crystallizing(GasStackIngredient.from(slurry.getCleanSlurry(), 200), crystal.getItemStack())
-            .build(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));
+              .build(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));
         // Dirty Dust
         // from clump
         ItemStackToItemStackRecipeBuilder.crushing(ItemStackIngredient.from(clumpTag), dirtyDust.getItemStack())
-            .build(consumer, Mekanism.rl(basePath + "dirty_dust/from_clump"));
+              .build(consumer, Mekanism.rl(basePath + "dirty_dust/from_clump"));
         // Dust
         // from dirty dust
         ItemStackToItemStackRecipeBuilder.enriching(ItemStackIngredient.from(dirtyDustTag), dust.getItemStack())
-            .build(consumer, Mekanism.rl(basePath + "dust/from_dirty_dust"));
+              .build(consumer, Mekanism.rl(basePath + "dust/from_dirty_dust"));
         // from ingot
         ItemStackToItemStackRecipeBuilder.crushing(ItemStackIngredient.from(ingotTag), dust.getItemStack())
-            .build(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
+              .build(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
         // from ore
         ItemStackToItemStackRecipeBuilder.enriching(ItemStackIngredient.from(resource.getOreTag()), dust.getItemStack(2))
-            .build(consumer, Mekanism.rl(basePath + "dust/from_ore"));
+              .build(consumer, Mekanism.rl(basePath + "dust/from_ore"));
         // Ingot
         // from dust
         addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(dustTag), ingot, 0.5F, 200, Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
@@ -1295,37 +1295,37 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
             ExtendedShapelessRecipeBuilder.shapelessRecipe(ingot, 9).addIngredient(blockTag).build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
             // to block
             ExtendedShapedRecipeBuilder.shapedRecipe(block)
-                .pattern(STORAGE_PATTERN)
-                .key(Pattern.CONSTANT, ingotTag)
-                .build(consumer, Mekanism.rl(basePath + "storage_blocks/from_ingots"));
+                  .pattern(STORAGE_PATTERN)
+                  .key(Pattern.CONSTANT, ingotTag)
+                  .build(consumer, Mekanism.rl(basePath + "storage_blocks/from_ingots"));
             // from nuggets
             ExtendedShapedRecipeBuilder.shapedRecipe(ingot).pattern(STORAGE_PATTERN).key(Pattern.CONSTANT, nuggetTag).build(consumer,
-                Mekanism.rl(basePath + "ingot/from_nuggets"));
+                  Mekanism.rl(basePath + "ingot/from_nuggets"));
             // to nuggets
             ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
-                .addIngredient(ingotTag)
-                .build(consumer, Mekanism.rl(basePath + "nugget/from_ingot"));
+                  .addIngredient(ingotTag)
+                  .build(consumer, Mekanism.rl(basePath + "nugget/from_ingot"));
             // from ore
             addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(resource.getOreTag()), ingot, 1, 200, Mekanism.rl(basePath + "ingot/from_ore_blasting"), Mekanism.rl(basePath + "ingot/from_ore_smelting"));
         }
         // Ore
         // from dust
         CombinerRecipeBuilder.combining(ItemStackIngredient.from(dustTag, 8), ItemStackIngredient.from(Tags.Items.COBBLESTONE), new ItemStack(ore))
-            .build(consumer, Mekanism.rl(basePath + "ore/from_dust"));
+              .build(consumer, Mekanism.rl(basePath + "ore/from_dust"));
         // Shard
         // from crystal
         ItemStackGasToItemStackRecipeBuilder.injecting(ItemStackIngredient.from(crystalTag), GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1), shard.getItemStack())
-            .build(consumer, Mekanism.rl(basePath + "shard/from_crystal"));
+              .build(consumer, Mekanism.rl(basePath + "shard/from_crystal"));
         // from ore
         ItemStackGasToItemStackRecipeBuilder.injecting(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1), shard.getItemStack(4))
-            .build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
+              .build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
         // Slurry
         // clean
         FluidGasToGasRecipeBuilder.washing(FluidStackIngredient.from(FluidTags.WATER, 5), GasStackIngredient.from(slurry.getDirtySlurry(), 1), slurry.getCleanSlurry().getGasStack(1))
-            .build(consumer, Mekanism.rl(basePath + "slurry/clean"));
+              .build(consumer, Mekanism.rl(basePath + "slurry/clean"));
         // dirty
         ItemStackGasToGasRecipeBuilder.dissolution(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1), slurry.getDirtySlurry().getGasStack(1_000))
-            .build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
+              .build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
     }
 
     private void addCoalOreProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
@@ -2188,13 +2188,13 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
         //Dosimeter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.DOSIMETER)
-            .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
-                  TripleLine.of(Pattern.INGOT, Pattern.REDSTONE, Pattern.INGOT),
-                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
-            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
-            .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
-            .build(consumer);
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.INGOT, Pattern.REDSTONE, Pattern.INGOT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .build(consumer);
         //Dynamic tank
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DYNAMIC_TANK, 4)
               .pattern(RecipePattern.createPattern(
@@ -2364,47 +2364,47 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
         //Geiger Counter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.GEIGER_COUNTER)
-            .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
-                  TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT),
-                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
-            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
-            .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
-            .build(consumer);
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .build(consumer);
         //Hazmat Mask
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_MASK)
-            .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT))
-            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
-            .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
-            .build(consumer);
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+              .build(consumer);
         //Hazmat Gown
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_GOWN)
-            .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
-            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
-            .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
-            .build(consumer);
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+              .build(consumer);
         //Hazmat Pants
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_PANTS)
-            .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT))
-            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
-            .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
-            .build(consumer);
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+              .build(consumer);
         //Hazmat Boots
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_BOOTS)
-            .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT))
-            ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
-            .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
-            .build(consumer);
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+              .build(consumer);
         //HDPE rod
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_ROD)
               .pattern(RecipePattern.createPattern(
@@ -2813,8 +2813,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "hydrofluoric_acid"));
         //uranium oxide
         ItemStackToGasRecipeBuilder.oxidizing(
-            ItemStackIngredient.from(MekanismTags.Items.YELLOW_CAKE_URANIUM),
-            MekanismGases.URANIUM_OXIDE.getGasStack(250)
+              ItemStackIngredient.from(MekanismTags.Items.YELLOW_CAKE_URANIUM),
+              MekanismGases.URANIUM_OXIDE.getGasStack(250)
         ).build(consumer, Mekanism.rl(basePath + "uranium_oxide"));
         //uranium hexafluoride
         ChemicalInfuserRecipeBuilder.chemicalInfusing(
@@ -2845,32 +2845,32 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
         //plutonium
         GasToGasRecipeBuilder.centrifuging(
-            GasStackIngredient.from(MekanismGases.NUCLEAR_WASTE, 10),
-            MekanismGases.PLUTONIUM.getGasStack(1)
+              GasStackIngredient.from(MekanismGases.NUCLEAR_WASTE, 10),
+              MekanismGases.PLUTONIUM.getGasStack(1)
         ).build(consumer, Mekanism.rl(basePath + "plutonium"));
         //polonium
         GasToGasRecipeBuilder.activating(
-            GasStackIngredient.from(MekanismGases.NUCLEAR_WASTE, 10),
-            MekanismGases.POLONIUM.getGasStack(1)
+              GasStackIngredient.from(MekanismGases.NUCLEAR_WASTE, 10),
+              MekanismGases.POLONIUM.getGasStack(1)
         ).build(consumer, Mekanism.rl(basePath + "polonium"));
 
         //plutonium pellet
         PressurizedReactionRecipeBuilder.reaction(
-            ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
-            FluidStackIngredient.from(FluidTags.WATER, 1000),
-            GasStackIngredient.from(MekanismGases.PLUTONIUM, 1000),
-            100,
-            MekanismItems.PLUTONIUM_PELLET.getItemStack(),
-            MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(1000)
+              ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
+              FluidStackIngredient.from(FluidTags.WATER, 1000),
+              GasStackIngredient.from(MekanismGases.PLUTONIUM, 1000),
+              100,
+              MekanismItems.PLUTONIUM_PELLET.getItemStack(),
+              MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(1000)
         ).build(consumer, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
         //polonium pellet
         PressurizedReactionRecipeBuilder.reaction(
-            ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
-            FluidStackIngredient.from(FluidTags.WATER, 1000),
-            GasStackIngredient.from(MekanismGases.POLONIUM, 1000),
-            100,
-            MekanismItems.POLONIUM_PELLET.getItemStack(),
-            MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(1000)
+              ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
+              FluidStackIngredient.from(FluidTags.WATER, 1000),
+              GasStackIngredient.from(MekanismGases.POLONIUM, 1000),
+              100,
+              MekanismItems.POLONIUM_PELLET.getItemStack(),
+              MekanismGases.SPENT_NUCLEAR_WASTE.getGasStack(1000)
         ).build(consumer, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
 
         //antimatter pellet
@@ -2881,35 +2881,35 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
         //back to antimatter
         ItemStackToGasRecipeBuilder.oxidizing(
-            ItemStackIngredient.from(MekanismTags.Items.PELLETS_ANTIMATTER),
-            MekanismGases.ANTIMATTER.getGasStack(1000)
+              ItemStackIngredient.from(MekanismTags.Items.PELLETS_ANTIMATTER),
+              MekanismGases.ANTIMATTER.getGasStack(1000)
         ).build(consumer, Mekanism.rl(basePath + "antimatter/from_pellet"));
     }
 
     private void addNucleosynthesizingRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "nucleosynthesizing/";
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-            ItemStackIngredient.from(Items.COAL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 4), new ItemStack(Items.DIAMOND), 1000)
-        .build(consumer, Mekanism.rl(basePath + "diamond"));
+              ItemStackIngredient.from(Items.COAL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 4), new ItemStack(Items.DIAMOND), 1000)
+              .build(consumer, Mekanism.rl(basePath + "diamond"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-            ItemStackIngredient.from(Items.DIAMOND), GasStackIngredient.from(MekanismGases.ANTIMATTER, 4), new ItemStack(Items.EMERALD), 1000)
-        .build(consumer, Mekanism.rl(basePath + "emerald"));
+              ItemStackIngredient.from(Items.DIAMOND), GasStackIngredient.from(MekanismGases.ANTIMATTER, 4), new ItemStack(Items.EMERALD), 1000)
+              .build(consumer, Mekanism.rl(basePath + "emerald"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-            ItemStackIngredient.from(Items.RED_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.REDSTONE_BLOCK), 500)
-        .build(consumer, Mekanism.rl(basePath + "redstone_block"));
+              ItemStackIngredient.from(Items.RED_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.REDSTONE_BLOCK), 500)
+              .build(consumer, Mekanism.rl(basePath + "redstone_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-            ItemStackIngredient.from(Items.YELLOW_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.GLOWSTONE), 500)
-        .build(consumer, Mekanism.rl(basePath + "glowstone_block"));
+              ItemStackIngredient.from(Items.YELLOW_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.GLOWSTONE), 500)
+              .build(consumer, Mekanism.rl(basePath + "glowstone_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-            ItemStackIngredient.from(Items.BLUE_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.LAPIS_BLOCK), 500)
-        .build(consumer, Mekanism.rl(basePath + "lapis_block"));
+              ItemStackIngredient.from(Items.BLUE_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.LAPIS_BLOCK), 500)
+              .build(consumer, Mekanism.rl(basePath + "lapis_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-            ItemStackIngredient.from(Items.LIGHT_GRAY_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.QUARTZ_BLOCK), 500)
-        .build(consumer, Mekanism.rl(basePath + "quartz_block"));
+              ItemStackIngredient.from(Items.LIGHT_GRAY_WOOL), GasStackIngredient.from(MekanismGases.ANTIMATTER, 2), new ItemStack(Items.QUARTZ_BLOCK), 500)
+              .build(consumer, Mekanism.rl(basePath + "quartz_block"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-            ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)), GasStackIngredient.from(MekanismGases.ANTIMATTER, 1), new ItemStack(Items.IRON_INGOT), 200)
-        .build(consumer, Mekanism.rl(basePath + "iron"));
+              ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)), GasStackIngredient.from(MekanismGases.ANTIMATTER, 1), new ItemStack(Items.IRON_INGOT), 200)
+              .build(consumer, Mekanism.rl(basePath + "iron"));
     }
 }

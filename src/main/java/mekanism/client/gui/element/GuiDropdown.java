@@ -97,8 +97,9 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum> extends GuiTex
         int index = getHoveredIndex(mouseX + guiObj.getLeft(), mouseY + guiObj.getTop());
         if (index != -1) {
             ITextComponent text = options[index].getTooltip();
-            if (text != null)
+            if (text != null) {
                 displayTooltip(options[index].getTooltip(), mouseX, mouseY);
+            }
         }
     }
 
@@ -111,10 +112,11 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum> extends GuiTex
 
     private void setOpen(boolean open) {
         if (isOpen != open) {
-            if (open)
+            if (open) {
                 height += options.length * 10 + 1;
-            else
+            } else {
                 height -= options.length * 10 + 1;
+            }
         }
         isOpen = open;
     }

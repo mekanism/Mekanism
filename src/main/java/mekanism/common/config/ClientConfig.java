@@ -73,20 +73,20 @@ public class ClientConfig extends BaseMekanismConfig {
         radiationParticleCount = CachedIntValue.wrap(this, builder.comment("How many particles spawn when rendering radiation effects (scaled by radiation level).")
               .define("radiationParticleCount", 100));
         energyColor = CachedIntValue.wrap(this, builder.comment("Color of energy in item durability display.")
-            .define("energyColor", 0x3CFE9A));
+              .define("energyColor", 0x3CFE9A));
 
         builder.comment("GUI Config").push(GUI_CATEGORY);
         guiTitleTextColor = CachedIntValue.wrap(this, builder.comment("Color of title text.")
-            .define("titleTextColor", 0x404040));
+              .define("titleTextColor", 0x404040));
         guiScreenTextColor = CachedIntValue.wrap(this, builder.comment("Color of text in black background/green text GUI elements.")
-            .define("screenTextColor", 0x3CFE9A));
+              .define("screenTextColor", 0x3CFE9A));
         builder.pop();
 
         builder.comment("QIO Config").push(QIO_CATEGORY);
         qioItemViewerSortType = CachedEnumValue.wrap(this, builder.comment("Sorting strategy when viewing items in a QIO Item Viewer.")
               .defineEnum("itemViewerSortType", ListSortType.NAME));
         qioItemViewerSortDirection = CachedEnumValue.wrap(this, builder.comment("Sorting direction when viewing items in a QIO Item Viewer.")
-            .defineEnum("itemViewerSortDirection", SortDirection.ASCENDING));
+              .defineEnum("itemViewerSortDirection", SortDirection.ASCENDING));
         qioItemViewerSlotsX = CachedIntValue.wrap(this, builder.comment("Number of slots to view horizontally on a QIO Item Viewer.")
               .defineInRange("itemViewerSlotsX", 8, 8, 16));
         qioItemViewerSlotsY = CachedIntValue.wrap(this, builder.comment("Number of slots to view vertically on a QIO Item Viewer.")

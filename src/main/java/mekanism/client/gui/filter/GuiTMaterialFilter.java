@@ -54,11 +54,11 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
         addButton(new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"),
-            () -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
+              () -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 64, 11, getButtonLocation("default"), () -> filter.allowDefault = !filter.allowDefault,
-            getOnHover(MekanismLang.FILTER_ALLOW_DEFAULT)));
+              getOnHover(MekanismLang.FILTER_ALLOW_DEFAULT)));
         addButton(new ColorButton(this, getGuiLeft() + 12, getGuiTop() + 44, 16, 16, () -> filter.color, () -> filter.color = hasShiftDown() ? null : TransporterUtils.increment(filter.color),
-            () -> filter.color = TransporterUtils.decrement(filter.color)));
+              () -> filter.color = TransporterUtils.decrement(filter.color)));
     }
 
     @Override

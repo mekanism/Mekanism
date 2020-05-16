@@ -102,7 +102,7 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
 
         @Override
         protected ILangEntry getLangEntry() {
-            return value ? MekanismLang.ACTIVE: MekanismLang.DISABLED;
+            return value ? MekanismLang.ACTIVE : MekanismLang.DISABLED;
         }
     }
 }

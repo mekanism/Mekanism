@@ -1,9 +1,9 @@
 package mekanism.common.tags;
 
-import java.util.Map;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasTags;
 import mekanism.api.chemical.infuse.InfuseType;

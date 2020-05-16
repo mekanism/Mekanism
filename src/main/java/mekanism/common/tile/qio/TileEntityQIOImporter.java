@@ -61,28 +61,32 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             return;
         }
         Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(back, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, getDirection()));
-        if (!capability.isPresent())
+        if (!capability.isPresent()) {
             return;
+        }
         IItemHandler inventory = capability.get();
         Set<HashedItem> typesAdded = new HashSet<>();
         int maxTypes = getMaxTransitTypes(), maxCount = getMaxTransitCount(), countAdded = 0;
 
         for (int i = inventory.getSlots() - 1; i >= 0; i--) {
             ItemStack stack = inventory.extractItem(i, maxCount - countAdded, true);
-            if (stack.isEmpty())
+            if (stack.isEmpty()) {
                 continue;
+            }
             HashedItem type = new HashedItem(stack);
             // if we don't have room for another item type, skip
-            if (!typesAdded.contains(type) && typesAdded.size() == maxTypes)
+            if (!typesAdded.contains(type) && typesAdded.size() == maxTypes) {
                 continue;
+            }
             // if we can't filter this item type, skip
-            if (!canFilter(stack))
+            if (!canFilter(stack)) {
                 continue;
+            }
             ItemStack used = TransporterManager.getToUse(stack, freq.addItem(stack));
             ItemStack ret = inventory.extractItem(i, used.getCount(), false);
             if (!InventoryUtils.areItemsStackable(used, ret) || used.getCount() != ret.getCount()) {
                 Mekanism.logger.error("QIO insertion error: item handler " + back + " returned " + stack + " during simulated extraction, "
-                    + "but returned " + ret + " during execution. This is wrong!");
+                                      + "but returned " + ret + " during execution. This is wrong!");
             }
             typesAdded.add(type);
             countAdded += used.getCount();
@@ -91,8 +95,9 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
 
     private boolean canFilter(ItemStack stack) {
         // quickly return true if we don't have any filters installed and we allow for filterless importing
-        if (importWithoutFilter && getFilters().isEmpty())
+        if (importWithoutFilter && getFilters().isEmpty()) {
             return true;
+        }
         for (QIOFilter<?> filter : getFilters()) {
             if (filter instanceof QIOItemStackFilter) {
                 if (Finder.item(((QIOItemStackFilter) filter).getItemStack()).modifies(stack)) {

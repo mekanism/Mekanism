@@ -1,17 +1,17 @@
 package mekanism.client.render.bolt;
 
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
-import org.apache.commons.lang3.tuple.Pair;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.client.render.bolt.BoltRenderer.BoltData;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class BoltEffect {
 
@@ -113,8 +113,10 @@ public class BoltEffect {
                 quads.add(quadData.getLeft());
 
                 if (segmentEnd == boltData.getEnd())
-                    // break if we've reached the defined end point
+                // break if we've reached the defined end point
+                {
                     break;
+                }
                 if (!data.isBranch) {
                     // continue the bolt if this is the primary (non-branch) segment
                     drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.getRight(), false));
@@ -123,8 +125,10 @@ public class BoltEffect {
                     drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.getRight(), true));
                 }
                 while (random.nextFloat() < branchInitiationFactor * (1 - progress))
-                    // branch initiation (probability decreases as progress increases)
+                // branch initiation (probability decreases as progress increases)
+                {
                     drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.getRight(), true));
+                }
             }
         }
         return quads;
@@ -156,7 +160,9 @@ public class BoltEffect {
     }
 
     private static class QuadCache {
+
         private Vec3d prevEnd, prevEndRight, prevEndBack;
+
         private QuadCache(Vec3d prevEnd, Vec3d prevEndRight, Vec3d prevEndBack) {
             this.prevEnd = prevEnd;
             this.prevEndRight = prevEndRight;
@@ -165,6 +171,7 @@ public class BoltEffect {
     }
 
     protected static class BoltInstructions {
+
         private Vec3d start;
         private Vec3d perpendicularDist;
         private QuadCache cache;
@@ -181,6 +188,7 @@ public class BoltEffect {
     }
 
     protected static class BoltQuads {
+
         private Color color;
         private List<Vec3d> vecs;
 
@@ -195,12 +203,13 @@ public class BoltEffect {
 
         protected void render(Matrix4f matrix, IVertexBuilder buffer, float alpha) {
             vecs.forEach(v -> buffer.pos(matrix, (float) v.x, (float) v.y, (float) v.z)
-                                    .color(color.r, color.g, color.b, (int) (color.a * alpha))
-                                    .endVertex());
+                  .color(color.r, color.g, color.b, (int) (color.a * alpha))
+                  .endVertex());
         }
     }
 
     public interface SpreadFunction {
+
         /** A steady linear increase in perpendicular noise. */
         public static final SpreadFunction LINEAR_ASCENT = (progress) -> progress;
         /** A steady linear increase in perpendicular noise, followed by a steady decrease after the halfway point. */
@@ -220,10 +229,12 @@ public class BoltEffect {
     }
 
     public interface SegmentSpreader {
+
         /** Don't remember where the last segment left off, just randomly move from the straight-line vector. */
         public static final SegmentSpreader NO_MEMORY = (perpendicularDist, randVec, maxDiff, scale, progress) -> {
             return randVec.scale(maxDiff);
         };
+
         /** Move from where the previous segment ended by a certain memory factor. Higher memory will restrict perpendicular movement. */
         public static SegmentSpreader memory(float memoryFactor) {
             return (perpendicularDist, randVec, maxDiff, spreadScale, progress) -> {

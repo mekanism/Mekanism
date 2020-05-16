@@ -1,11 +1,11 @@
 package mekanism.common.lib.frequency;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.security.ISecurityTile;
 import net.minecraft.tileentity.TileEntity;
@@ -72,8 +72,9 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
     }
 
     public void clear() {
-        if (privateManagers != null)
+        if (privateManagers != null) {
             privateManagers.clear();
+        }
     }
 
     public static enum Type {
@@ -84,6 +85,7 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
         boolean supportsPublic() {
             return this == PUBLIC_ONLY || this == PUBLIC_PRIVATE;
         }
+
         boolean supportsPrivate() {
             return this == PRIVATE_ONLY || this == PUBLIC_PRIVATE;
         }

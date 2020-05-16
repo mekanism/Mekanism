@@ -139,5 +139,6 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     @Override
-    public void onContentsChanged() {}
+    public void onContentsChanged() {
+    }
 }

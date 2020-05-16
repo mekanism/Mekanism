@@ -29,22 +29,24 @@ public class Color {
 
     /**
      * Blends this color into another, by a given scale.
-     * @param to color to blend with
+     *
+     * @param to    color to blend with
      * @param scale a scale (0 -> 1) defining the effect of the second color
+     *
      * @return blended color
      */
     public Color blend(Color to, double scale) {
         return rgba((int) (r + (to.r - r) * scale),
-                    (int) (g + (to.g - g) * scale),
-                    (int) (b + (to.b - b) * scale),
-                    (int) (a + (to.a - a) * scale));
+              (int) (g + (to.g - g) * scale),
+              (int) (b + (to.b - b) * scale),
+              (int) (a + (to.a - a) * scale));
     }
 
     public Color darken(double amount) {
         return rgba((int) (r * (1 - amount)),
-                    (int) (g * (1 - amount)),
-                    (int) (b * (1 - amount)),
-                    (int) (a * (1 - amount)));
+              (int) (g * (1 - amount)),
+              (int) (b * (1 - amount)),
+              (int) (a * (1 - amount)));
     }
 
     public static Color rgba(int r, int g, int b, int a) {

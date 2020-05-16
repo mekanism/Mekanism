@@ -1,8 +1,8 @@
 package mekanism.common.distribution.target;
 
 import mekanism.api.Action;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.distribution.SplitInfo;
 
 public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, FloatingLong, FloatingLong> {

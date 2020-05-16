@@ -1,9 +1,9 @@
 package mekanism.common.base;
 
-import java.util.Map;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class KeySync {

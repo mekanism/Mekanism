@@ -1,5 +1,7 @@
 package mekanism.common.content.qio;
 
+import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -7,17 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiPredicate;
-import org.apache.commons.lang3.tuple.Pair;
-import com.google.common.collect.Sets;
-import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import mekanism.common.base.TagCache;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Advanced pattern searching, in use by QIO Item Viewers. Only use on client-side.
- * @author aidancbrady
  *
+ * @author aidancbrady
  */
 public class SearchQueryParser {
 
@@ -149,7 +149,7 @@ public class SearchQueryParser {
         int i = start;
         for (; i < text.length(); i++) {
             char tc = text.charAt(i);
-            if (TERMINATORS.contains(tc) ||QueryType.get(tc) != null || (spaceTerminate && tc == ' ')) {
+            if (TERMINATORS.contains(tc) || QueryType.get(tc) != null || (spaceTerminate && tc == ' ')) {
                 i--; // back up so we don't include terminating char
                 break;
             }
@@ -167,6 +167,7 @@ public class SearchQueryParser {
         TAG('#', (key, stack) -> TagCache.getItemTags(stack).stream().anyMatch(itemTag -> itemTag.toLowerCase().contains(key.toLowerCase())));
 
         private static final Map<Character, QueryType> charLookupMap = new Char2ObjectOpenHashMap<>();
+
         static {
             for (QueryType type : QueryType.values()) {
                 charLookupMap.put(type.prefix, type);

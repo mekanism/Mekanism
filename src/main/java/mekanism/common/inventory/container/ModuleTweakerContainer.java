@@ -24,7 +24,7 @@ public class ModuleTweakerContainer extends MekanismContainer {
 
     @Override
     protected void addInventorySlots(@Nonnull PlayerInventory inv) {
-        for(int index = 0; index < inv.armorInventory.size(); index++) {
+        for (int index = 0; index < inv.armorInventory.size(); index++) {
             EquipmentSlotType slotType = EquipmentSlotType.values()[2 + inv.armorInventory.size() - index - 1];
             addSlot(new ArmorSlot(inv, 36 + slotType.ordinal() - 2, 8, 8 + index * 18, slotType) {
                 @Override

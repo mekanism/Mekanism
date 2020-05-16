@@ -1,8 +1,8 @@
 package mekanism.common.inventory.slot;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Optional;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
@@ -23,9 +23,11 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     IExtendedFluidTank getFluidTank();
 
     boolean isDraining();
+
     boolean isFilling();
 
     void setDraining(boolean draining);
+
     void setFilling(boolean filling);
 
     default void handleTank(IInventorySlot outputSlot, ContainerEditMode editMode) {

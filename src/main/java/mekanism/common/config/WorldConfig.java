@@ -1,7 +1,7 @@
 package mekanism.common.config;
 
-import java.util.Map;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.resource.OreType;

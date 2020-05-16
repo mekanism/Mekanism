@@ -1,5 +1,6 @@
 package mekanism.common.lib.radiation;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,7 +12,6 @@ import java.util.UUID;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -41,30 +41,20 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
- * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are
- * provided in _sieverts, defining a rate of accumulation of equivalent dose. For reference,
- * here are examples of equivalent dose (credit: wikipedia)
+ * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
+ * equivalent dose. For reference, here are examples of equivalent dose (credit: wikipedia)
  *
- * 100 nSv: baseline dose (banana equivalent dose)
- * 250 nSv: airport security screening
- *   1 mSv: annual total civilian dose equivalent
- *  50 mSv: annual total occupational equivalent dose limit
- * 250 mSv: total dose equivalent from 6-month trip to mars
- *    1 Sv: maximum allowed dose allowed for NASA astronauts over their careers
- *    5 Sv: dose required to (50% chance) kill human if received over 30-day period
- *   50 Sv: dose received after spending 10 min next to Chernobyl reactor core directly after meltdown
+ * 100 nSv: baseline dose (banana equivalent dose) 250 nSv: airport security screening 1 mSv: annual total civilian dose equivalent 50 mSv: annual total occupational
+ * equivalent dose limit 250 mSv: total dose equivalent from 6-month trip to mars 1 Sv: maximum allowed dose allowed for NASA astronauts over their careers 5 Sv: dose
+ * required to (50% chance) kill human if received over 30-day period 50 Sv: dose received after spending 10 min next to Chernobyl reactor core directly after meltdown
  *
- * For defining rate of accumulation, we use _sieverts per hour_ (Sv/h). Here are examples of dose
- * accumulation rates.
+ * For defining rate of accumulation, we use _sieverts per hour_ (Sv/h). Here are examples of dose accumulation rates.
  *
- * 100 nSv/h: max recommended human irradiation
- * 2.7 uSv/h: irradiation from airline at cruise altitude
- * 190 mSv/h: highest reading from fallout of Trinity (Manhattan project test) bomb, _20 miles away_, 3 hours after detonation
- * ~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station
- *       (at this rate, it takes 30 seconds to accumulate a median lethal dose)
+ * 100 nSv/h: max recommended human irradiation 2.7 uSv/h: irradiation from airline at cruise altitude 190 mSv/h: highest reading from fallout of Trinity (Manhattan
+ * project test) bomb, _20 miles away_, 3 hours after detonation ~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station (at this rate, it
+ * takes 30 seconds to accumulate a median lethal dose)
  *
  * @author aidancbrady
- *
  */
 public class RadiationManager {
 
@@ -99,6 +89,7 @@ public class RadiationManager {
      * Get the radiation level (in sV/h) at a certain location.
      *
      * @param coord - location
+     *
      * @return radiation level (in sV)
      */
     public double getRadiationLevel(Coord4D coord) {
@@ -222,7 +213,7 @@ public class RadiationManager {
 
         // update meltdowns
         if (meltdowns.containsKey(world.dimension.getType().getId())) {
-            for (Iterator<Meltdown> iter = meltdowns.get(world.dimension.getType().getId()).iterator(); iter.hasNext();) {
+            for (Iterator<Meltdown> iter = meltdowns.get(world.dimension.getType().getId()).iterator(); iter.hasNext(); ) {
                 Meltdown meltdown = iter.next();
                 if (meltdown.update()) {
                     iter.remove();
@@ -239,7 +230,7 @@ public class RadiationManager {
         // each tick, there's a 1/20 chance we'll decay radiation sources (averages to 1 decay operation per second)
         if (RAND.nextInt(20) == 0) {
             for (Map<Coord4D, RadiationSource> set : radiationMap.values()) {
-                for (Iterator<Map.Entry<Coord4D, RadiationSource>> iter = set.entrySet().iterator(); iter.hasNext();) {
+                for (Iterator<Map.Entry<Coord4D, RadiationSource>> iter = set.entrySet().iterator(); iter.hasNext(); ) {
                     Map.Entry<Coord4D, RadiationSource> entry = iter.next();
                     if (entry.getValue().decay()) {
                         // remove if source gets too low
@@ -344,7 +335,7 @@ public class RadiationManager {
         }
 
         public SoundEvent getSoundEvent() {
-            switch(this) {
+            switch (this) {
                 case LOW:
                     return MekanismSounds.GEIGER_SLOW.get();
                 case MEDIUM:

@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import org.lwjgl.glfw.GLFW;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -20,6 +19,7 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import org.lwjgl.glfw.GLFW;
 
 public class MekanismKeyHandler extends MekKeyHandler {
 
@@ -40,7 +40,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
     public static KeyBinding boostKey = new KeyBinding(MekanismLang.KEY_BOOST.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_LEFT_CONTROL, MekanismLang.MEKANISM.getTranslationKey());
     public static KeyBinding hudKey = new KeyBinding(MekanismLang.KEY_HUD.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
-        GLFW.GLFW_KEY_H, MekanismLang.MEKANISM.getTranslationKey());
+          GLFW.GLFW_KEY_H, MekanismLang.MEKANISM.getTranslationKey());
 
     private static Builder BINDINGS = new Builder(9)
           .addBinding(handModeSwitchKey, false)

@@ -46,15 +46,15 @@ public interface ISideConfiguration {
         if (container instanceof IGasTank && getConfig().supports(TransmissionType.GAS)) {
             ConfigInfo info = getConfig().getConfig(TransmissionType.GAS);
             List<DataType> types = info.getDataTypeForContainer(container);
-            return types.size() > 0 && types.size() < info.getSupportedDataTypes().size()-1 ? types.get(0) : null;
+            return types.size() > 0 && types.size() < info.getSupportedDataTypes().size() - 1 ? types.get(0) : null;
         } else if (container instanceof IExtendedFluidTank && getConfig().supports(TransmissionType.FLUID)) {
             ConfigInfo info = getConfig().getConfig(TransmissionType.FLUID);
             List<DataType> types = info.getDataTypeForContainer(container);
-            return types.size() > 0 && types.size() < info.getSupportedDataTypes().size()-1 ? types.get(0) : null;
+            return types.size() > 0 && types.size() < info.getSupportedDataTypes().size() - 1 ? types.get(0) : null;
         } else if (container instanceof IInventorySlot && getConfig().supports(TransmissionType.ITEM)) {
             ConfigInfo info = getConfig().getConfig(TransmissionType.ITEM);
             List<DataType> types = info.getDataTypeForContainer(container);
-            return types.size() > 0 && types.size() < info.getSupportedDataTypes().size()-1 ? types.get(0) : null;
+            return types.size() > 0 && types.size() < info.getSupportedDataTypes().size() - 1 ? types.get(0) : null;
         }
         return null;
     }

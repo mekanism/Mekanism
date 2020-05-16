@@ -13,6 +13,6 @@ public class GeneratorsBlockModelProvider extends BaseBlockModelProvider {
 
     @Override
     protected void registerModels() {
-        
+
     }
 }

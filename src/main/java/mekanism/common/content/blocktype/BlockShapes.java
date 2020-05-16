@@ -2,6 +2,7 @@ package mekanism.common.content.blocktype;
 
 import static mekanism.common.util.VoxelShapeUtils.setShape;
 import static net.minecraft.block.Block.makeCuboidShape;
+
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.util.Direction;
@@ -631,12 +632,12 @@ public final class BlockShapes {
         ), GAS_TANK);
 
         setShape(VoxelShapeUtils.combine(
-            makeCuboidShape(5, 15, 5, 11, 16, 11),
-            makeCuboidShape(6, 11, 6, 10, 15, 10)
+              makeCuboidShape(5, 15, 5, 11, 16, 11),
+              makeCuboidShape(6, 11, 6, 10, 15, 10)
         ), INDUSTRIAL_ALARM, true);
 
         setShape(VoxelShapeUtils.combine(
-            makeCuboidShape(1, 15, 1, 15, 16, 15)
+              makeCuboidShape(1, 15, 1, 15, 16, 15)
         ), QIO_DASHBOARD, true);
 
         //TODO: Don't bother rotating the shape, it is the same for all rotations

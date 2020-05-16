@@ -34,21 +34,21 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Predicate<@NonNull ItemStack> gasInsertPredicate = GasInventorySlot.getDrainInsertPredicate(gasTank, GasInventorySlot::getCapabilityWrapper);
         return new HybridInventorySlot(gasTank, fluidTank,
-            (stack, automationType) -> {
-                //if this is a fluid item, we won't allow extraction- it will go to output slot after being processed
-                if (FluidUtil.getFluidHandler(stack).isPresent()) {
-                    return automationType != AutomationType.EXTERNAL;
-                } else {
-                    // gas items can be extracted after being filled
-                    return automationType != AutomationType.EXTERNAL || gasInsertPredicate.negate().test(stack);
-                }
-            },
-            (stack, automationType) -> {
-                // gas slot or fluid slot insertion check acceptable
-                return gasInsertPredicate.test(stack) ||
-                       FluidInventorySlot.getInputPredicate(fluidTank).test(stack);
-            },
-            (stack) -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent() || FluidUtil.getFluidHandler(stack).isPresent(), inventory, x, y);
+              (stack, automationType) -> {
+                  //if this is a fluid item, we won't allow extraction- it will go to output slot after being processed
+                  if (FluidUtil.getFluidHandler(stack).isPresent()) {
+                      return automationType != AutomationType.EXTERNAL;
+                  } else {
+                      // gas items can be extracted after being filled
+                      return automationType != AutomationType.EXTERNAL || gasInsertPredicate.negate().test(stack);
+                  }
+              },
+              (stack, automationType) -> {
+                  // gas slot or fluid slot insertion check acceptable
+                  return gasInsertPredicate.test(stack) ||
+                         FluidInventorySlot.getInputPredicate(fluidTank).test(stack);
+              },
+              (stack) -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent() || FluidUtil.getFluidHandler(stack).isPresent(), inventory, x, y);
     }
 
 
@@ -56,21 +56,21 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         return new HybridInventorySlot(gasTank, fluidTank,
-            (stack, automationType) -> {
-                if (stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent()) {
-                    return automationType != AutomationType.EXTERNAL || GasInventorySlot.getFillExtractPredicate(gasTank, GasInventorySlot::getCapabilityWrapper).test(stack);
-                }
-                // always allow extraction if we're a fluid container item
-                return true;
-            },
-            (stack, automationType) -> {
-                if (stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent()) {
-                    return GasInventorySlot.fillInsertCheck(gasTank, GasInventorySlot.getCapabilityWrapper(stack));
-                }
-                // if we're not a gas container, we're an output fluid container- only allow internal/manual insertion
-                return automationType != AutomationType.EXTERNAL;
-            // always validate, as we could have any kind of fluid container in the output slot
-            }, alwaysTrue, inventory, x, y);
+              (stack, automationType) -> {
+                  if (stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent()) {
+                      return automationType != AutomationType.EXTERNAL || GasInventorySlot.getFillExtractPredicate(gasTank, GasInventorySlot::getCapabilityWrapper).test(stack);
+                  }
+                  // always allow extraction if we're a fluid container item
+                  return true;
+              },
+              (stack, automationType) -> {
+                  if (stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent()) {
+                      return GasInventorySlot.fillInsertCheck(gasTank, GasInventorySlot.getCapabilityWrapper(stack));
+                  }
+                  // if we're not a gas container, we're an output fluid container- only allow internal/manual insertion
+                  return automationType != AutomationType.EXTERNAL;
+                  // always validate, as we could have any kind of fluid container in the output slot
+              }, alwaysTrue, inventory, x, y);
     }
 
     public void drainGasTank() {

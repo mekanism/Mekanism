@@ -87,7 +87,7 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
         private GasTankRateLimitGasTank(GasTankTier tier, IMekanismGasHandler gasHandler) {
             super(tier::getOutput, tier::getStorage, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue,
-                tier == GasTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, gasHandler);
+                  tier == GasTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, gasHandler);
             isCreative = tier == GasTankTier.CREATIVE;
         }
 

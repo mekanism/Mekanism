@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
 public class FrequencyType<FREQ extends Frequency> {
+
     private static Map<String, FrequencyType<?>> registryMap = new HashMap<>();
 
     public static final FrequencyType<TeleporterFrequency> TELEPORTER = register("Teleporter",

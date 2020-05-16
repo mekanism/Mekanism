@@ -1,7 +1,7 @@
 package mekanism.common.tag;
 
-import java.util.Map;
 import com.google.common.collect.Table.Cell;
+import java.util.Map;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
@@ -63,14 +63,29 @@ public class MekanismTagProvider extends BaseTagProvider {
             addToTag(item.getRowKey(), item.getColumnKey(), item.getValue());
 
             switch (item.getRowKey()) {
-                case SHARD: addToTag(MekanismTags.Items.SHARDS, item.getValue()); break;
-                case CRYSTAL: addToTag(MekanismTags.Items.CRYSTALS, item.getValue()); break;
-                case DUST: addToTag(Tags.Items.DUSTS, item.getValue()); break;
-                case DIRTY_DUST: addToTag(MekanismTags.Items.DIRTY_DUSTS, item.getValue()); break;
-                case CLUMP: addToTag(MekanismTags.Items.CLUMPS, item.getValue()); break;
-                case INGOT: addToTag(Tags.Items.INGOTS, item.getValue()); break;
-                case NUGGET: addToTag(Tags.Items.NUGGETS, item.getValue()); break;
-                default: break;
+                case SHARD:
+                    addToTag(MekanismTags.Items.SHARDS, item.getValue());
+                    break;
+                case CRYSTAL:
+                    addToTag(MekanismTags.Items.CRYSTALS, item.getValue());
+                    break;
+                case DUST:
+                    addToTag(Tags.Items.DUSTS, item.getValue());
+                    break;
+                case DIRTY_DUST:
+                    addToTag(MekanismTags.Items.DIRTY_DUSTS, item.getValue());
+                    break;
+                case CLUMP:
+                    addToTag(MekanismTags.Items.CLUMPS, item.getValue());
+                    break;
+                case INGOT:
+                    addToTag(Tags.Items.INGOTS, item.getValue());
+                    break;
+                case NUGGET:
+                    addToTag(Tags.Items.NUGGETS, item.getValue());
+                    break;
+                default:
+                    break;
             }
         }
     }

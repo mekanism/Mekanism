@@ -34,9 +34,9 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
     public void init() {
         super.init();
         addButton(new GuiInnerScreen(this, 60, 23, 96, 40, () -> Arrays.asList(
-            MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
-            MekanismLang.BOIL_RATE.translate(formatInt(tile.getLastBoilRate())),
-            MekanismLang.MAX_BOIL_RATE.translate(formatInt(tile.getLastMaxBoil()))
+              MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
+              MekanismLang.BOIL_RATE.translate(formatInt(tile.getLastBoilRate())),
+              MekanismLang.MAX_BOIL_RATE.translate(formatInt(tile.getLastMaxBoil()))
         )));
         addButton(new GuiBoilerTab(this, tile, BoilerTab.STAT));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
@@ -59,7 +59,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
             @Override
             public double getLevel() {
                 return tile.getLastMaxBoil() * HeatUtils.getWaterThermalEnthalpy() /
-                      (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get());
+                       (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get());
             }
         }, 164, 13));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().superheatedCoolantTank,

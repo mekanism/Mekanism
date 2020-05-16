@@ -16,7 +16,8 @@ public class GuiDigitalBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {}
+    protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
+    }
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {

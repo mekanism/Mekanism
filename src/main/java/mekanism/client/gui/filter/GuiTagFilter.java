@@ -26,8 +26,8 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
     @Override
     protected void addButtons() {
         addButton(new GuiInnerScreen(this, 33, 18, 111, 43, () -> Arrays.asList(
-            MekanismLang.STATUS.translate(status),
-            MekanismLang.TAG_FILTER_TAG.translate(filter.getTagName())
+              MekanismLang.STATUS.translate(status),
+              MekanismLang.TAG_FILTER_TAG.translate(filter.getTagName())
         )).clearFormat());
     }
 

@@ -47,11 +47,18 @@ public enum GaugeInfo {
 
     public static GaugeInfo get(DataType type) {
         switch (type) {
-            case OUTPUT: case OUTPUT_1: return BLUE;
-            case INPUT: case INPUT_1: return RED;
-            case OUTPUT_2: return AQUA;
-            case INPUT_2: return ORANGE;
-            default: return STANDARD;
+            case OUTPUT:
+            case OUTPUT_1:
+                return BLUE;
+            case INPUT:
+            case INPUT_1:
+                return RED;
+            case OUTPUT_2:
+                return AQUA;
+            case INPUT_2:
+                return ORANGE;
+            default:
+                return STANDARD;
         }
     }
 }

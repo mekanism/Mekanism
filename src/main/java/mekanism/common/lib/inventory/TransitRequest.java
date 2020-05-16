@@ -1,13 +1,13 @@
 package mekanism.common.lib.inventory;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.inventory.TransitRequest.TileTransitRequest.TileItemData;
 import mekanism.common.util.InventoryUtils;
@@ -53,7 +53,7 @@ public abstract class TransitRequest {
             }
         }
         // remove items that we don't have enough of
-        for (Iterator<Map.Entry<HashedItem, TileItemData>> iter = ret.getItemMap().entrySet().iterator(); iter.hasNext();) {
+        for (Iterator<Map.Entry<HashedItem, TileItemData>> iter = ret.getItemMap().entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<HashedItem, TileItemData> entry = iter.next();
             if (entry.getValue().getTotalCount() < min) {
                 iter.remove();

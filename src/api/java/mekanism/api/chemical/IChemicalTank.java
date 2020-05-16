@@ -316,6 +316,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
 
     /**
      * Gets the attribute validator used by this tank. By default, this tank will not allow any chemicals that require validation.
+     *
      * @return the tank's attribute validator
      */
     default ChemicalAttributeValidator getAttributeValidator() {

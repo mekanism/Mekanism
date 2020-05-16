@@ -37,8 +37,8 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     public void init() {
         super.init();
         addButton(new GuiInnerScreen(this, 48, 23, 80, 42, () -> Arrays.asList(
-            MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
-            MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick()))
+              MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
+              MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick()))
         )).clearFormat());
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiSecurityTab<>(this, tile));
@@ -69,7 +69,8 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
             try {
                 Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.ENERGY_USAGE, tile.getPos(),
                       MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(energyUsageField.getText()))));
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
             energyUsageField.setText("");
         }
     }

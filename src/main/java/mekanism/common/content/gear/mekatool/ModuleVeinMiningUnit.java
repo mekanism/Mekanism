@@ -24,7 +24,7 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
     public void init() {
         super.init();
         addConfigItem(extendedMode = new ModuleConfigItem<Boolean>(this, "extended_mode", MekanismLang.MODULE_EXTENDED_MODE, new BooleanData(), false));
-        addConfigItem(excavationRange = new ModuleConfigItem<ExcavationRange>(this, "excavation_range", MekanismLang.MODULE_EXCAVATION_RANGE, new EnumData<>(ExcavationRange.class, getInstalledCount()+1), ExcavationRange.LOW));
+        addConfigItem(excavationRange = new ModuleConfigItem<ExcavationRange>(this, "excavation_range", MekanismLang.MODULE_EXCAVATION_RANGE, new EnumData<>(ExcavationRange.class, getInstalledCount() + 1), ExcavationRange.LOW));
     }
 
     public boolean isExtended() {
@@ -70,14 +70,17 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
         EXTREME(8);
         private int range;
         private ITextComponent label;
+
         private ExcavationRange(int range) {
             this.range = range;
             this.label = new StringTextComponent(Integer.toString(range));
         }
+
         @Override
         public ITextComponent getTextComponent() {
             return label;
         }
+
         public int getRange() {
             return range;
         }

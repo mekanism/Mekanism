@@ -20,9 +20,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.frequency.Frequency;
+import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.network.PacketGuiSetFrequency;
 import mekanism.common.network.PacketGuiSetFrequency.FrequencyUpdate;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
@@ -142,7 +142,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         }
         if (scrollList.hasSelection()) {
             Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(scrollList.getSelection()) :
-                                           tile.getPublicCache(FrequencyType.INVENTORY).get(scrollList.getSelection());
+                             tile.getPublicCache(FrequencyType.INVENTORY).get(scrollList.getSelection());
             setButton.active = tile.getFrequency(null) == null || !tile.getFrequency(null).equals(freq);
             deleteButton.active = tile.getSecurity().getOwnerUUID().equals(freq.getOwner());
         } else {

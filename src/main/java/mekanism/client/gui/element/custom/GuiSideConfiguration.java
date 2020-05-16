@@ -76,14 +76,14 @@ public class GuiSideConfiguration extends GuiWindow {
             }, tile, () -> currentType, ConfigurationPacket.SIDE_DATA, getOnHover()));
         }
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, 1));
-        ((MekanismContainer)((GuiMekanism<?>) guiObj).getContainer()).startTracking(1, ((ISideConfiguration) tile).getConfig());
+        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).startTracking(1, ((ISideConfiguration) tile).getConfig());
     }
 
     @Override
     public void close() {
         super.close();
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, 1));
-        ((MekanismContainer)((GuiMekanism<?>) guiObj).getContainer()).stopTracking(1);
+        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).stopTracking(1);
     }
 
     public <TILE extends TileEntityMekanism & ISideConfiguration> TILE getTile() {

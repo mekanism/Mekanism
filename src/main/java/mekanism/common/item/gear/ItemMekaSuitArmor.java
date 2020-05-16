@@ -57,10 +57,10 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
     // TODO separate these into individual modules maybe (specifically fire-related - on_fire, in_fire, lava)
     private static final Set<DamageSource> ALWAYS_SUPPORTED_SOURCES = new HashSet<>(Arrays.asList(
-        DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRYOUT,
-        DamageSource.FALL, DamageSource.FALLING_BLOCK, DamageSource.FIREWORKS, DamageSource.FLY_INTO_WALL, DamageSource.GENERIC,
-        DamageSource.HOT_FLOOR, DamageSource.IN_FIRE, DamageSource.IN_WALL, DamageSource.LAVA, DamageSource.LIGHTNING_BOLT,
-        DamageSource.ON_FIRE, DamageSource.SWEET_BERRY_BUSH, DamageSource.WITHER));
+          DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRYOUT,
+          DamageSource.FALL, DamageSource.FALLING_BLOCK, DamageSource.FIREWORKS, DamageSource.FLY_INTO_WALL, DamageSource.GENERIC,
+          DamageSource.HOT_FLOOR, DamageSource.IN_FIRE, DamageSource.IN_WALL, DamageSource.LAVA, DamageSource.LIGHTNING_BOLT,
+          DamageSource.ON_FIRE, DamageSource.SWEET_BERRY_BUSH, DamageSource.WITHER));
 
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
     private static final int GAS_TRANSFER_RATE = 256;
@@ -74,7 +74,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
         if (slot == EquipmentSlotType.HEAD) {
             Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT, Modules.VISION_ENHANCEMENT_UNIT,
-                Modules.SOLAR_RECHARGING_UNIT, Modules.NUTRITIONAL_INJECTION_UNIT);
+                  Modules.SOLAR_RECHARGING_UNIT, Modules.NUTRITIONAL_INJECTION_UNIT);
             gasTankSpecs.add(GasTankSpec.createFillOnly(() -> GAS_TRANSFER_RATE, () -> 16_000, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
             absorption = 0.15F;
         } else if (slot == EquipmentSlotType.CHEST) {
@@ -158,7 +158,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
         ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack), BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue),
-            RadiationShieldingHandler.create(item -> isModuleEnabled(item, Modules.RADIATION_SHIELDING_UNIT) ? ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
+              RadiationShieldingHandler.create(item -> isModuleEnabled(item, Modules.RADIATION_SHIELDING_UNIT) ? ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
         if (!gasTankSpecs.isEmpty()) {
             wrapper.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
         }
@@ -192,7 +192,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         if (slotType == getEquipmentSlot()) {
             list.add(MekanismLang.GENERIC_PRE_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, MekanismLang.get(slotType),
-                EnumColor.GRAY, APILang.TRANSMISSION_TYPE_ENERGY, StorageUtils.getEnergyPercent(stack)));
+                  EnumColor.GRAY, APILang.TRANSMISSION_TYPE_ENERGY, StorageUtils.getEnergyPercent(stack)));
             for (Module module : Modules.loadAll(stack)) {
                 if (module.renderHUD()) {
                     module.addHUDStrings(list);
@@ -250,10 +250,16 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
     // This is unused for the most part; toughness / damage reduction is handled manually
     protected static class MekaSuitMaterial extends BaseSpecialArmorMaterial {
+
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType slotType) { return 0; }
+        public int getDamageReductionAmount(EquipmentSlotType slotType) {
+            return 0;
+        }
+
         @Override
-        public float getToughness() { return 0; }
+        public float getToughness() {
+            return 0;
+        }
 
         @Override
         public String getName() {

@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
-import java.util.Set;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.Set;
 import mekanism.api.Upgrade;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.element.GuiElementHolder;

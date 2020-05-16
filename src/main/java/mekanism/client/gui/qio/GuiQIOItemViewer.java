@@ -1,9 +1,9 @@
 package mekanism.client.gui.qio;
 
+import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import com.google.common.collect.Sets;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiDigitalIconToggle;
@@ -31,6 +31,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
 
     private GuiTextField searchField;
     private Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '\"', '\'', '|', '(', ')', ':');
+
     {
         // include all search prefix chars
         ALLOWED_SPECIAL_CHARS.addAll(QueryType.getPrefixChars());
@@ -130,7 +131,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         CONTAINER c = (CONTAINER) container.recreate();
         GuiQIOItemViewer<CONTAINER> s = recreate(c);
         minecraft.currentScreen = null;
-        minecraft.player.openContainer = ((IHasContainer<?>)s).getContainer();
+        minecraft.player.openContainer = ((IHasContainer<?>) s).getContainer();
         minecraft.displayGuiScreen(s);
         s.searchField.setText(searchField.getText());
         c.updateSearch(searchField.getText());

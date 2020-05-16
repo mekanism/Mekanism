@@ -32,7 +32,7 @@ public class GuiHandlerRegistryHelper {
     }
 
     public static <T extends ContainerScreen<?>> void register(IGuiHandlerRegistration registry, Class<? extends T> guiContainerClass, ResourceLocation recipeType,
-        int xPos, int yPos, int width, int height) {
+          int xPos, int yPos, int width, int height) {
         registry.addRecipeClickArea(guiContainerClass, xPos, yPos, width, height, recipeType);
     }
 
@@ -61,8 +61,8 @@ public class GuiHandlerRegistryHelper {
                         categories.add(VanillaRecipeCategoryUid.FURNACE);
                         categories.add(mekanismBlock.getRegistryName());
                     } else {*/
-                        //Only use furnace list, so no extra registration.
-                        categories.add(VanillaRecipeCategoryUid.FURNACE);
+                    //Only use furnace list, so no extra registration.
+                    categories.add(VanillaRecipeCategoryUid.FURNACE);
                     //}
                 }
                 return Collections.singleton(IGuiClickableArea.createBasic(79, 40, 24, 7, categories.toArray(new ResourceLocation[0])));

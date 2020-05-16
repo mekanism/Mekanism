@@ -1,12 +1,12 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
@@ -73,7 +73,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     public void move(int changeX, int changeY) {
-        x += changeX; y += changeY;
+        x += changeX;
+        y += changeY;
         if (this instanceof GuiTexturedElement) {
             ((GuiTexturedElement) this).relativeX += changeX;
             ((GuiTexturedElement) this).relativeY += changeY;
@@ -126,7 +127,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         drawButtonText();
     }
 
-    public void renderBackgroundOverlay(int mouseX, int mouseY) {}
+    public void renderBackgroundOverlay(int mouseX, int mouseY) {
+    }
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
@@ -145,13 +147,13 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         return GuiUtils.checkChildren(children, (child) -> child.mouseClicked(mouseX, mouseY, button)) ||
-              super.mouseClicked(mouseX, mouseY, button);
+               super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return GuiUtils.checkChildren(children, (child) -> child.keyPressed(keyCode, scanCode, modifiers)) ||
-              super.keyPressed(keyCode, scanCode, modifiers);
+               super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

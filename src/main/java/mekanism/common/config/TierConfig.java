@@ -183,11 +183,11 @@ public class TierConfig extends BaseMekanismConfig {
         for (ConductorTier tier : EnumUtils.CONDUCTOR_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedDoubleValue conductionReference = CachedDoubleValue.wrap(this, builder.comment("Conduction value of " + tierName + " thermodynamic conductors.")
-                .defineInRange(tierName.toLowerCase() + "InverseConduction", tier.getBaseConduction(), 1, Double.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase() + "InverseConduction", tier.getBaseConduction(), 1, Double.MAX_VALUE));
             CachedDoubleValue capacityReference = CachedDoubleValue.wrap(this, builder.comment("Heat capacity of " + tierName + " thermodynamic conductors.")
-                .defineInRange(tierName.toLowerCase() + "HeatCapacity", tier.getBaseHeatCapacity(), 1, Double.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase() + "HeatCapacity", tier.getBaseHeatCapacity(), 1, Double.MAX_VALUE));
             CachedDoubleValue insulationReference = CachedDoubleValue.wrap(this, builder.comment("Insulation value of " + tierName + " thermodynamic conductor.")
-                .defineInRange(tierName.toLowerCase() + "Insulation", tier.getBaseConductionInsulation(), 0, Double.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase() + "Insulation", tier.getBaseConductionInsulation(), 0, Double.MAX_VALUE));
             tier.setConfigReference(conductionReference, capacityReference, insulationReference);
         }
         builder.pop();

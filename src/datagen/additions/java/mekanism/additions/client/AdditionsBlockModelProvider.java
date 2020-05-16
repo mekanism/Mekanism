@@ -14,6 +14,6 @@ public class AdditionsBlockModelProvider extends BaseBlockModelProvider {
 
     @Override
     protected void registerModels() {
-        
+
     }
 }

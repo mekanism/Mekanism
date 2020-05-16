@@ -3,8 +3,8 @@ package mekanism.common.network;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.lib.frequency.FrequencyType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -58,10 +58,11 @@ public class PacketQIOSetColor {
         buf.writeEnumValue(pkt.type);
         buf.writeVarInt(pkt.extra);
         FrequencyType.QIO.getIdentitySerializer().write(buf, pkt.identity);
-        if (pkt.type == Type.TILE)
+        if (pkt.type == Type.TILE) {
             buf.writeBlockPos(pkt.tilePosition);
-        else
+        } else {
             buf.writeEnumValue(pkt.currentHand);
+        }
     }
 
     public static PacketQIOSetColor decode(PacketBuffer buf) {

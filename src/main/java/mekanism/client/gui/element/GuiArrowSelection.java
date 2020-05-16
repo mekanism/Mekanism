@@ -1,7 +1,7 @@
 package mekanism.client.gui.element;
 
-import java.util.function.Supplier;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.function.Supplier;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;

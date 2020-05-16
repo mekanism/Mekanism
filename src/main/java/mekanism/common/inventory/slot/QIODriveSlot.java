@@ -62,12 +62,14 @@ public class QIODriveSlot extends BasicInventorySlot {
     }
 
     private void addDrive(ItemStack stack) {
-        if (driveHolder.getQIOFrequency() != null)
+        if (driveHolder.getQIOFrequency() != null) {
             driveHolder.getQIOFrequency().addDrive(new QIODriveKey(driveHolder, slot));
+        }
     }
 
     private void removeDrive() {
-        if (driveHolder.getQIOFrequency() != null)
+        if (driveHolder.getQIOFrequency() != null) {
             driveHolder.getQIOFrequency().removeDrive(new QIODriveKey(driveHolder, slot), true);
+        }
     }
 }

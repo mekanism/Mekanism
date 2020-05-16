@@ -88,8 +88,9 @@ public class GuiInnerScreen extends GuiScalableElement {
         super.renderToolTip(mouseX, mouseY);
         if (tooltipStrings != null) {
             List<ITextComponent> list = tooltipStrings.get();
-            if (list == null || list.isEmpty())
+            if (list == null || list.isEmpty()) {
                 return;
+            }
             displayTooltips(list, mouseX, mouseY);
         }
     }

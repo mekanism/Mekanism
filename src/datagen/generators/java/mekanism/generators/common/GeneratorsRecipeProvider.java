@@ -197,22 +197,22 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     private void addFissionReactorRecipes(Consumer<IFinishedRecipe> consumer) {
         // Casing
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FISSION_REACTOR_CASING, 4)
-            .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
-                  TripleLine.of(Pattern.INGOT, Pattern.STEEL_CASING, Pattern.INGOT),
-                  TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
-            ).key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
-            .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
-            .build(consumer, MekanismGenerators.rl("fission_reactor/casing"));
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.INGOT, Pattern.STEEL_CASING, Pattern.INGOT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+              ).key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .build(consumer, MekanismGenerators.rl("fission_reactor/casing"));
         // Port
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FISSION_REACTOR_PORT, 2)
-            .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY),
-                  TripleLine.of(FRAME_CHAR, Pattern.CIRCUIT, FRAME_CHAR),
-                  TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY))
-            ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
-            .key(FRAME_CHAR, GeneratorsBlocks.FISSION_REACTOR_CASING)
-            .build(consumer, MekanismGenerators.rl("fission_reactor/port"));
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY),
+                    TripleLine.of(FRAME_CHAR, Pattern.CIRCUIT, FRAME_CHAR),
+                    TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(FRAME_CHAR, GeneratorsBlocks.FISSION_REACTOR_CASING)
+              .build(consumer, MekanismGenerators.rl("fission_reactor/port"));
         //Logic Adapter
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER)
               .pattern(RecipePattern.createPattern(

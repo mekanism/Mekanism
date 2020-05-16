@@ -44,9 +44,14 @@ public class GeneratorsJEI implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registry) {
         GasToGasRecipe recipe = new GasToGasRecipe(null, GasStackIngredient.from(MekanismGases.FISSILE_FUEL, 1), MekanismGases.NUCLEAR_WASTE.getGasStack(1)) {
             @Override
-            public IRecipeSerializer<?> getSerializer() { return null; }
+            public IRecipeSerializer<?> getSerializer() {
+                return null;
+            }
+
             @Override
-            public IRecipeType<?> getType() { return null; }
+            public IRecipeType<?> getType() {
+                return null;
+            }
         };
         registry.addRecipes(Collections.singletonList(recipe), GeneratorsBlocks.FISSION_REACTOR_CASING.getRegistryName());
     }

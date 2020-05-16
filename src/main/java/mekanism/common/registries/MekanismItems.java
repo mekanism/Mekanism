@@ -1,11 +1,11 @@
 package mekanism.common.registries;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import mekanism.api.Upgrade;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -102,6 +102,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BOOTS = ITEMS.register("mekasuit_boots", props -> new ItemMekaSuitArmor(EquipmentSlotType.FEET, props));
 
     public static final ItemRegistryObject<Item> MODULE_BASE = ITEMS.register("module_base");
+
     static {
         for (ModuleData<?> module : Modules.getAll()) {
             MODULES.put(module, ITEMS.register("module_" + module.getName(), properties -> new ItemModule(module, properties)));

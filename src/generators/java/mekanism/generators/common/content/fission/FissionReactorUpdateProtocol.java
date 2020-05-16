@@ -114,6 +114,7 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
     }
 
     public static class FuelAssembly {
+
         public TreeSet<BlockPos> fuelAssemblies = new TreeSet<>((pos1, pos2) -> pos1.getY() - pos2.getY());
         public BlockPos controlRodAssembly;
 
@@ -178,11 +179,12 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
 
         public static FormedAssembly read(CompoundNBT nbt) {
             return new FormedAssembly(new BlockPos(nbt.getInt(NBTConstants.X), nbt.getInt(NBTConstants.Y), nbt.getInt(NBTConstants.Z)),
-                                      nbt.getInt(NBTConstants.HEIGHT));
+                  nbt.getInt(NBTConstants.HEIGHT));
         }
     }
 
     public static class AssemblyPos {
+
         int x, z;
 
         public AssemblyPos(int x, int z) {

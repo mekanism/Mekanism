@@ -71,32 +71,32 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
             addButton(new MovableFilterButton(this, 10, 31 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, () -> tile.getFilters(), index -> {
-                      if (index > 0) {
-                          Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
-                      }
-                  }, index -> {
-                      if (index < tile.getFilters().size() - 1) {
-                          Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
-                      }
-                  }, this::onClick, (filter) -> {
-                      List<ItemStack> list = new ArrayList<>();
-                      if (filter != null) {
-                          if (filter instanceof IItemStackFilter) {
-                              list.add(((IItemStackFilter<?>) filter).getItemStack());
-                          } else if (filter instanceof ITagFilter) {
-                              String name = ((ITagFilter<?>) filter).getTagName();
-                              if (name != null && !name.isEmpty()) {
-                                  list.addAll(TagCache.getItemTagStacks(((ITagFilter<?>) filter).getTagName()));
-                              }
-                          }
-                      }
-                      return list;
-                  }));
+                if (index > 0) {
+                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
+                }
+            }, index -> {
+                if (index < tile.getFilters().size() - 1) {
+                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
+                }
+            }, this::onClick, (filter) -> {
+                List<ItemStack> list = new ArrayList<>();
+                if (filter != null) {
+                    if (filter instanceof IItemStackFilter) {
+                        list.add(((IItemStackFilter<?>) filter).getItemStack());
+                    } else if (filter instanceof ITagFilter) {
+                        String name = ((ITagFilter<?>) filter).getTagName();
+                        if (name != null && !name.isEmpty()) {
+                            list.addAll(TagCache.getItemTagStacks(((ITagFilter<?>) filter).getTagName()));
+                        }
+                    }
+                }
+                return list;
+            }));
         }
         addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
-            () -> addWindow(GuiItemStackFilterDialog.create(this, tile))));
+              () -> addWindow(GuiItemStackFilterDialog.create(this, tile))));
         addButton(new TranslationButton(this, getGuiLeft() + 81, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_TAG_FILTER,
-            () -> addWindow(GuiTagFilterDialog.create(this, tile))));
+              () -> addWindow(GuiTagFilterDialog.create(this, tile))));
     }
 
     protected void onClick(IFilter<?> filter, int index) {

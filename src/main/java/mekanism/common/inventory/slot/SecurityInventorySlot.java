@@ -11,8 +11,8 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.lib.security.IOwnerItem;
 import mekanism.common.lib.security.ISecurityItem;
-import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.ISecurityTile.SecurityMode;
+import mekanism.common.lib.security.SecurityFrequency;
 import net.minecraft.item.ItemStack;
 
 @ParametersAreNonnullByDefault

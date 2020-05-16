@@ -82,9 +82,11 @@ public abstract class Module {
         return FloatingLong.ZERO;
     }
 
-    protected void tickServer(PlayerEntity player) {}
+    protected void tickServer(PlayerEntity player) {
+    }
 
-    protected void tickClient(PlayerEntity player) {}
+    protected void tickClient(PlayerEntity player) {
+    }
 
     public final void read(CompoundNBT nbt) {
         if (nbt.contains(NBTConstants.AMOUNT)) {
@@ -98,6 +100,7 @@ public abstract class Module {
 
     /**
      * Save this module on the container ItemStack. Will create proper NBT structure if it does not yet exist.
+     *
      * @param callback - will run after the NBT data is saved
      */
     public final void save(Consumer<ItemStack> callback) {
@@ -150,9 +153,11 @@ public abstract class Module {
         return configItems;
     }
 
-    public void addHUDStrings(List<ITextComponent> list) {}
+    public void addHUDStrings(List<ITextComponent> list) {
+    }
 
-    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {}
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+    }
 
     public boolean handlesModeChange() {
         return data.handlesModeChange() && handleModeChange.get();
@@ -183,17 +188,18 @@ public abstract class Module {
         }
     }
 
-    public void onRemoved(boolean last) {}
+    public void onRemoved(boolean last) {
+    }
 
     protected void displayModeChange(PlayerEntity player, ITextComponent modeName, IHasTextComponent mode) {
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-            MekanismLang.MODULE_MODE_CHANGE.translateColored(EnumColor.GRAY, modeName, EnumColor.INDIGO, mode.getTextComponent())));
+              MekanismLang.MODULE_MODE_CHANGE.translateColored(EnumColor.GRAY, modeName, EnumColor.INDIGO, mode.getTextComponent())));
     }
 
     protected void toggleEnabled(PlayerEntity player, ITextComponent modeName) {
         enabled.set(!isEnabled(), null);
         ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-            MekanismLang.GENERIC_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, modeName, isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate())));
+              MekanismLang.GENERIC_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, modeName, isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate())));
     }
 }

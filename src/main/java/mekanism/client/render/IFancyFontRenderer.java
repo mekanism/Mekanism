@@ -1,12 +1,12 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang3.tuple.Pair;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.text.ITextComponent;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface IFancyFontRenderer {
 
@@ -173,8 +173,9 @@ public interface IFancyFontRenderer {
                 lineBuilder = new StringBuilder(wordBuilder);
                 lineLength = wordLength;
             } else {
-                if (spacingLength > 0)
+                if (spacingLength > 0) {
                     lineBuilder.append(" ");
+                }
                 lineBuilder.append(wordBuilder);
                 lineLength += spacingLength + wordLength;
             }

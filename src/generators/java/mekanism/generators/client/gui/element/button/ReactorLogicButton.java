@@ -46,14 +46,18 @@ public class ReactorLogicButton<TYPE extends Enum<?> & IReactorLogicMode> extend
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
         TYPE mode = getMode();
-        if (mode == null) return;
+        if (mode == null) {
+            return;
+        }
         guiObj.displayTooltip(mode.getDescription(), mouseX, mouseY);
     }
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         TYPE mode = getMode();
-        if (mode == null) return;
+        if (mode == null) {
+            return;
+        }
         MekanismRenderer.bindTexture(TEXTURE);
         MekanismRenderer.color(mode.getColor());
         blit(x, y, 0, mode == tile.getMode() ? 22 : 0, width, height, 128, 44);
@@ -72,7 +76,9 @@ public class ReactorLogicButton<TYPE extends Enum<?> & IReactorLogicMode> extend
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         TYPE mode = getMode();
-        if (mode == null) return;
+        if (mode == null) {
+            return;
+        }
         int typeOffset = 22 * index;
         guiObj.renderItem(mode.getRenderStack(), 20, 35 + typeOffset);
         drawString(TextComponentUtil.build(EnumColor.WHITE, mode), 39, 34 + typeOffset, titleTextColor());

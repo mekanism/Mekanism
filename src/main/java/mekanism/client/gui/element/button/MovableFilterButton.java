@@ -39,9 +39,9 @@ public class MovableFilterButton extends FilterButton {
         super(gui, x, y, width, height, index, filterIndex, filters, onPress);
         int arrowX = this.x + width - 12;
         upButton = new FilterSelectButton(gui, arrowX, this.y + 1, false, () -> upButtonPress.accept(index + filterIndex.getAsInt()),
-            (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_UP.translate(), xAxis, yAxis));
+              (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_UP.translate(), xAxis, yAxis));
         downButton = new FilterSelectButton(gui, arrowX, this.y + height - 8, true, () -> downButtonPress.accept(index + filterIndex.getAsInt()),
-            (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis));
+              (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis));
         addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, x + 3, y + 3, () -> renderStackSupplier.apply(filters.get().getOrNull(filterIndex.getAsInt() + index))));
     }
 

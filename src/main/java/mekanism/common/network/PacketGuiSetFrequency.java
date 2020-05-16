@@ -3,11 +3,11 @@ package mekanism.common.network;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.frequency.Frequency;
+import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
-import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -81,10 +81,11 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> {
         buf.writeEnumValue(pkt.updateType);
         pkt.type.write(buf);
         pkt.type.getIdentitySerializer().write(buf, pkt.data);
-        if (pkt.updateType.isTile())
+        if (pkt.updateType.isTile()) {
             buf.writeBlockPos(pkt.tilePosition);
-        else
+        } else {
             buf.writeEnumValue(pkt.currentHand);
+        }
     }
 
     public static <FREQ extends Frequency> PacketGuiSetFrequency<FREQ> decode(PacketBuffer buf) {

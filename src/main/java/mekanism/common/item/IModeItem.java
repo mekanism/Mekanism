@@ -19,7 +19,7 @@ public interface IModeItem {
      */
     void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage);
 
-    default boolean supportsSlotType(@Nonnull  EquipmentSlotType slotType) {
+    default boolean supportsSlotType(@Nonnull EquipmentSlotType slotType) {
         return slotType == EquipmentSlotType.MAINHAND || slotType == EquipmentSlotType.OFFHAND;
     }
 

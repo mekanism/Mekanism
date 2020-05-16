@@ -1,7 +1,7 @@
 package mekanism.client.lang;
 
-import java.util.Map;
 import com.google.common.collect.Table.Cell;
+import java.util.Map;
 import mekanism.api.chemical.gas.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.APILang;
@@ -149,14 +149,29 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             String resourceName = formatAndCapitalize(item.getColumnKey().getName());
             switch (item.getRowKey()) {
-                case SHARD: add(item.getValue(), resourceName + " Shard"); break;
-                case CRYSTAL: add(item.getValue(), resourceName + " Crystal"); break;
-                case DUST: add(item.getValue(), resourceName + " Dust"); break;
-                case DIRTY_DUST: add(item.getValue(), "Dirty " + resourceName + " Dust"); break;
-                case CLUMP: add(item.getValue(), resourceName + " Clump"); break;
-                case INGOT: add(item.getValue(), resourceName + " Ingot"); break;
-                case NUGGET: add(item.getValue(), resourceName + " Nugget"); break;
-                default: break;
+                case SHARD:
+                    add(item.getValue(), resourceName + " Shard");
+                    break;
+                case CRYSTAL:
+                    add(item.getValue(), resourceName + " Crystal");
+                    break;
+                case DUST:
+                    add(item.getValue(), resourceName + " Dust");
+                    break;
+                case DIRTY_DUST:
+                    add(item.getValue(), "Dirty " + resourceName + " Dust");
+                    break;
+                case CLUMP:
+                    add(item.getValue(), resourceName + " Clump");
+                    break;
+                case INGOT:
+                    add(item.getValue(), resourceName + " Ingot");
+                    break;
+                case NUGGET:
+                    add(item.getValue(), resourceName + " Nugget");
+                    break;
+                default:
+                    break;
             }
         }
     }

@@ -1,10 +1,10 @@
 package mekanism.client;
 
+import com.google.common.collect.Table.Cell;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
-import com.google.common.collect.Table.Cell;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
@@ -388,14 +388,14 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
         ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), (state, world, pos, tintIndex) -> {
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-            if (tile instanceof TileEntityQIOComponent) {
-                EnumColor color = ((TileEntityQIOComponent) tile).getColor();
-                return color != null ? MekanismRenderer.getColorARGB(color, 1) : -1;
-            }
-            return -1;
-        }, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
-           MekanismBlocks.QIO_REDSTONE_ADAPTER);
+                  TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                  if (tile instanceof TileEntityQIOComponent) {
+                      EnumColor color = ((TileEntityQIOComponent) tile).getColor();
+                      return color != null ? MekanismRenderer.getColorARGB(color, 1) : -1;
+                  }
+                  return -1;
+              }, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
+              MekanismBlocks.QIO_REDSTONE_ADAPTER);
         ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, world, pos, tintIndex) -> {
                   Block block = state.getBlock();
                   if (block instanceof IColoredBlock) {
@@ -430,15 +430,17 @@ public class ClientRegistration {
               MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
 
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
-            if (item.getColumnKey().hasTextureOverride())
+            if (item.getColumnKey().hasTextureOverride()) {
                 continue;
+            }
             event.getItemColors().register((stack, index) -> {
                 return index == 0 || index == 2 ? item.getColumnKey().getTint() : 0xFFFFFFFF;
             }, item.getValue());
         }
         for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            if (entry.getKey().hasTextureOverride())
+            if (entry.getKey().hasTextureOverride()) {
                 continue;
+            }
             ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, world, pos, index) -> {
                 return entry.getKey().getTint();
             }, (stack, index) -> {

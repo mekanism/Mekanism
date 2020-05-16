@@ -18,8 +18,10 @@ import net.minecraft.world.World;
 
 public class TankMultiblockData extends MultiblockData {
 
-    @ContainerSync public MultiblockFluidTank<TankMultiblockData> fluidTank;
-    @ContainerSync public MultiblockGasTank<TankMultiblockData> gasTank;
+    @ContainerSync
+    public MultiblockFluidTank<TankMultiblockData> fluidTank;
+    @ContainerSync
+    public MultiblockGasTank<TankMultiblockData> gasTank;
 
     @ContainerSync
     public ContainerEditMode editMode = ContainerEditMode.BOTH;

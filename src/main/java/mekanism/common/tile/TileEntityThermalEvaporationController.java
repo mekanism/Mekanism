@@ -1,10 +1,10 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
@@ -296,7 +296,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         heatCapacitor.handleHeat(heatCapacitor.getHeatCapacity() * incr);
 
         totalLoss = incr < 0 ? -incr / heatCapacitor.getHeatCapacity() : 0;
-        tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, heatCapacitor.getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() * ((double)height / MAX_HEIGHT);
+        tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, heatCapacitor.getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() * ((double) height / MAX_HEIGHT);
         markDirty(false);
     }
 

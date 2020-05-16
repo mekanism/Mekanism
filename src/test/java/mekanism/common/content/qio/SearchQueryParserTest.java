@@ -1,10 +1,10 @@
 package mekanism.common.content.qio;
 
+import mekanism.common.content.qio.SearchQueryParser.ISearchQuery;
+import mekanism.common.content.qio.SearchQueryParser.SearchQueryList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import mekanism.common.content.qio.SearchQueryParser.ISearchQuery;
-import mekanism.common.content.qio.SearchQueryParser.SearchQueryList;
 
 @DisplayName("Test SearchQueryParser implementation")
 class SearchQueryParserTest {

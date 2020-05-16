@@ -33,7 +33,9 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
             addButton(new ReactorLogicButton<>(this, getGuiLeft() + 17, getGuiTop() + 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, (type) -> {
-                if (type == null) return;
+                if (type == null) {
+                    return;
+                }
                 MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.LOGIC_TYPE, tile, type.ordinal()));
             }));
         }

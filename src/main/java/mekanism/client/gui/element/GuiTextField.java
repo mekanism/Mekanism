@@ -1,13 +1,12 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
-import org.lwjgl.glfw.GLFW;
-import com.mojang.blaze3d.systems.RenderSystem;
-import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -18,11 +17,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * GuiElement wrapper of TextFieldWidget for more control
- * @author aidancbrady
  *
+ * @author aidancbrady
  */
 public class GuiTextField extends GuiTexturedElement {
 
@@ -323,7 +323,8 @@ public class GuiTextField extends GuiTexturedElement {
             GuiUtils.fill(field.x - 1, field.y - 1, field.width + 2, field.height + 2, field.textField.isFocused() ? SCREEN_COLOR.getAsInt() : DARK_SCREEN_COLOR.getAsInt());
             GuiUtils.fill(field.x, field.y, field.width, field.height, DEFAULT_BACKGROUND_COLOR);
         }),
-        NONE(field -> {});
+        NONE(field -> {
+        });
 
         private Consumer<GuiTextField> renderFunction;
 
@@ -341,7 +342,7 @@ public class GuiTextField extends GuiTexturedElement {
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"), callback)),
         DIGITAL((field, callback) -> {
             MekanismImageButton ret = new MekanismImageButton(field.guiObj, field.guiObj.getLeft() + field.relativeX + field.width - field.height, field.guiObj.getTop() + field.relativeY, field.height, 12,
-                MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark_digital.png"), callback);
+                  MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark_digital.png"), callback);
             ret.setButtonBackground(ButtonBackground.DIGITAL);
             return ret;
         });

@@ -1,9 +1,9 @@
 package mekanism.client.gui.element.scroll;
 
-import java.util.List;
-import java.util.function.Supplier;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.List;
+import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -46,14 +46,16 @@ public class GuiSlotScroll extends GuiTexturedElement {
         blit(x, y, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
 
         List<IScrollableSlot> list = getSlotList();
-        if (list == null)
+        if (list == null) {
             return;
+        }
         int slotStart = scrollBar.getCurrentSelection() * xSlots, max = xSlots * ySlots;
         for (int i = 0; i < max; i++) {
             int slot = slotStart + i;
             // terminate if we've exceeded max slot pos
-            if (slot >= list.size())
+            if (slot >= list.size()) {
                 break;
+            }
             int slotX = x + (i % xSlots) * 18, slotY = y + (i / xSlots) * 18;
             renderSlot(list.get(slot), slotX, slotY);
         }
@@ -76,8 +78,9 @@ public class GuiSlotScroll extends GuiTexturedElement {
     @Override
     public void renderToolTip(int xAxis, int yAxis) {
         IScrollableSlot slot = getSlot(xAxis, yAxis, relativeX, relativeY);
-        if (slot == null)
+        if (slot == null) {
             return;
+        }
         renderSlotTooltip(slot, xAxis, yAxis);
     }
 
@@ -96,27 +99,32 @@ public class GuiSlotScroll extends GuiTexturedElement {
 
     private IScrollableSlot getSlot(double mouseX, double mouseY, int relativeX, int relativeY) {
         List<IScrollableSlot> list = getSlotList();
-        if (list == null)
+        if (list == null) {
             return null;
+        }
         int slotX = (int) ((mouseX - relativeX) / 18), slotY = (int) ((mouseY - relativeY) / 18);
         // terminate if we clicked the border of a slot
         int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
-        if (mouseX < slotStartX || mouseX >= slotStartX + 16 || mouseY < slotStartY || mouseY >= slotStartY + 16)
+        if (mouseX < slotStartX || mouseX >= slotStartX + 16 || mouseY < slotStartY || mouseY >= slotStartY + 16) {
             return null;
+        }
         // terminate if we aren't looking at a slot on-screen
-        if (slotX < 0 || slotY < 0 || slotX >= xSlots || slotY >= ySlots)
+        if (slotX < 0 || slotY < 0 || slotX >= xSlots || slotY >= ySlots) {
             return null;
+        }
         int slot = (slotY + scrollBar.getCurrentSelection()) * xSlots + slotX;
         // terminate if the slot doesn't exist
-        if (slot >= list.size())
+        if (slot >= list.size()) {
             return null;
+        }
         return list.get(slot);
     }
 
     private void renderSlot(IScrollableSlot slot, int slotX, int slotY) {
         // sanity checks
-        if (slot.getItem() == null || slot.getItem().getStack() == null || slot.getItem().getStack().isEmpty())
+        if (slot.getItem() == null || slot.getItem().getStack() == null || slot.getItem().getStack().isEmpty()) {
             return;
+        }
         guiObj.renderItemWithOverlay(slot.getItem().getStack(), slotX + 1, slotY + 1, 1.0F, "");
         if (slot.getCount() > 1) {
             renderSlotText(getCountText(slot.getCount()), slotX + 1, slotY + 1);
@@ -125,8 +133,9 @@ public class GuiSlotScroll extends GuiTexturedElement {
 
     private void renderSlotTooltip(IScrollableSlot slot, int slotX, int slotY) {
         // sanity checks
-        if (slot.getItem() == null || slot.getItem().getStack() == null || slot.getItem().getStack().isEmpty())
+        if (slot.getItem() == null || slot.getItem().getStack() == null || slot.getItem().getStack().isEmpty()) {
             return;
+        }
         guiObj.renderItemTooltip(slot.getItem().getStack(), slotX, slotY);
     }
 
@@ -147,16 +156,21 @@ public class GuiSlotScroll extends GuiTexturedElement {
     }
 
     private String getCountText(long count) {
-        if (count <= 1)
+        if (count <= 1) {
             return null;
-        if (count < 10_000)
+        }
+        if (count < 10_000) {
             return Long.toString(count);
-        if (count < 10_000_000)
+        }
+        if (count < 10_000_000) {
             return Double.toString(Math.round(count / 1000D)) + "K";
-        if (count < 10_000_000_000L)
+        }
+        if (count < 10_000_000_000L) {
             return Double.toString(Math.round(count / 1_000_000D)) + "M";
-        if (count < 10_000_000_000_000L)
+        }
+        if (count < 10_000_000_000_000L) {
             return Double.toString(Math.round(count / 1_000_000_000D)) + "B";
+        }
         return ">10T";
     }
 

@@ -7,7 +7,7 @@ import net.minecraftforge.client.model.generators.ExistingFileHelper;
 
 public class BucketModelBuilder extends CustomLoaderItemModelBuilder {
 
-    private static final ResourceLocation BUCKET_MODEL_LOADER = new ResourceLocation("forge","bucket");
+    private static final ResourceLocation BUCKET_MODEL_LOADER = new ResourceLocation("forge", "bucket");
 
     private final ResourceLocation fluid;
 

@@ -32,7 +32,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, IGasTank> {
     }
 
     public GuiGasGauge(Supplier<IGasTank> tankSupplier, Supplier<List<IGasTank>> tanksSupplier, GaugeType type,
-        IGuiWrapper gui, int x, int y) {
+          IGuiWrapper gui, int x, int y) {
         this(tankSupplier, tanksSupplier, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
     }
 

@@ -15,11 +15,13 @@ public class WildcardMatcher {
             } else if (textIndex >= text.length()) {
                 return false;
             } else if (wc == '#') {
-                if (!Character.isDigit(text.charAt(textIndex)))
+                if (!Character.isDigit(text.charAt(textIndex))) {
                     fail = true;
+                }
             } else if (wc != '?') {
-                if (wc != text.charAt(textIndex))
+                if (wc != text.charAt(textIndex)) {
                     fail = true;
+                }
             }
             if (fail) {
                 return continueSearch ? matches(wildcard, text, wildcardStartIndex, textIndex + 1, true) : false;

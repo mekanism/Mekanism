@@ -1,5 +1,7 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
@@ -8,8 +10,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.Pos3D;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
@@ -86,8 +86,9 @@ public class RenderTickHandler {
 
     private static final ResourceLocation POWER_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "horizontal_power_long.png");
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
-    private static final EquipmentSlotType[] EQUIPMENT_ORDER = new EquipmentSlotType[] {EquipmentSlotType.OFFHAND, EquipmentSlotType.MAINHAND,
-        EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET};
+    private static final EquipmentSlotType[] EQUIPMENT_ORDER = new EquipmentSlotType[]{EquipmentSlotType.OFFHAND, EquipmentSlotType.MAINHAND,
+                                                                                       EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS,
+                                                                                       EquipmentSlotType.FEET};
 
     private static double HUD_SCALE = 0.6;
 
@@ -133,7 +134,7 @@ public class RenderTickHandler {
             if (!capacity.isZero()) {
                 int x = minecraft.getMainWindow().getScaledWidth() / 2 - 91;
                 int y = minecraft.getMainWindow().getScaledHeight() - ForgeIngameGui.left_height + 2;
-                int length = (int)Math.round(stored.divide(capacity).doubleValue() * 79);
+                int length = (int) Math.round(stored.divide(capacity).doubleValue() * 79);
 
                 GuiUtils.renderExtendedTexture(GuiBar.BAR, 2, 2, x, y, 81, 6);
                 minecraft.getTextureManager().bindTexture(POWER_BAR);
@@ -143,34 +144,34 @@ public class RenderTickHandler {
             }
         } else if (event.getType() == ElementType.HOTBAR) {
             if (!minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
-              int y = minecraft.getMainWindow().getScaledHeight();
-              boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
-              int count = 0;
-              Map<EquipmentSlotType, List<ITextComponent>> renderStrings = new LinkedHashMap<>();
-              for (EquipmentSlotType slotType : EQUIPMENT_ORDER) {
-                  ItemStack stack = minecraft.player.getItemStackFromSlot(slotType);
-                  if (stack.getItem() instanceof IItemHUDProvider) {
-                      List<ITextComponent> list = new ArrayList<>();
-                      ((IItemHUDProvider) stack.getItem()).addHUDStrings(list, stack, slotType);
-                      if (!list.isEmpty()) {
-                          renderStrings.put(slotType, list);
-                      }
-                      count += list.size();
-                  }
-              }
+                int y = minecraft.getMainWindow().getScaledHeight();
+                boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
+                int count = 0;
+                Map<EquipmentSlotType, List<ITextComponent>> renderStrings = new LinkedHashMap<>();
+                for (EquipmentSlotType slotType : EQUIPMENT_ORDER) {
+                    ItemStack stack = minecraft.player.getItemStackFromSlot(slotType);
+                    if (stack.getItem() instanceof IItemHUDProvider) {
+                        List<ITextComponent> list = new ArrayList<>();
+                        ((IItemHUDProvider) stack.getItem()).addHUDStrings(list, stack, slotType);
+                        if (!list.isEmpty()) {
+                            renderStrings.put(slotType, list);
+                        }
+                        count += list.size();
+                    }
+                }
 
-              RenderSystem.pushMatrix();
-              RenderSystem.scaled(HUD_SCALE, HUD_SCALE, HUD_SCALE);
-              int start = (renderStrings.size() * 2) + (count * 9);
-              for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
-                  for (ITextComponent text : entry.getValue()) {
-                      drawString(text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
-                      start -= 9;
-                  }
-                  start -= 2;
-              }
-              RenderSystem.popMatrix();
-          }
+                RenderSystem.pushMatrix();
+                RenderSystem.scaled(HUD_SCALE, HUD_SCALE, HUD_SCALE);
+                int start = (renderStrings.size() * 2) + (count * 9);
+                for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
+                    for (ITextComponent text : entry.getValue()) {
+                        drawString(text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
+                        start -= 9;
+                    }
+                    start -= 2;
+                }
+                RenderSystem.popMatrix();
+            }
         }
     }
 
@@ -290,10 +291,14 @@ public class RenderTickHandler {
                     player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
                         double radiation = c.getRadiation();
                         double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;
-                        if (prevRadiation < severity) prevRadiation = Math.min(severity, prevRadiation + 0.01);
-                        if (prevRadiation > severity) prevRadiation = Math.max(severity, prevRadiation - 0.01);
+                        if (prevRadiation < severity) {
+                            prevRadiation = Math.min(severity, prevRadiation + 0.01);
+                        }
+                        if (prevRadiation > severity) {
+                            prevRadiation = Math.max(severity, prevRadiation - 0.01);
+                        }
                         if (severity > RadiationManager.BASELINE) {
-                            int effect = (int)(prevRadiation * 255);
+                            int effect = (int) (prevRadiation * 255);
                             int color = (0x701E1E << 8) + effect;
                             MekanismRenderer.renderColorOverlay(0, 0, minecraft.getMainWindow().getScaledWidth(), minecraft.getMainWindow().getScaledHeight(), color);
                         }

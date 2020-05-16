@@ -1,5 +1,6 @@
 package mekanism.common.lib.multiblock;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -9,7 +10,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
@@ -76,6 +76,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     /**
      * Tick the multiblock.
+     *
      * @return if we need an update packet
      */
     public boolean tick(World world) {
@@ -184,7 +185,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     @Override
-    public void onContentsChanged() {}
+    public void onContentsChanged() {
+    }
 
     @Override
     public int hashCode() {
@@ -251,7 +253,9 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     // Only call from the server
     public void markDirtyComparator(World world) {
-        if (!isFormed()) return;
+        if (!isFormed()) {
+            return;
+        }
         int newRedstoneLevel = getMultiblockRedstoneLevel();
         if (newRedstoneLevel != currentRedstoneLevel) {
             //Update the comparator value if it changed

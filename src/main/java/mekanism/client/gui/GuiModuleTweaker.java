@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.glfw.GLFW;
 import mekanism.client.gui.element.custom.GuiModuleScreen;
 import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -18,6 +17,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
@@ -51,9 +51,9 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 select(index);
             }
             addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1)
-                .click((e, x, y) -> select(index))
-                .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
-                .with(() -> index == selected ? SlotOverlay.SELECT : null));
+                  .click((e, x, y) -> select(index))
+                  .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
+                  .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }
     }
 
@@ -74,7 +74,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 if (isValidItem(index)) {
                     selectable.add(index);
                     if (index == selected) {
-                        curIndex = selectable.size()-1;
+                        curIndex = selectable.size() - 1;
                     }
                 }
             }

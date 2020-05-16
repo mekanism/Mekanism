@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.attribute.Attribute;
@@ -71,7 +71,8 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
                 matrix.rotate(Vector3f.ZP.rotationDegrees(90));
                 break;
             }
-            default: break;
+            default:
+                break;
         }
     }
 }

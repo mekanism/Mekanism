@@ -1,24 +1,25 @@
 package mekanism.client.render.bolt;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import org.apache.commons.lang3.tuple.Pair;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.client.render.bolt.BoltEffect.BoltQuads;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class BoltRenderer {
+
     /** Amount of times per tick we refresh. 3 implies 60 Hz. */
     private static final float REFRESH_TIME = 3F;
     /** We will keep track of an owner's render data for 100 ticks after there are no bolts remaining. */
@@ -71,14 +72,15 @@ public class BoltRenderer {
         Matrix4f matrix = matrixStackIn.getLast().getMatrix();
         double time = minecraft.world.getGameTime() + partialTicks;
 
-        if (partialTicks < refreshTimestamp)
+        if (partialTicks < refreshTimestamp) {
             partialTicks += 1;
+        }
         boolean refresh = partialTicks - refreshTimestamp >= (1 / REFRESH_TIME);
         if (refresh) {
             refreshTimestamp = partialTicks % 1;
         }
 
-        for (Iterator<Map.Entry<Object, BoltOwnerData>> iter = boltOwners.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator<Map.Entry<Object, BoltOwnerData>> iter = boltOwners.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<Object, BoltOwnerData> entry = iter.next();
             BoltOwnerData data = entry.getValue();
             // tick our bolts based on the refresh rate, removing if they're now finished
@@ -97,8 +99,9 @@ public class BoltRenderer {
     }
 
     public void update(Object owner, BoltData newBoltData, float partialTicks) {
-        if (minecraft.world == null)
+        if (minecraft.world == null) {
             return;
+        }
 
         BoltOwnerData data = boltOwners.computeIfAbsent(owner, o -> new BoltOwnerData());
         double time = minecraft.world.getGameTime() + partialTicks;
@@ -174,6 +177,7 @@ public class BoltRenderer {
     }
 
     public interface SpawnFunction {
+
         /** Allow for bolts to be spawned each update call without any delay. */
         public static SpawnFunction NO_DELAY = (rand) -> Pair.of(0F, 0F);
 
@@ -183,8 +187,7 @@ public class BoltRenderer {
         }
 
         /**
-         * Spawns bolts with a specified delay and specified noise value, which will be randomly applied at
-         * either end of the delay bounds.
+         * Spawns bolts with a specified delay and specified noise value, which will be randomly applied at either end of the delay bounds.
          */
         public static SpawnFunction noise(float delay, float noise) {
             return (rand) -> Pair.of(delay - noise, delay + noise);
@@ -199,6 +202,7 @@ public class BoltRenderer {
     }
 
     public interface FadeFunction {
+
         /** No fade; render the bolts entirely throughout their lifespan. */
         public static FadeFunction NONE = (totalBolts, lifeScale) -> Pair.of(0, totalBolts);
 

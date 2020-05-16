@@ -1,9 +1,9 @@
 package mekanism.common.command.builders;
 
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
-import com.mojang.brigadier.builder.ArgumentBuilder;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -36,20 +36,20 @@ public class BuildCommand {
                       }
                   }
                   return 0;
-            })).then(Commands.literal("remove")
-               .requires(cs -> cs.hasPermissionLevel(4))
-               .executes(ctx -> {
-                   CommandSource source = ctx.getSource();
-                   Entity entity = source.getEntity();
-                   if (entity instanceof ServerPlayerEntity) {
-                       ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
-                       BlockRayTraceResult result = MekanismUtils.rayTrace(player, 100);
-                       if (result.getType() != RayTraceResult.Type.MISS) {
-                           destroy(player.getEntityWorld(), result.getPos());
-                       }
-                   }
-                   return 0;
-               }));
+              })).then(Commands.literal("remove")
+              .requires(cs -> cs.hasPermissionLevel(4))
+              .executes(ctx -> {
+                  CommandSource source = ctx.getSource();
+                  Entity entity = source.getEntity();
+                  if (entity instanceof ServerPlayerEntity) {
+                      ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
+                      BlockRayTraceResult result = MekanismUtils.rayTrace(player, 100);
+                      if (result.getType() != RayTraceResult.Type.MISS) {
+                          destroy(player.getEntityWorld(), result.getPos());
+                      }
+                  }
+                  return 0;
+              }));
     }
 
     private static void destroy(World world, BlockPos pos) {

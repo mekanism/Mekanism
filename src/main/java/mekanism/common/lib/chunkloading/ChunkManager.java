@@ -77,7 +77,7 @@ public class ChunkManager extends WorldSavedData {
                 Block block = world.getBlockState(blockPos).getBlock();
                 if (Attribute.has(block, AttributeUpgradeSupport.class) && Attribute.get(block, AttributeUpgradeSupport.class).getSupportedUpgrades().contains(Upgrade.ANCHOR)) {
                     shouldLoad = true;
-                }else {
+                } else {
                     LOGGER.warn("Block at {} was does not support Anchor Upgrades?! Block: {}", blockPos, block.getRegistryName());
                     iterator.remove();
                     savedData.markDirty();

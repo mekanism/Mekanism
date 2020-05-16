@@ -53,7 +53,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
         ITextComponent lost = MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN, false);
         return heatTransferred + heatLost == 0 ? MekanismLang.HEAT_NETWORK_FLOW.translate(transferred, lost)
                                                : MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY.translate(transferred, lost,
-                                                   (Math.round(heatTransferred / (heatTransferred + heatLost) * 10_000) / 100F) + "%");
+                                                     (Math.round(heatTransferred / (heatTransferred + heatLost) * 10_000) / 100F) + "%");
     }
 
     @Override

@@ -1,5 +1,8 @@
 package mekanism.common.content.qio;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,9 +12,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
@@ -70,6 +70,7 @@ public class QIOFrequency extends Frequency {
 
     /**
      * Dangerous function. Don't mess with this map.
+     *
      * @return core item data map, tracking item types + their respective counts and containing drives
      */
     public Map<HashedItem, QIOItemTypeData> getItemDataMap() {
@@ -80,8 +81,9 @@ public class QIOFrequency extends Frequency {
         HashedItem type = new HashedItem(stack);
         // these checks are extremely important; they prevent us from wasting CPU searching for a place to put the new items,
         // and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
-        if (totalCount == totalCountCapacity || (!itemDataMap.containsKey(type) && itemDataMap.size() == totalTypeCapacity))
+        if (totalCount == totalCountCapacity || (!itemDataMap.containsKey(type) && itemDataMap.size() == totalTypeCapacity)) {
             return stack;
+        }
         // at this point we're guaranteed at least part of the input stack will be inserted
         QIOItemTypeData data = itemDataMap.computeIfAbsent(type, t -> {
             tagLookupMap.putAll(TagCache.getItemTags(stack), t);
@@ -100,8 +102,9 @@ public class QIOFrequency extends Frequency {
     }
 
     public ItemStack removeByType(@Nullable HashedItem itemType, int amount) {
-        if (itemDataMap.isEmpty())
+        if (itemDataMap.isEmpty()) {
             return ItemStack.EMPTY;
+        }
 
         QIOItemTypeData data = null;
         if (itemType == null) {
@@ -109,8 +112,9 @@ public class QIOFrequency extends Frequency {
             itemType = entry.getKey();
         } else {
             data = itemDataMap.get(itemType);
-            if (data == null)
+            if (data == null) {
                 return ItemStack.EMPTY;
+            }
         }
 
         ItemStack removed = data.remove(amount);
@@ -168,10 +172,21 @@ public class QIOFrequency extends Frequency {
     }
 
     // utility methods for accessing descriptors
-    public long getTotalItemCount() { return totalCount; }
-    public long getTotalItemCountCapacity() { return totalCountCapacity; }
-    public int getTotalItemTypes(boolean remote) { return remote ? clientTypes : itemDataMap.size(); }
-    public int getTotalItemTypeCapacity() { return totalTypeCapacity; }
+    public long getTotalItemCount() {
+        return totalCount;
+    }
+
+    public long getTotalItemCountCapacity() {
+        return totalCountCapacity;
+    }
+
+    public int getTotalItemTypes(boolean remote) {
+        return remote ? clientTypes : itemDataMap.size();
+    }
+
+    public int getTotalItemTypeCapacity() {
+        return totalTypeCapacity;
+    }
 
     public long getStored(HashedItem itemType) {
         QIOItemTypeData data = itemDataMap.get(itemType);
@@ -311,8 +326,9 @@ public class QIOFrequency extends Frequency {
     }
 
     public void removeDrive(QIODriveKey key, boolean updateItemMap) {
-        if (!driveMap.containsKey(key))
+        if (!driveMap.containsKey(key)) {
             return;
+        }
         QIODriveData data = driveMap.get(key);
         if (updateItemMap) {
             data.getItemMap().entrySet().forEach(entry -> {
@@ -357,8 +373,9 @@ public class QIOFrequency extends Frequency {
     private void setNeedsUpdate(@Nullable HashedItem changedItem) {
         needsUpdate = true;
         isDirty = true;
-        if (changedItem != null)
+        if (changedItem != null) {
             updatedItems.add(changedItem);
+        }
     }
 
     private void setNeedsUpdate() {
@@ -387,17 +404,20 @@ public class QIOFrequency extends Frequency {
             // first we try to add the items to an already-containing drive
             for (QIODriveKey key : containingDrives) {
                 toAdd = addItemsToDrive(toAdd, driveMap.get(key));
-                if (toAdd == 0)
+                if (toAdd == 0) {
                     break;
+                }
             }
             // next, we add the items to any drive that will take it
             if (toAdd > 0) {
                 for (QIODriveData data : driveMap.values()) {
-                    if (containingDrives.contains(data.getKey()))
+                    if (containingDrives.contains(data.getKey())) {
                         continue;
+                    }
                     toAdd = addItemsToDrive(toAdd, data);
-                    if (toAdd == 0)
+                    if (toAdd == 0) {
                         break;
+                    }
                 }
             }
             // update internal/core values and return
@@ -409,14 +429,15 @@ public class QIOFrequency extends Frequency {
 
         private long addItemsToDrive(long toAdd, QIODriveData data) {
             long rejects = data.add(itemType, toAdd);
-            if (rejects < toAdd)
+            if (rejects < toAdd) {
                 containingDrives.add(data.getKey());
+            }
             return rejects;
         }
 
         private ItemStack remove(int amount) {
             ItemStack ret = ItemStack.EMPTY;
-            for (Iterator<QIODriveKey> iter = containingDrives.iterator(); iter.hasNext();) {
+            for (Iterator<QIODriveKey> iter = containingDrives.iterator(); iter.hasNext(); ) {
                 QIODriveData data = driveMap.get(iter.next());
                 ItemStack stack = data.remove(itemType, amount - ret.getCount());
                 if (ret.isEmpty()) {
@@ -425,11 +446,13 @@ public class QIOFrequency extends Frequency {
                     ret.grow(stack.getCount());
                 }
                 // remove this drive from containingDrives if it doesn't have this item anymore
-                if (data.getStored(itemType) == 0)
+                if (data.getStored(itemType) == 0) {
                     iter.remove();
+                }
                 // break early if we found enough items
-                if (ret.getCount() == amount)
+                if (ret.getCount() == amount) {
                     break;
+                }
             }
             count -= ret.getCount();
             totalCount -= ret.getCount();

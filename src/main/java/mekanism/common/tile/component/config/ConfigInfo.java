@@ -120,14 +120,18 @@ public class ConfigInfo {
     }
 
     public void setDefaults() {
-        if (slotInfo.containsKey(DataType.INPUT))
+        if (slotInfo.containsKey(DataType.INPUT)) {
             fill(DataType.INPUT);
-        if (slotInfo.containsKey(DataType.OUTPUT))
+        }
+        if (slotInfo.containsKey(DataType.OUTPUT)) {
             setDataType(DataType.OUTPUT, RelativeSide.RIGHT);
-        if (slotInfo.containsKey(DataType.EXTRA))
+        }
+        if (slotInfo.containsKey(DataType.EXTRA)) {
             setDataType(DataType.EXTRA, RelativeSide.BOTTOM);
-        if (slotInfo.containsKey(DataType.ENERGY))
+        }
+        if (slotInfo.containsKey(DataType.ENERGY)) {
             setDataType(DataType.ENERGY, RelativeSide.BACK);
+        }
     }
 
     public Set<Direction> getSidesForData(@Nonnull DataType dataType) {

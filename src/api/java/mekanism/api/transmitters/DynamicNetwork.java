@@ -1,5 +1,8 @@
 package mekanism.api.transmitters;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;
@@ -7,9 +10,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.Range3D;
 import mekanism.api.text.IHasTextComponent;
@@ -143,9 +143,11 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public abstract void clampBuffer();
 
-    protected void forceScaleUpdate() {}
+    protected void forceScaleUpdate() {
+    }
 
-    protected void onLastTransmitterRemoved(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {}
+    protected void onLastTransmitterRemoved(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    }
 
     public void invalidate(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
         if (transmitters.size() == 1 && triggerTransmitter != null) {

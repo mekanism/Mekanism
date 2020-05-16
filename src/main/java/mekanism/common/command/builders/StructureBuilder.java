@@ -48,13 +48,13 @@ public abstract class StructureBuilder {
             }
         }
         for (int y = 1; y < sizeY - 1; y++) {
-            for(int x = 1; x < sizeZ - 1; x++) {
+            for (int x = 1; x < sizeZ - 1; x++) {
                 BlockPos pos = new BlockPos(x, y, 0);
                 world.setBlockState(start.add(pos), getWallBlock(pos).getDefaultState());
                 pos = new BlockPos(x, y, sizeZ - 1);
                 world.setBlockState(start.add(pos), getWallBlock(pos).getDefaultState());
             }
-            for(int z = 1; z < sizeZ - 1; z++) {
+            for (int z = 1; z < sizeZ - 1; z++) {
                 BlockPos pos = new BlockPos(0, y, z);
                 world.setBlockState(start.add(pos), getWallBlock(pos).getDefaultState());
                 pos = new BlockPos(sizeZ - 1, y, z);

@@ -3,6 +3,7 @@ package mekanism.client.gui.element;
 import static mekanism.client.gui.element.GuiDigitalSwitch.BUTTON_SIZE_X;
 import static mekanism.client.gui.element.GuiDigitalSwitch.BUTTON_SIZE_Y;
 import static mekanism.client.gui.element.GuiDigitalSwitch.SWITCH;
+
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;

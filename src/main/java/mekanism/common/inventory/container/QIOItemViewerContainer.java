@@ -1,11 +1,11 @@
 package mekanism.common.inventory.container;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -210,8 +210,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     private void syncItemList() {
-        if (itemList == null)
+        if (itemList == null) {
             itemList = new ArrayList<>();
+        }
         itemList.clear();
         searchCache.clear();
         totalItems = 0;
@@ -226,8 +227,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     private void sortItemList() {
-        if (itemList == null)
+        if (itemList == null) {
             return;
+        }
         sortType.sort(itemList, sortDirection);
     }
 
@@ -283,8 +285,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public void updateSearch(String queryText) {
         // searches should only updated on client-side
-        if (!inv.player.world.isRemote() || itemList == null)
+        if (!inv.player.world.isRemote() || itemList == null) {
             return;
+        }
 
         List<IScrollableSlot> list = searchCache.get(queryText);
         if (list != null) {
@@ -307,8 +310,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     public void onClick(IScrollableSlot slot, int button, boolean hasShiftDown, ItemStack heldItem) {
         if (hasShiftDown) {
-            if (slot != null)
+            if (slot != null) {
                 Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.shiftTake(slot.getItem()));
+            }
             return;
         }
         if (button == 0) {

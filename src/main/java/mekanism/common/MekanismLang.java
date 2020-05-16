@@ -722,12 +722,18 @@ public enum MekanismLang implements ILangEntry {
 
     public static MekanismLang get(EquipmentSlotType type) {
         switch (type) {
-            case HEAD: return HEAD;
-            case CHEST: return BODY;
-            case LEGS: return LEGS;
-            case FEET: return FEET;
-            case MAINHAND: return MAINHAND;
-            case OFFHAND: return OFFHAND;
+            case HEAD:
+                return HEAD;
+            case CHEST:
+                return BODY;
+            case LEGS:
+                return LEGS;
+            case FEET:
+                return FEET;
+            case MAINHAND:
+                return MAINHAND;
+            case OFFHAND:
+                return OFFHAND;
         }
         return null;
     }

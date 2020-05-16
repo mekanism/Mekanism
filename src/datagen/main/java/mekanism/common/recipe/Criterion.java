@@ -1,7 +1,7 @@
 package mekanism.common.recipe;
 
-import java.util.Map;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.registries.MekanismBlocks;
@@ -19,6 +19,7 @@ import net.minecraftforge.common.Tags;
 public class Criterion {
 
     public static final Map<PrimaryResource, RecipeCriterion> HAS_RESOURCE_MAP = new Object2ObjectOpenHashMap<>();
+
     static {
         for (PrimaryResource resource : PrimaryResource.values()) {
             HAS_RESOURCE_MAP.put(resource, has(resource.getName(), MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource)));

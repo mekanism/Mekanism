@@ -243,7 +243,7 @@ public class CommonPlayerTickHandler {
                 ItemStack chestStack = base.getItemStackFromSlot(EquipmentSlotType.CHEST);
                 if (!chestStack.isEmpty()) {
                     if (chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
-                          GasUtils.hasGas(chestStack)) {
+                        GasUtils.hasGas(chestStack)) {
                         event.setCanceled(true);
                         return;
                     }

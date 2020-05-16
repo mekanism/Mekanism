@@ -1,7 +1,7 @@
 package mekanism.common.content.qio;
 
-import java.util.Map;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
 import mekanism.common.lib.inventory.HashedItem;
@@ -33,8 +33,9 @@ public class QIODriveData {
     public long add(HashedItem type, long amount) {
         long stored = getStored(type);
         // fail if we've reached item count capacity or adding this item would make us exceed type capacity
-        if (itemCount == countCapacity || (stored == 0 && itemMap.size() == typeCapacity))
+        if (itemCount == countCapacity || (stored == 0 && itemMap.size() == typeCapacity)) {
             return amount;
+        }
         long toAdd = Math.min(amount, countCapacity - itemCount);
         itemMap.put(type, stored + toAdd);
         itemCount += toAdd;
@@ -46,10 +47,11 @@ public class QIODriveData {
     public ItemStack remove(HashedItem type, int amount) {
         long stored = getStored(type);
         ItemStack ret = type.createStack(Math.min(amount, (int) stored));
-        if (stored - ret.getCount() > 0)
+        if (stored - ret.getCount() > 0) {
             itemMap.put(type, stored - ret.getCount());
-        else
+        } else {
             itemMap.remove(type);
+        }
         itemCount -= ret.getCount();
         key.updateMetadata(this);
         key.dataUpdate();

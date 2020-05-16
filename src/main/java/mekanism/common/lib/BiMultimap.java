@@ -1,10 +1,10 @@
 package mekanism.common.lib;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
 
 public class BiMultimap<K, V> {
 

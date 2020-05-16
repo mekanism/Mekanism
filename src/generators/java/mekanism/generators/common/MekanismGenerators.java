@@ -79,9 +79,8 @@ public class MekanismGenerators implements IModule {
         if (MekanismGases.ETHENE.get() != null) {
             MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismConfig.general.ETHENE_BURN_TIME,
                   () -> MekanismConfig.general.FROM_H2.get().add(MekanismGeneratorsConfig.generators.bioGeneration.get()
-                  .multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get()))));
+                        .multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get()))));
         }
-
 
         MinecraftForge.EVENT_BUS.register(this);
 

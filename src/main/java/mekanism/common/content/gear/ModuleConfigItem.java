@@ -69,9 +69,13 @@ public class ModuleConfigItem<TYPE> {
     }
 
     public interface ConfigData<TYPE> {
+
         TYPE get();
+
         void set(TYPE val);
+
         void read(String name, CompoundNBT tag);
+
         void write(String name, CompoundNBT tag);
     }
 
@@ -135,7 +139,7 @@ public class ModuleConfigItem<TYPE> {
 
         @Override
         public void read(String name, CompoundNBT tag) {
-            int index = Math.min(tag.getInt(name), selectableCount-1);
+            int index = Math.min(tag.getInt(name), selectableCount - 1);
             value = enumClass.getEnumConstants()[index];
         }
 

@@ -36,5 +36,6 @@ public class DefaultHeatHandler implements IHeatHandler {
     }
 
     @Override
-    public void handleHeat(int capacitor, double transfer) {}
+    public void handleHeat(int capacitor, double transfer) {
+    }
 }

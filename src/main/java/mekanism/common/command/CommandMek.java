@@ -1,13 +1,13 @@
 package mekanism.common.command;
 
 
-import java.util.Map;
-import java.util.Stack;
-import java.util.UUID;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
+import java.util.Stack;
+import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
@@ -129,44 +129,44 @@ public class CommandMek {
 
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("radiation")
-                .requires(cs -> cs.hasPermissionLevel(4))
-                .then(Commands.literal("add").then(Commands.argument("magnitude", DoubleArgumentType.doubleArg(0, 10000))
-                    .executes(ctx -> {
-                        try {
+                  .requires(cs -> cs.hasPermissionLevel(4))
+                  .then(Commands.literal("add").then(Commands.argument("magnitude", DoubleArgumentType.doubleArg(0, 10000))
+                        .executes(ctx -> {
+                            try {
+                                CommandSource source = ctx.getSource();
+                                Coord4D location = new Coord4D(source.getPos().x, source.getPos().y, source.getPos().z, source.getWorld().getDimension().getType());
+                                double magnitude = DoubleArgumentType.getDouble(ctx, "magnitude");
+                                Mekanism.radiationManager.radiate(location, magnitude);
+                                source.sendFeedback(MekanismLang.COMMAND_RADIATION_ADD.translate(location), true);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            return 0;
+                        })))
+                  .then(Commands.literal("get")
+                        .executes(ctx -> {
                             CommandSource source = ctx.getSource();
                             Coord4D location = new Coord4D(source.getPos().x, source.getPos().y, source.getPos().z, source.getWorld().getDimension().getType());
-                            double magnitude = DoubleArgumentType.getDouble(ctx, "magnitude");
-                            Mekanism.radiationManager.radiate(location, magnitude);
-                            source.sendFeedback(MekanismLang.COMMAND_RADIATION_ADD.translate(location), true);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return 0;
-                    })))
-                .then(Commands.literal("get")
-                    .executes(ctx -> {
-                        CommandSource source = ctx.getSource();
-                        Coord4D location = new Coord4D(source.getPos().x, source.getPos().y, source.getPos().z, source.getWorld().getDimension().getType());
-                        double radiation = Mekanism.radiationManager.getRadiationLevel(location);
-                        source.sendFeedback(MekanismLang.COMMAND_RADIATION_GET.translate(radiation), true);
-                        return 0;
-                    }))
-                .then(Commands.literal("heal")
-                    .executes(ctx -> {
-                        if (ctx.getSource().getEntity() instanceof ServerPlayerEntity) {
-                            ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
-                            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(0));
-                            ctx.getSource().sendFeedback(MekanismLang.COMMAND_RADIATION_CLEAR.translate(), true);
-                        }
-                        return 0;
-                    }))
-                .then(Commands.literal("removeAll")
-                    .executes(ctx -> {
-                        CommandSource source = ctx.getSource();
-                        Mekanism.radiationManager.clearSources();
-                        source.sendFeedback(MekanismLang.COMMAND_RADIATION_REMOVE_ALL.translate(), true);
-                        return 0;
-                    }));
+                            double radiation = Mekanism.radiationManager.getRadiationLevel(location);
+                            source.sendFeedback(MekanismLang.COMMAND_RADIATION_GET.translate(radiation), true);
+                            return 0;
+                        }))
+                  .then(Commands.literal("heal")
+                        .executes(ctx -> {
+                            if (ctx.getSource().getEntity() instanceof ServerPlayerEntity) {
+                                ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
+                                player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(0));
+                                ctx.getSource().sendFeedback(MekanismLang.COMMAND_RADIATION_CLEAR.translate(), true);
+                            }
+                            return 0;
+                        }))
+                  .then(Commands.literal("removeAll")
+                        .executes(ctx -> {
+                            CommandSource source = ctx.getSource();
+                            Mekanism.radiationManager.clearSources();
+                            source.sendFeedback(MekanismLang.COMMAND_RADIATION_REMOVE_ALL.translate(), true);
+                            return 0;
+                        }));
         }
     }
 

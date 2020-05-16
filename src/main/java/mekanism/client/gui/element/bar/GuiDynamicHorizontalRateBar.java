@@ -10,6 +10,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
+
     private static final ResourceLocation RATE_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "dynamic_rate.png");
     private static final int texWidth = 3;
     private static final int texHeight = 8;
@@ -34,7 +35,7 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
             RenderSystem.color4f(color.r / 255F, color.g / 255F, color.b / 255F, color.a / 255F);
             if (i == 0) {
                 blit(x + 1, y + 1, 0, 0, 1, texHeight, texWidth, texHeight);
-            } else if (i == displayInt-1) {
+            } else if (i == displayInt - 1) {
                 blit(x + 1 + i, y + 1, texWidth - 1, 0, 1, texHeight, texWidth, texHeight);
             } else {
                 blit(x + 1 + i, y + 1, 1, 0, 1, texHeight, texWidth, texHeight);

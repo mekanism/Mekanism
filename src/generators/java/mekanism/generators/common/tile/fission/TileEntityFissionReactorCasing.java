@@ -40,30 +40,67 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         }
     }
 
-    public double getLastEnvironmentLoss() { return getMultiblock().lastEnvironmentLoss; }
-    public double getLastTransferLoss() { return getMultiblock().lastTransferLoss; }
-    public double getTemperature() { return getMultiblock().heatCapacitor.getTemperature(); }
-    public long getHeatCapacity() { return Math.round(getMultiblock().heatCapacitor.getHeatCapacity()); }
-    public long getSurfaceArea() { return getMultiblock().surfaceArea; }
-    public double getBoilEfficiency() { return (double) Math.round(getMultiblock().getBoilEfficiency() * 1000) / 1000; }
-    public long getLastBoilRate() { return getMultiblock().lastBoilRate; }
-    public double getLastBurnRate() { return getMultiblock().lastBurnRate; }
-    public long getMaxBurnRate() { return getMultiblock().fuelAssemblies * FissionReactorMultiblockData.BURN_PER_ASSEMBLY; }
-    public double getRateLimit() { return getMultiblock().rateLimit; }
-    public boolean isReactorActive() { return getMultiblock().isActive(); }
-    public void setReactorActive(boolean active) { getMultiblock().setActive(active); }
+    public double getLastEnvironmentLoss() {
+        return getMultiblock().lastEnvironmentLoss;
+    }
+
+    public double getLastTransferLoss() {
+        return getMultiblock().lastTransferLoss;
+    }
+
+    public double getTemperature() {
+        return getMultiblock().heatCapacitor.getTemperature();
+    }
+
+    public long getHeatCapacity() {
+        return Math.round(getMultiblock().heatCapacitor.getHeatCapacity());
+    }
+
+    public long getSurfaceArea() {
+        return getMultiblock().surfaceArea;
+    }
+
+    public double getBoilEfficiency() {
+        return (double) Math.round(getMultiblock().getBoilEfficiency() * 1000) / 1000;
+    }
+
+    public long getLastBoilRate() {
+        return getMultiblock().lastBoilRate;
+    }
+
+    public double getLastBurnRate() {
+        return getMultiblock().lastBurnRate;
+    }
+
+    public long getMaxBurnRate() {
+        return getMultiblock().fuelAssemblies * FissionReactorMultiblockData.BURN_PER_ASSEMBLY;
+    }
+
+    public double getRateLimit() {
+        return getMultiblock().rateLimit;
+    }
+
+    public boolean isReactorActive() {
+        return getMultiblock().isActive();
+    }
+
+    public void setReactorActive(boolean active) {
+        getMultiblock().setActive(active);
+    }
 
     public String getDamageString() {
         return Math.round((getMultiblock().reactorDamage / FissionReactorMultiblockData.MAX_DAMAGE) * 100) + "%";
     }
+
     public EnumColor getDamageColor() {
         double damage = getMultiblock().reactorDamage / FissionReactorMultiblockData.MAX_DAMAGE;
         return damage < 0.25 ? EnumColor.BRIGHT_GREEN : (damage < 0.5 ? EnumColor.YELLOW : (damage < 0.75 ? EnumColor.ORANGE : EnumColor.DARK_RED));
     }
+
     public EnumColor getTempColor() {
         double temp = getTemperature();
         return temp < 600 ? EnumColor.BRIGHT_GREEN : (temp < 1000 ? EnumColor.YELLOW :
-              (temp < 1200 ? EnumColor.ORANGE : (temp < 1600 ? EnumColor.RED : EnumColor.DARK_RED)));
+                                                      (temp < 1200 ? EnumColor.ORANGE : (temp < 1600 ? EnumColor.RED : EnumColor.DARK_RED)));
     }
 
     public void setRateLimitFromPacket(double rate) {

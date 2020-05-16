@@ -69,14 +69,14 @@ public class GuiTransporterConfig extends GuiWindow {
                   tile, () -> null, ConfigurationPacket.INPUT_COLOR, getOnHover()));
         }
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, tile, 0));
-        ((MekanismContainer)((GuiMekanism<?>) guiObj).getContainer()).startTracking(0, ((ISideConfiguration) tile).getEjector());
+        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).startTracking(0, ((ISideConfiguration) tile).getEjector());
     }
 
     @Override
     public void close() {
         super.close();
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, 0));
-        ((MekanismContainer)((GuiMekanism<?>) guiObj).getContainer()).stopTracking(0);
+        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).stopTracking(0);
     }
 
     public <TILE extends TileEntityMekanism & ISideConfiguration> TILE getTile() {

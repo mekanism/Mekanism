@@ -23,8 +23,8 @@ import mekanism.api.inventory.AutomationType;
 public class VariableCapacityGasTank extends BasicGasTank {
 
     public static VariableCapacityGasTank create(LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
-        BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator,
-        @Nullable IMekanismGasHandler gasHandler) {
+          BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator,
+          @Nullable IMekanismGasHandler gasHandler) {
         return create(capacity, canExtract, canInsert, validator, null, gasHandler);
     }
 

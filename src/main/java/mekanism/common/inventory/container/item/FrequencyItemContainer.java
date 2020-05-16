@@ -61,6 +61,6 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
     }
 
     public List<FREQ> getPrivateCache() {
-       return privateCache;
+        return privateCache;
     }
 }

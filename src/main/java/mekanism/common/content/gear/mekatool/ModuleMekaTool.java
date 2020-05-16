@@ -17,12 +17,13 @@ public class ModuleMekaTool extends Module {
     }
 
     public static class ModuleAttackAmplificationUnit extends ModuleMekaTool {
+
         private ModuleConfigItem<AttackDamage> attackDamage;
 
         @Override
         public void init() {
             super.init();
-            addConfigItem(attackDamage = new ModuleConfigItem<AttackDamage>(this, "attack_damage", MekanismLang.MODULE_ATTACK_DAMAGE, new EnumData<>(AttackDamage.class, getInstalledCount()+2), AttackDamage.MED));
+            addConfigItem(attackDamage = new ModuleConfigItem<AttackDamage>(this, "attack_damage", MekanismLang.MODULE_ATTACK_DAMAGE, new EnumData<>(AttackDamage.class, getInstalledCount() + 2), AttackDamage.MED));
         }
 
         public int getDamage() {
@@ -38,14 +39,17 @@ public class ModuleMekaTool extends Module {
             MAX(32);
             private int damage;
             private ITextComponent label;
+
             private AttackDamage(int damage) {
                 this.damage = damage;
                 this.label = new StringTextComponent(Integer.toString(damage));
             }
+
             @Override
             public ITextComponent getTextComponent() {
                 return label;
             }
+
             public int getDamage() {
                 return damage;
             }

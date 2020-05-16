@@ -66,9 +66,14 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
         guiElements.add(GuiGasGauge.getDummy(GaugeType.SMALL_MED, this, 5, 18));
         guiElements.add(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
-            public FloatingLong getEnergy() { return FloatingLong.ONE; }
+            public FloatingLong getEnergy() {
+                return FloatingLong.ONE;
+            }
+
             @Override
-            public FloatingLong getMaxEnergy() { return FloatingLong.ONE; }
+            public FloatingLong getMaxEnergy() {
+                return FloatingLong.ONE;
+            }
         }, GaugeType.SMALL_MED, this, 172, 18));
         guiElements.add(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override

@@ -1,5 +1,8 @@
 package mekanism.common.inventory.container.sync.dynamic;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
@@ -14,9 +17,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -118,11 +118,11 @@ public class SyncMapper {
             }
             Function<Object, Object> fieldGetter = createGetter(field, objType, syncData);
             CallSite site = LambdaMetafactory.metafactory(LOOKUP, "apply", MethodType.methodType(Function.class), MethodType.methodType(Object.class, Object.class),
-                LOOKUP.findVirtual(handler.fieldType, data.getterMethodName, MethodType.methodType(data.valueType)), MethodType.methodType(data.valueType, handler.fieldType));
+                  LOOKUP.findVirtual(handler.fieldType, data.getterMethodName, MethodType.methodType(data.valueType)), MethodType.methodType(data.valueType, handler.fieldType));
             Function<Object, Object> getter = (Function<Object, Object>) site.getTarget().invokeExact();
 
             site = LambdaMetafactory.metafactory(LOOKUP, "accept", MethodType.methodType(BiConsumer.class), MethodType.methodType(void.class, Object.class, Object.class),
-                LOOKUP.findVirtual(handler.fieldType, data.setterMethodName, MethodType.methodType(void.class, data.valueType)), MethodType.methodType(void.class, handler.fieldType, data.valueType));
+                  LOOKUP.findVirtual(handler.fieldType, data.setterMethodName, MethodType.methodType(void.class, data.valueType)), MethodType.methodType(void.class, handler.fieldType, data.valueType));
             BiConsumer<Object, Object> setter = (BiConsumer<Object, Object>) site.getTarget().invokeExact();
             ret.addTrackedData(new TrackedFieldData(obj -> getter.apply(fieldGetter.apply(obj)), (obj, val) -> setter.accept(fieldGetter.apply(obj), val), type));
         }
@@ -148,7 +148,7 @@ public class SyncMapper {
     private static <O, V> BiConsumer<O, V> createSetter(Field field, Class<?> objType, ContainerSync syncData) throws Throwable {
         if (!syncData.setter().isEmpty()) {
             CallSite site = LambdaMetafactory.metafactory(LOOKUP, "accept", MethodType.methodType(BiConsumer.class), MethodType.methodType(void.class, Object.class, Object.class),
-                LOOKUP.findVirtual(objType, syncData.setter(), MethodType.methodType(void.class, field.getType())), MethodType.methodType(void.class, objType, field.getType()));
+                  LOOKUP.findVirtual(objType, syncData.setter(), MethodType.methodType(void.class, field.getType())), MethodType.methodType(void.class, objType, field.getType()));
             return (BiConsumer<O, V>) site.getTarget().invokeExact();
         } else {
             MethodHandle setter = LOOKUP.unreflectSetter(field);

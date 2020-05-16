@@ -28,11 +28,25 @@ public enum OreType {
         return resource;
     }
 
-    public int getPerChunk() { return perChunk; }
-    public int getMaxVeinSize() { return maxVeinSize; }
-    public int getBottomOffset() { return bottomOffset; }
-    public int getTopOffset() { return topOffset; }
-    public int getMaxHeight() { return maxHeight; }
+    public int getPerChunk() {
+        return perChunk;
+    }
+
+    public int getMaxVeinSize() {
+        return maxVeinSize;
+    }
+
+    public int getBottomOffset() {
+        return bottomOffset;
+    }
+
+    public int getTopOffset() {
+        return topOffset;
+    }
+
+    public int getMaxHeight() {
+        return maxHeight;
+    }
 
     public static OreType get(IResource resource) {
         for (OreType ore : values()) {

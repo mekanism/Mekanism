@@ -52,8 +52,9 @@ public class GeneratorsBuilders {
             buildWalls(world, start);
             for (int x = 1; x < sizeX - 1; x++) {
                 for (int z = 1; z < sizeZ - 1; z++) {
-                    if (x % 2 != z % 2)
+                    if (x % 2 != z % 2) {
                         continue;
+                    }
                     buildColumn(world, start, new BlockPos(x, 1, z), 15, GeneratorsBlocks.FISSION_FUEL_ASSEMBLY.getBlock());
                     world.setBlockState(start.add(x, sizeY - 2, z), GeneratorsBlocks.CONTROL_ROD_ASSEMBLY.getBlock().getDefaultState());
                 }

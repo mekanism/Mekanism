@@ -1,9 +1,9 @@
 package mekanism.common.registries;
 
-import java.util.EnumSet;
-import java.util.function.Supplier;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import java.util.EnumSet;
+import java.util.function.Supplier;
 import mekanism.api.Pos3D;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
@@ -407,34 +407,34 @@ public class MekanismBlockTypes {
           .build();
     // Modification Station
     public static final BlockTypeTile<TileEntityModificationStation> MODIFICATION_STATION = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.MODIFICATION_STATION, MekanismLang.DESCRIPTION_MODIFICATION_STATION)
-        .withGui(() -> MekanismContainerTypes.MODIFICATION_STATION)
-        .withEnergyConfig(MekanismConfig.usage.modificationStation, MekanismConfig.storage.modificationStation)
-        .withCustomContainerProvider((tile) -> (i, inv, player) -> new ModificationStationContainer(i, inv, (TileEntityModificationStation) tile))
-        .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeRedstone(), new AttributeSecurity())
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.MODIFICATION_STATION, MekanismLang.DESCRIPTION_MODIFICATION_STATION)
+          .withGui(() -> MekanismContainerTypes.MODIFICATION_STATION)
+          .withEnergyConfig(MekanismConfig.usage.modificationStation, MekanismConfig.storage.modificationStation)
+          .withCustomContainerProvider((tile) -> (i, inv, player) -> new ModificationStationContainer(i, inv, (TileEntityModificationStation) tile))
+          .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeRedstone(), new AttributeSecurity())
+          .build();
     // Isotopic Centrifuge
     public static final Machine<TileEntityIsotopicCentrifuge> ISOTOPIC_CENTRIFUGE = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.ISOTOPIC_CENTRIFUGE, MekanismLang.DESCRIPTION_ISOTOPIC_CENTRIFUGE)
-        .withGui(() -> MekanismContainerTypes.ISOTOPIC_CENTRIFUGE)
-        .withEnergyConfig(MekanismConfig.usage.isotopicCentrifuge, MekanismConfig.storage.isotopicCentrifuge)
-        .withSound(MekanismSounds.ISOTOPIC_CENTRIFUGE)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.ISOTOPIC_CENTRIFUGE, MekanismLang.DESCRIPTION_ISOTOPIC_CENTRIFUGE)
+          .withGui(() -> MekanismContainerTypes.ISOTOPIC_CENTRIFUGE)
+          .withEnergyConfig(MekanismConfig.usage.isotopicCentrifuge, MekanismConfig.storage.isotopicCentrifuge)
+          .withSound(MekanismSounds.ISOTOPIC_CENTRIFUGE)
+          .build();
     // Nutritional Liquifier
     public static final Machine<TileEntityNutritionalLiquifier> NUTRITIONAL_LIQUIFIER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.NUTRITIONAL_LIQUIFIER, MekanismLang.DESCRIPTION_NUTRITIONAL_LIQUIFIER)
-        .withGui(() -> MekanismContainerTypes.NUTRITIONAL_LIQUIFIER)
-        .withEnergyConfig(MekanismConfig.usage.nutritionalLiquifier, MekanismConfig.storage.nutritionalLiquifier)
-        .withSound(MekanismSounds.NUTRITIONAL_LIQUIFIER)
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.NUTRITIONAL_LIQUIFIER, MekanismLang.DESCRIPTION_NUTRITIONAL_LIQUIFIER)
+          .withGui(() -> MekanismContainerTypes.NUTRITIONAL_LIQUIFIER)
+          .withEnergyConfig(MekanismConfig.usage.nutritionalLiquifier, MekanismConfig.storage.nutritionalLiquifier)
+          .withSound(MekanismSounds.NUTRITIONAL_LIQUIFIER)
+          .build();
     // Antiprotonic Nucleosynthesizer
     public static final Machine<TileEntityAntiprotonicNucleosynthesizer> ANTIPROTONIC_NUCLEOSYNTHESIZER = MachineBuilder
-        .createMachine(() -> MekanismTileEntityTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismLang.DESCRIPTION_ANTIPROTONIC_NUCLEOSYNTHESIZER)
-        .withGui(() -> MekanismContainerTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER)
-        .withEnergyConfig(MekanismConfig.usage.antiprotonicNucleosynthesizer, MekanismConfig.storage.antiprotonicNucleosynthesizer)
-        .withSound(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER)
-        .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
-        .build();
+          .createMachine(() -> MekanismTileEntityTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismLang.DESCRIPTION_ANTIPROTONIC_NUCLEOSYNTHESIZER)
+          .withGui(() -> MekanismContainerTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER)
+          .withEnergyConfig(MekanismConfig.usage.antiprotonicNucleosynthesizer, MekanismConfig.storage.antiprotonicNucleosynthesizer)
+          .withSound(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .build();
 
     // QIO Drive Array
     public static final BlockTypeTile<TileEntityQIODriveArray> QIO_DRIVE_ARRAY = BlockTileBuilder
@@ -506,13 +506,13 @@ public class MekanismBlockTypes {
     // Pressure Disperser
     public static final BlockTypeTile<TileEntityPressureDisperser> PRESSURE_DISPERSER =
           BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.PRESSURE_DISPERSER, MekanismLang.DESCRIPTION_PRESSURE_DISPERSER)
-          .with(new AttributeMultiblock())
-          .build();
+                .with(new AttributeMultiblock())
+                .build();
     // Superheating Element
     public static final BlockTypeTile<TileEntitySuperheatingElement> SUPERHEATING_ELEMENT =
           BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.SUPERHEATING_ELEMENT, MekanismLang.DESCRIPTION_SUPERHEATING_ELEMENT)
-          .with(new AttributeStateActive(), new AttributeMultiblock())
-          .build();
+                .with(new AttributeStateActive(), new AttributeMultiblock())
+                .build();
     // Induction Casing
     public static final BlockTypeTile<TileEntityInductionCasing> INDUCTION_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.INDUCTION_CASING, MekanismLang.DESCRIPTION_INDUCTION_CASING)

@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.slot;
 
-import java.util.function.Supplier;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -120,7 +120,7 @@ public class GuiSlot extends GuiTexturedElement {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (onClick != null && isValidClickButton(button)) {
             if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height) {
-                onClick.onClick(this, (int)mouseX, (int)mouseY);
+                onClick.onClick(this, (int) mouseX, (int) mouseY);
                 playDownSound(Minecraft.getInstance().getSoundHandler());
                 return true;
             }

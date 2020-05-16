@@ -43,11 +43,16 @@ public class ItemHazmatSuitArmor extends ArmorItem {
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
     protected static class HazmatMaterial extends BaseSpecialArmorMaterial {
-        @Override
-        public int getDamageReductionAmount(EquipmentSlotType slotType) { return 0; }
 
         @Override
-        public float getToughness() { return 0; }
+        public int getDamageReductionAmount(EquipmentSlotType slotType) {
+            return 0;
+        }
+
+        @Override
+        public float getToughness() {
+            return 0;
+        }
 
         @Override
         public String getName() {

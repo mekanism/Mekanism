@@ -204,7 +204,7 @@ public class Pos3D extends Vec3d {
             return new Pos3D(entity.getPosX(), y, z);
         } else if (direction.getAxis() == Axis.Y) {
             return new Pos3D(x, entity.getPosY(), z);
-        } else //Axis.Z
+        } //Axis.Z
         return new Pos3D(x, y, entity.getPosZ());
     }
 

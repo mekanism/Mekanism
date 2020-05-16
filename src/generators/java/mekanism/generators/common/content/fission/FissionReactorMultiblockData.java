@@ -1,9 +1,9 @@
 package mekanism.generators.common.content.fission;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -18,8 +18,8 @@ import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
-import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
+import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -54,13 +54,19 @@ public class FissionReactorMultiblockData extends MultiblockData {
     @ContainerSync
     public int fuelAssemblies = 1, surfaceArea;
 
-    @ContainerSync public MultiblockGasTank<FissionReactorMultiblockData> gasCoolantTank;
-    @ContainerSync public MultiblockFluidTank<FissionReactorMultiblockData> fluidCoolantTank;
-    @ContainerSync public MultiblockGasTank<FissionReactorMultiblockData> fuelTank;
+    @ContainerSync
+    public MultiblockGasTank<FissionReactorMultiblockData> gasCoolantTank;
+    @ContainerSync
+    public MultiblockFluidTank<FissionReactorMultiblockData> fluidCoolantTank;
+    @ContainerSync
+    public MultiblockGasTank<FissionReactorMultiblockData> fuelTank;
 
-    @ContainerSync public MultiblockGasTank<FissionReactorMultiblockData> heatedCoolantTank;
-    @ContainerSync public MultiblockGasTank<FissionReactorMultiblockData> wasteTank;
-    @ContainerSync public MultiblockHeatCapacitor<FissionReactorMultiblockData> heatCapacitor;
+    @ContainerSync
+    public MultiblockGasTank<FissionReactorMultiblockData> heatedCoolantTank;
+    @ContainerSync
+    public MultiblockGasTank<FissionReactorMultiblockData> wasteTank;
+    @ContainerSync
+    public MultiblockHeatCapacitor<FissionReactorMultiblockData> heatCapacitor;
 
     @ContainerSync
     public double lastEnvironmentLoss = 0, lastTransferLoss = 0;
@@ -82,26 +88,26 @@ public class FissionReactorMultiblockData extends MultiblockData {
     public FissionReactorMultiblockData(TileEntityFissionReactorCasing tile) {
         super(tile);
         fluidCoolantTank = MultiblockFluidTank.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
-            fluid -> fluid.getFluid().isIn(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
+              (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
+              fluid -> fluid.getFluid().isIn(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
         fluidTanks.add(fluidCoolantTank);
         gasCoolantTank = MultiblockGasTank.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
-            gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty());
+              (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
+              gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty());
         fuelTank = MultiblockGasTank.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
-            gas -> gas == MekanismGases.FISSILE_FUEL.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
+              (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
+              gas -> gas == MekanismGases.FISSILE_FUEL.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
         heatedCoolantTank = MultiblockGasTank.create(this, tile, () -> getVolume() * HEATED_COOLANT_PER_VOLUME,
-            (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
-            gas -> gas == MekanismGases.STEAM.get() || gas.has(HeatedCoolant.class));
+              (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
+              gas -> gas == MekanismGases.STEAM.get() || gas.has(HeatedCoolant.class));
         wasteTank = MultiblockGasTank.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
-            (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
-            gas -> gas == MekanismGases.NUCLEAR_WASTE.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
+              (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
+              gas -> gas == MekanismGases.NUCLEAR_WASTE.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
         gasTanks.addAll(Arrays.asList(fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank));
         heatCapacitor = MultiblockHeatCapacitor.create(this, tile,
-            MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
-            () -> INVERSE_INSULATION_COEFFICIENT,
-            () -> INVERSE_INSULATION_COEFFICIENT);
+              MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
+              () -> INVERSE_INSULATION_COEFFICIENT,
+              () -> INVERSE_INSULATION_COEFFICIENT);
         heatCapacitors.add(heatCapacitor);
     }
 
@@ -262,11 +268,12 @@ public class FissionReactorMultiblockData extends MultiblockData {
     }
 
     public BlockPos getCenter() {
-        if (minLocation == null || maxLocation == null)
+        if (minLocation == null || maxLocation == null) {
             return null;
+        }
         return new BlockPos((minLocation.getX() + maxLocation.getX()) / 2,
-                           (minLocation.getY() + maxLocation.getY()) / 2,
-                           (minLocation.getZ() + maxLocation.getZ()) / 2);
+              (minLocation.getY() + maxLocation.getY()) / 2,
+              (minLocation.getZ() + maxLocation.getZ()) / 2);
     }
 
     @Override

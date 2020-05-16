@@ -19,9 +19,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.frequency.Frequency;
+import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.network.PacketGuiSetFrequency;
 import mekanism.common.network.PacketGuiSetFrequency.FrequencyUpdate;
 import mekanism.common.tile.TileEntityTeleporter;
@@ -123,7 +123,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         }
         if (scrollList.hasSelection()) {
             Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.TELEPORTER).get(scrollList.getSelection()) :
-                                           tile.getPublicCache(FrequencyType.TELEPORTER).get(scrollList.getSelection());
+                             tile.getPublicCache(FrequencyType.TELEPORTER).get(scrollList.getSelection());
             setButton.active = tile.getFrequency(FrequencyType.TELEPORTER) == null || !tile.getFrequency(FrequencyType.TELEPORTER).equals(freq);
             deleteButton.active = getOwner().equals(freq.getOwner());
         } else {

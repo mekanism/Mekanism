@@ -158,7 +158,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         radiationNegativeEffectsMinSeverity = CachedDoubleValue.wrap(this, builder.comment("Defines the minimum severity radiation dosage severity (scale of 0 to 1) for which negative effects can take place. Set to 1 to disable negative effects completely.")
               .defineInRange("negativeEffectsMinSeverity", 0.1D, 0, 1));
         radioactiveWasteBarrelMaxGas = CachedIntValue.wrap(this, builder.comment("Amount of gas (mB) that can be stored in a Radioactive Waste Barrel.")
-            .defineInRange("radioactiveWasteBarrelMaxGas", 64_000, 1, Integer.MAX_VALUE));
+              .defineInRange("radioactiveWasteBarrelMaxGas", 64_000, 1, Integer.MAX_VALUE));
         builder.pop();
 
         builder.comment("Digital Miner Settings").push(MINER_CATEGORY);

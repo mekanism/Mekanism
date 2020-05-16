@@ -13,7 +13,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ArmorSlot extends InsertableSlot {
 
-    public static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] {PlayerContainer.EMPTY_ARMOR_SLOT_BOOTS, PlayerContainer.EMPTY_ARMOR_SLOT_LEGGINGS, PlayerContainer.EMPTY_ARMOR_SLOT_CHESTPLATE, PlayerContainer.EMPTY_ARMOR_SLOT_HELMET};
+    public static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[]{PlayerContainer.EMPTY_ARMOR_SLOT_BOOTS, PlayerContainer.EMPTY_ARMOR_SLOT_LEGGINGS,
+                                                                                        PlayerContainer.EMPTY_ARMOR_SLOT_CHESTPLATE,
+                                                                                        PlayerContainer.EMPTY_ARMOR_SLOT_HELMET};
 
     private final EquipmentSlotType slotType;
 

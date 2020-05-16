@@ -27,8 +27,8 @@ public class CatalystRegistryHelper {
     public static void registerSmelter(IRecipeCatalystRegistration registry) {
         register(registry, MekanismBlocks.ENERGIZED_SMELTER);
         //if (!Mekanism.hooks.CraftTweakerLoaded || !EnergizedSmelter.hasRemovedRecipe()) {
-            //Vanilla catalyst
-            registerRecipeItem(registry, MekanismBlocks.ENERGIZED_SMELTER, VanillaRecipeCategoryUid.FURNACE);
+        //Vanilla catalyst
+        registerRecipeItem(registry, MekanismBlocks.ENERGIZED_SMELTER, VanillaRecipeCategoryUid.FURNACE);
         //}
     }
 

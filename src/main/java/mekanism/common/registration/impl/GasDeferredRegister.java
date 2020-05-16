@@ -37,6 +37,6 @@ public class GasDeferredRegister extends WrappedDeferredRegister<Gas> {
     public SlurryRegistryObject<Slurry, Slurry> registerSlurry(PrimaryResource resource) {
         String baseSlurryName = resource.getName() + "_slurry";
         return new SlurryRegistryObject<>(internal.register("dirty_" + baseSlurryName, () -> new Slurry(false, resource.getTint(), resource.getOreTag())),
-            internal.register("clean_" + baseSlurryName, () -> new Slurry(true, resource.getTint(), resource.getOreTag())));
+              internal.register("clean_" + baseSlurryName, () -> new Slurry(true, resource.getTint(), resource.getOreTag())));
     }
 }

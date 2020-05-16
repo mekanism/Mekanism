@@ -102,8 +102,9 @@ public class TileComponentFrequency implements ITileComponent {
             }
         } else {
             frequency = null;
-            if (lastFreq != null)
+            if (lastFreq != null) {
                 setNeedsNotify(type);
+            }
         }
         setFrequency(type, frequency);
     }
@@ -189,20 +190,23 @@ public class TileComponentFrequency implements ITileComponent {
 
     private <FREQ extends Frequency> void track(MekanismContainer container, FrequencyType<FREQ> type) {
         container.track(SyncableFrequencyList.create(() ->
-              type.getManagerWrapper().getPublicFrequencies(tile, getPublicCache(type)),
+                    type.getManagerWrapper().getPublicFrequencies(tile, getPublicCache(type)),
               value -> publicCache.put(type, value)));
         container.track(SyncableFrequencyList.create(() ->
-              type.getManagerWrapper().getPrivateFrequencies(tile, getPrivateCache(type)),
+                    type.getManagerWrapper().getPrivateFrequencies(tile, getPrivateCache(type)),
               value -> privateCache.put(type, value)));
     }
 
     @Override
-    public void addToUpdateTag(CompoundNBT updateTag) {}
+    public void addToUpdateTag(CompoundNBT updateTag) {
+    }
 
     @Override
-    public void readFromUpdateTag(CompoundNBT updateTag) {}
+    public void readFromUpdateTag(CompoundNBT updateTag) {
+    }
 
     private static class FrequencyTrackingData {
+
         private final boolean needsContainerSync;
         private final boolean needsListCache;
         private final boolean notifyNeighbors;

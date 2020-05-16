@@ -48,28 +48,28 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
             addButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, index -> {
-                      if (index > 0) {
-                          Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
-                      }
-                  }, index -> {
-                      if (index < getFilters().size() - 1) {
-                          Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
-                      }
-                  }, this::onClick, (filter) -> {
-                      List<ItemStack> list = new ArrayList<>();
-                      if (filter != null) {
-                          if (filter instanceof IItemStackFilter) {
-                              list.add(((IItemStackFilter<?>) filter).getItemStack());
-                          } else if (filter instanceof ITagFilter) {
-                              list.addAll(getTagStacks(((ITagFilter<?>) filter).getTagName()));
-                          } else if (filter instanceof IMaterialFilter) {
-                              list.add(((IMaterialFilter<?>) filter).getMaterialItem());
-                          } else if (filter instanceof IModIDFilter) {
-                              list.addAll(TagCache.getModIDStacks(((IModIDFilter<?>) filter).getModID(), false));
-                          }
-                      }
-                      return list;
-                  }));
+                if (index > 0) {
+                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
+                }
+            }, index -> {
+                if (index < getFilters().size() - 1) {
+                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
+                }
+            }, this::onClick, (filter) -> {
+                List<ItemStack> list = new ArrayList<>();
+                if (filter != null) {
+                    if (filter instanceof IItemStackFilter) {
+                        list.add(((IItemStackFilter<?>) filter).getItemStack());
+                    } else if (filter instanceof ITagFilter) {
+                        list.addAll(getTagStacks(((ITagFilter<?>) filter).getTagName()));
+                    } else if (filter instanceof IMaterialFilter) {
+                        list.add(((IMaterialFilter<?>) filter).getMaterialItem());
+                    } else if (filter instanceof IModIDFilter) {
+                        list.addAll(TagCache.getModIDStacks(((IModIDFilter<?>) filter).getModID(), false));
+                    }
+                }
+                return list;
+            }));
         }
     }
 

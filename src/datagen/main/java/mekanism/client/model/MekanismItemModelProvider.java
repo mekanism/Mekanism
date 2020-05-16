@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
-import java.util.Map;
 import com.google.common.collect.Table.Cell;
+import java.util.Map;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.item.ItemModule;

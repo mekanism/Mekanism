@@ -32,7 +32,7 @@ public class AttributeStateFissionPortMode extends AttributeState {
     }
 
     @Override
-    public void fillBlockStateContainer(Block block, List<IProperty<?>>properties) {
+    public void fillBlockStateContainer(Block block, List<IProperty<?>> properties) {
         properties.add(modeProperty);
     }
 

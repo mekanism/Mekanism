@@ -70,7 +70,8 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
                     return getMultiblock().reactorDamage >= FissionReactorMultiblockData.MAX_DAMAGE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 case DEPLETED:
                     return getMultiblock().fuelTank.isEmpty() ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
-                default: break;
+                default:
+                    break;
             }
         }
         return RedstoneStatus.IDLE;

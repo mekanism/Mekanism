@@ -48,7 +48,7 @@ public class MultiblockGasTank<MULTIBLOCK extends MultiblockData> extends Variab
 
     protected MultiblockGasTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity, Predicate<@NonNull Gas> validator) {
         super(capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(),
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(), validator, null, null);
+              (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(), validator, null, null);
         this.multiblock = multiblock;
         this.tile = tile;
     }

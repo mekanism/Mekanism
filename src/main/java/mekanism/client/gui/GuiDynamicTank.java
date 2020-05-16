@@ -53,8 +53,8 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         addButton(new GuiDownArrow(this, 150, 39));
         addButton(new GuiContainerEditMode<>(this, tile));
         addButton(new GuiHybridGauge(() -> tile.getMultiblock().gasTank, () -> tile.getMultiblock().getGasTanks(null),
-                                     () -> tile.getMultiblock().fluidTank, () -> tile.getMultiblock().getFluidTanks(null),
-                                     GaugeType.MEDIUM, this, 7, 16, 34, 56));
+              () -> tile.getMultiblock().fluidTank, () -> tile.getMultiblock().getFluidTanks(null),
+              GaugeType.MEDIUM, this, 7, 16, 34, 56));
     }
 
     @Override

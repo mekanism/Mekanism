@@ -121,7 +121,9 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
     }
 
     private interface Unit {
+
         String getSymbol();
+
         ILangEntry getLabel();
     }
 

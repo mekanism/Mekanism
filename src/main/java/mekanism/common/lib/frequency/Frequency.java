@@ -31,13 +31,17 @@ public abstract class Frequency {
         this.frequencyType = frequencyType;
     }
 
-    public void tick() {}
+    public void tick() {
+    }
 
-    public void onRemove() {}
+    public void onRemove() {
+    }
 
-    public void onDeactivate(TileEntity tile) {}
+    public void onDeactivate(TileEntity tile) {
+    }
 
-    public void update(TileEntity tile) {}
+    public void update(TileEntity tile) {
+    }
 
     public FrequencyType<?> getType() {
         return frequencyType;

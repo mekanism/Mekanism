@@ -38,21 +38,21 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
     public FissionReactorRecipeCategory(IGuiHelper helper) {
         super(helper, GeneratorsBlocks.FISSION_REACTOR_CASING, 3, 12, 189, 70);
         icon = helper.drawableBuilder(iconRL, 0, 0, 18, 18)
-            .setTextureSize(18, 18)
-            .build();
+              .setTextureSize(18, 18)
+              .build();
     }
 
     @Override
     protected void addGuiElements() {
         guiElements.add(new GuiInnerScreen(this, 45, 17, 105, 56));
         guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 6, 13)
-            .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));
+              .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));
         guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 25, 13)
-            .setLabel(GeneratorsLang.FISSION_FUEL_TANK.translateColored(EnumColor.DARK_GREEN)));
+              .setLabel(GeneratorsLang.FISSION_FUEL_TANK.translateColored(EnumColor.DARK_GREEN)));
         guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 152, 13)
-            .setLabel(GeneratorsLang.FISSION_HEATED_COOLANT_TANK.translateColored(EnumColor.GRAY)));
+              .setLabel(GeneratorsLang.FISSION_HEATED_COOLANT_TANK.translateColored(EnumColor.GRAY)));
         guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 171, 13)
-            .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
+              .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
     }
 
     @Override

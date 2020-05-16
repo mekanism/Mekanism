@@ -1,7 +1,7 @@
 package mekanism.client.render;
 
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

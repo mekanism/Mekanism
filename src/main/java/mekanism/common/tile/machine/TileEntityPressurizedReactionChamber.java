@@ -2,7 +2,6 @@ package mekanism.common.tile.machine;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
@@ -40,6 +39,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityPressurizedReactionChamber extends TileEntityProgressMachine<PressurizedReactionRecipe> {
 
@@ -82,7 +82,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(inputGasTank = BasicGasTank.create(MAX_GAS, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi,
-            gas -> containsRecipe(recipe -> recipe.getInputGas().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
+              gas -> containsRecipe(recipe -> recipe.getInputGas().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
         builder.addTank(outputGasTank = BasicGasTank.output(MAX_GAS, this));
         return builder.build();
     }

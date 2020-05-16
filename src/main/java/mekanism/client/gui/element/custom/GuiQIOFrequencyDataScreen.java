@@ -25,6 +25,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
                 QIOFrequency freq = frequencySupplier.get();
                 return freq != null ? (double) freq.getTotalItemCount() / (double) freq.getTotalItemCountCapacity() : 0;
             }
+
             @Override
             public ITextComponent getTooltip() {
                 QIOFrequency freq = frequencySupplier.get();
@@ -38,6 +39,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
                 QIOFrequency freq = frequencySupplier.get();
                 return freq != null ? (double) freq.getTotalItemTypes(true) / (double) freq.getTotalItemTypeCapacity() : 0;
             }
+
             @Override
             public ITextComponent getTooltip() {
                 QIOFrequency freq = frequencySupplier.get();

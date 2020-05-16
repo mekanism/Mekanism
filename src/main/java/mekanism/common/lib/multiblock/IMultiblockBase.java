@@ -49,7 +49,7 @@ public interface IMultiblockBase extends ITileNeighborCache {
             // if the update occurred outside of the multiblock, we don't care
             if (location == BlockLocation.OUTSIDE) {
                 return false;
-            // if it's a part of the multiblock and it's still there, we don't care either
+                // if it's a part of the multiblock and it's still there, we don't care either
             } else if (location == BlockLocation.WALLS && isMultiblock) {
                 return false;
             }

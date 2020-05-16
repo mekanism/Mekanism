@@ -1,8 +1,8 @@
 package mekanism.client;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.UUID;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.SoundHandler;

@@ -122,17 +122,17 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
         builder.comment("Fission Reactor Settings").push(FISSION_CATEGORY);
         energyPerFissionFuel = CachedFloatingLongValue.define(this, builder, "Amount of energy created (in heat) from each whole mB of fission fuel.",
-            "energyPerFissionFuel", FloatingLong.createConst(1_000_000));
+              "energyPerFissionFuel", FloatingLong.createConst(1_000_000));
         fissionCasingHeatCapacity = CachedDoubleValue.wrap(this, builder.comment("The heat capacity added to a Fission Reactor by a single casing block. Increase to require more energy to raise the reactor temperature.")
-            .define("casingHeatCapacity", 1000D));
+              .define("casingHeatCapacity", 1000D));
         fissionSurfaceAreaTarget = CachedDoubleValue.wrap(this, builder.comment("The average surface area of a Fission Reactor's fuel assemblies to reach 100% boil efficiency. Higher values make it harder to cool the reactor.")
-            .defineInRange("surfaceAreaTarget", 4D, 1D, Double.MAX_VALUE));
+              .defineInRange("surfaceAreaTarget", 4D, 1D, Double.MAX_VALUE));
         fissionMeltdownsEnabled = CachedBooleanValue.wrap(this, builder.comment("Whether catostrophic meltdowns can occur from Fission Reactors.")
-            .define("meltdownsEnabled", true));
+              .define("meltdownsEnabled", true));
         fissionMeltdownChance = CachedDoubleValue.wrap(this, builder.comment("The chance of a meltdown occurring once damage passes 100%. Will linearly scale as damage continues increasing.")
-            .defineInRange("meltdownChance", 0.001D, 0D, 1D));
+              .defineInRange("meltdownChance", 0.001D, 0D, 1D));
         fissionMeltdownRadiationMultiplier = CachedDoubleValue.wrap(this, builder.comment("How much radioactivity of fuel/waste contents are multiplied during a meltdown.")
-            .define("meltdownRadiationMultiplier", 50D));
+              .define("meltdownRadiationMultiplier", 50D));
         builder.pop();
 
         builder.pop();

@@ -107,7 +107,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addButton(configButton = new TranslationButton(this, getGuiLeft() + 87, buttonStart + 34, 61, 18, MekanismLang.BUTTON_CONFIG,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tile))));
         addButton(new TranslationButton(this, getGuiLeft() + 87, buttonStart + 51, 61, 18, MekanismLang.MINER_RESET,
-            () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, tile))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, tile))));
         updateEnabledButtons();
     }
 

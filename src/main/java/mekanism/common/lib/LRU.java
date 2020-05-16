@@ -1,11 +1,11 @@
 package mekanism.common.lib;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class LRU<T> extends AbstractCollection<T> {
 
@@ -45,8 +45,9 @@ public class LRU<T> extends AbstractCollection<T> {
 
     public void moveUp(T element) {
         LRUEntry entry = lookupMap.get(element);
-        if (entry == null)
+        if (entry == null) {
             return;
+        }
         remove(entry);
         addFirst(entry);
     }
@@ -54,8 +55,9 @@ public class LRU<T> extends AbstractCollection<T> {
     @Override
     public boolean remove(Object element) {
         LRUEntry entry = lookupMap.get(element);
-        if (entry == null)
+        if (entry == null) {
             return false;
+        }
         remove(entry);
         return true;
     }

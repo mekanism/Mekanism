@@ -1,9 +1,9 @@
 package mekanism.common.base;
 
 import com.mojang.authlib.GameProfile;
-import mekanism.common.Mekanism;
 import java.lang.ref.WeakReference;
 import javax.annotation.Nonnull;
+import mekanism.common.Mekanism;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.world.IWorld;

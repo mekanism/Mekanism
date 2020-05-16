@@ -1,11 +1,11 @@
 package mekanism.common.inventory.slot;
 
+import com.mojang.datafixers.util.Pair;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import com.mojang.datafixers.util.Pair;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;

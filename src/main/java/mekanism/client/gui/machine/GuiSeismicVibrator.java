@@ -24,8 +24,8 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
     public void init() {
         super.init();
         addButton(new GuiInnerScreen(this, 16, 23, 112, 40, () -> Arrays.asList(
-            tile.getActive() ? MekanismLang.VIBRATING.translate() : MekanismLang.IDLE.translate(),
-            MekanismLang.CHUNK.translate(tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)
+              tile.getActive() ? MekanismLang.VIBRATING.translate() : MekanismLang.IDLE.translate(),
+              MekanismLang.CHUNK.translate(tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)
         )));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));

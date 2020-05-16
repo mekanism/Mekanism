@@ -50,22 +50,22 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
     @Override
     public void init() {
         super.init();
-        addConfigItem(farmingRadius = new ModuleConfigItem<FarmingRadius>(this, "farming_radius", MekanismLang.MODULE_FARMING_RADIUS, new EnumData<>(FarmingRadius.class, getInstalledCount()+1), FarmingRadius.LOW));
+        addConfigItem(farmingRadius = new ModuleConfigItem<FarmingRadius>(this, "farming_radius", MekanismLang.MODULE_FARMING_RADIUS, new EnumData<>(FarmingRadius.class, getInstalledCount() + 1), FarmingRadius.LOW));
     }
 
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         return MekanismUtils.performActions(
-            //First try to use the disassembler as an axe
-            stripLogsAOE(context),
-            //Then as a shovel
-            //Fire a generic use event, if we are allowed to use the tool return zero otherwise return -1
-            // This is to mirror how onHoeUse returns of 0 if allowed, -1 if not allowed, and 1 if processing happened in the event
-            () -> tillAOE(context, ShovelItem.SHOVEL_LOOKUP, ctx -> onToolUse(ctx.getPlayer(), ctx.getHand(), ctx.getPos(), ctx.getFace()) ? 0 : -1,
-                  SoundEvents.ITEM_SHOVEL_FLATTEN, MekanismConfig.gear.mekaToolEnergyUsageShovel.get()),
-            //Finally as a hoe
-            () -> tillAOE(context, HoeItem.HOE_LOOKUP, ForgeEventFactory::onHoeUse, SoundEvents.ITEM_HOE_TILL, MekanismConfig.gear.mekaToolEnergyUsageHoe.get())
-      );
+              //First try to use the disassembler as an axe
+              stripLogsAOE(context),
+              //Then as a shovel
+              //Fire a generic use event, if we are allowed to use the tool return zero otherwise return -1
+              // This is to mirror how onHoeUse returns of 0 if allowed, -1 if not allowed, and 1 if processing happened in the event
+              () -> tillAOE(context, ShovelItem.SHOVEL_LOOKUP, ctx -> onToolUse(ctx.getPlayer(), ctx.getHand(), ctx.getPos(), ctx.getFace()) ? 0 : -1,
+                    SoundEvents.ITEM_SHOVEL_FLATTEN, MekanismConfig.gear.mekaToolEnergyUsageShovel.get()),
+              //Finally as a hoe
+              () -> tillAOE(context, HoeItem.HOE_LOOKUP, ForgeEventFactory::onHoeUse, SoundEvents.ITEM_HOE_TILL, MekanismConfig.gear.mekaToolEnergyUsageHoe.get())
+        );
     }
 
     public static enum FarmingRadius implements IHasTextComponent {
@@ -76,14 +76,17 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         ULTRA(7);
         private int radius;
         private ITextComponent label;
+
         private FarmingRadius(int radius) {
             this.radius = radius;
             this.label = new StringTextComponent(Integer.toString(radius));
         }
+
         @Override
         public ITextComponent getTextComponent() {
             return label;
         }
+
         public int getRadius() {
             return radius;
         }

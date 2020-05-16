@@ -67,7 +67,7 @@ public abstract class BasePacketHandler {
 
     public abstract void initialize();
 
-    protected  <MSG> void registerClientToServer(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
+    protected <MSG> void registerClientToServer(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
           BiConsumer<MSG, Supplier<Context>> consumer) {
         getChannel().registerMessage(index++, type, encoder, decoder, consumer, Optional.of(NetworkDirection.PLAY_TO_SERVER));
     }

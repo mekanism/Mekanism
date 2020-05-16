@@ -62,8 +62,9 @@ public class PacketQIOItemViewerSlotInteract {
                         ItemStack remainder = container.insertIntoPlayerInventory(ret);
                         if (!remainder.isEmpty()) {
                             remainder = freq.addItem(remainder);
-                            if (!remainder.isEmpty())
+                            if (!remainder.isEmpty()) {
                                 Mekanism.logger.error("QIO shift-click transfer resulted in lost items (" + remainder + "). This shouldn't happen!");
+                            }
                         }
                     } else if (message.type == Type.PUT) {
                         if (!curStack.isEmpty()) {

@@ -1,7 +1,6 @@
 package mekanism.generators.client.gui;
 
 import java.util.Arrays;
-import java.util.Collections;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiBigLight;
@@ -48,26 +47,26 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
         super.init();
         addButton(new GuiFissionReactorTab(this, tile, FissionReactorTab.STAT));
         addButton(new GuiInnerScreen(this, 45, 17, 105, 56, () -> Arrays.asList(
-            MekanismLang.STATUS.translate(tile.isReactorActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(tile.isReactorActive())),
-            GeneratorsLang.GAS_BURN_RATE.translate(tile.getLastBurnRate()),
-            GeneratorsLang.FISSION_HEATING_RATE.translate(formatInt(tile.getLastBoilRate())),
-            MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
-            GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
+              MekanismLang.STATUS.translate(tile.isReactorActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(tile.isReactorActive())),
+              GeneratorsLang.GAS_BURN_RATE.translate(tile.getLastBurnRate()),
+              GeneratorsLang.FISSION_HEATING_RATE.translate(formatInt(tile.getLastBoilRate())),
+              MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.KELVIN, true)),
+              GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
         )).defaultFormat().spacing(2));
         addButton(new GuiHybridGauge(
-            () -> tile.getMultiblock().gasCoolantTank, () -> tile.getMultiblock().getGasTanks(null),
-            () -> tile.getMultiblock().fluidCoolantTank, () -> tile.getMultiblock().getFluidTanks(null),
-            GaugeType.STANDARD, this, 6, 13)
-            .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));
+              () -> tile.getMultiblock().gasCoolantTank, () -> tile.getMultiblock().getGasTanks(null),
+              () -> tile.getMultiblock().fluidCoolantTank, () -> tile.getMultiblock().getFluidTanks(null),
+              GaugeType.STANDARD, this, 6, 13)
+              .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().fuelTank,
-            () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 25, 13)
-            .setLabel(GeneratorsLang.FISSION_FUEL_TANK.translateColored(EnumColor.DARK_GREEN)));
+              () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 25, 13)
+              .setLabel(GeneratorsLang.FISSION_FUEL_TANK.translateColored(EnumColor.DARK_GREEN)));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().heatedCoolantTank,
-            () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 152, 13)
-            .setLabel(GeneratorsLang.FISSION_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE)));
+              () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 152, 13)
+              .setLabel(GeneratorsLang.FISSION_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE)));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().wasteTank,
-            () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 171, 13)
-            .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
+              () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 171, 13)
+              .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
         addButton(new GuiHeatTab(() -> {
             ITextComponent transfer = MekanismUtils.getTemperatureDisplay(tile.getLastTransferLoss(), TemperatureUnit.KELVIN, false);
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);

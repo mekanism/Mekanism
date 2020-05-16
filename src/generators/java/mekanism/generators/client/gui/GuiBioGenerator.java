@@ -27,9 +27,9 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
     public void init() {
         super.init();
         addButton(new GuiInnerScreen(this, 48, 23, 80, 40, () -> Arrays.asList(
-            EnergyDisplay.of(tile.getEnergyContainer().getEnergy()).getTextComponent(),
-            GeneratorsLang.STORED_BIO_FUEL.translate(formatInt(tile.bioFuelTank.getFluidAmount())),
-            GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput()))
+              EnergyDisplay.of(tile.getEnergyContainer().getEnergy()).getTextComponent(),
+              GeneratorsLang.STORED_BIO_FUEL.translate(formatInt(tile.bioFuelTank.getFluidAmount())),
+              GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput()))
         )).defaultFormat());
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));

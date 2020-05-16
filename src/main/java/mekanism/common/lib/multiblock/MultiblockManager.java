@@ -1,12 +1,12 @@
 package mekanism.common.lib.multiblock;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
@@ -64,10 +64,8 @@ public class MultiblockManager<T extends MultiblockData> {
     }
 
     /**
-     * Grabs an inventory from the world's caches, and removes all the world's references to it.
-     * NOTE: this is not guaranteed to remove all references if somehow blocks with this inventory
-     * ID exist in unloaded chunks when the inventory is pulled. We should consider whether we
-     * should implement a way to mitigate this.
+     * Grabs an inventory from the world's caches, and removes all the world's references to it. NOTE: this is not guaranteed to remove all references if somehow blocks
+     * with this inventory ID exist in unloaded chunks when the inventory is pulled. We should consider whether we should implement a way to mitigate this.
      *
      * @param world - world the cache is stored in
      * @param id    - inventory ID to pull

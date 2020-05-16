@@ -1,6 +1,5 @@
 package mekanism.client.gui.element;
 
-import org.lwjgl.glfw.GLFW;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
@@ -10,6 +9,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.lib.Color;
 import net.minecraft.inventory.container.Container;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiWindow extends GuiTexturedElement {
 
@@ -40,8 +40,10 @@ public class GuiWindow extends GuiTexturedElement {
         if (isMouseOver(mouseX, mouseY)) {
             if (mouseY < y + 18) {
                 dragging = true;
-                dragX = mouseX; dragY = mouseY;
-                prevDX = 0; prevDY = 0;
+                dragX = mouseX;
+                dragY = mouseY;
+                prevDX = 0;
+                prevDY = 0;
             }
         } else if (!ret && interactionStrategy.allowContainer()) {
             if (guiObj instanceof GuiMekanism && ((GuiMekanism<?>) guiObj).getContainer() != null) {
@@ -64,7 +66,8 @@ public class GuiWindow extends GuiTexturedElement {
             int newDX = (int) Math.round(mouseX - dragX), newDY = (int) Math.round(mouseY - dragY);
             int changeX = Math.max(-x, Math.min(minecraft.getMainWindow().getScaledWidth() - (x + width), newDX - prevDX));
             int changeY = Math.max(-y, Math.min(minecraft.getMainWindow().getScaledHeight() - (y + height), newDY - prevDY));
-            prevDX = newDX; prevDY = newDY;
+            prevDX = newDX;
+            prevDY = newDY;
             move(changeX, changeY);
         }
     }
@@ -76,7 +79,8 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     @Override
-    public void drawButton(int mouseX, int mouseY) {}
+    public void drawButton(int mouseX, int mouseY) {
+    }
 
     @Override
     public void renderBackgroundOverlay(int mouseX, int mouseY) {
@@ -123,8 +127,9 @@ public class GuiWindow extends GuiTexturedElement {
         if (guiObj instanceof GuiMekanism) {
             ((GuiMekanism<?>) guiObj).setFocused(null);
         }
-        if (closeListener != null)
+        if (closeListener != null) {
             closeListener.run();
+        }
     }
 
     protected boolean isFocusOverlay() {

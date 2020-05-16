@@ -1,8 +1,8 @@
 package mekanism.client.render.tileentity;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
@@ -67,6 +67,6 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
     @Override
     public boolean isGlobalRenderer(TileEntityDynamicTank tile) {
         return tile.isRendering && tile.getMultiblock().isFormed() && (!tile.getMultiblock().fluidTank.isEmpty() || !tile.getMultiblock().gasTank.isEmpty()) &&
-              tile.getMultiblock().renderLocation != null;
+               tile.getMultiblock().renderLocation != null;
     }
 }

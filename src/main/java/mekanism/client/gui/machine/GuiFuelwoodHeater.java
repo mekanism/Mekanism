@@ -27,8 +27,8 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
     public void init() {
         super.init();
         addButton(new GuiInnerScreen(this, 48, 23, 80, 28, () -> Arrays.asList(
-            MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
-            MekanismLang.FUEL.translate(tile.burnTime)
+              MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
+              MekanismLang.FUEL.translate(tile.burnTime)
         )).defaultFormat());
         addButton(new GuiFlame(new IProgressInfoHandler() {
             @Override

@@ -12,17 +12,17 @@ public class GuiConfirmationDialog extends GuiWindow {
     private ITextComponent title;
 
     public GuiConfirmationDialog(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent title, Runnable onConfirm, DialogType type) {
-       super(gui, x, y, width, height);
-       this.title = title;
-       active = true;
+        super(gui, x, y, width, height);
+        this.title = title;
+        active = true;
 
-       addChild(new TranslationButton(gui, gui.getLeft() + x + width / 2 - 102 / 2, gui.getTop() + y + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, () -> {
-           close();
-       }));
-       addChild(new TranslationButton(gui, gui.getLeft() + x + width / 2 + 1, gui.getTop() + y + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, () -> {
-           onConfirm.run();
-           close();
-       }, null, type.getColorSupplier()));
+        addChild(new TranslationButton(gui, gui.getLeft() + x + width / 2 - 102 / 2, gui.getTop() + y + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, () -> {
+            close();
+        }));
+        addChild(new TranslationButton(gui, gui.getLeft() + x + width / 2 + 1, gui.getTop() + y + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, () -> {
+            onConfirm.run();
+            close();
+        }, null, type.getColorSupplier()));
     }
 
     public static void show(IGuiWrapper gui, ITextComponent title, Runnable onConfirm, DialogType type) {

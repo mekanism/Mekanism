@@ -28,9 +28,9 @@ public class GuiSolarGenerator<TILE extends TileEntitySolarGenerator> extends Gu
     public void init() {
         super.init();
         addButton(new GuiInnerScreen(this, 48, 23, 80, 40, () -> Arrays.asList(
-            EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent(),
-            GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getLastProductionAmount())),
-            GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput()))
+              EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent(),
+              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getLastProductionAmount())),
+              GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput()))
         )));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));

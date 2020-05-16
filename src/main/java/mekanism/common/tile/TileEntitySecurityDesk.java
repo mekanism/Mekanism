@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
+import com.mojang.authlib.GameProfile;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import com.mojang.authlib.GameProfile;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;

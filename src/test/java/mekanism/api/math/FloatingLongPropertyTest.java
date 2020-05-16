@@ -51,7 +51,7 @@ class FloatingLongPropertyTest implements WithQuickTheories {
     @DisplayName("Test parsing positive doubles")
     void testFromDouble() {
         qt().forAll(doubles().between(0, Double.MAX_VALUE))
-        .check(value -> FloatingLong.createConst(value).equals(clampFromBigDecimal(new BigDecimal(Double.toString(value)))));
+              .check(value -> FloatingLong.createConst(value).equals(clampFromBigDecimal(new BigDecimal(Double.toString(value)))));
     }
 
     @Test

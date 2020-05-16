@@ -30,8 +30,8 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     @Override
     protected void addButtons() {
         addButton(new GuiInnerScreen(this, 33, 18, 111, 43, () -> Arrays.asList(
-            MekanismLang.STATUS.translate(status),
-            MekanismLang.MODID_FILTER_ID.translate(filter.getModID())
+              MekanismLang.STATUS.translate(status),
+              MekanismLang.MODID_FILTER_ID.translate(filter.getModID())
         )).clearFormat());
     }
 

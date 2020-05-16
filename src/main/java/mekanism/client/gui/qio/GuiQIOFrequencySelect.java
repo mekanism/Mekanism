@@ -19,8 +19,8 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.lib.frequency.Frequency;
-import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -77,9 +77,9 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
         }));
         addButton(new GuiSlot(SlotType.NORMAL, this, 131, 119));
         addButton(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
-            () -> getFrequency() != null ? getFrequency().getColor() : null,
-            () -> sendColorUpdate(0),
-            () -> sendColorUpdate(1)));
+              () -> getFrequency() != null ? getFrequency().getColor() : null,
+              () -> sendColorUpdate(0),
+              () -> sendColorUpdate(1)));
         addButton(frequencyField = new GuiTextField(this, 50, 106, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
@@ -126,7 +126,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
         }
         if (scrollList.hasSelection()) {
             Frequency freq = privateMode ? getPrivateFrequencies().get(scrollList.getSelection()) :
-                                           getPublicFrequencies().get(scrollList.getSelection());
+                             getPublicFrequencies().get(scrollList.getSelection());
             setButton.active = getFrequency() == null || !getFrequency().equals(freq);
             deleteButton.active = getOwnerUUID().equals(freq.getOwner());
         } else {
@@ -180,14 +180,18 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     }
 
     public abstract void sendSetFrequency(FrequencyIdentity identity);
+
     public abstract void sendRemoveFrequency(FrequencyIdentity identity);
+
     public abstract void sendColorUpdate(int extra);
 
     public abstract QIOFrequency getFrequency();
 
     public abstract String getOwnerUsername();
+
     public abstract UUID getOwnerUUID();
 
     public abstract List<QIOFrequency> getPublicFrequencies();
+
     public abstract List<QIOFrequency> getPrivateFrequencies();
 }

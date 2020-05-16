@@ -1,5 +1,6 @@
 package mekanism.common.lib.multiblock;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
@@ -99,8 +99,9 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
     }
 
     private BlockPos traverse(BlockPos orig, int dist, Direction... sides) {
-        if (dist + 1 > MAX_SIZE * 3)
+        if (dist + 1 > MAX_SIZE * 3) {
             return null;
+        }
         for (Direction side : sides) {
             BlockPos offset = orig.offset(side);
             if (checkNode(pointer.getWorld().getTileEntity(offset), false)) {
@@ -136,9 +137,9 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
     }
 
     /**
-     * If the TileEntity will function as a 'structural block' (casing or structural multiblock)
-     * for this structure. This will also mark the tile in this position as having just received a multiblock
-     * update if 'markUpdated' is true.
+     * If the TileEntity will function as a 'structural block' (casing or structural multiblock) for this structure. This will also mark the tile in this position as
+     * having just received a multiblock update if 'markUpdated' is true.
+     *
      * @return Whether or not the tile is a viable node for a multiblock structure
      */
     protected boolean checkNode(TileEntity tile, boolean markUpdated) {
@@ -281,7 +282,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         }
 
         public Explorer(Predicate<BlockPos> checker) {
-           this(checker, MAX_SIZE * MAX_SIZE * MAX_SIZE);
+            this(checker, MAX_SIZE * MAX_SIZE * MAX_SIZE);
         }
 
         public int explore(BlockPos start) {
@@ -295,8 +296,9 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
             traversed.add(start);
             while (!openSet.isEmpty()) {
                 BlockPos ptr = openSet.poll();
-                if (traversed.size() >= maxCount)
+                if (traversed.size() >= maxCount) {
                     return traversed.size();
+                }
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     BlockPos offset = ptr.offset(side);
                     if (!traversed.contains(offset) && checker.test(offset)) {

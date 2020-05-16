@@ -43,7 +43,9 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
 
     /**
      * Whether this chemical has an attribute of a certain type.
+     *
      * @param type attribute type to check
+     *
      * @return if this chemical has the attribute
      */
     public boolean has(Class<? extends ChemicalAttribute> type) {
@@ -52,7 +54,9 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
 
     /**
      * Gets the attribute instance of a certain type, or null if it doesn't exist.
+     *
      * @param type attribute type to get
+     *
      * @return attribute instance
      */
     @Nullable
@@ -62,8 +66,8 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
     }
 
     /**
-     * Adds an attribute to this chemical's attribute map. Will overwrite any existing
-     * attribute with the same type.
+     * Adds an attribute to this chemical's attribute map. Will overwrite any existing attribute with the same type.
+     *
      * @param attribute attribute to add to this chemical
      */
     public void addAttribute(ChemicalAttribute attribute) {
@@ -72,6 +76,7 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
 
     /**
      * Gets all attribute instances associated with this chemical type.
+     *
      * @return collection of attribute instances
      */
     public Collection<ChemicalAttribute> getAttributes() {
@@ -80,6 +85,7 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
 
     /**
      * Gets all attribute types associated with this chemical type.
+     *
      * @return collection of attribute types
      */
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
