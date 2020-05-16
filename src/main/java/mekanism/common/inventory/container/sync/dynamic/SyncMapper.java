@@ -53,7 +53,7 @@ public class SyncMapper {
     }
 
     public static void setup(MekanismContainer container, Class<?> holderClass, Supplier<Object> holderSupplier, String tag) {
-        PropertyDataClassCache cache = syncablePropertyMap.computeIfAbsent(holderClass, c -> buildSyncMap(c));
+        PropertyDataClassCache cache = syncablePropertyMap.computeIfAbsent(holderClass, SyncMapper::buildSyncMap);
 
         for (PropertyField field : cache.propertyFieldMap.get(tag)) {
             for (TrackedFieldData data : field.trackedData) {
@@ -163,12 +163,12 @@ public class SyncMapper {
 
     protected static class PropertyDataClassCache {
 
-        private Multimap<String, PropertyField> propertyFieldMap = HashMultimap.create();
+        private final Multimap<String, PropertyField> propertyFieldMap = HashMultimap.create();
     }
 
     protected static class PropertyField {
 
-        private List<TrackedFieldData> trackedData = new ArrayList<>();
+        private final List<TrackedFieldData> trackedData = new ArrayList<>();
 
         private PropertyField(TrackedFieldData... data) {
             trackedData.addAll(Arrays.asList(data));
@@ -182,8 +182,8 @@ public class SyncMapper {
     protected static class TrackedFieldData {
 
         private PropertyType propertyType;
-        private Function<Object, Object> getter;
-        private BiConsumer<Object, Object> setter;
+        private final Function<Object, Object> getter;
+        private final BiConsumer<Object, Object> setter;
 
         protected TrackedFieldData(Function<Object, Object> getter, BiConsumer<Object, Object> setter) {
             this.getter = getter;
@@ -226,7 +226,7 @@ public class SyncMapper {
 
     protected static class EnumFieldData extends TrackedFieldData {
 
-        private Object[] constants;
+        private final Object[] constants;
 
         private EnumFieldData(Function<Object, Object> getter, BiConsumer<Object, Object> setter, Class<?> enumClass) {
             super(getter, setter);
@@ -239,7 +239,7 @@ public class SyncMapper {
         }
 
         protected <ENUM extends Enum<ENUM>> ISyncableData createData(ENUM[] constants, Supplier<Object> getter, Consumer<Object> setter) {
-            return SyncableEnum.create((val) -> constants[val], constants[0], () -> (ENUM) getter.get(), (val) -> setter.accept(val));
+            return SyncableEnum.create((val) -> constants[val], constants[0], () -> (ENUM) getter.get(), setter::accept);
         }
 
         @Override
@@ -250,8 +250,8 @@ public class SyncMapper {
 
     protected static class SpecialPropertyHandler {
 
-        private Class<?> fieldType;
-        private List<SpecialPropertyData> specialData = new ArrayList<>();
+        private final Class<?> fieldType;
+        private final List<SpecialPropertyData> specialData = new ArrayList<>();
 
         private SpecialPropertyHandler(Class<?> fieldType, SpecialPropertyData... data) {
             this.fieldType = fieldType;
@@ -261,10 +261,10 @@ public class SyncMapper {
 
     protected static class SpecialPropertyData {
 
-        private Class<?> propertyType;
-        private Class<?> valueType;
-        private String getterMethodName;
-        private String setterMethodName;
+        private final Class<?> propertyType;
+        private final Class<?> valueType;
+        private final String getterMethodName;
+        private final String setterMethodName;
 
         private SpecialPropertyData(Class<?> propertyType, Class<?> valueType, String getterMethodName, String setterMethodName) {
             this.propertyType = propertyType;

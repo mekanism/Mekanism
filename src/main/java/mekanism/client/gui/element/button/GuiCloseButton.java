@@ -11,7 +11,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 public class GuiCloseButton extends MekanismImageButton {
 
     public GuiCloseButton(IGuiWrapper gui, int x, int y, GuiWindow window) {
-        super(gui, x, y, 8, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "close.png"), () -> window.close());
+        super(gui, x, y, 8, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "close.png"), window::close);
     }
 
     @Override

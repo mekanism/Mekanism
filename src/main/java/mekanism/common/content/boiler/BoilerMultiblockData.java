@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.Arrays;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.GasStack;
@@ -78,15 +79,15 @@ public class BoilerMultiblockData extends MultiblockData implements IMekanismFlu
 
     public BoilerMultiblockData(TileEntityBoilerCasing tile) {
         super(tile);
-        superheatedCoolantTank = MultiblockGasTank.create(this, tile, () -> getSuperheatedCoolantTankCapacity(),
+        superheatedCoolantTank = MultiblockGasTank.create(this, tile, this::getSuperheatedCoolantTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(),
               gas -> gas.has(HeatedCoolant.class));
-        waterTank = MultiblockFluidTank.input(this, tile, () -> getWaterTankCapacity(), fluid -> fluid.getFluid().isIn(FluidTags.WATER));
+        waterTank = MultiblockFluidTank.input(this, tile, this::getWaterTankCapacity, fluid -> fluid.getFluid().isIn(FluidTags.WATER));
         fluidTanks.add(waterTank);
-        steamTank = MultiblockGasTank.create(this, tile, () -> getSteamTankCapacity(),
+        steamTank = MultiblockGasTank.create(this, tile, this::getSteamTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas == MekanismGases.STEAM.getGas());
-        cooledCoolantTank = MultiblockGasTank.create(this, tile, () -> getCooledCoolantTankCapacity(),
+        cooledCoolantTank = MultiblockGasTank.create(this, tile, this::getCooledCoolantTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas.has(CooledCoolant.class));
         gasTanks.addAll(Arrays.asList(steamTank, superheatedCoolantTank, cooledCoolantTank));
@@ -178,6 +179,7 @@ public class BoilerMultiblockData extends MultiblockData implements IMekanismFlu
         return Math.min(heatAvailable, MekanismConfig.general.superheatingHeatTransfer.get() * superheatingElements);
     }
 
+    @Nonnull
     @Override
     public HeatTransfer simulate() {
         double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (CASING_INVERSE_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT) * locations.size();

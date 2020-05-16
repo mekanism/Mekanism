@@ -75,7 +75,7 @@ public class SecurityFrequency extends Frequency {
         buffer.writeBoolean(override);
         buffer.writeEnumValue(securityMode);
         buffer.writeInt(trustedCache.size());
-        trustedCache.forEach(s -> buffer.writeString(s));
+        trustedCache.forEach(buffer::writeString);
     }
 
     @Override

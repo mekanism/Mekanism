@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.NBTConstants;
@@ -36,9 +37,9 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     private boolean exportWithoutFilter;
 
     private final EfficientEjector<Map.Entry<HashedItem, Long>> filterEjector =
-          new EfficientEjector<>((e) -> e.getKey(), (e) -> (int) Math.min(Integer.MAX_VALUE, e.getValue()));
+          new EfficientEjector<>(Entry::getKey, (e) -> (int) Math.min(Integer.MAX_VALUE, e.getValue()));
     private final EfficientEjector<Map.Entry<HashedItem, QIOItemTypeData>> filterlessEjector =
-          new EfficientEjector<>((e) -> e.getKey(), (e) -> (int) Math.min(Integer.MAX_VALUE, e.getValue().getCount()));
+          new EfficientEjector<>(Entry::getKey, (e) -> (int) Math.min(Integer.MAX_VALUE, e.getValue().getCount()));
 
     public TileEntityQIOExporter() {
         super(MekanismBlocks.QIO_EXPORTER);

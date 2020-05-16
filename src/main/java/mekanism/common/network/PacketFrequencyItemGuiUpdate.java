@@ -86,6 +86,6 @@ public class PacketFrequencyItemGuiUpdate<FREQ extends Frequency> {
         for (int i = 0; i < amount; i++) {
             privateCache.add(Frequency.readFromPacket(buf));
         }
-        return new PacketFrequencyItemGuiUpdate<FREQ>(currentHand, type, frequency, publicCache, privateCache);
+        return new PacketFrequencyItemGuiUpdate<>(currentHand, type, frequency, publicCache, privateCache);
     }
 }

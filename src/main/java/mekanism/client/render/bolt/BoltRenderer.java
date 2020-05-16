@@ -84,7 +84,7 @@ public class BoltRenderer {
             BoltOwnerData data = entry.getValue();
             // tick our bolts based on the refresh rate, removing if they're now finished
             if (refresh) {
-                data.bolts.removeIf(bolt -> bolt.tick());
+                data.bolts.removeIf(BoltInstance::tick);
             }
             if (repeat && data.bolts.isEmpty() && data.lastBolt != null) {
                 data.bolts.add(new BoltInstance(boltLifespan, boltEffect.generate(data.lastBolt)));

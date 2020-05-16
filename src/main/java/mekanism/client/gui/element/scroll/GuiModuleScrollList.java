@@ -45,7 +45,7 @@ public class GuiModuleScrollList extends GuiScrollList {
         ModuleData<?> prevSelect = getSelection();
         this.currentItem = currentItem;
         currentList.clear();
-        currentList.addAll(Modules.loadAll(currentItem).stream().map(m -> m.getData()).collect(Collectors.toList()));
+        currentList.addAll(Modules.loadAll(currentItem).stream().map(Module::getData).collect(Collectors.toList()));
         boolean selected = false;
         if (!forceReset && prevSelect != null) {
             for (int i = 0; i < currentList.size(); i++) {

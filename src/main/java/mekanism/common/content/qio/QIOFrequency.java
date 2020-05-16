@@ -37,16 +37,16 @@ public class QIOFrequency extends Frequency {
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     private static final Random rand = new Random();
 
-    private Map<QIODriveKey, QIODriveData> driveMap = new LinkedHashMap<>();
-    private Map<HashedItem, QIOItemTypeData> itemDataMap = new LinkedHashMap<>();
-    private Set<IQIODriveHolder> driveHolders = new HashSet<>();
+    private final Map<QIODriveKey, QIODriveData> driveMap = new LinkedHashMap<>();
+    private final Map<HashedItem, QIOItemTypeData> itemDataMap = new LinkedHashMap<>();
+    private final Set<IQIODriveHolder> driveHolders = new HashSet<>();
     // efficiently keep track of the tags utilized by the items stored
-    private BiMultimap<String, HashedItem> tagLookupMap = new BiMultimap<>();
+    private final BiMultimap<String, HashedItem> tagLookupMap = new BiMultimap<>();
     // a sensitive cache for wildcard tag lookups (wildcard -> [matching tags])
-    private SetMultimap<String, String> tagWildcardCache = HashMultimap.create();
+    private final SetMultimap<String, String> tagWildcardCache = HashMultimap.create();
 
-    private Set<HashedItem> updatedItems = new HashSet<>();
-    private Set<ServerPlayerEntity> playersViewingItems = new HashSet<>();
+    private final Set<HashedItem> updatedItems = new HashSet<>();
+    private final Set<ServerPlayerEntity> playersViewingItems = new HashSet<>();
 
     /** If we need to send a packet to viewing clients with changed item data. */
     private boolean needsUpdate;
@@ -204,9 +204,7 @@ public class QIOFrequency extends Frequency {
             });
             // flush players that somehow didn't send a container close packet
             playersViewingItems.removeIf(player -> !(player.openContainer instanceof QIOItemViewerContainer));
-            playersViewingItems.forEach(player -> {
-                Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity), player);
-            });
+            playersViewingItems.forEach(player -> Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity), player));
             updatedItems.clear();
             needsUpdate = false;
         }
@@ -313,13 +311,13 @@ public class QIOFrequency extends Frequency {
             totalCountCapacity += data.getCountCapacity();
             totalTypeCapacity += data.getTypeCapacity();
             driveMap.put(key, data);
-            data.getItemMap().entrySet().forEach(entry -> {
-                itemDataMap.computeIfAbsent(entry.getKey(), e -> {
+            data.getItemMap().forEach((storedKey, value) -> {
+                itemDataMap.computeIfAbsent(storedKey, e -> {
                     tagWildcardCache.clear();
-                    tagLookupMap.putAll(TagCache.getItemTags(entry.getKey().getStack()), entry.getKey());
-                    return new QIOItemTypeData(entry.getKey());
-                }).addFromDrive(data, entry.getValue());
-                updatedItems.add(entry.getKey());
+                    tagLookupMap.putAll(TagCache.getItemTags(storedKey.getStack()), storedKey);
+                    return new QIOItemTypeData(storedKey);
+                }).addFromDrive(data, value);
+                updatedItems.add(storedKey);
             });
             setNeedsUpdate();
         }
@@ -331,18 +329,18 @@ public class QIOFrequency extends Frequency {
         }
         QIODriveData data = driveMap.get(key);
         if (updateItemMap) {
-            data.getItemMap().entrySet().forEach(entry -> {
-                QIOItemTypeData itemData = itemDataMap.get(entry.getKey());
+            data.getItemMap().forEach((storedKey, value) -> {
+                QIOItemTypeData itemData = itemDataMap.get(storedKey);
                 if (itemData != null) {
                     itemData.containingDrives.remove(key);
-                    itemData.count -= entry.getValue();
-                    totalCount -= entry.getValue();
+                    itemData.count -= value;
+                    totalCount -= value;
                     // remove this entry from the item data map if it's now empty
                     if (itemData.containingDrives.isEmpty() || itemData.count == 0) {
-                        itemDataMap.remove(entry.getKey());
+                        itemDataMap.remove(storedKey);
                         tagWildcardCache.clear();
                     }
-                    updatedItems.add(entry.getKey());
+                    updatedItems.add(storedKey);
                 }
             });
             setNeedsUpdate();
@@ -357,9 +355,9 @@ public class QIOFrequency extends Frequency {
     }
 
     public void saveAll() {
-        driveMap.entrySet().forEach(e -> {
-            e.getKey().updateMetadata(e.getValue());
-            e.getKey().save(e.getValue());
+        driveMap.forEach((key, value) -> {
+            key.updateMetadata(value);
+            key.save(value);
         });
     }
 
@@ -384,9 +382,9 @@ public class QIOFrequency extends Frequency {
 
     public class QIOItemTypeData {
 
-        private HashedItem itemType;
+        private final HashedItem itemType;
         private long count = 0;
-        private Set<QIODriveKey> containingDrives = new HashSet<>();
+        private final Set<QIODriveKey> containingDrives = new HashSet<>();
 
         public QIOItemTypeData(HashedItem itemType) {
             this.itemType = itemType;

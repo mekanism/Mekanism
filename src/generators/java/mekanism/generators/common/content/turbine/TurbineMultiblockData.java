@@ -71,7 +71,7 @@ public class TurbineMultiblockData extends MultiblockData {
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), BasicFluidTank.internalOnly,
               fluid -> fluid.getFluid().isIn(FluidTags.WATER), null);
         ventTanks = Collections.singletonList(ventTank);
-        energyContainer = VariableCapacityEnergyContainer.create(() -> getEnergyCapacity(),
+        energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity,
               automationType -> automationType != AutomationType.EXTERNAL || isFormed(), BasicEnergyContainer.internalOnly, null);
         energyContainers.add(energyContainer);
     }

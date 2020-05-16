@@ -58,7 +58,7 @@ public class MekanismGases {
 
     public static class Coolants {
 
-        public static final CooledCoolant SODIUM_COOLANT = new CooledCoolant(() -> SUPERHEATED_SODIUM.get(), 5, 1);
-        public static final HeatedCoolant HEATED_SODIUM_COOLANT = new HeatedCoolant(() -> SODIUM.get(), 5, 1);
+        public static final CooledCoolant SODIUM_COOLANT = new CooledCoolant(SUPERHEATED_SODIUM, 5, 1);
+        public static final HeatedCoolant HEATED_SODIUM_COOLANT = new HeatedCoolant(SODIUM, 5, 1);
     }
 }

@@ -30,9 +30,7 @@ public class PacketRadiationData {
     }
 
     public static void sync(ServerPlayerEntity player) {
-        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
-            Mekanism.packetHandler.sendTo(new PacketRadiationData(c.getRadiation()), player);
-        });
+        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> Mekanism.packetHandler.sendTo(new PacketRadiationData(c.getRadiation()), player));
     }
 
     public static void handle(PacketRadiationData message, Supplier<Context> context) {

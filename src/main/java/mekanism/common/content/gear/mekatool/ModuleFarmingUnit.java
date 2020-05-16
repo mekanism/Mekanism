@@ -50,7 +50,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
     @Override
     public void init() {
         super.init();
-        addConfigItem(farmingRadius = new ModuleConfigItem<FarmingRadius>(this, "farming_radius", MekanismLang.MODULE_FARMING_RADIUS, new EnumData<>(FarmingRadius.class, getInstalledCount() + 1), FarmingRadius.LOW));
+        addConfigItem(farmingRadius = new ModuleConfigItem<>(this, "farming_radius", MekanismLang.MODULE_FARMING_RADIUS, new EnumData<>(FarmingRadius.class, getInstalledCount() + 1), FarmingRadius.LOW));
     }
 
     @Override

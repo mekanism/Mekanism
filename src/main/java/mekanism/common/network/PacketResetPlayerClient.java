@@ -15,9 +15,7 @@ public class PacketResetPlayerClient {
     }
 
     public static void handle(PacketResetPlayerClient message, Supplier<Context> context) {
-        context.get().enqueueWork(() -> {
-            Mekanism.playerState.clearPlayer(message.uuid);
-        });
+        context.get().enqueueWork(() -> Mekanism.playerState.clearPlayer(message.uuid));
         context.get().setPacketHandled(true);
     }
 

@@ -71,7 +71,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
     public MultiblockData(TileEntity tile) {
-        worldSupplier = () -> tile.getWorld();
+        worldSupplier = tile::getWorld;
     }
 
     /**

@@ -38,9 +38,8 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 154, 40));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
-        addButton(removeButton = new TranslationButton(this, getGuiLeft() + 34, getGuiTop() + 96, 108, 17, MekanismLang.BUTTON_REMOVE, () -> {
-            Mekanism.packetHandler.sendToServer(new PacketRemoveModule(Coord4D.get(getTileEntity()), selectedModule.getData()));
-        }));
+        addButton(removeButton = new TranslationButton(this, getGuiLeft() + 34, getGuiTop() + 96, 108, 17, MekanismLang.BUTTON_REMOVE,
+              () -> Mekanism.packetHandler.sendToServer(new PacketRemoveModule(Coord4D.get(getTileEntity()), selectedModule.getData()))));
         removeButton.active = false;
 
         addButton(new GuiModuleScrollList(this, 34, 20, 108, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));

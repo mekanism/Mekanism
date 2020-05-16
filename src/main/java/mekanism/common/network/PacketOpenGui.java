@@ -24,9 +24,7 @@ public class PacketOpenGui {
         if (player == null) {
             return;
         }
-        context.get().enqueueWork(() -> {
-            NetworkHooks.openGui((ServerPlayerEntity) player, message.type.containerSupplier.get());
-        });
+        context.get().enqueueWork(() -> NetworkHooks.openGui((ServerPlayerEntity) player, message.type.containerSupplier.get()));
         context.get().setPacketHandled(true);
     }
 

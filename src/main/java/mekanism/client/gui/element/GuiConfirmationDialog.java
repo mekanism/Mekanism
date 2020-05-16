@@ -16,9 +16,8 @@ public class GuiConfirmationDialog extends GuiWindow {
         this.title = title;
         active = true;
 
-        addChild(new TranslationButton(gui, gui.getLeft() + x + width / 2 - 102 / 2, gui.getTop() + y + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, () -> {
-            close();
-        }));
+        addChild(new TranslationButton(gui, gui.getLeft() + x + width / 2 - 102 / 2, gui.getTop() + y + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL,
+              this::close));
         addChild(new TranslationButton(gui, gui.getLeft() + x + width / 2 + 1, gui.getTop() + y + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, () -> {
             onConfirm.run();
             close();
@@ -47,12 +46,12 @@ public class GuiConfirmationDialog extends GuiWindow {
     }
 
     public enum DialogType {
-        NORMAL(null),
+        NORMAL(() -> null),
         DANGER(() -> EnumColor.RED);
 
-        private Supplier<EnumColor> colorSupplier;
+        private final Supplier<EnumColor> colorSupplier;
 
-        private DialogType(Supplier<EnumColor> colorSupplier) {
+        DialogType(Supplier<EnumColor> colorSupplier) {
             this.colorSupplier = colorSupplier;
         }
 

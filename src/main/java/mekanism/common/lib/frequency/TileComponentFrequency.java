@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
@@ -17,13 +16,13 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class TileComponentFrequency implements ITileComponent {
 
-    private TileEntityMekanism tile;
+    private final TileEntityMekanism tile;
 
-    private Map<FrequencyType<?>, Frequency> heldFrequencies = new LinkedHashMap<>();
-    private Map<FrequencyType<?>, FrequencyTrackingData> supportedFrequencies = new LinkedHashMap<>();
+    private final Map<FrequencyType<?>, Frequency> heldFrequencies = new LinkedHashMap<>();
+    private final Map<FrequencyType<?>, FrequencyTrackingData> supportedFrequencies = new LinkedHashMap<>();
 
-    private Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> publicCache = new LinkedHashMap<>();
-    private Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> privateCache = new LinkedHashMap<>();
+    private final Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> publicCache = new LinkedHashMap<>();
+    private final Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> privateCache = new LinkedHashMap<>();
 
     private boolean needsNotify;
 
@@ -117,7 +116,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     private void unload() {
         if (!tile.getWorld().isRemote()) {
-            heldFrequencies.entrySet().forEach(entry -> deactivate(entry.getKey()));
+            heldFrequencies.forEach((key, value) -> deactivate(key));
         }
     }
 
@@ -154,7 +153,6 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    @Nonnull
     @Override
     public void write(CompoundNBT nbtTags) {
         for (Frequency frequency : heldFrequencies.values()) {

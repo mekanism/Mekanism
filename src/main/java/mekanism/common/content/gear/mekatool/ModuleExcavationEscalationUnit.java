@@ -22,7 +22,7 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
     @Override
     public void init() {
         super.init();
-        addConfigItem(excavationMode = new ModuleConfigItem<ExcavationMode>(this, "excavation_mode", MekanismLang.MODULE_EFFICIENCY, new EnumData<>(ExcavationMode.class, getInstalledCount() + 2), ExcavationMode.NORMAL));
+        addConfigItem(excavationMode = new ModuleConfigItem<>(this, "excavation_mode", MekanismLang.MODULE_EFFICIENCY, new EnumData<>(ExcavationMode.class, getInstalledCount() + 2), ExcavationMode.NORMAL));
     }
 
     @Override

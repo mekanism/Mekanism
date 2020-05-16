@@ -127,9 +127,9 @@ public class Mekanism {
     /**
      * MultiblockManagers for various structrures
      */
-    public static MultiblockManager<TankMultiblockData> tankManager = new MultiblockManager<>("dynamicTank", () -> new TankCache());
-    public static MultiblockManager<MatrixMultiblockData> matrixManager = new MultiblockManager<>("inductionMatrix", () -> new MultiblockCache<MatrixMultiblockData>());
-    public static MultiblockManager<BoilerMultiblockData> boilerManager = new MultiblockManager<>("thermoelectricBoiler", () -> new MultiblockCache<BoilerMultiblockData>());
+    public static MultiblockManager<TankMultiblockData> tankManager = new MultiblockManager<>("dynamicTank", TankCache::new);
+    public static MultiblockManager<MatrixMultiblockData> matrixManager = new MultiblockManager<>("inductionMatrix", MultiblockCache::new);
+    public static MultiblockManager<BoilerMultiblockData> boilerManager = new MultiblockManager<>("thermoelectricBoiler", MultiblockCache::new);
     /**
      * RadiationManager for handling radiation across all dimensions
      */

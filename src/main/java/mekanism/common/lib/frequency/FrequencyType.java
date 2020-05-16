@@ -16,26 +16,26 @@ import net.minecraft.network.PacketBuffer;
 
 public class FrequencyType<FREQ extends Frequency> {
 
-    private static Map<String, FrequencyType<?>> registryMap = new HashMap<>();
+    private static final Map<String, FrequencyType<?>> registryMap = new HashMap<>();
 
     public static final FrequencyType<TeleporterFrequency> TELEPORTER = register("Teleporter",
           (key, uuid) -> new TeleporterFrequency((String) key, uuid),
-          () -> new TeleporterFrequency(),
+          TeleporterFrequency::new,
           FrequencyManagerWrapper.Type.PUBLIC_PRIVATE,
           IdentitySerializer.NAME);
     public static final FrequencyType<InventoryFrequency> INVENTORY = register("Inventory",
           (key, uuid) -> new InventoryFrequency((String) key, uuid),
-          () -> new InventoryFrequency(),
+          InventoryFrequency::new,
           FrequencyManagerWrapper.Type.PUBLIC_PRIVATE,
           IdentitySerializer.NAME);
     public static final FrequencyType<SecurityFrequency> SECURITY = register("Security",
           (key, uuid) -> new SecurityFrequency(uuid),
-          () -> new SecurityFrequency(),
+          SecurityFrequency::new,
           FrequencyManagerWrapper.Type.PUBLIC_ONLY,
           IdentitySerializer.UUID);
     public static final FrequencyType<QIOFrequency> QIO = register("QIO",
           (key, uuid) -> new QIOFrequency((String) key, uuid),
-          () -> new QIOFrequency(),
+          QIOFrequency::new,
           FrequencyManagerWrapper.Type.PUBLIC_PRIVATE,
           IdentitySerializer.NAME);
 

@@ -23,24 +23,25 @@ public class ModuleMekaTool extends Module {
         @Override
         public void init() {
             super.init();
-            addConfigItem(attackDamage = new ModuleConfigItem<AttackDamage>(this, "attack_damage", MekanismLang.MODULE_ATTACK_DAMAGE, new EnumData<>(AttackDamage.class, getInstalledCount() + 2), AttackDamage.MED));
+            addConfigItem(attackDamage = new ModuleConfigItem<>(this, "attack_damage", MekanismLang.MODULE_ATTACK_DAMAGE, new EnumData<>(AttackDamage.class, getInstalledCount() + 2), AttackDamage.MED));
         }
 
         public int getDamage() {
             return attackDamage.get().getDamage();
         }
 
-        public static enum AttackDamage implements IHasTextComponent {
+        public enum AttackDamage implements IHasTextComponent {
             OFF(0),
             LOW(4),
             MED(8),
             HIGH(16),
             EXTREME(24),
             MAX(32);
-            private int damage;
-            private ITextComponent label;
 
-            private AttackDamage(int damage) {
+            private final int damage;
+            private final ITextComponent label;
+
+            AttackDamage(int damage) {
                 this.damage = damage;
                 this.label = new StringTextComponent(Integer.toString(damage));
             }

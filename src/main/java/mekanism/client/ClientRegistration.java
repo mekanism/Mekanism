@@ -435,19 +435,14 @@ public class ClientRegistration {
             if (item.getColumnKey().hasTextureOverride()) {
                 continue;
             }
-            event.getItemColors().register((stack, index) -> {
-                return index == 0 || index == 2 ? item.getColumnKey().getTint() : 0xFFFFFFFF;
-            }, item.getValue());
+            event.getItemColors().register((stack, index) -> index == 0 || index == 2 ? item.getColumnKey().getTint() : 0xFFFFFFFF, item.getValue());
         }
         for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             if (entry.getKey().hasTextureOverride()) {
                 continue;
             }
-            ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, world, pos, index) -> {
-                return entry.getKey().getTint();
-            }, (stack, index) -> {
-                return entry.getKey().getTint();
-            }, entry.getValue());
+            ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, world, pos, index) -> entry.getKey().getTint(),
+                  (stack, index) -> entry.getKey().getTint(), entry.getValue());
         }
     }
 

@@ -14,7 +14,8 @@ public class TranslationButton extends MekanismButton {
         this(gui, x, y, width, height, translationHelper, onPress, null, null);
     }
 
-    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, Runnable onPress, IHoverable onHover, Supplier<EnumColor> colorSupplier) {
+    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, Runnable onPress, IHoverable onHover,
+          Supplier<EnumColor> colorSupplier) {
         super(gui, x, y, width, height, translationHelper.translate().getFormattedText(), onPress, onHover);
         this.colorSupplier = colorSupplier;
     }

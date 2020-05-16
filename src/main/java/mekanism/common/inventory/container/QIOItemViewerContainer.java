@@ -144,7 +144,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
+    public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotID) {
         Slot currentSlot = inventorySlots.get(slotID);
         if (currentSlot == null) {
             return ItemStack.EMPTY;
@@ -191,11 +191,11 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public void handleUpdate(Map<HashedItem, Long> itemMap, long countCapacity, int typeCapacity) {
-        itemMap.entrySet().forEach(e -> {
-            if (e.getValue() == 0) {
-                cachedInventory.remove(e.getKey());
+        itemMap.forEach((key, value) -> {
+            if (value == 0) {
+                cachedInventory.remove(key);
             } else {
-                cachedInventory.put(e.getKey(), e.getValue());
+                cachedInventory.put(key, value);
             }
         });
         cachedCountCapacity = countCapacity;
@@ -216,9 +216,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         itemList.clear();
         searchCache.clear();
         totalItems = 0;
-        cachedInventory.entrySet().forEach(e -> {
-            itemList.add(new ItemSlotData(e.getKey(), e.getValue()));
-            totalItems += e.getValue();
+        cachedInventory.forEach((key, value) -> {
+            itemList.add(new ItemSlotData(key, value));
+            totalItems += value;
         });
         sortItemList();
         if (!searchQuery.isEmpty()) {
@@ -332,7 +332,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public static class ItemSlotData implements IScrollableSlot {
 
-        private HashedItem itemType;
+        private final HashedItem itemType;
         private long count;
 
         private ItemSlotData(HashedItem itemType, long count) {
@@ -365,10 +365,10 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         ASCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_up.png"), MekanismLang.LIST_SORT_ASCENDING_DESC),
         DESCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_down.png"), MekanismLang.LIST_SORT_DESCENDING_DESC);
 
-        private ResourceLocation icon;
-        private ILangEntry tooltip;
+        private final ResourceLocation icon;
+        private final ILangEntry tooltip;
 
-        private SortDirection(ResourceLocation icon, ILangEntry tooltip) {
+        SortDirection(ResourceLocation icon, ILangEntry tooltip) {
             this.icon = icon;
             this.tooltip = tooltip;
         }
@@ -393,11 +393,11 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         SIZE(MekanismLang.LIST_SORT_COUNT, MekanismLang.LIST_SORT_COUNT_DESC, (a, b) -> Long.compare(a.getCount(), b.getCount())),
         MOD(MekanismLang.LIST_SORT_MOD, MekanismLang.LIST_SORT_MOD_DESC, (a, b) -> a.getModID().compareTo(b.getModID()));
 
-        private ILangEntry name;
-        private ILangEntry tooltip;
-        private Comparator<IScrollableSlot> comparator;
+        private final ILangEntry name;
+        private final ILangEntry tooltip;
+        private final Comparator<IScrollableSlot> comparator;
 
-        private ListSortType(ILangEntry name, ILangEntry tooltip, Comparator<IScrollableSlot> comparator) {
+        ListSortType(ILangEntry name, ILangEntry tooltip, Comparator<IScrollableSlot> comparator) {
             this.name = name;
             this.tooltip = tooltip;
             this.comparator = comparator;

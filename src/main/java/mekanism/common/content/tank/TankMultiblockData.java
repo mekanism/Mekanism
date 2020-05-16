@@ -31,10 +31,10 @@ public class TankMultiblockData extends MultiblockData {
 
     public TankMultiblockData(TileEntityDynamicTank tile) {
         super(tile);
-        fluidTank = MultiblockFluidTank.create(this, tile, () -> getTankCapacity(), BasicFluidTank.alwaysTrueBi,
+        fluidTank = MultiblockFluidTank.create(this, tile, this::getTankCapacity, BasicFluidTank.alwaysTrueBi,
               (stack, automationType) -> gasTank.isEmpty(), BasicFluidTank.alwaysTrue, null);
         fluidTanks.add(fluidTank);
-        gasTank = MultiblockGasTank.create(this, tile, () -> getTankCapacity(), BasicGasTank.alwaysTrueBi,
+        gasTank = MultiblockGasTank.create(this, tile, this::getTankCapacity, BasicGasTank.alwaysTrueBi,
               (stack, automationType) -> fluidTank.isEmpty(), BasicGasTank.alwaysTrue, null, null);
         gasTanks.add(gasTank);
         inventorySlots.addAll(createBaseInventorySlots());

@@ -23,8 +23,8 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
     @Override
     public void init() {
         super.init();
-        addConfigItem(extendedMode = new ModuleConfigItem<Boolean>(this, "extended_mode", MekanismLang.MODULE_EXTENDED_MODE, new BooleanData(), false));
-        addConfigItem(excavationRange = new ModuleConfigItem<ExcavationRange>(this, "excavation_range", MekanismLang.MODULE_EXCAVATION_RANGE, new EnumData<>(ExcavationRange.class, getInstalledCount() + 1), ExcavationRange.LOW));
+        addConfigItem(extendedMode = new ModuleConfigItem<>(this, "extended_mode", MekanismLang.MODULE_EXTENDED_MODE, new BooleanData(), false));
+        addConfigItem(excavationRange = new ModuleConfigItem<>(this, "excavation_range", MekanismLang.MODULE_EXCAVATION_RANGE, new EnumData<>(ExcavationRange.class, getInstalledCount() + 1), ExcavationRange.LOW));
     }
 
     public boolean isExtended() {

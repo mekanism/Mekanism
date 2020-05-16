@@ -64,17 +64,16 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 79, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
-            GuiConfirmationDialog.show(this, MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
-                int selection = scrollList.getSelection();
-                if (selection != -1) {
-                    Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
-                    sendRemoveFrequency(freq.getIdentity());
-                    scrollList.clearSelection();
-                }
-                updateButtons();
-            }, DialogType.DANGER);
-        }));
+        addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 79, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_DELETE,
+              () -> GuiConfirmationDialog.show(this, MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
+                  int selection = scrollList.getSelection();
+                  if (selection != -1) {
+                      Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
+                      sendRemoveFrequency(freq.getIdentity());
+                      scrollList.clearSelection();
+                  }
+                  updateButtons();
+              }, DialogType.DANGER)));
         addButton(new GuiSlot(SlotType.NORMAL, this, 131, 119));
         addButton(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
               () -> getFrequency() != null ? getFrequency().getColor() : null,

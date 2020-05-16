@@ -113,7 +113,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             createNeighborCache();
         }
         if (!structure.isFormed()) {
-            playersUsing.forEach(p -> p.closeScreen());
+            playersUsing.forEach(PlayerEntity::closeScreen);
 
             if (cachedID != null) {
                 getManager().updateCache(this, false);
@@ -324,7 +324,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        SyncMapper.setup(container, getMultiblock().getClass(), () -> getMultiblock());
+        SyncMapper.setup(container, getMultiblock().getClass(), this::getMultiblock);
     }
 
     @Nonnull

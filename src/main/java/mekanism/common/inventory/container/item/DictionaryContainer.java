@@ -22,7 +22,7 @@ public class DictionaryContainer extends MekanismItemContainer {
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
+    public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotID) {
         Slot slot = inventorySlots.get(slotID);
         return slot == null ? ItemStack.EMPTY : slot.getStack();
     }

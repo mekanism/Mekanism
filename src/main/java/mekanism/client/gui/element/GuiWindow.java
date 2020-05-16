@@ -122,7 +122,7 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     public void close() {
-        children.forEach(child -> child.onWindowClose());
+        children.forEach(GuiElement::onWindowClose);
         guiObj.removeWindow(this);
         if (guiObj instanceof GuiMekanism) {
             ((GuiMekanism<?>) guiObj).setFocused(null);

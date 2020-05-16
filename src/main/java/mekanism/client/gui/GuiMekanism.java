@@ -72,7 +72,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void tick() {
         super.tick();
-        children.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(child -> child.tick());
+        children.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
     }
 
     protected void initPreSlots() {

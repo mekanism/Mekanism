@@ -65,9 +65,9 @@ public class PacketQIOItemViewerGuiSync {
             buf.writeVarLong(pkt.countCapacity);
             buf.writeVarInt(pkt.typeCapacity);
             buf.writeVarInt(pkt.itemMap.size());
-            pkt.itemMap.entrySet().forEach(e -> {
-                buf.writeItemStack(e.getKey().getStack());
-                buf.writeVarLong(e.getValue());
+            pkt.itemMap.forEach((key, value) -> {
+                buf.writeItemStack(key.getStack());
+                buf.writeVarLong(value);
             });
         }
     }

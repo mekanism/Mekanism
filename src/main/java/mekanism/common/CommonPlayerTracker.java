@@ -85,9 +85,8 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void cloneEvent(PlayerEvent.Clone event) {
-        event.getOriginal().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(cap -> {
-            event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.deserializeNBT(cap.serializeNBT()));
-        });
+        event.getOriginal().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(cap ->
+            event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.deserializeNBT(cap.serializeNBT())));
     }
 
     @SubscribeEvent

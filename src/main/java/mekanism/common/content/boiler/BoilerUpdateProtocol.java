@@ -83,9 +83,9 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
         }
 
         if (!elements.isEmpty()) {
-            structure.superheatingElements = new Explorer(coord -> {
-                return coord.getY() < initDisperser.getY() && MekanismUtils.getTileEntity(TileEntitySuperheatingElement.class, pointer.getWorld(), coord) != null;
-            }).explore(elements.iterator().next());
+            structure.superheatingElements = new Explorer(coord ->
+                  coord.getY() < initDisperser.getY() && MekanismUtils.getTileEntity(TileEntitySuperheatingElement.class, pointer.getWorld(), coord) != null
+            ).explore(elements.iterator().next());
         }
 
         if (elements.size() > structure.superheatingElements) {
@@ -112,12 +112,12 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
         final BlockPos renderLocation = structure.renderLocation;
         final int volLength = structure.length;
         final int volWidth = structure.width;
-        structure.setWaterVolume(new Explorer(coord -> {
-            return coord.getY() >= renderLocation.getY() - 1 && coord.getY() < initDisperser.getY() &&
-                   coord.getX() >= renderLocation.getX() && coord.getX() < renderLocation.getX() + volLength &&
-                   coord.getZ() >= renderLocation.getZ() && coord.getZ() < renderLocation.getZ() + volWidth &&
-                   (pointer.getWorld().isAirBlock(coord) || checkNode(pointer.getWorld().getTileEntity(coord), false));
-        }).explore(initAir));
+        structure.setWaterVolume(new Explorer(coord ->
+              coord.getY() >= renderLocation.getY() - 1 && coord.getY() < initDisperser.getY() &&
+              coord.getX() >= renderLocation.getX() && coord.getX() < renderLocation.getX() + volLength &&
+              coord.getZ() >= renderLocation.getZ() && coord.getZ() < renderLocation.getZ() + volWidth &&
+              (pointer.getWorld().isAirBlock(coord) || checkNode(pointer.getWorld().getTileEntity(coord), false))
+        ).explore(initAir));
 
         //Make sure all air blocks are connected
         if (totalAir > structure.getWaterVolume()) {

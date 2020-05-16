@@ -145,7 +145,7 @@ public class ConfigInfo {
     }
 
     public Set<Direction> getAllOutputtingSides() {
-        return getSides(type -> type.canOutput());
+        return getSides(DataType::canOutput);
     }
 
     public Set<Direction> getSidesForOutput(DataType outputType) {

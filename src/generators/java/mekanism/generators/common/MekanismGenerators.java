@@ -49,8 +49,8 @@ public class MekanismGenerators implements IModule {
      */
     public static GeneratorsPacketHandler packetHandler = new GeneratorsPacketHandler();
 
-    public static MultiblockManager<TurbineMultiblockData> turbineManager = new MultiblockManager<>("industrialTurbine", () -> new TurbineCache());
-    public static MultiblockManager<FissionReactorMultiblockData> fissionReactorManager = new MultiblockManager<>("fissionReactor", () -> new FissionReactorCache());
+    public static MultiblockManager<TurbineMultiblockData> turbineManager = new MultiblockManager<>("industrialTurbine", TurbineCache::new);
+    public static MultiblockManager<FissionReactorMultiblockData> fissionReactorManager = new MultiblockManager<>("fissionReactor", FissionReactorCache::new);
 
     public MekanismGenerators() {
         Mekanism.modulesLoaded.add(instance = this);

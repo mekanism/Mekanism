@@ -106,14 +106,14 @@ public abstract class MekanismContainer extends Container {
 
     public void startTracking(Object key, ISpecificContainerTracker tracker) {
         List<ISyncableData> list = tracker.getSpecificSyncableData();
-        list.forEach(data -> track(data));
+        list.forEach(this::track);
         specificTrackedData.put(key, list);
     }
 
     public void stopTracking(Object key) {
         List<ISyncableData> list = specificTrackedData.get(key);
         if (list != null) {
-            list.forEach(data -> trackedData.remove(data));
+            list.forEach(trackedData::remove);
             specificTrackedData.remove(key);
         }
     }
@@ -125,7 +125,7 @@ public abstract class MekanismContainer extends Container {
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity player) {
+    public void onContainerClosed(@Nonnull PlayerEntity player) {
         super.onContainerClosed(player);
         closeInventory(player);
     }
@@ -176,7 +176,7 @@ public abstract class MekanismContainer extends Container {
      */
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
+    public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotID) {
         //TODO: Do we need any special handling to have this not do anything if we don't have an inventory or are an empty container?
         // Probably not given we then won't have any slots to actually add
         Slot currentSlot = inventorySlots.get(slotID);

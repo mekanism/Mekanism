@@ -1,5 +1,6 @@
 package mekanism.generators.common.content.fission;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,6 +23,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 
 public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorMultiblockData> {
 
@@ -115,7 +117,7 @@ public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorM
 
     public static class FuelAssembly {
 
-        public TreeSet<BlockPos> fuelAssemblies = new TreeSet<>((pos1, pos2) -> pos1.getY() - pos2.getY());
+        public TreeSet<BlockPos> fuelAssemblies = new TreeSet<>(Comparator.comparingInt(Vec3i::getY));
         public BlockPos controlRodAssembly;
 
         public FuelAssembly(BlockPos start, boolean isControlRod) {

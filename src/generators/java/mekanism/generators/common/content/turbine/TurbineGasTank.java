@@ -15,7 +15,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 public class TurbineGasTank extends MultiblockGasTank<TurbineMultiblockData> {
 
     public TurbineGasTank(TurbineMultiblockData multiblock, TileEntityTurbineCasing tile) {
-        super(multiblock, tile, () -> multiblock.getSteamCapacity(), gas -> gas == MekanismGases.STEAM.getGas());
+        super(multiblock, tile, multiblock::getSteamCapacity, gas -> gas == MekanismGases.STEAM.getGas());
     }
 
     @Override
