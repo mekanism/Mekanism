@@ -51,6 +51,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addDusts();
         addGems();
         addFluids();
+        addGasTags();
         addSlurryTags();
         addInfuseTags();
         addPellets();
@@ -262,6 +263,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Fluids.SULFUR_TRIOXIDE, MekanismFluids.SULFUR_TRIOXIDE);
         addToTag(MekanismTags.Fluids.SULFURIC_ACID, MekanismFluids.SULFURIC_ACID);
         addToTag(MekanismTags.Fluids.HYDROFLUORIC_ACID, MekanismFluids.HYDROFLUORIC_ACID);
+    }
+
+    private void addGasTags() {
+        addToTag(MekanismTags.Gases.WATER_VAPOR, MekanismGases.WATER_VAPOR, MekanismGases.STEAM);
     }
 
     private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {
