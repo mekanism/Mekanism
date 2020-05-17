@@ -35,7 +35,7 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
 
     public FrequencyManager<FREQ> getPublicManager() {
         if (!type.supportsPublic()) {
-            Mekanism.logger.error("Attempted to access public frequency manager of type " + frequencyType.getName() + ". This shouldn't happen!");
+            Mekanism.logger.error("Attempted to access public frequency manager of type {}. This shouldn't happen!", frequencyType.getName());
             return null;
         }
 
@@ -44,7 +44,7 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
 
     public FrequencyManager<FREQ> getPrivateManager(UUID ownerUUID) {
         if (!type.supportsPrivate()) {
-            Mekanism.logger.error("Attempted to access private frequency manager of type " + frequencyType.getName() + ". This shouldn't happen!");
+            Mekanism.logger.error("Attempted to access private frequency manager of type {}. This shouldn't happen!", frequencyType.getName());
             return null;
         }
 

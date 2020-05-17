@@ -19,15 +19,15 @@ public final class VoxelShapeUtils {
     private static final Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
 
     public static void print(double x1, double y1, double z1, double x2, double y2, double z2) {
-        Mekanism.logger.info("makeCuboidShape(" + Math.min(x1, x2) + ", " + Math.min(y1, y2) + ", " + Math.min(z1, z2) + ", " +
-                             Math.max(x1, x2) + ", " + Math.max(y1, y2) + ", " + Math.max(z1, z2) + "),");
+        Mekanism.logger.info("makeCuboidShape({}, {}, {}, {}, {}, {}),", Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
+              Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2));
     }
 
     /**
      * Prints out a set of strings that make copy pasting easier, for simplifying a voxel shape
      */
     public static void printSimplified(String name, VoxelShape shape) {
-        Mekanism.logger.info("Simplified: " + name);
+        Mekanism.logger.info("Simplified: {}", name);
         shape.simplify().toBoundingBoxList().forEach(box -> print(box.minX * 16, box.minY * 16, box.minZ * 16, box.maxX * 16, box.maxY * 16, box.maxZ * 16));
     }
 
@@ -284,7 +284,7 @@ public final class VoxelShapeUtils {
         //TODO: This is a decent way of calculating the true center point
         // We need to come up with a good way of doing things that have dimensions of things more than 1x1x1
         // And then create a custom shape for them
-        //Mekanism.logger.info("start: " + start + " end: " + end);
+        //Mekanism.logger.info("start: {} end: {}", start, end);
         //TODO: Create the shape creator automatically from information about width, height, depth? Or at least for the x and y differences
         // or maybe from the change in height etc
         float startX = start.x + shiftX;
@@ -368,7 +368,7 @@ public final class VoxelShapeUtils {
 
         int steps = (int) Math.ceil(Math.max(Math.max(Math.abs(xDif), Math.abs(yDif)), Math.abs(zDif)) * 4.0 / 3.0);
         //int steps = (int) Math.ceil(Math.max(Math.max(Math.abs(xDif), Math.abs(yDif)), Math.abs(zDif)) * 2);
-        //Mekanism.logger.info("Differences: " + xDif + ", " + yDif + ", " + zDif + " steps: " + steps);
+        //Mekanism.logger.info("Differences: {}, {}, {} steps: {}", xDif, yDif, zDif, steps);
         double tPartial = 1.0 / steps;
         //Mekanism.logger.info("x = {} + {} * t", xStart, xDif);
         //Mekanism.logger.info("y = {} + {} * t", yStart, yDif);

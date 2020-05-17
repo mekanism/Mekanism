@@ -63,11 +63,11 @@ public interface IGuiWrapper {
     }
 
     default void addWindow(GuiWindow window) {
-        Mekanism.logger.error("Tried to call 'addWindow' but unsupported in " + this);
+        Mekanism.logger.error("Tried to call 'addWindow' but unsupported in {}", getClass().getName());
     }
 
     default void removeWindow(GuiWindow window) {
-        Mekanism.logger.error("Tried to call 'removeWindow' but unsupported in " + this);
+        Mekanism.logger.error("Tried to call 'removeWindow' but unsupported in {}", getClass().getName());
     }
 
     @Nullable
@@ -82,26 +82,26 @@ public interface IGuiWrapper {
     ItemRenderer getItemRenderer();
 
     default void renderItemTooltip(@Nonnull ItemStack stack, int xAxis, int yAxis) {
-        Mekanism.logger.error("Tried to call 'renderItemTooltip' but unsupported in " + this);
+        Mekanism.logger.error("Tried to call 'renderItemTooltip' but unsupported in {}", getClass().getName());
     }
 
     default void renderItemWithOverlay(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
-        Mekanism.logger.error("Tried to call 'renderItemWithOverlay' but unsupported in " + this);
+        Mekanism.logger.error("Tried to call 'renderItemWithOverlay' but unsupported in {}", getClass().getName());
     }
 
     default void addFocusListener(GuiElement element) {
-        Mekanism.logger.error("Tried to call 'addFocusListener' but unsupported in " + this);
+        Mekanism.logger.error("Tried to call 'addFocusListener' but unsupported in {}", getClass().getName());
     }
 
     default void removeFocusListener(GuiElement element) {
-        Mekanism.logger.error("Tried to call 'removeFocusListener' but unsupported in " + this);
+        Mekanism.logger.error("Tried to call 'removeFocusListener' but unsupported in {}", getClass().getName());
     }
 
     default void focusChange(GuiElement changed) {
-        Mekanism.logger.error("Tried to call 'focusChange' but unsupported in " + this);
+        Mekanism.logger.error("Tried to call 'focusChange' but unsupported in {}", getClass().getName());
     }
 
     default void incrementFocus(GuiElement current) {
-        Mekanism.logger.error("Tried to call 'incrementFocus' but unsupported in " + this);
+        Mekanism.logger.error("Tried to call 'incrementFocus' but unsupported in {}", getClass().getName());
     }
 }

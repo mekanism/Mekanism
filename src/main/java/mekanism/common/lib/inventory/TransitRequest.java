@@ -108,7 +108,7 @@ public abstract class TransitRequest {
         return EMPTY;
     }
 
-    public class TransitResponse {
+    public static class TransitResponse {
 
         private final ItemStack inserted;
         private final ItemData slotData;
@@ -169,7 +169,7 @@ public abstract class TransitRequest {
         }
 
         public ItemStack use(int amount) {
-            Mekanism.logger.error("Can't 'use' with this type of TransitResponse: " + this);
+            Mekanism.logger.error("Can't 'use' with this type of TransitResponse: {}", getClass().getName());
             return ItemStack.EMPTY;
         }
     }
@@ -187,7 +187,7 @@ public abstract class TransitRequest {
             return slotData;
         }
 
-        public class SimpleItemData extends ItemData {
+        public static class SimpleItemData extends ItemData {
 
             public SimpleItemData(ItemStack stack) {
                 super(new HashedItem(stack));

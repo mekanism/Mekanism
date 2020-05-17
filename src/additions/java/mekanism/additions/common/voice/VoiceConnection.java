@@ -63,7 +63,7 @@ public class VoiceConnection extends Thread {
                     kill();
                     return;
                 } else {
-                    Mekanism.logger.info("VoiceServer: Traced IP in " + retryCount + " attempts.");
+                    Mekanism.logger.info("VoiceServer: Traced IP in {} attempts.", retryCount);
                 }
             }
         } catch (Exception e) {

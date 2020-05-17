@@ -297,7 +297,7 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTickHandler());
 
         //Initialization notification
-        logger.info("Version " + versionNumber + " initializing...");
+        logger.info("Version {} initializing...", versionNumber);
 
         //Register to receive subscribed events
         MinecraftForge.EVENT_BUS.register(this);
@@ -315,7 +315,7 @@ public class Mekanism {
         proxy.init();
 
         //Fake player info
-        logger.info("Fake player readout: UUID = " + gameProfile.getId().toString() + ", name = " + gameProfile.getName());
+        logger.info("Fake player readout: UUID = {}, name = {}", gameProfile.getId(), gameProfile.getName());
 
         //Completion notification
         logger.info("Loading complete.");

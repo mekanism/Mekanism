@@ -63,7 +63,7 @@ public class PacketQIOItemViewerSlotInteract {
                         if (!remainder.isEmpty()) {
                             remainder = freq.addItem(remainder);
                             if (!remainder.isEmpty()) {
-                                Mekanism.logger.error("QIO shift-click transfer resulted in lost items (" + remainder + "). This shouldn't happen!");
+                                Mekanism.logger.error("QIO shift-click transfer resulted in lost items ({}). This shouldn't happen!", remainder);
                             }
                         }
                     } else if (message.type == Type.PUT) {
