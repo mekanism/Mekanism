@@ -102,7 +102,7 @@ public class CommonWorldTickHandler {
                     long zSeed = fmlRandom.nextLong() >> 2 + 1L;
                     fmlRandom.setSeed((xSeed * nextChunk.x + zSeed * nextChunk.z) ^ world.getSeed());
                     if (GenHandler.generate((ServerWorld) world, fmlRandom, nextChunk.x, nextChunk.z)) {
-                        Mekanism.logger.info("Regenerating ores at chunk " + nextChunk);
+                        Mekanism.logger.info("Regenerating ores at chunk {}", nextChunk);
                     }
                 }
                 if (chunksToGen.isEmpty()) {

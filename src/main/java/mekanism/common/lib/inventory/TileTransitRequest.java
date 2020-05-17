@@ -64,9 +64,9 @@ public class TileTransitRequest extends TransitRequest {
                     ItemStack ret = handler.extractItem(entry.getIntKey(), toUse, false);
                     boolean stackable = InventoryUtils.areItemsStackable(getItemType().getStack(), ret);
                     if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
-                        Mekanism.logger.warn("An inventory's returned content " + (!stackable ? "type" : "count") + " does not line up with InvStack's prediction.");
-                        Mekanism.logger.warn("InvStack item: " + getItemType().getStack() + ", ret: " + ret);
-                        Mekanism.logger.warn("Tile: " + tile + " " + tile.getPos());
+                        Mekanism.logger.warn("An inventory's returned content {} does not line up with InvStack's prediction.", !stackable ? "type" : "count");
+                        Mekanism.logger.warn("InvStack item: {}, ret: {}", getItemType().getStack(), ret);
+                        Mekanism.logger.warn("Tile: {} {}", tile, tile.getPos());
                     }
                     amount -= toUse;
                     totalCount -= amount;

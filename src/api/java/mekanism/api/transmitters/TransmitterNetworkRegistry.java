@@ -118,7 +118,7 @@ public class TransmitterNetworkRegistry {
 
     public void removeInvalidTransmitters() {
         if (MekanismAPI.debug && !invalidTransmitters.isEmpty()) {
-            logger.info("Dealing with " + invalidTransmitters.size() + " invalid Transmitters");
+            logger.info("Dealing with {} invalid Transmitters", invalidTransmitters.size());
         }
 
         for (IGridTransmitter<?, ?, ?> invalid : invalidTransmitters) {
@@ -138,7 +138,7 @@ public class TransmitterNetworkRegistry {
         newOrphanTransmitters.clear();
 
         if (MekanismAPI.debug && !orphanTransmitters.isEmpty()) {
-            logger.info("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
+            logger.info("Dealing with {} orphan Transmitters", orphanTransmitters.size());
         }
 
         for (IGridTransmitter<?, ?, ?> orphanTransmitter : new Object2ObjectOpenHashMap<>(orphanTransmitters).values()) {
@@ -161,19 +161,19 @@ public class TransmitterNetworkRegistry {
             switch (finder.networksFound.size()) {
                 case 0:
                     if (MekanismAPI.debug) {
-                        logger.info("No networks found. Creating new network for " + finder.connectedTransmitters.size() + " transmitters");
+                        logger.info("No networks found. Creating new network for {} transmitters", finder.connectedTransmitters.size());
                     }
                     network = startOrphan.createEmptyNetwork();
                     break;
                 case 1:
                     if (MekanismAPI.debug) {
-                        logger.info("Adding " + finder.connectedTransmitters.size() + " transmitters to single found network");
+                        logger.info("Adding {} transmitters to single found network", finder.connectedTransmitters.size());
                     }
                     network = finder.networksFound.iterator().next();
                     break;
                 default:
                     if (MekanismAPI.debug) {
-                        logger.info("Merging " + finder.networksFound.size() + " networks with " + finder.connectedTransmitters.size() + " new transmitters");
+                        logger.info("Merging {} networks with {} new transmitters", finder.networksFound.size(), finder.connectedTransmitters.size());
                     }
                     //TODO: Should we take one of the existing network's uuids?
                     network = startOrphan.mergeNetworks(finder.networksFound);

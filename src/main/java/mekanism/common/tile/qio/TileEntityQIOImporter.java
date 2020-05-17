@@ -85,8 +85,8 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             ItemStack used = TransporterManager.getToUse(stack, freq.addItem(stack));
             ItemStack ret = inventory.extractItem(i, used.getCount(), false);
             if (!InventoryUtils.areItemsStackable(used, ret) || used.getCount() != ret.getCount()) {
-                Mekanism.logger.error("QIO insertion error: item handler " + back + " returned " + stack + " during simulated extraction, "
-                                      + "but returned " + ret + " during execution. This is wrong!");
+                Mekanism.logger.error("QIO insertion error: item handler {} returned {} during simulated extraction, "
+                                      + "but returned {} during execution. This is wrong!", back, stack, ret);
             }
             typesAdded.add(type);
             countAdded += used.getCount();

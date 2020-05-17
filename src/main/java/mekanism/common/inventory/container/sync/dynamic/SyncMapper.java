@@ -67,7 +67,7 @@ public class SyncMapper {
         try {
             buildSyncMap(clazz, cache);
         } catch (Throwable e) {
-            Mekanism.logger.error("Failed to create sync map for " + clazz.getName());
+            Mekanism.logger.error("Failed to create sync map for {}", clazz.getName());
             e.printStackTrace();
         }
         return cache;
@@ -99,7 +99,7 @@ public class SyncMapper {
                 } else if (field.getType().isEnum()) {
                     newField = new PropertyField(new EnumFieldData(createGetter(field, clazz, syncData), createSetter(field, clazz, syncData), field.getType()));
                 } else {
-                    Mekanism.logger.error("Attempted to sync an invalid field '" + field.getName() + "'");
+                    Mekanism.logger.error("Attempted to sync an invalid field '{}'", field.getName());
                     continue;
                 }
 
@@ -113,7 +113,7 @@ public class SyncMapper {
         for (SpecialPropertyData data : handler.specialData) {
             PropertyType type = PropertyType.getFromType(data.propertyType);
             if (type == null) {
-                Mekanism.logger.error("Tried to create special property data from invalid type '" + data.valueType + "'.");
+                Mekanism.logger.error("Tried to create special property data from invalid type '{}'.", data.valueType);
                 return null;
             }
             Function<Object, Object> fieldGetter = createGetter(field, objType, syncData);

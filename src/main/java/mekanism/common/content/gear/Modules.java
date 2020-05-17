@@ -142,7 +142,7 @@ public class Modules {
 
         MODULE module = type.get(container);
         if (module == null) {
-            Mekanism.logger.error("Attempted to load unknown module type '" + type + "' from container " + container.getItem());
+            Mekanism.logger.error("Attempted to load unknown module type '{}' from container {}", type, container.getItem());
         }
 
         module.read(modulesTag.getCompound(type.getName()));
