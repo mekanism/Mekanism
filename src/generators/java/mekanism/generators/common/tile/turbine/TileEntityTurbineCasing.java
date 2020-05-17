@@ -34,7 +34,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
 
     @Nonnull
     @Override
-    public TurbineMultiblockData getNewStructure() {
+    public TurbineMultiblockData createMultiblock() {
         return new TurbineMultiblockData(this);
     }
 

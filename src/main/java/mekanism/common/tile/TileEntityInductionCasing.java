@@ -26,7 +26,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
 
     @Nonnull
     @Override
-    public MatrixMultiblockData getNewStructure() {
+    public MatrixMultiblockData createMultiblock() {
         return new MatrixMultiblockData(this);
     }
 

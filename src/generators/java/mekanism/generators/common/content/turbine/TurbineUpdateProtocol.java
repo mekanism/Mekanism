@@ -1,7 +1,7 @@
 package mekanism.generators.common.content.turbine;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.tank.TankUpdateProtocol;
@@ -156,7 +156,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
 
         BlockPos startCoord = complex.offset(Direction.UP);
         if (MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), startCoord) != null) {
-            structure.coils = new Explorer(coord -> MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), coord) != null).explore(startCoord);
+            structure.coils = UpdateProtocol.explore(startCoord, coord -> MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), coord) != null);
         }
 
         if (coils.size() > structure.coils) {

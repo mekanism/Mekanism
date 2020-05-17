@@ -1,7 +1,7 @@
 package mekanism.common.content.boiler;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -83,9 +83,9 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
         }
 
         if (!elements.isEmpty()) {
-            structure.superheatingElements = new Explorer(coord ->
+            structure.superheatingElements = UpdateProtocol.explore(elements.iterator().next(), coord ->
                   coord.getY() < initDisperser.getY() && MekanismUtils.getTileEntity(TileEntitySuperheatingElement.class, pointer.getWorld(), coord) != null
-            ).explore(elements.iterator().next());
+            );
         }
 
         if (elements.size() > structure.superheatingElements) {
@@ -100,7 +100,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
             for (int y = structure.renderLocation.getY(); y < initDisperser.getY(); y++) {
                 for (int z = structure.renderLocation.getZ(); z < structure.renderLocation.getZ() + structure.width; z++) {
                     BlockPos airPos = new BlockPos(x, y, z);
-                    if (pointer.getWorld().isAirBlock(airPos) || checkNode(pointer.getWorld().getTileEntity(airPos), false)) {
+                    if (pointer.getWorld().isAirBlock(airPos) || checkNode(pointer.getWorld().getTileEntity(airPos))) {
                         initAir = airPos;
                         totalAir++;
                     }
@@ -112,12 +112,11 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
         final BlockPos renderLocation = structure.renderLocation;
         final int volLength = structure.length;
         final int volWidth = structure.width;
-        structure.setWaterVolume(new Explorer(coord ->
+        structure.setWaterVolume(UpdateProtocol.explore(initAir, coord ->
               coord.getY() >= renderLocation.getY() - 1 && coord.getY() < initDisperser.getY() &&
               coord.getX() >= renderLocation.getX() && coord.getX() < renderLocation.getX() + volLength &&
               coord.getZ() >= renderLocation.getZ() && coord.getZ() < renderLocation.getZ() + volWidth &&
-              (pointer.getWorld().isAirBlock(coord) || checkNode(pointer.getWorld().getTileEntity(coord), false))
-        ).explore(initAir));
+              (pointer.getWorld().isAirBlock(coord) || checkNode(pointer.getWorld().getTileEntity(coord)))));
 
         //Make sure all air blocks are connected
         if (totalAir > structure.getWaterVolume()) {

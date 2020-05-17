@@ -1,9 +1,9 @@
 package mekanism.generators.common.content.fission;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -123,7 +123,7 @@ public class FissionReactorMultiblockData extends MultiblockData {
         boolean needsPacket = super.tick(world);
         // burn reactor fuel, create energy
         if (isActive()) {
-            burnFuel();
+            burnFuel(world);
         } else {
             lastBurnRate = 0;
         }
@@ -179,8 +179,8 @@ public class FissionReactorMultiblockData extends MultiblockData {
                     radiation += wasteTank.getStored() * wasteTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
                 }
                 radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
-                Mekanism.radiationManager.radiate(new Coord4D(getCenter(), getWorld()), radiation);
-                Mekanism.radiationManager.createMeltdown(world, new Coord4D(minLocation, getWorld()), new Coord4D(maxLocation, getWorld()), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
+                Mekanism.radiationManager.radiate(new Coord4D(getCenter(), world), radiation);
+                Mekanism.radiationManager.createMeltdown(world, new Coord4D(minLocation, world), new Coord4D(maxLocation, world), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
             }
         }
     }
@@ -243,7 +243,7 @@ public class FissionReactorMultiblockData extends MultiblockData {
         return Math.min(1, avgSurfaceArea / MekanismGeneratorsConfig.generators.fissionSurfaceAreaTarget.get());
     }
 
-    public void burnFuel() {
+    public void burnFuel(World world) {
         double storedFuel = fuelTank.getStored() + burnRemaining;
         double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * BURN_PER_ASSEMBLY);
         storedFuel -= toBurn;
@@ -260,7 +260,7 @@ public class FissionReactorMultiblockData extends MultiblockData {
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0) {
                 double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();
-                Mekanism.radiationManager.radiate(new Coord4D(getCenter(), getWorld()), leftoverWaste * radioactivity);
+                Mekanism.radiationManager.radiate(new Coord4D(getCenter(), world), leftoverWaste * radioactivity);
             }
         }
         // update previous burn

@@ -27,7 +27,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
 
     @Nonnull
     @Override
-    public BoilerMultiblockData getNewStructure() {
+    public BoilerMultiblockData createMultiblock() {
         return new BoilerMultiblockData(this);
     }
 

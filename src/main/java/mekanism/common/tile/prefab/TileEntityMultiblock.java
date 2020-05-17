@@ -1,7 +1,5 @@
 package mekanism.common.tile.prefab;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,19 +13,17 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
-import mekanism.common.lib.mesh.IMeshNode;
-import mekanism.common.lib.mesh.Structure;
+import mekanism.common.lib.multiblock.Cuboid;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.lib.multiblock.UpdateProtocol;
+import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.lib.multiblock.UpdateProtocol.FormationResult;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -39,14 +35,11 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
-public abstract class TileEntityMultiblock<T extends MultiblockData> extends TileEntityMekanism implements IMultiblock<T>, IConfigurable, IMeshNode {
-
-    /**
-     * The multiblock data for this structure.
-     */
-    private T multiblock = getNewStructure();
+public abstract class TileEntityMultiblock<T extends MultiblockData> extends TileEntityMekanism implements IMultiblock<T>, IConfigurable {
 
     private Structure structure = Structure.INVALID;
+
+    private T defaultMultiblock = createMultiblock();
 
     /**
      * This multiblock's previous "has structure" state.
@@ -69,35 +62,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Nullable
     protected UUID cachedID = null;
 
-    /**
-     * If we've already run a protocol update that touches this block on this tick.
-     */
-    private boolean protocolUpdateThisTick;
-
-    private UpdateType updateRequested;
-
-    private final Map<BlockPos, BlockState> cachedNeighbors = new HashMap<>();
-
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
-    }
-
-    @Override
-    public void removeMultiblock() {
-        multiblock.remove(getWorld());
-        multiblock = getNewStructure();
-        invalidateCachedCapabilities();
-    }
-
-    @Override
-    public T getMultiblock() {
-        return multiblock;
-    }
-
-    @Override
-    public void setMultiblock(T multiblock) {
-        this.multiblock = multiblock;
     }
 
     @Override
@@ -108,6 +75,11 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public Structure getStructure() {
         return structure;
+    }
+
+    @Override
+    public T getDefaultData() {
+        return defaultMultiblock;
     }
 
     @Override
@@ -123,20 +95,12 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (ticker == 1 && cachedNeighbors.isEmpty()) {
-            createNeighborCache();
-        }
-        if (ticker >= 1) {
-            structure.tick(this);
-        }
-        if (!multiblock.isFormed()) {
+        structure.tick(this);
+        if (!getMultiblock().isFormed()) {
             playersUsing.forEach(PlayerEntity::closeScreen);
 
             if (cachedID != null) {
                 getManager().updateCache(this);
-            }
-            if (ticker == 3) {
-                updateRequested = UpdateType.INITIAL;
             }
             if (prevStructure) {
                 structureChanged();
@@ -148,13 +112,12 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 structureChanged();
                 prevStructure = true;
             }
-            multiblock.didUpdateThisTick = false;
-            if (multiblock.inventoryID != null) {
-                cachedData.sync(multiblock);
-                cachedID = multiblock.inventoryID;
+            if (getMultiblock().inventoryID != null) {
+                cachedData.sync(getMultiblock());
+                cachedID = getMultiblock().inventoryID;
                 getManager().updateCache(this);
                 if (isRendering) {
-                    if (multiblock.tick(world)) {
+                    if (getMultiblock().tick(world)) {
                         sendUpdatePacket();
                     }
                     // mark the chunk dirty each tick to make sure we save
@@ -162,25 +125,21 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 }
             }
         }
-
-        if (ticker >= 5 && updateRequested != null) {
-            runUpdate();
-        }
-        protocolUpdateThisTick = false;
     }
 
     private void structureChanged() {
-        if (multiblock.isFormed() && !multiblock.hasRenderer) {
-            multiblock.hasRenderer = true;
+        invalidateCachedCapabilities();
+        if (getMultiblock().isFormed() && !getMultiblock().hasRenderer) {
+            getMultiblock().hasRenderer = true;
             isRendering = true;
             //Force update the structure's comparator level as it may be incorrect due to not having a capacity while unformed
-            multiblock.forceUpdateComparatorLevel();
+            getMultiblock().forceUpdateComparatorLevel();
             //If we are the block that is rendering the structure make sure to tell all the valves to update their comparator levels
-            multiblock.notifyAllUpdateComparator(world);
+            getMultiblock().notifyAllUpdateComparator(world);
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos pos = getPos().offset(side);
-            if (!multiblock.isFormed() || (!multiblock.locations.contains(pos) && !multiblock.internalLocations.contains(pos))) {
+            if (!getMultiblock().isFormed() || (!getMultiblock().locations.contains(pos) && !getMultiblock().internalLocations.contains(pos))) {
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);
                 if (!world.isAirBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
                     MekanismUtils.notifyNeighborofChange(world, pos, getPos());
@@ -188,7 +147,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             }
         }
         sendUpdatePacket();
-        if (!multiblock.isFormed()) {
+        if (!getMultiblock().isFormed()) {
             //If we have no structure just mark the comparator as dirty for each block,
             // this will only perform neighbor updates if the block supports comparators
             markDirtyComparator();
@@ -196,55 +155,23 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void markUpdated() {
-        protocolUpdateThisTick = true;
-    }
-
-    @Override
-    public boolean updatedThisTick() {
-        return protocolUpdateThisTick;
-    }
-
-    @Override
-    public void requestUpdate(BlockPos neighborPos, UpdateType type) {
-        if (!isRemote() && (type == UpdateType.FORCE || shouldUpdate(neighborPos))) {
-            updateRequested = type;
+    public FormationResult runUpdate(UpdateType updateRequested, Cuboid cuboid) {
+        if (getMultiblock().isFormed() && getMultiblock().inventoryID != null) {
+            // update the cache before we destroy the multiblock
+            cachedData.sync(getMultiblock());
+            cachedID = getMultiblock().inventoryID;
+            getManager().updateCache(this);
         }
-    }
-
-    private void runUpdate() {
-        if (!protocolUpdateThisTick && (!multiblock.isFormed() || !multiblock.didUpdateThisTick)) {
-            if (multiblock.isFormed() && multiblock.inventoryID != null) {
-                // update the cache before we destroy the multiblock
-                cachedData.sync(multiblock);
-                cachedID = multiblock.inventoryID;
-                getManager().updateCache(this);
-            }
-            getProtocol().doUpdate(updateRequested);
-            if (multiblock.isFormed()) {
-                multiblock.didUpdateThisTick = true;
-            }
-        }
-        updateRequested = null;
-    }
-
-    @Override
-    public Map<BlockPos, BlockState> getNeighborCache() {
-        return cachedNeighbors;
+        return getProtocol().doUpdate(updateRequested, cuboid);
     }
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (player.isSneaking() || !multiblock.isFormed()) {
+        if (player.isSneaking() || !getMultiblock().isFormed()) {
             return ActionResultType.PASS;
         }
         return openGui(player);
     }
-
-    @Nonnull
-    public abstract T getNewStructure();
-
-    public abstract UpdateProtocol<T> getProtocol();
 
     @Override
     public void remove() {
@@ -260,7 +187,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     private void unload() {
         if (!world.isRemote()) {
-            structure.invalidate();
+            structure.invalidate(world);
             if (cachedID != null) {
                 getManager().invalidate(this);
             }
@@ -269,7 +196,6 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @Override
     public void resetCache() {
-        this.onChunkUnloaded();
         cachedID = null;
         cachedData = getManager().getNewCache();
     }
@@ -289,16 +215,16 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.putBoolean(NBTConstants.RENDERING, isRendering);
-        updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, multiblock.isFormed());
-        if (multiblock.isFormed() && isRendering) {
-            updateTag.putInt(NBTConstants.HEIGHT, multiblock.height);
-            updateTag.putInt(NBTConstants.WIDTH, multiblock.width);
-            updateTag.putInt(NBTConstants.LENGTH, multiblock.length);
-            if (multiblock.renderLocation != null) {
-                updateTag.put(NBTConstants.RENDER_LOCATION, NBTUtil.writeBlockPos(multiblock.renderLocation));
+        updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, getMultiblock().isFormed());
+        if (getMultiblock().isFormed() && isRendering) {
+            updateTag.putInt(NBTConstants.HEIGHT, getMultiblock().height);
+            updateTag.putInt(NBTConstants.WIDTH, getMultiblock().width);
+            updateTag.putInt(NBTConstants.LENGTH, getMultiblock().length);
+            if (getMultiblock().renderLocation != null) {
+                updateTag.put(NBTConstants.RENDER_LOCATION, NBTUtil.writeBlockPos(getMultiblock().renderLocation));
             }
-            if (multiblock.inventoryID != null) {
-                updateTag.putUniqueId(NBTConstants.INVENTORY_ID, multiblock.inventoryID);
+            if (getMultiblock().inventoryID != null) {
+                updateTag.putUniqueId(NBTConstants.INVENTORY_ID, getMultiblock().inventoryID);
             }
         }
         return updateTag;
@@ -308,33 +234,33 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isRendering = value);
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> multiblock.setFormedForce(value));
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> getMultiblock().setFormedForce(value));
         if (isRendering) {
-            if (multiblock.isFormed()) {
-                NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> multiblock.height = value);
-                NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> multiblock.width = value);
-                NBTUtils.setIntIfPresent(tag, NBTConstants.LENGTH, value -> multiblock.length = value);
-                NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> multiblock.renderLocation = value);
+            if (getMultiblock().isFormed()) {
+                NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> getMultiblock().height = value);
+                NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> getMultiblock().width = value);
+                NBTUtils.setIntIfPresent(tag, NBTConstants.LENGTH, value -> getMultiblock().length = value);
+                NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> getMultiblock().renderLocation = value);
                 if (tag.hasUniqueId(NBTConstants.INVENTORY_ID)) {
-                    multiblock.inventoryID = tag.getUniqueId(NBTConstants.INVENTORY_ID);
+                    getMultiblock().inventoryID = tag.getUniqueId(NBTConstants.INVENTORY_ID);
                 } else {
-                    multiblock.inventoryID = null;
+                    getMultiblock().inventoryID = null;
                 }
-                if (multiblock.renderLocation != null && !prevStructure) {
-                    Mekanism.proxy.doMultiblockSparkle(this, multiblock.renderLocation, multiblock.length - 1, multiblock.width - 1, multiblock.height - 1);
+                if (getMultiblock().renderLocation != null && !prevStructure) {
+                    Mekanism.proxy.doMultiblockSparkle(this, getMultiblock().renderLocation, getMultiblock().length - 1, getMultiblock().width - 1, getMultiblock().height - 1);
                 }
             } else {
                 // this will consecutively be set on the server
                 isRendering = false;
             }
         }
-        prevStructure = multiblock.isFormed();
+        prevStructure = getMultiblock().isFormed();
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (!multiblock.isFormed() && nbtTags.hasUniqueId(NBTConstants.INVENTORY_ID)) {
+        if (!getMultiblock().isFormed() && nbtTags.hasUniqueId(NBTConstants.INVENTORY_ID)) {
             cachedID = nbtTags.getUniqueId(NBTConstants.INVENTORY_ID);
             cachedData.load(nbtTags);
         }
@@ -346,8 +272,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         super.write(nbtTags);
         if (cachedID != null) {
             nbtTags.putUniqueId(NBTConstants.INVENTORY_ID, cachedID);
-            if (multiblock.isFormed()) {
-                cachedData.sync(multiblock);
+            if (getMultiblock().isFormed()) {
+                cachedData.sync(getMultiblock());
             }
             cachedData.save(nbtTags);
         }
@@ -363,11 +289,11 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        if (getMultiblock().isFormed() && isRendering && multiblock.renderLocation != null) {
+        if (getMultiblock().isFormed() && isRendering && getMultiblock().renderLocation != null) {
             //TODO: Eventually we may want to look into caching this
-            BlockPos corner1 = multiblock.renderLocation;
+            BlockPos corner1 = getMultiblock().renderLocation;
             //height - 2 up, but then we go up one further to take into account that block
-            BlockPos corner2 = corner1.east(multiblock.length + 1).south(multiblock.width + 1).up(multiblock.height - 1);
+            BlockPos corner2 = corner1.east(getMultiblock().length + 1).south(getMultiblock().width + 1).up(getMultiblock().height - 1);
             //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
             // how the specific multiblock wants to render, that it is being viewed
             return new AxisAlignedBB(corner1, corner2);
@@ -383,13 +309,13 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        return side -> multiblock.getInventorySlots(side);
+        return side -> getMultiblock().getInventorySlots(side);
     }
 
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        if (!getWorld().isRemote() && !multiblock.isFormed()) {
-            FormationResult result = getProtocol().doUpdate(UpdateType.NORMAL);
+        if (!getWorld().isRemote() && !getMultiblock().isFormed()) {
+            FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
                 player.sendMessage(result.getResultText());
                 return ActionResultType.SUCCESS;

@@ -1,7 +1,7 @@
-package mekanism.common.lib.mesh;
+package mekanism.common.lib.multiblock;
 
 import java.util.Arrays;
-import mekanism.common.lib.mesh.Structure.Axis;
+import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.util.math.BlockPos;
 
 public class Plane {

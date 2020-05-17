@@ -1,15 +1,15 @@
 package mekanism.common.lib.multiblock;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
@@ -48,8 +48,6 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public UUID inventoryID;
 
-    public boolean didUpdateThisTick;
-
     public boolean hasRenderer;
 
     @Nullable//may be null if structure has not been fully sent
@@ -62,7 +60,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     private int currentRedstoneLevel;
 
-    private final Supplier<World> worldSupplier;
+    private BooleanSupplier remoteSupplier = () -> false;
 
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
     protected final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
@@ -71,7 +69,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
     public MultiblockData(TileEntity tile) {
-        worldSupplier = tile::getWorld;
+        remoteSupplier = () -> tile.getWorld().isRemote();
     }
 
     /**
@@ -127,6 +125,10 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         }
 
         forceUpdateComparatorLevel();
+    }
+
+    protected boolean isRemote() {
+        return remoteSupplier.getAsBoolean();
     }
 
     protected boolean shouldCap(CacheSubstance type) {
@@ -225,14 +227,6 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
             return BlockLocation.OUTSIDE;
         }
         return BlockLocation.WALLS;
-    }
-
-    public World getWorld() {
-        return worldSupplier.get();
-    }
-
-    public boolean isRemote() {
-        return getWorld().isRemote();
     }
 
     public boolean isFormed() {

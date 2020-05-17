@@ -40,7 +40,7 @@ public interface IValveHandler extends IMultiblockBase {
     }
 
     default void triggerValveTransfer() {
-        if (getMultiblock().isFormed()) {
+        if (getMultiblockData().isFormed()) {
             for (ValveData data : getValveData()) {
                 if (getPos().equals(data.location)) {
                     data.onTransfer();
@@ -51,7 +51,7 @@ public interface IValveHandler extends IMultiblockBase {
     }
 
     default Collection<ValveData> getValveData() {
-        return getMultiblock().valves;
+        return getMultiblockData().valves;
     }
 
     class ValveData {

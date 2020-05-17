@@ -26,10 +26,9 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.lib.multiblock.IStructuralMultiblock;
+import mekanism.common.lib.multiblock.IMultiblockBase;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.base.TileEntityUpdateable;
-import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
@@ -117,11 +116,8 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
 
     @Nullable
     private MultiblockData getMultiblock(@Nonnull TileEntity tile) {
-        if (tile instanceof TileEntityMultiblock<?>) {
-            return ((TileEntityMultiblock<?>) tile).getMultiblock();
-        } else if (tile instanceof IStructuralMultiblock) {
-            IStructuralMultiblock structuralMultiblock = (IStructuralMultiblock) tile;
-            return structuralMultiblock.getMultiblock();
+        if (tile instanceof IMultiblockBase) {
+            return ((IMultiblockBase) tile).getMultiblockData();
         }
         return null;
     }

@@ -1,6 +1,7 @@
-package mekanism.common.lib.mesh;
+package mekanism.common.lib.multiblock;
 
-import mekanism.common.lib.mesh.Structure.BlockPosBuilder;
+import mekanism.common.lib.multiblock.Structure.BlockPosBuilder;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public class Cuboid {
@@ -27,6 +28,38 @@ public class Cuboid {
 
     public int height() {
         return maxPos.getY() - minPos.getY() + 1;
+    }
+
+    public BlockPos getMinPos() {
+        return minPos;
+    }
+
+    public BlockPos getMaxPos() {
+        return maxPos;
+    }
+
+    public Direction getSide(BlockPos pos) {
+        if (pos.getX() == minPos.getX()) {
+            return Direction.WEST;
+        } else if (pos.getX() == maxPos.getX()) {
+            return Direction.EAST;
+        } else if (pos.getY() == minPos.getY()) {
+            return Direction.DOWN;
+        } else if (pos.getY() == maxPos.getY()) {
+            return Direction.UP;
+        } else if (pos.getZ() == minPos.getZ()) {
+            return Direction.NORTH;
+        } else if (pos.getZ() == maxPos.getZ()) {
+            return Direction.SOUTH;
+        }
+        return null;
+    }
+
+    public boolean isEdge(BlockPos obj) {
+        boolean xMatches = obj.getX() == minPos.getX() || obj.getX() == maxPos.getX();
+        boolean yMatches = obj.getY() == minPos.getY() || obj.getY() == maxPos.getY();
+        boolean zMatches = obj.getZ() == minPos.getZ() || obj.getZ() == maxPos.getZ();
+        return xMatches && yMatches || xMatches && zMatches || yMatches && zMatches;
     }
 
     public boolean greaterOrEqual(Cuboid other) {

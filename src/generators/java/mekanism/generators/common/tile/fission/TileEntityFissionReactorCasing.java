@@ -73,7 +73,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     @Override
-    public FissionReactorMultiblockData getNewStructure() {
+    public FissionReactorMultiblockData createMultiblock() {
         return new FissionReactorMultiblockData(this);
     }
 

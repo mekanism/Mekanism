@@ -46,7 +46,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
 
     @Nonnull
     @Override
-    public TankMultiblockData getNewStructure() {
+    public TankMultiblockData createMultiblock() {
         return new TankMultiblockData(this);
     }
 

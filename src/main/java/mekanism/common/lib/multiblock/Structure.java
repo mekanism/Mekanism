@@ -1,24 +1,23 @@
-package mekanism.common.lib.mesh;
+package mekanism.common.lib.multiblock;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import com.google.common.base.Function;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.lib.multiblock.MultiblockManager;
-import mekanism.common.lib.multiblock.UpdateProtocol.Explorer;
+import mekanism.common.lib.multiblock.IMultiblockBase.UpdateType;
+import mekanism.common.lib.multiblock.UpdateProtocol.FormationResult;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class Structure {
 
     public static final Structure INVALID = new Structure();
+    private static final Cuboid MIN_BOUNDS = new Cuboid(3, 3, 3);
 
-    private Map<BlockPos, IMeshNode> nodes = new Object2ObjectOpenHashMap<>();
+    private Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
     private Map<Axis, TreeMap<Integer, Plane>> planeMap = new Object2ObjectOpenHashMap<>();
 
     private boolean valid;
@@ -26,21 +25,41 @@ public class Structure {
     private long updateTimestamp;
     private boolean didUpdate;
 
-    private MultiblockData multiblock;
-    private Set<MultiblockManager<?>> managers = new ObjectOpenHashSet<>();
+    private MultiblockData multiblockData;
+    private Map<MultiblockManager<?>, IMultiblock<?>> controllers = new Object2ObjectOpenHashMap<>();
 
     private Structure() {}
 
-    public Structure(IMeshNode node) {
+    public Structure(IMultiblockBase node) {
         init(node);
         valid = true;
     }
 
-    private void init(IMeshNode node) {
+    private void init(IMultiblockBase node) {
         nodes.put(node.getPos(), node);
         for (Axis axis : Axis.AXES) {
             getAxisMap(axis).put(axis.getCoord(node.getPos()), new Plane(axis, node.getPos()));
         }
+        if (node instanceof IMultiblock) {
+            IMultiblock<?> multiblockTile = (IMultiblock<?>) node;
+            controllers.put(multiblockTile.getManager(), multiblockTile);
+        }
+    }
+
+    public MultiblockData getMultiblockData() {
+        return multiblockData;
+    }
+
+    public void setMultiblockData(MultiblockData multiblockData) {
+        this.multiblockData = multiblockData;
+    }
+
+    public IMultiblock<?> getController() {
+        return controllers.size() == 1 ? controllers.values().iterator().next() : null;
+    }
+
+    public IMultiblockBase getTile(BlockPos pos) {
+        return nodes.get(pos);
     }
 
     private TreeMap<Integer, Plane> getAxisMap(Axis axis) {
@@ -52,17 +71,29 @@ public class Structure {
         return ret;
     }
 
-    public <TILE extends TileEntity & IMeshNode> void tick(TILE tile) {
+    public <TILE extends TileEntity & IMultiblockBase> void tick(TILE tile) {
         if (!didUpdate && updateTimestamp == tile.getWorld().getGameTime() - 1) {
-            System.out.println(size() + " " + hashCode() + " " + fetchCuboid(new Cuboid(3, 3, 3)));
             didUpdate = true;
+            runUpdate(tile);
         }
         if (!isValid()) {
             validate(tile);
         }
     }
 
-    public void add(IMeshNode node) {
+    public <TILE extends TileEntity & IMultiblockBase> FormationResult runUpdate(TILE tile) {
+        if (getController() != null) {
+            Cuboid cuboid = fetchCuboid(MIN_BOUNDS);
+            if (cuboid != null && multiblockData == null) {
+                return getController().runUpdate(UpdateType.NORMAL, cuboid);
+            } else {
+                removeMultiblock(tile.getWorld());
+            }
+        }
+        return FormationResult.FAIL;
+    }
+
+    public void add(IMultiblockBase node) {
         if (!node.getStructure().isValid()) {
             node.resetStructure();
         }
@@ -85,6 +116,8 @@ public class Structure {
                     }
                 });
             }
+
+            controllers.putAll(s.controllers);
         }
     }
 
@@ -92,8 +125,16 @@ public class Structure {
         return valid;
     }
 
-    public void invalidate() {
+    public void invalidate(World world) {
+        removeMultiblock(world);
         valid = false;
+    }
+
+    public void removeMultiblock(World world) {
+        if (multiblockData != null) {
+            multiblockData.remove(world);
+            multiblockData = null;
+        }
     }
 
     public boolean contains(BlockPos pos) {
@@ -126,14 +167,14 @@ public class Structure {
         return prev;
     }
 
-    private static <TILE extends TileEntity & IMeshNode> void validate(TILE node) {
+    private static <TILE extends TileEntity & IMultiblockBase> void validate(TILE node) {
         node.resetStructure();
-        new Explorer(pos -> {
+        UpdateProtocol.explore(node.getPos(), pos -> {
             if (pos.equals(node.getPos()))
                 return true;
             TileEntity tile = MekanismUtils.getTileEntity(node.getWorld(), pos);
-            if (tile instanceof IMeshNode) {
-                IMeshNode adj = (IMeshNode) tile;
+            if (tile instanceof IMultiblockBase) {
+                IMultiblockBase adj = (IMultiblockBase) tile;
                 if (!adj.getStructure().isValid() || node.getStructure().size() > adj.getStructure().size()) {
                     node.getStructure().add(adj);
                 } else {
@@ -142,7 +183,7 @@ public class Structure {
                 return true;
             }
             return false;
-        }).explore(node.getPos());
+        });
 
         node.getStructure().updateTimestamp = node.getWorld().getGameTime();
         node.getStructure().didUpdate = false;

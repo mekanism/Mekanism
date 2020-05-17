@@ -40,9 +40,9 @@ public class MultiblockManager<T extends MultiblockData> {
         return tile.getMultiblock().inventoryID;
     }
 
-    public static boolean areCompatible(TileEntity tile, TileEntity reference) {
-        if (tile instanceof TileEntityMultiblock && reference instanceof TileEntityMultiblock) {
-            return ((TileEntityMultiblock<?>) tile).getManager() == ((TileEntityMultiblock<?>) reference).getManager();
+    public boolean isCompatible(TileEntity tile) {
+        if (tile instanceof IMultiblock) {
+            return ((IMultiblock<?>) tile).getManager() == this;
         }
         return false;
     }
@@ -94,21 +94,12 @@ public class MultiblockManager<T extends MultiblockData> {
     }
 
     public void updateCache(IMultiblock<T> tile) {
-        if (!inventories.containsKey(tile.getCacheID())) {
-            inventories.put(tile.getCacheID(), new CacheWrapper(tile.getCache(), Coord4D.get((TileEntity) tile)));
-        } else {
-            inventories.get(tile.getCacheID()).update(tile);
-        }
+        inventories.computeIfAbsent(tile.getCacheID(), id -> new CacheWrapper()).update(tile);
     }
 
     private class CacheWrapper {
         private MultiblockCache<T> cache;
         private Set<Coord4D> locations = new ObjectOpenHashSet<>();
-
-        public CacheWrapper(MultiblockCache<T> cache, Coord4D initPos) {
-            this.cache = cache;
-            locations.add(initPos);
-        }
 
         public MultiblockCache<T> getCache() {
             return cache;

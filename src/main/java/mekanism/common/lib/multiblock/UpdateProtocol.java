@@ -13,7 +13,6 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.multiblock.IMultiblockBase.UpdateType;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
-import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -28,15 +27,15 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
     /**
      * The original block the calculation is getting run from.
      */
-    public TileEntityMultiblock<T> pointer;
+    public IMultiblock<T> pointer;
 
-    public UpdateProtocol(TileEntityMultiblock<T> tile) {
+    public UpdateProtocol(IMultiblock<T> tile) {
         pointer = tile;
     }
 
-    public StructureResult buildStructure(BlockPos corner) {
-        BlockPos min = corner, max = traverse(corner, 0, Direction.EAST, Direction.UP, Direction.SOUTH);
-        T structure = getNewStructure();
+    public StructureResult buildStructure(Cuboid cuboid) {
+        BlockPos min = cuboid.getMinPos(), max = cuboid.getMaxPos();
+        T structure = pointer.createMultiblock();
         if (!structure.buildStructure(min, max)) {
             return fail(FormationResult.FAIL);
         }
@@ -52,12 +51,9 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                     BlockPos pos = new BlockPos(x, y, z);
                     if (x == min.getX() || x == max.getX() || y == min.getY() || y == max.getY() || z == min.getZ() || z == max.getZ()) {
                         CasingType type = getCasingType(pos);
-                        TileEntity tile = pointer.getWorld().getTileEntity(pos);
+                        IMultiblockBase tile = pointer.getStructure().getTile(pos);
                         // terminate if we encounter a node that already failed this tick
-                        if (tile instanceof IMultiblockBase && ((IMultiblockBase) tile).updatedThisTick()) {
-                            return fail(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos));
-                        }
-                        if (!checkNode(tile, true) || isFramePos(pos, min, max) && !type.isFrame()) {
+                        if (!checkNode((TileEntity) tile) || (cuboid.isEdge(pos) && !type.isFrame())) {
                             //If it is not a valid node or if it is supposed to be a frame but is invalid
                             // then we are not valid over all
                             return fail(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos));
@@ -70,15 +66,11 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                                     getManager().updateCache(multiblockTile);
                                     idsFound.add(uuid);
                                 }
-                                multiblockTile.setMultiblock(structure);
-                            } else if (tile instanceof IStructuralMultiblock) {
-                                ((IStructuralMultiblock) tile).setMultiblock(structure);
                             }
-
                             if (type.isValve()) {
                                 ValveData data = new ValveData();
                                 data.location = pos;
-                                data.side = getSide(data.location, min, max);
+                                data.side = cuboid.getSide(data.location);
                                 valves.add(data);
                             }
                             locations.add(pos);
@@ -98,38 +90,8 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         return result.isFormed() ? form(structure, idsFound) : fail(result);
     }
 
-    private BlockPos traverse(BlockPos orig, int dist, Direction... sides) {
-        if (dist + 1 > MAX_SIZE * 3) {
-            return null;
-        }
-        for (Direction side : sides) {
-            BlockPos offset = orig.offset(side);
-            if (checkNode(pointer.getWorld().getTileEntity(offset), false)) {
-                return traverse(offset, dist + 1, sides);
-            }
-        }
-        return orig;
-    }
-
     protected FormationResult validate(T structure, Set<BlockPos> innerNodes) {
         return FormationResult.SUCCESS;
-    }
-
-    public Direction getSide(BlockPos pos, BlockPos min, BlockPos max) {
-        if (pos.getX() == min.getX()) {
-            return Direction.WEST;
-        } else if (pos.getX() == max.getX()) {
-            return Direction.EAST;
-        } else if (pos.getY() == min.getY()) {
-            return Direction.DOWN;
-        } else if (pos.getY() == max.getY()) {
-            return Direction.UP;
-        } else if (pos.getZ() == min.getZ()) {
-            return Direction.NORTH;
-        } else if (pos.getZ() == max.getZ()) {
-            return Direction.SOUTH;
-        }
-        return null;
     }
 
     protected boolean isValidInnerNode(BlockPos pos) {
@@ -142,43 +104,26 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
      *
      * @return Whether or not the tile is a viable node for a multiblock structure
      */
-    protected boolean checkNode(TileEntity tile, boolean markUpdated) {
-        if (markUpdated && tile instanceof IMultiblockBase) {
-            ((IMultiblockBase) tile).markUpdated();
-        }
-        if (tile instanceof IStructuralMultiblock && ((IStructuralMultiblock) tile).canInterface(pointer)) {
+    protected boolean checkNode(TileEntity tile) {
+        if (tile instanceof IStructuralMultiblock && ((IStructuralMultiblock) tile).canInterface(getManager())) {
             return true;
         }
-        return MultiblockManager.areCompatible(tile, pointer);
-    }
-
-    private boolean isFramePos(BlockPos obj, BlockPos min, BlockPos max) {
-        boolean xMatches = obj.getX() == min.getX() || obj.getX() == max.getX();
-        boolean yMatches = obj.getY() == min.getY() || obj.getY() == max.getY();
-        boolean zMatches = obj.getZ() == min.getZ() || obj.getZ() == max.getZ();
-        return xMatches && yMatches || xMatches && zMatches || yMatches && zMatches;
+        return getManager().isCompatible(tile);
     }
 
     protected abstract CasingType getCasingType(BlockPos pos);
 
     protected abstract MultiblockManager<T> getManager();
 
-    protected T getNewStructure() {
-        return pointer.getNewStructure();
-    }
-
     /**
      * Runs the protocol and updates all nodes that make a part of the multiblock.
      */
-    public FormationResult doUpdate(UpdateType type) {
-        BlockPos corner = traverse(pointer.getPos(), 0, Direction.WEST, Direction.DOWN, Direction.NORTH);
-        if (corner == null) {
-            return FormationResult.FAIL;
-        }
-        StructureResult result = buildStructure(corner);
+    public FormationResult doUpdate(UpdateType type, Cuboid cuboid) {
+        StructureResult result = buildStructure(cuboid);
         T structureFound = result.structureFound;
 
         if (structureFound != null && structureFound.locations.contains(pointer.getPos())) {
+            pointer.setMultiblockData(structureFound);
             structureFound.setFormedForce(true);
             MultiblockCache<T> cache = getManager().getNewCache();
             MultiblockManager<T> manager = getManager();
@@ -203,13 +148,42 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
             structureFound.onCreated(pointer.getWorld());
             return FormationResult.SUCCESS;
         } else {
-            pointer.getMultiblock().remove(pointer.getWorld());
-            if (type == UpdateType.INITIAL) {
-                // run a traversal over connected multiblocks of the same type to make sure we don't re-run an update for every connected block
-                new Explorer(pos -> checkNode(pointer.getWorld().getTileEntity(pos), true)).explore(pointer.getPos());
-            }
+            pointer.getStructure().removeMultiblock(pointer.getWorld());
             return result.getFormationResult();
         }
+    }
+
+    protected static ITextComponent text(BlockPos pos) {
+        return MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public static int explore(BlockPos start, Predicate<BlockPos> checker) {
+        return explore(start, checker, MAX_SIZE * MAX_SIZE * MAX_SIZE);
+    }
+
+    public static int explore(BlockPos start, Predicate<BlockPos> checker, int maxCount) {
+        if (!checker.test(start)) {
+            return 0;
+        }
+
+        Queue<BlockPos> openSet = new LinkedList<>();
+        Set<BlockPos> traversed = new ObjectOpenHashSet<>();
+        openSet.add(start);
+        traversed.add(start);
+        while (!openSet.isEmpty()) {
+            BlockPos ptr = openSet.poll();
+            if (traversed.size() >= maxCount) {
+                return traversed.size();
+            }
+            for (Direction side : EnumUtils.DIRECTIONS) {
+                BlockPos offset = ptr.offset(side);
+                if (!traversed.contains(offset) && checker.test(offset)) {
+                    openSet.add(offset);
+                    traversed.add(offset);
+                }
+            }
+        }
+        return traversed.size();
     }
 
     public static class FormationResult {
@@ -264,50 +238,6 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
 
         private FormationResult getFormationResult() {
             return result;
-        }
-    }
-
-    protected static ITextComponent text(BlockPos pos) {
-        return MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ());
-    }
-
-    public static class Explorer {
-
-        protected Predicate<BlockPos> checker;
-        protected int maxCount;
-
-        public Explorer(Predicate<BlockPos> checker, int maxCount) {
-            this.checker = checker;
-            this.maxCount = maxCount;
-        }
-
-        public Explorer(Predicate<BlockPos> checker) {
-            this(checker, MAX_SIZE * MAX_SIZE * MAX_SIZE);
-        }
-
-        public int explore(BlockPos start) {
-            if (!checker.test(start)) {
-                return 0;
-            }
-
-            Queue<BlockPos> openSet = new LinkedList<>();
-            Set<BlockPos> traversed = new ObjectOpenHashSet<>();
-            openSet.add(start);
-            traversed.add(start);
-            while (!openSet.isEmpty()) {
-                BlockPos ptr = openSet.poll();
-                if (traversed.size() >= maxCount) {
-                    return traversed.size();
-                }
-                for (Direction side : EnumUtils.DIRECTIONS) {
-                    BlockPos offset = ptr.offset(side);
-                    if (!traversed.contains(offset) && checker.test(offset)) {
-                        openSet.add(offset);
-                        traversed.add(offset);
-                    }
-                }
-            }
-            return traversed.size();
         }
     }
 
