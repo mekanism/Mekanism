@@ -67,7 +67,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                                 IMultiblock<T> multiblockTile = (IMultiblock<T>) tile;
                                 UUID uuid = multiblockTile.getCacheID();
                                 if (uuid != null && multiblockTile.getManager() == getManager()) {
-                                    getManager().updateCache(multiblockTile, false);
+                                    getManager().updateCache(multiblockTile);
                                     idsFound.add(uuid);
                                 }
                                 multiblockTile.setMultiblock(structure);
@@ -271,7 +271,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         return MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ());
     }
 
-    protected static class Explorer {
+    public static class Explorer {
 
         protected Predicate<BlockPos> checker;
         protected int maxCount;

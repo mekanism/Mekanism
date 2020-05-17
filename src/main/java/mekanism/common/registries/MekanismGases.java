@@ -58,7 +58,7 @@ public class MekanismGases {
 
     public static class Coolants {
 
-        // Do not change this to directly reference IGasProvider objects. References are likely to be null at this point.
+        // Do not change this to directly reference IGasProvider objects. This prevents a circular reference loop.
         public static final CooledCoolant SODIUM_COOLANT = new CooledCoolant(() -> SUPERHEATED_SODIUM.get(), 5, 1);
         public static final HeatedCoolant HEATED_SODIUM_COOLANT = new HeatedCoolant(() -> SODIUM.get(), 5, 1);
     }

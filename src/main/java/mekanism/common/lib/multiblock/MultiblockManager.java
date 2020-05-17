@@ -1,12 +1,12 @@
 package mekanism.common.lib.multiblock;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
@@ -23,7 +23,7 @@ public class MultiblockManager<T extends MultiblockData> {
     /**
      * A map containing references to all multiblock inventory caches.
      */
-    public Map<UUID, MultiblockCache<T>> inventories = new Object2ObjectOpenHashMap<>();
+    public Map<UUID, CacheWrapper> inventories = new Object2ObjectOpenHashMap<>();
 
     public MultiblockManager(String name, Supplier<MultiblockCache<T>> cacheSupplier) {
         this.name = name;
@@ -54,7 +54,7 @@ public class MultiblockManager<T extends MultiblockData> {
     }
 
     public void invalidate(IMultiblock<?> multiblock) {
-        MultiblockCache<T> cache = inventories.get(multiblock.getCacheID());
+        CacheWrapper cache = inventories.get(multiblock.getCacheID());
         if (cache != null) {
             cache.locations.remove(Coord4D.get((TileEntity) multiblock));
             if (cache.locations.isEmpty()) {
@@ -73,7 +73,7 @@ public class MultiblockManager<T extends MultiblockData> {
      * @return correct multiblock inventory cache
      */
     public MultiblockCache<T> pullInventory(World world, UUID id) {
-        MultiblockCache<T> toReturn = inventories.get(id);
+        CacheWrapper toReturn = inventories.get(id);
         for (Coord4D obj : toReturn.locations) {
             TileEntity tile = MekanismUtils.getTileEntity(TileEntity.class, world, obj.getPos());
             if (tile instanceof IMultiblock) {
@@ -81,7 +81,7 @@ public class MultiblockManager<T extends MultiblockData> {
             }
         }
         inventories.remove(id);
-        return toReturn;
+        return toReturn.getCache();
     }
 
     /**
@@ -93,18 +93,30 @@ public class MultiblockManager<T extends MultiblockData> {
         return UUID.randomUUID();
     }
 
-    public void updateCache(IMultiblock<T> tile, boolean force) {
+    public void updateCache(IMultiblock<T> tile) {
         if (!inventories.containsKey(tile.getCacheID())) {
-            tile.getCache().locations.add(Coord4D.get((TileEntity) tile));
-            inventories.put(tile.getCacheID(), tile.getCache());
+            inventories.put(tile.getCacheID(), new CacheWrapper(tile.getCache(), Coord4D.get((TileEntity) tile)));
         } else {
-            MultiblockCache<T> cache = inventories.get(tile.getCacheID());
-            if (force) {
-                tile.getCache().locations = cache.locations;
-                inventories.put(tile.getCacheID(), tile.getCache());
-                cache = tile.getCache();
-            }
-            cache.locations.add(Coord4D.get((TileEntity) tile));
+            inventories.get(tile.getCacheID()).update(tile);
+        }
+    }
+
+    private class CacheWrapper {
+        private MultiblockCache<T> cache;
+        private Set<Coord4D> locations = new ObjectOpenHashSet<>();
+
+        public CacheWrapper(MultiblockCache<T> cache, Coord4D initPos) {
+            this.cache = cache;
+            locations.add(initPos);
+        }
+
+        public MultiblockCache<T> getCache() {
+            return cache;
+        }
+
+        public void update(IMultiblock<T> tile) {
+            locations.add(Coord4D.get((TileEntity) tile));
+            cache = tile.getCache();
         }
     }
 }

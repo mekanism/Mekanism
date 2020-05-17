@@ -1,14 +1,11 @@
 package mekanism.common.lib.multiblock;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -45,8 +42,6 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     private List<IGasTank> gasTanks = new ArrayList<>();
     private List<IEnergyContainer> energyContainers = new ArrayList<>();
     private List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
-
-    public Set<Coord4D> locations = new ObjectOpenHashSet<>();
 
     public void apply(T data) {
         for (CacheSubstance type : CacheSubstance.values()) {
