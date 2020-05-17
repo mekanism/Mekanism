@@ -31,12 +31,12 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         addButton(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return GeneratorsLang.GAS_BURN_RATE.translate(tile.getLastBurnRate());
+                return GeneratorsLang.GAS_BURN_RATE.translate(tile.getMultiblock().lastBurnRate);
             }
 
             @Override
             public double getLevel() {
-                return Math.min(1, tile.getLastBurnRate() / tile.getMaxBurnRate());
+                return Math.min(1, tile.getMultiblock().lastBurnRate / tile.getMaxBurnRate());
             }
         }, 5, 114, xSize - 12));
         addButton(rateLimitField = new GuiTextField(this, 77, 128, 49, 12));
@@ -66,13 +66,13 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         drawTitleText(GeneratorsLang.FISSION_REACTOR_STATS.translate(), 6);
         // heat stats
         drawTextScaledBound(GeneratorsLang.FISSION_HEAT_STATISTICS.translate(), 6, 20, 0x202020, xSize - 12);
-        drawTextScaledBound(GeneratorsLang.FISSION_HEAT_CAPACITY.translate(formatInt(tile.getHeatCapacity())), 6, 32, titleTextColor(), xSize - 12);
-        drawTextScaledBound(GeneratorsLang.FISSION_SURFACE_AREA.translate(formatInt(tile.getSurfaceArea())), 6, 42, titleTextColor(), xSize - 12);
+        drawTextScaledBound(GeneratorsLang.FISSION_HEAT_CAPACITY.translate(formatInt((int) tile.getMultiblock().heatCapacitor.getHeatCapacity())), 6, 32, titleTextColor(), xSize - 12);
+        drawTextScaledBound(GeneratorsLang.FISSION_SURFACE_AREA.translate(formatInt(tile.getMultiblock().surfaceArea)), 6, 42, titleTextColor(), xSize - 12);
         drawTextScaledBound(GeneratorsLang.FISSION_BOIL_EFFICIENCY.translate(tile.getBoilEfficiency()), 6, 52, titleTextColor(), xSize - 12);
         // fuel stats
         drawTextScaledBound(GeneratorsLang.FISSION_FUEL_STATISTICS.translate(), 6, 68, 0x202020, xSize - 12);
         drawTextScaledBound(GeneratorsLang.FISSION_MAX_BURN_RATE.translate(formatInt(tile.getMaxBurnRate())), 6, 80, titleTextColor(), xSize - 12);
-        drawTextScaledBound(GeneratorsLang.FISSION_RATE_LIMIT.translate(tile.getRateLimit()), 6, 90, titleTextColor(), xSize - 12);
+        drawTextScaledBound(GeneratorsLang.FISSION_RATE_LIMIT.translate(tile.getMultiblock().rateLimit), 6, 90, titleTextColor(), xSize - 12);
         drawTextScaledBound(GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 6, 104, titleTextColor(), xSize - 12);
         drawTextScaledBound(GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 6, 130, titleTextColor(), 69);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

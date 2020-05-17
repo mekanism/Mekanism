@@ -41,26 +41,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
         return Mekanism.boilerManager;
     }
 
-    public double getLastEnvironmentLoss() {
-        return getMultiblock().lastEnvironmentLoss;
-    }
-
-    public double getTemperature() {
-        return getMultiblock().getTotalTemperature();
-    }
-
-    public int getLastBoilRate() {
-        return getMultiblock().lastBoilRate;
-    }
-
-    public int getLastMaxBoil() {
-        return getMultiblock().lastMaxBoil;
-    }
-
-    public int getSuperheatingElements() {
-        return getMultiblock().superheatingElements;
-    }
-
     @Nonnull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
