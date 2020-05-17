@@ -1,6 +1,5 @@
 package mekanism.common.lib.multiblock;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
@@ -71,7 +71,6 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                                     idsFound.add(uuid);
                                 }
                                 multiblockTile.setMultiblock(structure);
-                                locations.add(pos);
                             } else if (tile instanceof IStructuralMultiblock) {
                                 ((IStructuralMultiblock) tile).setMultiblock(structure);
                             }
@@ -82,6 +81,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
                                 data.side = getSide(data.location, min, max);
                                 valves.add(data);
                             }
+                            locations.add(pos);
                         }
                     } else if (!isValidInnerNode(pos)) {
                         return fail(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos));
