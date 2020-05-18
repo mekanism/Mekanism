@@ -3,8 +3,8 @@ package mekanism.api.datagen.tag;
 import java.nio.file.Path;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
@@ -23,7 +23,7 @@ public abstract class GasTagsProvider extends ForgeRegistryTagProvider<Gas> {
 
     @Override
     protected void setCollection(TagCollection<Gas> collection) {
-        GasTags.setCollection(collection);
+        ChemicalTags.GAS.setCollection(collection);
     }
 
     @Nonnull

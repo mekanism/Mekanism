@@ -2,8 +2,8 @@ package mekanism.common.integration.projecte;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfuseTypeTags;
 import mekanism.api.chemical.infuse.InfusionStack;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NSSTag;
@@ -86,7 +86,7 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
     @Nonnull
     @Override
     protected TagCollection<InfuseType> getTagCollection() {
-        return InfuseTypeTags.getCollection();
+        return ChemicalTags.INFUSE_TYPE.getCollection();
     }
 
     @Override

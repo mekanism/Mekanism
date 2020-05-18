@@ -127,6 +127,8 @@ public final class NBTConstants {
     public static final String PARTIAL_WASTE = "partialWaste";
     public static final String PATH_TYPE = "pathType";
     public static final String PICKUP_DROPS = "dropPickup";
+    public static final String PIGMENT_NAME = "pigmentName";
+    public static final String PIGMENT_TANKS = "PigmentTanks";
     public static final String PLASMA_TEMP = "plasmaTemp";
     public static final String POSITION = "position";
     public static final String PROGRESS = "progress";

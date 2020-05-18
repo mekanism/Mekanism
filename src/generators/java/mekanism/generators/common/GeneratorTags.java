@@ -1,7 +1,7 @@
 package mekanism.generators.common;
 
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasTags;
 import mekanism.common.Mekanism;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tags.FluidTags;
@@ -29,7 +29,7 @@ public class GeneratorTags {
         public static final Tag<Gas> FUSION_FUEL = tag("fusion_fuel");
 
         private static Tag<Gas> tag(String name) {
-            return new GasTags.Wrapper(Mekanism.rl(name));
+            return ChemicalTags.gasTag(Mekanism.rl(name));
         }
     }
 }

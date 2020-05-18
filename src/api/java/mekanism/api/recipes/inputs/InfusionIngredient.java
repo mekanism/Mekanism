@@ -15,8 +15,8 @@ import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfuseTypeTags;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.providers.IInfuseTypeProvider;
 import net.minecraft.network.PacketBuffer;
@@ -95,7 +95,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
-            Tag<InfuseType> tag = InfuseTypeTags.getCollection().get(resourceLocation);
+            Tag<InfuseType> tag = ChemicalTags.INFUSE_TYPE.getCollection().get(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown infuse type tag '" + resourceLocation + "'");
             }
@@ -244,7 +244,7 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
         }
 
         public static Tagged read(PacketBuffer buffer) {
-            return new Tagged(new InfuseTypeTags.Wrapper(buffer.readResourceLocation()), buffer.readVarLong());
+            return new Tagged(ChemicalTags.infusionTag(buffer.readResourceLocation()), buffer.readVarLong());
         }
     }
 

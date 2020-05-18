@@ -4,10 +4,10 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasTags;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfuseTypeTags;
+import mekanism.api.chemical.pigment.Pigment;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -27,8 +27,9 @@ public final class TagType<TYPE extends IForgeRegistryEntry<TYPE>> {
     public static TagType<Block> BLOCK = new TagType<>("Block", "blocks", () -> ForgeRegistries.BLOCKS, BlockTags::setCollection);
     public static TagType<EntityType<?>> ENTITY_TYPE = new TagType<>("Entity Type", "entity_types", () -> ForgeRegistries.ENTITIES, EntityTypeTags::setCollection);
     public static TagType<Fluid> FLUID = new TagType<>("Fluid", "fluids", () -> ForgeRegistries.FLUIDS, FluidTags::setCollection);
-    public static TagType<Gas> GAS = new TagType<>("Gas", "gases", () -> MekanismAPI.GAS_REGISTRY, GasTags::setCollection);
-    public static TagType<InfuseType> INFUSE_TYPE = new TagType<>("Infuse Type", "infuse_types", () -> MekanismAPI.INFUSE_TYPE_REGISTRY, InfuseTypeTags::setCollection);
+    public static TagType<Gas> GAS = new TagType<>("Gas", "gases", () -> MekanismAPI.GAS_REGISTRY, ChemicalTags.GAS::setCollection);
+    public static TagType<InfuseType> INFUSE_TYPE = new TagType<>("Infuse Type", "infuse_types", () -> MekanismAPI.INFUSE_TYPE_REGISTRY, ChemicalTags.INFUSE_TYPE::setCollection);
+    public static TagType<Pigment> PIGMENT = new TagType<>("Pigment", "pigments", () -> MekanismAPI.PIGMENT_REGISTRY, ChemicalTags.PIGMENT::setCollection);
 
     private final Consumer<TagCollection<TYPE>> collectionSetter;
     private final Supplier<IForgeRegistry<TYPE>> registry;

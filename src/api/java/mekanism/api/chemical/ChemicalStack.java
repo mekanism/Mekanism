@@ -3,6 +3,8 @@ package mekanism.api.chemical;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.text.IHasTextComponent;
@@ -13,6 +15,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.IRegistryDelegate;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey {
 
     private boolean isEmpty;
@@ -20,7 +24,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     @Nonnull
     private final IRegistryDelegate<CHEMICAL> chemicalDelegate;
 
-    protected ChemicalStack(@Nonnull CHEMICAL chemical, long amount) {
+    protected ChemicalStack(CHEMICAL chemical, long amount) {
         this.chemicalDelegate = getDelegate(chemical);
         this.amount = amount;
         updateEmpty();
@@ -29,16 +33,12 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     /**
      * Used for checking the chemical is valid and registered.
      */
-    @Nonnull
     protected abstract IRegistryDelegate<CHEMICAL> getDelegate(CHEMICAL chemical);
 
-    @Nonnull
     protected abstract CHEMICAL getEmptyChemical();
 
-    @Nonnull
     public abstract ChemicalStack<CHEMICAL> copy();
 
-    @Nonnull
     public final CHEMICAL getType() {
         return isEmpty ? getEmptyChemical() : getRaw();
     }
@@ -50,11 +50,11 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      *
      * @return if the ChemicalStacks contain the same chemical type
      */
-    public boolean isTypeEqual(@Nonnull ChemicalStack<CHEMICAL> stack) {
+    public boolean isTypeEqual(ChemicalStack<CHEMICAL> stack) {
         return isTypeEqual(stack.getType());
     }
 
-    public boolean isTypeEqual(@Nonnull CHEMICAL chemical) {
+    public boolean isTypeEqual(CHEMICAL chemical) {
         return getType() == chemical;
     }
 
@@ -63,7 +63,6 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      *
      * @return The registry name of the stored chemical.
      */
-    @Nonnull
     public ResourceLocation getTypeRegistryName() {
         return getType().getRegistryName();
     }
@@ -79,7 +78,6 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return getType().getTint();
     }
 
-    @Nonnull
     public final CHEMICAL getRaw() {
         return chemicalDelegate.get();
     }
@@ -202,7 +200,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      *
      * @return true if this ChemicalStack contains the other ChemicalStack (same chemical and >= amount)
      */
-    public boolean contains(@Nonnull ChemicalStack<CHEMICAL> other) {
+    public boolean contains(ChemicalStack<CHEMICAL> other) {
         return isTypeEqual(other) && amount >= other.amount;
     }
 
@@ -213,7 +211,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      *
      * @return true if the two ChemicalStacks are exactly the same
      */
-    public boolean isStackIdentical(@Nonnull ChemicalStack<CHEMICAL> other) {
+    public boolean isStackIdentical(ChemicalStack<CHEMICAL> other) {
         return isTypeEqual(other) && amount == other.amount;
     }
 
