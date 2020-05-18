@@ -1,6 +1,8 @@
 package mekanism.api.chemical.gas;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
@@ -14,6 +16,8 @@ import net.minecraftforge.registries.IRegistryDelegate;
  *
  * @author aidancbrady
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class GasStack extends ChemicalStack<Gas> {
 
     public static final GasStack EMPTY = new GasStack(MekanismAPI.EMPTY_GAS, 0);
@@ -24,15 +28,14 @@ public class GasStack extends ChemicalStack<Gas> {
      * @param gasProvider - provides the gas type of the stack
      * @param amount      - amount of gas to be referenced in this GasStack
      */
-    public GasStack(@Nonnull IGasProvider gasProvider, long amount) {
+    public GasStack(IGasProvider gasProvider, long amount) {
         super(gasProvider.getGas(), amount);
     }
 
-    public GasStack(@Nonnull GasStack stack, long amount) {
+    public GasStack(GasStack stack, long amount) {
         this(stack.getType(), amount);
     }
 
-    @Nonnull
     @Override
     protected IRegistryDelegate<Gas> getDelegate(Gas gas) {
         if (MekanismAPI.GAS_REGISTRY.getKey(gas) == null) {
@@ -42,7 +45,6 @@ public class GasStack extends ChemicalStack<Gas> {
         return gas.delegate;
     }
 
-    @Nonnull
     @Override
     protected Gas getEmptyChemical() {
         return MekanismAPI.EMPTY_GAS;
@@ -55,8 +57,7 @@ public class GasStack extends ChemicalStack<Gas> {
      *
      * @return GasStack stored in the tag compound
      */
-    @Nonnull
-    public static GasStack readFromNBT(CompoundNBT nbtTags) {
+    public static GasStack readFromNBT(@Nullable CompoundNBT nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return EMPTY;
         }
@@ -85,7 +86,6 @@ public class GasStack extends ChemicalStack<Gas> {
      *
      * @return copied GasStack
      */
-    @Nonnull
     @Override
     public GasStack copy() {
         return new GasStack(this, getAmount());

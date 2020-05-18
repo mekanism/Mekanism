@@ -4,10 +4,10 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasTags;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfuseTypeTags;
+import mekanism.api.chemical.pigment.Pigment;
 import mekanism.common.Mekanism;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
@@ -205,7 +205,7 @@ public class MekanismTags {
         public static final Tag<Gas> WATER_VAPOR = tag("water_vapor");
 
         private static Tag<Gas> tag(String name) {
-            return new GasTags.Wrapper(Mekanism.rl(name));
+            return ChemicalTags.gasTag(Mekanism.rl(name));
         }
     }
 
@@ -220,7 +220,14 @@ public class MekanismTags {
         public static final Tag<InfuseType> TIN = tag("tin");
 
         private static Tag<InfuseType> tag(String name) {
-            return new InfuseTypeTags.Wrapper(Mekanism.rl(name));
+            return ChemicalTags.infusionTag(Mekanism.rl(name));
+        }
+    }
+
+    public static class Pigments {
+
+        private static Tag<Pigment> tag(String name) {
+            return ChemicalTags.pigmentTag(Mekanism.rl(name));
         }
     }
 }

@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Consumer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.Tag.Builder;
@@ -15,10 +16,12 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extends TagCollection<T> {
 
     private final IForgeRegistry<T> registry;
+    private final Consumer<TagCollection<T>> collectionSetter;
 
-    public ForgeRegistryTagCollection(IForgeRegistry<T> registry, String location, String type) {
+    public ForgeRegistryTagCollection(IForgeRegistry<T> registry, String location, String type, Consumer<TagCollection<T>> collectionSetter) {
         super(key -> Optional.ofNullable(registry.getValue(key)), location, false, type);
         this.registry = registry;
+        this.collectionSetter = collectionSetter;
     }
 
     public void write(PacketBuffer buffer) {
@@ -54,5 +57,9 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
             tagMap.put(resourceLocation, builder.build(resourceLocation));
         }
         this.toImmutable(tagMap);
+    }
+
+    public void setCollection() {
+        collectionSetter.accept(this);
     }
 }

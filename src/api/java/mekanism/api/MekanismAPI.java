@@ -5,6 +5,8 @@ import mekanism.api.chemical.gas.EmptyGas;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.EmptyInfuseType;
 import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.pigment.EmptyPigment;
+import mekanism.api.chemical.pigment.Pigment;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,6 +30,7 @@ public class MekanismAPI {
     //Static init both of our registries so that we don't have to deal with any race conditions while trying to use these via deferred registers
     public static IForgeRegistry<Gas> GAS_REGISTRY = new RegistryBuilder<Gas>().setName(new ResourceLocation(MEKANISM_MODID, "gas")).setType(Gas.class).create();
     public static IForgeRegistry<InfuseType> INFUSE_TYPE_REGISTRY = new RegistryBuilder<InfuseType>().setName(new ResourceLocation(MEKANISM_MODID, "infuse_type")).setType(InfuseType.class).create();
+    public static IForgeRegistry<Pigment> PIGMENT_REGISTRY = new RegistryBuilder<Pigment>().setName(new ResourceLocation(MEKANISM_MODID, "pigment")).setType(Pigment.class).create();
 
     /**
      * Mekanism debug mode
@@ -38,6 +41,8 @@ public class MekanismAPI {
     public static final Gas EMPTY_GAS = new EmptyGas();
     @Nonnull
     public static final InfuseType EMPTY_INFUSE_TYPE = new EmptyInfuseType();
+    @Nonnull
+    public static final Pigment EMPTY_PIGMENT = new EmptyPigment();
 
     @SubscribeEvent
     public static void registerGases(RegistryEvent.Register<Gas> event) {
@@ -49,5 +54,11 @@ public class MekanismAPI {
     public static void registerInfuseTypes(RegistryEvent.Register<InfuseType> event) {
         //Register EMPTY InfuseType
         event.getRegistry().register(EMPTY_INFUSE_TYPE);
+    }
+
+    @SubscribeEvent
+    public static void registerPigments(RegistryEvent.Register<Pigment> event) {
+        //Register EMPTY Pigment
+        event.getRegistry().register(EMPTY_PIGMENT);
     }
 }

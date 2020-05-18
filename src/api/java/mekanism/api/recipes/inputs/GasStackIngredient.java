@@ -15,9 +15,9 @@ import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.GasTags;
 import mekanism.api.providers.IGasProvider;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
@@ -95,7 +95,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
-            Tag<Gas> tag = GasTags.getCollection().get(resourceLocation);
+            Tag<Gas> tag = ChemicalTags.GAS.getCollection().get(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown gas tag '" + resourceLocation + "'");
             }
@@ -244,7 +244,7 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
         }
 
         public static Tagged read(PacketBuffer buffer) {
-            return new Tagged(new GasTags.Wrapper(buffer.readResourceLocation()), buffer.readVarLong());
+            return new Tagged(ChemicalTags.gasTag(buffer.readResourceLocation()), buffer.readVarLong());
         }
     }
 

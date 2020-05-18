@@ -1,14 +1,12 @@
 package mekanism.common.tags;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasTags;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfuseTypeTags;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketMekanismTags;
 import net.minecraft.network.PacketBuffer;
@@ -16,61 +14,69 @@ import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.Tag;
-import net.minecraft.tags.Tag.Builder;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class MekanismTagManager implements IFutureReloadListener {
 
-    private final ForgeRegistryTagCollection<Gas> gases = new ForgeRegistryTagCollection<>(MekanismAPI.GAS_REGISTRY, "tags/gases", "gas");
-    private final ForgeRegistryTagCollection<InfuseType> infuseTypes = new ForgeRegistryTagCollection<>(MekanismAPI.INFUSE_TYPE_REGISTRY,
-          "tags/infuse_types", "infuse_type");
+    private final List<ForgeRegistryTagCollection<?>> tagCollections = new ArrayList<>();
 
-    public ForgeRegistryTagCollection<Gas> getGases() {
-        return this.gases;
+    public MekanismTagManager() {
+        for (ManagedTagType<?> managedType : ManagedTagType.getManagedTypes()) {
+            tagCollections.add(managedType.getTagCollection());
+        }
     }
 
-    public ForgeRegistryTagCollection<InfuseType> getInfuseTypes() {
-        return this.infuseTypes;
+    @Override
+    public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler,
+          Executor backgroundExecutor, Executor gameExecutor) {
+        CompletableFuture<List<TagInfo<?>>> reloadResults = CompletableFuture.completedFuture(new ArrayList<>());
+        for (ForgeRegistryTagCollection<?> tagCollection : tagCollections) {
+            reloadResults = combine(reloadResults, tagCollection, resourceManager, backgroundExecutor);
+        }
+        return reloadResults.thenCompose(stage::markCompleteAwaitingOthers).thenAcceptAsync(results -> {
+            results.forEach(TagInfo::registerAndSet);
+            Mekanism.packetHandler.sendToAll(new PacketMekanismTags(Mekanism.instance.getTagManager()));
+        }, gameExecutor);
+    }
+
+    private <T extends IForgeRegistryEntry<T>> CompletableFuture<List<TagInfo<?>>> combine(CompletableFuture<List<TagInfo<?>>> reloadResults,
+          ForgeRegistryTagCollection<T> tagCollection, IResourceManager resourceManager, Executor backgroundExecutor) {
+        return reloadResults.thenCombine(tagCollection.reload(resourceManager, backgroundExecutor), (results, result) -> {
+            results.add(new TagInfo<>(tagCollection, result));
+            return results;
+        });
+    }
+
+    public void setCollections() {
+        tagCollections.forEach(ForgeRegistryTagCollection::setCollection);
     }
 
     public void write(PacketBuffer buffer) {
-        this.gases.write(buffer);
-        this.infuseTypes.write(buffer);
+        tagCollections.forEach(tagCollection -> tagCollection.write(buffer));
     }
 
     public static MekanismTagManager read(PacketBuffer buffer) {
         MekanismTagManager tagManager = new MekanismTagManager();
-        tagManager.getGases().read(buffer);
-        tagManager.getInfuseTypes().read(buffer);
+        tagManager.tagCollections.forEach(tagCollection -> tagCollection.read(buffer));
         return tagManager;
     }
 
-    @Nonnull
-    @Override
-    public CompletableFuture<Void> reload(@Nonnull IStage stage, @Nonnull IResourceManager resourceManager, @Nonnull IProfiler preparationsProfiler,
-          @Nonnull IProfiler reloadProfiler, @Nonnull Executor backgroundExecutor, @Nonnull Executor gameExecutor) {
-        //TODO: Modify this in a way that makes it easy to add a new type without having to screw around with the completable future
-        CompletableFuture<Map<ResourceLocation, Builder<Gas>>> gasReload = this.gases.reload(resourceManager, backgroundExecutor);
-        CompletableFuture<Map<ResourceLocation, Builder<InfuseType>>> infuseTypeReload = this.infuseTypes.reload(resourceManager, backgroundExecutor);
-        return gasReload.thenCombine(infuseTypeReload, ReloadResults::new)
-              .thenCompose(stage::markCompleteAwaitingOthers)
-              .thenAcceptAsync(reloadResults -> {
-                  this.gases.registerAll(reloadResults.gases);
-                  this.infuseTypes.registerAll(reloadResults.infuseTypes);
-                  GasTags.setCollection(this.gases);
-                  InfuseTypeTags.setCollection(this.infuseTypes);
-                  Mekanism.packetHandler.sendToAll(new PacketMekanismTags(Mekanism.instance.getTagManager()));
-              }, gameExecutor);
-    }
+    private static class TagInfo<T extends IForgeRegistryEntry<T>> {
 
-    public static class ReloadResults {
+        private final ForgeRegistryTagCollection<T> tagCollection;
+        private final Map<ResourceLocation, Tag.Builder<T>> results;
 
-        final Map<ResourceLocation, Tag.Builder<Gas>> gases;
-        final Map<ResourceLocation, Tag.Builder<InfuseType>> infuseTypes;
+        private TagInfo(ForgeRegistryTagCollection<T> tagCollection, Map<ResourceLocation, Tag.Builder<T>> result) {
+            this.tagCollection = tagCollection;
+            this.results = result;
+        }
 
-        public ReloadResults(Map<ResourceLocation, Tag.Builder<Gas>> gases, Map<ResourceLocation, Tag.Builder<InfuseType>> infuseTypes) {
-            this.gases = gases;
-            this.infuseTypes = infuseTypes;
+        private void registerAndSet() {
+            tagCollection.registerAll(results);
+            tagCollection.setCollection();
         }
     }
 }

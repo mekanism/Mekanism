@@ -3,8 +3,8 @@ package mekanism.api.datagen.tag;
 import java.nio.file.Path;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfuseTypeTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
@@ -23,7 +23,7 @@ public abstract class InfuseTypeTagsProvider extends ForgeRegistryTagProvider<In
 
     @Override
     protected void setCollection(TagCollection<InfuseType> collection) {
-        InfuseTypeTags.setCollection(collection);
+        ChemicalTags.INFUSE_TYPE.setCollection(collection);
     }
 
     @Nonnull

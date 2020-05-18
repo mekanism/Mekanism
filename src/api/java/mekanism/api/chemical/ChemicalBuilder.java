@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ChemicalBuilder<TYPE extends Chemical<TYPE>, BUILDER extends ChemicalBuilder<TYPE, BUILDER>> {
+public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extends ChemicalBuilder<CHEMICAL, BUILDER>> {
 
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
     private final ResourceLocation texture;

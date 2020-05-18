@@ -14,12 +14,14 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistryEntry<TYPE> implements IHasTextComponent, IHasTranslationKey {
+public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends ForgeRegistryEntry<CHEMICAL> implements IHasTextComponent, IHasTranslationKey {
 
+    private final ReverseTagWrapper<CHEMICAL> reverseTags;
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
 
     private final ResourceLocation iconLocation;
@@ -27,7 +29,8 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
 
     private String translationKey;
 
-    protected Chemical(ChemicalBuilder<TYPE, ?> builder) {
+    protected Chemical(ChemicalBuilder<CHEMICAL, ?> builder, ChemicalTags<CHEMICAL> chemicalTags) {
+        reverseTags = new ReverseTagWrapper<>((CHEMICAL) this, chemicalTags::getGeneration, chemicalTags::getCollection);
         this.attributeMap = builder.getAttributeMap();
         this.iconLocation = builder.getTexture();
         this.tint = builder.getColor();
@@ -92,6 +95,13 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
         return attributeMap.keySet();
     }
 
+    /**
+     * Writes this Chemical to a defined tag compound.
+     *
+     * @param nbtTags - tag compound to write this Chemical to
+     *
+     * @return the tag compound this Chemical was written to
+     */
     public abstract CompoundNBT write(CompoundNBT nbtTags);
 
     protected abstract String getDefaultTranslationKey();
@@ -119,9 +129,13 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
         return tint;
     }
 
-    public abstract boolean isIn(Tag<TYPE> tag);
+    public boolean isIn(Tag<CHEMICAL> tag) {
+        return tag.contains((CHEMICAL) this);
+    }
 
-    public abstract Set<ResourceLocation> getTags();
+    public Set<ResourceLocation> getTags() {
+        return reverseTags.getTagNames();
+    }
 
     public abstract boolean isEmptyType();
 }

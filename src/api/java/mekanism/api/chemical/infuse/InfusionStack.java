@@ -1,6 +1,8 @@
 package mekanism.api.chemical.infuse;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
@@ -9,11 +11,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.registries.IRegistryDelegate;
 
-/**
- * InfuseObject - an object associated with an ItemStack that can modify a Metallurgic Infuser's internal infuse.
- *
- * @author AidanBrady
- */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class InfusionStack extends ChemicalStack<InfuseType> {
 
     public static final InfusionStack EMPTY = new InfusionStack(MekanismAPI.EMPTY_INFUSE_TYPE, 0);
@@ -24,15 +23,14 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
      * @param infuseTypeProvider - provides the infusion type of the stack
      * @param amount             - amount of the infusion type to be referenced in this InfusionStack
      */
-    public InfusionStack(@Nonnull IInfuseTypeProvider infuseTypeProvider, long amount) {
+    public InfusionStack(IInfuseTypeProvider infuseTypeProvider, long amount) {
         super(infuseTypeProvider.getInfuseType(), amount);
     }
 
-    public InfusionStack(@Nonnull InfusionStack stack, long amount) {
+    public InfusionStack(InfusionStack stack, long amount) {
         this(stack.getType(), amount);
     }
 
-    @Nonnull
     @Override
     protected IRegistryDelegate<InfuseType> getDelegate(InfuseType infuseType) {
         if (MekanismAPI.INFUSE_TYPE_REGISTRY.getKey(infuseType) == null) {
@@ -43,7 +41,6 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
         return infuseType.delegate;
     }
 
-    @Nonnull
     @Override
     protected InfuseType getEmptyChemical() {
         return MekanismAPI.EMPTY_INFUSE_TYPE;
@@ -56,8 +53,7 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
      *
      * @return InfusionStack stored in the tag compound
      */
-    @Nonnull
-    public static InfusionStack readFromNBT(CompoundNBT nbtTags) {
+    public static InfusionStack readFromNBT(@Nullable CompoundNBT nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return EMPTY;
         }
@@ -86,7 +82,6 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
      *
      * @return copied InfusionStack
      */
-    @Nonnull
     @Override
     public InfusionStack copy() {
         return new InfusionStack(this, getAmount());
@@ -99,12 +94,6 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
      */
     @Override
     public final boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (o instanceof InfusionStack) {
-            return isTypeEqual((InfusionStack) o);
-        }
-        return false;
+        return o instanceof InfusionStack && isTypeEqual((InfusionStack) o);
     }
 }

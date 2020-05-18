@@ -3,14 +3,19 @@ package mekanism.api.chemical;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import java.util.function.Function;
 import java.util.function.IntSupplier;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -31,6 +36,26 @@ public class ChemicalUtils {
 
     public static InfusionStack readInfusionStack(PacketBuffer buffer) {
         return buffer.readBoolean() ? InfusionStack.readFromPacket(buffer) : InfusionStack.EMPTY;
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL readChemicalFromNBT(@Nullable CompoundNBT nbtTags, CHEMICAL empty, String nbtName,
+          Function<ResourceLocation, CHEMICAL> registryLookup) {
+        if (nbtTags == null || nbtTags.isEmpty()) {
+            return empty;
+        }
+        return registryLookup.apply(new ResourceLocation(nbtTags.getString(nbtName)));
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL readChemicalFromRegistry(@Nullable ResourceLocation name, CHEMICAL empty,
+          IForgeRegistry<CHEMICAL> registry) {
+        if (name == null) {
+            return empty;
+        }
+        CHEMICAL chemical = registry.getValue(name);
+        if (chemical == null) {
+            return empty;
+        }
+        return chemical;
     }
 
     /**
