@@ -1,7 +1,6 @@
 package mekanism.common.lib.multiblock;
 
 import java.util.UUID;
-import mekanism.common.lib.multiblock.UpdateProtocol.FormationResult;
 
 public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
 
@@ -16,8 +15,6 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
     @Override
     T getDefaultData();
 
-    FormationResult runUpdate(UpdateType updateRequested, Cuboid cuboid);
-
     MultiblockManager<T> getManager();
 
     UUID getCacheID();
@@ -25,4 +22,8 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
     MultiblockCache<T> getCache();
 
     void resetCache();
+
+    default IStructureValidator validateStructure() {
+        return new CuboidStructureValidator(getStructure());
+    }
 }

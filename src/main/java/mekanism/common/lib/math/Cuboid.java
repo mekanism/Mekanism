@@ -1,10 +1,10 @@
-package mekanism.common.lib.multiblock;
+package mekanism.common.lib.math;
 
 import mekanism.common.lib.multiblock.Structure.BlockPosBuilder;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-public class Cuboid {
+public class Cuboid implements IShape {
 
     private BlockPos minPos;
     private BlockPos maxPos;

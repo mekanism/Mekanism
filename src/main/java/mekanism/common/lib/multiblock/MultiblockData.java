@@ -22,6 +22,8 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
+import mekanism.common.lib.math.Cuboid;
+import mekanism.common.lib.math.IShape;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
@@ -89,15 +91,19 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return ret;
     }
 
-    public boolean buildStructure(BlockPos min, BlockPos max) {
-        minLocation = min;
-        maxLocation = max;
-        renderLocation = min.offset(Direction.UP);
-        length = Math.abs(max.getX() - min.getX()) + 1;
-        height = Math.abs(max.getY() - min.getY()) + 1;
-        width = Math.abs(max.getZ() - min.getZ()) + 1;
-        setVolume(length * width * height);
-        return length >= 3 && length <= UpdateProtocol.MAX_SIZE && height >= 3 && height <= UpdateProtocol.MAX_SIZE && width >= 3 && width <= UpdateProtocol.MAX_SIZE;
+    public boolean setShape(IShape shape) {
+        if (shape instanceof Cuboid) {
+            Cuboid cuboid = (Cuboid) shape;
+            minLocation = cuboid.getMinPos();
+            maxLocation = cuboid.getMaxPos();
+            renderLocation = minLocation.offset(Direction.UP);
+            length = Math.abs(maxLocation.getX() - minLocation.getX()) + 1;
+            height = Math.abs(maxLocation.getY() - minLocation.getY()) + 1;
+            width = Math.abs(maxLocation.getZ() - minLocation.getZ()) + 1;
+            setVolume(length * width * height);
+            return length >= 3 && length <= UpdateProtocol.MAX_SIZE && height >= 3 && height <= UpdateProtocol.MAX_SIZE && width >= 3 && width <= UpdateProtocol.MAX_SIZE;
+        }
+        return false;
     }
 
     public void onCreated(World world) {
