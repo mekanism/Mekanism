@@ -42,7 +42,7 @@ public class BlockFusionReactorGlass extends BlockMekanism implements IHasTileEn
         if (!world.isRemote) {
             TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
-                tile.onNeighborChange(neighborBlock);
+                tile.onNeighborChange(neighborBlock, neighborPos);
             }
         }
     }

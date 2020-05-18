@@ -19,7 +19,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class UpdateProtocol<T extends MultiblockData> {
+public abstract class FormationProtocol<T extends MultiblockData> {
 
     public static final int MAX_SIZE = 18;
 
@@ -28,7 +28,7 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
      */
     public IMultiblock<T> pointer;
 
-    public UpdateProtocol(IMultiblock<T> tile) {
+    public FormationProtocol(IMultiblock<T> tile) {
         pointer = tile;
     }
 

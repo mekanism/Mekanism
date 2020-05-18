@@ -10,7 +10,7 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
         return (T) IMultiblockBase.super.getMultiblockData();
     }
 
-    UpdateProtocol<T> getProtocol();
+    FormationProtocol<T> getFormationProtocol();
 
     @Override
     T getDefaultData();

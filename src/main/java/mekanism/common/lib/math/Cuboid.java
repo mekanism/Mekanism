@@ -1,6 +1,6 @@
 package mekanism.common.lib.math;
 
-import mekanism.common.lib.multiblock.Structure.BlockPosBuilder;
+import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
@@ -55,11 +55,46 @@ public class Cuboid implements IShape {
         return null;
     }
 
-    public boolean isEdge(BlockPos obj) {
-        boolean xMatches = obj.getX() == minPos.getX() || obj.getX() == maxPos.getX();
-        boolean yMatches = obj.getY() == minPos.getY() || obj.getY() == maxPos.getY();
-        boolean zMatches = obj.getZ() == minPos.getZ() || obj.getZ() == maxPos.getZ();
-        return xMatches && yMatches || xMatches && zMatches || yMatches && zMatches;
+    public boolean isOnSide(BlockPos pos) {
+        return getMatches(pos) >= 1;
+    }
+
+    public boolean isOnEdge(BlockPos pos) {
+        return getMatches(pos) >= 2;
+    }
+
+    public boolean isOnCorner(BlockPos pos) {
+        return getMatches(pos) >= 3;
+    }
+
+    public int getMatches(BlockPos pos) {
+        int matches = 0;
+        if (pos.getX() == minPos.getX())
+            matches++;
+        if (pos.getX() == maxPos.getX())
+            matches++;
+        if (pos.getY() == minPos.getY())
+            matches++;
+        if (pos.getY() == maxPos.getY())
+            matches++;
+        if (pos.getZ() == minPos.getZ())
+            matches++;
+        if (pos.getZ() == maxPos.getZ())
+            matches++;
+        return matches;
+    }
+
+    public CuboidRelative getRelativeLocation(BlockPos pos) {
+        if (pos.getX() > minPos.getX() && pos.getX() < maxPos.getX() &&
+            pos.getY() > minPos.getY() && pos.getY() < maxPos.getY() &&
+            pos.getZ() > minPos.getZ() && pos.getZ() < maxPos.getZ()) {
+            return CuboidRelative.INSIDE;
+        } else if (pos.getX() < minPos.getX() || pos.getX() > maxPos.getX() ||
+                   pos.getY() < minPos.getY() || pos.getY() > maxPos.getY() ||
+                   pos.getZ() < minPos.getZ() || pos.getZ() > maxPos.getZ()) {
+            return CuboidRelative.OUTSIDE;
+        }
+        return CuboidRelative.WALLS;
     }
 
     public boolean greaterOrEqual(Cuboid other) {
@@ -90,5 +125,91 @@ public class Cuboid implements IShape {
     @Override
     public String toString() {
         return "Cuboid(start=" + minPos + ",bounds=(" + length() + "," + height() + "," + width() + "))";
+    }
+
+    public enum CuboidRelative {
+        INSIDE,
+        OUTSIDE,
+        WALLS;
+    }
+
+    public enum CuboidSide {
+        BOTTOM(Axis.Y, Face.NEGATIVE),
+        TOP(Axis.Y, Face.POSITIVE),
+        NORTH(Axis.Z, Face.NEGATIVE),
+        SOUTH(Axis.Z, Face.POSITIVE),
+        WEST(Axis.X, Face.NEGATIVE),
+        EAST(Axis.X, Face.POSITIVE);
+
+        public static final CuboidSide[] SIDES = values();
+
+        private static final CuboidSide[][] ORDERED = new CuboidSide[][] {new CuboidSide[] {WEST, BOTTOM, NORTH}, new CuboidSide[] {EAST, TOP, SOUTH}};
+        private static final CuboidSide[] OPPOSITES = new CuboidSide[] {TOP, BOTTOM, SOUTH, NORTH, EAST, WEST};
+
+        private Axis axis;
+        private Face face;
+
+        private CuboidSide(Axis axis, Face face) {
+            this.axis = axis;
+            this.face = face;
+        }
+
+        public Axis getAxis() {
+            return axis;
+        }
+
+        public Face getFace() {
+            return face;
+        }
+
+        public CuboidSide flip() {
+            return OPPOSITES[ordinal()];
+        }
+
+        public static CuboidSide get(Face face, Axis axis) {
+            return ORDERED[face.ordinal()][axis.ordinal()];
+        }
+
+        public enum Face {
+            NEGATIVE,
+            POSITIVE;
+
+            public Face getOpposite() {
+                return this == POSITIVE ? NEGATIVE : POSITIVE;
+            }
+
+            public boolean isPositive() {
+                return this == POSITIVE;
+            }
+        }
+    }
+
+    public static class CuboidBuilder {
+
+        private BlockPosBuilder[] bounds = new BlockPosBuilder[] {new BlockPosBuilder(), new BlockPosBuilder()};
+
+        public boolean isSet(CuboidSide side) {
+            return bounds[side.getFace().ordinal()].isSet(side.getAxis());
+        }
+
+        public void set(CuboidSide side, int val) {
+            bounds[side.getFace().ordinal()].set(side.getAxis(), val);
+        }
+
+        public boolean trySet(CuboidSide side, int val) {
+            if (isSet(side) && get(side) != val) {
+                return false;
+            }
+            set(side, val);
+            return true;
+        }
+
+        public int get(CuboidSide side) {
+            return bounds[side.getFace().ordinal()].get(side.getAxis());
+        }
+
+        public Cuboid build() {
+            return new Cuboid(bounds[0].build(), bounds[1].build());
+        }
     }
 }

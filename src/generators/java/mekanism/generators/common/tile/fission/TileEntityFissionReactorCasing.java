@@ -6,7 +6,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockManager;
-import mekanism.common.lib.multiblock.UpdateProtocol;
+import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -78,7 +78,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     @Override
-    public UpdateProtocol<FissionReactorMultiblockData> getProtocol() {
+    public FormationProtocol<FissionReactorMultiblockData> getFormationProtocol() {
         return new FissionReactorUpdateProtocol(this);
     }
 

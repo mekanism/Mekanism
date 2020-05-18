@@ -2,29 +2,31 @@ package mekanism.common.lib.multiblock;
 
 import mekanism.common.lib.math.Cuboid;
 import mekanism.common.lib.math.IShape;
-import mekanism.common.lib.multiblock.UpdateProtocol.FormationResult;
+import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public class CuboidStructureValidator implements IStructureValidator {
 
     private static final Cuboid MIN_CUBOID = new Cuboid(3, 3, 3);
+    private static final Cuboid MAX_CUBOID = new Cuboid(18, 18, 18);
 
-    private Cuboid cuboid;
+    protected Cuboid cuboid;
+    protected Structure structure;
 
     public CuboidStructureValidator(Structure structure) {
-        cuboid = structure.fetchCuboid(MIN_CUBOID);
+        this.structure = structure;
     }
 
     @Override
-    public FormationResult validate(UpdateProtocol<?> protocol, UpdateProtocol<?>.ValidationContext ctx) {
+    public FormationResult validate(FormationProtocol<?> protocol, FormationProtocol<?>.ValidationContext ctx) {
         BlockPos min = cuboid.getMinPos(), max = cuboid.getMaxPos();
         for (int x = min.getX(); x <= max.getX(); x++) {
             for (int y = min.getY(); y <= max.getY(); y++) {
                 for (int z = min.getZ(); z <= max.getZ(); z++) {
                     BlockPos pos = new BlockPos(x, y, z);
                     if (x == min.getX() || x == max.getX() || y == min.getY() || y == max.getY() || z == min.getZ() || z == max.getZ()) {
-                        FormationResult ret = ctx.validateFrame(pos, cuboid.isEdge(pos));
+                        FormationResult ret = ctx.validateFrame(pos, cuboid.isOnEdge(pos));
                         if (!ret.isFormed()) {
                             return ret;
                         }
@@ -51,7 +53,8 @@ public class CuboidStructureValidator implements IStructureValidator {
     }
 
     @Override
-    public boolean isValid() {
+    public boolean checkValid() {
+        cuboid = StructureHelper.fetchCuboid(structure, MIN_CUBOID, MAX_CUBOID);
         return cuboid != null;
     }
 }

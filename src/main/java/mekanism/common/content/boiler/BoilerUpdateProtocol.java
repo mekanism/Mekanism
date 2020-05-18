@@ -8,7 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.multiblock.MultiblockManager;
-import mekanism.common.lib.multiblock.UpdateProtocol;
+import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityPressureDisperser;
@@ -18,7 +18,7 @@ import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
+public class BoilerUpdateProtocol extends FormationProtocol<BoilerMultiblockData> {
 
     public BoilerUpdateProtocol(TileEntityBoilerCasing tile) {
         super(tile);
@@ -83,7 +83,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
         }
 
         if (!elements.isEmpty()) {
-            structure.superheatingElements = UpdateProtocol.explore(elements.iterator().next(), coord ->
+            structure.superheatingElements = FormationProtocol.explore(elements.iterator().next(), coord ->
                   coord.getY() < initDisperser.getY() && MekanismUtils.getTileEntity(TileEntitySuperheatingElement.class, pointer.getWorld(), coord) != null
             );
         }
@@ -112,7 +112,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<BoilerMultiblockData> {
         final BlockPos renderLocation = structure.renderLocation;
         final int volLength = structure.length;
         final int volWidth = structure.width;
-        structure.setWaterVolume(UpdateProtocol.explore(initAir, coord ->
+        structure.setWaterVolume(FormationProtocol.explore(initAir, coord ->
               coord.getY() >= renderLocation.getY() - 1 && coord.getY() < initDisperser.getY() &&
               coord.getX() >= renderLocation.getX() && coord.getX() < renderLocation.getX() + volLength &&
               coord.getZ() >= renderLocation.getZ() && coord.getZ() < renderLocation.getZ() + volWidth &&

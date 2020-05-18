@@ -3,13 +3,13 @@ package mekanism.common.content.tank;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.multiblock.MultiblockManager;
-import mekanism.common.lib.multiblock.UpdateProtocol;
+import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 
-public class TankUpdateProtocol extends UpdateProtocol<TankMultiblockData> {
+public class TankUpdateProtocol extends FormationProtocol<TankMultiblockData> {
 
     public static final int FLUID_PER_TANK = 64_000;
 

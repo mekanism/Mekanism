@@ -32,7 +32,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     }
 
     @Override
-    public BoilerUpdateProtocol getProtocol() {
+    public BoilerUpdateProtocol getFormationProtocol() {
         return new BoilerUpdateProtocol(this);
     }
 

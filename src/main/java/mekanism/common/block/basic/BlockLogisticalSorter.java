@@ -101,7 +101,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         if (!world.isRemote) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tile).onNeighborChange(neighborBlock);
+                ((TileEntityMekanism) tile).onNeighborChange(neighborBlock, neighborPos);
             }
             if (tile instanceof TileEntityLogisticalSorter) {
                 TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) tile;

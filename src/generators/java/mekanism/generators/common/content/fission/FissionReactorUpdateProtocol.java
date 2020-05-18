@@ -10,7 +10,7 @@ import mekanism.api.NBTConstants;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.multiblock.MultiblockManager;
-import mekanism.common.lib.multiblock.UpdateProtocol;
+import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
@@ -25,7 +25,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
-public class FissionReactorUpdateProtocol extends UpdateProtocol<FissionReactorMultiblockData> {
+public class FissionReactorUpdateProtocol extends FormationProtocol<FissionReactorMultiblockData> {
 
     public FissionReactorUpdateProtocol(TileEntityFissionReactorCasing tile) {
         super(tile);

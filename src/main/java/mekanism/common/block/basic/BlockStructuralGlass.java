@@ -57,7 +57,7 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntit
         if (!world.isRemote) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tile).onNeighborChange(neighborBlock);
+                ((TileEntityMekanism) tile).onNeighborChange(neighborBlock, neighborPos);
             }
         }
     }

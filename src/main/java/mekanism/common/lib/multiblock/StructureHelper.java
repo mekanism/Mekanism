@@ -1,0 +1,103 @@
+package mekanism.common.lib.multiblock;
+
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.TreeMap;
+import mekanism.common.lib.math.Cuboid;
+import mekanism.common.lib.math.Cuboid.CuboidBuilder;
+import mekanism.common.lib.math.Cuboid.CuboidSide;
+import mekanism.common.lib.math.Cuboid.CuboidSide.Face;
+import mekanism.common.lib.math.Plane;
+import mekanism.common.lib.multiblock.Structure.Axis;
+
+public class StructureHelper {
+
+    public static Cuboid fetchCuboid(Structure structure, Cuboid minBounds, Cuboid maxBounds) {
+        return fetchCuboid(structure, minBounds, maxBounds, 0);
+    }
+
+    /**
+     * Fetch a cuboid with all 6 sides present. Quicker than using the below algorithm with all sides.
+     *
+     * @param structure structure to check
+     * @param minBounds minimum size of the cuboid
+     * @param maxBounds maximum size of the cuboid
+     * @param tolerance how many missing blocks are tolerated in the completed structure (will double count edges & triple count corners)
+     * @return found cuboid, or null if it doesn't exist
+     */
+    public static Cuboid fetchCuboid(Structure structure, Cuboid minBounds, Cuboid maxBounds, int tolerance) {
+        Cuboid prev = null;
+        int missing = 0;
+        for (Axis axis : Axis.AXES) {
+            TreeMap<Integer, Plane> map = structure.getAxisMap(axis);
+            Map.Entry<Integer, Plane> first = map.firstEntry(), last = map.lastEntry();
+            missing += first.getValue().getMissing() + last.getValue().getMissing();
+            if (first == null || !first.getValue().equals(last.getValue()) || missing > tolerance) {
+                return null;
+            }
+            Cuboid cuboid = Cuboid.from(first.getValue(), last.getValue(), first.getKey(), last.getKey());
+            // if this is the first axial cuboid check, make sure we meet the min bounds
+            if (prev == null && !cuboid.greaterOrEqual(minBounds) && maxBounds.greaterOrEqual(cuboid)) {
+                return null;
+            }
+            // if this isn't the first axial cuboid check, make sure the cuboids match
+            if (prev != null && !prev.equals(cuboid)) {
+                return null;
+            }
+            prev = cuboid;
+        }
+        return prev;
+    }
+
+    /**
+     * Fetch a cuboid with a defined amount of sides. At least two sides should be provided;
+     * otherwise it's impossible to discern the overall dimensions about the cuboid.
+     *
+     * @param structure structure to check
+     * @param minBounds minimum size of the cuboid
+     * @param maxBounds maximum size of the cuboid
+     * @param sides
+     * @param tolerance how many missing blocks are tolerated in the completed structure (will double count edges & triple count corners)
+     * @return found cuboid, or null if it doesn't exist
+     */
+    public static Cuboid fetchCuboid(Structure structure, Cuboid minBounds, Cuboid maxBounds, EnumSet<CuboidSide> sides, int tolerance) {
+        // make sure we have enough sides to create cuboidal dimensions
+        if (sides.size() < 2) {
+            return null;
+        }
+        int missing = 0;
+        CuboidBuilder builder = new CuboidBuilder();
+        for (CuboidSide side : sides) {
+            Axis axis = side.getAxis(), horizontal = side.getAxis().horizontal(), vertical = side.getAxis().vertical();
+            TreeMap<Integer, Plane> map = structure.getAxisMap(axis);
+            Map.Entry<Integer, Plane> entry = side.getFace().isPositive() ? map.lastEntry() : map.firstEntry();
+            Plane plane = entry.getValue();
+            // handle missing blocks based on tolerance value
+            missing += plane.getMissing();
+            if (missing > tolerance) {
+                return null;
+            }
+            // set bounds from dimension of plane's axis
+            builder.set(side, entry.getKey());
+            // update cuboidal dimensions from each corner of the plane
+            if (!builder.trySet(CuboidSide.get(Face.NEGATIVE, horizontal), plane.getMinCol())) {
+                return null;
+            }
+            if (!builder.trySet(CuboidSide.get(Face.POSITIVE, horizontal), plane.getMaxCol())) {
+                return null;
+            }
+            if (!builder.trySet(CuboidSide.get(Face.NEGATIVE, vertical), plane.getMinRow())) {
+                return null;
+            }
+            if (!builder.trySet(CuboidSide.get(Face.POSITIVE, vertical), plane.getMaxRow())) {
+                return null;
+            }
+        }
+        Cuboid ret = builder.build();
+        // make sure the cuboid has the correct bounds
+        if (!ret.greaterOrEqual(minBounds) || !maxBounds.greaterOrEqual(ret)) {
+            return null;
+        }
+        return ret;
+    }
+}

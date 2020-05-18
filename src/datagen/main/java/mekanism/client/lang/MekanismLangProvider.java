@@ -1,7 +1,7 @@
 package mekanism.client.lang;
 
-import com.google.common.collect.Table.Cell;
 import java.util.Map;
+import com.google.common.collect.Table.Cell;
 import mekanism.api.chemical.gas.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.APILang;
@@ -410,6 +410,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Multiblock
         add(MekanismLang.MULTIBLOCK_INVALID_FRAME, "Couldn't create frame, invalid block at %s.");
         add(MekanismLang.MULTIBLOCK_INVALID_INNER, "Couldn't validate center, found invalid block at %s.");
+        add(MekanismLang.MULTIBLOCK_INVALID_CONTROLLER_CONFLICT, "Controller conflict: found extra controller at %s.");
+        add(MekanismLang.MULTIBLOCK_INVALID_NO_CONTROLLER, "Couldn't form, no controller found.");
 
         add(MekanismLang.BOILER_INVALID_AIR_POCKETS, "Couldn't form, found disconnected interior air pockets.");
         add(MekanismLang.BOILER_INVALID_EXTRA_DISPERSER, "Couldn't form, found invalid Pressure Dispersers.");

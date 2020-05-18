@@ -4,7 +4,7 @@ import java.util.Set;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.multiblock.MultiblockManager;
-import mekanism.common.lib.multiblock.UpdateProtocol;
+import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -14,7 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-public class MatrixUpdateProtocol extends UpdateProtocol<MatrixMultiblockData> {
+public class MatrixUpdateProtocol extends FormationProtocol<MatrixMultiblockData> {
 
     public MatrixUpdateProtocol(TileEntityInductionCasing tile) {
         super(tile);

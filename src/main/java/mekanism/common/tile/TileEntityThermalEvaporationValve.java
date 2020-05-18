@@ -1,20 +1,13 @@
 package mekanism.common.tile;
 
-import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 
 public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock {
-
-    private boolean prevMaster = false;
 
     public TileEntityThermalEvaporationValve() {
         super(MekanismBlocks.THERMAL_EVAPORATION_VALVE);
@@ -23,35 +16,19 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Nonnull
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
-        return side -> getController() == null ? Collections.emptyList() : getController().getFluidTanks(side);
+        return side -> getMultiblock().getFluidTanks(side);
     }
 
     @Nonnull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
-        return side -> getController() == null ? Collections.emptyList() : getController().getHeatCapacitors(side);
+        return side -> getMultiblock().getHeatCapacitors(side);
     }
 
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        return side -> getController() == null ? Collections.emptyList() : getController().getInventorySlots(side);
-    }
-
-    @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if ((master == null) == prevMaster) {
-            for (Direction side : EnumUtils.DIRECTIONS) {
-                BlockPos offset = pos.offset(side);
-                if (!world.isAirBlock(offset) && MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, offset) == null) {
-                    MekanismUtils.notifyNeighborofChange(world, offset, pos);
-                }
-            }
-            invalidateCachedCapabilities();
-            markDirtyComparator();
-        }
-        prevMaster = master != null;
+        return side -> getMultiblock().getInventorySlots(side);
     }
 
     @Override
@@ -70,10 +47,6 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 
     @Override
     public int getRedstoneLevel() {
-        TileEntityThermalEvaporationController controller = getController();
-        if (controller == null) {
-            return 0;
-        }
-        return controller.getCurrentRedstoneLevel();
+        return getMultiblock().getCurrentRedstoneLevel();
     }
 }

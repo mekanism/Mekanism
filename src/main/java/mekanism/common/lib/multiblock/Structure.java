@@ -2,12 +2,11 @@ package mekanism.common.lib.multiblock;
 
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.function.BiConsumer;
 import com.google.common.base.Function;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import mekanism.common.lib.math.Cuboid;
+import mekanism.common.lib.math.BlockPosBuilder;
 import mekanism.common.lib.math.Plane;
-import mekanism.common.lib.multiblock.UpdateProtocol.FormationResult;
+import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -62,7 +61,7 @@ public class Structure {
         return nodes.get(pos);
     }
 
-    private TreeMap<Integer, Plane> getAxisMap(Axis axis) {
+    public TreeMap<Integer, Plane> getAxisMap(Axis axis) {
         TreeMap<Integer, Plane> ret = planeMap.get(axis);
         if (ret == null) {
             ret = new TreeMap<>(Integer::compare);
@@ -84,12 +83,11 @@ public class Structure {
     public <TILE extends TileEntity & IMultiblockBase> FormationResult runUpdate(TILE tile) {
         if (getController() != null) {
             IStructureValidator validator = getController().validateStructure();
-            if (validator.isValid() && multiblockData == null) {
-                return getController().getProtocol().doUpdate(validator);
-            } else {
-                removeMultiblock(tile.getWorld());
+            if (validator.checkValid() && multiblockData == null) {
+                return getController().getFormationProtocol().doUpdate(validator);
             }
         }
+        removeMultiblock(tile.getWorld());
         return FormationResult.FAIL;
     }
 
@@ -145,31 +143,9 @@ public class Structure {
         return nodes.size();
     }
 
-    public Cuboid fetchCuboid(Cuboid minBounds) {
-        Cuboid prev = null;
-        for (Axis axis : Axis.AXES) {
-            TreeMap<Integer, Plane> map = getAxisMap(axis);
-            Map.Entry<Integer, Plane> first = map.firstEntry(), last = map.lastEntry();
-            if (first == null || !first.getValue().equals(last.getValue()) || !first.getValue().isFull()) {
-                return null;
-            }
-            Cuboid cuboid = Cuboid.from(first.getValue(), last.getValue(), first.getKey(), last.getKey());
-            // if this is the first axial cuboid check, make sure we meet the min bounds
-            if (prev == null && !cuboid.greaterOrEqual(minBounds)) {
-                return null;
-            }
-            // if this isn't the first axial cuboid check, make sure
-            if (prev != null && !prev.equals(cuboid)) {
-                return null;
-            }
-            prev = cuboid;
-        }
-        return prev;
-    }
-
     private static <TILE extends TileEntity & IMultiblockBase> void validate(TILE node) {
         node.resetStructure();
-        UpdateProtocol.explore(node.getPos(), pos -> {
+        FormationProtocol.explore(node.getPos(), pos -> {
             if (pos.equals(node.getPos()))
                 return true;
             TileEntity tile = MekanismUtils.getTileEntity(node.getWorld(), pos);
@@ -190,16 +166,14 @@ public class Structure {
     }
 
     public enum Axis {
-        X(pos -> pos.getX(), (pos, val) -> pos.x = val),
-        Y(pos -> pos.getY(), (pos, val) -> pos.y = val),
-        Z(pos -> pos.getZ(), (pos, val) -> pos.z = val);
+        X(pos -> pos.getX()),
+        Y(pos -> pos.getY()),
+        Z(pos -> pos.getZ());
 
         private Function<BlockPos, Integer> posMapper;
-        private BiConsumer<BlockPosBuilder, Integer> setter;
 
-        private Axis(Function<BlockPos, Integer> posMapper, BiConsumer<BlockPosBuilder, Integer> setter) {
+        private Axis(Function<BlockPos, Integer> posMapper) {
             this.posMapper = posMapper;
-            this.setter = setter;
         }
 
         public int getCoord(BlockPos pos) {
@@ -207,7 +181,7 @@ public class Structure {
         }
 
         public void set(BlockPosBuilder pos, int val) {
-            setter.accept(pos, val);
+            pos.set(this, val);
         }
 
         public Axis horizontal() {
@@ -219,14 +193,5 @@ public class Structure {
         }
 
         protected static final Axis[] AXES = values();
-    }
-
-    public static class BlockPosBuilder {
-
-        protected int x, y, z;
-
-        public BlockPos build() {
-            return new BlockPos(x, y, z);
-        }
     }
 }

@@ -26,6 +26,7 @@ import mekanism.common.command.builders.Builders.BoilerBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
+import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.content.tank.TankCache;
@@ -130,6 +131,7 @@ public class Mekanism {
     public static MultiblockManager<TankMultiblockData> tankManager = new MultiblockManager<>("dynamicTank", TankCache::new);
     public static MultiblockManager<MatrixMultiblockData> matrixManager = new MultiblockManager<>("inductionMatrix", MultiblockCache::new);
     public static MultiblockManager<BoilerMultiblockData> boilerManager = new MultiblockManager<>("thermoelectricBoiler", MultiblockCache::new);
+    public static MultiblockManager<EvaporationMultiblockData> evaporationManager = new MultiblockManager<>("evaporation", MultiblockCache::new);
     /**
      * RadiationManager for handling radiation across all dimensions
      */

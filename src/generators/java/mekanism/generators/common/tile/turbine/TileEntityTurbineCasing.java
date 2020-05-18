@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.lib.multiblock.MultiblockManager;
-import mekanism.common.lib.multiblock.UpdateProtocol;
+import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
@@ -39,7 +39,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
     }
 
     @Override
-    public UpdateProtocol<TurbineMultiblockData> getProtocol() {
+    public FormationProtocol<TurbineMultiblockData> getFormationProtocol() {
         return new TurbineUpdateProtocol(this);
     }
 

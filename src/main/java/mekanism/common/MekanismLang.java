@@ -28,6 +28,8 @@ public enum MekanismLang implements ILangEntry {
     //Multiblock Stuff
     MULTIBLOCK_INVALID_FRAME("multiblock", "invalid_frame"),
     MULTIBLOCK_INVALID_INNER("multiblock", "invalid_inner"),
+    MULTIBLOCK_INVALID_CONTROLLER_CONFLICT("multiblock", "invalid_controller_conflict"),
+    MULTIBLOCK_INVALID_NO_CONTROLLER("multiblock", "invalid_no_controller"),
     //Boiler
     BOILER_INVALID_AIR_POCKETS("boiler", "invalid_air_pockets"),
     BOILER_INVALID_EXTRA_DISPERSER("boiler", "invalid_extra_disperser"),

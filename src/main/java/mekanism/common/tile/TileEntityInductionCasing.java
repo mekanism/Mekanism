@@ -31,7 +31,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
     }
 
     @Override
-    public MatrixUpdateProtocol getProtocol() {
+    public MatrixUpdateProtocol getFormationProtocol() {
         return new MatrixUpdateProtocol(this);
     }
 

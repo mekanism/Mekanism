@@ -1,7 +1,6 @@
 package mekanism.common.lib.math;
 
 import java.util.Arrays;
-import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.util.math.BlockPos;
 
@@ -20,8 +19,12 @@ public class Plane {
     }
 
     public boolean isFull() {
+        return size > 0 && getMissing() == 0;
+    }
+
+    public int getMissing() {
         int length = maxCol - minCol + 1, height = maxRow - minRow + 1;
-        return size > 0 && length * height == size;
+        return (length * height) - size;
     }
 
     public void merge(Plane other) {

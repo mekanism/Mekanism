@@ -1,24 +1,25 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Set;
-import mekanism.api.Coord4D;
+import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.common.Mekanism;
+import mekanism.common.content.evaporation.EvaporationMultiblockData;
+import mekanism.common.content.evaporation.EvaporationStructureValidator;
+import mekanism.common.content.evaporation.EvaporationUpdateProtocol;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
+import mekanism.common.lib.multiblock.FormationProtocol;
+import mekanism.common.lib.multiblock.IStructureValidator;
+import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.tile.prefab.TileEntityMultiblock;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
-public class TileEntityThermalEvaporationBlock extends TileEntityMekanism {
-
-    public Coord4D master;
-    private boolean attempted;
+public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<EvaporationMultiblockData> {
 
     public TileEntityThermalEvaporationBlock() {
         this(MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
@@ -29,109 +30,60 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (ticker == 5 && !attempted && master == null) {
-            updateController();
-        }
-        attempted = false;
-    }
-
-    public void addToStructure(Coord4D controller) {
-        master = controller;
-    }
-
-    public void controllerGone() {
-        master = null;
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-        if (master != null) {
-            TileEntityThermalEvaporationController tile = getController();
-            if (tile != null) {
-                tile.refresh();
-            }
-        }
-    }
-
-    @Override
-    public void onNeighborChange(Block block) {
-        super.onNeighborChange(block);
+    public void onNeighborChange(Block block, BlockPos neighborPos) {
+        super.onNeighborChange(block, neighborPos);
         if (!isRemote()) {
-            TileEntityThermalEvaporationController tile = getController();
-            if (tile == null) {
-                updateController();
-            } else {
-                tile.refresh();
+            if (getMultiblock().isFormed()) {
+                if (getMultiblock().isSolarSpot(neighborPos)) {
+                    getMultiblock().updateSolars(getWorld());
+                }
             }
         }
     }
 
-    private void updateController() {
-        if (!(this instanceof TileEntityThermalEvaporationController)) {
-            for (Direction side : EnumUtils.DIRECTIONS) {
-                BlockPos checkPos = pos.offset(side);
-                TileEntityThermalEvaporationController check = MekanismUtils.getTileEntity(TileEntityThermalEvaporationController.class, getWorld(), checkPos);
-                if (check != null) {
-                    check.refresh();
-                    return;
-                }
-            }
-            TileEntityThermalEvaporationController found = new ControllerFinder().find();
-            if (found != null) {
-                found.refresh();
-            }
+    @Nonnull
+    @Override
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
+        if (getMultiblock().isFormed() && isRendering) {
+            updateTag.put(NBTConstants.FLUID_STORED, getMultiblock().inputTank.getFluid().writeToNBT(new CompoundNBT()));
+            updateTag.putFloat(NBTConstants.SCALE, getMultiblock().prevScale);
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        if (isRendering && getMultiblock().isFormed()) {
+            NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> getMultiblock().inputTank.setStack(fluid));
+            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> getMultiblock().prevScale = scale);
         }
     }
 
-    public TileEntityThermalEvaporationController getController() {
-        if (master != null) {
-            return MekanismUtils.getTileEntity(TileEntityThermalEvaporationController.class, getWorld(), master.getPos());
-        }
-        return null;
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        SyncMapper.setup(container, getMultiblock().getClass(), this::getMultiblock, "stats");
     }
 
-    public class ControllerFinder {
+    @Override
+    public EvaporationMultiblockData createMultiblock() {
+        return new EvaporationMultiblockData(this);
+    }
 
-        public TileEntityThermalEvaporationController found;
+    @Override
+    public FormationProtocol<EvaporationMultiblockData> getFormationProtocol() {
+        return new EvaporationUpdateProtocol(this);
+    }
 
-        public Set<BlockPos> iterated = new ObjectOpenHashSet<>();
+    @Override
+    public MultiblockManager<EvaporationMultiblockData> getManager() {
+        return Mekanism.evaporationManager;
+    }
 
-        private Deque<BlockPos> checkQueue = new LinkedList<>();
-
-        public void loop(BlockPos startPos) {
-            checkQueue.add(startPos);
-
-            while (checkQueue.peek() != null) {
-                BlockPos checkPos = checkQueue.pop();
-                if (iterated.contains(checkPos)) {
-                    continue;
-                }
-                iterated.add(checkPos);
-
-                TileEntity te = MekanismUtils.getTileEntity(getWorld(), checkPos);
-                if (te instanceof TileEntityThermalEvaporationController) {
-                    found = (TileEntityThermalEvaporationController) te;
-                    return;
-                }
-
-                if (te instanceof TileEntityThermalEvaporationBlock) {
-                    ((TileEntityThermalEvaporationBlock) te).attempted = true;
-                    for (Direction side : EnumUtils.DIRECTIONS) {
-                        BlockPos coord = checkPos.offset(side);
-                        if (!iterated.contains(coord)) {
-                            checkQueue.addLast(coord);
-                        }
-                    }
-                }
-            }
-        }
-
-        public TileEntityThermalEvaporationController find() {
-            loop(TileEntityThermalEvaporationBlock.this.pos);
-            return found;
-        }
+    @Override
+    public IStructureValidator validateStructure() {
+        return new EvaporationStructureValidator(getStructure());
     }
 }

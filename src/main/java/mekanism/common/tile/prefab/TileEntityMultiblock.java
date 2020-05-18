@@ -18,7 +18,7 @@ import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.Structure;
-import mekanism.common.lib.multiblock.UpdateProtocol.FormationResult;
+import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;

@@ -1,7 +1,8 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.ParametersAreNonnullByDefault;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
@@ -24,19 +25,22 @@ public class RenderThermalEvaporationController extends MekanismTileEntityRender
     @Override
     protected void render(TileEntityThermalEvaporationController tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        if (tile.getActive() && tile.height - 2 >= 1 && !tile.inputTank.isEmpty()) {
+        if (tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && !tile.getMultiblock().inputTank.isEmpty()) {
             FluidRenderData data = new FluidRenderData();
-            data.location = new Coord4D(tile.getRenderLocation(), tile.getWorld());
-            data.height = tile.height - 2;
+            data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
+            data.height = tile.getMultiblock().height - 2;
             data.length = 2;
             data.width = 2;
-            data.fluidType = tile.inputTank.getFluid();
+            data.fluidType = tile.getMultiblock().inputTank.getFluid();
             matrix.push();
             BlockPos pos = tile.getPos();
+            int glow = data.calculateGlowLight(light);
             matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
-            MekanismRenderer.renderObject(ModelRenderer.getModel(data, Math.min(1, tile.prevScale)), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
-                  data.getColorARGB(tile.prevScale), data.calculateGlowLight(light));
+            IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+            MekanismRenderer.renderObject(ModelRenderer.getModel(data, Math.min(1, tile.getMultiblock().prevScale)), matrix, buffer,
+                  data.getColorARGB(tile.getMultiblock().prevScale), glow);
             matrix.pop();
+            MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, data, pos, glow);
         }
     }
 
@@ -47,6 +51,7 @@ public class RenderThermalEvaporationController extends MekanismTileEntityRender
 
     @Override
     public boolean isGlobalRenderer(TileEntityThermalEvaporationController tile) {
-        return tile.getActive() && tile.height - 2 >= 1 && !tile.inputTank.isEmpty();
+        return tile.isRendering && tile.getMultiblock().isFormed() && !tile.getMultiblock().inputTank.isEmpty() &&
+              tile.getMultiblock().renderLocation != null;
     }
 }

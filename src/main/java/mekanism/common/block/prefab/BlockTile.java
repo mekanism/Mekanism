@@ -110,7 +110,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         if (!world.isRemote) {
             TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
-                tile.onNeighborChange(neighborBlock);
+                tile.onNeighborChange(neighborBlock, neighborPos);
             }
         }
     }

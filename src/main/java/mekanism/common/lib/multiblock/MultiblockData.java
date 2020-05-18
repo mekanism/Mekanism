@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -63,6 +64,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     private int currentRedstoneLevel;
 
     private BooleanSupplier remoteSupplier = () -> false;
+    private Supplier<World> worldSupplier = () -> null;
 
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
     protected final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
@@ -72,6 +74,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public MultiblockData(TileEntity tile) {
         remoteSupplier = () -> tile.getWorld().isRemote();
+        worldSupplier = tile::getWorld;
     }
 
     /**
@@ -101,7 +104,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
             height = Math.abs(maxLocation.getY() - minLocation.getY()) + 1;
             width = Math.abs(maxLocation.getZ() - minLocation.getZ()) + 1;
             setVolume(length * width * height);
-            return length >= 3 && length <= UpdateProtocol.MAX_SIZE && height >= 3 && height <= UpdateProtocol.MAX_SIZE && width >= 3 && width <= UpdateProtocol.MAX_SIZE;
+            return length >= 3 && length <= FormationProtocol.MAX_SIZE && height >= 3 && height <= FormationProtocol.MAX_SIZE && width >= 3 && width <= FormationProtocol.MAX_SIZE;
         }
         return false;
     }
@@ -135,6 +138,10 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     protected boolean isRemote() {
         return remoteSupplier.getAsBoolean();
+    }
+
+    protected World getWorld() {
+        return worldSupplier.get();
     }
 
     protected boolean shouldCap(CacheSubstance type) {
@@ -222,19 +229,6 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return data.getVolume() == getVolume();
     }
 
-    public BlockLocation getBlockLocation(BlockPos pos) {
-        if (pos.getX() > minLocation.getX() && pos.getX() < maxLocation.getX() &&
-            pos.getY() > minLocation.getY() && pos.getY() < maxLocation.getY() &&
-            pos.getZ() > minLocation.getZ() && pos.getZ() < maxLocation.getZ()) {
-            return BlockLocation.INSIDE;
-        } else if (pos.getX() < minLocation.getX() || pos.getX() > maxLocation.getX() ||
-                   pos.getY() < minLocation.getY() || pos.getY() > maxLocation.getY() ||
-                   pos.getZ() < minLocation.getZ() || pos.getZ() > maxLocation.getZ()) {
-            return BlockLocation.OUTSIDE;
-        }
-        return BlockLocation.WALLS;
-    }
-
     public boolean isFormed() {
         return formed;
     }
@@ -284,11 +278,5 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public int getCurrentRedstoneLevel() {
         return currentRedstoneLevel;
-    }
-
-    public enum BlockLocation {
-        INSIDE,
-        OUTSIDE,
-        WALLS;
     }
 }

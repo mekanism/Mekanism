@@ -8,7 +8,7 @@ import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
-import mekanism.common.lib.multiblock.UpdateProtocol.FormationResult;
+import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import net.minecraft.entity.player.PlayerEntity;

@@ -6,7 +6,7 @@ import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.lib.multiblock.MultiblockManager;
-import mekanism.common.lib.multiblock.UpdateProtocol;
+import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.util.MekanismUtils;
@@ -24,7 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData> {
+public class TurbineUpdateProtocol extends FormationProtocol<TurbineMultiblockData> {
 
     public static final long GAS_PER_TANK = TankUpdateProtocol.FLUID_PER_TANK;
     public static final int MAX_BLADES = 28;
@@ -156,7 +156,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<TurbineMultiblockData>
 
         BlockPos startCoord = complex.offset(Direction.UP);
         if (MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), startCoord) != null) {
-            structure.coils = UpdateProtocol.explore(startCoord, coord -> MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), coord) != null);
+            structure.coils = FormationProtocol.explore(startCoord, coord -> MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getWorld(), coord) != null);
         }
 
         if (coils.size() > structure.coils) {
