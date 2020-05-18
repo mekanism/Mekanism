@@ -13,7 +13,6 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
-import mekanism.common.lib.multiblock.Cuboid;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockCache;
@@ -152,17 +151,6 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             // this will only perform neighbor updates if the block supports comparators
             markDirtyComparator();
         }
-    }
-
-    @Override
-    public FormationResult runUpdate(UpdateType updateRequested, Cuboid cuboid) {
-        if (getMultiblock().isFormed() && getMultiblock().inventoryID != null) {
-            // update the cache before we destroy the multiblock
-            cachedData.sync(getMultiblock());
-            cachedID = getMultiblock().inventoryID;
-            getManager().updateCache(this);
-        }
-        return getProtocol().doUpdate(updateRequested, cuboid);
     }
 
     @Override

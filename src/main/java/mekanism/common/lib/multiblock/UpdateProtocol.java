@@ -11,7 +11,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.lib.multiblock.IMultiblockBase.UpdateType;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.item.ItemStack;
@@ -33,61 +32,22 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
         pointer = tile;
     }
 
-    public StructureResult buildStructure(Cuboid cuboid) {
-        BlockPos min = cuboid.getMinPos(), max = cuboid.getMaxPos();
+    public StructureResult buildStructure(IStructureValidator validator) {
         T structure = pointer.createMultiblock();
-        if (!structure.buildStructure(min, max)) {
+        if (!structure.setShape(validator.getShape())) {
             return fail(FormationResult.FAIL);
         }
 
-        Set<BlockPos> locations = new ObjectOpenHashSet<>();
-        Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
-        Set<ValveData> valves = new ObjectOpenHashSet<>();
-        Set<UUID> idsFound = new ObjectOpenHashSet<>();
-
-        for (int x = min.getX(); x <= max.getX(); x++) {
-            for (int y = min.getY(); y <= max.getY(); y++) {
-                for (int z = min.getZ(); z <= max.getZ(); z++) {
-                    BlockPos pos = new BlockPos(x, y, z);
-                    if (x == min.getX() || x == max.getX() || y == min.getY() || y == max.getY() || z == min.getZ() || z == max.getZ()) {
-                        CasingType type = getCasingType(pos);
-                        IMultiblockBase tile = pointer.getStructure().getTile(pos);
-                        // terminate if we encounter a node that already failed this tick
-                        if (!checkNode((TileEntity) tile) || (cuboid.isEdge(pos) && !type.isFrame())) {
-                            //If it is not a valid node or if it is supposed to be a frame but is invalid
-                            // then we are not valid over all
-                            return fail(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos));
-                        } else {
-                            if (tile instanceof IMultiblock) {
-                                @SuppressWarnings("unchecked")
-                                IMultiblock<T> multiblockTile = (IMultiblock<T>) tile;
-                                UUID uuid = multiblockTile.getCacheID();
-                                if (uuid != null && multiblockTile.getManager() == getManager()) {
-                                    getManager().updateCache(multiblockTile);
-                                    idsFound.add(uuid);
-                                }
-                            }
-                            if (type.isValve()) {
-                                ValveData data = new ValveData();
-                                data.location = pos;
-                                data.side = cuboid.getSide(data.location);
-                                valves.add(data);
-                            }
-                            locations.add(pos);
-                        }
-                    } else if (!isValidInnerNode(pos)) {
-                        return fail(FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos));
-                    } else if (!pointer.getWorld().isAirBlock(pos)) {
-                        innerNodes.add(pos);
-                    }
-                }
-            }
+        ValidationContext ctx = new ValidationContext(validator);
+        FormationResult result = validator.validate(this, ctx);
+        if (!result.isFormed()) {
+            return fail(result);
         }
 
-        structure.locations = locations;
-        structure.valves = valves;
-        FormationResult result = validate(structure, innerNodes);
-        return result.isFormed() ? form(structure, idsFound) : fail(result);
+        structure.locations = ctx.locations;
+        structure.valves = ctx.valves;
+        result = validate(structure, ctx.innerNodes);
+        return result.isFormed() ? form(structure, ctx.idsFound) : fail(result);
     }
 
     protected FormationResult validate(T structure, Set<BlockPos> innerNodes) {
@@ -118,8 +78,8 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
     /**
      * Runs the protocol and updates all nodes that make a part of the multiblock.
      */
-    public FormationResult doUpdate(UpdateType type, Cuboid cuboid) {
-        StructureResult result = buildStructure(cuboid);
+    public FormationResult doUpdate(IStructureValidator validator) {
+        StructureResult result = buildStructure(validator);
         T structureFound = result.structureFound;
 
         if (structureFound != null && structureFound.locations.contains(pointer.getPos())) {
@@ -238,6 +198,57 @@ public abstract class UpdateProtocol<T extends MultiblockData> {
 
         private FormationResult getFormationResult() {
             return result;
+        }
+    }
+
+    public class ValidationContext {
+
+        Set<BlockPos> locations = new ObjectOpenHashSet<>();
+        Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
+        Set<ValveData> valves = new ObjectOpenHashSet<>();
+        Set<UUID> idsFound = new ObjectOpenHashSet<>();
+        IStructureValidator validator;
+
+        public ValidationContext(IStructureValidator validator) {
+            this.validator = validator;
+        }
+
+        public FormationResult validateFrame(BlockPos pos, boolean needsFrame) {
+            CasingType type = getCasingType(pos);
+            IMultiblockBase tile = pointer.getStructure().getTile(pos);
+            // terminate if we encounter a node that already failed this tick
+            if (!checkNode((TileEntity) tile) || (needsFrame && !type.isFrame())) {
+                //If it is not a valid node or if it is supposed to be a frame but is invalid
+                // then we are not valid over all
+                return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos);
+            } else {
+                if (tile instanceof IMultiblock) {
+                    @SuppressWarnings("unchecked")
+                    IMultiblock<T> multiblockTile = (IMultiblock<T>) tile;
+                    UUID uuid = multiblockTile.getCacheID();
+                    if (uuid != null && multiblockTile.getManager() == getManager()) {
+                        getManager().updateCache(multiblockTile);
+                        idsFound.add(uuid);
+                    }
+                }
+                locations.add(pos);
+                if (type.isValve()) {
+                    ValveData data = new ValveData();
+                    data.location = pos;
+                    data.side = validator.getSide(data.location);
+                    valves.add(data);
+                }
+            }
+            return FormationResult.SUCCESS;
+        }
+
+        public FormationResult validateInner(BlockPos pos) {
+            if (!isValidInnerNode(pos)) {
+                return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos);
+            } else if (!pointer.getWorld().isAirBlock(pos)) {
+                innerNodes.add(pos);
+            }
+            return FormationResult.SUCCESS;
         }
     }
 

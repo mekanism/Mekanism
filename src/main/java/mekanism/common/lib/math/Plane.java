@@ -1,6 +1,7 @@
-package mekanism.common.lib.multiblock;
+package mekanism.common.lib.math;
 
 import java.util.Arrays;
+import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.util.math.BlockPos;
 

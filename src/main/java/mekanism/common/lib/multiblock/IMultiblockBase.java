@@ -36,14 +36,4 @@ public interface IMultiblockBase {
     BlockPos getPos();
 
     World getWorld();
-
-    enum UpdateType {
-        NORMAL,
-        INITIAL,
-        FORCE;
-
-        public boolean force() {
-            return this == FORCE;
-        }
-    }
 }

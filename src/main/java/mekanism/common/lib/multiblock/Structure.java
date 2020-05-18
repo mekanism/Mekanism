@@ -5,7 +5,8 @@ import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import com.google.common.base.Function;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import mekanism.common.lib.multiblock.IMultiblockBase.UpdateType;
+import mekanism.common.lib.math.Cuboid;
+import mekanism.common.lib.math.Plane;
 import mekanism.common.lib.multiblock.UpdateProtocol.FormationResult;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -15,7 +16,6 @@ import net.minecraft.world.World;
 public class Structure {
 
     public static final Structure INVALID = new Structure();
-    private static final Cuboid MIN_BOUNDS = new Cuboid(3, 3, 3);
 
     private Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
     private Map<Axis, TreeMap<Integer, Plane>> planeMap = new Object2ObjectOpenHashMap<>();
@@ -83,9 +83,9 @@ public class Structure {
 
     public <TILE extends TileEntity & IMultiblockBase> FormationResult runUpdate(TILE tile) {
         if (getController() != null) {
-            Cuboid cuboid = fetchCuboid(MIN_BOUNDS);
-            if (cuboid != null && multiblockData == null) {
-                return getController().runUpdate(UpdateType.NORMAL, cuboid);
+            IStructureValidator validator = getController().validateStructure();
+            if (validator.isValid() && multiblockData == null) {
+                return getController().getProtocol().doUpdate(validator);
             } else {
                 removeMultiblock(tile.getWorld());
             }
