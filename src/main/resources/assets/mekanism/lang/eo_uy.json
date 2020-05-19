@@ -225,7 +225,7 @@
   "color.mekanism.purple": "Purple",
   "color.mekanism.red": "Red",
   "color.mekanism.white": "White",
-  "color.mekanism.yellow": "Yellow",
+  "color.mekanism.yellow": "Flava",
   "command.mekanism.chunk": "%s chunk %d, %d",
   "command.mekanism.chunk.clear": "%d chunks removed from watch list",
   "command.mekanism.chunk.flush": "%d chunks unloaded",
