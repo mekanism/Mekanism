@@ -129,13 +129,14 @@ public enum GeneratorsLang implements ILangEntry {
     DESCRIPTION_TURBINE_VENT("description", "turbine_vent"),
     DESCRIPTION_SATURATING_CONDENSER("description", "saturating_condenser"),
 
+    DESCRIPTION_REACTOR_GLASS("description", "reactor_glass"),
+
     DESCRIPTION_FISSION_REACTOR_CASING("description", "fission_reactor_casing"),
     DESCRIPTION_FISSION_REACTOR_PORT("description", "fission_reactor_port"),
     DESCRIPTION_FISSION_REACTOR_LOGIC_ADAPTER("description", "fission_reactor_logic_adapter"),
     DESCRIPTION_FISSION_FUEL_ASSEMBLY("description", "fission_fuel_assembly"),
     DESCRIPTION_CONTROL_ROD_ASSEMBLY("description", "control_rod_assembly"),
 
-    DESCRIPTION_FUSION_REACTOR_GLASS("description", "fusion_reactor_glass"),
     DESCRIPTION_FUSION_REACTOR_FRAME("description", "fusion_reactor_frame"),
     DESCRIPTION_FUSION_REACTOR_PORT("description", "fusion_reactor_port"),
     DESCRIPTION_FUSION_REACTOR_LOGIC_ADAPTER("description", "fusion_reactor_logic_adapter"),

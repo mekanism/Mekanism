@@ -16,14 +16,9 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
     }
 
     @Override
-    public boolean isFrame() {
-        return false;
-    }
-
-    @Override
     public void receiveLaserEnergy(@Nonnull FloatingLong energy, Direction side) {
-        if (getReactor() != null) {
-            getReactor().addTemperatureFromEnergyInput(energy);
+        if (getMultiblock().isFormed()) {
+            getMultiblock().addTemperatureFromEnergyInput(energy);
         }
     }
 

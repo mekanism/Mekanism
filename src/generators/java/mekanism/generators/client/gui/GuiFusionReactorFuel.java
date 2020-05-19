@@ -1,7 +1,6 @@
 package mekanism.generators.client.gui;
 
 import java.util.Arrays;
-import java.util.Collections;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
@@ -33,14 +32,15 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiEnergyTab(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.energyContainer.getEnergy(), tile.energyContainer.getMaxEnergy())),
-              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
+        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(
+              EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy())),
+              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getMultiblock().getPassiveGeneration(false, true)))),
               this));
-        addButton(new GuiGasGauge(() -> tile.deuteriumTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 25, 64));
-        addButton(new GuiGasGauge(() -> tile.fuelTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 79, 50));
-        addButton(new GuiGasGauge(() -> tile.tritiumTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 133, 64));
-        addButton(new GuiProgress(() -> tile.isBurning() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 47, 76));
-        addButton(new GuiProgress(() -> tile.isBurning() ? 1 : 0, ProgressType.SMALL_LEFT, this, 101, 76));
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().deuteriumTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.SMALL, this, 25, 64));
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 79, 50));
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().tritiumTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.SMALL, this, 133, 64));
+        addButton(new GuiProgress(() -> tile.getMultiblock().isBurning() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 47, 76));
+        addButton(new GuiProgress(() -> tile.getMultiblock().isBurning() ? 1 : 0, ProgressType.SMALL_LEFT, this, 101, 76));
         addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
         addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
         addButton(injectionRateField = new GuiTextField(this, 98, 115, 26, 11));
@@ -54,7 +54,7 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         renderTitleText(5);
-        drawCenteredText(GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getReactor() == null ? MekanismLang.NONE : tile.getReactor().getInjectionRate()),
+        drawCenteredText(GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getMultiblock().getInjectionRate()),
               0, getXSize(), 35, titleTextColor());
         drawString(GeneratorsLang.REACTOR_EDIT_RATE.translate(), 50, 117, titleTextColor());
     }

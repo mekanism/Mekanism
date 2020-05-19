@@ -1,9 +1,9 @@
 package mekanism.common.registries;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import java.util.EnumSet;
 import java.util.function.Supplier;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import mekanism.api.Pos3D;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
@@ -73,6 +73,7 @@ import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.tile.TileEntitySecurityDesk;
+import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
@@ -560,6 +561,11 @@ public class MekanismBlockTypes {
           .withCustomShape(BlockShapes.INDUSTRIAL_ALARM)
           .with(new AttributeStateActive(), new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeRedstone())
           .build();
+    // Structural Glass
+    public static final BlockTypeTile<TileEntityStructuralGlass> STRUCTURAL_GLASS = BlockTileBuilder
+        .createBlock(() -> MekanismTileEntityTypes.STRUCTURAL_GLASS, MekanismLang.DESCRIPTION_STRUCTURAL_GLASS)
+        .with(new AttributeMultiblock())
+        .build();
 
     // Induction Cells
     public static final BlockTypeTile<TileEntityInductionCell> BASIC_INDUCTION_CELL = createInductionCell(InductionCellTier.BASIC, () -> MekanismTileEntityTypes.BASIC_INDUCTION_CELL);

@@ -143,7 +143,7 @@ public class Cuboid implements IShape {
 
         public static final CuboidSide[] SIDES = values();
 
-        private static final CuboidSide[][] ORDERED = new CuboidSide[][] {new CuboidSide[] {WEST, BOTTOM, NORTH}, new CuboidSide[] {EAST, TOP, SOUTH}};
+        private static final CuboidSide[][] ORDERED = new CuboidSide[][] {{WEST, BOTTOM, NORTH}, {EAST, TOP, SOUTH}};
         private static final CuboidSide[] OPPOSITES = new CuboidSide[] {TOP, BOTTOM, SOUTH, NORTH, EAST, WEST};
 
         private Axis axis;

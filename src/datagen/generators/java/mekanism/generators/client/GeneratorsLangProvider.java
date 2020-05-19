@@ -38,6 +38,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsBlocks.HEAT_GENERATOR, "Heat Generator");
         add(GeneratorsBlocks.SOLAR_GENERATOR, "Solar Generator");
         add(GeneratorsBlocks.WIND_GENERATOR, "Wind Generator");
+        add(GeneratorsBlocks.REACTOR_GLASS, "Reactor Glass");
         add(GeneratorsBlocks.FISSION_REACTOR_CASING, "Fission Reactor Casing");
         add(GeneratorsBlocks.FISSION_REACTOR_PORT, "Fission Reactor Port");
         add(GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER, "Fission Reactor Logic Adapter");
@@ -46,7 +47,6 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsBlocks.LASER_FOCUS_MATRIX, "Laser Focus Matrix");
         add(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, "Fusion Reactor Controller");
         add(GeneratorsBlocks.FUSION_REACTOR_FRAME, "Fusion Reactor Frame");
-        add(GeneratorsBlocks.FUSION_REACTOR_GLASS, "Fusion Reactor Glass");
         add(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER, "Fusion Reactor Logic Adapter");
         add(GeneratorsBlocks.FUSION_REACTOR_PORT, "Fusion Reactor Port");
         add(GeneratorsBlocks.ROTATIONAL_COMPLEX, "Rotational Complex");
@@ -199,7 +199,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.DESCRIPTION_LASER_FOCUS_MATRIX, "A panel of Fusion Reactor Glass that is capable of absorbing optical energy and thereby heating up the Fusion Reactor.");
         add(GeneratorsLang.DESCRIPTION_FUSION_REACTOR_CONTROLLER, "The controlling block for the entire Fusion Reactor structure.");
         add(GeneratorsLang.DESCRIPTION_FUSION_REACTOR_FRAME, "Reinforced framing that can be used in the Fusion Reactor multiblock.");
-        add(GeneratorsLang.DESCRIPTION_FUSION_REACTOR_GLASS, "Reinforced glass that can be used in the Fusion Reactor multiblock.");
+        add(GeneratorsLang.DESCRIPTION_REACTOR_GLASS, "Reinforced glass that can be used in the Fission Reactor and Fusion Reactor multiblocks (as well as any others!).");
         add(GeneratorsLang.DESCRIPTION_FUSION_REACTOR_LOGIC_ADAPTER, "A block that can be used to allow basic monitoring of a reactor using redstone.");
         add(GeneratorsLang.DESCRIPTION_FUSION_REACTOR_PORT, "A block of reinforced framing that is capable of managing both the gas and energy transfer of the Fusion Reactor.");
         //Turbine

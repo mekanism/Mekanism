@@ -7,6 +7,7 @@ import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import mekanism.generators.common.tile.TileEntityReactorGlass;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.fission.TileEntityControlRodAssembly;
@@ -14,9 +15,8 @@ import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
-import mekanism.generators.common.tile.fusion.TileEntityFusionReactorFrame;
-import mekanism.generators.common.tile.fusion.TileEntityFusionReactorGlass;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
 import mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix;
@@ -39,6 +39,8 @@ public class GeneratorsTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityHeatGenerator> HEAT_GENERATOR = TILE_ENTITY_TYPES.register(GeneratorsBlocks.HEAT_GENERATOR, TileEntityHeatGenerator::new);
     public static final TileEntityTypeRegistryObject<TileEntitySolarGenerator> SOLAR_GENERATOR = TILE_ENTITY_TYPES.register(GeneratorsBlocks.SOLAR_GENERATOR, TileEntitySolarGenerator::new);
     public static final TileEntityTypeRegistryObject<TileEntityWindGenerator> WIND_GENERATOR = TILE_ENTITY_TYPES.register(GeneratorsBlocks.WIND_GENERATOR, TileEntityWindGenerator::new);
+    //Misc
+    public static final TileEntityTypeRegistryObject<TileEntityReactorGlass> REACTOR_GLASS = TILE_ENTITY_TYPES.register(GeneratorsBlocks.REACTOR_GLASS, TileEntityReactorGlass::new);
     //Fission Reactor
     public static final TileEntityTypeRegistryObject<TileEntityFissionReactorCasing> FISSION_REACTOR_CASING = TILE_ENTITY_TYPES.register(GeneratorsBlocks.FISSION_REACTOR_CASING, TileEntityFissionReactorCasing::new);
     public static final TileEntityTypeRegistryObject<TileEntityFissionReactorPort> FISSION_REACTOR_PORT = TILE_ENTITY_TYPES.register(GeneratorsBlocks.FISSION_REACTOR_PORT, TileEntityFissionReactorPort::new);
@@ -47,8 +49,7 @@ public class GeneratorsTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityControlRodAssembly> CONTROL_ROD_ASSEMBLY = TILE_ENTITY_TYPES.register(GeneratorsBlocks.CONTROL_ROD_ASSEMBLY, TileEntityControlRodAssembly::new);
     //Fusion Reactor
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorController> FUSION_REACTOR_CONTROLLER = TILE_ENTITY_TYPES.register(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, TileEntityFusionReactorController::new);
-    public static final TileEntityTypeRegistryObject<TileEntityFusionReactorFrame> FUSION_REACTOR_FRAME = TILE_ENTITY_TYPES.register(GeneratorsBlocks.FUSION_REACTOR_FRAME, TileEntityFusionReactorFrame::new);
-    public static final TileEntityTypeRegistryObject<TileEntityFusionReactorGlass> FUSION_REACTOR_GLASS = TILE_ENTITY_TYPES.register(GeneratorsBlocks.FUSION_REACTOR_GLASS, TileEntityFusionReactorGlass::new);
+    public static final TileEntityTypeRegistryObject<TileEntityFusionReactorBlock> FUSION_REACTOR_FRAME = TILE_ENTITY_TYPES.register(GeneratorsBlocks.FUSION_REACTOR_FRAME, TileEntityFusionReactorBlock::new);
     public static final TileEntityTypeRegistryObject<TileEntityLaserFocusMatrix> LASER_FOCUS_MATRIX = TILE_ENTITY_TYPES.register(GeneratorsBlocks.LASER_FOCUS_MATRIX, TileEntityLaserFocusMatrix::new);
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorLogicAdapter> FUSION_REACTOR_LOGIC_ADAPTER = TILE_ENTITY_TYPES.register(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER, TileEntityFusionReactorLogicAdapter::new);
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorPort> FUSION_REACTOR_PORT = TILE_ENTITY_TYPES.register(GeneratorsBlocks.FUSION_REACTOR_PORT, TileEntityFusionReactorPort::new);

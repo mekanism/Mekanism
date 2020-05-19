@@ -17,7 +17,7 @@ public class MultiblockManager<T extends MultiblockData> {
 
     private static Set<MultiblockManager<?>> managers = new ObjectOpenHashSet<>();
 
-    public String name;
+    private String name;
     private Supplier<MultiblockCache<T>> cacheSupplier;
 
     /**
@@ -33,6 +33,10 @@ public class MultiblockManager<T extends MultiblockData> {
 
     public MultiblockCache<T> getNewCache() {
         return cacheSupplier.get();
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Nullable

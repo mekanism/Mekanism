@@ -1,7 +1,6 @@
 package mekanism.generators.client.gui;
 
 import java.util.Arrays;
-import java.util.Collections;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
@@ -24,9 +23,10 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
     @Override
     public void init() {
         super.init();
-        if (tile.isFormed()) {
-            addButton(new GuiEnergyTab(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.energyContainer.getEnergy(), tile.energyContainer.getMaxEnergy())),
-                  GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(), this));
+        if (tile.getMultiblock().isFormed()) {
+            addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(
+                  EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy())),
+                  GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getMultiblock().getPassiveGeneration(false, true)))), this));
             addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
             addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
             addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
@@ -36,7 +36,7 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         renderTitleText(5);
-        drawString(tile.isFormed() ? MekanismLang.MULTIBLOCK_FORMED.translate() : MekanismLang.MULTIBLOCK_INCOMPLETE.translate(), 8, 16, titleTextColor());
+        drawString(MekanismLang.MULTIBLOCK_FORMED.translate(), 8, 16, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

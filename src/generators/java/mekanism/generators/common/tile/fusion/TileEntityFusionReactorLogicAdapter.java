@@ -45,26 +45,21 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         prevOutputting = outputting;
     }
 
-    @Override
-    public boolean isFrame() {
-        return false;
-    }
-
     public boolean checkMode() {
         if (isRemote()) {
             return prevOutputting;
         }
-        if (getReactor() == null || !getReactor().isFormed()) {
+        if (!getMultiblock().isFormed()) {
             return false;
         }
         switch (logicType) {
             case READY:
-                return getReactor().getLastPlasmaTemp() >= getReactor().getIgnitionTemperature(activeCooled);
+                return getMultiblock().getLastPlasmaTemp() >= getMultiblock().getIgnitionTemperature(activeCooled);
             case CAPACITY:
-                return getReactor().getLastPlasmaTemp() >= getReactor().getMaxPlasmaTemperature(activeCooled);
+                return getMultiblock().getLastPlasmaTemp() >= getMultiblock().getMaxPlasmaTemperature(activeCooled);
             case DEPLETED:
-                return (getReactor().getDeuteriumTank().getStored() < getReactor().getInjectionRate() / 2) ||
-                       (getReactor().getTritiumTank().getStored() < getReactor().getInjectionRate() / 2);
+                return (getMultiblock().deuteriumTank.getStored() < getMultiblock().getInjectionRate() / 2) ||
+                       (getMultiblock().tritiumTank.getStored() < getMultiblock().getInjectionRate() / 2);
             case DISABLED:
             default:
                 return false;

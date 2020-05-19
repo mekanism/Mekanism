@@ -1,0 +1,358 @@
+package mekanism.generators.common.content.fusion;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import mekanism.api.Action;
+import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.heat.HeatAPI;
+import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.capabilities.heat.ITileHeatHandler;
+import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
+import mekanism.common.lib.multiblock.IValveHandler.ValveData;
+import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.registries.MekanismGases;
+import mekanism.common.util.HeatUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorTags;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import mekanism.generators.common.item.ItemHohlraum;
+import mekanism.generators.common.registries.GeneratorsGases;
+import mekanism.generators.common.slot.ReactorInventorySlot;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidAttributes;
+
+public class FusionReactorMultiblockData extends MultiblockData {
+
+    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000_000);
+    public static final int MAX_WATER = 100 * FluidAttributes.BUCKET_VOLUME;
+    public static final long MAX_STEAM = MAX_WATER * 100L;
+    public static final long MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
+
+    public static final int MAX_INJECTION = 98;//this is the effective cap in the GUI, as text field is limited to 2 chars
+    //Reaction characteristics
+    private static final double burnTemperature = 100_000_000;
+    private static final double burnRatio = 1;
+    //Thermal characteristics
+    private static final double plasmaHeatCapacity = 100;
+    public static final double caseHeatCapacity = 1;
+    public static final double inverseInsulation = 100_000;
+    private static final double thermocoupleEfficiency = 0.05;
+    //Heat transfer metrics
+    private static final double plasmaCaseConductivity = 0.2;
+    private static final double caseWaterConductivity = 0.3;
+    private static final double caseAirConductivity = 0.1;
+
+    private Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
+
+    @ContainerSync
+    private boolean burning = false;
+
+    @ContainerSync
+    public BasicEnergyContainer energyContainer;
+    public BasicHeatCapacitor heatCapacitor;
+
+    @ContainerSync(tag = "heat")
+    public IExtendedFluidTank waterTank;
+    @ContainerSync(tag = "heat")
+    public IGasTank steamTank;
+
+    @ContainerSync(tag = "heat")
+    private double lastPlasmaTemperature = HeatAPI.AMBIENT_TEMP;
+    @ContainerSync(tag = "heat")
+    private double lastCaseTemperature = HeatAPI.AMBIENT_TEMP;
+
+    @ContainerSync(tag = "fuel") public IGasTank deuteriumTank;
+    @ContainerSync(tag = "fuel") public IGasTank tritiumTank;
+    @ContainerSync(tag = "fuel") public IGasTank fuelTank;
+    @ContainerSync(tag = "fuel", getter = "getInjectionRate", setter = "setInjectionRate")
+    private int injectionRate = 0;
+
+    public double plasmaTemperature;
+
+    private ReactorInventorySlot reactorSlot;
+
+    public boolean clientBurning;
+    public double clientTemp;
+
+    public FusionReactorMultiblockData(TileEntityFusionReactorBlock tile) {
+        super(tile);
+
+        gasTanks.add(deuteriumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.DEUTERIUM), this));
+        gasTanks.add(tritiumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.TRITIUM), this));
+        gasTanks.add(fuelTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL), this));
+        gasTanks.add(steamTank = VariableCapacityGasTank.output(() -> getMaxSteam(), gas -> gas == MekanismGases.STEAM.getGas(), this));
+        fluidTanks.add(waterTank = VariableCapacityFluidTank.input(() -> getMaxWater(), fluid -> fluid.getFluid().isIn(FluidTags.WATER), this));
+        energyContainers.add(energyContainer = BasicEnergyContainer.output(MAX_ENERGY, this));
+        heatCapacitors.add(heatCapacitor = BasicHeatCapacitor.create(caseHeatCapacity, getInverseConductionCoefficient(), inverseInsulation, this));
+        inventorySlots.add(reactorSlot = ReactorInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, this, 80, 39));
+    }
+
+    @Override
+    public void onCreated(World world) {
+        super.onCreated(world);
+        for (ValveData data : valves) {
+            TileEntity tile = MekanismUtils.getTileEntity(world, data.location);
+            if (tile instanceof ITileHeatHandler) {
+                heatHandlers.add((ITileHeatHandler) tile);
+            }
+        }
+    }
+
+    public void addTemperatureFromEnergyInput(FloatingLong energyAdded) {
+        if (isBurning()) {
+            setPlasmaTemp(getPlasmaTemp() + energyAdded.divide(plasmaHeatCapacity).doubleValue());
+        } else {
+            setPlasmaTemp(getPlasmaTemp() + energyAdded.divide(plasmaHeatCapacity).multiply(10).doubleValue());
+        }
+    }
+
+    private boolean hasHohlraum() {
+        if (!reactorSlot.isEmpty()) {
+            ItemStack hohlraum = reactorSlot.getStack();
+            if (hohlraum.getItem() instanceof ItemHohlraum) {
+                Optional<IGasHandler> capability = MekanismUtils.toOptional(hohlraum.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+                if (capability.isPresent()) {
+                    IGasHandler gasHandlerItem = capability.get();
+                    if (gasHandlerItem.getGasTankCount() > 0) {
+                        //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                        return gasHandlerItem.getGasInTank(0).getAmount() == gasHandlerItem.getGasTankCapacity(0);
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean tick(World world) {
+        boolean needsPacket = super.tick(world);
+        //Only thermal transfer happens unless we're hot enough to burn.
+        if (getPlasmaTemp() >= burnTemperature) {
+            //If we're not burning yet we need a hohlraum to ignite
+            if (!burning && hasHohlraum()) {
+                vaporiseHohlraum();
+            }
+
+            //Only inject fuel if we're burning
+            if (burning) {
+                injectFuel();
+                long fuelBurned = burnFuel();
+                if (fuelBurned == 0) {
+                    setBurning(false);
+                }
+            }
+        } else {
+            setBurning(false);
+        }
+
+        //Perform the heat transfer calculations
+        transferHeat();
+
+        if (burning) {
+            kill();
+        }
+        updateTemperatures();
+
+        if (isBurning() != clientBurning || Math.abs(getLastPlasmaTemp() - clientTemp) > 1_000_000) {
+            clientBurning = isBurning();
+            clientTemp = getLastPlasmaTemp();
+            needsPacket = true;
+        }
+        return needsPacket;
+    }
+
+    public void updateTemperatures() {
+        lastPlasmaTemperature = getPlasmaTemp();
+        lastCaseTemperature = heatCapacitor.getTemperature();
+    }
+
+    private void kill() {
+        AxisAlignedBB deathZone = new AxisAlignedBB(minLocation.getX() + 1, minLocation.getY() + 1, minLocation.getZ() + 1,
+              maxLocation.getX(), maxLocation.getY(), maxLocation.getZ());
+        List<Entity> entitiesToDie = getWorld().getEntitiesWithinAABB(Entity.class, deathZone);
+
+        for (Entity entity : entitiesToDie) {
+            entity.attackEntityFrom(DamageSource.MAGIC, 50_000F);
+        }
+    }
+
+    private void vaporiseHohlraum() {
+        ItemStack hohlraum = reactorSlot.getStack();
+        Optional<IGasHandler> capability = MekanismUtils.toOptional(hohlraum.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        if (capability.isPresent()) {
+            IGasHandler gasHandlerItem = capability.get();
+            if (gasHandlerItem.getGasTankCount() > 0) {
+                fuelTank.insert(gasHandlerItem.getGasInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
+                lastPlasmaTemperature = getPlasmaTemp();
+                reactorSlot.setStack(ItemStack.EMPTY);
+                setBurning(true);
+            }
+        }
+    }
+
+    private void injectFuel() {
+        long amountNeeded = fuelTank.getNeeded();
+        long amountAvailable = 2 * Math.min(deuteriumTank.getStored(), tritiumTank.getStored());
+        long amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
+        amountToInject -= amountToInject % 2;
+        long injectingAmount = amountToInject / 2;
+        MekanismUtils.logMismatchedStackSize(deuteriumTank.shrinkStack(injectingAmount, Action.EXECUTE), injectingAmount);
+        MekanismUtils.logMismatchedStackSize(tritiumTank.shrinkStack(injectingAmount, Action.EXECUTE), injectingAmount);
+        fuelTank.insert(GeneratorsGases.FUSION_FUEL.getGasStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
+    }
+
+    private long burnFuel() {
+        long fuelBurned = (long) Math.min(fuelTank.getStored(), Math.max(0, lastPlasmaTemperature - burnTemperature) * burnRatio);
+        MekanismUtils.logMismatchedStackSize(fuelTank.shrinkStack(fuelBurned, Action.EXECUTE), fuelBurned);
+        setPlasmaTemp(getPlasmaTemp() + MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(fuelBurned).divide(plasmaHeatCapacity).doubleValue());
+        return fuelBurned;
+    }
+
+    private void transferHeat() {
+        //Transfer from plasma to casing
+        double plasmaCaseHeat = plasmaCaseConductivity * (lastPlasmaTemperature - lastCaseTemperature);
+        setPlasmaTemp(getPlasmaTemp() - plasmaCaseHeat / plasmaHeatCapacity);
+        heatCapacitor.handleHeat(plasmaCaseHeat);
+
+        //Transfer from casing to water if necessary
+        double caseWaterHeat = caseWaterConductivity * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
+        int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
+        waterToVaporize = Math.min(waterToVaporize, Math.min(waterTank.getFluidAmount(), MathUtils.clampToInt(steamTank.getNeeded())));
+        if (waterToVaporize > 0) {
+            MekanismUtils.logMismatchedStackSize(waterTank.shrinkStack(waterToVaporize, Action.EXECUTE), waterToVaporize);
+            steamTank.insert(MekanismGases.STEAM.getGasStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
+            caseWaterHeat = waterToVaporize * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
+            heatCapacitor.handleHeat(-caseWaterHeat);
+        }
+
+        for (ITileHeatHandler source : heatHandlers) {
+            source.simulate();
+        }
+
+        //Passive energy generation
+        double caseAirHeat = caseAirConductivity * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
+        heatCapacitor.handleHeat(-caseAirHeat);
+        energyContainer.insert(FloatingLong.create(caseAirHeat * thermocoupleEfficiency), Action.EXECUTE, AutomationType.INTERNAL);
+        updateHeatCapacitors(null);
+    }
+
+    public void setLastPlasmaTemp(double temp) {
+        lastPlasmaTemperature = temp;
+    }
+
+    public double getLastPlasmaTemp() {
+        return lastPlasmaTemperature;
+    }
+
+    public double getLastCaseTemp() {
+        return lastCaseTemperature;
+    }
+
+    public double getPlasmaTemp() {
+        return plasmaTemperature;
+    }
+
+    public void setPlasmaTemp(double temp) {
+        plasmaTemperature = temp;
+    }
+
+    public int getInjectionRate() {
+        return injectionRate;
+    }
+
+    public void setInjectionRate(int rate) {
+        injectionRate = rate;
+        if (getWorld() != null && !isRemote()) {
+            if (!waterTank.isEmpty()) {
+                waterTank.setStackSize(Math.min(waterTank.getFluidAmount(), waterTank.getCapacity()), Action.EXECUTE);
+            }
+            if (!steamTank.isEmpty()) {
+                steamTank.setStackSize(Math.min(steamTank.getStored(), steamTank.getCapacity()), Action.EXECUTE);
+            }
+        }
+    }
+
+    public int getMaxWater() {
+        return MAX_WATER * injectionRate;
+    }
+
+    public long getMaxSteam() {
+        return MAX_STEAM * injectionRate;
+    }
+
+    public boolean isBurning() {
+        return burning;
+    }
+
+    public void setBurning(boolean burn) {
+        burning = burn;
+    }
+
+    public double getCaseTemp() {
+        return heatCapacitor.getTemperature();
+    }
+
+    @Override
+    protected int getMultiblockRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getCapacity());
+    }
+
+    public int getMinInjectionRate(boolean active) {
+        double k = active ? caseWaterConductivity : 0;
+        double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) /
+                      (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
+                       plasmaCaseConductivity * (k + caseAirConductivity));
+        return (int) (2 * Math.ceil(aMin / 2D));
+    }
+
+    public double getMaxPlasmaTemperature(boolean active) {
+        double k = active ? caseWaterConductivity : 0;
+        return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() / plasmaCaseConductivity *
+               (plasmaCaseConductivity + k + caseAirConductivity) / (k + caseAirConductivity);
+    }
+
+    public double getMaxCasingTemperature(boolean active) {
+        double k = active ? caseWaterConductivity : 0;
+        return MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(injectionRate).divide(k + caseAirConductivity).doubleValue();
+    }
+
+    public double getIgnitionTemperature(boolean active) {
+        double k = active ? caseWaterConductivity : 0;
+        double energyPerFusionFuel = MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue();
+        return burnTemperature * energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) /
+               (energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
+    }
+
+    public FloatingLong getPassiveGeneration(boolean active, boolean current) {
+        double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(active);
+        return FloatingLong.create(thermocoupleEfficiency * caseAirConductivity * temperature);
+    }
+
+    public long getSteamPerTick(boolean current) {
+        double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(true);
+        return MathUtils.clampToLong(HeatUtils.getSteamEnergyEfficiency() * caseWaterConductivity * temperature / HeatUtils.getWaterThermalEnthalpy());
+    }
+
+    public static double getInverseConductionCoefficient() {
+        return 1 / caseAirConductivity;
+    }
+}

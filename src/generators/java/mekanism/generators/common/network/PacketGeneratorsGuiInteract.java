@@ -8,6 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
@@ -70,7 +71,7 @@ public class PacketGeneratorsGuiInteract {
 
     public enum GeneratorsGuiInteraction {
         INJECTION_RATE((tile, player, extra) -> {
-            if (tile instanceof TileEntityFusionReactorController) {
+            if (tile instanceof TileEntityFusionReactorBlock) {
                 ((TileEntityFusionReactorController) tile).setInjectionRateFromPacket((int) Math.round(extra));
             } else if (tile instanceof TileEntityFissionReactorCasing) {
                 ((TileEntityFissionReactorCasing) tile).setRateLimitFromPacket(extra);

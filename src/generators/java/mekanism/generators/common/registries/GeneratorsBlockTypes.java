@@ -22,6 +22,7 @@ import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import mekanism.generators.common.tile.TileEntityReactorGlass;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.fission.TileEntityControlRodAssembly;
@@ -30,10 +31,11 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.RedstoneStatus;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
-import mekanism.generators.common.tile.fusion.TileEntityFusionReactorFrame;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
+import mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
@@ -49,7 +51,6 @@ public class GeneratorsBlockTypes {
     private static final FloatingLong STORAGE = FloatingLong.createConst(160_000);
     private static final FloatingLong STORAGE2 = FloatingLong.createConst(200_000);
     private static final FloatingLong SOLAR_STORAGE = FloatingLong.createConst(96_000);
-    private static final FloatingLong FUSION_REACTOR_STORAGE = FloatingLong.createConst(1_000_000_000);
 
     // Heat Generator
     public static final Generator<TileEntityHeatGenerator> HEAT_GENERATOR = GeneratorBuilder
@@ -186,7 +187,6 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityFusionReactorController> FUSION_REACTOR_CONTROLLER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_CONTROLLER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_CONTROLLER)
           .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_CONTROLLER)
-          .withEnergyConfig(() -> FUSION_REACTOR_STORAGE)
           .withSound(GeneratorsSounds.FUSION_REACTOR)
           .with(new AttributeStateActive(), new AttributeInventory(), new AttributeMultiblock())
           .build();
@@ -196,7 +196,7 @@ public class GeneratorsBlockTypes {
           .with(new AttributeStateActive(), new AttributeMultiblock())
           .build();
     // Fusion Reactor Frame
-    public static final BlockTypeTile<TileEntityFusionReactorFrame> FUSION_REACTOR_FRAME = BlockTileBuilder
+    public static final BlockTypeTile<TileEntityFusionReactorBlock> FUSION_REACTOR_FRAME = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_FRAME, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_FRAME)
           .withEnergyConfig(null, null)
           .with(new AttributeMultiblock())
@@ -208,5 +208,15 @@ public class GeneratorsBlockTypes {
           .with(new AttributeRedstoneEmitter<>((tile) -> tile.checkMode() ? 15 : 0))
           .with(new AttributeMultiblock())
           .withEmptyContainer(GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
+          .build();
+    // Laser Focus Matrix
+    public static final BlockTypeTile<TileEntityLaserFocusMatrix> LASER_FOCUS_MATRIX = BlockTileBuilder
+          .createBlock(() -> GeneratorsTileEntityTypes.LASER_FOCUS_MATRIX, GeneratorsLang.DESCRIPTION_LASER_FOCUS_MATRIX)
+          .with(new AttributeMultiblock())
+          .build();
+    // Reactor Glass
+    public static final BlockTypeTile<TileEntityReactorGlass> REACTOR_GLASS = BlockTileBuilder
+          .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_GLASS, GeneratorsLang.DESCRIPTION_REACTOR_GLASS)
+          .with(new AttributeMultiblock())
           .build();
 }

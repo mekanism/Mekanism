@@ -12,6 +12,8 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorCache;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
+import mekanism.generators.common.content.fusion.FusionReactorCache;
+import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.network.GeneratorsPacketHandler;
@@ -51,6 +53,7 @@ public class MekanismGenerators implements IModule {
 
     public static MultiblockManager<TurbineMultiblockData> turbineManager = new MultiblockManager<>("industrialTurbine", TurbineCache::new);
     public static MultiblockManager<FissionReactorMultiblockData> fissionReactorManager = new MultiblockManager<>("fissionReactor", FissionReactorCache::new);
+    public static MultiblockManager<FusionReactorMultiblockData> fusionReactorManager = new MultiblockManager<>("fusionReactor", FusionReactorCache::new);
 
     public MekanismGenerators() {
         Mekanism.modulesLoaded.add(instance = this);

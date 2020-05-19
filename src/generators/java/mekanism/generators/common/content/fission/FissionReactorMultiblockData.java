@@ -49,7 +49,8 @@ public class FissionReactorMultiblockData extends MultiblockData {
     public static final long BURN_PER_ASSEMBLY = 1;
     private static final double EXPLOSION_CHANCE = 1D / (512_000);
 
-    public Set<ValveData> valves = new ObjectOpenHashSet<>();
+    private Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
+
     public Set<FormedAssembly> assemblies = new LinkedHashSet<>();
     @ContainerSync
     public int fuelAssemblies = 1, surfaceArea;
@@ -116,6 +117,13 @@ public class FissionReactorMultiblockData extends MultiblockData {
         super.onCreated(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
+
+        for (ValveData data : valves) {
+            TileEntity tile = MekanismUtils.getTileEntity(world, data.location);
+            if (tile instanceof ITileHeatHandler) {
+                heatHandlers.add((ITileHeatHandler) tile);
+            }
+        }
     }
 
     @Override
@@ -138,7 +146,7 @@ public class FissionReactorMultiblockData extends MultiblockData {
         // adjacent heat transfer
         lastTransferLoss = 0;
         for (ValveData valve : valves) {
-            TileEntity tile = world.getTileEntity(valve.location);
+            TileEntity tile = MekanismUtils.getTileEntity(world, valve.location);
             if (tile instanceof ITileHeatHandler) {
                 lastTransferLoss += ((ITileHeatHandler) tile).simulateAdjacent();
             }

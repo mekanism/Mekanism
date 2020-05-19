@@ -1,127 +1,32 @@
 package mekanism.generators.common.tile.fusion;
 
-import javax.annotation.Nonnull;
-import mekanism.api.NBTConstants;
-import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.heat.HeatAPI;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
-import mekanism.common.capabilities.heat.BasicHeatCapacitor;
-import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
-import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
-import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
-import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.inventory.container.sync.SyncableLong;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.util.NBTUtils;
-import mekanism.generators.common.GeneratorTags;
-import mekanism.generators.common.content.fusion.FusionReactor;
-import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import mekanism.generators.common.slot.ReactorInventorySlot;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFusionReactorController extends TileEntityFusionReactorBlock {
-
-    public static final int MAX_WATER = 100 * FluidAttributes.BUCKET_VOLUME;
-    public static final long MAX_STEAM = MAX_WATER * 100L;
-    public static final long MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
-
-    public BasicEnergyContainer energyContainer;
-    public BasicHeatCapacitor heatCapacitor;
-    public IExtendedFluidTank waterTank;
-    public IGasTank steamTank;
-    public IGasTank deuteriumTank;
-    public IGasTank tritiumTank;
-    public IGasTank fuelTank;
-    public double plasmaTemperature;
-
-    private AxisAlignedBB box;
-    private double clientTemp = HeatAPI.AMBIENT_TEMP;
-    private boolean clientBurning = false;
-
-    private ReactorInventorySlot reactorSlot;
-
-    private int localMaxWater = MAX_WATER;
-    private long localMaxSteam = MAX_STEAM;
 
     public TileEntityFusionReactorController() {
         super(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER);
         //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
         addDisabledCapabilities(Capabilities.GAS_HANDLER_CAPABILITY, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Capabilities.HEAT_HANDLER_CAPABILITY);
         addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
-        addSemiDisabledCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, () -> !isFormed());
+        addSemiDisabledCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, () -> !getMultiblock().isFormed());
+        delaySupplier = () -> 0;
     }
 
-    @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(deuteriumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.DEUTERIUM), this));
-        builder.addTank(tritiumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.TRITIUM), this));
-        builder.addTank(fuelTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL), this));
-        builder.addTank(steamTank = VariableCapacityGasTank.output(() -> localMaxSteam, gas -> gas == MekanismGases.STEAM.getGas(), this));
-        return builder.build();
+    public void onUpdateServer() {
+        super.onUpdateServer();
+        setActive(getMultiblock().isFormed());
     }
 
-    @Nonnull
     @Override
-    protected IFluidTankHolder getInitialFluidTanks() {
-        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(waterTank = VariableCapacityFluidTank.input(() -> localMaxWater, fluid -> fluid.getFluid().isIn(FluidTags.WATER), this));
-        return builder.build();
-    }
-
-    @Nonnull
-    @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
-        builder.addContainer(energyContainer = BasicEnergyContainer.output(MachineEnergyContainer.validateBlock(this).getStorage(), this));
-        return builder.build();
-    }
-
-    @Nonnull
-    @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
-        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
-        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(FusionReactor.caseHeatCapacity, FusionReactor.getInverseConductionCoefficient(), FusionReactor.inverseInsulation, this));
-        return builder.build();
-    }
-
-    @Nonnull
-    @Override
-    protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(reactorSlot = ReactorInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, this, 80, 39));
-        return builder.build();
+    protected boolean canPlaySound() {
+        return getMultiblock().isFormed() && getMultiblock().isBurning();
     }
 
     @Override
@@ -132,189 +37,8 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
         return super.handles(type);
     }
 
-    public ReactorInventorySlot getReactorSlot() {
-        return reactorSlot;
-    }
-
-    @Override
-    public boolean isFrame() {
-        return false;
-    }
-
-    public void radiateNeutrons(int neutrons) {
-        //future impl
-    }
-
-    @Override
-    public void formMultiblock(boolean keepBurning) {
-        if (getReactor() == null) {
-            setReactor(new FusionReactor(this));
-        }
-        getReactor().formMultiblock(keepBurning);
-    }
-
-    public double getPlasmaTemp() {
-        return isFormed() ? getReactor().getLastPlasmaTemp() : 0;
-    }
-
-    public double getCaseTemp() {
-        return isFormed() ? getReactor().getLastCaseTemp() : 0;
-    }
-
-    @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (isFormed()) {
-            getReactor().simulateServer();
-            if (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getLastPlasmaTemp() - clientTemp) > 1_000_000) {
-                clientBurning = getReactor().isBurning();
-                clientTemp = getReactor().getLastPlasmaTemp();
-                sendUpdatePacket();
-            }
-        }
-    }
-
-    @Override
-    protected boolean canPlaySound() {
-        return isBurning();
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT tag) {
-        super.write(tag);
-        tag.putDouble(NBTConstants.PLASMA_TEMP, plasmaTemperature);
-        tag.putBoolean(NBTConstants.FORMED, isFormed());
-        if (isFormed()) {
-            tag.putInt(NBTConstants.INJECTION_RATE, getReactor().getInjectionRate());
-            tag.putBoolean(NBTConstants.BURNING, getReactor().isBurning());
-        }
-        return tag;
-    }
-
-    @Override
-    public void read(CompoundNBT tag) {
-        super.read(tag);
-        NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, (temp) -> plasmaTemperature = temp);
-        boolean formed = tag.getBoolean(NBTConstants.FORMED);
-        if (formed) {
-            setReactor(new FusionReactor(this));
-            getReactor().setInjectionRate(tag.getInt(NBTConstants.INJECTION_RATE));
-            getReactor().setBurning(tag.getBoolean(NBTConstants.BURNING));
-            getReactor().updateTemperatures();
-        }
-    }
-
-    public void updateMaxCapacities(int capRate) {
-        localMaxWater = MAX_WATER * capRate;
-        localMaxSteam = MAX_STEAM * capRate;
-    }
-
-    public void setInjectionRateFromPacket(int rate) {
-        if (getReactor() != null) {
-            getReactor().setInjectionRate(Math.max(0, rate - (rate % 2)));
-            markDirty(false);
-        }
-    }
-
-    public boolean isFormed() {
-        return getReactor() != null && getReactor().isFormed();
-    }
-
-    public boolean isBurning() {
-        return isFormed() && getReactor().isBurning();
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        super.setActive(active);
-        if (active == (getReactor() == null)) {
-            setReactor(active ? new FusionReactor(this) : null);
-            if (!active) {
-                invalidateCachedCapabilities();
-            }
-        }
-    }
-
     @Override
     public boolean renderUpdate() {
         return true;
-    }
-
-    @Nonnull
-    @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        if (box == null) {
-            box = new AxisAlignedBB(getPos().getX() - 1, getPos().getY() - 3, getPos().getZ() - 1, getPos().getX() + 2, getPos().getY(), getPos().getZ() + 2);
-        }
-        return box;
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
-        boolean formed = isFormed();
-        updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, formed);
-        if (formed) {
-            updateTag.putDouble(NBTConstants.PLASMA_TEMP, getPlasmaTemp());
-            updateTag.putBoolean(NBTConstants.BURNING, isBurning());
-        }
-        return updateTag;
-    }
-
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
-        boolean formed = tag.getBoolean(NBTConstants.HAS_STRUCTURE);
-        FusionReactor reactor = getReactor();
-        if (formed) {
-            if (reactor == null || !reactor.isFormed()) {
-                BlockPos corner = getPos().subtract(new Vec3i(2, 2, 2));
-                Mekanism.proxy.doMultiblockSparkle(this, corner, 4, 4, 3);
-            }
-            if (reactor == null) {
-                setReactor(reactor = new FusionReactor(this));
-            }
-            reactor.formed = true;
-            NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, reactor::setLastPlasmaTemp);
-            NBTUtils.setBooleanIfPresent(tag, NBTConstants.BURNING, reactor::setBurning);
-        } else if (reactor != null) {
-            setReactor(null);
-        }
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(this::getPlasmaTemp, value -> {
-            if (getReactor() != null) {
-                getReactor().setPlasmaTemp(value);
-                getReactor().setLastPlasmaTemp(value);
-            }
-        }));
-        container.track(SyncableDouble.create(this::getCaseTemp, value -> {
-            if (getReactor() != null) {
-                getReactor().setLastCaseTemp(value);
-            }
-        }));
-    }
-
-    public void addFuelTabContainerTrackers(MekanismContainer container) {
-        container.track(SyncableInt.create(() -> getReactor() == null ? 0 : getReactor().getInjectionRate(), value -> {
-            if (getReactor() != null) {
-                getReactor().setInjectionRate(value);
-            }
-        }));
-        container.track(SyncableGasStack.create(fuelTank));
-        container.track(SyncableGasStack.create(deuteriumTank));
-        container.track(SyncableGasStack.create(tritiumTank));
-    }
-
-    public void addHeatTabContainerTrackers(MekanismContainer container) {
-        container.track(SyncableFluidStack.create(waterTank));
-        container.track(SyncableGasStack.create(steamTank));
-        container.track(SyncableInt.create(() -> localMaxWater, (val) -> localMaxWater = val));
-        container.track(SyncableLong.create(() -> localMaxSteam, (val) -> localMaxSteam = val));
     }
 }

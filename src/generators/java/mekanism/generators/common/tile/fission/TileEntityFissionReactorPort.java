@@ -129,4 +129,9 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         }
         return super.extractGas(tank, amount, side, action);
     }
+
+    @Override
+    public int getRedstoneLevel() {
+        return getMultiblock().getCurrentRedstoneLevel();
+    }
 }

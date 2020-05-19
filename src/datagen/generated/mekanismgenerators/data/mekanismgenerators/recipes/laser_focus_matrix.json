@@ -11,7 +11,7 @@
   ],
   "key": {
     "G": {
-      "item": "mekanismgenerators:fusion_reactor_glass"
+      "item": "mekanismgenerators:reactor_glass"
     },
     "R": {
       "tag": "forge:storage_blocks/redstone"

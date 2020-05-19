@@ -1,11 +1,9 @@
-package mekanism.generators.common.block.fusion;
+package mekanism.common.block.prefab;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.block.basic.BlockStructuralGlass;
-import mekanism.common.block.prefab.BlockBasicMultiblock;
-import mekanism.generators.common.registries.GeneratorsBlockTypes;
-import mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix;
+import mekanism.common.content.blocktype.BlockTypeTile;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -17,10 +15,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ILightReader;
 
-public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserFocusMatrix> {
+public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockTile<TILE, TYPE> {
 
-    public BlockLaserFocusMatrix() {
-        super(GeneratorsBlockTypes.LASER_FOCUS_MATRIX, Block.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 8F).notSolid());
+    public BlockTileGlass(TYPE type) {
+        super(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).notSolid());
     }
 
     @Override
@@ -31,11 +29,7 @@ public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserF
     @Override
     @Deprecated
     public boolean isSideInvisible(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
-        Block blockOffset = adjacentBlockState.getBlock();
-        if (blockOffset instanceof BlockStructuralGlass || blockOffset instanceof BlockLaserFocusMatrix) {
-            return true;
-        }
-        return super.isSideInvisible(state, adjacentBlockState, side);
+        return adjacentBlockState.getBlock() instanceof BlockTileGlass;
     }
 
     @Override

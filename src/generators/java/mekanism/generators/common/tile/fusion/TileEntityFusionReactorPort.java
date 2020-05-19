@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.fusion;
 
-import java.util.Collections;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
@@ -12,15 +11,10 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.holder.chemical.ProxiedChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.common.capabilities.holder.fluid.ProxiedFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.ProxiedInventorySlotHolder;
-import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -33,49 +27,43 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 
 public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock implements IConfigurable {
 
     public TileEntityFusionReactorPort() {
         super(GeneratorsBlocks.FUSION_REACTOR_PORT);
         delaySupplier = () -> 0;
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
     @Nonnull
     @Override
     protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         //Note: We can just use a proxied holder as the input/output restrictions are done in the tanks themselves
-        return ProxiedChemicalTankHolder.create(side -> true, side -> getActive(),
-              side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getGasTanks(side));
+        return side -> getMultiblock().getGasTanks(side);
     }
 
     @Nonnull
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
-        return ProxiedFluidTankHolder.create(side -> true, side -> getActive(),
-              side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getFluidTanks(side));
+        return side -> getMultiblock().getFluidTanks(side);
     }
 
     @Nonnull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
-        return ProxiedEnergyContainerHolder.create(side -> true, side -> getActive(),
-              side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getEnergyContainers(side));
+        return side -> getMultiblock().getEnergyContainers(side);
     }
 
     @Nonnull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors() {
-        return side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getHeatCapacitors(side);
+        return side -> getMultiblock().getHeatCapacitors(side);
     }
 
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        return ProxiedInventorySlotHolder.create(side -> true, side -> getActive(),
-              side -> getReactor() == null ? Collections.emptyList() : getReactor().controller.getInventorySlots(side));
+        return side -> getMultiblock().getInventorySlots(side);
     }
 
     @Override
@@ -92,28 +80,11 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     }
 
     @Override
-    public boolean isFrame() {
-        return false;
-    }
-
-    @Override
-    protected void resetChanged() {
-        if (changed) {
-            World world = getWorld();
-            if (world != null) {
-                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
-                invalidateCachedCapabilities();
-            }
-        }
-        super.resetChanged();
-    }
-
-    @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (getActive() && getReactor() != null) {
-            GasUtils.emit(getReactor().getSteamTank(), this);
-            CableUtils.emit(getReactor().controller.energyContainer, this);
+        if (getActive() && getMultiblock().isFormed()) {
+            GasUtils.emit(getMultiblock().steamTank, this);
+            CableUtils.emit(getMultiblock().energyContainer, this);
         }
     }
 
@@ -141,5 +112,10 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         return ActionResultType.PASS;
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return getMultiblock().getCurrentRedstoneLevel();
     }
 }

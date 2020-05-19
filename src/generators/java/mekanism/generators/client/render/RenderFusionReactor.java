@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
@@ -29,11 +29,11 @@ public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFu
     @Override
     protected void render(TileEntityFusionReactorController tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        if (tile.isBurning()) {
+        if (tile.getMultiblock().isFormed() && tile.getMultiblock().isBurning()) {
             matrix.push();
             matrix.translate(0.5, -1.5, 0.5);
 
-            long scaledTemp = Math.round(tile.getPlasmaTemp() / SCALE);
+            long scaledTemp = Math.round(tile.getMultiblock().getLastPlasmaTemp() / SCALE);
             float ticks = MekanismClient.ticksPassed + partialTick;
             double scale = 1 + 0.7 * Math.sin(Math.toRadians(ticks * 3.14 * scaledTemp + 135F));
             IVertexBuilder buffer = core.getBuffer(renderer);
@@ -67,6 +67,6 @@ public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFu
 
     @Override
     public boolean isGlobalRenderer(TileEntityFusionReactorController tile) {
-        return tile.isBurning();
+        return tile.getMultiblock().isFormed() && tile.getMultiblock().isBurning();
     }
 }

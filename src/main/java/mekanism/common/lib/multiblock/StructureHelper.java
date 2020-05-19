@@ -12,9 +12,6 @@ import mekanism.common.lib.multiblock.Structure.Axis;
 
 public class StructureHelper {
 
-    public static Cuboid fetchCuboid(Structure structure, Cuboid minBounds, Cuboid maxBounds) {
-        return fetchCuboid(structure, minBounds, maxBounds, 0);
-    }
 
     /**
      * Fetch a cuboid with all 6 sides present. Quicker than using the below algorithm with all sides.
@@ -22,17 +19,14 @@ public class StructureHelper {
      * @param structure structure to check
      * @param minBounds minimum size of the cuboid
      * @param maxBounds maximum size of the cuboid
-     * @param tolerance how many missing blocks are tolerated in the completed structure (will double count edges & triple count corners)
      * @return found cuboid, or null if it doesn't exist
      */
-    public static Cuboid fetchCuboid(Structure structure, Cuboid minBounds, Cuboid maxBounds, int tolerance) {
+    public static Cuboid fetchCuboid(Structure structure, Cuboid minBounds, Cuboid maxBounds) {
         Cuboid prev = null;
-        int missing = 0;
         for (Axis axis : Axis.AXES) {
             TreeMap<Integer, Plane> map = structure.getAxisMap(axis);
             Map.Entry<Integer, Plane> first = map.firstEntry(), last = map.lastEntry();
-            missing += first.getValue().getMissing() + last.getValue().getMissing();
-            if (first == null || !first.getValue().equals(last.getValue()) || missing > tolerance) {
+            if (first == null || !first.getValue().equals(last.getValue()) || !first.getValue().isFull()) {
                 return null;
             }
             Cuboid cuboid = Cuboid.from(first.getValue(), last.getValue(), first.getKey(), last.getKey());

@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "mekanismgenerators:fusion_reactor_glass",
+    "item": "mekanismgenerators:reactor_glass",
     "count": 4
   },
   "pattern": [

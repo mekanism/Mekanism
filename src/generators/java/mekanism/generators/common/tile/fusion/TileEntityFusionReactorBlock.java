@@ -1,25 +1,23 @@
 package mekanism.generators.common.tile.fusion;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Set;
-import mekanism.api.Coord4D;
+import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.content.fusion.FusionReactor;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
+import mekanism.common.lib.multiblock.FormationProtocol;
+import mekanism.common.lib.multiblock.IStructureValidator;
+import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.tile.prefab.TileEntityMultiblock;
+import mekanism.common.util.NBTUtils;
+import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
+import mekanism.generators.common.content.fusion.FusionReactorStructureValidator;
+import mekanism.generators.common.content.fusion.FusionReactorUpdateProtocol;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundNBT;
 
-public abstract class TileEntityFusionReactorBlock extends TileEntityMekanism {
-
-    private FusionReactor fusionReactor;
-
-    private boolean attempted;
-
-    public boolean changed;
+public class TileEntityFusionReactorBlock extends TileEntityMultiblock<FusionReactorMultiblockData> {
 
     public TileEntityFusionReactorBlock() {
         this(GeneratorsBlocks.FUSION_REACTOR_FRAME);
@@ -29,123 +27,58 @@ public abstract class TileEntityFusionReactorBlock extends TileEntityMekanism {
         super(blockProvider);
     }
 
-    public abstract boolean isFrame();
-
-    public FusionReactor getReactor() {
-        return fusionReactor;
-    }
-
-    public void setReactor(FusionReactor reactor) {
-        if (reactor != fusionReactor) {
-            changed = true;
-        }
-        fusionReactor = reactor;
+    @Override
+    public FusionReactorMultiblockData createMultiblock() {
+        return new FusionReactorMultiblockData(this);
     }
 
     @Override
-    public void remove() {
-        super.remove();
-        formMultiblock(false);
+    public FormationProtocol<FusionReactorMultiblockData> getFormationProtocol() {
+        return new FusionReactorUpdateProtocol(this);
     }
 
     @Override
-    protected void onUpdateClient() {
-        super.onUpdateClient();
-        resetChanged();
-    }
-
-    protected void resetChanged() {
-        if (changed) {
-            changed = false;
-        }
+    public MultiblockManager<FusionReactorMultiblockData> getManager() {
+        return MekanismGenerators.fusionReactorManager;
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        resetChanged();
-        if (ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed())) {
-            updateController(false);
+    public IStructureValidator validateStructure() {
+        return new FusionReactorStructureValidator(getStructure());
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
+        if (getMultiblock().isFormed() && isRendering) {
+            updateTag.putDouble(NBTConstants.PLASMA_TEMP, getMultiblock().getPlasmaTemp());
+            updateTag.putBoolean(NBTConstants.BURNING, getMultiblock().isBurning());
         }
-        attempted = false;
+        return updateTag;
     }
 
     @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-        formMultiblock(true);
-    }
-
-    @Override
-    public void onAdded() {
-        super.onAdded();
-        if (!isRemote()) {
-            if (getReactor() == null) {
-                updateController(true);
-            } else {
-                formMultiblock(false);
-            }
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        if (getMultiblock().isFormed() && isRendering) {
+            NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, getMultiblock()::setLastPlasmaTemp);
+            NBTUtils.setBooleanIfPresent(tag, NBTConstants.BURNING, getMultiblock()::setBurning);
         }
     }
 
-    protected void formMultiblock(boolean keepBurning) {
-        if (getReactor() != null) {
-            getReactor().formMultiblock(keepBurning);
+    public void setInjectionRateFromPacket(int rate) {
+        if (getMultiblock().isFormed()) {
+            getMultiblock().setInjectionRate(Math.min(FusionReactorMultiblockData.MAX_INJECTION, Math.max(0, rate - (rate % 2))));
+            markDirty(false);
         }
     }
 
-    private void updateController(boolean fromAdding) {
-        if (this instanceof TileEntityFusionReactorController) {
-            if (!fromAdding) {
-                TileEntityFusionReactorController controller = (TileEntityFusionReactorController) this;
-                if (!controller.isFormed()) {
-                    formMultiblock(false);
-                }
-            }
-        } else {
-            TileEntityFusionReactorController found = new ControllerFinder().find();
-            if (found != null && !found.isFormed()) {
-                found.formMultiblock(false);
-            }
-        }
+    public void addFuelTabContainerTrackers(MekanismContainer container) {
+        SyncMapper.setup(container, FusionReactorMultiblockData.class, () -> getMultiblock(), "fuel");
     }
 
-    public class ControllerFinder {
-
-        public TileEntityFusionReactorController found;
-
-        public Set<Coord4D> iterated = new ObjectOpenHashSet<>();
-
-        public void loop(Coord4D pos) {
-            if (iterated.size() > 512 || found != null) {
-                return;
-            }
-            World world = getWorld();
-            if (world == null) {
-                return;
-            }
-
-            iterated.add(pos);
-            for (Direction side : EnumUtils.DIRECTIONS) {
-                Coord4D coord = pos.offset(side);
-                BlockPos coordPos = coord.getPos();
-                if (!iterated.contains(coord)) {
-                    TileEntityFusionReactorBlock tile = MekanismUtils.getTileEntity(TileEntityFusionReactorBlock.class, world, coordPos);
-                    if (tile != null) {
-                        tile.attempted = true;
-                        if (tile instanceof TileEntityFusionReactorController) {
-                            found = (TileEntityFusionReactorController) tile;
-                            return;
-                        }
-                        loop(coord);
-                    }
-                }
-            }
-        }
-
-        public TileEntityFusionReactorController find() {
-            loop(Coord4D.get(TileEntityFusionReactorBlock.this));
-            return found;
-        }
+    public void addHeatTabContainerTrackers(MekanismContainer container) {
+        SyncMapper.setup(container, FusionReactorMultiblockData.class, () -> getMultiblock(), "heat");
     }
 }

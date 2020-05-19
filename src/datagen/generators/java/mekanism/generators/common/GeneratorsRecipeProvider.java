@@ -257,7 +257,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY),
                     TripleLine.of(GLASS_CHAR, Pattern.REDSTONE, GLASS_CHAR),
                     TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY))
-              ).key(GLASS_CHAR, GeneratorsBlocks.FUSION_REACTOR_GLASS)
+              ).key(GLASS_CHAR, GeneratorsBlocks.REACTOR_GLASS)
               .key(Pattern.REDSTONE, Tags.Items.STORAGE_BLOCKS_REDSTONE)
               .build(consumer);
         //Frame
@@ -271,7 +271,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer, MekanismGenerators.rl("reactor/frame"));
         //Glass
-        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FUSION_REACTOR_GLASS, 4)
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.REACTOR_GLASS, 4)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY),
                     TripleLine.of(FRAME_CHAR, GLASS_CHAR, FRAME_CHAR),

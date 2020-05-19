@@ -9,6 +9,7 @@ import mekanism.common.lib.math.Plane;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -190,6 +191,10 @@ public class Structure {
 
         public Axis vertical() {
             return this == Y ? Z : Y;
+        }
+
+        public static Axis get(Direction side) {
+            return AXES[side.getAxis().ordinal()];
         }
 
         protected static final Axis[] AXES = values();
