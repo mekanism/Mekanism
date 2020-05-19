@@ -166,6 +166,7 @@ public class Structure {
 
         node.getStructure().updateTimestamp = node.getWorld().getGameTime();
         node.getStructure().didUpdate = false;
+        node.getStructure().removeMultiblock(node.getWorld());
     }
 
     public enum Axis {

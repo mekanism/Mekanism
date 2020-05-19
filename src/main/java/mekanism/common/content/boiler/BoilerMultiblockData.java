@@ -1,10 +1,10 @@
 package mekanism.common.content.boiler;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.Arrays;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.GasStack;

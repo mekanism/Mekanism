@@ -12,9 +12,9 @@ import mekanism.common.util.EnumUtils;
 @MethodsReturnNonnullByDefault
 public enum CableTier implements ITier {
     BASIC(BaseTier.BASIC, FloatingLong.createConst(8_000)),
-    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(64_000)),
-    ELITE(BaseTier.ELITE, FloatingLong.createConst(512_000)),
-    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(4_096_000));
+    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(128_000)),
+    ELITE(BaseTier.ELITE, FloatingLong.createConst(1_024_000)),
+    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(8_192_000));
 
     private final FloatingLong baseCapacity;
     private final BaseTier baseTier;

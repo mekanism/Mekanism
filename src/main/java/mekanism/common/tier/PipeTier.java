@@ -9,7 +9,7 @@ public enum PipeTier implements ITier {
     BASIC(BaseTier.BASIC, 4_000, 512),
     ADVANCED(BaseTier.ADVANCED, 8_000, 1_000),
     ELITE(BaseTier.ELITE, 64_000, 16_000),
-    ULTIMATE(BaseTier.ULTIMATE, 256_000, 64_000);
+    ULTIMATE(BaseTier.ULTIMATE, 512_000, 64_000);
 
     private final int baseCapacity;
     private final int basePull;

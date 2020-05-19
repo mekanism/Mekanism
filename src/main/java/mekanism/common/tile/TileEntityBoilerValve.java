@@ -45,9 +45,9 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
             BoilerValveMode mode = getMode();
 
             if (mode == BoilerValveMode.OUTPUT_STEAM) {
-                GasUtils.emit(getMultiblock().steamTank, this);
+                GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().steamTank, this);
             } else if (mode == BoilerValveMode.OUTPUT_COOLANT) {
-                GasUtils.emit(getMultiblock().cooledCoolantTank, this);
+                GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().cooledCoolantTank, this);
             }
         }
     }

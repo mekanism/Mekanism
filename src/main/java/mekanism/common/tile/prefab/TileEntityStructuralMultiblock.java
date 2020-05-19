@@ -45,7 +45,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     public void onUpdateServer() {
         super.onUpdateServer();
-        if (ticker >= 3)
+        if (ticker >= 1)
             structure.tick(this);
     }
 

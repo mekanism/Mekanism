@@ -61,6 +61,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Nullable
     protected UUID cachedID = null;
 
+    // start at 100 to make sure we run the animation
+    private long unformedTicks = 100;
+
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
@@ -84,17 +87,22 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     protected void onUpdateClient() {
         super.onUpdateClient();
-        if (!getMultiblock().isFormed() && !playersUsing.isEmpty()) {
-            for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
-                player.closeScreen();
+        if (!getMultiblock().isFormed()) {
+            unformedTicks++;
+            if (!playersUsing.isEmpty()) {
+                for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
+                    player.closeScreen();
+                }
             }
+        } else {
+            unformedTicks = 0;
         }
     }
 
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (ticker >= 3)
+        if (ticker >= 1)
             structure.tick(this);
         if (!getMultiblock().isFormed()) {
             playersUsing.forEach(PlayerEntity::closeScreen);
@@ -248,7 +256,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 } else {
                     getMultiblock().inventoryID = null;
                 }
-                if (getMultiblock().renderLocation != null && !prevStructure) {
+                if (getMultiblock().renderLocation != null && !prevStructure && unformedTicks >= 10) {
                     Mekanism.proxy.doMultiblockSparkle(this, getMultiblock().renderLocation, getMultiblock().length - 1, getMultiblock().width - 1, getMultiblock().height - 1);
                 }
             } else {

@@ -44,7 +44,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 public class FusionReactorMultiblockData extends MultiblockData {
 
     private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000_000);
-    public static final int MAX_WATER = 100 * FluidAttributes.BUCKET_VOLUME;
+    public static final int MAX_WATER = 1_000 * FluidAttributes.BUCKET_VOLUME;
     public static final long MAX_STEAM = MAX_WATER * 100L;
     public static final long MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
 
@@ -78,12 +78,15 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @ContainerSync(tags = "heat")
     private double lastPlasmaTemperature = HeatAPI.AMBIENT_TEMP;
-    @ContainerSync(tags = "heat")
+    @ContainerSync
     private double lastCaseTemperature = HeatAPI.AMBIENT_TEMP;
 
-    @ContainerSync(tags = "fuel") public IGasTank deuteriumTank;
-    @ContainerSync(tags = "fuel") public IGasTank tritiumTank;
-    @ContainerSync(tags = "fuel") public IGasTank fuelTank;
+    @ContainerSync(tags = "fuel")
+    public IGasTank deuteriumTank;
+    @ContainerSync(tags = "fuel")
+    public IGasTank tritiumTank;
+    @ContainerSync(tags = "fuel")
+    public IGasTank fuelTank;
     @ContainerSync(tags = "fuel", getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 0;
 

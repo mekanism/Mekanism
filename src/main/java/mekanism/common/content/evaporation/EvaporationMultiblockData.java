@@ -15,8 +15,9 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -71,8 +72,8 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
 
     public EvaporationMultiblockData(TileEntityThermalEvaporationBlock tile) {
         super(tile);
-        fluidTanks.add(inputTank = VariableCapacityFluidTank.input(this::getMaxFluid, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this));
-        fluidTanks.add(outputTank = BasicFluidTank.output(MAX_OUTPUT, this));
+        fluidTanks.add(inputTank = MultiblockFluidTank.input(this, tile, this::getMaxFluid, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid))));
+        fluidTanks.add(outputTank = MultiblockFluidTank.output(this, tile, () -> MAX_OUTPUT, BasicFluidTank.alwaysTrue));
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
         inventorySlots.add(inputInputSlot = FluidInventorySlot.fill(inputTank, this, 28, 20));
@@ -81,7 +82,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
         inventorySlots.add(outputOutputSlot = OutputInventorySlot.at(this, 132, 51));
         inputInputSlot.setSlotType(ContainerSlotType.INPUT);
         inputOutputSlot.setSlotType(ContainerSlotType.INPUT);
-        heatCapacitors.add(heatCapacitor = BasicHeatCapacitor.create(MekanismConfig.general.evaporationHeatCapacity.get() * 3, this));
+        heatCapacitors.add(heatCapacitor = MultiblockHeatCapacitor.create(this, tile, MekanismConfig.general.evaporationHeatCapacity.get() * 3));
     }
 
     @Override

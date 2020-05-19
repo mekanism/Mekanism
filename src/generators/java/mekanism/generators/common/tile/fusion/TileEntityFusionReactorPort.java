@@ -83,8 +83,8 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (getActive() && getMultiblock().isFormed()) {
-            GasUtils.emit(getMultiblock().steamTank, this);
-            CableUtils.emit(getMultiblock().energyContainer, this);
+            GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().steamTank, this);
+            CableUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().energyContainer, this);
         }
     }
 
