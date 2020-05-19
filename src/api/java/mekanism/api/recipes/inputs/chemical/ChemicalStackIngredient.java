@@ -13,7 +13,7 @@ import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.inputs.FluidStackIngredient.IngredientType;
+import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 
