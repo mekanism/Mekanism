@@ -306,7 +306,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         }
     }
 
-    public enum IngredientType {
+    private enum IngredientType {
         SINGLE,
         TAGGED,
         MULTI
