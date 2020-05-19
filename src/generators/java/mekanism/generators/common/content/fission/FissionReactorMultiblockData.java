@@ -26,6 +26,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
+import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -120,7 +121,7 @@ public class FissionReactorMultiblockData extends MultiblockData {
 
         for (ValveData data : valves) {
             TileEntity tile = MekanismUtils.getTileEntity(world, data.location);
-            if (tile instanceof ITileHeatHandler) {
+            if (tile instanceof TileEntityFissionReactorPort) {
                 heatHandlers.add((ITileHeatHandler) tile);
             }
         }

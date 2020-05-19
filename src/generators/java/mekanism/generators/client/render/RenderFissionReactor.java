@@ -30,7 +30,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
 
     @Override
     protected void render(TileEntityFissionReactorCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null) {
+        if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null) {
             BlockPos pos = tile.getPos();
             IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
             if (tile.getMultiblock().isBurning()) {
@@ -95,6 +95,6 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
 
     @Override
     public boolean isGlobalRenderer(TileEntityFissionReactorCasing tile) {
-        return tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null;
+        return tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null;
     }
 }

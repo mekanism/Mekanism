@@ -30,6 +30,11 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
     }
 
     @Override
+    protected boolean canBeMaster() {
+        return true;
+    }
+
+    @Override
     public boolean handles(SubstanceType type) {
         if (type == SubstanceType.GAS || type == SubstanceType.FLUID || type == SubstanceType.HEAT) {
             return false;

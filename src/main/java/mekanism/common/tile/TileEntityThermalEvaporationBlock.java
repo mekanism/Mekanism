@@ -45,7 +45,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<Evap
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        if (getMultiblock().isFormed() && isRendering) {
+        if (getMultiblock().isFormed() && isMaster) {
             updateTag.put(NBTConstants.FLUID_STORED, getMultiblock().inputTank.getFluid().writeToNBT(new CompoundNBT()));
             updateTag.putFloat(NBTConstants.SCALE, getMultiblock().prevScale);
         }
@@ -55,7 +55,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<Evap
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        if (isRendering && getMultiblock().isFormed()) {
+        if (isMaster && getMultiblock().isFormed()) {
             NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> getMultiblock().inputTank.setStack(fluid));
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> getMultiblock().prevScale = scale);
         }

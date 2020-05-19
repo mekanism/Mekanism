@@ -13,12 +13,12 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
+import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.Structure;
-import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -48,12 +48,12 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     /**
      * Whether or not this multiblock segment is rendering the structure.
      */
-    public boolean isRendering;
+    public boolean isMaster;
 
     /**
      * This multiblock segment's cached data
      */
-    protected MultiblockCache<T> cachedData = getManager().getNewCache();
+    protected MultiblockCache<T> cachedData;
 
     /**
      * This multiblock segment's cached inventory ID
@@ -94,7 +94,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        structure.tick(this);
+        if (ticker >= 3)
+            structure.tick(this);
         if (!getMultiblock().isFormed()) {
             playersUsing.forEach(PlayerEntity::closeScreen);
 
@@ -105,17 +106,16 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 structureChanged();
                 prevStructure = false;
             }
-            isRendering = false;
+            isMaster = false;
         } else {
             if (!prevStructure) {
                 structureChanged();
                 prevStructure = true;
             }
             if (getMultiblock().inventoryID != null) {
-                cachedData.sync(getMultiblock());
                 cachedID = getMultiblock().inventoryID;
                 getManager().updateCache(this);
-                if (isRendering) {
+                if (isMaster) {
                     if (getMultiblock().tick(world)) {
                         sendUpdatePacket();
                     }
@@ -128,9 +128,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     private void structureChanged() {
         invalidateCachedCapabilities();
-        if (getMultiblock().isFormed() && !getMultiblock().hasRenderer) {
-            getMultiblock().hasRenderer = true;
-            isRendering = true;
+        if (getMultiblock().isFormed() && !getMultiblock().hasMaster && canBeMaster()) {
+            getMultiblock().hasMaster = true;
+            isMaster = true;
             //Force update the structure's comparator level as it may be incorrect due to not having a capacity while unformed
             getMultiblock().forceUpdateComparatorLevel();
             //If we are the block that is rendering the structure make sure to tell all the valves to update their comparator levels
@@ -151,6 +151,10 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             // this will only perform neighbor updates if the block supports comparators
             markDirtyComparator();
         }
+    }
+
+    protected boolean canBeMaster() {
+        return true;
     }
 
     @Override
@@ -185,7 +189,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void resetCache() {
         cachedID = null;
-        cachedData = getManager().getNewCache();
+        cachedData = null;
     }
 
     @Override
@@ -198,13 +202,23 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         return cachedData;
     }
 
+    @Override
+    public void setCache(MultiblockCache<T> cache) {
+        this.cachedData = cache;
+    }
+
+    @Override
+    public boolean isMaster() {
+        return isMaster;
+    }
+
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        updateTag.putBoolean(NBTConstants.RENDERING, isRendering);
+        updateTag.putBoolean(NBTConstants.RENDERING, isMaster);
         updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, getMultiblock().isFormed());
-        if (getMultiblock().isFormed() && isRendering) {
+        if (getMultiblock().isFormed() && isMaster) {
             updateTag.putInt(NBTConstants.HEIGHT, getMultiblock().height);
             updateTag.putInt(NBTConstants.WIDTH, getMultiblock().width);
             updateTag.putInt(NBTConstants.LENGTH, getMultiblock().length);
@@ -221,9 +235,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isRendering = value);
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isMaster = value);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> getMultiblock().setFormedForce(value));
-        if (isRendering) {
+        if (isMaster) {
             if (getMultiblock().isFormed()) {
                 NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> getMultiblock().height = value);
                 NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> getMultiblock().width = value);
@@ -239,7 +253,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 }
             } else {
                 // this will consecutively be set on the server
-                isRendering = false;
+                isMaster = false;
             }
         }
         prevStructure = getMultiblock().isFormed();
@@ -250,7 +264,10 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         super.read(nbtTags);
         if (!getMultiblock().isFormed() && nbtTags.hasUniqueId(NBTConstants.INVENTORY_ID)) {
             cachedID = nbtTags.getUniqueId(NBTConstants.INVENTORY_ID);
-            cachedData.load(nbtTags);
+            if (nbtTags.contains(NBTConstants.CACHE)) {
+                cachedData = getManager().getNewCache();
+                cachedData.load(nbtTags.getCompound(NBTConstants.CACHE));
+            }
         }
     }
 
@@ -260,10 +277,16 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         super.write(nbtTags);
         if (cachedID != null) {
             nbtTags.putUniqueId(NBTConstants.INVENTORY_ID, cachedID);
-            if (getMultiblock().isFormed()) {
-                cachedData.sync(getMultiblock());
+            if (cachedData != null) {
+                // sync one last time if this is the master
+                if (getMultiblock().isFormed()) {
+                    cachedData.sync(getMultiblock());
+                }
+                CompoundNBT cacheTags = new CompoundNBT();
+                cachedData.save(cacheTags);
+                nbtTags.put(NBTConstants.CACHE, cacheTags);
+
             }
-            cachedData.save(nbtTags);
         }
         return nbtTags;
     }
@@ -277,7 +300,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        if (getMultiblock().isFormed() && isRendering && getMultiblock().renderLocation != null) {
+        if (getMultiblock().isFormed() && isMaster && getMultiblock().renderLocation != null) {
             //TODO: Eventually we may want to look into caching this
             BlockPos corner1 = getMultiblock().renderLocation;
             //height - 2 up, but then we go up one further to take into account that block

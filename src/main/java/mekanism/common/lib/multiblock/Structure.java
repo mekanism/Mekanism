@@ -84,7 +84,7 @@ public class Structure {
     public <TILE extends TileEntity & IMultiblockBase> FormationResult runUpdate(TILE tile) {
         if (getController() != null) {
             IStructureValidator validator = getController().validateStructure();
-            if (validator.checkValid() && multiblockData == null) {
+            if (validator.precheck() && multiblockData == null) {
                 return getController().getFormationProtocol().doUpdate(validator);
             }
         }
@@ -152,12 +152,14 @@ public class Structure {
             TileEntity tile = MekanismUtils.getTileEntity(node.getWorld(), pos);
             if (tile instanceof IMultiblockBase) {
                 IMultiblockBase adj = (IMultiblockBase) tile;
-                if (!adj.getStructure().isValid() || node.getStructure().size() > adj.getStructure().size()) {
-                    node.getStructure().add(adj);
-                } else {
-                    adj.getStructure().add(node);
+                if (adj.getStructure() != node.getStructure()) {
+                    if (!adj.getStructure().isValid() || node.getStructure().size() > adj.getStructure().size()) {
+                        node.getStructure().add(adj);
+                    } else {
+                        adj.getStructure().add(node);
+                    }
+                    return true;
                 }
-                return true;
             }
             return false;
         });

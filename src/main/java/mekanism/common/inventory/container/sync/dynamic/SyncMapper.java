@@ -1,8 +1,5 @@
 package mekanism.common.inventory.container.sync.dynamic;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
@@ -17,11 +14,14 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import mekanism.api.chemical.ChemicalStack;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -39,11 +39,11 @@ public class SyncMapper {
     private static final List<SpecialPropertyHandler> specialProperties = new ArrayList<>();
 
     static {
-        specialProperties.add(new SpecialPropertyHandler(IExtendedFluidTank.class, new SpecialPropertyData(FluidStack.class, FluidStack.class, "getFluid", "setStack")));
-        specialProperties.add(new SpecialPropertyHandler(IGasTank.class, new SpecialPropertyData(GasStack.class, ChemicalStack.class, "getStack", "setStack")));
-        specialProperties.add(new SpecialPropertyHandler(IEnergyContainer.class, new SpecialPropertyData(FloatingLong.class, FloatingLong.class, "getEnergy", "setEnergy")));
-        specialProperties.add(new SpecialPropertyHandler(BasicHeatCapacitor.class, new SpecialPropertyData(Double.TYPE, Double.TYPE, "getHeatCapacity", "setHeatCapacityFromPacket"),
-              new SpecialPropertyData(Double.TYPE, Double.TYPE, "getHeat", "setHeat")));
+        specialProperties.add(new SpecialPropertyHandler(IExtendedFluidTank.class, SpecialPropertyData.create(IExtendedFluidTank.class, FluidStack.class, obj -> obj.getFluid(), (obj, val) -> obj.setStack(val))));
+        specialProperties.add(new SpecialPropertyHandler(IGasTank.class, SpecialPropertyData.create(IGasTank.class, GasStack.class, obj -> obj.getStack(), (obj, val) -> obj.setStack(val))));
+        specialProperties.add(new SpecialPropertyHandler(IEnergyContainer.class, SpecialPropertyData.create(IEnergyContainer.class, FloatingLong.class, obj -> obj.getEnergy(), (obj, val) -> obj.setEnergy(val))));
+        specialProperties.add(new SpecialPropertyHandler(BasicHeatCapacitor.class, SpecialPropertyData.create(BasicHeatCapacitor.class, double.class, obj -> obj.getHeatCapacity(), (obj, val) -> obj.setHeatCapacityFromPacket(val)),
+              SpecialPropertyData.create(IHeatCapacitor.class, double.class, obj -> obj.getHeat(), (obj, val) -> obj.setHeat(val))));
     }
 
     private static Map<Class<?>, PropertyDataClassCache> syncablePropertyMap = new Object2ObjectOpenHashMap<>();
@@ -57,7 +57,7 @@ public class SyncMapper {
 
         for (PropertyField field : cache.propertyFieldMap.get(tag)) {
             for (TrackedFieldData data : field.trackedData) {
-                container.track(data.createProxiedSyncableData(holderSupplier));
+                container.track(data.createSyncableData(holderSupplier));
             }
         }
     }
@@ -103,7 +103,9 @@ public class SyncMapper {
                     continue;
                 }
 
-                cache.propertyFieldMap.put(syncData.tag(), newField);
+                for (String tag : syncData.tags()) {
+                    cache.propertyFieldMap.put(tag, newField);
+                }
             }
         }
     }
@@ -111,20 +113,13 @@ public class SyncMapper {
     private static PropertyField createSpecialProperty(SpecialPropertyHandler handler, Field field, Class<?> objType, ContainerSync syncData) throws Throwable {
         PropertyField ret = new PropertyField();
         for (SpecialPropertyData data : handler.specialData) {
-            PropertyType type = PropertyType.getFromType(data.propertyType);
-            if (type == null) {
-                Mekanism.logger.error("Tried to create special property data from invalid type '{}'.", data.valueType);
-                return null;
-            }
+            // create a getter for the actual property field itself
             Function<Object, Object> fieldGetter = createGetter(field, objType, syncData);
-            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "apply", MethodType.methodType(Function.class), MethodType.methodType(Object.class, Object.class),
-                  LOOKUP.findVirtual(handler.fieldType, data.getterMethodName, MethodType.methodType(data.valueType)), MethodType.methodType(data.valueType, handler.fieldType));
-            Function<Object, Object> getter = (Function<Object, Object>) site.getTarget().invokeExact();
-
-            site = LambdaMetafactory.metafactory(LOOKUP, "accept", MethodType.methodType(BiConsumer.class), MethodType.methodType(void.class, Object.class, Object.class),
-                  LOOKUP.findVirtual(handler.fieldType, data.setterMethodName, MethodType.methodType(void.class, data.valueType)), MethodType.methodType(void.class, handler.fieldType, data.valueType));
-            BiConsumer<Object, Object> setter = (BiConsumer<Object, Object>) site.getTarget().invokeExact();
-            ret.addTrackedData(new TrackedFieldData(obj -> getter.apply(fieldGetter.apply(obj)), (obj, val) -> setter.accept(fieldGetter.apply(obj), val), type));
+            // create a new tracked field
+            TrackedFieldData trackedField = TrackedFieldData.create(data.propertyType, obj -> data.get(fieldGetter.apply(obj)), (obj, val) -> data.set(fieldGetter.apply(obj), val));
+            if (trackedField != null) {
+                ret.addTrackedData(trackedField);
+            }
         }
         return ret;
     }
@@ -203,7 +198,7 @@ public class SyncMapper {
             setter.accept(dataObj, value);
         }
 
-        protected ISyncableData createProxiedSyncableData(Supplier<Object> obj) {
+        protected ISyncableData createSyncableData(Supplier<Object> obj) {
             return create(() -> {
                 Object dataObj = obj.get();
                 return dataObj == null ? getDefault() : get(dataObj);
@@ -221,6 +216,19 @@ public class SyncMapper {
 
         protected Object getDefault() {
             return propertyType.getDefault();
+        }
+
+        protected static TrackedFieldData create(Class<?> propertyType, Function<Object, Object> getter, BiConsumer<Object, Object> setter) {
+            if (propertyType.isEnum()) {
+                return new EnumFieldData(getter, setter, propertyType);
+            } else {
+                PropertyType type = PropertyType.getFromType(propertyType);
+                if (type == null) {
+                    Mekanism.logger.error("Tried to create property data for invalid type '{}'.", propertyType.getName());
+                    return null;
+                }
+                return new TrackedFieldData(getter, setter, type);
+            }
         }
     }
 
@@ -262,15 +270,26 @@ public class SyncMapper {
     protected static class SpecialPropertyData {
 
         private final Class<?> propertyType;
-        private final Class<?> valueType;
-        private final String getterMethodName;
-        private final String setterMethodName;
+        private final Function<Object, Object> getter;
+        private final BiConsumer<Object, Object> setter;
 
-        private SpecialPropertyData(Class<?> propertyType, Class<?> valueType, String getterMethodName, String setterMethodName) {
+        private SpecialPropertyData(Class<?> propertyType, Function<Object, Object> getter, BiConsumer<Object, Object> setter) {
             this.propertyType = propertyType;
-            this.valueType = valueType;
-            this.getterMethodName = getterMethodName;
-            this.setterMethodName = setterMethodName;
+            this.getter = getter;
+            this.setter = setter;
+        }
+
+        protected Object get(Object obj) {
+            return getter.apply(obj);
+        }
+
+        protected void set(Object obj, Object val) {
+            setter.accept(obj, val);
+        }
+
+        @SuppressWarnings("unchecked")
+        protected static <O, V> SpecialPropertyData create(Class<O> fieldType, Class<V> propertyType, Function<O, V> getter, BiConsumer<O, V> setter) {
+            return new SpecialPropertyData(propertyType, (Function<Object, Object>) getter, (BiConsumer<Object, Object>) setter);
         }
     }
 }

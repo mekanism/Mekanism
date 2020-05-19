@@ -60,7 +60,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        if (getMultiblock().isFormed() && isRendering) {
+        if (getMultiblock().isFormed() && isMaster) {
             updateTag.putFloat(NBTConstants.SCALE, getMultiblock().prevWaterScale);
             updateTag.putFloat(NBTConstants.SCALE_ALT, getMultiblock().prevSteamScale);
             updateTag.putInt(NBTConstants.VOLUME, getMultiblock().getWaterVolume());
@@ -77,7 +77,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        if (isRendering && getMultiblock().isFormed()) {
+        if (isMaster && getMultiblock().isFormed()) {
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> getMultiblock().prevWaterScale = scale);
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> getMultiblock().prevSteamScale = scale);
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> getMultiblock().setWaterVolume(value));

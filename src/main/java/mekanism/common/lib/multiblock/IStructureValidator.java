@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 
 public interface IStructureValidator {
 
-    boolean checkValid();
+    boolean precheck();
 
     IShape getShape();
 

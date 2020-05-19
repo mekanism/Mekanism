@@ -23,6 +23,14 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
 
     void resetCache();
 
+    void setCache(MultiblockCache<T> cache);
+
+    boolean isMaster();
+
+    default boolean hasCache() {
+        return getCache() != null;
+    }
+
     default IStructureValidator validateStructure() {
         return new CuboidStructureValidator(getStructure());
     }

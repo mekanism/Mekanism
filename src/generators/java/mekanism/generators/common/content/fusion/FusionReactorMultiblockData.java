@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
-import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -14,11 +13,12 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
+import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
+import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -31,6 +31,7 @@ import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.slot.ReactorInventorySlot;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
+import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.FluidTags;
@@ -70,20 +71,20 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public BasicEnergyContainer energyContainer;
     public BasicHeatCapacitor heatCapacitor;
 
-    @ContainerSync(tag = "heat")
+    @ContainerSync(tags = "heat")
     public IExtendedFluidTank waterTank;
-    @ContainerSync(tag = "heat")
+    @ContainerSync(tags = "heat")
     public IGasTank steamTank;
 
-    @ContainerSync(tag = "heat")
+    @ContainerSync(tags = "heat")
     private double lastPlasmaTemperature = HeatAPI.AMBIENT_TEMP;
-    @ContainerSync(tag = "heat")
+    @ContainerSync(tags = "heat")
     private double lastCaseTemperature = HeatAPI.AMBIENT_TEMP;
 
-    @ContainerSync(tag = "fuel") public IGasTank deuteriumTank;
-    @ContainerSync(tag = "fuel") public IGasTank tritiumTank;
-    @ContainerSync(tag = "fuel") public IGasTank fuelTank;
-    @ContainerSync(tag = "fuel", getter = "getInjectionRate", setter = "setInjectionRate")
+    @ContainerSync(tags = "fuel") public IGasTank deuteriumTank;
+    @ContainerSync(tags = "fuel") public IGasTank tritiumTank;
+    @ContainerSync(tags = "fuel") public IGasTank fuelTank;
+    @ContainerSync(tags = "fuel", getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 0;
 
     public double plasmaTemperature;
@@ -93,16 +94,18 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public boolean clientBurning;
     public double clientTemp;
 
+    private AxisAlignedBB deathZone;
+
     public FusionReactorMultiblockData(TileEntityFusionReactorBlock tile) {
         super(tile);
 
-        gasTanks.add(deuteriumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.DEUTERIUM), this));
-        gasTanks.add(tritiumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.TRITIUM), this));
-        gasTanks.add(fuelTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL), this));
-        gasTanks.add(steamTank = VariableCapacityGasTank.output(() -> getMaxSteam(), gas -> gas == MekanismGases.STEAM.getGas(), this));
-        fluidTanks.add(waterTank = VariableCapacityFluidTank.input(() -> getMaxWater(), fluid -> fluid.getFluid().isIn(FluidTags.WATER), this));
+        gasTanks.add(deuteriumTank = MultiblockGasTank.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.DEUTERIUM)));
+        gasTanks.add(tritiumTank = MultiblockGasTank.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.TRITIUM)));
+        gasTanks.add(fuelTank = MultiblockGasTank.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL)));
+        gasTanks.add(steamTank = MultiblockGasTank.output(this, tile, () -> getMaxSteam(), gas -> gas == MekanismGases.STEAM.getGas()));
+        fluidTanks.add(waterTank = MultiblockFluidTank.input(this, tile, () -> getMaxWater(), fluid -> fluid.getFluid().isIn(FluidTags.WATER)));
         energyContainers.add(energyContainer = BasicEnergyContainer.output(MAX_ENERGY, this));
-        heatCapacitors.add(heatCapacitor = BasicHeatCapacitor.create(caseHeatCapacity, getInverseConductionCoefficient(), inverseInsulation, this));
+        heatCapacitors.add(heatCapacitor = MultiblockHeatCapacitor.create(caseHeatCapacity, getInverseConductionCoefficient(), inverseInsulation, this));
         inventorySlots.add(reactorSlot = ReactorInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, this, 80, 39));
     }
 
@@ -111,10 +114,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
         super.onCreated(world);
         for (ValveData data : valves) {
             TileEntity tile = MekanismUtils.getTileEntity(world, data.location);
-            if (tile instanceof ITileHeatHandler) {
+            if (tile instanceof TileEntityFusionReactorPort) {
                 heatHandlers.add((ITileHeatHandler) tile);
             }
         }
+        deathZone = new AxisAlignedBB(minLocation.getX() + 1, minLocation.getY() + 1, minLocation.getZ() + 1,
+              maxLocation.getX(), maxLocation.getY(), maxLocation.getZ());
     }
 
     public void addTemperatureFromEnergyInput(FloatingLong energyAdded) {
@@ -153,7 +158,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             }
 
             //Only inject fuel if we're burning
-            if (burning) {
+            if (isBurning()) {
                 injectFuel();
                 long fuelBurned = burnFuel();
                 if (fuelBurned == 0) {
@@ -166,11 +171,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
         //Perform the heat transfer calculations
         transferHeat();
+        updateHeatCapacitors(null);
+        updateTemperatures();
 
-        if (burning) {
+        if (isBurning()) {
             kill();
         }
-        updateTemperatures();
 
         if (isBurning() != clientBurning || Math.abs(getLastPlasmaTemp() - clientTemp) > 1_000_000) {
             clientBurning = isBurning();
@@ -186,8 +192,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void kill() {
-        AxisAlignedBB deathZone = new AxisAlignedBB(minLocation.getX() + 1, minLocation.getY() + 1, minLocation.getZ() + 1,
-              maxLocation.getX(), maxLocation.getY(), maxLocation.getZ());
         List<Entity> entitiesToDie = getWorld().getEntitiesWithinAABB(Entity.class, deathZone);
 
         for (Entity entity : entitiesToDie) {
@@ -252,7 +256,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double caseAirHeat = caseAirConductivity * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
         heatCapacitor.handleHeat(-caseAirHeat);
         energyContainer.insert(FloatingLong.create(caseAirHeat * thermocoupleEfficiency), Action.EXECUTE, AutomationType.INTERNAL);
-        updateHeatCapacitors(null);
     }
 
     public void setLastPlasmaTemp(double temp) {

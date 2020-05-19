@@ -99,7 +99,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         updateTag.putBoolean(NBTConstants.HANDLE_SOUND, getMultiblock().isFormed() && getMultiblock().handlesSound(this));
         if (getMultiblock().isFormed()) {
             updateTag.putDouble(NBTConstants.BURNING, getMultiblock().lastBurnRate);
-            if (isRendering) {
+            if (isMaster) {
                 updateTag.putFloat(NBTConstants.SCALE, getMultiblock().prevCoolantScale);
                 updateTag.putFloat(NBTConstants.SCALE_ALT, getMultiblock().prevFuelScale);
                 updateTag.putFloat(NBTConstants.SCALE_ALT_2, getMultiblock().prevHeatedCoolantScale);
@@ -124,7 +124,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
         if (getMultiblock().isFormed()) {
             NBTUtils.setDoubleIfPresent(tag, NBTConstants.BURNING, value -> getMultiblock().lastBurnRate = value);
-            if (isRendering) {
+            if (isMaster) {
                 NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> getMultiblock().prevCoolantScale = scale);
                 NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> getMultiblock().prevFuelScale = scale);
                 NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_2, scale -> getMultiblock().prevHeatedCoolantScale = scale);

@@ -8,14 +8,20 @@ import net.minecraft.util.math.BlockPos;
 
 public class CuboidStructureValidator implements IStructureValidator {
 
-    private static final Cuboid MIN_CUBOID = new Cuboid(3, 3, 3);
-    private static final Cuboid MAX_CUBOID = new Cuboid(18, 18, 18);
+    private final Cuboid minBounds;
+    private final Cuboid maxBounds;
 
     protected Cuboid cuboid;
     protected Structure structure;
 
     public CuboidStructureValidator(Structure structure) {
+        this(structure, new Cuboid(3, 3, 3), new Cuboid(18, 18, 18));
+    }
+
+    public CuboidStructureValidator(Structure structure, Cuboid minBounds, Cuboid maxBounds) {
         this.structure = structure;
+        this.minBounds = minBounds;
+        this.maxBounds = maxBounds;
     }
 
     @Override
@@ -53,8 +59,8 @@ public class CuboidStructureValidator implements IStructureValidator {
     }
 
     @Override
-    public boolean checkValid() {
-        cuboid = StructureHelper.fetchCuboid(structure, MIN_CUBOID, MAX_CUBOID);
+    public boolean precheck() {
+        cuboid = StructureHelper.fetchCuboid(structure, minBounds, maxBounds);
         return cuboid != null;
     }
 }

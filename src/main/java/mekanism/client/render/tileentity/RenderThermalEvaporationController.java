@@ -25,7 +25,7 @@ public class RenderThermalEvaporationController extends MekanismTileEntityRender
     @Override
     protected void render(TileEntityThermalEvaporationController tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        if (tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && !tile.getMultiblock().inputTank.isEmpty()) {
+        if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && !tile.getMultiblock().inputTank.isEmpty()) {
             FluidRenderData data = new FluidRenderData();
             data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
             data.height = tile.getMultiblock().height - 2;
@@ -51,7 +51,7 @@ public class RenderThermalEvaporationController extends MekanismTileEntityRender
 
     @Override
     public boolean isGlobalRenderer(TileEntityThermalEvaporationController tile) {
-        return tile.isRendering && tile.getMultiblock().isFormed() && !tile.getMultiblock().inputTank.isEmpty() &&
+        return tile.isMaster && tile.getMultiblock().isFormed() && !tile.getMultiblock().inputTank.isEmpty() &&
               tile.getMultiblock().renderLocation != null;
     }
 }

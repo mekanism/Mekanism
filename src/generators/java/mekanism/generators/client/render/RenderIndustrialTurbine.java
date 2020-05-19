@@ -28,7 +28,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
 
     @Override
     protected void render(TileEntityTurbineCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().complex != null && tile.getMultiblock().renderLocation != null) {
+        if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().complex != null && tile.getMultiblock().renderLocation != null) {
             BlockPos pos = tile.getPos();
             BlockPos complexPos = tile.getMultiblock().complex;
             IVertexBuilder buffer = RenderTurbineRotor.INSTANCE.model.getBuffer(renderer);
@@ -71,6 +71,6 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
 
     @Override
     public boolean isGlobalRenderer(TileEntityTurbineCasing tile) {
-        return tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().complex != null && tile.getMultiblock().renderLocation != null;
+        return tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().complex != null && tile.getMultiblock().renderLocation != null;
     }
 }

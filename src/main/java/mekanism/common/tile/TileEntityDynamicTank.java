@@ -81,7 +81,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        if (getMultiblock().isFormed() && isRendering) {
+        if (getMultiblock().isFormed() && isMaster) {
             updateTag.putFloat(NBTConstants.SCALE, getMultiblock().prevScale);
             updateTag.putInt(NBTConstants.VOLUME, getMultiblock().getVolume());
             updateTag.put(NBTConstants.FLUID_STORED, getMultiblock().fluidTank.getFluid().writeToNBT(new CompoundNBT()));
@@ -94,7 +94,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        if (getMultiblock().isFormed() && isRendering) {
+        if (getMultiblock().isFormed() && isMaster) {
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> getMultiblock().prevScale = scale);
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> getMultiblock().setVolume(value));
             NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> getMultiblock().fluidTank.setStack(value));

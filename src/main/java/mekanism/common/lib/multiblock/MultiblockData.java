@@ -43,7 +43,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
-    @ContainerSync(tag = "stats")
+    @ContainerSync(tags = "stats")
     public int length, width, height;
 
     @ContainerSync(getter = "getVolume", setter = "setVolume")
@@ -51,7 +51,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public UUID inventoryID;
 
-    public boolean hasRenderer;
+    public boolean hasMaster;
 
     @Nullable//may be null if structure has not been fully sent
     public BlockPos renderLocation;

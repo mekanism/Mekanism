@@ -47,12 +47,17 @@ public class TileEntityFusionReactorBlock extends TileEntityMultiblock<FusionRea
         return new FusionReactorStructureValidator(getStructure());
     }
 
+    @Override
+    protected boolean canBeMaster() {
+        return false;
+    }
+
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        if (getMultiblock().isFormed() && isRendering) {
-            updateTag.putDouble(NBTConstants.PLASMA_TEMP, getMultiblock().getPlasmaTemp());
+        if (getMultiblock().isFormed() && isMaster) {
+            updateTag.putDouble(NBTConstants.PLASMA_TEMP, getMultiblock().getLastPlasmaTemp());
             updateTag.putBoolean(NBTConstants.BURNING, getMultiblock().isBurning());
         }
         return updateTag;
@@ -61,7 +66,7 @@ public class TileEntityFusionReactorBlock extends TileEntityMultiblock<FusionRea
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        if (getMultiblock().isFormed() && isRendering) {
+        if (getMultiblock().isFormed() && isMaster) {
             NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, getMultiblock()::setLastPlasmaTemp);
             NBTUtils.setBooleanIfPresent(tag, NBTConstants.BURNING, getMultiblock()::setBurning);
         }

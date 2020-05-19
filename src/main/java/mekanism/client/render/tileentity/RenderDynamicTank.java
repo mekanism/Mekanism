@@ -27,7 +27,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     protected void render(TileEntityDynamicTank tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null) {
+        if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null) {
             RenderData data = null;
             if (!tile.getMultiblock().fluidTank.isEmpty()) {
                 data = new FluidRenderData();
@@ -66,7 +66,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     public boolean isGlobalRenderer(TileEntityDynamicTank tile) {
-        return tile.isRendering && tile.getMultiblock().isFormed() && (!tile.getMultiblock().fluidTank.isEmpty() || !tile.getMultiblock().gasTank.isEmpty()) &&
+        return tile.isMaster && tile.getMultiblock().isFormed() && (!tile.getMultiblock().fluidTank.isEmpty() || !tile.getMultiblock().gasTank.isEmpty()) &&
                tile.getMultiblock().renderLocation != null;
     }
 }

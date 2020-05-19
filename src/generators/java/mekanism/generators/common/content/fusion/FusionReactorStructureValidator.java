@@ -78,7 +78,7 @@ public class FusionReactorStructureValidator extends CuboidStructureValidator {
     }
 
     @Override
-    public boolean checkValid() {
+    public boolean precheck() {
         // 72 = (12 missing blocks possible on each face) * (6 sides)
         cuboid = StructureHelper.fetchCuboid(structure, BOUNDS, BOUNDS, EnumSet.allOf(CuboidSide.class), 72);
         return cuboid != null;

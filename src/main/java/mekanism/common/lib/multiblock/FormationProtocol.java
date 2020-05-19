@@ -226,7 +226,7 @@ public abstract class FormationProtocol<T extends MultiblockData> {
                     @SuppressWarnings("unchecked")
                     IMultiblock<T> multiblockTile = (IMultiblock<T>) tile;
                     UUID uuid = multiblockTile.getCacheID();
-                    if (uuid != null && multiblockTile.getManager() == getManager()) {
+                    if (uuid != null && multiblockTile.getManager() == getManager() && multiblockTile.hasCache()) {
                         getManager().updateCache(multiblockTile);
                         idsFound.add(uuid);
                     }

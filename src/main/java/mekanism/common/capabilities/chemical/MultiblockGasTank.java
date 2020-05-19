@@ -32,6 +32,18 @@ public class MultiblockGasTank<MULTIBLOCK extends MultiblockData> extends Variab
         return new MultiblockGasTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, null, null);
     }
 
+    public static <MULTIBLOCK extends MultiblockData> MultiblockGasTank<MULTIBLOCK> input(MULTIBLOCK multiblock,
+        TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity, Predicate<@NonNull Gas> validator) {
+      return create(multiblock, tile, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.isFormed(),
+            (stack, automationType) -> multiblock.isFormed(), validator, null, null);
+  }
+
+  public static <MULTIBLOCK extends MultiblockData> MultiblockGasTank<MULTIBLOCK> output(MULTIBLOCK multiblock,
+        TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity, Predicate<@NonNull Gas> validator) {
+      return create(multiblock, tile, capacity, (stack, automationType) -> multiblock.isFormed(),
+            (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.isFormed(), validator, null, null);
+  }
+
     public static <MULTIBLOCK extends MultiblockData> MultiblockGasTank<MULTIBLOCK>
     create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas,
           @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IMekanismGasHandler gasHandler) {

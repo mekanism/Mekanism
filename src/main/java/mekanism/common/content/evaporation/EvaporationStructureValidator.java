@@ -73,7 +73,7 @@ public class EvaporationStructureValidator extends CuboidStructureValidator {
     }
 
     @Override
-    public boolean checkValid() {
+    public boolean precheck() {
         cuboid = StructureHelper.fetchCuboid(structure, MIN_CUBOID, MAX_CUBOID, EnumSet.complementOf(EnumSet.of(CuboidSide.TOP)), 8);
         return cuboid != null;
     }

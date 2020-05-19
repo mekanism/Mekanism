@@ -26,7 +26,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
 
     @Override
     protected void render(TileEntityBoilerCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && tile.getMultiblock().upperRenderLocation != null) {
+        if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && tile.getMultiblock().upperRenderLocation != null) {
             BlockPos pos = tile.getPos();
             IVertexBuilder buffer = null;
             if (!tile.getMultiblock().waterTank.isEmpty()) {
@@ -75,6 +75,6 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
 
     @Override
     public boolean isGlobalRenderer(TileEntityBoilerCasing tile) {
-        return tile.isRendering && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && tile.getMultiblock().upperRenderLocation != null;
+        return tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && tile.getMultiblock().upperRenderLocation != null;
     }
 }

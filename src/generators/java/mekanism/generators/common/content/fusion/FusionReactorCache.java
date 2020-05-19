@@ -26,6 +26,7 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
         data.plasmaTemperature = plasmaTemperature;
         data.setInjectionRate(injectionRate);
         data.setBurning(burning);
+        data.updateTemperatures();
     }
 
     @Override

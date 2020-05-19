@@ -51,6 +51,7 @@ public final class NBTConstants {
     public static final String BUCKET_MODE = "bucketMode";
     public static final String BURNING = "burning";
     public static final String BURN_TIME = "burnTime";
+    public static final String CACHE = "cache";
     public static final String CHANNEL = "channel";
     public static final String CHUNK_SET = "chunkSet";
     public static final String COLOR = "color";

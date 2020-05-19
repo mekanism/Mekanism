@@ -3,8 +3,11 @@ package mekanism.generators.common.tile.turbine;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.math.Cuboid;
+import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
+import mekanism.common.lib.multiblock.IStructureValidator;
+import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
@@ -52,7 +55,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        if (getMultiblock().isFormed() && isRendering) {
+        if (getMultiblock().isFormed() && isMaster) {
             updateTag.putFloat(NBTConstants.SCALE, getMultiblock().prevSteamScale);
             updateTag.putInt(NBTConstants.VOLUME, getMultiblock().getVolume());
             updateTag.putInt(NBTConstants.LOWER_VOLUME, getMultiblock().lowerVolume);
@@ -66,7 +69,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        if (getMultiblock().isFormed() && isRendering) {
+        if (getMultiblock().isFormed() && isMaster) {
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> getMultiblock().prevSteamScale = scale);
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> getMultiblock().setVolume(value));
             NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> getMultiblock().lowerVolume = value);
@@ -75,5 +78,10 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
             NBTUtils.setFloatIfPresent(tag, NBTConstants.ROTATION, value -> getMultiblock().clientRotation = value);
             TurbineMultiblockData.clientRotationMap.put(getMultiblock().inventoryID, getMultiblock().clientRotation);
         }
+    }
+
+    @Override
+    public IStructureValidator validateStructure() {
+        return new CuboidStructureValidator(getStructure(), new Cuboid(3, 3, 3), new Cuboid(17, 18, 17));
     }
 }

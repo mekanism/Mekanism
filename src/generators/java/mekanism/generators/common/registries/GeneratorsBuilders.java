@@ -62,6 +62,11 @@ public class GeneratorsBuilders {
         }
 
         @Override
+        protected Block getWallBlock(BlockPos pos) {
+            return GeneratorsBlocks.REACTOR_GLASS.getBlock();
+        }
+
+        @Override
         protected Block getCasing() {
             return GeneratorsBlocks.FISSION_REACTOR_CASING.getBlock();
         }

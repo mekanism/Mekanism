@@ -102,6 +102,7 @@ public class MultiblockManager<T extends MultiblockData> {
     }
 
     private class CacheWrapper {
+
         private MultiblockCache<T> cache;
         private Set<Coord4D> locations = new ObjectOpenHashSet<>();
 
@@ -111,7 +112,26 @@ public class MultiblockManager<T extends MultiblockData> {
 
         public void update(IMultiblock<T> tile) {
             locations.add(Coord4D.get((TileEntity) tile));
-            cache = tile.getCache();
+
+            if (tile.getMultiblock().isFormed()) {
+                if (tile.isMaster()) {
+                    // create a new cache for the tile if it needs one
+                    if (!tile.hasCache()) {
+                        tile.setCache(getNewCache());
+                    }
+                    // if this is the master tile, sync the cache with the multiblock and then update our reference
+                    tile.getCache().sync(tile.getMultiblock());
+                    cache = tile.getCache();
+                }
+            } else {
+                if (tile.hasCache()) {
+                    // if the tile doesn't have a formed multiblock but has a cache, update our reference
+                    cache = tile.getCache();
+                } else if (cache != null) {
+                    // if the tile doesn't have a cache but we do, update the tile's reference
+                    tile.setCache(cache);
+                }
+            }
         }
     }
 }
