@@ -8,7 +8,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.recipes.inputs.InfusionIngredient;
+import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -23,10 +23,10 @@ import net.minecraft.util.ResourceLocation;
 public abstract class MetallurgicInfuserRecipe extends MekanismRecipe implements BiPredicate<InfusionStack, ItemStack> {
 
     private final ItemStackIngredient itemInput;
-    private final InfusionIngredient infusionInput;
+    private final InfusionStackIngredient infusionInput;
     private final ItemStack output;
 
-    public MetallurgicInfuserRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack output) {
+    public MetallurgicInfuserRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
         super(id);
         this.itemInput = itemInput;
         this.infusionInput = infusionInput;
@@ -46,7 +46,7 @@ public abstract class MetallurgicInfuserRecipe extends MekanismRecipe implements
         return this.output.copy();
     }
 
-    public InfusionIngredient getInfusionInput() {
+    public InfusionStackIngredient getInfusionInput() {
         return this.infusionInput;
     }
 

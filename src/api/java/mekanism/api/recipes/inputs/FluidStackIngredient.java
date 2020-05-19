@@ -72,11 +72,11 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             json = jsonArray.get(0);
         }
         if (!json.isJsonObject()) {
-            throw new JsonSyntaxException("Expected item to be object or array of objects");
+            throw new JsonSyntaxException("Expected fluid to be object or array of objects");
         }
         JsonObject jsonObject = json.getAsJsonObject();
         if (jsonObject.has(JsonConstants.FLUID) && jsonObject.has(JsonConstants.TAG)) {
-            throw new JsonParseException("An ingredient entry is either a tag or an item, not both");
+            throw new JsonParseException("An ingredient entry is either a tag or an fluid, not both");
         } else if (jsonObject.has(JsonConstants.FLUID)) {
             return from(SerializerHelper.deserializeFluid(jsonObject));
         } else if (jsonObject.has(JsonConstants.TAG)) {
@@ -117,7 +117,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 cleanedIngredients.add(ingredient);
             }
         }
-        //There should be more than a single item or we would have split out earlier
+        //There should be more than a single fluid or we would have split out earlier
         return new Multi(cleanedIngredients.toArray(new FluidStackIngredient[0]));
     }
 
@@ -306,7 +306,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         }
     }
 
-    private enum IngredientType {
+    public enum IngredientType {
         SINGLE,
         TAGGED,
         MULTI

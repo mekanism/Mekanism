@@ -3,7 +3,7 @@ package mekanism.generators.client.jei;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.api.recipes.inputs.GasStackIngredient;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.MekanismGenerators;

@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
-import mekanism.api.recipes.inputs.InfusionIngredient;
+import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import net.minecraft.item.ItemStack;
@@ -33,7 +33,7 @@ public class MetallurgicInfuserRecipeSerializer<T extends MetallurgicInfuserReci
         ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
         JsonElement infusionInput = JSONUtils.isJsonArray(json, JsonConstants.INFUSION_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INFUSION_INPUT) :
                                     JSONUtils.getJsonObject(json, JsonConstants.INFUSION_INPUT);
-        InfusionIngredient infusionIngredient = InfusionIngredient.deserialize(infusionInput);
+        InfusionStackIngredient infusionIngredient = InfusionStackIngredient.deserialize(infusionInput);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
@@ -45,7 +45,7 @@ public class MetallurgicInfuserRecipeSerializer<T extends MetallurgicInfuserReci
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient itemInput = ItemStackIngredient.read(buffer);
-            InfusionIngredient infusionInput = InfusionIngredient.read(buffer);
+            InfusionStackIngredient infusionInput = InfusionStackIngredient.read(buffer);
             ItemStack output = buffer.readItemStack();
             return this.factory.create(recipeId, itemInput, infusionInput, output);
         } catch (Exception e) {
@@ -66,6 +66,6 @@ public class MetallurgicInfuserRecipeSerializer<T extends MetallurgicInfuserReci
 
     public interface IFactory<T extends MetallurgicInfuserRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack output);
+        T create(ResourceLocation id, ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output);
     }
 }

@@ -12,8 +12,8 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.GasStackIngredient;
-import mekanism.api.recipes.inputs.InfusionIngredient;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.Pattern;
@@ -248,7 +248,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Hohlraum
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 4),
-              InfusionIngredient.from(MekanismTags.InfuseTypes.CARBON, 10),
+              InfusionStackIngredient.from(MekanismTags.InfuseTypes.CARBON, 10),
               GeneratorsItems.HOHLRAUM.getItemStack()
         ).build(consumer);
         //Laser Focus Matrix

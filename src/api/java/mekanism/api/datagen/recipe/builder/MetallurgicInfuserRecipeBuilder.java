@@ -10,7 +10,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.inputs.InfusionIngredient;
+import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
@@ -22,17 +22,17 @@ import net.minecraft.util.ResourceLocation;
 public class MetallurgicInfuserRecipeBuilder extends MekanismRecipeBuilder<MetallurgicInfuserRecipeBuilder> {
 
     private final ItemStackIngredient itemInput;
-    private final InfusionIngredient infusionInput;
+    private final InfusionStackIngredient infusionInput;
     private final ItemStack output;
 
-    protected MetallurgicInfuserRecipeBuilder(ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack output) {
+    protected MetallurgicInfuserRecipeBuilder(ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
         super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "metallurgic_infusing"));
         this.itemInput = itemInput;
         this.infusionInput = infusionInput;
         this.output = output;
     }
 
-    public static MetallurgicInfuserRecipeBuilder metallurgicInfusing(ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack output) {
+    public static MetallurgicInfuserRecipeBuilder metallurgicInfusing(ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This metallurgic infusing recipe requires a non empty output.");
         }

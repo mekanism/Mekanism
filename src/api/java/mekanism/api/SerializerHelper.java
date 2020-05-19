@@ -9,11 +9,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -29,7 +29,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 @MethodsReturnNonnullByDefault
 public class SerializerHelper {
 
-    private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public static FloatingLong getFloatingLong(@Nonnull JsonObject json, @Nonnull String key) {
         if (!json.has(key)) {
@@ -46,64 +46,42 @@ public class SerializerHelper {
         }
     }
 
-    public static ItemStack getItemStack(@Nonnull JsonObject json, @Nonnull String key) {
+    private static void validateKey(@Nonnull JsonObject json, @Nonnull String key) {
         if (!json.has(key)) {
             throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
         }
         if (!json.get(key).isJsonObject()) {
             throw new JsonSyntaxException("Expected '" + key + "' to be an object");
         }
+    }
+
+    public static ItemStack getItemStack(@Nonnull JsonObject json, @Nonnull String key) {
+        validateKey(json, key);
         return ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, key));
     }
 
     public static GasStack getGasStack(@Nonnull JsonObject json, @Nonnull String key) {
-        if (!json.has(key)) {
-            throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
-        }
-        if (!json.get(key).isJsonObject()) {
-            throw new JsonSyntaxException("Expected '" + key + "' to be an object");
-        }
+        validateKey(json, key);
         return deserializeGas(JSONUtils.getJsonObject(json, key));
     }
 
     public static FluidStack getFluidStack(@Nonnull JsonObject json, @Nonnull String key) {
-        if (!json.has(key)) {
-            throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
-        }
-        if (!json.get(key).isJsonObject()) {
-            throw new JsonSyntaxException("Expected '" + key + "' to be an object");
-        }
+        validateKey(json, key);
         return deserializeFluid(JSONUtils.getJsonObject(json, key));
     }
 
     public static InfusionStack getInfusionStack(@Nonnull JsonObject json, @Nonnull String key) {
-        if (!json.has(key)) {
-            throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
-        }
-        if (!json.get(key).isJsonObject()) {
-            throw new JsonSyntaxException("Expected '" + key + "' to be an object");
-        }
+        validateKey(json, key);
         return deserializeInfuseType(JSONUtils.getJsonObject(json, key));
     }
 
+    public static PigmentStack getPigmentStack(@Nonnull JsonObject json, @Nonnull String key) {
+        validateKey(json, key);
+        return deserializePigment(JSONUtils.getJsonObject(json, key));
+    }
+
     public static GasStack deserializeGas(@Nonnull JsonObject json) {
-        if (!json.has(JsonConstants.AMOUNT)) {
-            throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
-        }
-        JsonElement count = json.get(JsonConstants.AMOUNT);
-        if (!JSONUtils.isNumber(count)) {
-            throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
-        }
-        long amount = count.getAsJsonPrimitive().getAsLong();
-        if (amount < 1) {
-            throw new JsonSyntaxException("Expected amount to be greater than zero.");
-        }
-        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, JsonConstants.GAS));
-        Gas gas = Gas.getFromRegistry(resourceLocation);
-        if (gas.isEmptyType()) {
-            throw new JsonSyntaxException("Invalid gas type '" + resourceLocation + "'");
-        }
-        return new GasStack(gas, amount);
+        return ChemicalIngredientDeserializer.GAS.deserializeStack(json);
     }
 
     public static FluidStack deserializeFluid(@Nonnull JsonObject json) {
@@ -140,25 +118,12 @@ public class SerializerHelper {
     }
 
     public static InfusionStack deserializeInfuseType(@Nonnull JsonObject json) {
-        if (!json.has(JsonConstants.AMOUNT)) {
-            throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
-        }
-        JsonElement count = json.get(JsonConstants.AMOUNT);
-        if (!JSONUtils.isNumber(count)) {
-            throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
-        }
-        long amount = count.getAsJsonPrimitive().getAsLong();
-        if (amount < 1) {
-            throw new JsonSyntaxException("Expected amount to be greater than zero.");
-        }
-        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, JsonConstants.INFUSE_TYPE));
-        InfuseType infuseType = InfuseType.getFromRegistry(resourceLocation);
-        if (infuseType.isEmptyType()) {
-            throw new JsonSyntaxException("Invalid infusion type '" + resourceLocation + "'");
-        }
-        return new InfusionStack(infuseType, amount);
+        return ChemicalIngredientDeserializer.INFUSION.deserializeStack(json);
     }
 
+    public static PigmentStack deserializePigment(@Nonnull JsonObject json) {
+        return ChemicalIngredientDeserializer.PIGMENT.deserializeStack(json);
+    }
 
     public static JsonElement serializeItemStack(@Nonnull ItemStack stack) {
         JsonObject json = new JsonObject();
@@ -173,10 +138,7 @@ public class SerializerHelper {
     }
 
     public static JsonElement serializeGasStack(@Nonnull GasStack stack) {
-        JsonObject json = new JsonObject();
-        json.addProperty(JsonConstants.GAS, stack.getType().getRegistryName().toString());
-        json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
-        return json;
+        return ChemicalIngredientDeserializer.GAS.serializeStack(stack);
     }
 
     public static JsonElement serializeFluidStack(@Nonnull FluidStack stack) {
@@ -190,9 +152,10 @@ public class SerializerHelper {
     }
 
     public static JsonElement serializeInfusionStack(@Nonnull InfusionStack stack) {
-        JsonObject json = new JsonObject();
-        json.addProperty(JsonConstants.INFUSE_TYPE, stack.getType().getRegistryName().toString());
-        json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
-        return json;
+        return ChemicalIngredientDeserializer.INFUSION.serializeStack(stack);
+    }
+
+    public static JsonElement serializePigmentStack(@Nonnull PigmentStack stack) {
+        return ChemicalIngredientDeserializer.PIGMENT.serializeStack(stack);
     }
 }

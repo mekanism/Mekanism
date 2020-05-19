@@ -14,6 +14,7 @@ public class JsonConstants {
     public static final String ITEM = "item";
     public static final String GAS = "gas";
     public static final String INFUSE_TYPE = "infuse_type";
+    public static final String PIGMENT = "pigment";
     public static final String FLUID = "fluid";
 
     //Recipes

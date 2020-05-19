@@ -2,7 +2,7 @@ package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
-import mekanism.api.recipes.inputs.InfusionIngredient;
+import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe {
 
-    public MetallurgicInfuserIRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack output) {
+    public MetallurgicInfuserIRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
         super(id, itemInput, infusionInput, output);
     }
 

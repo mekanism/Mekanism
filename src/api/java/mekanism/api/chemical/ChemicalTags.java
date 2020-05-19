@@ -36,15 +36,19 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
     }
 
     public static Tag<Gas> gasTag(ResourceLocation resourceLocation) {
-        return new ChemicalTag<>(resourceLocation, GAS);
+        return chemicalTag(resourceLocation, GAS);
     }
 
     public static Tag<InfuseType> infusionTag(ResourceLocation resourceLocation) {
-        return new ChemicalTag<>(resourceLocation, INFUSE_TYPE);
+        return chemicalTag(resourceLocation, INFUSE_TYPE);
     }
 
     public static Tag<Pigment> pigmentTag(ResourceLocation resourceLocation) {
-        return new ChemicalTag<>(resourceLocation, PIGMENT);
+        return chemicalTag(resourceLocation, PIGMENT);
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>> Tag<CHEMICAL> chemicalTag(ResourceLocation resourceLocation, ChemicalTags<CHEMICAL> chemicalTags) {
+        return new ChemicalTag<>(resourceLocation, chemicalTags);
     }
 
     private static class ChemicalTag<CHEMICAL extends Chemical<CHEMICAL>> extends Tag<CHEMICAL> {
