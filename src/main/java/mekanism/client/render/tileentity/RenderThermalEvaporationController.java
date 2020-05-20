@@ -9,7 +9,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.tile.TileEntityThermalEvaporationController;
+import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;

@@ -254,6 +254,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.QIO_IMPORTER, "QIO Importer");
         add(MekanismBlocks.QIO_EXPORTER, "QIO Exporter");
         add(MekanismBlocks.QIO_REDSTONE_ADAPTER, "QIO Redstone Adapter");
+        add(MekanismBlocks.SPS_CASING, "SPS Casing");
+        add(MekanismBlocks.SPS_PORT, "SPS Port");
+        add(MekanismBlocks.SUPERCHARGED_COIL, "Supercharged Coil");
         //Bounding block (I don't think these lang keys actually will ever be used, but set them just in case)
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         add(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, "Advanced Bounding Block");
@@ -1027,6 +1030,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_GAS_TANK, "A portable tank that lets you carry gas wherever you please.");
         add(MekanismLang.DESCRIPTION_DIVERSION, "- Controllable by redstone");
         add(MekanismLang.DESCRIPTION_RESTRICTIVE, "- Only used if no other paths available");
+        add(MekanismLang.DESCRIPTION_SPS_CASING, "Reinforced casing capable of resisting intense chemical and thermal effects from phase-shifting reactions.");
+        add(MekanismLang.DESCRIPTION_SPS_PORT, "A port used for the transfer of energy and substances in the Supercritical Phase Shifter.");
+        add(MekanismLang.DESCRIPTION_SUPERCHARGED_COIL, "Used in Supercritical Phase Shifter multiblock to supply large quantities of energy. Must be attached to a SPS Port.");
         // Modules
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");

@@ -7,9 +7,9 @@ import mekanism.common.lib.math.Cuboid.CuboidSide;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
+import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.lib.multiblock.StructureHelper;
-import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.util.math.BlockPos;
 
 public class EvaporationStructureValidator extends CuboidStructureValidator {

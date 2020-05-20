@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.multiblock;
 
 import java.util.UUID;
 import mekanism.common.content.boiler.BoilerMultiblockData;

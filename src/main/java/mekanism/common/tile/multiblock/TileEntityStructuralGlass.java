@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.multiblock;
 
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;

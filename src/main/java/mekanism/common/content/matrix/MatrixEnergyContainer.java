@@ -14,8 +14,8 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.tier.InductionProviderTier;
-import mekanism.common.tile.TileEntityInductionCell;
-import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.tile.multiblock.TileEntityInductionCell;
+import mekanism.common.tile.multiblock.TileEntityInductionProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 

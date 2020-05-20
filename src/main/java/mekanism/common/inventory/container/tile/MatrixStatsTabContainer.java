@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container.tile;
 
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.tile.TileEntityInductionCasing;
+import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 

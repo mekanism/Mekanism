@@ -5,7 +5,7 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.registries.MekanismBlockTypes;
-import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 
