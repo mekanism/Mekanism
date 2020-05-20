@@ -108,7 +108,7 @@ public class FissionReactorMultiblockData extends MultiblockData {
         gasTanks.addAll(Arrays.asList(fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank));
         heatCapacitor = MultiblockHeatCapacitor.create(this, tile,
               MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
-              () -> INVERSE_INSULATION_COEFFICIENT,
+              () -> INVERSE_CONDUCTION_COEFFICIENT,
               () -> INVERSE_INSULATION_COEFFICIENT);
         heatCapacitors.add(heatCapacitor);
     }

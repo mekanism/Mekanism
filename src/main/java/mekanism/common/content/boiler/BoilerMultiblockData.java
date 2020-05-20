@@ -35,7 +35,7 @@ public class BoilerMultiblockData extends MultiblockData implements IMekanismFlu
     public static Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
     public static final double CASING_HEAT_CAPACITY = 50;
-    public static final double CASING_INVERSE_INSULATION_COEFFICIENT = 10;
+    public static final double CASING_INVERSE_INSULATION_COEFFICIENT = 100_000;
     public static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
 
     public static final int WATER_PER_VOLUME = 16_000;
@@ -93,8 +93,8 @@ public class BoilerMultiblockData extends MultiblockData implements IMekanismFlu
         gasTanks.addAll(Arrays.asList(steamTank, superheatedCoolantTank, cooledCoolantTank));
         heatCapacitor = MultiblockHeatCapacitor.create(this, tile,
               CASING_HEAT_CAPACITY,
-              () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size(),
-              () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size());
+              () -> CASING_INVERSE_CONDUCTION_COEFFICIENT,
+              () -> CASING_INVERSE_INSULATION_COEFFICIENT);
         heatCapacitors.add(heatCapacitor);
     }
 
@@ -182,7 +182,7 @@ public class BoilerMultiblockData extends MultiblockData implements IMekanismFlu
     @Nonnull
     @Override
     public HeatTransfer simulate() {
-        double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (CASING_INVERSE_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT) * locations.size();
+        double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (CASING_INVERSE_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT);
         double heatToTransfer = (heatCapacitor.getTemperature() - HeatAPI.AMBIENT_TEMP) / invConduction;
 
         heatCapacitor.handleHeat(-heatToTransfer * heatCapacitor.getHeatCapacity());
