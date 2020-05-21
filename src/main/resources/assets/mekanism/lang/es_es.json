@@ -291,7 +291,7 @@
   "description.mekanism.chemical_injection_chamber": "Una máquina de élite capaz de procesar minerales en cuatro fragmentos, sirviendo como la etapa inicial del procesamiento del mineral 400%.",
   "description.mekanism.chemical_oxidizer": "Máquina capaz de oxidar materiales sólidos en fase de gas.",
   "description.mekanism.chemical_washer": "Máquina definitiva que limpia la slapia no procesada y la prepara para la cristallización.",
-  "description.mekanism.combiner": "A machine used to combine items together. For example, dusts and cobblestone to form their ore counterparts.",
+  "description.mekanism.combiner": "Una maquina usada para combinar objetos. Por ejemplo, polvos y roca para formar su contraparte en mineral.",
   "description.mekanism.copper_ore": "Material conductor común que se puede utilizar en la producción de alambres. Su capacidad de soportar altas temperaturas también hace que sea esencial para la maquinaria avanzada.",
   "description.mekanism.crusher": "Máquina utilizada para triturar lingotes en sus contrapartes de polvo, así como realizar muchas otras operaciones.",
   "description.mekanism.digital_miner": "Un minero auto-avanzado basado en filtros que puede extraer cualquier bloque que le digas dentro de un radio (máximo) de 32 bloques.",
