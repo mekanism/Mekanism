@@ -54,6 +54,7 @@ public final class NBTConstants {
     public static final String CACHE = "cache";
     public static final String CHANNEL = "channel";
     public static final String CHUNK_SET = "chunkSet";
+    public static final String COILS = "coils";
     public static final String COLOR = "color";
     public static final String COMPONENT_CONFIG = "componentConfig";
     public static final String COMPONENT_EJECTOR = "componentEjector";
@@ -107,7 +108,9 @@ public final class NBTConstants {
     public static final String ITEM = "Item";
     public static final String ITEMS = "Items";
     public static final String LAST_FIRED = "lastFired";
+    public static final String LAST_PROCESSED = "lastProcessed";
     public static final String LATCHED = "latched";
+    public static final String LEVEL = "level";
     public static final String LOGIC_TYPE = "logicType";
     public static final String MAIN = "main";
     public static final String MAX = "max";

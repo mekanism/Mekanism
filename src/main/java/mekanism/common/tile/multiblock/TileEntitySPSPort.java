@@ -37,7 +37,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
             GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().outputTank, this);
 
             if (getMultiblock().canSupplyCoilEnergy(this)) {
-                getMultiblock().supplyCoilEnergy(energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
+                getMultiblock().supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
             }
         }
     }

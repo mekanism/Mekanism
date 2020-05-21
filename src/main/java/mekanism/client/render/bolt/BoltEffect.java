@@ -1,17 +1,17 @@
 package mekanism.client.render.bolt;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
+import org.apache.commons.lang3.tuple.Pair;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.client.render.bolt.BoltRenderer.BoltData;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.util.math.Vec3d;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class BoltEffect {
 
@@ -108,7 +108,7 @@ public class BoltEffect {
                     // new vector is original + current progress through segments + perpendicular change
                     segmentEnd = boltData.getStart().add(diff.scale(progress)).add(perpendicularDist);
                 }
-                float boltSize = size * (0.5F + (1 - progress) * 0.5F);
+                float boltSize = (boltData.getSize() != -1 ? boltData.getSize() : size) * (0.5F + (1 - progress) * 0.5F);
                 Pair<BoltQuads, QuadCache> quadData = createQuads(data.cache, data.start, segmentEnd, Color.rgba(red, green, blue, alpha), boltSize);
                 quads.add(quadData.getLeft());
 
