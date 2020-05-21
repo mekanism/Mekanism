@@ -577,14 +577,15 @@ public class MekanismBlockTypes {
     // SPS Port
     public static final BlockTypeTile<TileEntitySPSPort> SPS_PORT = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SPS_PORT, MekanismLang.DESCRIPTION_SPS_PORT)
+          .withEnergyConfig(() -> FloatingLong.ZERO, MekanismConfig.storage.spsPort)
           .with(new AttributeMultiblock(), new AttributeStateActive())
           .build();
     // Supercharged Coil
     public static final BlockTypeTile<TileEntitySuperchargedCoil> SUPERCHARGED_COIL = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.SUPERCHARGED_COIL, MekanismLang.DESCRIPTION_SUPERCHARGED_COIL)
-        .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE))
-        .withCustomShape(BlockShapes.LASER)
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.SUPERCHARGED_COIL, MekanismLang.DESCRIPTION_SUPERCHARGED_COIL)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE))
+          .withCustomShape(BlockShapes.LASER)
+          .build();
 
     // Induction Cells
     public static final BlockTypeTile<TileEntityInductionCell> BASIC_INDUCTION_CELL = createInductionCell(InductionCellTier.BASIC, () -> MekanismTileEntityTypes.BASIC_INDUCTION_CELL);

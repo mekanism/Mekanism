@@ -38,6 +38,7 @@ public class StorageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue isotopicCentrifuge;
     public final CachedFloatingLongValue nutritionalLiquifier;
     public final CachedFloatingLongValue antiprotonicNucleosynthesizer;
+    public final CachedFloatingLongValue spsPort;
 
     StorageConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -99,6 +100,8 @@ public class StorageConfig extends BaseMekanismConfig {
         nutritionalLiquifier = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "nutritionalLiquifier",
               FloatingLong.createConst(40_000));
         antiprotonicNucleosynthesizer = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules). Also defines max process rate.", "antiprotonicNucleosynthesizer",
+              FloatingLong.createConst(1_000_000_000));
+        spsPort = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules). Also defines max output rate.", "spsPort",
               FloatingLong.createConst(1_000_000_000));
 
         builder.pop();

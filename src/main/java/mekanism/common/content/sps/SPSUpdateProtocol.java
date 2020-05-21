@@ -1,5 +1,6 @@
 package mekanism.common.content.sps;
 
+import java.util.Set;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
@@ -25,6 +26,11 @@ public class SPSUpdateProtocol extends FormationProtocol<SPSMultiblockData> {
             return CasingType.VALVE;
         }
         return CasingType.INVALID;
+    }
+
+    @Override
+    protected FormationResult validate(SPSMultiblockData structure, Set<BlockPos> innerNodes) {
+        return FormationResult.SUCCESS;
     }
 
     @Override
