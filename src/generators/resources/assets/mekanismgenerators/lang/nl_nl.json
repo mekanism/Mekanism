@@ -25,7 +25,7 @@
   "description.mekanismgenerators.advanced_solar_generator": "Een geavanceerde generator die de stralen van de zon direct absorbeert met weinig verlies om energie te produceren.",
   "description.mekanismgenerators.bio_generator": "Een generator die organische materialen in de wereld verbrandt om energie te produceren.",
   "description.mekanismgenerators.electromagnetic_coil": "Een blok dat kinetische energie van een rotationeel complex converteert naar bruikbare elektriciteit. Deze kunnen in elke regeling boven je Rotationele Complex geplaatst worden zolang ze elkaar en het complex zelf raken.",
-  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the varying molecular gases to produce energy.",
+  "description.mekanismgenerators.gas_burning_generator": "Een generator die de verschillende moleculaire gassen gebruikt om energie te produceren.",
   "description.mekanismgenerators.heat_generator": "Een generator die de warmte van de lava of andere verbrande bronnen gebruikt om energie te produceren.",
   "description.mekanismgenerators.laser_focus_matrix": "Een paneel van Reactor Glas dat optische energie kan absorberen en zo de Fusion Reactor kan opwarmen.",
   "description.mekanismgenerators.reactor.logic.capacity": "De kerncapaciteit van de reactor is behaald",
