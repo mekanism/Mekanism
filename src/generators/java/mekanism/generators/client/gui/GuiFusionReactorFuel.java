@@ -52,11 +52,11 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        renderTitleText(5);
+        drawTitleText(GeneratorsLang.FUSION_REACTOR.translate(), 5);
         drawCenteredText(GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getMultiblock().getInjectionRate()),
               0, getXSize(), 35, titleTextColor());
         drawString(GeneratorsLang.REACTOR_EDIT_RATE.translate(), 50, 117, titleTextColor());
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     private void setInjection() {

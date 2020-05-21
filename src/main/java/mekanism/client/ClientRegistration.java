@@ -21,6 +21,7 @@ import mekanism.client.gui.GuiModificationStation;
 import mekanism.client.gui.GuiModuleTweaker;
 import mekanism.client.gui.GuiPersonalChestTile;
 import mekanism.client.gui.GuiQuantumEntangloporter;
+import mekanism.client.gui.GuiSPS;
 import mekanism.client.gui.GuiSecurityDesk;
 import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.gui.GuiThermalEvaporationController;
@@ -312,6 +313,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_IMPORTER, GuiQIOImporter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_EXPORTER, GuiQIOExporter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_REDSTONE_ADAPTER, GuiQIORedstoneAdapter::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SPS, GuiSPS::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FACTORY, GuiFactory::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.GAS_TANK, GuiGasTank::new);

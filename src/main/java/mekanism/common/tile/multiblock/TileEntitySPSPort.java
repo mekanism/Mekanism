@@ -1,6 +1,5 @@
 package mekanism.common.tile.multiblock;
 
-import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.Gas;
@@ -45,9 +44,6 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     @Nonnull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
-        if (!getMultiblock().isFormed()) {
-            return side -> Collections.emptyList();
-        }
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
         return builder.build();

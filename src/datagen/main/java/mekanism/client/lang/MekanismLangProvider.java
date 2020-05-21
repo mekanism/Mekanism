@@ -416,6 +416,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MULTIBLOCK_INVALID_CONTROLLER_CONFLICT, "Controller conflict: found extra controller at %s.");
         add(MekanismLang.MULTIBLOCK_INVALID_NO_CONTROLLER, "Couldn't form, no controller found.");
         //SPS
+        add(MekanismLang.SPS, "Supercritical Phase Shifter");
         add(MekanismLang.SPS_INVALID_DISCONNECTED_COIL, "Couldn't form, found a coil without a connection to an SPS Port.");
         add(MekanismLang.SPS_PORT_MODE, "Toggled SPS Port mode to: %s.");
         //Boiler
@@ -591,6 +592,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Evaporation
         add(MekanismLang.EVAPORATION_HEIGHT, "Height: %s");
         add(MekanismLang.FLUID_PRODUCTION, "Production: %s mB/t");
+        add(MekanismLang.EVAPORATION_PLANT, "Thermal Evaporation Plant");
         //Configuration
         add(MekanismLang.TRANSPORTER_CONFIG, "Transporter Config");
         add(MekanismLang.SIDE_CONFIG, "Side Config");

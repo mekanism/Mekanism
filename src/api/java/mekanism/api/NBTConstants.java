@@ -135,6 +135,7 @@ public final class NBTConstants {
     public static final String PIGMENT_TANKS = "PigmentTanks";
     public static final String PLASMA_TEMP = "plasmaTemp";
     public static final String POSITION = "position";
+    public static final String PROCESSED = "processed";
     public static final String PROGRESS = "progress";
     public static final String PUBLIC_FREQUENCY = "publicFreq";
     public static final String PULL = "pull";

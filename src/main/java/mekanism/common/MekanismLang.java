@@ -31,6 +31,7 @@ public enum MekanismLang implements ILangEntry {
     MULTIBLOCK_INVALID_CONTROLLER_CONFLICT("multiblock", "invalid_controller_conflict"),
     MULTIBLOCK_INVALID_NO_CONTROLLER("multiblock", "invalid_no_controller"),
     //SPS
+    SPS("sps", "sps"),
     SPS_INVALID_DISCONNECTED_COIL("sps", "invalid_disconnected_coil"),
     SPS_PORT_MODE("sps", "port_mode"),
     //Boiler
@@ -198,6 +199,7 @@ public enum MekanismLang implements ILangEntry {
     //Evaporation
     EVAPORATION_HEIGHT("evaporation", "height"),
     FLUID_PRODUCTION("evaporation", "fluid_production"),
+    EVAPORATION_PLANT("evaporation", "evaporation_plant"),
     //Configuration
     TRANSPORTER_CONFIG("configuration", "transporter"),
     SIDE_CONFIG("configuration", "side"),

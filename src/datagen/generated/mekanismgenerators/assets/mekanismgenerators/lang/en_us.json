@@ -129,6 +129,7 @@
   "reactor.mekanismgenerators.fuel": "Fuel",
   "reactor.mekanismgenerators.fuel.edit_rate": "Edit Rate:",
   "reactor.mekanismgenerators.fuel.injection_rate": "Injection Rate: %s",
+  "reactor.mekanismgenerators.fusion_reactor": "Fusion Reactor",
   "reactor.mekanismgenerators.heat": "Heat",
   "reactor.mekanismgenerators.heat.case": "Case: %s",
   "reactor.mekanismgenerators.heat.plasma": "Plasma: %s",

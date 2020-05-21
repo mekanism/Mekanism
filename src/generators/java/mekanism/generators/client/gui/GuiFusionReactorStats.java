@@ -37,7 +37,7 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(5);
+        drawTitleText(GeneratorsLang.FUSION_REACTOR.translate(), 5);
         if (tile.getMultiblock().isFormed()) {
             drawString(GeneratorsLang.REACTOR_PASSIVE.translateColored(EnumColor.DARK_GREEN), 6, 26, titleTextColor());
             drawTextScaledBound(GeneratorsLang.REACTOR_MIN_INJECTION.translate(tile.getMultiblock().getMinInjectionRate(false)), 16, 36, titleTextColor(), 156);
