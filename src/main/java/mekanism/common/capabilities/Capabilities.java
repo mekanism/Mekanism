@@ -7,6 +7,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.lasers.ILaserReceptor;
@@ -23,6 +24,7 @@ import mekanism.common.capabilities.basic.DefaultHeatHandler;
 import mekanism.common.capabilities.basic.DefaultInfusionHandler;
 import mekanism.common.capabilities.basic.DefaultLaserReceptor;
 import mekanism.common.capabilities.basic.DefaultLogisticalTransporter;
+import mekanism.common.capabilities.basic.DefaultPigmentHandler;
 import mekanism.common.capabilities.basic.DefaultSpecialConfigData;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyHandler;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
@@ -49,6 +51,9 @@ public class Capabilities {
 
     @CapabilityInject(IInfusionHandler.class)
     public static Capability<IInfusionHandler> INFUSION_HANDLER_CAPABILITY = null;
+
+    @CapabilityInject(IPigmentHandler.class)
+    public static Capability<IPigmentHandler> PIGMENT_HANDLER_CAPABILITY = null;
 
     @CapabilityInject(IRadiationShielding.class)
     public static Capability<IRadiationShielding> RADIATION_SHIELDING_CAPABILITY = null;
@@ -92,6 +97,7 @@ public class Capabilities {
 
         DefaultGasHandler.register();
         DefaultInfusionHandler.register();
+        DefaultPigmentHandler.register();
         DefaultHeatHandler.register();
 
         DefaultConfigurable.register();

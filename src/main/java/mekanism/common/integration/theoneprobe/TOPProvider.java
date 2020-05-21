@@ -21,6 +21,9 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
+import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
+import mekanism.api.chemical.pigment.IPigmentHandler;
+import mekanism.api.chemical.pigment.PigmentHandlerWrapper;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -54,6 +57,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         FluidElement.ID = probe.registerElementFactory(FluidElement::new);
         GasElement.ID = probe.registerElementFactory(GasElement::new);
         InfuseTypeElement.ID = probe.registerElementFactory(InfuseTypeElement::new);
+        PigmentElement.ID = probe.registerElementFactory(PigmentElement::new);
         //Grab the default view settings
         IProbeConfig probeConfig = probe.createProbeConfig();
         displayFluidTanks = probeConfig.getTankMode() > 0;
@@ -109,6 +113,14 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
                 } else if (structure.isFormed()) {
                     //Special handling to allow viewing the infusion types in a multiblock when looking at things other than the ports
                     addInfo(new InfusionHandlerWrapper((IMekanismInfusionHandler) structure), info, InfuseTypeElement::new, MekanismLang.INFUSE_TYPE);
+                }
+                //Pigment
+                Optional<IPigmentHandler> pigmentCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.PIGMENT_HANDLER_CAPABILITY, null));
+                if (pigmentCapability.isPresent()) {
+                    addInfo(new PigmentHandlerWrapper(pigmentCapability.get()), info, PigmentElement::new, MekanismLang.PIGMENT);
+                } else if (structure.isFormed()) {
+                    //Special handling to allow viewing the infusion types in a multiblock when looking at things other than the ports
+                    addInfo(new PigmentHandlerWrapper((IMekanismPigmentHandler) structure), info, PigmentElement::new, MekanismLang.PIGMENT);
                 }
             }
         }

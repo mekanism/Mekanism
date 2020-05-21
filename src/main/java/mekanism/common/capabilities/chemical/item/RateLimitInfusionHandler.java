@@ -53,6 +53,10 @@ public class RateLimitInfusionHandler extends ItemStackMekanismInfusionHandler {
 
         private final long rate;
 
+        public RateLimitInfusionTank(long rate, LongSupplier capacity, IMekanismInfusionHandler infusionHandler) {
+            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, infusionHandler);
+        }
+
         public RateLimitInfusionTank(long rate, LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> isValid, IMekanismInfusionHandler infusionHandler) {
             super(capacity, canExtract, canInsert, isValid, infusionHandler);

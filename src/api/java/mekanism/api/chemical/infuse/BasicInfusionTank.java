@@ -93,16 +93,6 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
     }
 
     @Override
-    public InfusionStack getEmptyStack() {
-        return InfusionStack.EMPTY;
-    }
-
-    @Override
-    public InfusionStack createStack(InfusionStack stored, long size) {
-        return new InfusionStack(stored, size);
-    }
-
-    @Override
     public void onContentsChanged() {
         if (infusionHandler != null) {
             infusionHandler.onContentsChanged();

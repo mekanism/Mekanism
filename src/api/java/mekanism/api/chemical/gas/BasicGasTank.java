@@ -139,16 +139,6 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
     }
 
     @Override
-    public GasStack getEmptyStack() {
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public GasStack createStack(GasStack stored, long size) {
-        return new GasStack(stored, size);
-    }
-
-    @Override
     public void onContentsChanged() {
         if (gasHandler != null) {
             gasHandler.onContentsChanged();

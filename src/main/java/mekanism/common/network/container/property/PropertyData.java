@@ -61,6 +61,8 @@ public abstract class PropertyData {
                 return new GasStackPropertyData(property, ChemicalUtils.readGasStack(buffer));
             case INFUSION_STACK:
                 return new InfusionStackPropertyData(property, ChemicalUtils.readInfusionStack(buffer));
+            case PIGMENT_STACK:
+                return new PigmentStackPropertyData(property, ChemicalUtils.readPigmentStack(buffer));
             case FREQUENCY:
                 return FrequencyPropertyData.readFrequency(property, buffer);
             case FLOATING_LONG:

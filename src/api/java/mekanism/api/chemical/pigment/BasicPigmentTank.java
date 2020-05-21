@@ -93,16 +93,6 @@ public class BasicPigmentTank extends BasicChemicalTank<Pigment, PigmentStack> i
     }
 
     @Override
-    public PigmentStack getEmptyStack() {
-        return PigmentStack.EMPTY;
-    }
-
-    @Override
-    public PigmentStack createStack(PigmentStack stored, long size) {
-        return new PigmentStack(stored, size);
-    }
-
-    @Override
     public void onContentsChanged() {
         if (pigmentHandler != null) {
             pigmentHandler.onContentsChanged();

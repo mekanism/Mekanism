@@ -1,5 +1,6 @@
 package mekanism.common.tile.base;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
@@ -23,6 +23,10 @@ import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
+import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -65,6 +69,7 @@ import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.capabilities.resolver.manager.InfusionHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
+import mekanism.common.capabilities.resolver.manager.PigmentHandlerManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -74,6 +79,7 @@ import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInfusionStack;
+import mekanism.common.inventory.container.sync.SyncablePigmentStack;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.item.ItemConfigurationCard;
@@ -123,7 +129,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
-      ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler {
+      ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler,
+      IMekanismPigmentHandler {
 
     /**
      * The players currently using this block.
@@ -185,6 +192,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected final InfusionHandlerManager infusionHandlerManager;
     //End variables IMekanismInfusionHandler
 
+    //Variables for handling IMekanismPigmentHandler
+    protected final PigmentHandlerManager pigmentHandlerManager;
+    //End variables IMekanismPigmentHandler
+
     //Variables for handling IMekanismFluidHandler
     protected final FluidHandlerManager fluidHandlerManager;
     //End variables IMekanismFluidHandler
@@ -226,6 +237,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         presetVariables();
         capabilityHandlerManagers.add(gasHandlerManager = new GasHandlerManager(getInitialGasTanks(), this));
         capabilityHandlerManagers.add(infusionHandlerManager = new InfusionHandlerManager(getInitialInfusionTanks(), this));
+        capabilityHandlerManagers.add(pigmentHandlerManager = new PigmentHandlerManager(getInitialPigmentTanks(), this));
         capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(), this));
         capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(), this));
         capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(), this));
@@ -344,6 +356,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public final boolean canHandleInfusion() {
         return infusionHandlerManager.canHandle();
+    }
+
+    @Override
+    public final boolean canHandlePigment() {
+        return pigmentHandlerManager.canHandle();
     }
 
     @Override
@@ -604,6 +621,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 container.track(SyncableInfusionStack.create(infusionTank));
             }
         }
+        if (canHandlePigment() && handles(SubstanceType.PIGMENT)) {
+            List<IPigmentTank> pigmentTanks = getPigmentTanks(null);
+            for (IPigmentTank pigmentTank : pigmentTanks) {
+                container.track(SyncablePigmentStack.create(pigmentTank));
+            }
+        }
         if (canHandleFluid() && handles(SubstanceType.FLUID)) {
             List<IExtendedFluidTank> fluidTanks = getFluidTanks(null);
             for (IExtendedFluidTank fluidTank : fluidTanks) {
@@ -849,6 +872,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return infusionHandlerManager.getContainers(side);
     }
     //End methods IMekanismInfusionHandler
+
+    //Methods for implementing IMekanismPigmentHandler
+    @Nullable
+    protected IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public final List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
+        return pigmentHandlerManager.getContainers(side);
+    }
+    //End methods IMekanismPigmentHandler
 
     //Methods for implementing IMekanismFluidHandler
     @Nullable
