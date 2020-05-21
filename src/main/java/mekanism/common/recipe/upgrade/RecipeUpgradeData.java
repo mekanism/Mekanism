@@ -75,6 +75,10 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             //If we are for a block that handles infusion or we have an infusion handler capability
             supportedTypes.add(RecipeUpgradeType.INFUSION);
         }
+        if (stack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.PIGMENT)) {
+            //If we are for a block that handles pigment or we have an pigment handler capability
+            supportedTypes.add(RecipeUpgradeType.PIGMENT);
+        }
         if (item instanceof ISustainedInventory || tile != null && tile.persistInventory()) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
         }
@@ -99,6 +103,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 return new GasRecipeData(ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
             case INFUSION:
                 return new InfusionRecipeData(ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
+            case PIGMENT:
+                return new PigmentRecipeData(ItemDataUtils.getList(stack, NBTConstants.PIGMENT_TANKS));
             case ITEM:
                 return new ItemRecipeData(((ISustainedInventory) item).getInventory(stack));
             case SECURITY:

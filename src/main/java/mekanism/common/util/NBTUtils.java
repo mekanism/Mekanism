@@ -15,6 +15,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongConsumer;
 import net.minecraft.item.ItemStack;
@@ -146,6 +147,12 @@ public class NBTUtils {
     public static void setInfusionStackIfPresent(CompoundNBT nbt, String key, Consumer<InfusionStack> setter) {
         if (nbt.contains(key, NBT.TAG_COMPOUND)) {
             setter.accept(InfusionStack.readFromNBT(nbt.getCompound(key)));
+        }
+    }
+
+    public static void setPigmentStackIfPresent(CompoundNBT nbt, String key, Consumer<PigmentStack> setter) {
+        if (nbt.contains(key, NBT.TAG_COMPOUND)) {
+            setter.accept(PigmentStack.readFromNBT(nbt.getCompound(key)));
         }
     }
 

@@ -14,6 +14,10 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
+import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
+import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -36,7 +40,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler,
+public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismPigmentHandler,
       IMekanismStrictEnergyHandler, ITileHeatHandler {
 
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
@@ -69,6 +73,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
     protected final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
     protected final List<IGasTank> gasTanks = new ArrayList<>();
+    protected final List<IInfusionTank> infusionTanks = new ArrayList<>();
+    protected final List<IPigmentTank> pigmentTanks = new ArrayList<>();
     protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
@@ -175,6 +181,18 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     @Override
     public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return isFormed() ? gasTanks : Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
+        return isFormed() ? infusionTanks : Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
+        return isFormed() ? pigmentTanks : Collections.emptyList();
     }
 
     @Nonnull

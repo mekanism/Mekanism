@@ -7,6 +7,8 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.IPigmentHandler;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -59,6 +61,10 @@ public class ItemGaugeDropper extends Item {
         if (!infusionStack.isEmpty()) {
             return infusionStack.getChemicalTint();
         }
+        PigmentStack pigmentStack = StorageUtils.getStoredPigmentFromNBT(stack);
+        if (!pigmentStack.isEmpty()) {
+            return pigmentStack.getChemicalTint();
+        }
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluidStack.isEmpty()) {
             return fluidStack.getFluid().getAttributes().getColor(fluidStack);
@@ -85,6 +91,13 @@ public class ItemGaugeDropper extends Item {
                     infusionHandlerItem.setInfusionInTank(tank, InfusionStack.EMPTY);
                 }
             }
+            Optional<IPigmentHandler> pigmentCapability = MekanismUtils.toOptional(stack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY));
+            if (pigmentCapability.isPresent()) {
+                IPigmentHandler pigmentHandlerItem = pigmentCapability.get();
+                for (int tank = 0; tank < pigmentHandlerItem.getPigmentTankCount(); tank++) {
+                    pigmentHandlerItem.setPigmentInTank(tank, PigmentStack.EMPTY);
+                }
+            }
             Optional<IFluidHandlerItem> fluidCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
             if (fluidCapability.isPresent()) {
                 IFluidHandlerItem fluidHandler = fluidCapability.get();
@@ -106,13 +119,16 @@ public class ItemGaugeDropper extends Item {
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
         InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
+        PigmentStack pigmentStack = StorageUtils.getStoredPigmentFromNBT(stack);
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
-        if (gasStack.isEmpty() && infusionStack.isEmpty() && fluidStack.isEmpty()) {
+        if (gasStack.isEmpty() && infusionStack.isEmpty() && pigmentStack.isEmpty() && fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translate());
         } else if (!gasStack.isEmpty()) {
             tooltip.add(MekanismLang.STORED.translate(gasStack, gasStack.getAmount()));
         } else if (!infusionStack.isEmpty()) {
             tooltip.add(MekanismLang.STORED.translate(infusionStack, infusionStack.getAmount()));
+        } else if (!pigmentStack.isEmpty()) {
+            tooltip.add(MekanismLang.STORED.translate(pigmentStack, pigmentStack.getAmount()));
         } else if (!fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.STORED.translate(fluidStack, fluidStack.getAmount()));
         }

@@ -14,6 +14,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
@@ -345,9 +346,11 @@ public class MekanismRenderer {
         for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
             event.addSprite(gas.getIcon());
         }
-
         for (InfuseType type : MekanismAPI.INFUSE_TYPE_REGISTRY.getValues()) {
             event.addSprite(type.getIcon());
+        }
+        for (Pigment pigment : MekanismAPI.PIGMENT_REGISTRY.getValues()) {
+            event.addSprite(pigment.getIcon());
         }
 
         ModelRenderer.resetCachedModels();

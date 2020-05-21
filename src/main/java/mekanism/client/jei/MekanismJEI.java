@@ -9,6 +9,8 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.IPigmentHandler;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IItemProvider;
@@ -34,6 +36,8 @@ import mekanism.client.jei.chemical.GasStackHelper;
 import mekanism.client.jei.chemical.GasStackRenderer;
 import mekanism.client.jei.chemical.InfusionStackHelper;
 import mekanism.client.jei.chemical.InfusionStackRenderer;
+import mekanism.client.jei.chemical.PigmentStackHelper;
+import mekanism.client.jei.chemical.PigmentStackRenderer;
 import mekanism.client.jei.machine.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.jei.machine.ChemicalInfuserRecipeCategory;
 import mekanism.client.jei.machine.CombinerRecipeCategory;
@@ -80,6 +84,7 @@ public class MekanismJEI implements IModPlugin {
 
     public static final IIngredientType<GasStack> TYPE_GAS = () -> GasStack.class;
     public static final IIngredientType<InfusionStack> TYPE_INFUSION = () -> InfusionStack.class;
+    public static final IIngredientType<PigmentStack> TYPE_PIGMENT = () -> PigmentStack.class;
 
     private static final ISubtypeInterpreter MEKANISM_NBT_INTERPRETER = stack -> {
         if (!stack.hasTag()) {
@@ -87,6 +92,7 @@ public class MekanismJEI implements IModPlugin {
         }
         String nbtRepresentation = addInterpretation("", getGasComponent(stack));
         nbtRepresentation = addInterpretation(nbtRepresentation, getInfusionComponent(stack));
+        nbtRepresentation = addInterpretation(nbtRepresentation, getPigmentComponent(stack));
         nbtRepresentation = addInterpretation(nbtRepresentation, getEnergyComponent(stack));
         return nbtRepresentation;
     };
@@ -136,6 +142,25 @@ public class MekanismJEI implements IModPlugin {
         return ISubtypeInterpreter.NONE;
     }
 
+    private static String getPigmentComponent(ItemStack stack) {
+        Optional<IPigmentHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY));
+        if (capability.isPresent()) {
+            IPigmentHandler pigmentHandlerItem = capability.get();
+            String component = "";
+            int tanks = pigmentHandlerItem.getPigmentTankCount();
+            for (int tank = 0; tank < tanks; tank++) {
+                PigmentStack pigmentStack = pigmentHandlerItem.getPigmentInTank(tank);
+                if (!pigmentStack.isEmpty()) {
+                    component = addInterpretation(component, pigmentStack.getTypeRegistryName().toString());
+                } else if (tanks > 1) {
+                    component = addInterpretation(component, "empty");
+                }
+            }
+            return component;
+        }
+        return ISubtypeInterpreter.NONE;
+    }
+
     private static String getEnergyComponent(ItemStack stack) {
         Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
         if (capability.isPresent()) {
@@ -166,7 +191,7 @@ public class MekanismJEI implements IModPlugin {
             //Handle items
             ItemStack itemStack = itemProvider.getItemStack();
             if (itemStack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).isPresent() || itemStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent() ||
-                itemStack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent()) {
+                itemStack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent() || itemStack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY).isPresent()) {
                 registry.registerSubtypeInterpreter(itemProvider.getItem(), MEKANISM_NBT_INTERPRETER);
             }
         }
@@ -184,6 +209,8 @@ public class MekanismJEI implements IModPlugin {
         registry.register(MekanismJEI.TYPE_GAS, gases, new GasStackHelper(), new GasStackRenderer());
         List<InfusionStack> infuseTypes = MekanismAPI.INFUSE_TYPE_REGISTRY.getValues().stream().filter(g -> !g.isEmptyType()).map(g -> new InfusionStack(g, FluidAttributes.BUCKET_VOLUME)).collect(Collectors.toList());
         registry.register(MekanismJEI.TYPE_INFUSION, infuseTypes, new InfusionStackHelper(), new InfusionStackRenderer());
+        List<PigmentStack> pigmentTypes = MekanismAPI.PIGMENT_REGISTRY.getValues().stream().filter(g -> !g.isEmptyType()).map(g -> new PigmentStack(g, FluidAttributes.BUCKET_VOLUME)).collect(Collectors.toList());
+        registry.register(MekanismJEI.TYPE_PIGMENT, pigmentTypes, new PigmentStackHelper(), new PigmentStackRenderer());
     }
 
     @Override

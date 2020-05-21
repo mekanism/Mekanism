@@ -27,9 +27,17 @@ public class NSSHelper {
         return NSSInfuseType.createInfuseType(getResourceLocation(infuseTypeName, "infuse type"));
     };
 
+    private static final NSSCreator pigmentCreator = pigmentName -> {
+        if (pigmentName.startsWith("#")) {
+            return NSSPigment.createTag(getResourceLocation(pigmentName.substring(1), "pigment tag"));
+        }
+        return NSSPigment.createPigment(getResourceLocation(pigmentName, "pigment"));
+    };
+
     public static void init() {
         register("GAS", gasCreator);
         register("INFUSE_TYPE", infuseTypeCreator);
+        register("PIGMENT", pigmentCreator);
     }
 
     private static void register(String key, NSSCreator creator) {

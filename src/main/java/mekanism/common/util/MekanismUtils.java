@@ -1033,7 +1033,8 @@ public final class MekanismUtils {
         TEXTURE_BLOCKS("textures/block"),
         TEXTURE_ITEMS("textures/item"),
         MODEL("models"),
-        INFUSE("infuse");
+        INFUSE("infuse"),
+        PIGMENT("pigment");
 
         private String prefix;
 
