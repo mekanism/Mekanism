@@ -33,6 +33,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public abstract class TileEntityMultiblock<T extends MultiblockData> extends TileEntityMekanism implements IMultiblock<T>, IConfigurable {
 
@@ -323,6 +324,16 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public boolean persistInventory() {
         return false;
+    }
+
+    @Override
+    public BlockPos getTilePos() {
+        return getPos();
+    }
+
+    @Override
+    public World getTileWorld() {
+        return getWorld();
     }
 
     @Nonnull

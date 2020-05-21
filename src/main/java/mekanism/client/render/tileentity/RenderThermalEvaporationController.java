@@ -9,21 +9,21 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
+import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
 
 @ParametersAreNonnullByDefault
-public class RenderThermalEvaporationController extends MekanismTileEntityRenderer<TileEntityThermalEvaporationController> {
+public class RenderThermalEvaporationController extends MekanismTileEntityRenderer<TileEntityThermalEvaporationBlock> {
 
     public RenderThermalEvaporationController(TileEntityRendererDispatcher renderer) {
         super(renderer);
     }
 
     @Override
-    protected void render(TileEntityThermalEvaporationController tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+    protected void render(TileEntityThermalEvaporationBlock tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
         if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && !tile.getMultiblock().inputTank.isEmpty()) {
             FluidRenderData data = new FluidRenderData();
@@ -50,7 +50,7 @@ public class RenderThermalEvaporationController extends MekanismTileEntityRender
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEntityThermalEvaporationController tile) {
+    public boolean isGlobalRenderer(TileEntityThermalEvaporationBlock tile) {
         return tile.isMaster && tile.getMultiblock().isFormed() && !tile.getMultiblock().inputTank.isEmpty() &&
               tile.getMultiblock().renderLocation != null;
     }

@@ -17,7 +17,7 @@ public class FusionReactorUpdateProtocol extends FormationProtocol<FusionReactor
 
     @Override
     protected CasingType getCasingType(BlockPos pos) {
-        Block block = pointer.getWorld().getBlockState(pos).getBlock();
+        Block block = pointer.getTileWorld().getBlockState(pos).getBlock();
         if (BlockTypeTile.is(block, GeneratorsBlockTypes.FUSION_REACTOR_FRAME)) {
             return CasingType.FRAME;
         } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.FUSION_REACTOR_PORT)) {

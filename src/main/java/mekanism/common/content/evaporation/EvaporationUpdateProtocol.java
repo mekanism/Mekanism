@@ -17,7 +17,7 @@ public class EvaporationUpdateProtocol extends FormationProtocol<EvaporationMult
 
     @Override
     protected CasingType getCasingType(BlockPos pos) {
-        Block block = pointer.getWorld().getBlockState(pos).getBlock();
+        Block block = pointer.getTileWorld().getBlockState(pos).getBlock();
         if (BlockTypeTile.is(block, MekanismBlockTypes.THERMAL_EVAPORATION_BLOCK)) {
             return CasingType.FRAME;
         } else if (BlockTypeTile.is(block, MekanismBlockTypes.THERMAL_EVAPORATION_VALVE)) {

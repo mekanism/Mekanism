@@ -55,7 +55,7 @@ public abstract class FormationProtocol<T extends MultiblockData> {
     }
 
     protected boolean isValidInnerNode(BlockPos pos) {
-        return pointer.getWorld().isAirBlock(pos);
+        return pointer.getTileWorld().isAirBlock(pos);
     }
 
     /**
@@ -82,7 +82,7 @@ public abstract class FormationProtocol<T extends MultiblockData> {
         StructureResult result = buildStructure(validator);
         T structureFound = result.structureFound;
 
-        if (structureFound != null && structureFound.locations.contains(pointer.getPos())) {
+        if (structureFound != null && structureFound.locations.contains(pointer.getTilePos())) {
             pointer.setMultiblockData(structureFound);
             structureFound.setFormedForce(true);
             MultiblockCache<T> cache = getManager().getNewCache();
@@ -94,7 +94,7 @@ public abstract class FormationProtocol<T extends MultiblockData> {
                 List<ItemStack> rejectedItems = new ArrayList<>();
                 for (UUID id : result.idsFound) {
                     if (manager.inventories.get(id) != null) {
-                        cache.merge(manager.pullInventory(pointer.getWorld(), id), rejectedItems);
+                        cache.merge(manager.pullInventory(pointer.getTileWorld(), id), rejectedItems);
                         idToUse = id;
                     }
                 }
@@ -105,10 +105,10 @@ public abstract class FormationProtocol<T extends MultiblockData> {
 
             cache.apply(structureFound);
             structureFound.inventoryID = idToUse;
-            structureFound.onCreated(pointer.getWorld());
+            structureFound.onCreated(pointer.getTileWorld());
             return FormationResult.SUCCESS;
         } else {
-            pointer.getStructure().removeMultiblock(pointer.getWorld());
+            pointer.getStructure().removeMultiblock(pointer.getTileWorld());
             return result.getFormationResult();
         }
     }
@@ -245,7 +245,7 @@ public abstract class FormationProtocol<T extends MultiblockData> {
         public FormationResult validateInner(BlockPos pos) {
             if (!isValidInnerNode(pos)) {
                 return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos);
-            } else if (!pointer.getWorld().isAirBlock(pos)) {
+            } else if (!pointer.getTileWorld().isAirBlock(pos)) {
                 innerNodes.add(pos);
             }
             return FormationResult.SUCCESS;

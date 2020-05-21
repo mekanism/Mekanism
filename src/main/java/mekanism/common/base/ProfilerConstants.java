@@ -23,6 +23,7 @@ public class ProfilerConstants {
     public static final String TELEPORTER = "teleporter";
     public static final String THERMAL_EVAPORATION_CONTROLLER = "thermalEvaporationController";
     public static final String THERMOELECTRIC_BOILER = "thermoelectricBoiler";
+    public static final String SPS = "supercriticalPhaseShifter";
 
     //Sub parts
     public static final String CORE = "core";

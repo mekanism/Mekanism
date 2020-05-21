@@ -33,7 +33,7 @@ public interface IMultiblockBase {
         setStructure(new Structure(this));
     }
 
-    BlockPos getPos();
+    BlockPos getTilePos();
 
-    World getWorld();
+    World getTileWorld();
 }

@@ -17,7 +17,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
-import mekanism.generators.common.GeneratorsLang;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -37,7 +36,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         if (getActive() && getMultiblock().isFormed()) {
             GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().outputTank, this);
 
-            if (getMultiblock().isCoilPort(this)) {
+            if (getMultiblock().canSupplyCoilEnergy(this)) {
                 getMultiblock().supplyCoilEnergy(energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
             }
         }
@@ -75,7 +74,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))));
+                  MekanismLang.SPS_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))));
         }
         return ActionResultType.SUCCESS;
     }

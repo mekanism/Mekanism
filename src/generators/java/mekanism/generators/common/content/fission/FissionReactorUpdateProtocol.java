@@ -9,8 +9,8 @@ import java.util.TreeSet;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.FormationProtocol;
+import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
@@ -33,7 +33,7 @@ public class FissionReactorUpdateProtocol extends FormationProtocol<FissionReact
 
     @Override
     protected CasingType getCasingType(BlockPos pos) {
-        Block block = pointer.getWorld().getBlockState(pos).getBlock();
+        Block block = pointer.getTileWorld().getBlockState(pos).getBlock();
         if (BlockTypeTile.is(block, GeneratorsBlockTypes.FISSION_REACTOR_CASING)) {
             return CasingType.FRAME;
         } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.FISSION_REACTOR_PORT)) {
@@ -49,7 +49,7 @@ public class FissionReactorUpdateProtocol extends FormationProtocol<FissionReact
         if (super.isValidInnerNode(pos)) {
             return true;
         }
-        return BlockType.is(pointer.getWorld().getBlockState(pos).getBlock(), GeneratorsBlockTypes.FISSION_FUEL_ASSEMBLY, GeneratorsBlockTypes.CONTROL_ROD_ASSEMBLY);
+        return BlockType.is(pointer.getTileWorld().getBlockState(pos).getBlock(), GeneratorsBlockTypes.FISSION_FUEL_ASSEMBLY, GeneratorsBlockTypes.CONTROL_ROD_ASSEMBLY);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class FissionReactorUpdateProtocol extends FormationProtocol<FissionReact
         int assemblyCount = 0, surfaceArea = 0;
 
         for (BlockPos coord : innerNodes) {
-            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord);
+            TileEntity tile = MekanismUtils.getTileEntity(pointer.getTileWorld(), coord);
             AssemblyPos pos = new AssemblyPos(coord.getX(), coord.getZ());
             FuelAssembly assembly = map.get(pos);
 

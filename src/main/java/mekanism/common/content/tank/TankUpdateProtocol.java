@@ -2,8 +2,8 @@ package mekanism.common.content.tank;
 
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.FormationProtocol;
+import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import net.minecraft.block.Block;
@@ -19,7 +19,7 @@ public class TankUpdateProtocol extends FormationProtocol<TankMultiblockData> {
 
     @Override
     protected CasingType getCasingType(BlockPos pos) {
-        Block block = pointer.getWorld().getBlockState(pos).getBlock();
+        Block block = pointer.getTileWorld().getBlockState(pos).getBlock();
         if (BlockTypeTile.is(block, MekanismBlockTypes.DYNAMIC_TANK)) {
             return CasingType.FRAME;
         } else if (BlockTypeTile.is(block, MekanismBlockTypes.DYNAMIC_VALVE)) {
