@@ -11,8 +11,8 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.HybridInventorySlot;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
+import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.World;
 

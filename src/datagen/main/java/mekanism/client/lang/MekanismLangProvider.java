@@ -254,6 +254,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.QIO_IMPORTER, "QIO Importer");
         add(MekanismBlocks.QIO_EXPORTER, "QIO Exporter");
         add(MekanismBlocks.QIO_REDSTONE_ADAPTER, "QIO Redstone Adapter");
+        add(MekanismBlocks.SPS_CASING, "SPS Casing");
+        add(MekanismBlocks.SPS_PORT, "SPS Port");
+        add(MekanismBlocks.SUPERCHARGED_COIL, "Supercharged Coil");
         //Bounding block (I don't think these lang keys actually will ever be used, but set them just in case)
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         add(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, "Advanced Bounding Block");
@@ -412,7 +415,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MULTIBLOCK_INVALID_INNER, "Couldn't validate center, found invalid block at %s.");
         add(MekanismLang.MULTIBLOCK_INVALID_CONTROLLER_CONFLICT, "Controller conflict: found extra controller at %s.");
         add(MekanismLang.MULTIBLOCK_INVALID_NO_CONTROLLER, "Couldn't form, no controller found.");
-
+        //SPS
+        add(MekanismLang.SPS, "Supercritical Phase Shifter");
+        add(MekanismLang.SPS_INVALID_DISCONNECTED_COIL, "Couldn't form, found a coil without a connection to an SPS Port.");
+        add(MekanismLang.SPS_PORT_MODE, "Toggled SPS Port mode to: %s.");
+        //Boiler
         add(MekanismLang.BOILER_INVALID_AIR_POCKETS, "Couldn't form, found disconnected interior air pockets.");
         add(MekanismLang.BOILER_INVALID_EXTRA_DISPERSER, "Couldn't form, found invalid Pressure Dispersers.");
         add(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, "Couldn't form, expected but didn't find Pressure Disperser at %s.");
@@ -586,6 +593,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Evaporation
         add(MekanismLang.EVAPORATION_HEIGHT, "Height: %s");
         add(MekanismLang.FLUID_PRODUCTION, "Production: %s mB/t");
+        add(MekanismLang.EVAPORATION_PLANT, "Thermal Evaporation Plant");
         //Configuration
         add(MekanismLang.TRANSPORTER_CONFIG, "Transporter Config");
         add(MekanismLang.SIDE_CONFIG, "Side Config");
@@ -1028,6 +1036,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_GAS_TANK, "A portable tank that lets you carry gas wherever you please.");
         add(MekanismLang.DESCRIPTION_DIVERSION, "- Controllable by redstone");
         add(MekanismLang.DESCRIPTION_RESTRICTIVE, "- Only used if no other paths available");
+        add(MekanismLang.DESCRIPTION_SPS_CASING, "Reinforced casing capable of resisting intense chemical and thermal effects from phase-shifting reactions.");
+        add(MekanismLang.DESCRIPTION_SPS_PORT, "A port used for the transfer of energy and substances in the Supercritical Phase Shifter.");
+        add(MekanismLang.DESCRIPTION_SUPERCHARGED_COIL, "Used in Supercritical Phase Shifter multiblock to supply large quantities of energy. Must be attached to a SPS Port.");
         // Modules
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");

@@ -24,7 +24,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
-import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tags.FluidTags;

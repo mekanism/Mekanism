@@ -53,18 +53,10 @@ import mekanism.common.tier.GasTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.TileEntityBoilerCasing;
-import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityGasTank;
-import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.tile.TileEntityInductionCell;
-import mekanism.common.tile.TileEntityInductionPort;
-import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityModificationStation;
@@ -73,12 +65,7 @@ import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.tile.TileEntitySecurityDesk;
-import mekanism.common.tile.TileEntityStructuralGlass;
-import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.tile.TileEntityThermalEvaporationBlock;
-import mekanism.common.tile.TileEntityThermalEvaporationController;
-import mekanism.common.tile.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.laser.TileEntityLaser;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
@@ -112,6 +99,22 @@ import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.tile.machine.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.machine.TileEntitySeismicVibrator;
 import mekanism.common.tile.machine.TileEntitySolarNeutronActivator;
+import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
+import mekanism.common.tile.multiblock.TileEntityBoilerValve;
+import mekanism.common.tile.multiblock.TileEntityDynamicTank;
+import mekanism.common.tile.multiblock.TileEntityDynamicValve;
+import mekanism.common.tile.multiblock.TileEntityInductionCasing;
+import mekanism.common.tile.multiblock.TileEntityInductionCell;
+import mekanism.common.tile.multiblock.TileEntityInductionPort;
+import mekanism.common.tile.multiblock.TileEntityInductionProvider;
+import mekanism.common.tile.multiblock.TileEntitySPSCasing;
+import mekanism.common.tile.multiblock.TileEntitySPSPort;
+import mekanism.common.tile.multiblock.TileEntityStructuralGlass;
+import mekanism.common.tile.multiblock.TileEntitySuperchargedCoil;
+import mekanism.common.tile.multiblock.TileEntitySuperheatingElement;
+import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
+import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
+import mekanism.common.tile.multiblock.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
@@ -563,9 +566,28 @@ public class MekanismBlockTypes {
           .build();
     // Structural Glass
     public static final BlockTypeTile<TileEntityStructuralGlass> STRUCTURAL_GLASS = BlockTileBuilder
-        .createBlock(() -> MekanismTileEntityTypes.STRUCTURAL_GLASS, MekanismLang.DESCRIPTION_STRUCTURAL_GLASS)
-        .with(new AttributeMultiblock())
-        .build();
+          .createBlock(() -> MekanismTileEntityTypes.STRUCTURAL_GLASS, MekanismLang.DESCRIPTION_STRUCTURAL_GLASS)
+          .with(new AttributeMultiblock())
+          .build();
+    // SPS Casing
+    public static final BlockTypeTile<TileEntitySPSCasing> SPS_CASING = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.SPS_CASING, MekanismLang.DESCRIPTION_SPS_CASING)
+          .withGui(() -> MekanismContainerTypes.SPS)
+          .with(new AttributeMultiblock())
+          .build();
+    // SPS Port
+    public static final BlockTypeTile<TileEntitySPSPort> SPS_PORT = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.SPS_PORT, MekanismLang.DESCRIPTION_SPS_PORT)
+          .withGui(() -> MekanismContainerTypes.SPS)
+          .withEnergyConfig(() -> FloatingLong.ZERO, MekanismConfig.storage.spsPort)
+          .with(new AttributeMultiblock(), new AttributeStateActive())
+          .build();
+    // Supercharged Coil
+    public static final BlockTypeTile<TileEntitySuperchargedCoil> SUPERCHARGED_COIL = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.SUPERCHARGED_COIL, MekanismLang.DESCRIPTION_SUPERCHARGED_COIL)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE))
+          .withCustomShape(BlockShapes.LASER)
+          .build();
 
     // Induction Cells
     public static final BlockTypeTile<TileEntityInductionCell> BASIC_INDUCTION_CELL = createInductionCell(InductionCellTier.BASIC, () -> MekanismTileEntityTypes.BASIC_INDUCTION_CELL);

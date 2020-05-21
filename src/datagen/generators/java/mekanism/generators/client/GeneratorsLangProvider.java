@@ -102,6 +102,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.REACTOR_MAX_CASING, "Max. Casing Temp: %s");
         add(GeneratorsLang.REACTOR_MAX_PLASMA, "Max. Plasma Temp: %s");
         add(GeneratorsLang.REACTOR_MIN_INJECTION, "Min. Inject Rate: %s");
+        add(GeneratorsLang.FUSION_REACTOR, "Fusion Reactor");
         add(GeneratorsLang.REACTOR_PASSIVE, "Air-Cooled");
         add(GeneratorsLang.REACTOR_PASSIVE_RATE, "Passive Generation: %s/t");
         add(GeneratorsLang.REACTOR_PLASMA, "Plasma: %s");

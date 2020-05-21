@@ -11,7 +11,7 @@ import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.GasRenderData;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;

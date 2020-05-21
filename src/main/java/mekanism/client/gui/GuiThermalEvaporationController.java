@@ -13,7 +13,7 @@ import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.tile.TileEntityThermalEvaporationController;
+import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.entity.player.PlayerInventory;
@@ -58,7 +58,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(4);
+        drawTitleText(MekanismLang.EVAPORATION_PLANT.translate(), 4);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

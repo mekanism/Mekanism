@@ -14,6 +14,7 @@ public enum GeneratorsLang implements ILangEntry {
     SKY_BLOCKED("wind_generator", "sky_blocked"),
     NO_WIND("wind_generator", "no_wind"),
 
+    FUSION_REACTOR("reactor", "fusion_reactor"),
     REACTOR_PASSIVE("reactor", "stats.passive"),
     REACTOR_MIN_INJECTION("reactor", "stats.min_inject"),
     REACTOR_IGNITION("reactor", "stats.ignition"),

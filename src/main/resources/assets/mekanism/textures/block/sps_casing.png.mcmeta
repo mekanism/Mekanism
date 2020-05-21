@@ -1,0 +1,20 @@
+{
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "SOLID",
+    "textures": [
+      "mekanism:block/sps_casing-ctm"
+    ],
+    "extra": {
+      "connect_to": [
+        {
+          "block": "mekanism:sps_casing"
+        },
+        {
+          "block": "mekanism:sps_port"
+        }
+      ]
+    }
+  }
+}

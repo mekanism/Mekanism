@@ -7,7 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
-import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;

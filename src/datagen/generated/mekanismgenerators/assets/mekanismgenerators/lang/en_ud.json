@@ -129,6 +129,7 @@
   "reactor.mekanismgenerators.fuel": "\uA781\u01DDn\u2132",
   "reactor.mekanismgenerators.fuel.edit_rate": ":\u01DD\u0287\u0250\u1D1A \u0287\u1D09p\u018E",
   "reactor.mekanismgenerators.fuel.injection_rate": "%s :\u01DD\u0287\u0250\u1D1A uo\u1D09\u0287\u0254\u01DD\u027EuI",
+  "reactor.mekanismgenerators.fusion_reactor": "\u0279o\u0287\u0254\u0250\u01DD\u1D1A uo\u1D09sn\u2132",
   "reactor.mekanismgenerators.heat": "\u0287\u0250\u01DDH",
   "reactor.mekanismgenerators.heat.case": "%s :\u01DDs\u0250\u0186",
   "reactor.mekanismgenerators.heat.plasma": "%s :\u0250\u026Fs\u0250\uA781\u0500",

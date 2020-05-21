@@ -3,12 +3,12 @@ package mekanism.common.content.matrix;
 import java.util.Set;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.FormationProtocol;
+import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlockTypes;
-import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.tile.TileEntityInductionCell;
-import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.tile.multiblock.TileEntityInductionCasing;
+import mekanism.common.tile.multiblock.TileEntityInductionCell;
+import mekanism.common.tile.multiblock.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
@@ -22,7 +22,7 @@ public class MatrixUpdateProtocol extends FormationProtocol<MatrixMultiblockData
 
     @Override
     protected CasingType getCasingType(BlockPos pos) {
-        Block block = pointer.getWorld().getBlockState(pos).getBlock();
+        Block block = pointer.getTileWorld().getBlockState(pos).getBlock();
         if (BlockTypeTile.is(block, MekanismBlockTypes.INDUCTION_CASING)) {
             return CasingType.FRAME;
         } else if (BlockTypeTile.is(block, MekanismBlockTypes.INDUCTION_PORT)) {
@@ -36,7 +36,7 @@ public class MatrixUpdateProtocol extends FormationProtocol<MatrixMultiblockData
         if (super.isValidInnerNode(pos)) {
             return true;
         }
-        TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
+        TileEntity tile = MekanismUtils.getTileEntity(pointer.getTileWorld(), pos);
         return tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider;
     }
 
@@ -48,7 +48,7 @@ public class MatrixUpdateProtocol extends FormationProtocol<MatrixMultiblockData
     @Override
     protected FormationResult validate(MatrixMultiblockData structure, Set<BlockPos> innerNodes) {
         for (BlockPos pos : innerNodes) {
-            TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), pos);
+            TileEntity tile = MekanismUtils.getTileEntity(pointer.getTileWorld(), pos);
             if (tile instanceof TileEntityInductionCell) {
                 structure.addCell(pos, (TileEntityInductionCell) tile);
             } else if (tile instanceof TileEntityInductionProvider) {

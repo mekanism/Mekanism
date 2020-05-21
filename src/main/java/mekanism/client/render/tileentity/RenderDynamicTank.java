@@ -12,7 +12,7 @@ import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.GasRenderData;
 import mekanism.client.render.data.RenderData;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;

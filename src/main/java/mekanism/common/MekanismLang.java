@@ -30,6 +30,10 @@ public enum MekanismLang implements ILangEntry {
     MULTIBLOCK_INVALID_INNER("multiblock", "invalid_inner"),
     MULTIBLOCK_INVALID_CONTROLLER_CONFLICT("multiblock", "invalid_controller_conflict"),
     MULTIBLOCK_INVALID_NO_CONTROLLER("multiblock", "invalid_no_controller"),
+    //SPS
+    SPS("sps", "sps"),
+    SPS_INVALID_DISCONNECTED_COIL("sps", "invalid_disconnected_coil"),
+    SPS_PORT_MODE("sps", "port_mode"),
     //Boiler
     BOILER_INVALID_AIR_POCKETS("boiler", "invalid_air_pockets"),
     BOILER_INVALID_EXTRA_DISPERSER("boiler", "invalid_extra_disperser"),
@@ -196,6 +200,7 @@ public enum MekanismLang implements ILangEntry {
     //Evaporation
     EVAPORATION_HEIGHT("evaporation", "height"),
     FLUID_PRODUCTION("evaporation", "fluid_production"),
+    EVAPORATION_PLANT("evaporation", "evaporation_plant"),
     //Configuration
     TRANSPORTER_CONFIG("configuration", "transporter"),
     SIDE_CONFIG("configuration", "side"),
@@ -629,6 +634,9 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_GAS_TANK("description", "gas_tank"),
     DESCRIPTION_DIVERSION("description", "diversion"),
     DESCRIPTION_RESTRICTIVE("description", "restrictive"),
+    DESCRIPTION_SPS_CASING("description", "sps_casing"),
+    DESCRIPTION_SPS_PORT("description", "sps_port"),
+    DESCRIPTION_SUPERCHARGED_COIL("description", "supercharged_coil"),
     //Factory Type
     SMELTING("factory", "smelting"),
     ENRICHING("factory", "enriching"),

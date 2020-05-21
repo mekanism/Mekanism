@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.multiblock;
 
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;

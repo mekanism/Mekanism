@@ -15,7 +15,7 @@ import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.tile.TileEntityBoilerCasing;
+import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;

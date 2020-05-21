@@ -36,9 +36,9 @@ public class Structure {
     }
 
     private void init(IMultiblockBase node) {
-        nodes.put(node.getPos(), node);
+        nodes.put(node.getTilePos(), node);
         for (Axis axis : Axis.AXES) {
-            getAxisMap(axis).put(axis.getCoord(node.getPos()), new Plane(axis, node.getPos()));
+            getAxisMap(axis).put(axis.getCoord(node.getTilePos()), new Plane(axis, node.getTilePos()));
         }
         if (node instanceof IMultiblock) {
             IMultiblock<?> multiblockTile = (IMultiblock<?>) node;

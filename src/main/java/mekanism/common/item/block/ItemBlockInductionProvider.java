@@ -9,7 +9,7 @@ import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.InductionProviderTier;
-import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.tile.multiblock.TileEntityInductionProvider;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;

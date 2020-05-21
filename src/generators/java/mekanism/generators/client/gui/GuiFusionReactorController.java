@@ -35,7 +35,7 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(5);
+        drawTitleText(GeneratorsLang.FUSION_REACTOR.translate(), 5);
         drawString(MekanismLang.MULTIBLOCK_FORMED.translate(), 8, 16, titleTextColor());
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.multiblock;
 
 import javax.annotation.Nonnull;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
