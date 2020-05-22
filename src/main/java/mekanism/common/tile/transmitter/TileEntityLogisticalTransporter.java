@@ -58,8 +58,12 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
             this.tier = TransporterTier.BASIC;
         }
         transmitterDelegate = new TransporterImpl(this);
-        redstoneReactive = true;
         addCapabilityResolver(BasicCapabilityResolver.persistent(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, this::getTransmitter));
+    }
+
+    @Override
+    public boolean handlesRedstone() {
+        return false;
     }
 
     @Override
