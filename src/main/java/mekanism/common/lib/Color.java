@@ -12,7 +12,23 @@ public class Color {
     }
 
     protected Color(double r, double g, double b, double a) {
-        this((int) (r * 255D), (int) (g * 255D), (int) (b * 255D), (int) (a * 255D));
+        this((int) Math.round(r * 255D), (int) Math.round(g * 255D), (int) Math.round(b * 255D), (int) Math.round(a * 255D));
+    }
+
+    public double rd() {
+        return r / 255D;
+    }
+
+    public double gd() {
+        return g / 255D;
+    }
+
+    public double bd() {
+        return b / 255D;
+    }
+
+    public double ad() {
+        return a / 255D;
     }
 
     public int rgba() {
@@ -36,17 +52,17 @@ public class Color {
      * @return blended color
      */
     public Color blend(Color to, double scale) {
-        return rgba((int) (r + (to.r - r) * scale),
-              (int) (g + (to.g - g) * scale),
-              (int) (b + (to.b - b) * scale),
-              (int) (a + (to.a - a) * scale));
+        return rgba((int) Math.round(r + (to.r - r) * scale),
+                    (int) Math.round(g + (to.g - g) * scale),
+                    (int) Math.round(b + (to.b - b) * scale),
+                    (int) Math.round(a + (to.a - a) * scale));
     }
 
     public Color darken(double amount) {
-        return rgba((int) (r * (1 - amount)),
-              (int) (g * (1 - amount)),
-              (int) (b * (1 - amount)),
-              (int) (a * (1 - amount)));
+        return rgba((int) Math.round(r * (1 - amount)),
+                    (int) Math.round(g * (1 - amount)),
+                    (int) Math.round(b * (1 - amount)),
+                    (int) Math.round(a * (1 - amount)));
     }
 
     public static Color rgba(int r, int g, int b, int a) {
@@ -83,6 +99,31 @@ public class Color {
 
     public static Color rgb(int color) {
         return rgb((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+    }
+
+    public static Color hsv(double h, double s, double v) {
+        double hueIndex = (h % 360) / 60D;
+        int i = (int) hueIndex;
+        double diff = hueIndex - i;
+        double p = v * (1.0 - s);
+        double q = v * (1.0 - (s * diff));
+        double t = v * (1.0 - (s * (1.0 - diff)));
+
+        switch (i) {
+            case 0:
+                return rgb(v, t, p);
+            case 1:
+                return rgb(q, v, p);
+            case 2:
+                return rgb(p, v, t);
+            case 3:
+                return rgb(p, q, v);
+            case 4:
+                return rgb(t, p, v);
+            case 5:
+            default:
+                return rgb(v, p, q);
+        }
     }
 
     public static int packOpaque(int rgb) {
