@@ -573,12 +573,14 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntitySPSCasing> SPS_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SPS_CASING, MekanismLang.DESCRIPTION_SPS_CASING)
           .withGui(() -> MekanismContainerTypes.SPS)
+          .withSound(MekanismSounds.SPS)
           .with(new AttributeMultiblock())
           .build();
     // SPS Port
     public static final BlockTypeTile<TileEntitySPSPort> SPS_PORT = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SPS_PORT, MekanismLang.DESCRIPTION_SPS_PORT)
           .withGui(() -> MekanismContainerTypes.SPS)
+          .withSound(MekanismSounds.SPS)
           .withEnergyConfig(() -> FloatingLong.ZERO, MekanismConfig.storage.spsPort)
           .with(new AttributeMultiblock(), new AttributeStateActive())
           .build();

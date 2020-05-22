@@ -24,7 +24,7 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.lib.math.Cuboid;
+import mekanism.common.lib.math.VoxelCuboid;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
@@ -217,7 +217,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     }
 
     public boolean isSolarSpot(BlockPos pos) {
-        return pos.getY() == maxLocation.getY() && new Cuboid(minLocation, maxLocation).isOnCorner(pos);
+        return pos.getY() == maxLocation.getY() && new VoxelCuboid(minLocation, maxLocation).isOnCorner(pos);
     }
 
     public void updateSolars(World world) {

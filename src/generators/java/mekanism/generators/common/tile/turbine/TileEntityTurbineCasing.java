@@ -3,7 +3,7 @@ package mekanism.generators.common.tile.turbine;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.lib.math.Cuboid;
+import mekanism.common.lib.math.VoxelCuboid;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.lib.multiblock.IStructureValidator;
@@ -82,6 +82,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
 
     @Override
     public IStructureValidator validateStructure() {
-        return new CuboidStructureValidator(getStructure(), new Cuboid(3, 3, 3), new Cuboid(17, 18, 17));
+        return new CuboidStructureValidator(getStructure(), new VoxelCuboid(3, 3, 3), new VoxelCuboid(17, 18, 17));
     }
 }

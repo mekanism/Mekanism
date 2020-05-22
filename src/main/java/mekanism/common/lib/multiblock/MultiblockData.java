@@ -27,7 +27,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
-import mekanism.common.lib.math.Cuboid;
+import mekanism.common.lib.math.VoxelCuboid;
 import mekanism.common.lib.math.IShape;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
@@ -101,8 +101,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     public boolean setShape(IShape shape) {
-        if (shape instanceof Cuboid) {
-            Cuboid cuboid = (Cuboid) shape;
+        if (shape instanceof VoxelCuboid) {
+            VoxelCuboid cuboid = (VoxelCuboid) shape;
             minLocation = cuboid.getMinPos();
             maxLocation = cuboid.getMaxPos();
             renderLocation = minLocation.offset(Direction.UP);

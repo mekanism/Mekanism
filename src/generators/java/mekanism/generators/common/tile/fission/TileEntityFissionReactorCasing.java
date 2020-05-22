@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
+import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockManager;
-import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -20,7 +20,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> implements IValveHandler {
 
-    private boolean handleSound, prevBurning;
+    private boolean handleSound;
+    private boolean prevBurning;
 
     public TileEntityFissionReactorCasing() {
         super(GeneratorsBlocks.FISSION_REACTOR_CASING);

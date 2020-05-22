@@ -46,6 +46,7 @@ public class MekanismSoundProvider extends BaseSoundProvider {
         addSoundEvent(MekanismSounds.NUTRITIONAL_LIQUIFIER, Mekanism.rl(basePath + "nutritional_liquifier"));
         addSoundEvent(MekanismSounds.INDUSTRIAL_ALARM, Mekanism.rl(basePath + "industrial_alarm"));
         addSoundEvent(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER, Mekanism.rl(basePath + "antiprotonic_nucleosynthesizer"));
+        addSoundEvent(MekanismSounds.SPS, Mekanism.rl(basePath + "sps"));
     }
 
     private void addItemSoundEvents() {

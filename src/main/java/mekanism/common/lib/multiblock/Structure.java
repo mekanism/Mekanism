@@ -5,7 +5,7 @@ import java.util.TreeMap;
 import com.google.common.base.Function;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.lib.math.BlockPosBuilder;
-import mekanism.common.lib.math.Plane;
+import mekanism.common.lib.math.VoxelPlane;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -18,7 +18,7 @@ public class Structure {
     public static final Structure INVALID = new Structure();
 
     private Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
-    private Map<Axis, TreeMap<Integer, Plane>> planeMap = new Object2ObjectOpenHashMap<>();
+    private Map<Axis, TreeMap<Integer, VoxelPlane>> planeMap = new Object2ObjectOpenHashMap<>();
 
     private boolean valid;
 
@@ -38,7 +38,7 @@ public class Structure {
     private void init(IMultiblockBase node) {
         nodes.put(node.getTilePos(), node);
         for (Axis axis : Axis.AXES) {
-            getAxisMap(axis).put(axis.getCoord(node.getTilePos()), new Plane(axis, node.getTilePos()));
+            getAxisMap(axis).put(axis.getCoord(node.getTilePos()), new VoxelPlane(axis, node.getTilePos()));
         }
         if (node instanceof IMultiblock) {
             IMultiblock<?> multiblockTile = (IMultiblock<?>) node;
@@ -62,8 +62,8 @@ public class Structure {
         return nodes.get(pos);
     }
 
-    public TreeMap<Integer, Plane> getAxisMap(Axis axis) {
-        TreeMap<Integer, Plane> ret = planeMap.get(axis);
+    public TreeMap<Integer, VoxelPlane> getAxisMap(Axis axis) {
+        TreeMap<Integer, VoxelPlane> ret = planeMap.get(axis);
         if (ret == null) {
             ret = new TreeMap<>(Integer::compare);
             planeMap.put(axis, ret);
@@ -104,9 +104,9 @@ public class Structure {
             });
 
             for (Axis axis : s.planeMap.keySet()) {
-                Map<Integer, Plane> map = getAxisMap(axis);
+                Map<Integer, VoxelPlane> map = getAxisMap(axis);
                 s.planeMap.get(axis).entrySet().forEach(entry -> {
-                    Plane p = map.get(entry.getKey());
+                    VoxelPlane p = map.get(entry.getKey());
                     if (p != null) {
                         p.merge(entry.getValue());
                     } else {

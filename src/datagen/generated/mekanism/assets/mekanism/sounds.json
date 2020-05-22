@@ -199,6 +199,11 @@
       "mekanism:tile/chemical_oxidizer"
     ]
   },
+  "tile.machine.sps": {
+    "sounds": [
+      "mekanism:tile/sps"
+    ]
+  },
   "item.scuba_mask": {
     "sounds": [
       "mekanism:item/scuba_mask"

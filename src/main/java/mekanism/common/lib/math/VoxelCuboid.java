@@ -4,17 +4,17 @@ import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-public class Cuboid implements IShape {
+public class VoxelCuboid implements IShape {
 
     private BlockPos minPos;
     private BlockPos maxPos;
 
-    public Cuboid(BlockPos minPos, BlockPos maxPos) {
+    public VoxelCuboid(BlockPos minPos, BlockPos maxPos) {
         this.minPos = minPos;
         this.maxPos = maxPos;
     }
 
-    public Cuboid(int length, int height, int width) {
+    public VoxelCuboid(int length, int height, int width) {
         this(new BlockPos(0, 0, 0), new BlockPos(length - 1, height - 1, width - 1));
     }
 
@@ -97,20 +97,20 @@ public class Cuboid implements IShape {
         return CuboidRelative.WALLS;
     }
 
-    public boolean greaterOrEqual(Cuboid other) {
+    public boolean greaterOrEqual(VoxelCuboid other) {
         return length() >= other.length() && width() >= other.width() && height() >= other.height();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Cuboid)) {
+        if (!(obj instanceof VoxelCuboid)) {
             return false;
         }
-        Cuboid other = (Cuboid) obj;
+        VoxelCuboid other = (VoxelCuboid) obj;
         return minPos.equals(other.minPos) && maxPos.equals(other.maxPos);
     }
 
-    public static Cuboid from(Plane p1, Plane p2, int p1Pos, int p2Pos) {
+    public static VoxelCuboid from(VoxelPlane p1, VoxelPlane p2, int p1Pos, int p2Pos) {
         BlockPosBuilder min = new BlockPosBuilder();
         BlockPosBuilder max = new BlockPosBuilder();
         p1.getAxis().set(min, p1Pos);
@@ -119,7 +119,7 @@ public class Cuboid implements IShape {
         p1.getAxis().horizontal().set(max, p1.getMaxCol());
         p1.getAxis().vertical().set(min, p1.getMinRow());
         p1.getAxis().vertical().set(max, p1.getMaxRow());
-        return new Cuboid(min.build(), max.build());
+        return new VoxelCuboid(min.build(), max.build());
     }
 
     @Override
@@ -208,8 +208,8 @@ public class Cuboid implements IShape {
             return bounds[side.getFace().ordinal()].get(side.getAxis());
         }
 
-        public Cuboid build() {
-            return new Cuboid(bounds[0].build(), bounds[1].build());
+        public VoxelCuboid build() {
+            return new VoxelCuboid(bounds[0].build(), bounds[1].build());
         }
     }
 }

@@ -2,8 +2,8 @@ package mekanism.common.content.evaporation;
 
 import java.util.EnumSet;
 import mekanism.common.MekanismLang;
-import mekanism.common.lib.math.Cuboid;
-import mekanism.common.lib.math.Cuboid.CuboidSide;
+import mekanism.common.lib.math.VoxelCuboid;
+import mekanism.common.lib.math.VoxelCuboid.CuboidSide;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
@@ -14,8 +14,8 @@ import net.minecraft.util.math.BlockPos;
 
 public class EvaporationStructureValidator extends CuboidStructureValidator {
 
-    private static final Cuboid MIN_CUBOID = new Cuboid(4, 3, 4);
-    private static final Cuboid MAX_CUBOID = new Cuboid(4, 18, 4);
+    private static final VoxelCuboid MIN_CUBOID = new VoxelCuboid(4, 3, 4);
+    private static final VoxelCuboid MAX_CUBOID = new VoxelCuboid(4, 18, 4);
 
     public EvaporationStructureValidator(Structure structure) {
         super(structure);

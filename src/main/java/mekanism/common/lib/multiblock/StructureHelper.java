@@ -3,11 +3,11 @@ package mekanism.common.lib.multiblock;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.TreeMap;
-import mekanism.common.lib.math.Cuboid;
-import mekanism.common.lib.math.Cuboid.CuboidBuilder;
-import mekanism.common.lib.math.Cuboid.CuboidSide;
-import mekanism.common.lib.math.Cuboid.CuboidSide.Face;
-import mekanism.common.lib.math.Plane;
+import mekanism.common.lib.math.VoxelCuboid;
+import mekanism.common.lib.math.VoxelCuboid.CuboidBuilder;
+import mekanism.common.lib.math.VoxelCuboid.CuboidSide;
+import mekanism.common.lib.math.VoxelCuboid.CuboidSide.Face;
+import mekanism.common.lib.math.VoxelPlane;
 import mekanism.common.lib.multiblock.Structure.Axis;
 
 public class StructureHelper {
@@ -21,15 +21,15 @@ public class StructureHelper {
      * @param maxBounds maximum size of the cuboid
      * @return found cuboid, or null if it doesn't exist
      */
-    public static Cuboid fetchCuboid(Structure structure, Cuboid minBounds, Cuboid maxBounds) {
-        Cuboid prev = null;
+    public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds) {
+        VoxelCuboid prev = null;
         for (Axis axis : Axis.AXES) {
-            TreeMap<Integer, Plane> map = structure.getAxisMap(axis);
-            Map.Entry<Integer, Plane> first = map.firstEntry(), last = map.lastEntry();
+            TreeMap<Integer, VoxelPlane> map = structure.getAxisMap(axis);
+            Map.Entry<Integer, VoxelPlane> first = map.firstEntry(), last = map.lastEntry();
             if (first == null || !first.getValue().equals(last.getValue()) || !first.getValue().isFull()) {
                 return null;
             }
-            Cuboid cuboid = Cuboid.from(first.getValue(), last.getValue(), first.getKey(), last.getKey());
+            VoxelCuboid cuboid = VoxelCuboid.from(first.getValue(), last.getValue(), first.getKey(), last.getKey());
             // if this is the first axial cuboid check, make sure we meet the min bounds
             if (prev == null && !cuboid.greaterOrEqual(minBounds) && maxBounds.greaterOrEqual(cuboid)) {
                 return null;
@@ -54,7 +54,7 @@ public class StructureHelper {
      * @param tolerance how many missing blocks are tolerated in the completed structure (will double count edges & triple count corners)
      * @return found cuboid, or null if it doesn't exist
      */
-    public static Cuboid fetchCuboid(Structure structure, Cuboid minBounds, Cuboid maxBounds, EnumSet<CuboidSide> sides, int tolerance) {
+    public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds, EnumSet<CuboidSide> sides, int tolerance) {
         // make sure we have enough sides to create cuboidal dimensions
         if (sides.size() < 2) {
             return null;
@@ -63,9 +63,9 @@ public class StructureHelper {
         CuboidBuilder builder = new CuboidBuilder();
         for (CuboidSide side : sides) {
             Axis axis = side.getAxis(), horizontal = side.getAxis().horizontal(), vertical = side.getAxis().vertical();
-            TreeMap<Integer, Plane> map = structure.getAxisMap(axis);
-            Map.Entry<Integer, Plane> entry = side.getFace().isPositive() ? map.lastEntry() : map.firstEntry();
-            Plane plane = entry.getValue();
+            TreeMap<Integer, VoxelPlane> map = structure.getAxisMap(axis);
+            Map.Entry<Integer, VoxelPlane> entry = side.getFace().isPositive() ? map.lastEntry() : map.firstEntry();
+            VoxelPlane plane = entry.getValue();
             // handle missing blocks based on tolerance value
             missing += plane.getMissing();
             if (missing > tolerance) {
@@ -87,7 +87,7 @@ public class StructureHelper {
                 return null;
             }
         }
-        Cuboid ret = builder.build();
+        VoxelCuboid ret = builder.build();
         // make sure the cuboid has the correct bounds
         if (!ret.greaterOrEqual(minBounds) || !maxBounds.greaterOrEqual(ret)) {
             return null;

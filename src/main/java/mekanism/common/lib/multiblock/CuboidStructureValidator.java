@@ -1,6 +1,6 @@
 package mekanism.common.lib.multiblock;
 
-import mekanism.common.lib.math.Cuboid;
+import mekanism.common.lib.math.VoxelCuboid;
 import mekanism.common.lib.math.IShape;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import net.minecraft.util.Direction;
@@ -8,17 +8,17 @@ import net.minecraft.util.math.BlockPos;
 
 public class CuboidStructureValidator implements IStructureValidator {
 
-    private final Cuboid minBounds;
-    private final Cuboid maxBounds;
+    private final VoxelCuboid minBounds;
+    private final VoxelCuboid maxBounds;
 
-    protected Cuboid cuboid;
+    protected VoxelCuboid cuboid;
     protected Structure structure;
 
     public CuboidStructureValidator(Structure structure) {
-        this(structure, new Cuboid(3, 3, 3), new Cuboid(18, 18, 18));
+        this(structure, new VoxelCuboid(3, 3, 3), new VoxelCuboid(18, 18, 18));
     }
 
-    public CuboidStructureValidator(Structure structure, Cuboid minBounds, Cuboid maxBounds) {
+    public CuboidStructureValidator(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds) {
         this.structure = structure;
         this.minBounds = minBounds;
         this.maxBounds = maxBounds;

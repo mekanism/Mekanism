@@ -2,8 +2,8 @@ package mekanism.generators.common.content.fusion;
 
 import java.util.EnumSet;
 import mekanism.common.MekanismLang;
-import mekanism.common.lib.math.Cuboid;
-import mekanism.common.lib.math.Cuboid.CuboidSide;
+import mekanism.common.lib.math.VoxelCuboid;
+import mekanism.common.lib.math.VoxelCuboid.CuboidSide;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class FusionReactorStructureValidator extends CuboidStructureValidator {
 
-    private static final Cuboid BOUNDS = new Cuboid(5, 5, 5);
+    private static final VoxelCuboid BOUNDS = new VoxelCuboid(5, 5, 5);
     private static final byte[][] ALLOWED_GRID = new byte[][] {
         {0, 0, 1, 0, 0},
         {0, 1, 2, 1, 0},

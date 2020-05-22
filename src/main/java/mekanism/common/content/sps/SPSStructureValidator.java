@@ -1,8 +1,8 @@
 package mekanism.common.content.sps;
 
 import java.util.EnumSet;
-import mekanism.common.lib.math.Cuboid;
-import mekanism.common.lib.math.Cuboid.CuboidSide;
+import mekanism.common.lib.math.VoxelCuboid;
+import mekanism.common.lib.math.VoxelCuboid.CuboidSide;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class SPSStructureValidator extends CuboidStructureValidator {
 
-    private static final Cuboid BOUNDS = new Cuboid(7, 7, 7);
+    private static final VoxelCuboid BOUNDS = new VoxelCuboid(7, 7, 7);
     private static final byte[][] ALLOWED_GRID = new byte[][] {
         {0, 0, 1, 1, 1, 0, 0},
         {0, 1, 2, 2, 2, 1, 0},

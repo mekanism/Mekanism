@@ -130,6 +130,10 @@ public class SPSMultiblockData extends MultiblockData {
         return (float) ((inputProcessed + progress) / POLONIUM_PER_ANTIMATTER);
     }
 
+    public boolean handlesSound(TileEntitySPSCasing tile) {
+        return tile.getPos().equals(minLocation.add(3, 0, 0)) || tile.getPos().equals(minLocation.add(3, 0, 7));
+    }
+
     public static class SyncableCoilData {
 
         public Map<BlockPos, CoilData> coilMap = new Object2ObjectOpenHashMap<>();
