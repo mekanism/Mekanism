@@ -88,4 +88,15 @@ public class Color {
     public static int packOpaque(int rgb) {
         return rgb | (0xFF << 24);
     }
+
+    public interface ColorFunction {
+
+        ColorFunction HEAT = (level) -> Color.rgba((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 255);
+
+        static ColorFunction scale(Color from, Color to) {
+            return (level) -> from.blend(to, level);
+        }
+
+        Color getColor(float level);
+    }
 }

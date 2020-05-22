@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
@@ -26,7 +27,7 @@ public class SPSMultiblockData extends MultiblockData {
     private static final long MAX_INPUT_GAS = 1_000_000;
     private static final long MAX_OUTPUT_GAS = 1_000_000;
 
-    private static final FloatingLong ENERGY_PER_INPUT_USE = FloatingLong.createConst(1_000_000);
+    private static final double ENERGY_PER_INPUT_USE = 1_000_000;
     private static final int POLONIUM_PER_ANTIMATTER = 1_000;
 
     @ContainerSync
@@ -36,33 +37,35 @@ public class SPSMultiblockData extends MultiblockData {
 
     public SyncableCoilData coilData = new SyncableCoilData();
 
+    @ContainerSync
     public double progress;
+    @ContainerSync
     public int inputProcessed = 0;
 
     public FloatingLong receivedEnergy = FloatingLong.ZERO;
+    @ContainerSync
     public FloatingLong lastReceivedEnergy = FloatingLong.ZERO;
-
+    @ContainerSync
     public double lastProcessed;
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
         super(tile);
 
-        inputTank = MultiblockGasTank.create(this, tile, () -> MAX_INPUT_GAS,
+        gasTanks.add(inputTank = MultiblockGasTank.create(this, tile, () -> MAX_INPUT_GAS,
             (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(), (stack, automationType) -> isFormed(),
-            gas -> gas == MekanismGases.POLONIUM.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
-        outputTank = MultiblockGasTank.create(this, tile, () -> MAX_OUTPUT_GAS,
+            gas -> gas == MekanismGases.POLONIUM.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
+        gasTanks.add(outputTank = MultiblockGasTank.create(this, tile, () -> MAX_OUTPUT_GAS,
             (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(),
-            gas -> gas == MekanismGases.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
+            gas -> gas == MekanismGases.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
     }
 
     @Override
     public boolean tick(World world) {
         boolean needsPacket = super.tick(world);
         double processed = 0;
-
         if (canOperate() && !receivedEnergy.isZero()) {
-            long inputNeeded = (POLONIUM_PER_ANTIMATTER - inputProcessed) + POLONIUM_PER_ANTIMATTER * outputTank.getNeeded();
-            double processable = receivedEnergy.divide(ENERGY_PER_INPUT_USE).doubleValue();
+            long inputNeeded = (POLONIUM_PER_ANTIMATTER - inputProcessed) + POLONIUM_PER_ANTIMATTER * (outputTank.getNeeded() - 1);
+            double processable = receivedEnergy.doubleValue() / ENERGY_PER_INPUT_USE;
             if (processable + progress >= inputNeeded) {
                 processed = inputNeeded;
                 process(inputNeeded);
@@ -79,6 +82,7 @@ public class SPSMultiblockData extends MultiblockData {
             needsPacket = true;
         }
         lastReceivedEnergy = receivedEnergy;
+        receivedEnergy = FloatingLong.ZERO;
         lastProcessed = processed;
 
         needsPacket |= coilData.tick();
@@ -91,7 +95,8 @@ public class SPSMultiblockData extends MultiblockData {
         inputProcessed += operations;
         inputTank.shrinkStack(operations, Action.EXECUTE);
         if (inputProcessed >= POLONIUM_PER_ANTIMATTER) {
-            outputTank.growStack(inputProcessed / POLONIUM_PER_ANTIMATTER, Action.EXECUTE);
+            GasStack toAdd = MekanismGases.ANTIMATTER.getGasStack(inputProcessed / POLONIUM_PER_ANTIMATTER);
+            outputTank.insert(toAdd, Action.EXECUTE, AutomationType.INTERNAL);
             inputProcessed %= POLONIUM_PER_ANTIMATTER;
         }
     }
@@ -100,8 +105,8 @@ public class SPSMultiblockData extends MultiblockData {
         return canOperate() && coilData.coilMap.containsKey(tile.getPos());
     }
 
-    public void addCoil(BlockPos pos, Direction side) {
-        coilData.coilMap.put(pos, new CoilData(pos, side));
+    public void addCoil(BlockPos portPos, Direction side) {
+        coilData.coilMap.put(portPos, new CoilData(portPos, side));
     }
 
     public void supplyCoilEnergy(TileEntitySPSPort tile, FloatingLong energy) {
@@ -115,6 +120,14 @@ public class SPSMultiblockData extends MultiblockData {
 
     public static int getCoilLevel(FloatingLong energy) {
         return (int) Math.log10(energy.doubleValue());
+    }
+
+    public double getProcessRate() {
+        return Math.round((lastProcessed / POLONIUM_PER_ANTIMATTER) * 1000) / 1000D;
+    }
+
+    public float getScaledProgress() {
+        return (float) ((inputProcessed + progress) / POLONIUM_PER_ANTIMATTER);
     }
 
     public static class SyncableCoilData {

@@ -37,7 +37,8 @@ public class SPSUpdateProtocol extends FormationProtocol<SPSMultiblockData> {
         for (ValveData valve : structure.valves) {
             BlockPos pos = valve.location.offset(valve.side.getOpposite());
             if (innerNodes.contains(pos)) {
-                structure.addCoil(pos, valve.side.getOpposite());
+                structure.addCoil(valve.location, valve.side.getOpposite());
+                validCoils.add(pos);
             }
         }
         // fail if there's a coil not connected to a port

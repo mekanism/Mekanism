@@ -419,6 +419,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SPS, "Supercritical Phase Shifter");
         add(MekanismLang.SPS_INVALID_DISCONNECTED_COIL, "Couldn't form, found a coil without a connection to an SPS Port.");
         add(MekanismLang.SPS_PORT_MODE, "Toggled SPS Port mode to: %s.");
+        add(MekanismLang.SPS_ENERGY_INPUT, "Energy Input: %s");
         //Boiler
         add(MekanismLang.BOILER_INVALID_AIR_POCKETS, "Couldn't form, found disconnected interior air pockets.");
         add(MekanismLang.BOILER_INVALID_EXTRA_DISPERSER, "Couldn't form, found invalid Pressure Dispersers.");
@@ -534,6 +535,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.JETPACK_STORED, "Jetpack Fuel: %s");
         add(MekanismLang.PROGRESS, "Progress: %s");
         add(MekanismLang.PROCESS_RATE, "Process Rate: %s");
+        add(MekanismLang.PROCESS_RATE_MB, "Process Rate: %s mb/t");
         add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %s");
         //Gui stuff
         add(MekanismLang.WIDTH, "Width");

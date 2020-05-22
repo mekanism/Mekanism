@@ -32,10 +32,12 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (getActive() && getMultiblock().isFormed()) {
-            GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().outputTank, this);
+        if (getMultiblock().isFormed()) {
+            if (getActive()) {
+                GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().outputTank, this);
+            }
 
-            if (getMultiblock().canSupplyCoilEnergy(this)) {
+            if (!energyContainer.isEmpty() && getMultiblock().canSupplyCoilEnergy(this)) {
                 getMultiblock().supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
             }
         }

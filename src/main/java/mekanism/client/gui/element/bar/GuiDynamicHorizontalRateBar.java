@@ -5,6 +5,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
+import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -42,16 +43,5 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
             }
             MekanismRenderer.resetColor();
         }
-    }
-
-    public interface ColorFunction {
-
-        ColorFunction HEAT = (level) -> Color.rgba((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 255);
-
-        static ColorFunction scale(Color from, Color to) {
-            return (level) -> from.blend(to, level);
-        }
-
-        Color getColor(float level);
     }
 }

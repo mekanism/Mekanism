@@ -1,12 +1,12 @@
 package mekanism.client.render;
 
+import org.lwjgl.opengl.GL11;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class MekanismRenderType extends RenderType {
 
@@ -56,5 +56,16 @@ public class MekanismRenderType extends RenderType {
               .alpha(CUBOID_ALPHA);//enableAlphaTest/alphaFunc(GL11.GL_GREATER, 0.1F)
         return makeType("resizable_cuboid", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, true, false,
               stateBuilder.build(true));
+    }
+
+    public static RenderType renderSPS(ResourceLocation resourceLocation) {
+        RenderType.State state = RenderType.State.getBuilder()
+              .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
+              .shadeModel(SHADE_ENABLED)//shadeModel(GL11.GL_SMOOTH)
+              .transparency(LIGHTNING_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
+              .lightmap(LIGHTMAP_DISABLED)
+              .writeMask(WriteMaskState.COLOR_WRITE)
+              .build(true);
+        return makeType("mek_sps", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, true, state);
     }
 }

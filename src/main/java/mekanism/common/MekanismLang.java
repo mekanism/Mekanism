@@ -34,6 +34,7 @@ public enum MekanismLang implements ILangEntry {
     SPS("sps", "sps"),
     SPS_INVALID_DISCONNECTED_COIL("sps", "invalid_disconnected_coil"),
     SPS_PORT_MODE("sps", "port_mode"),
+    SPS_ENERGY_INPUT("sps", "energy_input"),
     //Boiler
     BOILER_INVALID_AIR_POCKETS("boiler", "invalid_air_pockets"),
     BOILER_INVALID_EXTRA_DISPERSER("boiler", "invalid_extra_disperser"),
@@ -144,6 +145,7 @@ public enum MekanismLang implements ILangEntry {
     WIDTH("gui", "width"),
     PROGRESS("gui", "progress"),
     PROCESS_RATE("gui", "process_rate"),
+    PROCESS_RATE_MB("gui", "process_rate_mb"),
     TICKS_REQUIRED("gui", "ticks_required"),
     MIN("gui", "min"),
     MAX("gui", "max"),
