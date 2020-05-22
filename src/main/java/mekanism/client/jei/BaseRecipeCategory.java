@@ -11,6 +11,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.providers.IBaseProvider;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -18,6 +19,7 @@ import mekanism.client.gui.element.gauge.GaugeOverlay;
 import mekanism.client.jei.chemical.ChemicalStackRenderer;
 import mekanism.client.jei.chemical.GasStackRenderer;
 import mekanism.client.jei.chemical.InfusionStackRenderer;
+import mekanism.client.jei.chemical.PigmentStackRenderer;
 import mekanism.common.Mekanism;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -143,6 +145,10 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     public IDrawable getIcon() {
         //Note: This is allowed to be null even though annotations imply it isn't supposed to be
         return null;
+    }
+
+    protected void initPigment(IGuiIngredientGroup<@NonNull PigmentStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<PigmentStack> stacks) {
+        initChemical(group, slot, input, x, y, width, height, stacks, max -> new PigmentStackRenderer(max, width, height));
     }
 
     protected void initInfusion(IGuiIngredientGroup<@NonNull InfusionStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<InfusionStack> stacks) {

@@ -13,6 +13,7 @@ public enum SubstanceType {
     FLUID(NBTConstants.FLUID_TANKS, (tile) -> tile.getFluidTanks(null)),
     GAS(NBTConstants.GAS_TANKS, (tile) -> tile.getGasTanks(null)),
     INFUSION(NBTConstants.INFUSION_TANKS, (tile) -> tile.getInfusionTanks(null)),
+    PIGMENT(NBTConstants.PIGMENT_TANKS, (tile) -> tile.getPigmentTanks(null)),
     HEAT(NBTConstants.HEAT_CAPACITORS, (tile) -> tile.getHeatCapacitors(null));
 
     private final String containerTag;
@@ -49,6 +50,8 @@ public enum SubstanceType {
                 return tile.canHandleGas();
             case INFUSION:
                 return tile.canHandleInfusion();
+            case PIGMENT:
+                return tile.canHandlePigment();
             case HEAT:
                 return tile.canHandleHeat();
         }

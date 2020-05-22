@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.slot.ArmorSlot;
@@ -33,6 +34,7 @@ import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncablePigmentStack;
 import mekanism.common.inventory.container.sync.SyncableShort;
 import mekanism.common.inventory.container.sync.list.SyncableList;
 import mekanism.common.lib.frequency.Frequency;
@@ -398,6 +400,13 @@ public abstract class MekanismContainer extends Container {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableInfusionStack) {
             ((SyncableInfusionStack) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, @Nonnull PigmentStack value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncablePigmentStack) {
+            ((SyncablePigmentStack) data).set(value);
         }
     }
 

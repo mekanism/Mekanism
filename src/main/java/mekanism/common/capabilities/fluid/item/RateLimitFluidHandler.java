@@ -53,6 +53,10 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
 
         private final int rate;
 
+        public RateLimitFluidTank(int rate, IntSupplier capacity, IMekanismFluidHandler fluidHandler) {
+            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, fluidHandler);
+        }
+
         public RateLimitFluidTank(int rate, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> isValid, IMekanismFluidHandler fluidHandler) {
             super(capacity, canExtract, canInsert, isValid, fluidHandler);

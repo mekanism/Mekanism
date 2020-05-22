@@ -18,6 +18,9 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.BasicPigmentTank;
+import mekanism.api.chemical.pigment.IPigmentHandler;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -124,6 +127,17 @@ public class StorageUtils {
     }
 
     /**
+     * Gets the pigment if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a pigment handler
+     * attached to our item but it may have stored data in its tank from when it was a block
+     */
+    @Nonnull
+    public static PigmentStack getStoredPigmentFromNBT(ItemStack stack) {
+        BasicPigmentTank tank = BasicPigmentTank.create(Long.MAX_VALUE, null);
+        DataHandlerUtils.readContainers(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.PIGMENT_TANKS));
+        return tank.getStack();
+    }
+
+    /**
      * Gets the energy if one is stored from an item's container going off the basis there is a single energy container. This is for cases when we may not actually have
      * an energy handler attached to our item but it may have stored data in its container from when it was a block
      */
@@ -177,7 +191,7 @@ public class StorageUtils {
 
     public static double getDurabilityForDisplay(ItemStack stack) {
         //Note we ensure the capabilities are not null, as the first call to getDurabilityForDisplay happens before capability injection
-        if (Capabilities.GAS_HANDLER_CAPABILITY == null || Capabilities.INFUSION_HANDLER_CAPABILITY == null ||
+        if (Capabilities.GAS_HANDLER_CAPABILITY == null || Capabilities.INFUSION_HANDLER_CAPABILITY == null || Capabilities.PIGMENT_HANDLER_CAPABILITY == null ||
             CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null || Capabilities.STRICT_ENERGY_CAPABILITY == null) {
             return 1;
         }
@@ -196,6 +210,14 @@ public class StorageUtils {
             int tanks = infusionHandlerItem.getInfusionTankCount();
             for (int tank = 0; tank < tanks; tank++) {
                 bestRatio = Math.max(bestRatio, getRatio(infusionHandlerItem.getInfusionInTank(tank).getAmount(), infusionHandlerItem.getInfusionTankCapacity(tank)));
+            }
+        }
+        Optional<IPigmentHandler> pigmentCapability = MekanismUtils.toOptional(stack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY));
+        if (pigmentCapability.isPresent()) {
+            IPigmentHandler pigmentHandlerItem = pigmentCapability.get();
+            int tanks = pigmentHandlerItem.getPigmentTankCount();
+            for (int tank = 0; tank < tanks; tank++) {
+                bestRatio = Math.max(bestRatio, getRatio(pigmentHandlerItem.getPigmentInTank(tank).getAmount(), pigmentHandlerItem.getPigmentTankCapacity(tank)));
             }
         }
         Optional<IFluidHandlerItem> fluidCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));

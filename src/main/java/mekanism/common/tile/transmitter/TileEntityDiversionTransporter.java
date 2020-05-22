@@ -23,17 +23,11 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 
     public TileEntityDiversionTransporter() {
         super(MekanismBlocks.DIVERSION_TRANSPORTER);
-        redstoneReactive = false;
     }
 
     @Override
     public TransmitterType getTransmitterType() {
         return TransmitterType.DIVERSION_TRANSPORTER;
-    }
-
-    @Override
-    public boolean handlesRedstone() {
-        return false;
     }
 
     @Override

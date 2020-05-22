@@ -5,6 +5,7 @@ public enum RecipeUpgradeType {
     FLUID,
     GAS,
     INFUSION,
+    PIGMENT,
     ITEM,
     SECURITY,
     UPGRADE;

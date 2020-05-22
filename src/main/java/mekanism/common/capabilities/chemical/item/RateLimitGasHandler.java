@@ -65,6 +65,10 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
         private final LongSupplier rate;
 
+        public RateLimitGasTank(LongSupplier rate, LongSupplier capacity, @Nullable ChemicalAttributeValidator attributeValidator, IMekanismGasHandler gasHandler) {
+            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, attributeValidator, gasHandler);
+        }
+
         public RateLimitGasTank(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid,
               @Nullable ChemicalAttributeValidator attributeValidator, IMekanismGasHandler gasHandler) {

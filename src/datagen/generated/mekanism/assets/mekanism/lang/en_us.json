@@ -725,6 +725,7 @@
   "gui.mekanism.no_fluid": "No fluid",
   "gui.mekanism.no_recipe": "(No recipe)",
   "gui.mekanism.none": "None",
+  "gui.mekanism.pigment": "Pigment: %s",
   "gui.mekanism.process_rate": "Process Rate: %s",
   "gui.mekanism.process_rate_mb": "Process Rate: %s mb/t",
   "gui.mekanism.progress": "Progress: %s",
