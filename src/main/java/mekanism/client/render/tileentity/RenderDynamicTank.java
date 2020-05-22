@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
 
+//TODO: Merged Tank
 @ParametersAreNonnullByDefault
 public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDynamicTank> {
 
@@ -29,12 +30,12 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
     protected void render(TileEntityDynamicTank tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null) {
             RenderData data = null;
-            if (!tile.getMultiblock().fluidTank.isEmpty()) {
+            if (!tile.getMultiblock().getFluidTank().isEmpty()) {
                 data = new FluidRenderData();
-                ((FluidRenderData) data).fluidType = tile.getMultiblock().fluidTank.getFluid();
-            } else if (!tile.getMultiblock().gasTank.isEmpty()) {
+                ((FluidRenderData) data).fluidType = tile.getMultiblock().getFluidTank().getFluid();
+            } else if (!tile.getMultiblock().getGasTank().isEmpty()) {
                 data = new GasRenderData();
-                ((GasRenderData) data).gasType = tile.getMultiblock().gasTank.getStack();
+                ((GasRenderData) data).gasType = tile.getMultiblock().getGasTank().getStack();
             }
 
             if (data != null) {
@@ -48,6 +49,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
                 BlockPos pos = tile.getPos();
                 matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                 int glow = data.calculateGlowLight(light);
+                //TODO: use isGaseous and flip this?
                 Model3D fluidModel = ModelRenderer.getModel(data, data instanceof FluidRenderData ? tile.getMultiblock().prevScale : 1);
                 MekanismRenderer.renderObject(fluidModel, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevScale), glow);
                 matrix.pop();
@@ -66,7 +68,6 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     public boolean isGlobalRenderer(TileEntityDynamicTank tile) {
-        return tile.isMaster && tile.getMultiblock().isFormed() && (!tile.getMultiblock().fluidTank.isEmpty() || !tile.getMultiblock().gasTank.isEmpty()) &&
-               tile.getMultiblock().renderLocation != null;
+        return tile.isMaster && tile.getMultiblock().isFormed() && !tile.getMultiblock().isEmpty() && tile.getMultiblock().renderLocation != null;
     }
 }

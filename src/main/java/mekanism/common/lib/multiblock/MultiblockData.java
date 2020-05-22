@@ -67,8 +67,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     private int currentRedstoneLevel;
 
-    private BooleanSupplier remoteSupplier = () -> false;
-    private Supplier<World> worldSupplier = () -> null;
+    private final BooleanSupplier remoteSupplier;
+    private final Supplier<World> worldSupplier;
 
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
     protected final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
@@ -130,6 +130,16 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         }
         if (shouldCap(CacheSubstance.GAS)) {
             for (IGasTank tank : getGasTanks(null)) {
+                tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
+            }
+        }
+        if (shouldCap(CacheSubstance.INFUSION)) {
+            for (IInfusionTank tank : getInfusionTanks(null)) {
+                tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
+            }
+        }
+        if (shouldCap(CacheSubstance.PIGMENT)) {
+            for (IPigmentTank tank : getPigmentTanks(null)) {
                 tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
             }
         }

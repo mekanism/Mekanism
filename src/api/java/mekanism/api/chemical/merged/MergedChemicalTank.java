@@ -69,15 +69,15 @@ public class MergedChemicalTank {
         }
     }
 
-    public IGasTank getGasTank() {
+    public final IGasTank getGasTank() {
         return (IGasTank) tankMap.get(ChemicalTankType.GAS);
     }
 
-    public IInfusionTank getInfusionTank() {
+    public final IInfusionTank getInfusionTank() {
         return (IInfusionTank) tankMap.get(ChemicalTankType.INFUSE_TYPE);
     }
 
-    public IPigmentTank getPigmentTank() {
+    public final IPigmentTank getPigmentTank() {
         return (IPigmentTank) tankMap.get(ChemicalTankType.PIGMENT);
     }
 

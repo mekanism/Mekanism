@@ -20,7 +20,6 @@ public final class NBTConstants {
     public static final String HEIGHT = "height";
     public static final String HOT = "hot";
     public static final String INVENTORY_ID = "inventoryID";
-    public static final String LEFT_ON_FACE = "isLeftOnFace";
     public static final String LENGTH = "length";
     public static final String LOWER_VOLUME = "lowerVolume";
     public static final String MUFFLING_COUNT = "muffling";
@@ -101,6 +100,7 @@ public final class NBTConstants {
     public static final String IDLE_DIR = "idleDir";
     public static final String INDEX = "index";
     public static final String INFUSE_TYPE_NAME = "infuseTypeName";
+    public static final String INFUSE_TYPE_STORED = "infuseType";
     public static final String INFUSION_TANKS = "InfusionTanks";
     public static final String INJECTION_RATE = "injectionRate";
     public static final String INVALID = "invalid";
@@ -115,7 +115,6 @@ public final class NBTConstants {
     public static final String MAIN = "main";
     public static final String MAX = "max";
     public static final String MAX_BURN_TIME = "maxBurnTime";
-    public static final String MAX_ENERGY = "maxEnergy";
     public static final String MEK_DATA = "mekData";
     public static final String MIN = "min";
     public static final String MODE = "mode";
@@ -132,6 +131,7 @@ public final class NBTConstants {
     public static final String PATH_TYPE = "pathType";
     public static final String PICKUP_DROPS = "dropPickup";
     public static final String PIGMENT_NAME = "pigmentName";
+    public static final String PIGMENT_STORED = "pigment";
     public static final String PIGMENT_TANKS = "PigmentTanks";
     public static final String PLASMA_TEMP = "plasmaTemp";
     public static final String POSITION = "position";

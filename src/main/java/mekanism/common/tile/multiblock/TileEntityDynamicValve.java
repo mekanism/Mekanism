@@ -5,6 +5,12 @@ import mekanism.api.Action;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
@@ -30,19 +36,32 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
         return side -> getMultiblock().getGasTanks(side);
     }
 
+    @Nonnull
+    @Override
+    protected IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
+        return side -> getMultiblock().getInfusionTanks(side);
+    }
+
+    @Nonnull
+    @Override
+    protected IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
+        return side -> getMultiblock().getPigmentTanks(side);
+    }
+
     @Override
     public boolean persists(SubstanceType type) {
         //Do not handle fluid when it comes to syncing it/saving this tile to disk
-        if (type == SubstanceType.FLUID || type == SubstanceType.GAS) {
+        if (type == SubstanceType.FLUID || type == SubstanceType.GAS || type == SubstanceType.INFUSION || type == SubstanceType.PIGMENT) {
             return false;
         }
         return super.persists(type);
     }
 
+    @Nonnull
     @Override
-    public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
+    public FluidStack insertFluid(@Nonnull FluidStack stack, Direction side, @Nonnull Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
-        if (ret.getAmount() < stack.getAmount() && action.execute()) {
+        if (action.execute() && ret.getAmount() < stack.getAmount()) {
             triggerValveTransfer();
         }
         return ret;

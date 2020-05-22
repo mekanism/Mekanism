@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.fluid;
 
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
@@ -22,10 +23,12 @@ public class MultiblockFluidTank<MULTIBLOCK extends MultiblockData> extends Vari
     protected final MULTIBLOCK multiblock;
     protected final TileEntityMultiblock<MULTIBLOCK> tile;
 
-    public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> create(MULTIBLOCK multiblock,
-          TileEntityMultiblock<MULTIBLOCK> tile, IntSupplier capacity, Predicate<@NonNull FluidStack> validator) {
-        return create(multiblock, tile, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(),
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(), validator, null);
+    public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
+          IntSupplier capacity, Predicate<@NonNull FluidStack> validator) {
+        Objects.requireNonNull(tile, "Tile cannot be null");
+        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
+        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
+        return new MultiblockFluidTank<>(multiblock, tile, capacity, validator);
     }
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> input(MULTIBLOCK multiblock,
@@ -43,6 +46,11 @@ public class MultiblockFluidTank<MULTIBLOCK extends MultiblockData> extends Vari
     public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, IntSupplier capacity,
           BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator,
           @Nullable IMekanismFluidHandler fluidHandler) {
+        Objects.requireNonNull(tile, "Tile cannot be null");
+        Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
+        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
+        Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
+        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         return new MultiblockFluidTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, fluidHandler);
     }
 
