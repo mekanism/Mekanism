@@ -11,7 +11,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 public class GuiSideConfigurationTab extends GuiWindowCreatorTab {
 
     public GuiSideConfigurationTab(IGuiWrapper gui, TileEntityMekanism tile) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "configuration.png"), gui, tile, -26, 6, 26, 18);
+        super(MekanismUtils.getResource(ResourceType.GUI, "configuration.png"), gui, tile, -26, 6, 26, 18, true);
     }
 
     @Override

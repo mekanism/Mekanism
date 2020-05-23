@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 public class GuiUpgradeTab extends GuiInsetElement<TileEntity> {
 
     public GuiUpgradeTab(IGuiWrapper gui, TileEntity tile) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "upgrade.png"), gui, tile, gui.getWidth(), 6, 26, 18);
+        super(MekanismUtils.getResource(ResourceType.GUI, "upgrade.png"), gui, tile, gui.getWidth(), 6, 26, 18, false);
     }
 
     @Override

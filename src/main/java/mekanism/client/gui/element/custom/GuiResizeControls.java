@@ -22,7 +22,7 @@ public class GuiResizeControls extends GuiSideHolder {
     private static final ResourceLocation PLUS = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "plus.png");
 
     public GuiResizeControls(IGuiWrapper gui, int y, Consumer<ResizeType> resizeHandler) {
-        super(gui, -26, y, 39);
+        super(gui, -26, y, 39, true);
         this.resizeHandler = resizeHandler;
         addChild(expandButton = new MekanismImageButton(gui, gui.getLeft() + -22, gui.getTop() + y + 5, 19, 9, 19, 9, PLUS, () -> handleResize(ResizeType.EXPAND_Y)));
         addChild(shrinkButton = new MekanismImageButton(gui, gui.getLeft() + -22, gui.getTop() + y + 25, 19, 9, 19, 9, MINUS, () -> handleResize(ResizeType.SHRINK_Y)));

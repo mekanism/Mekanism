@@ -21,7 +21,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     private static final ResourceLocation PULSE = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_pulse.png");
 
     public GuiRedstoneControlTab(IGuiWrapper gui, TileEntityMekanism tile) {
-        super(DISABLED, gui, tile, gui.getWidth(), 138, 26, 18);
+        super(DISABLED, gui, tile, gui.getWidth(), 138, 26, 18, false);
     }
 
     @Override

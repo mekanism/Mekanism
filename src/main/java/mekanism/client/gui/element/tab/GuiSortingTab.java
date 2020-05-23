@@ -15,7 +15,7 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
 
     public GuiSortingTab(IGuiWrapper gui, TileEntityFactory<?> tile) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "sorting.png"), gui, tile, -26, 62, 35, 18);
+        super(MekanismUtils.getResource(ResourceType.GUI, "sorting.png"), gui, tile, -26, 62, 35, 18, true);
     }
 
     @Override

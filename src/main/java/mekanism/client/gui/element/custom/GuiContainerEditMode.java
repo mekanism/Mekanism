@@ -20,7 +20,7 @@ public class GuiContainerEditMode<TILE extends TileEntityMekanism & IFluidContai
     private static final ResourceLocation EMPTY = MekanismUtils.getResource(ResourceType.GUI, "container_edit_mode_empty.png");
 
     public GuiContainerEditMode(IGuiWrapper gui, TILE tile) {
-        super(BOTH, gui, tile, gui.getWidth(), 138, 26, 18);
+        super(BOTH, gui, tile, gui.getWidth(), 138, 26, 18, false);
     }
 
     @Override

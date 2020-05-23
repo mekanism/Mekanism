@@ -9,7 +9,7 @@ public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enu
     private final TAB tabType;
 
     public GuiTabElementType(IGuiWrapper gui, TILE tile, TAB type) {
-        super(type.getResource(), gui, tile, -26, type.getYPos(), 26, 18);
+        super(type.getResource(), gui, tile, -26, type.getYPos(), 26, 18, true);
         tabType = type;
     }
 

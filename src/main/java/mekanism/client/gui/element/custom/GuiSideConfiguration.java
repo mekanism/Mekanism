@@ -60,7 +60,7 @@ public class GuiSideConfiguration extends GuiWindow {
         List<TransmissionType> transmissions = getTile().getConfig().getTransmissions();
         for (int i = 0; i < transmissions.size(); i++) {
             TransmissionType type = transmissions.get(i);
-            GuiConfigTypeTab tab = new GuiConfigTypeTab(gui, type, relativeX + (i < 3 ? -26 : width), relativeY + (2 + 28 * (i % 3)), this);
+            GuiConfigTypeTab tab = new GuiConfigTypeTab(gui, type, relativeX + (i < 3 ? -26 : width), relativeY + (2 + 28 * (i % 3)), this, i < 3);
             addChild(tab);
             configTabs.add(tab);
         }

@@ -15,9 +15,9 @@ public class GuiSideHolder extends GuiTexturedElement {
 
     protected final boolean left;
 
-    public GuiSideHolder(IGuiWrapper gui, int x, int y, int height) {
-        super(x < 0 ? HOLDER_LEFT : HOLDER_RIGHT, gui, x, y, TEXTURE_WIDTH, height);
-        this.left = x < 0;
+    public GuiSideHolder(IGuiWrapper gui, int x, int y, int height, boolean left) {
+        super(left ? HOLDER_LEFT : HOLDER_RIGHT, gui, x, y, TEXTURE_WIDTH, height);
+        this.left = left;
         active = false;
     }
 
