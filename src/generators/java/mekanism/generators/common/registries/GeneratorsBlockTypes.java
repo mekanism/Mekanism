@@ -1,6 +1,5 @@
 package mekanism.generators.common.registries;
 
-import mekanism.api.Pos3D;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
@@ -13,6 +12,7 @@ import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.blocktype.BlockTypeTile.BlockTileBuilder;
+import mekanism.common.lib.math.Pos3D;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.content.blocktype.BlockShapes;

@@ -1,7 +1,8 @@
 package mekanism.common.lib.math;
 
 import java.util.Random;
-import mekanism.common.lib.math.VoxelCuboid.CuboidSide;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
+import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
 import net.minecraft.util.math.Vec3d;
 
 // can add to this as we see necessary

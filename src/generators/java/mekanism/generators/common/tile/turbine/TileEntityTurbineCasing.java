@@ -3,7 +3,7 @@ package mekanism.generators.common.tile.turbine;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.lib.math.VoxelCuboid;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.lib.multiblock.IStructureValidator;

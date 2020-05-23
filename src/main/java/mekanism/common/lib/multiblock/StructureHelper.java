@@ -3,11 +3,11 @@ package mekanism.common.lib.multiblock;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.TreeMap;
-import mekanism.common.lib.math.VoxelCuboid;
-import mekanism.common.lib.math.VoxelCuboid.CuboidBuilder;
-import mekanism.common.lib.math.VoxelCuboid.CuboidSide;
-import mekanism.common.lib.math.VoxelCuboid.CuboidSide.Face;
-import mekanism.common.lib.math.VoxelPlane;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
+import mekanism.common.lib.math.voxel.VoxelPlane;
+import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidBuilder;
+import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
+import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide.Face;
 import mekanism.common.lib.multiblock.Structure.Axis;
 
 public class StructureHelper {

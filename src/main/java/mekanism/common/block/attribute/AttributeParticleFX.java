@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
-import mekanism.api.Pos3D;
+import mekanism.common.lib.math.Pos3D;
 import net.minecraft.particles.IParticleData;
 
 public class AttributeParticleFX implements Attribute {

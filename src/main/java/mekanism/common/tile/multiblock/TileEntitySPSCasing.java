@@ -1,5 +1,7 @@
 package mekanism.common.tile.multiblock;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
@@ -11,6 +13,7 @@ import mekanism.common.content.sps.SPSUpdateProtocol;
 import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.lib.multiblock.IStructureValidator;
 import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.particle.custom.SPSOrbitEffect;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
@@ -18,6 +21,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 
 public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData> {
+
+    public Queue<SPSOrbitEffect> orbitEffects = new LinkedList<>();
 
     private boolean handleSound;
     private boolean prevActive;
@@ -28,6 +33,12 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
 
     public TileEntitySPSCasing(IBlockProvider provider) {
         super(provider);
+    }
+
+    @Override
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        orbitEffects.removeIf(effect -> !isMaster || effect.tick());
     }
 
     @Override

@@ -2,7 +2,7 @@ package mekanism.client.particle;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
-import mekanism.api.Pos3D;
+import mekanism.common.lib.math.Pos3D;
 import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;

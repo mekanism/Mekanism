@@ -1,7 +1,8 @@
-package mekanism.api;
+package mekanism.common.lib.math.voxel;
 
 import java.util.HashSet;
 import java.util.Set;
+import mekanism.api.Coord4D;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.dimension.DimensionType;
 

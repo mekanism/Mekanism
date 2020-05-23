@@ -2,8 +2,8 @@ package mekanism.common.content.evaporation;
 
 import java.util.EnumSet;
 import mekanism.common.MekanismLang;
-import mekanism.common.lib.math.VoxelCuboid;
-import mekanism.common.lib.math.VoxelCuboid.CuboidSide;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
+import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;

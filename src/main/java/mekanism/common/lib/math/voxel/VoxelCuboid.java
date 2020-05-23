@@ -1,4 +1,4 @@
-package mekanism.common.lib.math;
+package mekanism.common.lib.math.voxel;
 
 import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.util.Direction;

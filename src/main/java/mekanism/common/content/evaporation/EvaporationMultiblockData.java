@@ -24,7 +24,7 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.lib.math.VoxelCuboid;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
