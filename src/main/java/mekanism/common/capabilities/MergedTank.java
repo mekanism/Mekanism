@@ -36,6 +36,19 @@ public class MergedTank extends MergedChemicalTank {
         this.fluidTank = new FluidTankWrapper(fluidTank, () -> Arrays.stream(chemicalTanks).allMatch(IChemicalTank::isEmpty));
     }
 
+    public CurrentType getCurrentType() {
+        if (!getFluidTank().isEmpty()) {
+            return CurrentType.FLUID;
+        } else if (!getGasTank().isEmpty()) {
+            return CurrentType.GAS;
+        } else if (!getInfusionTank().isEmpty()) {
+            return CurrentType.INFUSION;
+        } else if (!getPigmentTank().isEmpty()) {
+            return CurrentType.PIGMENT;
+        }
+        return CurrentType.EMPTY;
+    }
+
     public final IExtendedFluidTank getFluidTank() {
         return fluidTank;
     }
@@ -52,5 +65,13 @@ public class MergedTank extends MergedChemicalTank {
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> getGasTank().setStack(value));
         NBTUtils.setInfusionStackIfPresent(tag, NBTConstants.INFUSE_TYPE_NAME, value -> getInfusionTank().setStack(value));
         NBTUtils.setPigmentStackIfPresent(tag, NBTConstants.PIGMENT_STORED, value -> getPigmentTank().setStack(value));
+    }
+
+    public enum CurrentType {
+        EMPTY,
+        FLUID,
+        GAS,
+        INFUSION,
+        PIGMENT
     }
 }

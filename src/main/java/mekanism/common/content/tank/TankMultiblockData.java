@@ -11,6 +11,7 @@ import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.MergedTank;
+import mekanism.common.capabilities.MergedTank.CurrentType;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.chemical.MultiblockInfusionTank;
 import mekanism.common.capabilities.chemical.MultiblockPigmentTank;
@@ -32,6 +33,7 @@ public class TankMultiblockData extends MultiblockData {
     @ContainerSync
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
+    private HybridInventorySlot inputSlot, outputSlot;
     private int tankCapacity;
     public float prevScale;
 
@@ -52,30 +54,39 @@ public class TankMultiblockData extends MultiblockData {
 
     private List<IInventorySlot> createBaseInventorySlots() {
         List<IInventorySlot> inventorySlots = new ArrayList<>();
-        HybridInventorySlot input, output;
-        inventorySlots.add(input = HybridInventorySlot.inputOrDrain(mergedTank, this, 146, 21));
-        inventorySlots.add(output = HybridInventorySlot.outputOrFill(mergedTank, this, 146, 51));
-        input.setSlotType(ContainerSlotType.INPUT);
-        output.setSlotType(ContainerSlotType.OUTPUT);
+        inventorySlots.add(inputSlot = HybridInventorySlot.inputOrDrain(mergedTank, this, 146, 21));
+        inventorySlots.add(outputSlot = HybridInventorySlot.outputOrFill(mergedTank, this, 146, 51));
+        inputSlot.setSlotType(ContainerSlotType.INPUT);
+        outputSlot.setSlotType(ContainerSlotType.OUTPUT);
         return inventorySlots;
     }
 
     @Override
     public boolean tick(World world) {
         boolean needsPacket = super.tick(world);
-        //TODO: No magic numbers??
-        HybridInventorySlot inputSlot = (HybridInventorySlot) inventorySlots.get(0);
-        HybridInventorySlot outputSlot = (HybridInventorySlot) inventorySlots.get(1);
         inputSlot.handleTank(outputSlot, editMode);
         inputSlot.drainChemicalTank();
         outputSlot.fillChemicalTank();
-        //TODO: FIXME, make this easier to extend/grow
-        float scale = Math.max(MekanismUtils.getScale(prevScale, getFluidTank()), MekanismUtils.getScale(prevScale, getGasTank()));
+        float scale = getScale();
         if (scale != prevScale) {
             needsPacket = true;
             prevScale = scale;
         }
         return needsPacket;
+    }
+
+    private float getScale() {
+        switch (mergedTank.getCurrentType()) {
+            case FLUID:
+                return MekanismUtils.getScale(prevScale, getFluidTank());
+            case GAS:
+                return MekanismUtils.getScale(prevScale, getGasTank());
+            case INFUSION:
+                return MekanismUtils.getScale(prevScale, getInfusionTank());
+            case PIGMENT:
+                return MekanismUtils.getScale(prevScale, getPigmentTank());
+        }
+        return MekanismUtils.getScale(prevScale, 0, getTankCapacity(), true);
     }
 
     public int getTankCapacity() {
@@ -90,8 +101,21 @@ public class TankMultiblockData extends MultiblockData {
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        //TODO: FIXME So that if fluid is null it checks gas, etc
-        return MekanismUtils.redstoneLevelFromContents(getFluidTank().getFluidAmount(), getTankCapacity());
+        return MekanismUtils.redstoneLevelFromContents(getStoredAmount(), getTankCapacity());
+    }
+
+    private long getStoredAmount() {
+        switch (mergedTank.getCurrentType()) {
+            case FLUID:
+                return getFluidTank().getFluidAmount();
+            case GAS:
+                return getGasTank().getStored();
+            case INFUSION:
+                return getInfusionTank().getStored();
+            case PIGMENT:
+                return getPigmentTank().getStored();
+        }
+        return 0;
     }
 
     public IExtendedFluidTank getFluidTank() {
@@ -111,6 +135,6 @@ public class TankMultiblockData extends MultiblockData {
     }
 
     public boolean isEmpty() {
-        return getFluidTank().isEmpty() && getGasTank().isEmpty() && getInfusionTank().isEmpty() && getPigmentTank().isEmpty();
+        return mergedTank.getCurrentType() == CurrentType.EMPTY;
     }
 }

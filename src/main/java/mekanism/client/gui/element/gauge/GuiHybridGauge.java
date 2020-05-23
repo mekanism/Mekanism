@@ -11,7 +11,6 @@ import mekanism.client.jei.IJEIIngredientHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
-//TODO: Merged Tank??
 public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelper {
 
     private final Supplier<IGasTank> gasTankSupplier;
