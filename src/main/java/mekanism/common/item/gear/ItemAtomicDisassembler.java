@@ -1,13 +1,13 @@
 package mekanism.common.item.gear;
 
-import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.NBTConstants;
@@ -62,6 +62,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public boolean canHarvestBlock(@Nonnull BlockState state) {
         return state.getBlock() != Blocks.BEDROCK;
+    }
+
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @OnlyIn(Dist.CLIENT)

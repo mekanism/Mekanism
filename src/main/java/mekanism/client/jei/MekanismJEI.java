@@ -15,6 +15,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.GuiSPS;
 import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.machine.GuiAntiprotonicNucleosynthesizer;
 import mekanism.client.gui.machine.GuiChemicalCrystallizer;
@@ -53,6 +54,7 @@ import mekanism.client.jei.machine.MetallurgicInfuserRecipeCategory;
 import mekanism.client.jei.machine.NucleosynthesizingRecipeCategory;
 import mekanism.client.jei.machine.PressurizedReactionRecipeCategory;
 import mekanism.client.jei.machine.RotaryCondensentratorRecipeCategory;
+import mekanism.client.jei.machine.SPSRecipeCategory;
 import mekanism.client.jei.machine.SawmillRecipeCategory;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -243,6 +245,8 @@ public class MekanismJEI implements IModPlugin {
 
         registry.addRecipeCategories(new NucleosynthesizingRecipeCategory(guiHelper));
 
+        registry.addRecipeCategories(new SPSRecipeCategory(guiHelper));
+
         registry.addRecipeCategories(new SawmillRecipeCategory(guiHelper, MekanismBlocks.PRECISION_SAWMILL));
 
         registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.ENRICHMENT_CHAMBER));
@@ -272,6 +276,7 @@ public class MekanismJEI implements IModPlugin {
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE, GuiIsotopicCentrifuge.class, 64, 39, 48, 8);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER, GuiNutritionalLiquifier.class, 64, 40, 48, 8);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, GuiAntiprotonicNucleosynthesizer.class, 45, 18, 104, 68);
+        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.SPS_CASING, GuiSPS.class, 27, 17, 122, 60);
         GuiHandlerRegistryHelper.registerCondensentrator(registry);
 
         GuiHandlerRegistryHelper.register(registry, GuiRobitCrafting.class, VanillaRecipeCategoryUid.CRAFTING, 90, 35, 22, 15);
@@ -305,6 +310,7 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.registerCondensentrator(registry);
         RecipeRegistryHelper.registerSmelter(registry);
         RecipeRegistryHelper.registerNutritionalLiquifier(registry);
+        RecipeRegistryHelper.registerSPS(registry);
     }
 
     @Override

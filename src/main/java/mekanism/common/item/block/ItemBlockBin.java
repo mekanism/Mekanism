@@ -23,9 +23,14 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSus
     }
 
     @Override
+    public BinTier getTier() {
+        return Attribute.getTier(getBlock(), BinTier.class);
+    }
+
+    @Override
     public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
         BinMekanismInventory inventory = BinMekanismInventory.create(stack);
-        BinTier tier = Attribute.getTier(getBlock(), BinTier.class);
+        BinTier tier = getTier();
         if (inventory != null && tier != null) {
             BinInventorySlot slot = inventory.getBinSlot();
             if (slot.isEmpty()) {

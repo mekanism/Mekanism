@@ -42,9 +42,14 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockTileModel<TileEntity
     }
 
     @Override
+    public GasTankTier getTier() {
+        return Attribute.getTier(getBlock(), GasTankTier.class);
+    }
+
+    @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        GasTankTier tier = Attribute.getTier(getBlock(), GasTankTier.class);
+        GasTankTier tier = getTier();
         StorageUtils.addStoredGas(stack, tooltip, true, true, MekanismLang.EMPTY, stored -> {
             if (stored.isEmpty()) {
                 return MekanismLang.EMPTY.translate();

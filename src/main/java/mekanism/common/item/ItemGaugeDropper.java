@@ -10,6 +10,7 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.fluid.IExtendedFluidHandler;
+import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.GaugeDropperContentsHandler;
@@ -48,6 +49,11 @@ public class ItemGaugeDropper extends Item {
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
         return StorageUtils.getDurabilityForDisplay(stack);
+    }
+
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Override

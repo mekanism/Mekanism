@@ -11,20 +11,22 @@ import net.minecraft.util.IStringSerializable;
  * @author aidancbrady
  */
 public enum BaseTier implements IStringSerializable {
-    BASIC("Basic", EnumColor.BRIGHT_GREEN),
-    ADVANCED("Advanced", EnumColor.DARK_RED),
-    ELITE("Elite", EnumColor.DARK_BLUE),
-    ULTIMATE("Ultimate", EnumColor.PURPLE),
-    CREATIVE("Creative", EnumColor.BLACK);
+    BASIC("Basic", EnumColor.BRIGHT_GREEN, EnumColor.BRIGHT_GREEN),
+    ADVANCED("Advanced", EnumColor.DARK_RED, EnumColor.RED),
+    ELITE("Elite", EnumColor.DARK_BLUE, EnumColor.INDIGO),
+    ULTIMATE("Ultimate", EnumColor.PURPLE, EnumColor.PURPLE),
+    CREATIVE("Creative", EnumColor.BLACK, EnumColor.DARK_GRAY);
 
     private static final BaseTier[] TIERS = values();
 
     private final String name;
     private final EnumColor color;
+    private final EnumColor textColor;
 
-    BaseTier(String s, EnumColor c) {
+    BaseTier(String s, EnumColor c, EnumColor c1) {
         name = s;
         color = c;
+        textColor = c1;
     }
 
     public String getSimpleName() {
@@ -37,6 +39,10 @@ public enum BaseTier implements IStringSerializable {
 
     public EnumColor getColor() {
         return color;
+    }
+
+    public EnumColor getTextColor() {
+        return textColor;
     }
 
     @Override

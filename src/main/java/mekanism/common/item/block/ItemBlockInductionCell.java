@@ -23,6 +23,7 @@ public class ItemBlockInductionCell extends ItemBlockTooltip<BlockTile<TileEntit
     }
 
     @Nonnull
+    @Override
     public InductionCellTier getTier() {
         return Attribute.getTier(getBlock(), InductionCellTier.class);
     }

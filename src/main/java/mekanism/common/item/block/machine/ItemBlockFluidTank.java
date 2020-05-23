@@ -66,6 +66,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
     }
 
     @Nonnull
+    @Override
     public FluidTankTier getTier() {
         return Attribute.getTier(getBlock(), FluidTankTier.class);
     }

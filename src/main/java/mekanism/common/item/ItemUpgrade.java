@@ -43,6 +43,11 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     }
 
     @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.GRAY.textFormatting);
+    }
+
+    @Override
     public Upgrade getUpgradeType(ItemStack stack) {
         return upgrade;
     }

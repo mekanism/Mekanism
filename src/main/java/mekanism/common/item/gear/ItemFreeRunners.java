@@ -52,6 +52,11 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
         return "mekanism:render/null_armor.png";
     }
 
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
+    }
+
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
