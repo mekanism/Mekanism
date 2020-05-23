@@ -33,7 +33,6 @@ public class EvaporationStructureValidator extends CuboidStructureValidator {
                         if (isSolarSpot(pos)) {
                             // validate the frame, but we won't fail if it's invalid
                             ctx.validateFrame(pos, false);
-                            continue;
                         } else {
                             boolean controller = structure.getTile(pos) instanceof TileEntityThermalEvaporationController;
                             if (foundController && controller) {

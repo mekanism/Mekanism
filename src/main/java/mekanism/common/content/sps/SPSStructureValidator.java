@@ -40,7 +40,6 @@ public class SPSStructureValidator extends CuboidStructureValidator {
                         if (type == FrameType.IGNORED) {
                             // validate the frame, but we won't fail if it's invalid
                             ctx.validateFrame(pos, false);
-                            continue;
                         } else {
                             FormationResult ret = ctx.validateFrame(pos, type.needsFrame());
                             if (!ret.isFormed()) {

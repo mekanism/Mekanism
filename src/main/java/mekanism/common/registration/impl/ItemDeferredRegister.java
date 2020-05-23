@@ -27,7 +27,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     }
 
     public ItemRegistryObject<Item> register(String name) {
-        return register(name, () -> new Item(getMekBaseProperties()));
+        return register(name, Item::new);
     }
 
     public ItemRegistryObject<Item> register(String name, EnumColor color) {

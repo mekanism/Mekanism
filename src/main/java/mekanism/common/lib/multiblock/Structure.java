@@ -2,8 +2,8 @@ package mekanism.common.lib.multiblock;
 
 import java.util.Map;
 import java.util.TreeMap;
-import com.google.common.base.Function;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.function.ToIntFunction;
 import mekanism.common.lib.math.voxel.BlockPosBuilder;
 import mekanism.common.lib.math.voxel.VoxelPlane;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
@@ -11,14 +11,15 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 public class Structure {
 
     public static final Structure INVALID = new Structure();
 
-    private Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
-    private Map<Axis, TreeMap<Integer, VoxelPlane>> planeMap = new Object2ObjectOpenHashMap<>();
+    private final Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
+    private final Map<Axis, TreeMap<Integer, VoxelPlane>> planeMap = new Object2ObjectOpenHashMap<>();
 
     private boolean valid;
 
@@ -26,7 +27,7 @@ public class Structure {
     private boolean didUpdate;
 
     private MultiblockData multiblockData;
-    private Map<MultiblockManager<?>, IMultiblock<?>> controllers = new Object2ObjectOpenHashMap<>();
+    private final Map<MultiblockManager<?>, IMultiblock<?>> controllers = new Object2ObjectOpenHashMap<>();
 
     private Structure() {}
 
@@ -63,12 +64,7 @@ public class Structure {
     }
 
     public TreeMap<Integer, VoxelPlane> getAxisMap(Axis axis) {
-        TreeMap<Integer, VoxelPlane> ret = planeMap.get(axis);
-        if (ret == null) {
-            ret = new TreeMap<>(Integer::compare);
-            planeMap.put(axis, ret);
-        }
-        return ret;
+        return planeMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
     }
 
     public <TILE extends TileEntity & IMultiblockBase> void tick(TILE tile) {
@@ -98,20 +94,18 @@ public class Structure {
         }
         Structure s = node.getStructure();
         if (s != this) {
-            s.nodes.entrySet().forEach(entry -> {
-                nodes.put(entry.getKey(), entry.getValue());
-                entry.getValue().setStructure(this);
+            s.nodes.forEach((key, value) -> {
+                nodes.put(key, value);
+                value.setStructure(this);
             });
-
             for (Axis axis : s.planeMap.keySet()) {
                 Map<Integer, VoxelPlane> map = getAxisMap(axis);
-                s.planeMap.get(axis).entrySet().forEach(entry -> {
-                    VoxelPlane p = map.get(entry.getKey());
+                s.planeMap.get(axis).forEach((key, value) -> {
+                    VoxelPlane p = map.get(key);
                     if (p != null) {
-                        p.merge(entry.getValue());
+                        p.merge(value);
                     } else {
-                        p = entry.getValue();
-                        map.put(entry.getKey(), entry.getValue());
+                        map.put(key, p = value);
                     }
                 });
             }
@@ -170,18 +164,18 @@ public class Structure {
     }
 
     public enum Axis {
-        X(pos -> pos.getX()),
-        Y(pos -> pos.getY()),
-        Z(pos -> pos.getZ());
+        X(Vec3i::getX),
+        Y(Vec3i::getY),
+        Z(Vec3i::getZ);
 
-        private Function<BlockPos, Integer> posMapper;
+        private final ToIntFunction<BlockPos> posMapper;
 
-        private Axis(Function<BlockPos, Integer> posMapper) {
+        Axis(ToIntFunction<BlockPos> posMapper) {
             this.posMapper = posMapper;
         }
 
         public int getCoord(BlockPos pos) {
-            return posMapper.apply(pos);
+            return posMapper.applyAsInt(pos);
         }
 
         public void set(BlockPosBuilder pos, int val) {

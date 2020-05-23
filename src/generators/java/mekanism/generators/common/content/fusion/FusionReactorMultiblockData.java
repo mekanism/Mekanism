@@ -105,8 +105,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
         gasTanks.add(deuteriumTank = MultiblockGasTank.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.DEUTERIUM)));
         gasTanks.add(tritiumTank = MultiblockGasTank.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.TRITIUM)));
         gasTanks.add(fuelTank = MultiblockGasTank.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL)));
-        gasTanks.add(steamTank = MultiblockGasTank.output(this, tile, () -> getMaxSteam(), gas -> gas == MekanismGases.STEAM.getGas()));
-        fluidTanks.add(waterTank = MultiblockFluidTank.input(this, tile, () -> getMaxWater(), fluid -> fluid.getFluid().isIn(FluidTags.WATER)));
+        gasTanks.add(steamTank = MultiblockGasTank.output(this, tile, this::getMaxSteam, gas -> gas == MekanismGases.STEAM.getGas()));
+        fluidTanks.add(waterTank = MultiblockFluidTank.input(this, tile, this::getMaxWater, fluid -> fluid.getFluid().isIn(FluidTags.WATER)));
         energyContainers.add(energyContainer = BasicEnergyContainer.output(MAX_ENERGY, this));
         heatCapacitors.add(heatCapacitor = MultiblockHeatCapacitor.create(caseHeatCapacity, getInverseConductionCoefficient(), inverseInsulation, this));
         inventorySlots.add(reactorSlot = ReactorInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, this, 80, 39));
