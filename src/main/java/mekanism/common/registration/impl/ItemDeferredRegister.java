@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -30,9 +31,10 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     }
 
     public ItemRegistryObject<Item> register(String name, EnumColor color) {
-        return register(name, () -> new Item(getMekBaseProperties()) {
+        return register(name, properties -> new Item(properties) {
+            @Nonnull
             @Override
-            public ITextComponent getDisplayName(ItemStack stack) {
+            public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
                 return super.getDisplayName(stack).applyTextStyle(color.textFormatting);
             }
         });
