@@ -57,6 +57,11 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
 
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
+    }
+
     @Nonnull
     public GasStack useGas(ItemStack stack, long amount) {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));

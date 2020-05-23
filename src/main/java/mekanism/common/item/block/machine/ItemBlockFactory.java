@@ -11,6 +11,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
@@ -29,6 +30,11 @@ public class ItemBlockFactory extends ItemBlockMachine {
 
     public ItemBlockFactory(BlockFactory<?> block) {
         super(block);
+    }
+
+    @Override
+    public FactoryTier getTier() {
+        return Attribute.getTier(getBlock(), FactoryTier.class);
     }
 
     @Override

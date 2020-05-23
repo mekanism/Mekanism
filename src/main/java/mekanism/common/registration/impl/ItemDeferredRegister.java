@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
@@ -24,6 +27,15 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
     public ItemRegistryObject<Item> register(String name) {
         return register(name, () -> new Item(getMekBaseProperties()));
+    }
+
+    public ItemRegistryObject<Item> register(String name, EnumColor color) {
+        return register(name, () -> new Item(getMekBaseProperties()) {
+            @Override
+            public ITextComponent getDisplayName(ItemStack stack) {
+                return super.getDisplayName(stack).applyTextStyle(color.textFormatting);
+            }
+        });
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup) {

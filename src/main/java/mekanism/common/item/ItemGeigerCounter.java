@@ -17,6 +17,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,6 +36,11 @@ public class ItemGeigerCounter extends Item {
                 return 0;
             }
         });
+    }
+
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Nonnull

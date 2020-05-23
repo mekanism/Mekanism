@@ -12,10 +12,10 @@ import net.minecraft.util.IStringSerializable;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public enum EnergyCubeTier implements ITier, IStringSerializable {
-    BASIC(BaseTier.BASIC, FloatingLong.createConst(2_000_000), FloatingLong.createConst(1_0)),
-    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(8_000_000), FloatingLong.createConst(4_000)),
-    ELITE(BaseTier.ELITE, FloatingLong.createConst(32_000_000), FloatingLong.createConst(16_000)),
-    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(128_000_000), FloatingLong.createConst(64_000)),
+    BASIC(BaseTier.BASIC, FloatingLong.createConst(4_000_000), FloatingLong.createConst(4_000)),
+    ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(16_000_000), FloatingLong.createConst(16_000)),
+    ELITE(BaseTier.ELITE, FloatingLong.createConst(64_000_000), FloatingLong.createConst(64_000)),
+    ULTIMATE(BaseTier.ULTIMATE, FloatingLong.createConst(256_000_000), FloatingLong.createConst(256_000)),
     CREATIVE(BaseTier.CREATIVE, FloatingLong.MAX_VALUE, FloatingLong.MAX_VALUE);
 
     private final FloatingLong baseMaxEnergy;

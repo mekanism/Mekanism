@@ -67,6 +67,11 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
         tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getState(stack)));
     }
 
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
+    }
+
     @Nonnull
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {

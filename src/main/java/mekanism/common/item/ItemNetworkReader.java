@@ -1,9 +1,9 @@
 package mekanism.common.item;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
@@ -39,6 +39,11 @@ public class ItemNetworkReader extends ItemEnergized {
 
     public ItemNetworkReader(Properties properties) {
         super(MekanismConfig.gear.networkReaderChargeRate, MekanismConfig.gear.networkReaderMaxEnergy, properties);
+    }
+
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Nonnull

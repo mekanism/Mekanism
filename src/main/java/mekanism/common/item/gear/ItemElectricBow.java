@@ -56,6 +56,11 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     }
 
     @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
+    }
+
+    @Override
     public void onPlayerStoppedUsing(@Nonnull ItemStack stack, @Nonnull World world, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entityLiving;

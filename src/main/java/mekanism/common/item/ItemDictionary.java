@@ -18,6 +18,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -25,6 +26,11 @@ public class ItemDictionary extends Item {
 
     public ItemDictionary(Properties properties) {
         super(properties.maxStackSize(1));
+    }
+
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Nonnull

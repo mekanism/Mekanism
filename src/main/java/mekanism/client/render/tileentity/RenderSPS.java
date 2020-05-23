@@ -33,7 +33,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
 
     private static final CustomEffect CORE = new CustomEffect(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png"));
     private static final Random rand = new Random();
-    private static float MIN_SCALE = 0.5F, MAX_SCALE = 4F;
+    private static float MIN_SCALE = 0.1F, MAX_SCALE = 4F;
 
     private Minecraft minecraft = Minecraft.getInstance();
     private BoltRenderer bolts = BoltRenderer.create(BoltEffect.ELECTRICITY, 12, SpawnFunction.delay(6));
@@ -57,23 +57,23 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
                 }
             }
 
+            float energyScale = getEnergyScale(tile.getMultiblock().lastProcessed);
             int targetEffectCount = 0;
 
             if (!minecraft.isGamePaused() && !tile.getMultiblock().lastReceivedEnergy.isZero()) {
-                double rate = Math.log10(tile.getMultiblock().lastReceivedEnergy.doubleValue());
-                if (rand.nextDouble() < (rate / 16F)) {
+                if (rand.nextDouble() < getBoundedScale(energyScale, 0.01F, 0.4F)) {
                     CuboidSide side = CuboidSide.SIDES[rand.nextInt(6)];
                     Plane plane = Plane.getInnerCuboidPlane(new VoxelCuboid(tile.getMultiblock().minLocation, tile.getMultiblock().maxLocation), side);
                     Vec3d endPos = plane.getRandomPoint(rand).subtract(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
-                    BoltData data = new BoltData(renderCenter, endPos, 1, 15, 0.01F * (float) rate);
+                    BoltData data = new BoltData(renderCenter, endPos, 1, 15, 0.01F * getBoundedScale(energyScale, 0.5F, 5));
                     edgeBolts.update(Objects.hashCode(side.hashCode(), endPos.hashCode()), data, partialTick);
                 }
-                targetEffectCount = (int) (rate * 20);
+                targetEffectCount = (int) getBoundedScale(energyScale, 10, 120);
             }
 
             if (tile.orbitEffects.size() > targetEffectCount) {
                 tile.orbitEffects.poll();
-            } else if (tile.orbitEffects.size() < targetEffectCount && rand.nextDouble() < 0.2) {
+            } else if (tile.orbitEffects.size() < targetEffectCount && rand.nextDouble() < 0.5) {
                 tile.orbitEffects.add(new SPSOrbitEffect(tile.getMultiblock(), center));
             }
 
@@ -83,13 +83,19 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
             tile.orbitEffects.forEach(effect -> BillboardingEffectRenderer.render(effect, tile.getPos(), matrix, renderer, tile.getWorld().getGameTime(), partialTick));
 
             if (tile.getMultiblock().lastProcessed > 0) {
-                double scaledEnergy = (Math.log10(tile.getMultiblock().lastProcessed) + 4) / 5D;
-                float scale = MIN_SCALE + (float)Math.min(1, Math.max(0, scaledEnergy)) * (MAX_SCALE - MIN_SCALE);
                 CORE.setPos(center);
-                CORE.setScale(scale);
+                CORE.setScale(getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE));
                 BillboardingEffectRenderer.render(CORE, tile.getPos(), matrix, renderer, tile.getWorld().getGameTime(), partialTick);
             }
         }
+    }
+
+    private static float getEnergyScale(double lastProcessed) {
+        return (float) Math.min(1, Math.max(0, (Math.log10(lastProcessed) + 2) / 4D));
+    }
+
+    private static float getBoundedScale(float scale, float min, float max) {
+        return min + scale * (max - min);
     }
 
     private static BoltData getBoltFromData(CoilData data, BlockPos pos, SPSMultiblockData multiblock, Vec3d center) {

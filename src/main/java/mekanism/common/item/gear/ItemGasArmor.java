@@ -13,6 +13,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
+import mekanism.api.text.EnumColor;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.common.capabilities.Capabilities;
@@ -52,6 +53,11 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         StorageUtils.addStoredGas(stack, tooltip, true, false);
+    }
+
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Override

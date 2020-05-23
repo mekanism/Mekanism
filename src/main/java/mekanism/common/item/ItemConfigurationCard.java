@@ -45,6 +45,11 @@ public class ItemConfigurationCard extends Item {
         tooltip.add(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, Translation.of(getDataType(stack))));
     }
 
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
+    }
+
     @Nonnull
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {

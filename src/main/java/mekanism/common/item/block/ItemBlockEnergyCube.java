@@ -38,6 +38,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Nonnull
+    @Override
     public EnergyCubeTier getTier() {
         return Attribute.getTier(getBlock(), EnergyCubeTier.class);
     }

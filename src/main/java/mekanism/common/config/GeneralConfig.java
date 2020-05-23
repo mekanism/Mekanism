@@ -28,6 +28,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     private static final String ENTANGLOPORTER_CATEGORY = "quantum_entangloporter";
     private static final String SECURITY_CATEGORY = "security";
     private static final String EVAPORATION_CATEGORY = "thermal_evaporation";
+    private static final String SPS_CATEGORY = "sps";
     private static final String RADIATION_CATEGORY = "radiation";
 
     private final ForgeConfigSpec configSpec;
@@ -88,6 +89,9 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue evaporationTempMultiplier;
     public final CachedDoubleValue evaporationSolarMultiplier;
     public final CachedDoubleValue evaporationHeatCapacity;
+    //SPS
+    public final CachedIntValue spsInputPerAntimatter;
+    public final CachedFloatingLongValue spsEnergyPerInput;
 
     GeneralConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -217,6 +221,13 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("solarMultiplier", 0.2));
         evaporationHeatCapacity = CachedDoubleValue.wrap(this, builder.comment("Heat capacity of Thermal Evaporation Tower layers (increases amount of energy needed to increase temperature).")
               .define("heatCapacity", 100D));
+        builder.pop();
+
+        builder.comment("SPS Settings").push(SPS_CATEGORY);
+        spsInputPerAntimatter = CachedIntValue.wrap(this, builder.comment("How much input gas (polonium) in mB must be processed to make 1 mB of antimatter.")
+              .defineInRange("inputPerAntimatter", 1, 1, Integer.MAX_VALUE));
+        spsEnergyPerInput = CachedFloatingLongValue.define(this, builder, "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter).",
+              "energyPerInput", FloatingLong.createConst(1_000_000));
         builder.pop();
 
         builder.pop();

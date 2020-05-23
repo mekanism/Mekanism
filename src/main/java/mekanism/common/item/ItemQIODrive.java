@@ -35,6 +35,11 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
     }
 
     @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(tier.getBaseTier().getTextColor().textFormatting);
+    }
+
+    @Override
     public long getCountCapacity(ItemStack stack) {
         return tier.getMaxCount();
     }

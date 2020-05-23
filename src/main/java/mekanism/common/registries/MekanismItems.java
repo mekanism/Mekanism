@@ -1,12 +1,13 @@
 package mekanism.common.registries;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import mekanism.api.Upgrade;
+import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
@@ -75,6 +76,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemDosimeter> DOSIMETER = ITEMS.register("dosimeter", ItemDosimeter::new);
     public static final ItemRegistryObject<ItemCanteen> CANTEEN = ITEMS.register("canteen", ItemCanteen::new);
     public static final ItemRegistryObject<ItemPortableQIODashboard> PORTABLE_QIO_DASHBOARD = ITEMS.register("portable_qio_dashboard", ItemPortableQIODashboard::new);
+    // QIO Drives
     public static final ItemRegistryObject<ItemQIODrive> BASE_QIO_DRIVE = registerQIODrive(QIODriveTier.BASE);
     public static final ItemRegistryObject<ItemQIODrive> HYPER_DENSE_QIO_DRIVE = registerQIODrive(QIODriveTier.HYPER_DENSE);
     public static final ItemRegistryObject<ItemQIODrive> TIME_DILATING_QIO_DRIVE = registerQIODrive(QIODriveTier.TIME_DILATING);
@@ -110,7 +112,7 @@ public class MekanismItems {
     }
 
     public static final ItemRegistryObject<Item> ENRICHED_IRON = ITEMS.register("enriched_iron");
-    public static final ItemRegistryObject<Item> TELEPORTATION_CORE = ITEMS.register("teleportation_core");
+    public static final ItemRegistryObject<Item> TELEPORTATION_CORE = ITEMS.register("teleportation_core", EnumColor.INDIGO);
     public static final ItemRegistryObject<Item> ELECTROLYTIC_CORE = ITEMS.register("electrolytic_core");
     public static final ItemRegistryObject<Item> SAWDUST = ITEMS.register("sawdust");
     public static final ItemRegistryObject<Item> SALT = ITEMS.register("salt");
@@ -118,9 +120,9 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> BIO_FUEL = ITEMS.register("bio_fuel");
     public static final ItemRegistryObject<Item> FLUORITE_GEM = ITEMS.register("fluorite_gem");
     public static final ItemRegistryObject<Item> YELLOW_CAKE_URANIUM = ITEMS.register("yellow_cake_uranium");
-    public static final ItemRegistryObject<Item> ANTIMATTER_PELLET = ITEMS.register("pellet_antimatter");
-    public static final ItemRegistryObject<Item> PLUTONIUM_PELLET = ITEMS.register("pellet_plutonium");
-    public static final ItemRegistryObject<Item> POLONIUM_PELLET = ITEMS.register("pellet_polonium");
+    public static final ItemRegistryObject<Item> ANTIMATTER_PELLET = ITEMS.register("pellet_antimatter", EnumColor.PURPLE);
+    public static final ItemRegistryObject<Item> PLUTONIUM_PELLET = ITEMS.register("pellet_plutonium", EnumColor.DARK_GRAY);
+    public static final ItemRegistryObject<Item> POLONIUM_PELLET = ITEMS.register("pellet_polonium", EnumColor.INDIGO);
     public static final ItemRegistryObject<Item> REPROCESSED_FISSILE_FRAGMENT = ITEMS.register("reprocessed_fissile_fragment");
 
     public static final ItemRegistryObject<Item> ENRICHED_CARBON = registerResource(ResourceType.ENRICHED, MiscResource.CARBON);
@@ -196,7 +198,7 @@ public class MekanismItems {
 
     private static ItemRegistryObject<Item> registerCircuit(BaseTier tier) {
         //Ensure the name is lower case as with concatenating with values from enums it may not be
-        return ITEMS.register(tier.getLowerName() + "_control_circuit");
+        return ITEMS.register(tier.getLowerName() + "_control_circuit", tier.getTextColor());
     }
 
     private static ItemRegistryObject<ItemTierInstaller> registerInstaller(@Nullable BaseTier fromTier, @Nonnull BaseTier toTier) {

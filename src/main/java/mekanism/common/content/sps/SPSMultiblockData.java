@@ -9,6 +9,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
@@ -26,9 +27,6 @@ public class SPSMultiblockData extends MultiblockData {
 
     private static final long MAX_INPUT_GAS = 1_000_000;
     private static final long MAX_OUTPUT_GAS = 1_000_000;
-
-    private static final double ENERGY_PER_INPUT_USE = 1_000_000;
-    private static final int POLONIUM_PER_ANTIMATTER = 1_000;
 
     @ContainerSync
     public MultiblockGasTank<SPSMultiblockData> inputTank;
@@ -63,9 +61,10 @@ public class SPSMultiblockData extends MultiblockData {
     public boolean tick(World world) {
         boolean needsPacket = super.tick(world);
         double processed = 0;
+        final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
         if (canOperate() && !receivedEnergy.isZero()) {
-            long inputNeeded = (POLONIUM_PER_ANTIMATTER - inputProcessed) + POLONIUM_PER_ANTIMATTER * (outputTank.getNeeded() - 1);
-            double processable = receivedEnergy.doubleValue() / ENERGY_PER_INPUT_USE;
+            long inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeeded() - 1);
+            double processable = receivedEnergy.doubleValue() / MekanismConfig.general.spsEnergyPerInput.get().doubleValue();
             if (processable + progress >= inputNeeded) {
                 processed = inputNeeded;
                 process(inputNeeded);
@@ -92,12 +91,13 @@ public class SPSMultiblockData extends MultiblockData {
     private void process(long operations) {
         if (operations == 0)
             return;
+        final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
         inputProcessed += operations;
         inputTank.shrinkStack(operations, Action.EXECUTE);
-        if (inputProcessed >= POLONIUM_PER_ANTIMATTER) {
-            GasStack toAdd = MekanismGases.ANTIMATTER.getGasStack(inputProcessed / POLONIUM_PER_ANTIMATTER);
+        if (inputProcessed >= inputPerAntimatter) {
+            GasStack toAdd = MekanismGases.ANTIMATTER.getGasStack(inputProcessed / inputPerAntimatter);
             outputTank.insert(toAdd, Action.EXECUTE, AutomationType.INTERNAL);
-            inputProcessed %= POLONIUM_PER_ANTIMATTER;
+            inputProcessed %= inputPerAntimatter;
         }
     }
 
@@ -119,15 +119,17 @@ public class SPSMultiblockData extends MultiblockData {
     }
 
     public static int getCoilLevel(FloatingLong energy) {
-        return (int) Math.log10(energy.doubleValue());
+        if (energy.isZero())
+            return 0;
+        return 1 + Math.max(0, (int) ((Math.log10(energy.doubleValue()) - 3) * 1.8));
     }
 
     public double getProcessRate() {
-        return Math.round((lastProcessed / POLONIUM_PER_ANTIMATTER) * 1000) / 1000D;
+        return Math.round((lastProcessed / MekanismConfig.general.spsInputPerAntimatter.get()) * 1000) / 1000D;
     }
 
     public float getScaledProgress() {
-        return (float) ((inputProcessed + progress) / POLONIUM_PER_ANTIMATTER);
+        return (float) ((inputProcessed + progress) / MekanismConfig.general.spsInputPerAntimatter.get());
     }
 
     public boolean handlesSound(TileEntitySPSCasing tile) {

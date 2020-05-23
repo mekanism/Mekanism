@@ -2,12 +2,14 @@ package mekanism.common.item.gear;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemHazmatSuitArmor extends ArmorItem {
@@ -29,6 +31,11 @@ public class ItemHazmatSuitArmor extends ArmorItem {
             return 0.15;
         }
         return 0;
+    }
+
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Override

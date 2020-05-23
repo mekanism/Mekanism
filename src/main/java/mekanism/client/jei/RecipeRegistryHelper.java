@@ -1,12 +1,15 @@
 package mekanism.client.jei;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
@@ -16,6 +19,8 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -68,6 +73,22 @@ public class RecipeRegistryHelper {
         registry.addRecipes(ForgeRegistries.ITEMS.getValues().stream().filter(Item::isFood)
               .map(item -> new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getGasStack(item.getFood().getHealing() * 50)))
               .collect(Collectors.toList()), MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
+    }
+
+    public static void registerSPS(IRecipeRegistration registry) {
+        //TODO - V10: FIXME, all these nonnull things should not be null (recipe id, serializer, type)
+        GasToGasRecipe recipe = new GasToGasRecipe(null, GasStackIngredient.from(MekanismGases.POLONIUM, 1000), MekanismGases.ANTIMATTER.getGasStack(1)) {
+            @Override
+            public IRecipeSerializer<?> getSerializer() {
+                return null;
+            }
+
+            @Override
+            public IRecipeType<?> getType() {
+                return null;
+            }
+        };
+        registry.addRecipes(Collections.singletonList(recipe), MekanismBlocks.SPS_CASING.getRegistryName());
     }
 
     private static ClientWorld getWorld() {

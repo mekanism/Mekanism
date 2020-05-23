@@ -33,6 +33,11 @@ public class ItemModule extends Item implements IModuleItem {
     }
 
     @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.GRAY.textFormatting);
+    }
+
+    @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
