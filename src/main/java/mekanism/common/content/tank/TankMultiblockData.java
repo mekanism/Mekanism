@@ -64,9 +64,17 @@ public class TankMultiblockData extends MultiblockData {
     @Override
     public boolean tick(World world) {
         boolean needsPacket = super.tick(world);
-        inputSlot.handleTank(outputSlot, editMode);
-        inputSlot.drainChemicalTank();
-        outputSlot.fillChemicalTank();
+        CurrentType type = mergedTank.getCurrentType();
+        if (type == CurrentType.EMPTY) {
+            inputSlot.handleTank(outputSlot, editMode);
+            inputSlot.drainChemicalTanks();
+            outputSlot.fillChemicalTanks();
+        } else if (type == CurrentType.FLUID) {
+            inputSlot.handleTank(outputSlot, editMode);
+        } else { //Chemicals
+            inputSlot.drainChemicalTank(type);
+            outputSlot.fillChemicalTank(type);
+        }
         float scale = getScale();
         if (scale != prevScale) {
             prevScale = scale;

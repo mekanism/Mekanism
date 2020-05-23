@@ -74,7 +74,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                 }
                 //If we have no contents that are still valid, allow extraction
             }
-            //Always allow it if something went horribly wrong and we are not a chemical item
+            //Always allow it if we are not a chemical item (For example this may be true for hybrid inventory slots)
             return true;
         };
     }
