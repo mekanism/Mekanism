@@ -69,8 +69,8 @@ public class TankMultiblockData extends MultiblockData {
         outputSlot.fillChemicalTank();
         float scale = getScale();
         if (scale != prevScale) {
-            needsPacket = true;
             prevScale = scale;
+            needsPacket = true;
         }
         return needsPacket;
     }

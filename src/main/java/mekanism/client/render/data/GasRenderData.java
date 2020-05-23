@@ -1,14 +1,14 @@
 package mekanism.client.render.data;
 
 import javax.annotation.Nonnull;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-public class GasRenderData extends RenderData {
+public class GasRenderData extends ChemicalRenderData<Gas, GasStack> {
 
-    @Nonnull
-    public GasStack gasType = GasStack.EMPTY;
+    public GasRenderData(@Nonnull GasStack chemicalType) {
+        super(chemicalType);
+    }
 
     @Override
     public boolean isGaseous() {
@@ -16,24 +16,7 @@ public class GasRenderData extends RenderData {
     }
 
     @Override
-    public int getColorARGB(float scale) {
-        return MekanismRenderer.getColorARGB(gasType, scale);
-    }
-
-    @Override
-    public TextureAtlasSprite getTexture() {
-        return MekanismRenderer.getChemicalTexture(gasType.getType());
-    }
-
-    @Override
-    public int hashCode() {
-        int code = super.hashCode();
-        code = 31 * code + gasType.getTypeRegistryName().hashCode();
-        return code;
-    }
-
-    @Override
     public boolean equals(Object data) {
-        return super.equals(data) && data instanceof GasRenderData && gasType.isTypeEqual(((GasRenderData) data).gasType);
+        return super.equals(data) && data instanceof GasRenderData && chemicalType.isTypeEqual(((GasRenderData) data).chemicalType);
     }
 }

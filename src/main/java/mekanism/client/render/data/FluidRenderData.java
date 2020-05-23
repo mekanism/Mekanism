@@ -9,7 +9,11 @@ import net.minecraftforge.fluids.FluidStack;
 public class FluidRenderData extends RenderData {
 
     @Nonnull
-    public FluidStack fluidType = FluidStack.EMPTY;
+    public final FluidStack fluidType;
+
+    public FluidRenderData(@Nonnull FluidStack fluidType) {
+         this.fluidType = fluidType;
+    }
 
     @Override
     public boolean isGaseous() {
@@ -39,7 +43,9 @@ public class FluidRenderData extends RenderData {
     public int hashCode() {
         int code = super.hashCode();
         code = 31 * code + fluidType.getFluid().getRegistryName().hashCode();
-        code = 31 * code + (fluidType.hasTag() ? fluidType.getTag().hashCode() : 0);
+        if (fluidType.hasTag()) {
+            code = 31 * code + fluidType.getTag().hashCode();
+        }
         return code;
     }
 

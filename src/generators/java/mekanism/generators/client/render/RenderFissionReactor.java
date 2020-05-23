@@ -54,13 +54,13 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                 }
             }
             if (!tile.getMultiblock().fluidCoolantTank.isEmpty()) {
-                FluidRenderData data = new FluidRenderData();
-                data.height = tile.getMultiblock().height - 2;
-                if (data.height >= 1) {
+                int height = tile.getMultiblock().height - 2;
+                if (height >= 1) {
+                    FluidRenderData data = new FluidRenderData(tile.getMultiblock().fluidCoolantTank.getFluid());
                     data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
+                    data.height = height;
                     data.length = tile.getMultiblock().length;
                     data.width = tile.getMultiblock().width;
-                    data.fluidType = tile.getMultiblock().fluidCoolantTank.getFluid();
                     int glow = data.calculateGlowLight(light);
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
@@ -70,13 +70,13 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                 }
             }
             if (!tile.getMultiblock().heatedCoolantTank.isEmpty()) {
-                GasRenderData data = new GasRenderData();
-                data.height = tile.getMultiblock().height - 2;
-                if (data.height >= 1) {
+                int height = tile.getMultiblock().height - 2;
+                if (height >= 1) {
+                    GasRenderData data = new GasRenderData(tile.getMultiblock().heatedCoolantTank.getStack());
                     data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
+                    data.height = height;
                     data.length = tile.getMultiblock().length;
                     data.width = tile.getMultiblock().width;
-                    data.gasType = tile.getMultiblock().heatedCoolantTank.getStack();
                     matrix.push();
                     matrix.scale(0.998F, 0.998F, 0.998F);
                     matrix.translate(data.location.x - pos.getX() + 0.001, data.location.y - pos.getY() + 0.001, data.location.z - pos.getZ() + 0.001);

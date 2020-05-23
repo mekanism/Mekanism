@@ -232,6 +232,10 @@ public final class MekanismUtils {
             //If we have any contents make sure we end up rendering it
             return targetScale;
         }
+        if (empty && prevScale < 0.01) {
+            //If we are empty and have a very small amount just round it down to empty
+            return 0;
+        }
         return prevScale;
     }
 

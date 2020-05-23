@@ -15,6 +15,9 @@ public final class ModelRenderer {
     private static Map<RenderData, Int2ObjectMap<Model3D>> cachedCenterData = new Object2ObjectOpenHashMap<>();
     private static Map<ValveRenderData, Model3D> cachedValveFluids = new Object2ObjectOpenHashMap<>();
 
+    /**
+     * @apiNote If the data is gaseous then scale is ignored
+     */
     public static Model3D getModel(RenderData data, double scale) {
         int maxStages = data.height * BLOCK_STAGES;
         int stage;

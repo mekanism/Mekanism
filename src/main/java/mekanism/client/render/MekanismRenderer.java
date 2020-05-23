@@ -220,12 +220,12 @@ public class MekanismRenderer {
         return color;
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> int getColorARGB(@Nonnull STACK stack, float scale) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> int getColorARGB(@Nonnull STACK stack, float scale, boolean gaseous) {
         if (stack.isEmpty()) {
             return -1;
         }
         int color = stack.getChemicalTint();
-        return getColorARGB(getRed(color), getGreen(color), getBlue(color), Math.min(1, scale + 0.2F));
+        return getColorARGB(getRed(color), getGreen(color), getBlue(color), gaseous ? Math.min(1, scale + 0.2F) : 1);
     }
 
     public static int getColorARGB(float red, float green, float blue, float alpha) {
