@@ -2,7 +2,6 @@ package mekanism.common.content.blocktype;
 
 import java.util.EnumSet;
 import java.util.function.Supplier;
-import mekanism.api.Pos3D;
 import mekanism.api.Upgrade;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.AttributeFactoryType;
@@ -15,6 +14,7 @@ import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
+import mekanism.common.lib.math.Pos3D;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;

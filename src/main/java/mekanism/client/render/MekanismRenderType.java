@@ -62,7 +62,7 @@ public class MekanismRenderType extends RenderType {
         RenderType.State state = RenderType.State.getBuilder()
               .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .shadeModel(SHADE_ENABLED)//shadeModel(GL11.GL_SMOOTH)
-              .transparency(LIGHTNING_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
+              .transparency(TRANSLUCENT_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
               .lightmap(LIGHTMAP_DISABLED)
               .writeMask(WriteMaskState.COLOR_WRITE)
               .build(true);

@@ -1,6 +1,8 @@
-package mekanism.api;
+package mekanism.common.lib.math;
 
 import javax.annotation.Nonnull;
+import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;

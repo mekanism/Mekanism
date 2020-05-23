@@ -15,21 +15,15 @@ public class Color {
         this((int) Math.round(r * 255D), (int) Math.round(g * 255D), (int) Math.round(b * 255D), (int) Math.round(a * 255D));
     }
 
-    public double rd() {
-        return r / 255D;
-    }
+    public float rf() { return r / 255F; }
+    public float gf() { return g / 255F; }
+    public float bf() { return b / 255F; }
+    public float af() { return a / 255F; }
 
-    public double gd() {
-        return g / 255D;
-    }
-
-    public double bd() {
-        return b / 255D;
-    }
-
-    public double ad() {
-        return a / 255D;
-    }
+    public double rd() { return r / 255D; }
+    public double gd() { return g / 255D; }
+    public double bd() { return b / 255D; }
+    public double ad() { return a / 255D; }
 
     public int rgba() {
         return (r & 0xFF) << 24 | (g & 0xFF) << 16 | (b & 0xFF) << 8 | (a & 0xFF);
@@ -41,6 +35,14 @@ public class Color {
 
     public int rgb() {
         return (r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF);
+    }
+
+    public int[] rgbaArray() {
+        return new int[] {r, g, b, a};
+    }
+
+    public int[] argbArray() {
+        return new int[] {a, r, g, b};
     }
 
     /**

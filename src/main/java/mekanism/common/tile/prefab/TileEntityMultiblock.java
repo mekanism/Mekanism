@@ -257,7 +257,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 } else {
                     getMultiblock().inventoryID = null;
                 }
-                if (getMultiblock().renderLocation != null && !prevStructure && unformedTicks >= 10) {
+                if (getMultiblock().renderLocation != null && !prevStructure && unformedTicks >= 5) {
                     Mekanism.proxy.doMultiblockSparkle(this, getMultiblock().renderLocation, getMultiblock().length - 1, getMultiblock().width - 1, getMultiblock().height - 1);
                 }
             } else {
