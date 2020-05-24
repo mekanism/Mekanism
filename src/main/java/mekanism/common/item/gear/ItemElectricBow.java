@@ -30,6 +30,7 @@ import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.NonNullList;
@@ -45,7 +46,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvider {
 
     public ItemElectricBow(Properties properties) {
-        super(properties.setNoRepair());
+        super(properties.rarity(Rarity.RARE).setNoRepair());
     }
 
     @Override
@@ -53,11 +54,6 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         StorageUtils.addStoredEnergy(stack, tooltip, true);
         tooltip.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack))));
-    }
-
-    @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Override

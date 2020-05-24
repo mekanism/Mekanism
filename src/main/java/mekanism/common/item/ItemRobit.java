@@ -20,6 +20,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -31,7 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
 
     public ItemRobit(Properties properties) {
-        super(() -> EntityRobit.MAX_ENERGY.multiply(0.005), () -> EntityRobit.MAX_ENERGY, properties);
+        super(() -> EntityRobit.MAX_ENERGY.multiply(0.005), () -> EntityRobit.MAX_ENERGY, properties.rarity(Rarity.RARE));
     }
 
     @Override
@@ -40,11 +41,6 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         super.addInformation(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getName(stack)));
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
-    }
-
-    @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Nonnull

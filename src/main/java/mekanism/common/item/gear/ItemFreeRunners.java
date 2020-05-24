@@ -32,6 +32,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
@@ -45,17 +46,12 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
     private static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
 
     public ItemFreeRunners(Properties properties) {
-        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, properties.setNoRepair().setISTER(ISTERProvider::freeRunners));
+        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, properties.rarity(Rarity.RARE).setNoRepair().setISTER(ISTERProvider::freeRunners));
     }
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
         return "mekanism:render/null_armor.png";
-    }
-
-    @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Nonnull

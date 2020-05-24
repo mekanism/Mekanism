@@ -41,6 +41,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
@@ -56,17 +57,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IModeItem {
 
     public ItemAtomicDisassembler(Properties properties) {
-        super(MekanismConfig.gear.disassemblerChargeRate, MekanismConfig.gear.disassemblerMaxEnergy, properties.setNoRepair().setISTER(ISTERProvider::disassembler));
+        super(MekanismConfig.gear.disassemblerChargeRate, MekanismConfig.gear.disassemblerMaxEnergy, properties.rarity(Rarity.RARE).setNoRepair().setISTER(ISTERProvider::disassembler));
     }
 
     @Override
     public boolean canHarvestBlock(@Nonnull BlockState state) {
         return state.getBlock() != Blocks.BEDROCK;
-    }
-
-    @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -44,6 +44,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
@@ -69,7 +70,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     private float absorption;
 
     public ItemMekaSuitArmor(EquipmentSlotType slot, Properties properties) {
-        super(MEKASUIT_MATERIAL, slot, properties.setNoRepair().maxStackSize(1));
+        super(MEKASUIT_MATERIAL, slot, properties.rarity(Rarity.EPIC).setNoRepair().maxStackSize(1));
         Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.RADIATION_SHIELDING_UNIT);
 
         if (slot == EquipmentSlotType.HEAD) {
@@ -115,11 +116,6 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
             }
             tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
         }
-    }
-
-    @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(EnumColor.PURPLE.textFormatting);
     }
 
     @Override

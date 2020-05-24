@@ -36,6 +36,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
@@ -47,7 +48,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeItem {
 
     public ItemFlamethrower(Properties properties) {
-        super(properties.maxStackSize(1).setNoRepair().setISTER(ISTERProvider::flamethrower));
+        super(properties.maxStackSize(1).rarity(Rarity.RARE).setNoRepair().setISTER(ISTERProvider::flamethrower));
     }
 
     @Override
@@ -55,11 +56,6 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         StorageUtils.addStoredGas(stack, tooltip, true, false);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
-    }
-
-    @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Override

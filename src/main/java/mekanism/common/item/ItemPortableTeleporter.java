@@ -17,6 +17,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -29,7 +30,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem {
 
     public ItemPortableTeleporter(Properties properties) {
-        super(MekanismConfig.gear.portableTeleporterChargeRate, MekanismConfig.gear.portableTeleporterMaxEnergy, properties);
+        super(MekanismConfig.gear.portableTeleporterChargeRate, MekanismConfig.gear.portableTeleporterMaxEnergy, properties.rarity(Rarity.RARE));
     }
 
     @Override
@@ -41,11 +42,6 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
             tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, !getFrequency(stack).isPublic() ? MekanismLang.PRIVATE : MekanismLang.PUBLIC));
         }
         super.addInformation(stack, world, tooltip, flag);
-    }
-
-    @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Nonnull

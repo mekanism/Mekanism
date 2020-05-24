@@ -1,10 +1,10 @@
 package mekanism.common.item.gear;
 
-import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.Multimap;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
@@ -47,6 +47,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
@@ -69,7 +70,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem, IItemHUDProvider {
 
     public ItemMekaTool(Properties properties) {
-        super(MekanismConfig.gear.mekaToolBaseChargeRate, MekanismConfig.gear.mekaToolBaseEnergyCapacity, properties.setNoRepair().setISTER(ISTERProvider::disassembler));
+        super(MekanismConfig.gear.mekaToolBaseChargeRate, MekanismConfig.gear.mekaToolBaseEnergyCapacity, properties.rarity(Rarity.EPIC).setNoRepair().setISTER(ISTERProvider::disassembler));
         Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.ATTACK_AMPLIFICATION_UNIT, Modules.SILK_TOUCH_UNIT, Modules.VEIN_MINING_UNIT, Modules.FARMING_UNIT,
               Modules.TELEPORTATION_UNIT, Modules.EXCAVATION_ESCALATION_UNIT);
     }

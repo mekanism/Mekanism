@@ -10,7 +10,6 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.fluid.IExtendedFluidHandler;
-import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.GaugeDropperContentsHandler;
@@ -22,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -38,7 +38,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 public class ItemGaugeDropper extends Item {
 
     public ItemGaugeDropper(Properties properties) {
-        super(properties.maxStackSize(1));
+        super(properties.maxStackSize(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override
@@ -49,11 +49,6 @@ public class ItemGaugeDropper extends Item {
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
         return StorageUtils.getDurabilityForDisplay(stack);
-    }
-
-    @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Override

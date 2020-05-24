@@ -15,6 +15,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -24,7 +25,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem {
 
     public ItemPortableQIODashboard(Properties properties) {
-        super(properties.maxStackSize(1));
+        super(properties.maxStackSize(1).rarity(Rarity.RARE));
     }
 
     @Nonnull

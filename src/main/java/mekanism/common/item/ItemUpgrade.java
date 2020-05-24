@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Rarity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.text.ITextComponent;
@@ -28,7 +29,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     private final Upgrade upgrade;
 
     public ItemUpgrade(Upgrade type, Properties properties) {
-        super(properties.maxStackSize(type.getMax()));
+        super(properties.maxStackSize(type.getMax()).rarity(Rarity.UNCOMMON));
         upgrade = type;
     }
 
@@ -40,11 +41,6 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
         } else {
             tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
         }
-    }
-
-    @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(EnumColor.GRAY.textFormatting);
     }
 
     @Override

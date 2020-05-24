@@ -13,7 +13,6 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
-import mekanism.api.text.EnumColor;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.common.capabilities.Capabilities;
@@ -30,6 +29,7 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
@@ -41,7 +41,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
 
     protected ItemGasArmor(IArmorMaterial material, EquipmentSlotType slot, Properties properties) {
-        super(material, slot, properties.setNoRepair().maxStackSize(1));
+        super(material, slot, properties.rarity(Rarity.RARE).setNoRepair().maxStackSize(1));
     }
 
     protected abstract LongSupplier getMaxGas();
@@ -54,11 +54,6 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         StorageUtils.addStoredGas(stack, tooltip, true, false);
-    }
-
-    @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
     @Override

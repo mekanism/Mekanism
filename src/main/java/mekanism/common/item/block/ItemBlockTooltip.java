@@ -19,29 +19,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends ItemBlockMekanism<BLOCK> {
 
     private final boolean hasDetails;
-    private EnumColor textColor;
 
     public ItemBlockTooltip(BLOCK block, Item.Properties properties) {
-        this(block, false, properties, null);
-    }
-
-    public ItemBlockTooltip(BLOCK block, Item.Properties properties, EnumColor color) {
-        this(block, false, properties, color);
+        this(block, false, properties);
     }
 
     public ItemBlockTooltip(BLOCK block, boolean hasDetails, Properties properties) {
-        this(block, hasDetails, properties, null);
-    }
-
-    public ItemBlockTooltip(BLOCK block, boolean hasDetails, Properties properties, EnumColor color) {
         super(block, properties);
         this.hasDetails = hasDetails;
-        this.textColor = color;
-    }
-
-    @Override
-    public EnumColor getTextColor(ItemStack stack) {
-        return textColor != null ? textColor : super.getTextColor(stack);
     }
 
     @Override

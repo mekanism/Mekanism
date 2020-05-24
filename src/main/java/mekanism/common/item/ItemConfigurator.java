@@ -44,6 +44,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Rarity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -58,7 +59,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IModeItem, IItemHUDProvider {
 
     public ItemConfigurator(Properties properties) {
-        super(MekanismConfig.gear.configuratorChargeRate, MekanismConfig.gear.configuratorMaxEnergy, properties);
+        super(MekanismConfig.gear.configuratorChargeRate, MekanismConfig.gear.configuratorMaxEnergy, properties.rarity(Rarity.UNCOMMON));
     }
 
     @Override
