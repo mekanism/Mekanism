@@ -11,7 +11,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 public class GuiTransporterConfigTab extends GuiWindowCreatorTab {
 
     public GuiTransporterConfigTab(IGuiWrapper gui, TileEntityMekanism tile) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "transporter_config.png"), gui, tile, -26, 34, 26, 18);
+        super(MekanismUtils.getResource(ResourceType.GUI, "transporter_config.png"), gui, tile, -26, 34, 26, 18, true);
     }
 
     @Override

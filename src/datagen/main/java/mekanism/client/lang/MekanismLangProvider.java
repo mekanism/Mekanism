@@ -2,6 +2,7 @@ package mekanism.client.lang;
 
 import java.util.Map;
 import com.google.common.collect.Table.Cell;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.APILang;
@@ -40,6 +41,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addEntities();
         addGases();
         addInfusionTypes();
+        addPigments();
         addDamageSources();
         addMisc();
     }
@@ -321,6 +323,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addGases() {
+        add(MekanismAPI.EMPTY_GAS, "Empty");
         add(MekanismGases.HYDROGEN, "Hydrogen");
         add(MekanismGases.OXYGEN, "Oxygen");
         add(MekanismGases.STEAM, "Steam");
@@ -353,6 +356,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addInfusionTypes() {
+        add(MekanismAPI.EMPTY_INFUSE_TYPE, "Empty");
         add(MekanismInfuseTypes.CARBON, "Carbon");
         add(MekanismInfuseTypes.REDSTONE, "Redstone");
         add(MekanismInfuseTypes.DIAMOND, "Diamond");
@@ -360,6 +364,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismInfuseTypes.TIN, "Tin");
         add(MekanismInfuseTypes.FUNGI, "Fungi");
         add(MekanismInfuseTypes.BIO, "Biomass");
+    }
+
+    private void addPigments() {
+        add(MekanismAPI.EMPTY_PIGMENT, "Empty");
     }
 
     private void addDamageSources() {

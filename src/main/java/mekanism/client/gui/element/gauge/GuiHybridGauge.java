@@ -13,11 +13,11 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelper {
 
-    private Supplier<IGasTank> gasTankSupplier;
-    private Supplier<IExtendedFluidTank> fluidTankSupplier;
+    private final Supplier<IGasTank> gasTankSupplier;
+    private final Supplier<IExtendedFluidTank> fluidTankSupplier;
 
-    private GuiGasGauge gasGauge;
-    private GuiFluidGauge fluidGauge;
+    private final GuiGasGauge gasGauge;
+    private final GuiFluidGauge fluidGauge;
 
     private ITextComponent label;
 
@@ -61,7 +61,7 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
     @Nullable
     @Override
     public Object getIngredient() {
-        return gasGauge.getIngredient() != null ? gasGauge.getIngredient() : fluidGauge.getIngredient();
+        return gasGauge.getIngredient() == null ? fluidGauge.getIngredient() : gasGauge.getIngredient();
     }
 
     @Override
@@ -71,12 +71,12 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
 
     @Override
     public TextureAtlasSprite getIcon() {
-        return gasTankSupplier.get() != null && !gasTankSupplier.get().isEmpty() ? gasGauge.getIcon() : fluidGauge.getIcon();
+        return gasTankSupplier.get() == null || gasTankSupplier.get().isEmpty() ? fluidGauge.getIcon() : gasGauge.getIcon();
     }
 
     @Override
     public List<ITextComponent> getTooltipText() {
-        return gasTankSupplier.get() != null && !gasTankSupplier.get().isEmpty() ? gasGauge.getTooltipText() : fluidGauge.getTooltipText();
+        return gasTankSupplier.get() == null || gasTankSupplier.get().isEmpty() ? fluidGauge.getTooltipText() : gasGauge.getTooltipText();
     }
 
     @Override
@@ -86,6 +86,6 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
 
     @Override
     public TransmissionType getTransmission() {
-        return gasTankSupplier.get() != null && gasTankSupplier.get().isEmpty() ? TransmissionType.FLUID : TransmissionType.GAS;
+        return gasTankSupplier.get() == null || !gasTankSupplier.get().isEmpty() ? TransmissionType.GAS : TransmissionType.FLUID;
     }
 }

@@ -74,7 +74,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
         if (!getMultiblock().isFormed()) {
             return false;
         }
-        return FluidUtils.handleTankInteraction(player, hand, itemStack, getMultiblock().fluidTank);
+        return FluidUtils.handleTankInteraction(player, hand, itemStack, getMultiblock().getFluidTank());
     }
 
     @Nonnull
@@ -84,8 +84,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
         if (getMultiblock().isFormed() && isMaster) {
             updateTag.putFloat(NBTConstants.SCALE, getMultiblock().prevScale);
             updateTag.putInt(NBTConstants.VOLUME, getMultiblock().getVolume());
-            updateTag.put(NBTConstants.FLUID_STORED, getMultiblock().fluidTank.getFluid().writeToNBT(new CompoundNBT()));
-            updateTag.put(NBTConstants.GAS_STORED, getMultiblock().gasTank.getStack().write(new CompoundNBT()));
+            getMultiblock().mergedTank.addToUpdateTag(updateTag);
             writeValves(updateTag);
         }
         return updateTag;
@@ -97,8 +96,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
         if (getMultiblock().isFormed() && isMaster) {
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> getMultiblock().prevScale = scale);
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> getMultiblock().setVolume(value));
-            NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> getMultiblock().fluidTank.setStack(value));
-            NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> getMultiblock().gasTank.setStack(value));
+            getMultiblock().mergedTank.readFromUpdateTag(tag);
             readValves(tag);
         }
     }

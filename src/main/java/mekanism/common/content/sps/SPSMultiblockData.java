@@ -77,7 +77,7 @@ public class SPSMultiblockData extends MultiblockData {
             }
         }
 
-        if (receivedEnergy != lastReceivedEnergy || processed != lastProcessed) {
+        if (!receivedEnergy.equals(lastReceivedEnergy) || processed != lastProcessed) {
             needsPacket = true;
         }
         lastReceivedEnergy = receivedEnergy;

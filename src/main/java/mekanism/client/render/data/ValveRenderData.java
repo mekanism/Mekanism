@@ -1,26 +1,28 @@
 package mekanism.client.render.data;
 
+import javax.annotation.Nonnull;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.FluidStack;
 
 public class ValveRenderData extends FluidRenderData {
 
     public Direction side;
     public BlockPos valveLocation;
 
-    public static ValveRenderData get(FluidRenderData renderData, ValveData valveData) {
-        ValveRenderData data = new ValveRenderData();
+    private ValveRenderData(@Nonnull FluidStack fluidType) {
+        super(fluidType);
+    }
 
+    public static ValveRenderData get(FluidRenderData renderData, ValveData valveData) {
+        ValveRenderData data = new ValveRenderData(renderData.fluidType);
         data.location = renderData.location;
         data.height = renderData.height;
         data.length = renderData.length;
         data.width = renderData.width;
-        data.fluidType = renderData.fluidType;
-
         data.side = valveData.side;
         data.valveLocation = valveData.location;
-
         return data;
     }
 

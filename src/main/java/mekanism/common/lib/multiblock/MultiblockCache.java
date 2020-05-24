@@ -12,6 +12,12 @@ import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.chemical.infuse.BasicInfusionTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
+import mekanism.api.chemical.pigment.BasicPigmentTank;
+import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
+import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -34,14 +40,16 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class MultiblockCache<T extends MultiblockData> implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler,
-      IMekanismStrictEnergyHandler, IMekanismHeatHandler {
+public class MultiblockCache<T extends MultiblockData> implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler, IMekanismStrictEnergyHandler,
+      IMekanismHeatHandler, IMekanismInfusionHandler, IMekanismPigmentHandler {
 
-    private List<IInventorySlot> inventorySlots = new ArrayList<>();
-    private List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
-    private List<IGasTank> gasTanks = new ArrayList<>();
-    private List<IEnergyContainer> energyContainers = new ArrayList<>();
-    private List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
+    private final List<IInventorySlot> inventorySlots = new ArrayList<>();
+    private final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
+    private final List<IGasTank> gasTanks = new ArrayList<>();
+    private final List<IInfusionTank> infusionTanks = new ArrayList<>();
+    private final List<IPigmentTank> pigmentTanks = new ArrayList<>();
+    private final List<IEnergyContainer> energyContainers = new ArrayList<>();
+    private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
     public void apply(T data) {
         for (CacheSubstance type : CacheSubstance.values()) {
@@ -106,6 +114,16 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         for (int i = 0; i < cacheGasTanks.size(); i++) {
             StorageUtils.mergeTanks(cacheGasTanks.get(i), mergeCache.getGasTanks(null).get(i));
         }
+        // Infusion
+        List<IInfusionTank> cacheInfusionTanks = getInfusionTanks(null);
+        for (int i = 0; i < cacheInfusionTanks.size(); i++) {
+            StorageUtils.mergeTanks(cacheInfusionTanks.get(i), mergeCache.getInfusionTanks(null).get(i));
+        }
+        // Pigment
+        List<IPigmentTank> cachePigmentTanks = getPigmentTanks(null);
+        for (int i = 0; i < cachePigmentTanks.size(); i++) {
+            StorageUtils.mergeTanks(cachePigmentTanks.get(i), mergeCache.getPigmentTanks(null).get(i));
+        }
         // Energy
         List<IEnergyContainer> cacheContainers = getEnergyContainers(null);
         for (int i = 0; i < cacheContainers.size(); i++) {
@@ -142,6 +160,18 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     @Nonnull
     @Override
+    public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
+        return infusionTanks;
+    }
+
+    @Nonnull
+    @Override
+    public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
+        return pigmentTanks;
+    }
+
+    @Nonnull
+    @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return energyContainers;
     }
@@ -162,6 +192,12 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         GAS(NBTConstants.GAS_TANKS, (cache) -> cache.gasTanks.add(BasicGasTank.create(Long.MAX_VALUE, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi,
               BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, cache)),
               (holder) -> ((IMekanismGasHandler) holder).getGasTanks(null)),
+
+        INFUSION(NBTConstants.INFUSION_TANKS, (cache) -> cache.infusionTanks.add(BasicInfusionTank.create(Long.MAX_VALUE, cache)),
+              (holder) -> ((IMekanismInfusionHandler) holder).getInfusionTanks(null)),
+
+        PIGMENT(NBTConstants.PIGMENT_TANKS, (cache) -> cache.pigmentTanks.add(BasicPigmentTank.create(Long.MAX_VALUE, cache)),
+              (holder) -> ((IMekanismPigmentHandler) holder).getPigmentTanks(null)),
 
         ENERGY(NBTConstants.ENERGY_CONTAINERS, (cache) -> cache.energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, cache)),
               (holder) -> ((IMekanismStrictEnergyHandler) holder).getEnergyContainers(null)),
@@ -199,6 +235,12 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
                     break;
                 case GAS:
                     ((IGasTank) cache).setStack(((IGasTank) data).getStack());
+                    break;
+                case INFUSION:
+                    ((IInfusionTank) cache).setStack(((IInfusionTank) data).getStack());
+                    break;
+                case PIGMENT:
+                    ((IPigmentTank) cache).setStack(((IPigmentTank) data).getStack());
                     break;
                 case ENERGY:
                     ((IEnergyContainer) cache).setEnergy(((IEnergyContainer) data).getEnergy());

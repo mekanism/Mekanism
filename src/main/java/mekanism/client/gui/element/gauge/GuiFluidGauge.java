@@ -25,7 +25,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     private ITextComponent label;
     private Supplier<IExtendedFluidTank> tankSupplier;
 
-    public GuiFluidGauge(IFluidInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
+    public GuiFluidGauge(ITankInfoHandler<IExtendedFluidTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
         super(type, gui, x, y, sizeX, sizeY, handler, TankType.FLUID_TANK);
         //Ensure it isn't null
         setDummyType(FluidStack.EMPTY);
@@ -36,7 +36,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     }
 
     public GuiFluidGauge(Supplier<IExtendedFluidTank> tankSupplier, Supplier<List<IExtendedFluidTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
-        this(new IFluidInfoHandler() {
+        this(new ITankInfoHandler<IExtendedFluidTank>() {
             @Nullable
             @Override
             public IExtendedFluidTank getTank() {
@@ -139,8 +139,5 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     @Override
     public Object getIngredient() {
         return getTank().isEmpty() ? null : getTank().getFluid();
-    }
-
-    public interface IFluidInfoHandler extends ITankInfoHandler<IExtendedFluidTank> {
     }
 }

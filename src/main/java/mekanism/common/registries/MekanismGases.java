@@ -56,6 +56,7 @@ public class MekanismGases {
         }
     }
 
+    @SuppressWarnings("Convert2MethodRef")
     public static class Coolants {
 
         // Do not change this to directly reference IGasProvider objects. This prevents a circular reference loop.

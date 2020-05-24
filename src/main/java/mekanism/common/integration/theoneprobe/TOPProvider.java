@@ -17,12 +17,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandlerWrapper;
 import mekanism.api.chemical.gas.GasHandlerWrapper;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
-import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
-import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.PigmentHandlerWrapper;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.text.ILangEntry;
@@ -38,6 +33,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -78,7 +74,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
             Optional<IStrictEnergyHandler> energyCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null));
             if (energyCapability.isPresent()) {
                 displayEnergy(info, energyCapability.get());
-            } else if (structure.isFormed()) {
+            } else if (structure != null && structure.isFormed()) {
                 //Special handling to allow viewing the energy of multiblock's when looking at things other than the ports
                 displayEnergy(info, structure);
             }
@@ -88,40 +84,21 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
             }
             ProbeMode requiredMode = tankMode == ConfigMode.NORMAL ? ProbeMode.NORMAL : ProbeMode.EXTENDED;
             if (mode == requiredMode) {
+                //TODO: Improve handling for displaying merged tanks/potentially hiding the alternate tank types
                 //Fluid - only add it to our own tiles in which we disable the default display for
                 if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
                     Optional<IFluidHandler> fluidCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null));
                     if (fluidCapability.isPresent()) {
                         displayFluid(info, fluidCapability.get());
-                    } else if (structure.isFormed()) {
+                    } else if (structure != null && structure.isFormed()) {
                         //Special handling to allow viewing the fluid in a multiblock when looking at things other than the ports
                         displayFluid(info, structure);
                     }
                 }
-                //Gas
-                Optional<IGasHandler> gasCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, null));
-                if (gasCapability.isPresent()) {
-                    addInfo(new GasHandlerWrapper(gasCapability.get()), info, GasElement::new, MekanismLang.GAS);
-                } else if (structure.isFormed()) {
-                    //Special handling to allow viewing the gas in a multiblock when looking at things other than the ports
-                    addInfo(new GasHandlerWrapper(structure), info, GasElement::new, MekanismLang.GAS);
-                }
-                //Infuse Type
-                Optional<IInfusionHandler> infusionCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.INFUSION_HANDLER_CAPABILITY, null));
-                if (infusionCapability.isPresent()) {
-                    addInfo(new InfusionHandlerWrapper(infusionCapability.get()), info, InfuseTypeElement::new, MekanismLang.INFUSE_TYPE);
-                } else if (structure.isFormed()) {
-                    //Special handling to allow viewing the infusion types in a multiblock when looking at things other than the ports
-                    addInfo(new InfusionHandlerWrapper((IMekanismInfusionHandler) structure), info, InfuseTypeElement::new, MekanismLang.INFUSE_TYPE);
-                }
-                //Pigment
-                Optional<IPigmentHandler> pigmentCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.PIGMENT_HANDLER_CAPABILITY, null));
-                if (pigmentCapability.isPresent()) {
-                    addInfo(new PigmentHandlerWrapper(pigmentCapability.get()), info, PigmentElement::new, MekanismLang.PIGMENT);
-                } else if (structure.isFormed()) {
-                    //Special handling to allow viewing the infusion types in a multiblock when looking at things other than the ports
-                    addInfo(new PigmentHandlerWrapper((IMekanismPigmentHandler) structure), info, PigmentElement::new, MekanismLang.PIGMENT);
-                }
+                //Chemicals
+                addInfo(tile, structure, Capabilities.GAS_HANDLER_CAPABILITY, GasHandlerWrapper::new, info, GasElement::new, MekanismLang.GAS);
+                addInfo(tile, structure, Capabilities.INFUSION_HANDLER_CAPABILITY, InfusionHandlerWrapper::new, info, InfuseTypeElement::new, MekanismLang.INFUSE_TYPE);
+                addInfo(tile, structure, Capabilities.PIGMENT_HANDLER_CAPABILITY, PigmentHandlerWrapper::new, info, PigmentElement::new, MekanismLang.PIGMENT);
             }
         }
     }
@@ -150,6 +127,18 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         int containers = energyHandler.getEnergyContainerCount();
         for (int container = 0; container < containers; container++) {
             info.element(new EnergyElement(energyHandler.getEnergy(container), energyHandler.getMaxEnergy(container)));
+        }
+    }
+
+    private <HANDLER, CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addInfo(TileEntity tile, @Nullable MultiblockData structure,
+          Capability<HANDLER> capability, Function<HANDLER, IChemicalHandlerWrapper<CHEMICAL, STACK>> wrapperCreator, IProbeInfo info,
+          ElementCreator<CHEMICAL, STACK> elementCreator, ILangEntry langEntry) {
+        Optional<HANDLER> cap = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, capability, null));
+        if (cap.isPresent()) {
+            addInfo(wrapperCreator.apply(cap.get()), info, elementCreator, langEntry);
+        } else if (structure != null && structure.isFormed()) {
+            //Special handling to allow viewing the chemicals in a multiblock when looking at things other than the ports
+            addInfo(wrapperCreator.apply((HANDLER) structure), info, elementCreator, langEntry);
         }
     }
 

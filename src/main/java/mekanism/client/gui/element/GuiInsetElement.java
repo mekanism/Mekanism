@@ -13,8 +13,8 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiSideHo
     protected final ResourceLocation overlay;
 
     //TODO: Improve the overlays by having some spots have alpha for transparency rather than only keeping the "key" parts. Do the same for the MekanismImageButtons
-    public GuiInsetElement(ResourceLocation overlay, IGuiWrapper gui, TILE tile, int x, int y, int height, int innerSize) {
-        super(gui, x, y, height);
+    public GuiInsetElement(ResourceLocation overlay, IGuiWrapper gui, TILE tile, int x, int y, int height, int innerSize, boolean left) {
+        super(gui, x, y, height, left);
         this.overlay = overlay;
         this.tile = tile;
         this.innerWidth = innerSize;

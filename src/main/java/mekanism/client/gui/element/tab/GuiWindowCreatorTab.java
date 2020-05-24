@@ -8,8 +8,8 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class GuiWindowCreatorTab extends GuiInsetElement<TileEntityMekanism> {
 
-    public GuiWindowCreatorTab(ResourceLocation overlay, IGuiWrapper gui, TileEntityMekanism tile, int x, int y, int height, int innerSize) {
-        super(overlay, gui, tile, x, y, height, innerSize);
+    public GuiWindowCreatorTab(ResourceLocation overlay, IGuiWrapper gui, TileEntityMekanism tile, int x, int y, int height, int innerSize, boolean left) {
+        super(overlay, gui, tile, x, y, height, innerSize, left);
     }
 
     @Override

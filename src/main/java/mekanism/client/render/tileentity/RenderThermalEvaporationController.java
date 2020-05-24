@@ -26,12 +26,11 @@ public class RenderThermalEvaporationController extends MekanismTileEntityRender
     protected void render(TileEntityThermalEvaporationBlock tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
         if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && !tile.getMultiblock().inputTank.isEmpty()) {
-            FluidRenderData data = new FluidRenderData();
+            FluidRenderData data = new FluidRenderData(tile.getMultiblock().inputTank.getFluid());
             data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
             data.height = tile.getMultiblock().height - 2;
             data.length = 2;
             data.width = 2;
-            data.fluidType = tile.getMultiblock().inputTank.getFluid();
             matrix.push();
             BlockPos pos = tile.getPos();
             int glow = data.calculateGlowLight(light);

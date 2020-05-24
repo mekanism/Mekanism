@@ -35,8 +35,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot input(IExtendedFluidTank fluidTank, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
-        return new FluidInventorySlot(fluidTank, alwaysFalse, getInputPredicate(fluidTank),
-              stack -> FluidUtil.getFluidHandler(stack).isPresent(), inventory, x, y);
+        return new FluidInventorySlot(fluidTank, alwaysFalse, getInputPredicate(fluidTank), stack -> FluidUtil.getFluidHandler(stack).isPresent(), inventory, x, y);
     }
 
     protected static Predicate<ItemStack> getInputPredicate(IExtendedFluidTank fluidTank) {

@@ -30,13 +30,14 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
             BlockPos pos = tile.getPos();
             IVertexBuilder buffer = null;
             if (!tile.getMultiblock().waterTank.isEmpty()) {
-                FluidRenderData data = new FluidRenderData();
-                data.height = tile.getMultiblock().upperRenderLocation.y - 1 - tile.getMultiblock().renderLocation.getY();
-                if (data.height >= 1) {
+                int height = tile.getMultiblock().upperRenderLocation.y - 1 - tile.getMultiblock().renderLocation.getY();
+                ;
+                if (height >= 1) {
+                    FluidRenderData data = new FluidRenderData(tile.getMultiblock().waterTank.getFluid());
                     data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
+                    data.height = height;
                     data.length = tile.getMultiblock().length;
                     data.width = tile.getMultiblock().width;
-                    data.fluidType = tile.getMultiblock().waterTank.getFluid();
                     int glow = data.calculateGlowLight(light);
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
@@ -48,13 +49,13 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                 }
             }
             if (!tile.getMultiblock().steamTank.isEmpty()) {
-                GasRenderData data = new GasRenderData();
-                data.height = tile.getMultiblock().renderLocation.getY() + tile.getMultiblock().height - 2 - tile.getMultiblock().upperRenderLocation.y;
-                if (data.height >= 1) {
+                int height = tile.getMultiblock().renderLocation.getY() + tile.getMultiblock().height - 2 - tile.getMultiblock().upperRenderLocation.y;
+                if (height >= 1) {
+                    GasRenderData data = new GasRenderData(tile.getMultiblock().steamTank.getStack());
                     data.location = tile.getMultiblock().upperRenderLocation;
+                    data.height = height;
                     data.length = tile.getMultiblock().length;
                     data.width = tile.getMultiblock().width;
-                    data.gasType = tile.getMultiblock().steamTank.getStack();
                     if (buffer == null) {
                         buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
                     }

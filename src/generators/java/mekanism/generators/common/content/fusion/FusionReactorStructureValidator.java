@@ -40,7 +40,6 @@ public class FusionReactorStructureValidator extends CuboidStructureValidator {
                         if (type == FrameType.IGNORED) {
                             // validate the frame, but we won't fail if it's invalid
                             ctx.validateFrame(pos, false);
-                            continue;
                         } else {
                             boolean isControllerPos = isControllerPos(pos);
                             boolean controller = structure.getTile(pos) instanceof TileEntityFusionReactorController;

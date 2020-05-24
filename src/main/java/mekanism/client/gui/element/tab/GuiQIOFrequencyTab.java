@@ -22,12 +22,12 @@ public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
     private boolean isItem;
 
     public GuiQIOFrequencyTab(IGuiWrapper gui, TileEntityMekanism tile) {
-        super(FREQUENCY, gui, tile, -26, 6, 26, 18);
+        super(FREQUENCY, gui, tile, -26, 6, 26, 18, true);
         this.currentHand = Hand.MAIN_HAND;
     }
 
     public GuiQIOFrequencyTab(IGuiWrapper gui, Hand hand) {
-        super(FREQUENCY, gui, null, -26, 6, 26, 18);
+        super(FREQUENCY, gui, null, -26, 6, 26, 18, true);
         isItem = true;
         currentHand = hand;
     }

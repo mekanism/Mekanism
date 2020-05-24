@@ -33,7 +33,7 @@ public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher,
     @Override
     protected void initPreSlots() {
         //Add the side holder before the slots, as it holds a couple of the slots
-        addButton(new GuiSideHolder(this, getXSize(), 66, 57));
+        addButton(new GuiSideHolder(this, getXSize(), 66, 57, false));
     }
 
     @Override

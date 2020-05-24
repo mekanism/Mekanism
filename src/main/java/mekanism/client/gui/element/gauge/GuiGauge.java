@@ -3,6 +3,7 @@ package mekanism.client.gui.element.gauge;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanismTile;
@@ -105,6 +106,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         }
     }
 
+    @Nullable
     public abstract TransmissionType getTransmission();
 
     public void setDummyType(T type) {

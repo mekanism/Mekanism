@@ -51,7 +51,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSideHolder(this, 176, 6, 106));
+        addButton(new GuiSideHolder(this, 176, 6, 106, false));
         addButton(new GuiRobitScreen(this, 27, 16, 122, 56, () -> nameChangeField.visible));
         addButton(new GuiHorizontalPowerBar(this, robit.getEnergyContainer(), 27, 74, 120));
         addButton(confirmName = new TranslationButton(this, getGuiLeft() + 58, getGuiTop() + 47, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));

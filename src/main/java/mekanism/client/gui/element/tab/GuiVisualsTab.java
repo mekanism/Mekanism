@@ -14,7 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
 
     public GuiVisualsTab(IGuiWrapper gui, TileEntityDigitalMiner tile) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "visuals.png"), gui, tile, -26, 6, 26, 18);
+        super(MekanismUtils.getResource(ResourceType.GUI, "visuals.png"), gui, tile, -26, 6, 26, 18, true);
     }
 
     @Override

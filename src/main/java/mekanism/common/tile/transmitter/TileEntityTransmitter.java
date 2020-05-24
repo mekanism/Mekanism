@@ -39,7 +39,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public TransmitterImpl<A, N, BUFFER> transmitterDelegate;
 
     public TileEntityTransmitter(IBlockProvider blockProvider) {
-        super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType());
+        super(((IHasTileEntity<? extends TileEntityTransmitter<?, ?, ?>>) blockProvider.getBlock()).getTileType());
         transmitterDelegate = new TransmitterImpl<>(this);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION_CAPABILITY, this));
         addCapabilityResolver(BasicCapabilityResolver.persistent(Capabilities.GRID_TRANSMITTER_CAPABILITY, this::getTransmitter));

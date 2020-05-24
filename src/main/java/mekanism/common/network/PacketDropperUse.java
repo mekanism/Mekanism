@@ -8,15 +8,12 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentHandler;
-import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -64,53 +61,41 @@ public class PacketDropperUse {
                     if (tile instanceof TileEntityMultiblock<?>) {
                         MultiblockData structure = ((TileEntityMultiblock<?>) tile).getMultiblock();
                         if (structure.isFormed()) {
-                            if (message.tankType == TankType.GAS_TANK) {
-                                IGasTank tank = structure.getGasTank(message.tankId, null);
-                                if (tank != null) {
-                                    handleChemicalTank(player, stack, tank, message.action);
-                                }
-                            } else if (message.tankType == TankType.FLUID_TANK) {
-                                IExtendedFluidTank tank = structure.getFluidTank(message.tankId, null);
-                                if (tank != null) {
-                                    handleFluidTank(player, stack, tank, message.action);
-                                }
-                            } else if (message.tankType == TankType.INFUSION_TANK && structure instanceof IMekanismInfusionHandler) {
-                                IInfusionTank tank = ((IMekanismInfusionHandler) structure).getInfusionTank(message.tankId, null);
-                                if (tank != null) {
-                                    handleChemicalTank(player, stack, tank, message.action);
-                                }
-                            } else if (message.tankType == TankType.PIGMENT_TANK && structure instanceof IMekanismPigmentHandler) {
-                                IPigmentTank tank = ((IMekanismPigmentHandler) structure).getPigmentTank(message.tankId, null);
-                                if (tank != null) {
-                                    handleChemicalTank(player, stack, tank, message.action);
-                                }
-                            }
+                            handleTankType(structure, message, player, stack);
                         }
-                    } else if (message.tankType == TankType.GAS_TANK) {
-                        IGasTank tank = tile.getGasTank(message.tankId, null);
-                        if (tank != null) {
-                            handleChemicalTank(player, stack, tank, message.action);
-                        }
-                    } else if (message.tankType == TankType.FLUID_TANK) {
-                        IExtendedFluidTank tank = tile.getFluidTank(message.tankId, null);
-                        if (tank != null) {
-                            handleFluidTank(player, stack, tank, message.action);
-                        }
-                    } else if (message.tankType == TankType.INFUSION_TANK) {
-                        IInfusionTank tank = tile.getInfusionTank(message.tankId, null);
-                        if (tank != null) {
-                            handleChemicalTank(player, stack, tank, message.action);
-                        }
-                    } else if (message.tankType == TankType.PIGMENT_TANK) {
-                        IPigmentTank tank = tile.getPigmentTank(message.tankId, null);
-                        if (tank != null) {
-                            handleChemicalTank(player, stack, tank, message.action);
-                        }
+                    } else {
+                        handleTankType(tile, message, player, stack);
                     }
                 }
             }
         });
         context.get().setPacketHandled(true);
+    }
+
+    private static <HANDLER extends IMekanismFluidHandler & IMekanismGasHandler & IMekanismInfusionHandler & IMekanismPigmentHandler> void handleTankType(HANDLER handler,
+          PacketDropperUse message, PlayerEntity player, ItemStack stack) {
+        if (message.tankType == TankType.FLUID_TANK) {
+            IExtendedFluidTank fluidTank = handler.getFluidTank(message.tankId, null);
+            if (fluidTank != null) {
+                handleFluidTank(player, stack, fluidTank, message.action);
+            }
+        } else {
+            IChemicalTank<?, ?> tank = null;
+            switch (message.tankType) {
+                case GAS_TANK:
+                    tank = handler.getGasTank(message.tankId, null);
+                    break;
+                case INFUSION_TANK:
+                    tank = handler.getInfusionTank(message.tankId, null);
+                    break;
+                case PIGMENT_TANK:
+                    tank = handler.getPigmentTank(message.tankId, null);
+                    break;
+            }
+            if (tank != null) {
+                handleChemicalTank(player, stack, tank, message.action);
+            }
+        }
     }
 
     public static void encode(PacketDropperUse pkt, PacketBuffer buf) {
