@@ -12,6 +12,7 @@ import mekanism.common.content.gear.Modules.ModuleData;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,7 +23,7 @@ public class ItemModule extends Item implements IModuleItem {
     private ModuleData<?> moduleData;
 
     public ItemModule(ModuleData<?> moduleData, Properties properties) {
-        super(properties.maxStackSize(moduleData.getMaxStackSize()));
+        super(properties.maxStackSize(moduleData.getMaxStackSize()).rarity(Rarity.UNCOMMON));
         moduleData.setStack(this);
         this.moduleData = moduleData;
     }

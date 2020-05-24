@@ -11,6 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -28,6 +29,10 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
     public ItemRegistryObject<Item> register(String name) {
         return register(name, Item::new);
+    }
+
+    public ItemRegistryObject<Item> register(String name, Rarity rarity) {
+        return register(name, (props) -> new Item(props.rarity(rarity)));
     }
 
     public ItemRegistryObject<Item> register(String name, EnumColor color) {
