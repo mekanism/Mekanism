@@ -1,4 +1,4 @@
-package mekanism.client.render.bolt;
+package mekanism.client.render.effect;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.Queue;
 import java.util.Random;
 import org.apache.commons.lang3.tuple.Pair;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import mekanism.client.render.bolt.BoltRenderer.BoltData;
+import mekanism.client.render.effect.BoltRenderer.BoltData;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.util.math.Vec3d;

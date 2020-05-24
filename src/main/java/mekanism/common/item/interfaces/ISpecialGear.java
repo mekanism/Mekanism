@@ -1,4 +1,4 @@
-package mekanism.common.item.gear;
+package mekanism.common.item.interfaces;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.armor.CustomArmor;

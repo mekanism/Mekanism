@@ -11,7 +11,7 @@ public class Pattern {
     public static final char CIRCUIT = 'C';
     public static final char DYE = 'D';
     public static final char ENERGY = 'E';
-    public static final char GLOWSTONE = 'G';
+    public static final char GLOWSTONE = 'G', GLASS = 'G';
     public static final char INGOT = 'I';
     public static final char LITHIUM = 'L';
     public static final char OSMIUM = 'O';

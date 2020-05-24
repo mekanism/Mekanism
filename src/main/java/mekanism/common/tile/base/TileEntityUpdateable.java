@@ -5,19 +5,21 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUpdateTile;
+import mekanism.common.tile.interfaces.ITileWrapper;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketDirection;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
  * Extension of TileEntity that adds various helpers we use across the majority of our Tiles even those that are not an instance of TileEntityMekanism. Additionally we
  * improve the performance of markDirty by not firing neighbor updates unless the markDirtyComparator method is overridden.
  */
-public abstract class TileEntityUpdateable extends TileEntity {
+public abstract class TileEntityUpdateable extends TileEntity implements ITileWrapper {
 
     public TileEntityUpdateable(TileEntityType<?> type) {
         super(type);
@@ -117,5 +119,15 @@ public abstract class TileEntityUpdateable extends TileEntity {
             // does not need to and should not be redrawn
             Mekanism.packetHandler.sendToAllTracking(new PacketUpdateTile(this), tracking);
         }
+    }
+
+    @Override
+    public World getTileWorld() {
+        return getWorld();
+    }
+
+    @Override
+    public BlockPos getTilePos() {
+        return getPos();
     }
 }

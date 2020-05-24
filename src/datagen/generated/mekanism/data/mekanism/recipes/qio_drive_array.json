@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:qio_drive_array"
+  },
+  "pattern": [
+    "IGI",
+    "C#C",
+    "ITI"
+  ],
+  "key": {
+    "#": {
+      "item": "mekanism:personal_chest"
+    },
+    "I": {
+      "tag": "forge:pellets/polonium"
+    },
+    "G": {
+      "tag": "forge:glass_panes"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    }
+  }
+}

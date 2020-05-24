@@ -3,7 +3,7 @@ package mekanism.client.render.layer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.render.armor.CustomArmor;
-import mekanism.common.item.gear.ISpecialGear;
+import mekanism.common.item.interfaces.ISpecialGear;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;

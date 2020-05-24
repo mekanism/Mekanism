@@ -19,6 +19,7 @@ import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
+import mekanism.common.item.interfaces.ISpecialGear;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;

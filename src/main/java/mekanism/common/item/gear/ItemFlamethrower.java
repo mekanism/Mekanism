@@ -23,8 +23,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.IModeItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
+import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -60,6 +60,11 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
     @Override
     public ITextComponent getDisplayName(ItemStack stack) {
         return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged || !ItemStack.areItemsEqual(oldStack, newStack);
     }
 
     @Nonnull

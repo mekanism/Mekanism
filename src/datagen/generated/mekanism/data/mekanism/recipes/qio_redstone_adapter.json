@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:qio_redstone_adapter"
+  },
+  "pattern": [
+    "IWI",
+    "CRC",
+    "ITI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:pellets/polonium"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "W": {
+      "item": "minecraft:redstone_torch"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    }
+  }
+}

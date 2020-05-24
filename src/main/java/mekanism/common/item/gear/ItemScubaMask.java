@@ -9,6 +9,7 @@ import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.ScubaMaskArmor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.item.interfaces.ISpecialGear;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:portable_qio_dashboard"
+  },
+  "pattern": [
+    "AAA",
+    "G#G",
+    "ATA"
+  ],
+  "key": {
+    "G": {
+      "tag": "forge:glass_panes"
+    },
+    "A": {
+      "tag": "forge:pellets/polonium"
+    },
+    "#": {
+      "item": "mekanism:qio_dashboard"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    }
+  }
+}

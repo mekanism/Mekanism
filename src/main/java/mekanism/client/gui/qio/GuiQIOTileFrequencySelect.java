@@ -37,19 +37,19 @@ public class GuiQIOTileFrequencySelect extends GuiQIOFrequencySelect<QIOFrequenc
 
     @Override
     public void sendSetFrequency(FrequencyIdentity identity) {
-        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_TILE, FrequencyType.QIO, identity, tile.getPos()));
+        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_TILE, FrequencyType.QIO, identity, tile.getTilePos()));
     }
 
     @Override
     public void sendRemoveFrequency(FrequencyIdentity identity) {
-        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, FrequencyType.QIO, identity, tile.getPos()));
+        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, FrequencyType.QIO, identity, tile.getTilePos()));
     }
 
     @Override
     public void sendColorUpdate(int extra) {
         QIOFrequency freq = getFrequency();
         if (freq != null) {
-            Mekanism.packetHandler.sendToServer(PacketQIOSetColor.create(tile.getPos(), freq, extra));
+            Mekanism.packetHandler.sendToServer(PacketQIOSetColor.create(tile.getTilePos(), freq, extra));
         }
     }
 

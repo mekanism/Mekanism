@@ -42,6 +42,11 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
     }
 
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
+    }
+
     @Nonnull
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {

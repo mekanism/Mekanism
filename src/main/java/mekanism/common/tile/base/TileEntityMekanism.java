@@ -1,6 +1,5 @@
 package mekanism.common.tile.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
@@ -50,7 +50,6 @@ import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
-import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
@@ -152,7 +151,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean canBeUpgraded;
     private boolean isDirectional;
     private boolean isActivatable;
-    private boolean hasInventory;
     private boolean hasSecurity;
     private boolean hasSound;
     private boolean hasGui;
@@ -270,8 +268,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         supportsRedstone = Attribute.has(block, AttributeRedstone.class);
         hasSound = Attribute.has(block, AttributeSound.class);
         hasGui = Attribute.has(block, AttributeGui.class);
-        //TODO - V10: Evaluate removing the hasInventory thing as we base it on if there is a holder or not
-        hasInventory = Attribute.has(block, AttributeInventory.class);
         hasSecurity = Attribute.has(block, AttributeSecurity.class);
         isActivatable = hasSound || Attribute.has(block, AttributeStateActive.class);
         supportsComparator = Attribute.has(block, AttributeComparator.class);

@@ -225,7 +225,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("SPS Settings").push(SPS_CATEGORY);
         spsInputPerAntimatter = CachedIntValue.wrap(this, builder.comment("How much input gas (polonium) in mB must be processed to make 1 mB of antimatter.")
-              .defineInRange("inputPerAntimatter", 1, 1, Integer.MAX_VALUE));
+              .defineInRange("inputPerAntimatter", 1_000, 1, Integer.MAX_VALUE));
         spsEnergyPerInput = CachedFloatingLongValue.define(this, builder, "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter).",
               "energyPerInput", FloatingLong.createConst(1_000_000));
         builder.pop();

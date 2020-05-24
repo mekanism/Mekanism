@@ -1,11 +1,11 @@
 package mekanism.common.recipe;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
@@ -29,9 +29,9 @@ import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
@@ -2795,6 +2795,124 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.GLOWSTONE, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .build(consumer);
+        //Module Base
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_BASE, 2)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
+              .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
+              .build(consumer);
+        //Base QIO Drive
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.BASE_QIO_DRIVE)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.CIRCUIT, MekanismItems.ULTIMATE_CONTROL_CIRCUIT)
+              .key(Pattern.CONSTANT, MekanismTags.Items.PELLETS_POLONIUM)
+              .build(consumer);
+        //Hyper-Dense QIO Drive
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HYPER_DENSE_QIO_DRIVE)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
+                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.CONSTANT, Tags.Items.GEMS_DIAMOND)
+              .key(Pattern.PREVIOUS, MekanismItems.BASE_QIO_DRIVE)
+              .build(consumer);
+        //Time-Dilating QIO Drive
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.TIME_DILATING_QIO_DRIVE)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
+                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.CONSTANT, Tags.Items.GEMS_EMERALD)
+              .key(Pattern.PREVIOUS, MekanismItems.HYPER_DENSE_QIO_DRIVE)
+              .build(consumer);
+        //Supermassive QIO Drive
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SUPERMASSIVE_QIO_DRIVE)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
+                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.CONSTANT, MekanismTags.Items.PELLETS_ANTIMATTER)
+              .key(Pattern.PREVIOUS, MekanismItems.TIME_DILATING_QIO_DRIVE)
+              .build(consumer);
+        //QIO Drive Array
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_DRIVE_ARRAY)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.GLASS, Pattern.INGOT),
+                  TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
+                  TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
+              ).key(Pattern.CONSTANT, MekanismBlocks.PERSONAL_CHEST)
+              .key(Pattern.INGOT, MekanismTags.Items.PELLETS_POLONIUM)
+              .key(Pattern.GLASS, Tags.Items.GLASS_PANES)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .build(consumer);
+        //QIO Redstone Adapter
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_REDSTONE_ADAPTER)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.WOOD, Pattern.INGOT),
+                  TripleLine.of(Pattern.CIRCUIT, Pattern.REDSTONE, Pattern.CIRCUIT),
+                  TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.PELLETS_POLONIUM)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.WOOD, Blocks.REDSTONE_TORCH)
+              .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .build(consumer);
+        //QIO Exporter
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_EXPORTER)
+            .pattern(RecipePattern.createPattern(
+                TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT),
+                TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+            ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+            .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+            .key(Pattern.CONSTANT, Blocks.PISTON)
+            .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+            .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+            .build(consumer);
+        //QIO Importer
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_IMPORTER)
+            .pattern(RecipePattern.createPattern(
+                TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT),
+                TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+             ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+            .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+            .key(Pattern.CONSTANT, Blocks.STICKY_PISTON)
+            .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+            .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+            .build(consumer);
+        //QIO Dashboard
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_DASHBOARD)
+            .pattern(RecipePattern.createPattern(
+                TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                TripleLine.of(Pattern.ALLOY, Pattern.GLASS, Pattern.ALLOY),
+                TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
+            ).key(Pattern.GLASS, Tags.Items.GLASS_PANES)
+            .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+            .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+            .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+            .build(consumer);
+        //Portable QIO Dashboard
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.PORTABLE_QIO_DASHBOARD)
+            .pattern(RecipePattern.createPattern(
+                TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY),
+                TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                TripleLine.of(Pattern.ALLOY, TELEPORTATION_CORE_CHAR, Pattern.ALLOY))
+            ).key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+            .key(Pattern.CONSTANT, MekanismBlocks.QIO_DASHBOARD)
+            .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+            .build(consumer);
     }
 
     private void addUraniumRecipes(Consumer<IFinishedRecipe> consumer) {

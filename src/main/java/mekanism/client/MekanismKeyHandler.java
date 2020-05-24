@@ -4,7 +4,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.KeySync;
-import mekanism.common.item.IModeItem;
+import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketOpenGui;
 import mekanism.common.network.PacketOpenGui.GuiType;

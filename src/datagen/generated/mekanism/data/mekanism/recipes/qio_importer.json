@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:qio_importer"
+  },
+  "pattern": [
+    "ITI",
+    "ACA",
+    " # "
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "A": {
+      "tag": "forge:pellets/polonium"
+    },
+    "#": {
+      "item": "minecraft:sticky_piston"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    },
+    "I": {
+      "tag": "forge:ingots/lead"
+    }
+  }
+}

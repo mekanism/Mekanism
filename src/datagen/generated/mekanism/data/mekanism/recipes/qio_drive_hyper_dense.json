@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:qio_drive_hyper_dense"
+  },
+  "pattern": [
+    "IPI",
+    "P#P",
+    "IPI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/lead"
+    },
+    "#": {
+      "tag": "forge:gems/diamond"
+    },
+    "P": {
+      "item": "mekanism:qio_drive_base"
+    }
+  }
+}

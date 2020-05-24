@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_base",
+    "count": 2
+  },
+  "pattern": [
+    " I ",
+    "I#I",
+    " I "
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/tin"
+    },
+    "#": {
+      "item": "mekanism:hdpe_sheet"
+    }
+  }
+}

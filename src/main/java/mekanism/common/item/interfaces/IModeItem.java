@@ -1,4 +1,4 @@
-package mekanism.common.item;
+package mekanism.common.item.interfaces;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

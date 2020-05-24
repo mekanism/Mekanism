@@ -4,9 +4,9 @@ import java.util.List;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.security.ISecurityTile;
-import net.minecraft.util.math.BlockPos;
+import mekanism.common.tile.interfaces.ITileWrapper;
 
-public interface IQIOFrequencyHolder extends ISecurityTile, IFrequencyHandler {
+public interface IQIOFrequencyHolder extends ISecurityTile, IFrequencyHandler, ITileWrapper {
 
     default QIOFrequency getQIOFrequency() {
         return getFrequency(FrequencyType.QIO);
@@ -19,6 +19,4 @@ public interface IQIOFrequencyHolder extends ISecurityTile, IFrequencyHandler {
     default List<QIOFrequency> getPrivateFrequencies() {
         return getPrivateCache(FrequencyType.QIO);
     }
-
-    BlockPos getPos();
 }

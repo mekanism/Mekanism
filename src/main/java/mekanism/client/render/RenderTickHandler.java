@@ -1,7 +1,5 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
@@ -10,6 +8,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -18,10 +18,10 @@ import mekanism.client.MekanismClient;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.bolt.BoltEffect;
-import mekanism.client.render.bolt.BoltRenderer;
-import mekanism.client.render.bolt.BoltRenderer.BoltData;
-import mekanism.client.render.bolt.BoltRenderer.SpawnFunction;
+import mekanism.client.render.effect.BoltEffect;
+import mekanism.client.render.effect.BoltRenderer;
+import mekanism.client.render.effect.BoltRenderer.BoltData;
+import mekanism.client.render.effect.BoltRenderer.SpawnFunction;
 import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
@@ -30,12 +30,12 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.Attributes.AttributeCustomSelectionBox;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.IModeItem;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.interfaces.IItemHUDProvider;
+import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -253,7 +253,7 @@ public class RenderTickHandler {
                 }
 
                 // Traverse a copy of flamethrower state and do animations
-                if (world.getDayTime() % 4 == 0) {
+                if (world.getGameTime() % 4 == 0) {
                     for (PlayerEntity p : world.getPlayers()) {
                         if (!Mekanism.playerState.isFlamethrowerOn(p) && !p.isSwingInProgress) {
                             ItemStack currentItem = p.inventory.getCurrentItem();
