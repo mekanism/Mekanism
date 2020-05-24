@@ -194,4 +194,16 @@ public class ChemicalUtils {
 
         STACK extract(int tank, long amount, Action action);
     }
+
+    @FunctionalInterface
+    public interface ChemicalToStackCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
+
+        STACK createStack(CHEMICAL chemical, long amount);
+    }
+
+    @FunctionalInterface
+    public interface StackToStackCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
+
+        STACK createStack(STACK chemical, long amount);
+    }
 }

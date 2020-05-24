@@ -5,6 +5,10 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.container.PacketUpdateContainer;
+import mekanism.common.network.container.property.chemical.GasStackPropertyData;
+import mekanism.common.network.container.property.chemical.InfusionStackPropertyData;
+import mekanism.common.network.container.property.chemical.PigmentStackPropertyData;
+import mekanism.common.network.container.property.chemical.SlurryStackPropertyData;
 import mekanism.common.network.container.property.list.ListPropertyData;
 import net.minecraft.network.PacketBuffer;
 

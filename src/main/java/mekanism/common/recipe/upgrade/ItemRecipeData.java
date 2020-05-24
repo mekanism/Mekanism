@@ -45,7 +45,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         DataHandlerUtils.readContainers(this.slots, slots);
     }
 
-    ItemRecipeData(List<IInventorySlot> slots) {
+    private ItemRecipeData(List<IInventorySlot> slots) {
         this.slots = slots;
     }
 

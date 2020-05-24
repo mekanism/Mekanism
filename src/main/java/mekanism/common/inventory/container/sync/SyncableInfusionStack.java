@@ -7,7 +7,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.common.network.container.property.InfusionStackPropertyData;
+import mekanism.common.network.container.property.chemical.InfusionStackPropertyData;
 import mekanism.common.network.container.property.LongPropertyData;
 import mekanism.common.network.container.property.PropertyData;
 

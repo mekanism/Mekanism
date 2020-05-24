@@ -43,7 +43,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
         DataHandlerUtils.readContainers(fluidTanks, tanks);
     }
 
-    FluidRecipeData(List<IExtendedFluidTank> fluidTanks) {
+    private FluidRecipeData(List<IExtendedFluidTank> fluidTanks) {
         this.fluidTanks = fluidTanks;
     }
 

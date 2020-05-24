@@ -3,6 +3,8 @@ package mekanism.api.recipes.inputs.chemical;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalUtils.ChemicalToStackCreator;
+import mekanism.api.chemical.ChemicalUtils.StackToStackCreator;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -51,17 +53,5 @@ class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK extends 
 
     public STACK createStack(STACK stack, long amount) {
         return stackToStackCreator.createStack(stack, amount);
-    }
-
-    @FunctionalInterface
-    protected interface ChemicalToStackCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
-
-        STACK createStack(CHEMICAL chemical, long amount);
-    }
-
-    @FunctionalInterface
-    protected interface StackToStackCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
-
-        STACK createStack(STACK chemical, long amount);
     }
 }

@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -391,31 +393,16 @@ public abstract class MekanismContainer extends Container {
         }
     }
 
-    public void handleWindowProperty(short property, @Nonnull GasStack value) {
+    public <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleWindowProperty(short property, @Nonnull STACK value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableGasStack) {
-            ((SyncableGasStack) data).set(value);
-        }
-    }
-
-    public void handleWindowProperty(short property, @Nonnull InfusionStack value) {
-        ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableInfusionStack) {
-            ((SyncableInfusionStack) data).set(value);
-        }
-    }
-
-    public void handleWindowProperty(short property, @Nonnull PigmentStack value) {
-        ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncablePigmentStack) {
-            ((SyncablePigmentStack) data).set(value);
-        }
-    }
-
-    public void handleWindowProperty(short property, @Nonnull SlurryStack value) {
-        ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableSlurryStack) {
-            ((SyncableSlurryStack) data).set(value);
+        if (data instanceof SyncableGasStack && value instanceof GasStack) {
+            ((SyncableGasStack) data).set((GasStack) value);
+        } else if (data instanceof SyncableInfusionStack && value instanceof InfusionStack) {
+            ((SyncableInfusionStack) data).set((InfusionStack) value);
+        } else if (data instanceof SyncablePigmentStack && value instanceof PigmentStack) {
+            ((SyncablePigmentStack) data).set((PigmentStack) value);
+        } else if (data instanceof SyncableSlurryStack && value instanceof SlurryStack) {
+            ((SyncableSlurryStack) data).set((SlurryStack) value);
         }
     }
 

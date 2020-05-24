@@ -44,7 +44,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
         DataHandlerUtils.readContainers(energyContainers, containers);
     }
 
-    EnergyRecipeData(List<IEnergyContainer> energyContainers) {
+    private EnergyRecipeData(List<IEnergyContainer> energyContainers) {
         this.energyContainers = energyContainers;
     }
 

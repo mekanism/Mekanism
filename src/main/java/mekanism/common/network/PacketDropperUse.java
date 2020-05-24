@@ -95,7 +95,7 @@ public class PacketDropperUse {
                     tank = handler.getPigmentTank(message.tankId, null);
                     break;
                 case SLURRY_TANK:
-                    tank = handler.getPigmentTank(message.tankId, null);
+                    tank = handler.getSlurryTank(message.tankId, null);
                     break;
             }
             if (tank != null) {
@@ -123,6 +123,7 @@ public class PacketDropperUse {
             return;
         }
         IChemicalTank<CHEMICAL, STACK> itemChemicalTank = null;
+        //TODO: Eventually try to clean this up further to reduce duplicate code
         STACK emptyStack = chemicalTank.getEmptyStack();
         if (emptyStack == GasStack.EMPTY) {
             Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));

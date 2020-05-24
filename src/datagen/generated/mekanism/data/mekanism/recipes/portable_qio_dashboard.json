@@ -5,13 +5,10 @@
   },
   "pattern": [
     "AAA",
-    "G#G",
+    "A#A",
     "ATA"
   ],
   "key": {
-    "G": {
-      "tag": "forge:glass_panes"
-    },
     "A": {
       "tag": "forge:pellets/polonium"
     },
