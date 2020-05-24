@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
@@ -15,6 +16,7 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
     public static final ChemicalTags<Gas> GAS = new ChemicalTags<>();
     public static final ChemicalTags<InfuseType> INFUSE_TYPE = new ChemicalTags<>();
     public static final ChemicalTags<Pigment> PIGMENT = new ChemicalTags<>();
+    public static final ChemicalTags<Slurry> SLURRY = new ChemicalTags<>();
 
     private TagCollection<CHEMICAL> collection = new TagCollection<>(location -> Optional.empty(), "", false, "");
     private int generation;
@@ -45,6 +47,10 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
 
     public static Tag<Pigment> pigmentTag(ResourceLocation resourceLocation) {
         return chemicalTag(resourceLocation, PIGMENT);
+    }
+
+    public static Tag<Slurry> slurryTag(ResourceLocation resourceLocation) {
+        return chemicalTag(resourceLocation, SLURRY);
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>> Tag<CHEMICAL> chemicalTag(ResourceLocation resourceLocation, ChemicalTags<CHEMICAL> chemicalTags) {

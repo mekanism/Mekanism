@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
-import mekanism.api.chemical.gas.Slurry;
+import mekanism.api.chemical.gas.GasSlurry;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
@@ -21,7 +21,7 @@ public class MekanismGases {
 
     public static final GasDeferredRegister GASES = new GasDeferredRegister(Mekanism.MODID);
 
-    public static final Map<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> PROCESSED_RESOURCE_SLURRIES = new LinkedHashMap<>();
+    public static final Map<PrimaryResource, SlurryRegistryObject<GasSlurry, GasSlurry>> PROCESSED_RESOURCE_SLURRIES = new LinkedHashMap<>();
 
     public static final GasRegistryObject<Gas> HYDROGEN = GASES.register(ChemicalConstants.HYDROGEN, new Fuel(() -> 1, MekanismConfig.general.FROM_H2));
     public static final GasRegistryObject<Gas> OXYGEN = GASES.register(ChemicalConstants.OXYGEN);

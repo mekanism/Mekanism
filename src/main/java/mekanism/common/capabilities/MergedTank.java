@@ -11,6 +11,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.util.NBTUtils;
@@ -21,12 +22,13 @@ import net.minecraft.nbt.CompoundNBT;
 @MethodsReturnNonnullByDefault
 public class MergedTank extends MergedChemicalTank {
 
-    public static MergedTank create(IExtendedFluidTank fluidTank, IGasTank gasTank, IInfusionTank infusionTank, IPigmentTank pigmentTank) {
+    public static MergedTank create(IExtendedFluidTank fluidTank, IGasTank gasTank, IInfusionTank infusionTank, IPigmentTank pigmentTank, ISlurryTank slurryTank) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
         Objects.requireNonNull(pigmentTank, "Pigment tank cannot be null");
-        return new MergedTank(fluidTank, gasTank, infusionTank, pigmentTank);
+        Objects.requireNonNull(slurryTank, "Slurry tank cannot be null");
+        return new MergedTank(fluidTank, gasTank, infusionTank, pigmentTank, slurryTank);
     }
 
     private final IExtendedFluidTank fluidTank;
@@ -45,6 +47,8 @@ public class MergedTank extends MergedChemicalTank {
             return CurrentType.INFUSION;
         } else if (!getPigmentTank().isEmpty()) {
             return CurrentType.PIGMENT;
+        } else if (!getSlurryTank().isEmpty()) {
+            return CurrentType.SLURRY;
         }
         return CurrentType.EMPTY;
     }
@@ -58,6 +62,7 @@ public class MergedTank extends MergedChemicalTank {
         updateTag.put(NBTConstants.GAS_STORED, getGasTank().getStack().write(new CompoundNBT()));
         updateTag.put(NBTConstants.INFUSE_TYPE_NAME, getInfusionTank().getStack().write(new CompoundNBT()));
         updateTag.put(NBTConstants.PIGMENT_STORED, getPigmentTank().getStack().write(new CompoundNBT()));
+        updateTag.put(NBTConstants.SLURRY_STORED, getSlurryTank().getStack().write(new CompoundNBT()));
     }
 
     public void readFromUpdateTag(CompoundNBT tag) {
@@ -65,6 +70,7 @@ public class MergedTank extends MergedChemicalTank {
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> getGasTank().setStack(value));
         NBTUtils.setInfusionStackIfPresent(tag, NBTConstants.INFUSE_TYPE_NAME, value -> getInfusionTank().setStack(value));
         NBTUtils.setPigmentStackIfPresent(tag, NBTConstants.PIGMENT_STORED, value -> getPigmentTank().setStack(value));
+        NBTUtils.setSlurryStackIfPresent(tag, NBTConstants.SLURRY_STORED, value -> getSlurryTank().setStack(value));
     }
 
     public enum CurrentType {
@@ -72,6 +78,7 @@ public class MergedTank extends MergedChemicalTank {
         FLUID,
         GAS,
         INFUSION,
-        PIGMENT
+        PIGMENT,
+        SLURRY
     }
 }

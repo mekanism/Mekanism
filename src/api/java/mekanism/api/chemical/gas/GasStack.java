@@ -40,7 +40,7 @@ public class GasStack extends ChemicalStack<Gas> {
     protected IRegistryDelegate<Gas> getDelegate(Gas gas) {
         if (MekanismAPI.GAS_REGISTRY.getKey(gas) == null) {
             MekanismAPI.logger.fatal("Failed attempt to create a GasStack for an unregistered Gas {} (type {})", gas.getRegistryName(), gas.getClass().getName());
-            throw new IllegalArgumentException("Cannot create a GasStack from an unregistered gas");
+            throw new IllegalArgumentException("Cannot create a GasStack from an unregistered Gas");
         }
         return gas.delegate;
     }
@@ -92,7 +92,7 @@ public class GasStack extends ChemicalStack<Gas> {
     }
 
     /**
-     * Default equality comparison for a GasStack. Same functionality as isGasEqual().
+     * Default equality comparison for a GasStack. Same functionality as isTypeEqual().
      *
      * This is included for use in data structures.
      */

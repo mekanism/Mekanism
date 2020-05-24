@@ -15,6 +15,9 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.util.Direction;
 
@@ -37,6 +40,10 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
 
     public static ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> forSidePigment(Supplier<Direction> facingSupplier) {
         return new ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank>(new ChemicalTankHolder<>(facingSupplier));
+    }
+
+    public static ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> forSideSlurry(Supplier<Direction> facingSupplier) {
+        return new ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank>(new ChemicalTankHolder<>(facingSupplier));
     }
 
     public static ChemicalTankHelper<Gas, GasStack, IGasTank> forSideGasWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {

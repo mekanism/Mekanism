@@ -26,17 +26,21 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryStack;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MergedChemicalTank {
 
-    public static MergedChemicalTank create(IGasTank gasTank, IInfusionTank infusionTank, IPigmentTank pigmentTank) {
+    public static MergedChemicalTank create(IGasTank gasTank, IInfusionTank infusionTank, IPigmentTank pigmentTank, ISlurryTank slurryTank) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
         Objects.requireNonNull(pigmentTank, "Pigment tank cannot be null");
-        return new MergedChemicalTank(gasTank, infusionTank, pigmentTank);
+        Objects.requireNonNull(slurryTank, "Slurry tank cannot be null");
+        return new MergedChemicalTank(gasTank, infusionTank, pigmentTank, slurryTank);
     }
 
     private final Map<ChemicalTankType<?, ?, ?>, IChemicalTank<?, ?>> tankMap = new HashMap<>();
@@ -81,12 +85,17 @@ public class MergedChemicalTank {
         return (IPigmentTank) tankMap.get(ChemicalTankType.PIGMENT);
     }
 
+    public final ISlurryTank getSlurryTank() {
+        return (ISlurryTank) tankMap.get(ChemicalTankType.SLURRY);
+    }
+
     private static class ChemicalTankType<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
 
         private static final List<ChemicalTankType<?, ?, ?>> TYPES = new ArrayList<>();
         private static final ChemicalTankType<Gas, GasStack, IGasTank> GAS = new ChemicalTankType<>("gas", GasTankWrapper::new, tank -> tank instanceof IGasTank);
         private static final ChemicalTankType<InfuseType, InfusionStack, IInfusionTank> INFUSE_TYPE = new ChemicalTankType<>("infusion", InfusionTankWrapper::new, tank -> tank instanceof IInfusionTank);
         private static final ChemicalTankType<Pigment, PigmentStack, IPigmentTank> PIGMENT = new ChemicalTankType<>("pigment", PigmentTankWrapper::new, tank -> tank instanceof IPigmentTank);
+        private static final ChemicalTankType<Slurry, SlurryStack, ISlurryTank> SLURRY = new ChemicalTankType<>("slurry", SlurryTankWrapper::new, tank -> tank instanceof ISlurryTank);
 
         private final BiFunction<TANK, BooleanSupplier, TANK> tankWrapper;
         private final Predicate<IChemicalTank<?, ?>> tankValidator;
@@ -134,6 +143,13 @@ public class MergedChemicalTank {
     private static class PigmentTankWrapper extends ChemicalTankWrapper<Pigment, PigmentStack, IPigmentTank> implements IPigmentTank {
 
         public PigmentTankWrapper(IPigmentTank internal, BooleanSupplier insertCheck) {
+            super(internal, insertCheck);
+        }
+    }
+
+    private static class SlurryTankWrapper extends ChemicalTankWrapper<Slurry, SlurryStack, ISlurryTank> implements ISlurryTank {
+
+        public SlurryTankWrapper(ISlurryTank internal, BooleanSupplier insertCheck) {
             super(internal, insertCheck);
         }
     }

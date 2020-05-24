@@ -18,6 +18,8 @@ import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -41,7 +43,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismPigmentHandler,
-      IMekanismStrictEnergyHandler, ITileHeatHandler {
+      IMekanismSlurryHandler, IMekanismStrictEnergyHandler, ITileHeatHandler {
 
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
     public Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
@@ -75,6 +77,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     protected final List<IGasTank> gasTanks = new ArrayList<>();
     protected final List<IInfusionTank> infusionTanks = new ArrayList<>();
     protected final List<IPigmentTank> pigmentTanks = new ArrayList<>();
+    protected final List<ISlurryTank> slurryTanks = new ArrayList<>();
     protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
@@ -143,6 +146,11 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
                 tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
             }
         }
+        if (shouldCap(CacheSubstance.SLURRY)) {
+            for (ISlurryTank tank : getSlurryTanks(null)) {
+                tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
+            }
+        }
         if (shouldCap(CacheSubstance.ENERGY)) {
             for (IEnergyContainer container : getEnergyContainers(null)) {
                 container.setEnergy(container.getEnergy().min(container.getMaxEnergy()));
@@ -203,6 +211,12 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     @Override
     public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
         return isFormed() ? pigmentTanks : Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
+        return isFormed() ? slurryTanks : Collections.emptyList();
     }
 
     @Nonnull

@@ -7,7 +7,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.common.network.container.property.GasStackPropertyData;
+import mekanism.common.network.container.property.chemical.GasStackPropertyData;
 import mekanism.common.network.container.property.LongPropertyData;
 import mekanism.common.network.container.property.PropertyData;
 

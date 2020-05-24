@@ -22,7 +22,7 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
     }
 
     /**
-     * Helper method to create an {@link NSSPigment} representing an infuse type from a {@link PigmentStack}
+     * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link PigmentStack}
      */
     @Nonnull
     public static NSSPigment createPigment(@Nonnull PigmentStack stack) {
@@ -31,7 +31,7 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
     }
 
     /**
-     * Helper method to create an {@link NSSPigment} representing an infuse type from a {@link Pigment}
+     * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link Pigment}
      */
     @Nonnull
     public static NSSPigment createPigment(@Nonnull Pigment pigment) {
@@ -43,7 +43,7 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
     }
 
     /**
-     * Helper method to create an {@link NSSPigment} representing an infuse type from a {@link ResourceLocation}
+     * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link ResourceLocation}
      */
     @Nonnull
     public static NSSPigment createPigment(@Nonnull ResourceLocation pigmentID) {
@@ -59,7 +59,7 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
     }
 
     /**
-     * Helper method to create an {@link NSSPigment} representing a tag from a {@link Tag < InfuseType >}
+     * Helper method to create an {@link NSSPigment} representing a tag from a {@link Tag<Pigment>}
      */
     @Nonnull
     public static NSSPigment createTag(@Nonnull Tag<Pigment> tag) {

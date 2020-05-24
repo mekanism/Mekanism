@@ -8,7 +8,7 @@ import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.common.network.container.property.LongPropertyData;
-import mekanism.common.network.container.property.PigmentStackPropertyData;
+import mekanism.common.network.container.property.chemical.PigmentStackPropertyData;
 import mekanism.common.network.container.property.PropertyData;
 
 /**

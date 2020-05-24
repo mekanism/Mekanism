@@ -16,6 +16,10 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.security.ISecurityItem;
+import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
+import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
+import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
+import mekanism.common.recipe.upgrade.chemical.SlurryRecipeData;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
@@ -79,6 +83,10 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             //If we are for a block that handles pigment or we have an pigment handler capability
             supportedTypes.add(RecipeUpgradeType.PIGMENT);
         }
+        if (stack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.SLURRY)) {
+            //If we are for a block that handles slurry or we have an slurry handler capability
+            supportedTypes.add(RecipeUpgradeType.SLURRY);
+        }
         if (item instanceof ISustainedInventory || tile != null && tile.persistInventory()) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
         }
@@ -105,6 +113,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 return new InfusionRecipeData(ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
             case PIGMENT:
                 return new PigmentRecipeData(ItemDataUtils.getList(stack, NBTConstants.PIGMENT_TANKS));
+            case SLURRY:
+                return new SlurryRecipeData(ItemDataUtils.getList(stack, NBTConstants.SLURRY_TANKS));
             case ITEM:
                 return new ItemRecipeData(((ISustainedInventory) item).getInventory(stack));
             case SECURITY:

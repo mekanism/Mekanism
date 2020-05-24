@@ -14,6 +14,7 @@ public enum SubstanceType {
     GAS(NBTConstants.GAS_TANKS, (tile) -> tile.getGasTanks(null)),
     INFUSION(NBTConstants.INFUSION_TANKS, (tile) -> tile.getInfusionTanks(null)),
     PIGMENT(NBTConstants.PIGMENT_TANKS, (tile) -> tile.getPigmentTanks(null)),
+    SLURRY(NBTConstants.SLURRY_TANKS, (tile) -> tile.getSlurryTanks(null)),
     HEAT(NBTConstants.HEAT_CAPACITORS, (tile) -> tile.getHeatCapacitors(null));
 
     private final String containerTag;

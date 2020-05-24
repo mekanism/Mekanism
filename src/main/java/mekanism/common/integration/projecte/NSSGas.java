@@ -59,7 +59,7 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
     }
 
     /**
-     * Helper method to create an {@link NSSGas} representing a tag from a {@link Tag < Gas >}
+     * Helper method to create an {@link NSSGas} representing a tag from a {@link Tag<Gas>}
      */
     @Nonnull
     public static NSSGas createTag(@Nonnull Tag<Gas> tag) {

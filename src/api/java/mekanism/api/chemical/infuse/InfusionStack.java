@@ -88,7 +88,7 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
     }
 
     /**
-     * Default equality comparison for a InfusionStack. Same functionality as isInfusionEqual().
+     * Default equality comparison for a InfusionStack. Same functionality as isTypeEqual().
      *
      * This is included for use in data structures.
      */

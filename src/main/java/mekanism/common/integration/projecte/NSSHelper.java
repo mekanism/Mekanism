@@ -34,10 +34,18 @@ public class NSSHelper {
         return NSSPigment.createPigment(getResourceLocation(pigmentName, "pigment"));
     };
 
+    private static final NSSCreator slurryCreator = slurryName -> {
+        if (slurryName.startsWith("#")) {
+            return NSSSlurry.createTag(getResourceLocation(slurryName.substring(1), "slurry tag"));
+        }
+        return NSSSlurry.createSlurry(getResourceLocation(slurryName, "slurry"));
+    };
+
     public static void init() {
         register("GAS", gasCreator);
         register("INFUSE_TYPE", infuseTypeCreator);
         register("PIGMENT", pigmentCreator);
+        register("SLURRY", slurryCreator);
     }
 
     private static void register(String key, NSSCreator creator) {

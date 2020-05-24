@@ -12,6 +12,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
 import net.minecraft.fluid.Fluid;
@@ -80,6 +81,11 @@ public class SerializerHelper {
         return deserializePigment(JSONUtils.getJsonObject(json, key));
     }
 
+    public static SlurryStack getSlurryStack(@Nonnull JsonObject json, @Nonnull String key) {
+        validateKey(json, key);
+        return deserializeSlurry(JSONUtils.getJsonObject(json, key));
+    }
+
     public static GasStack deserializeGas(@Nonnull JsonObject json) {
         return ChemicalIngredientDeserializer.GAS.deserializeStack(json);
     }
@@ -125,6 +131,10 @@ public class SerializerHelper {
         return ChemicalIngredientDeserializer.PIGMENT.deserializeStack(json);
     }
 
+    public static SlurryStack deserializeSlurry(@Nonnull JsonObject json) {
+        return ChemicalIngredientDeserializer.SLURRY.deserializeStack(json);
+    }
+
     public static JsonElement serializeItemStack(@Nonnull ItemStack stack) {
         JsonObject json = new JsonObject();
         json.addProperty(JsonConstants.ITEM, stack.getItem().getRegistryName().toString());
@@ -157,5 +167,9 @@ public class SerializerHelper {
 
     public static JsonElement serializePigmentStack(@Nonnull PigmentStack stack) {
         return ChemicalIngredientDeserializer.PIGMENT.serializeStack(stack);
+    }
+
+    public static JsonElement serializeSlurryStack(@Nonnull SlurryStack stack) {
+        return ChemicalIngredientDeserializer.SLURRY.serializeStack(stack);
     }
 }

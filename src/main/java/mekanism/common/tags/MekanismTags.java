@@ -8,6 +8,7 @@ import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.Mekanism;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
@@ -228,6 +229,16 @@ public class MekanismTags {
 
         private static Tag<Pigment> tag(String name) {
             return ChemicalTags.pigmentTag(Mekanism.rl(name));
+        }
+    }
+
+    public static class Slurries {
+
+        public static final Tag<Slurry> DIRTY = tag("dirty");
+        public static final Tag<Slurry> CLEAN = tag("clean");
+
+        private static Tag<Slurry> tag(String name) {
+            return ChemicalTags.slurryTag(Mekanism.rl(name));
         }
     }
 }

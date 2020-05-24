@@ -25,6 +25,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
 
     private final ResourceLocation iconLocation;
+    private final boolean hidden;
     private final int tint;
 
     private String translationKey;
@@ -34,6 +35,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
         this.attributeMap = builder.getAttributeMap();
         this.iconLocation = builder.getTexture();
         this.tint = builder.getColor();
+        this.hidden = builder.isHidden();
     }
 
     @Override
@@ -127,6 +129,15 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
      */
     public int getTint() {
         return tint;
+    }
+
+    /**
+     * Whether or not this chemical is hidden.
+     *
+     * @return if this chemical is hidden
+     */
+    public boolean isHidden() {
+        return hidden;
     }
 
     public boolean isIn(Tag<CHEMICAL> tag) {

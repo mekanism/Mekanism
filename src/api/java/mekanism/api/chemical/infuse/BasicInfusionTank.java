@@ -82,8 +82,7 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
 
     protected BasicInfusionTank(long capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
           Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
-        super(capacity, canExtract, canInsert, validator, null);
-        this.infusionHandler = infusionHandler;
+        this(capacity, canExtract, canInsert, validator, null, infusionHandler);
     }
 
     protected BasicInfusionTank(long capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,

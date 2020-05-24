@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.common.registries.MekanismPigments;
+import mekanism.common.registries.MekanismSlurries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.mojang.authlib.GameProfile;
@@ -200,6 +201,7 @@ public class Mekanism {
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismInfuseTypes.INFUSE_TYPES.register(modEventBus);
         MekanismPigments.PIGMENTS.register(modEventBus);
+        MekanismSlurries.SLURRIES.register(modEventBus);
         MekanismGases.GASES.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());

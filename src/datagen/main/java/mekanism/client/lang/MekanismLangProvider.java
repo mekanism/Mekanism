@@ -3,7 +3,7 @@ package mekanism.client.lang;
 import java.util.Map;
 import com.google.common.collect.Table.Cell;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.Slurry;
+import mekanism.api.chemical.gas.GasSlurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -42,6 +42,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addGases();
         addInfusionTypes();
         addPigments();
+        addSlurries();
         addDamageSources();
         addMisc();
     }
@@ -349,10 +350,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismGases.PLUTONIUM, "Plutonium");
         add(MekanismGases.POLONIUM, "Polonium");
         add(MekanismGases.NUTRITIONAL_PASTE, "Nutritional Paste");
-
-        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> entry : MekanismGases.PROCESSED_RESOURCE_SLURRIES.entrySet()) {
-            addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getName()));
-        }
     }
 
     private void addInfusionTypes() {
@@ -368,6 +365,14 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addPigments() {
         add(MekanismAPI.EMPTY_PIGMENT, "Empty");
+    }
+
+    private void addSlurries() {
+        add(MekanismAPI.EMPTY_SLURRY, "Empty");
+
+        for (Map.Entry<PrimaryResource, SlurryRegistryObject<GasSlurry, GasSlurry>> entry : MekanismGases.PROCESSED_RESOURCE_SLURRIES.entrySet()) {
+            addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getName()));
+        }
     }
 
     private void addDamageSources() {
@@ -563,6 +568,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GAS, "Gas: %s");
         add(MekanismLang.INFUSE_TYPE, "Infuse Type: %s");
         add(MekanismLang.PIGMENT, "Pigment: %s");
+        add(MekanismLang.SLURRY, "Slurry: %s");
         add(MekanismLang.LIQUID, "Liquid: %s");
         add(MekanismLang.UNIT, "Unit: %s");
         add(MekanismLang.USING, "Using: %s/t");
@@ -1146,7 +1152,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 
-    private void addSlurry(SlurryRegistryObject<Slurry, Slurry> slurryRO, String name) {
+    private void addSlurry(SlurryRegistryObject<GasSlurry, GasSlurry> slurryRO, String name) {
         add(slurryRO.getDirtySlurry(), name);
         add(slurryRO.getCleanSlurry(), "Clean " + name);
     }

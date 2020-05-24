@@ -16,6 +16,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
     private final ResourceLocation texture;
     private int color = 0xFFFFFF;
+    private boolean hidden;
 
     protected ChemicalBuilder(ResourceLocation texture) {
         this.texture = texture;
@@ -39,8 +40,17 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
         return getThis();
     }
 
+    public BUILDER hidden() {
+        this.hidden = true;
+        return getThis();
+    }
+
     public int getColor() {
         return color;
+    }
+
+    public boolean isHidden() {
+        return hidden;
     }
 
     @SuppressWarnings("unchecked")

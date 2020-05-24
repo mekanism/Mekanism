@@ -8,6 +8,8 @@ import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.BasicSlurryTank;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.MergedTank;
@@ -15,6 +17,7 @@ import mekanism.common.capabilities.MergedTank.CurrentType;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.chemical.MultiblockInfusionTank;
 import mekanism.common.capabilities.chemical.MultiblockPigmentTank;
+import mekanism.common.capabilities.chemical.MultiblockSlurryTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -43,12 +46,14 @@ public class TankMultiblockData extends MultiblockData {
               MultiblockFluidTank.create(this, tile, this::getTankCapacity, BasicFluidTank.alwaysTrue),
               MultiblockGasTank.create(this, tile, this::getTankCapacity, BasicGasTank.alwaysTrue),
               MultiblockInfusionTank.create(this, tile, this::getTankCapacity, BasicInfusionTank.alwaysTrue),
-              MultiblockPigmentTank.create(this, tile, this::getTankCapacity, BasicPigmentTank.alwaysTrue)
+              MultiblockPigmentTank.create(this, tile, this::getTankCapacity, BasicPigmentTank.alwaysTrue),
+              MultiblockSlurryTank.create(this, tile, this::getTankCapacity, BasicSlurryTank.alwaysTrue)
         );
         fluidTanks.add(mergedTank.getFluidTank());
         gasTanks.add(mergedTank.getGasTank());
         infusionTanks.add(mergedTank.getInfusionTank());
         pigmentTanks.add(mergedTank.getPigmentTank());
+        slurryTanks.add(mergedTank.getSlurryTank());
         inventorySlots.addAll(createBaseInventorySlots());
     }
 
@@ -93,6 +98,8 @@ public class TankMultiblockData extends MultiblockData {
                 return MekanismUtils.getScale(prevScale, getInfusionTank());
             case PIGMENT:
                 return MekanismUtils.getScale(prevScale, getPigmentTank());
+            case SLURRY:
+                return MekanismUtils.getScale(prevScale, getSlurryTank());
         }
         return MekanismUtils.getScale(prevScale, 0, getTankCapacity(), true);
     }
@@ -122,6 +129,8 @@ public class TankMultiblockData extends MultiblockData {
                 return getInfusionTank().getStored();
             case PIGMENT:
                 return getPigmentTank().getStored();
+            case SLURRY:
+                return getSlurryTank().getStored();
         }
         return 0;
     }
@@ -140,6 +149,10 @@ public class TankMultiblockData extends MultiblockData {
 
     public IPigmentTank getPigmentTank() {
         return mergedTank.getPigmentTank();
+    }
+
+    public ISlurryTank getSlurryTank() {
+        return mergedTank.getSlurryTank();
     }
 
     public boolean isEmpty() {

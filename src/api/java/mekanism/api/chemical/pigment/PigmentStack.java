@@ -36,7 +36,7 @@ public class PigmentStack extends ChemicalStack<Pigment> {
         if (MekanismAPI.PIGMENT_REGISTRY.getKey(pigment) == null) {
             MekanismAPI.logger.fatal("Failed attempt to create a PigmentStack for an unregistered Pigment {} (type {})", pigment.getRegistryName(),
                   pigment.getClass().getName());
-            throw new IllegalArgumentException("Cannot create a PigmentStack from an unregistered pigment");
+            throw new IllegalArgumentException("Cannot create a PigmentStack from an unregistered Pigment");
         }
         return pigment.delegate;
     }
@@ -88,7 +88,7 @@ public class PigmentStack extends ChemicalStack<Pigment> {
     }
 
     /**
-     * Default equality comparison for a PigmentStack. Same functionality as isPigmentEqual().
+     * Default equality comparison for a PigmentStack. Same functionality as isTypeEqual().
      *
      * This is included for use in data structures.
      */

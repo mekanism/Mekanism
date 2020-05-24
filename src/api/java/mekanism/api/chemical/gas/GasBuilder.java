@@ -12,8 +12,6 @@ import net.minecraft.util.ResourceLocation;
 @MethodsReturnNonnullByDefault
 public class GasBuilder extends ChemicalBuilder<Gas, GasBuilder> {
 
-    private boolean hidden;
-
     protected GasBuilder(ResourceLocation texture) {
         super(texture);
     }
@@ -24,17 +22,5 @@ public class GasBuilder extends ChemicalBuilder<Gas, GasBuilder> {
 
     public static GasBuilder builder(ResourceLocation texture) {
         return new GasBuilder(texture);
-    }
-
-    /**
-     * Sets this gas' visibility state to hidden, this will make the gas not get displayed in JEI
-     */
-    public GasBuilder hidden() {
-        hidden = true;
-        return this;
-    }
-
-    public boolean isHidden() {
-        return hidden;
     }
 }

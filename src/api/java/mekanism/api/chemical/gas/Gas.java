@@ -22,11 +22,8 @@ import net.minecraft.util.Util;
 @MethodsReturnNonnullByDefault
 public class Gas extends Chemical<Gas> implements IGasProvider {
 
-    private boolean hidden;
-
     public Gas(GasBuilder builder) {
         super(builder, ChemicalTags.GAS);
-        hidden = builder.isHidden();
     }
 
     /**
@@ -42,15 +39,6 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
 
     public static Gas getFromRegistry(@Nullable ResourceLocation name) {
         return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_GAS, MekanismAPI.GAS_REGISTRY);
-    }
-
-    /**
-     * Whether or not this gas is hidden.
-     *
-     * @return if this gas is hidden
-     */
-    public boolean isHidden() {
-        return hidden;
     }
 
     @Override

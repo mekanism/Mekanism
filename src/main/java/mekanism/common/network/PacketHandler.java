@@ -11,13 +11,14 @@ import mekanism.common.network.container.PacketUpdateContainerFloat;
 import mekanism.common.network.container.PacketUpdateContainerFloatingLong;
 import mekanism.common.network.container.PacketUpdateContainerFluidStack;
 import mekanism.common.network.container.PacketUpdateContainerFrequency;
-import mekanism.common.network.container.PacketUpdateContainerGasStack;
-import mekanism.common.network.container.PacketUpdateContainerInfusionStack;
+import mekanism.common.network.container.chemical.PacketUpdateContainerGasStack;
+import mekanism.common.network.container.chemical.PacketUpdateContainerInfusionStack;
 import mekanism.common.network.container.PacketUpdateContainerInt;
 import mekanism.common.network.container.PacketUpdateContainerItemStack;
 import mekanism.common.network.container.PacketUpdateContainerLong;
-import mekanism.common.network.container.PacketUpdateContainerPigmentStack;
+import mekanism.common.network.container.chemical.PacketUpdateContainerPigmentStack;
 import mekanism.common.network.container.PacketUpdateContainerShort;
+import mekanism.common.network.container.chemical.PacketUpdateContainerSlurryStack;
 import mekanism.common.network.container.list.PacketUpdateContainerFilterList;
 import mekanism.common.network.container.list.PacketUpdateContainerFrequencyList;
 import mekanism.common.network.container.list.PacketUpdateContainerStringList;
@@ -88,6 +89,7 @@ public class PacketHandler extends BasePacketHandler {
         registerUpdateContainer(PacketUpdateContainerGasStack.class, PacketUpdateContainerGasStack::decode);
         registerUpdateContainer(PacketUpdateContainerInfusionStack.class, PacketUpdateContainerInfusionStack::decode);
         registerUpdateContainer(PacketUpdateContainerPigmentStack.class, PacketUpdateContainerPigmentStack::decode);
+        registerUpdateContainer(PacketUpdateContainerSlurryStack.class, PacketUpdateContainerSlurryStack::decode);
         registerUpdateContainer(PacketUpdateContainerFrequency.class, PacketUpdateContainerFrequency::decode);
         registerUpdateContainer(PacketUpdateContainerFloatingLong.class, PacketUpdateContainerFloatingLong::decode);
         //List sync packets
