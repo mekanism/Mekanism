@@ -1038,9 +1038,10 @@ public final class MekanismUtils {
         TEXTURE_ITEMS("textures/item"),
         MODEL("models"),
         INFUSE("infuse"),
-        PIGMENT("pigment");
+        PIGMENT("pigment"),
+        SLURRY("slurry");
 
-        private String prefix;
+        private final String prefix;
 
         ResourceType(String s) {
             prefix = s;

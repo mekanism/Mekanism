@@ -10,6 +10,7 @@ import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.slot.ArmorSlot;
@@ -36,6 +37,7 @@ import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.SyncablePigmentStack;
 import mekanism.common.inventory.container.sync.SyncableShort;
+import mekanism.common.inventory.container.sync.SyncableSlurryStack;
 import mekanism.common.inventory.container.sync.list.SyncableList;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.network.container.PacketUpdateContainerBatch;
@@ -407,6 +409,13 @@ public abstract class MekanismContainer extends Container {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncablePigmentStack) {
             ((SyncablePigmentStack) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, @Nonnull SlurryStack value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncableSlurryStack) {
+            ((SyncableSlurryStack) data).set(value);
         }
     }
 

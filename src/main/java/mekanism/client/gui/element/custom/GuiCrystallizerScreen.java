@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.Slurry;
+import mekanism.api.chemical.gas.GasSlurry;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
@@ -48,7 +48,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
         GasStack gasStack = oreInfo.getInputGas();
         if (!gasStack.isEmpty()) {
             drawString(TextComponentUtil.build(gasStack), 33, 15, screenTextColor());
-            if (gasStack.getType() instanceof Slurry && !renderStack.isEmpty()) {
+            if (gasStack.getType() instanceof GasSlurry && !renderStack.isEmpty()) {
                 drawString(MekanismLang.GENERIC_PARENTHESIS.translate(renderStack), 33, 24, screenTextColor());
             } else {
                 GasToItemStackRecipe recipe = oreInfo.getRecipe();
@@ -77,8 +77,8 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
         Gas inputGas = oreInfo.getInputGas().getType();
         if (prevGas != inputGas) {
             prevGas = inputGas;
-            if (!prevGas.isEmptyType() && prevGas instanceof Slurry && !prevGas.isIn(MekanismTags.Gases.DIRTY_SLURRY)) {
-                updateStackList(((Slurry) prevGas).getOreTag());
+            if (!prevGas.isEmptyType() && prevGas instanceof GasSlurry && !prevGas.isIn(MekanismTags.Gases.DIRTY_SLURRY)) {
+                updateStackList(((GasSlurry) prevGas).getOreTag());
             } else {
                 resetStacks();
             }

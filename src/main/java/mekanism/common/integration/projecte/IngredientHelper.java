@@ -5,6 +5,7 @@ import java.util.Map;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.SlurryStack;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
@@ -64,6 +65,10 @@ public class IngredientHelper {
 
     public void put(PigmentStack stack) {
         put(NSSPigment.createPigment(stack), stack.getAmount());
+    }
+
+    public void put(SlurryStack stack) {
+        put(NSSSlurry.createSlurry(stack), stack.getAmount());
     }
 
     public void put(FluidStack stack) {

@@ -18,6 +18,9 @@ import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.BasicSlurryTank;
+import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -41,13 +44,14 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class MultiblockCache<T extends MultiblockData> implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler, IMekanismStrictEnergyHandler,
-      IMekanismHeatHandler, IMekanismInfusionHandler, IMekanismPigmentHandler {
+      IMekanismHeatHandler, IMekanismInfusionHandler, IMekanismPigmentHandler, IMekanismSlurryHandler {
 
     private final List<IInventorySlot> inventorySlots = new ArrayList<>();
     private final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
     private final List<IGasTank> gasTanks = new ArrayList<>();
     private final List<IInfusionTank> infusionTanks = new ArrayList<>();
     private final List<IPigmentTank> pigmentTanks = new ArrayList<>();
+    private final List<ISlurryTank> slurryTanks = new ArrayList<>();
     private final List<IEnergyContainer> energyContainers = new ArrayList<>();
     private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
@@ -124,6 +128,11 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         for (int i = 0; i < cachePigmentTanks.size(); i++) {
             StorageUtils.mergeTanks(cachePigmentTanks.get(i), mergeCache.getPigmentTanks(null).get(i));
         }
+        // Slurry
+        List<ISlurryTank> cacheSlurryTanks = getSlurryTanks(null);
+        for (int i = 0; i < cacheSlurryTanks.size(); i++) {
+            StorageUtils.mergeTanks(cacheSlurryTanks.get(i), mergeCache.getSlurryTanks(null).get(i));
+        }
         // Energy
         List<IEnergyContainer> cacheContainers = getEnergyContainers(null);
         for (int i = 0; i < cacheContainers.size(); i++) {
@@ -172,6 +181,12 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     @Nonnull
     @Override
+    public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
+        return slurryTanks;
+    }
+
+    @Nonnull
+    @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return energyContainers;
     }
@@ -198,6 +213,9 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
         PIGMENT(NBTConstants.PIGMENT_TANKS, (cache) -> cache.pigmentTanks.add(BasicPigmentTank.create(Long.MAX_VALUE, cache)),
               (holder) -> ((IMekanismPigmentHandler) holder).getPigmentTanks(null)),
+
+        SLURRY(NBTConstants.SLURRY_TANKS, (cache) -> cache.slurryTanks.add(BasicSlurryTank.create(Long.MAX_VALUE, cache)),
+              (holder) -> ((IMekanismSlurryHandler) holder).getSlurryTanks(null)),
 
         ENERGY(NBTConstants.ENERGY_CONTAINERS, (cache) -> cache.energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, cache)),
               (holder) -> ((IMekanismStrictEnergyHandler) holder).getEnergyContainers(null)),
@@ -241,6 +259,9 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
                     break;
                 case PIGMENT:
                     ((IPigmentTank) cache).setStack(((IPigmentTank) data).getStack());
+                    break;
+                case SLURRY:
+                    ((ISlurryTank) cache).setStack(((ISlurryTank) data).getStack());
                     break;
                 case ENERGY:
                     ((IEnergyContainer) cache).setEnergy(((IEnergyContainer) data).getEnergy());

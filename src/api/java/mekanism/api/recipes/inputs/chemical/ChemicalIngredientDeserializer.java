@@ -23,6 +23,8 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
@@ -49,6 +51,10 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
           new ChemicalIngredientDeserializer<Pigment, PigmentStack, PigmentStackIngredient>("pigment", ChemicalIngredientInfo.PIGMENT, ChemicalTags.PIGMENT,
                 PigmentStack::readFromPacket, Pigment::getFromRegistry, PigmentStackIngredient::from, PigmentStackIngredient::from, PigmentStackIngredient.Multi::new,
                 PigmentStackIngredient[]::new);
+    public static final ChemicalIngredientDeserializer<Slurry, SlurryStack, SlurryStackIngredient> SLURRY =
+          new ChemicalIngredientDeserializer<Slurry, SlurryStack, SlurryStackIngredient>("slurry", ChemicalIngredientInfo.SLURRY, ChemicalTags.SLURRY,
+                SlurryStack::readFromPacket, Slurry::getFromRegistry, SlurryStackIngredient::from, SlurryStackIngredient::from, SlurryStackIngredient.Multi::new,
+                SlurryStackIngredient[]::new);
 
     private final ChemicalTags<CHEMICAL> tags;
     private final Function<PacketBuffer, STACK> fromPacket;

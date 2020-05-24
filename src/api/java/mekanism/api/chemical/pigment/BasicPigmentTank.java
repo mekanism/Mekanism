@@ -82,8 +82,7 @@ public class BasicPigmentTank extends BasicChemicalTank<Pigment, PigmentStack> i
 
     protected BasicPigmentTank(long capacity, BiPredicate<@NonNull Pigment, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull Pigment, @NonNull AutomationType> canInsert, Predicate<@NonNull Pigment> validator, @Nullable IMekanismPigmentHandler pigmentHandler) {
-        super(capacity, canExtract, canInsert, validator, null);
-        this.pigmentHandler = pigmentHandler;
+        this(capacity, canExtract, canInsert, validator, null, pigmentHandler);
     }
 
     protected BasicPigmentTank(long capacity, BiPredicate<@NonNull Pigment, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Pigment, @NonNull AutomationType> canInsert,

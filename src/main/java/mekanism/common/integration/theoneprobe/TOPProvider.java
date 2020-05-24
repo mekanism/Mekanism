@@ -19,6 +19,7 @@ import mekanism.api.chemical.IChemicalHandlerWrapper;
 import mekanism.api.chemical.gas.GasHandlerWrapper;
 import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
 import mekanism.api.chemical.pigment.PigmentHandlerWrapper;
+import mekanism.api.chemical.slurry.SlurryHandlerWrapper;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -54,6 +55,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         GasElement.ID = probe.registerElementFactory(GasElement::new);
         InfuseTypeElement.ID = probe.registerElementFactory(InfuseTypeElement::new);
         PigmentElement.ID = probe.registerElementFactory(PigmentElement::new);
+        SlurryElement.ID = probe.registerElementFactory(SlurryElement::new);
         //Grab the default view settings
         IProbeConfig probeConfig = probe.createProbeConfig();
         displayFluidTanks = probeConfig.getTankMode() > 0;
@@ -99,6 +101,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
                 addInfo(tile, structure, Capabilities.GAS_HANDLER_CAPABILITY, GasHandlerWrapper::new, info, GasElement::new, MekanismLang.GAS);
                 addInfo(tile, structure, Capabilities.INFUSION_HANDLER_CAPABILITY, InfusionHandlerWrapper::new, info, InfuseTypeElement::new, MekanismLang.INFUSE_TYPE);
                 addInfo(tile, structure, Capabilities.PIGMENT_HANDLER_CAPABILITY, PigmentHandlerWrapper::new, info, PigmentElement::new, MekanismLang.PIGMENT);
+                addInfo(tile, structure, Capabilities.SLURRY_HANDLER_CAPABILITY, SlurryHandlerWrapper::new, info, SlurryElement::new, MekanismLang.SLURRY);
             }
         }
     }

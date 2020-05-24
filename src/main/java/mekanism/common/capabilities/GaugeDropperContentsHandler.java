@@ -14,12 +14,15 @@ import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler.RateLimitGasTank;
 import mekanism.common.capabilities.chemical.item.RateLimitInfusionHandler.RateLimitInfusionTank;
 import mekanism.common.capabilities.chemical.item.RateLimitPigmentHandler.RateLimitPigmentTank;
+import mekanism.common.capabilities.chemical.item.RateLimitSlurryHandler.RateLimitSlurryTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler.RateLimitFluidTank;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
@@ -32,7 +35,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class GaugeDropperContentsHandler extends ItemCapability implements IMekanismFluidHandler, IFluidHandlerItem, IMekanismGasHandler, IMekanismInfusionHandler,
-      IMekanismPigmentHandler {
+      IMekanismPigmentHandler, IMekanismSlurryHandler {
 
     private static final int CAPACITY = 16 * FluidAttributes.BUCKET_VOLUME;
     //TODO: Convert this to a long and make it a config option after making fluids be able to handle longs
@@ -44,6 +47,7 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
 
     private final MergedTank mergedTank;
 
+    private List<ISlurryTank> slurryTanks;
     private List<IPigmentTank> pigmentTanks;
     private List<IInfusionTank> infusionTanks;
     private List<IGasTank> gasTanks;
@@ -54,7 +58,8 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
               new RateLimitFluidTank(TRANSFER_RATE, () -> CAPACITY, this),
               new RateLimitGasTank(() -> TRANSFER_RATE, () -> CAPACITY, null, this),
               new RateLimitInfusionTank(TRANSFER_RATE, () -> CAPACITY,this),
-              new RateLimitPigmentTank(TRANSFER_RATE, () -> CAPACITY,this)
+              new RateLimitPigmentTank(TRANSFER_RATE, () -> CAPACITY,this),
+              new RateLimitSlurryTank(TRANSFER_RATE, () -> CAPACITY,this)
         );
     }
 
@@ -64,6 +69,7 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
         this.gasTanks = Collections.singletonList(mergedTank.getGasTank());
         this.infusionTanks = Collections.singletonList(mergedTank.getInfusionTank());
         this.pigmentTanks = Collections.singletonList(mergedTank.getPigmentTank());
+        this.slurryTanks = Collections.singletonList(mergedTank.getSlurryTank());
     }
 
     @Override
@@ -74,6 +80,7 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
             DataHandlerUtils.readContainers(getGasTanks(null), ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
             DataHandlerUtils.readContainers(getInfusionTanks(null), ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
             DataHandlerUtils.readContainers(getPigmentTanks(null), ItemDataUtils.getList(stack, NBTConstants.PIGMENT_TANKS));
+            DataHandlerUtils.readContainers(getSlurryTanks(null), ItemDataUtils.getList(stack, NBTConstants.SLURRY_TANKS));
         }
     }
 
@@ -99,6 +106,11 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
     }
 
     @Override
+    public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
+        return slurryTanks;
+    }
+
+    @Override
     public void onContentsChanged() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
@@ -106,6 +118,7 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
             ItemDataUtils.setList(stack, NBTConstants.GAS_TANKS, DataHandlerUtils.writeContainers(getGasTanks(null)));
             ItemDataUtils.setList(stack, NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeContainers(getInfusionTanks(null)));
             ItemDataUtils.setList(stack, NBTConstants.PIGMENT_TANKS, DataHandlerUtils.writeContainers(getPigmentTanks(null)));
+            ItemDataUtils.setList(stack, NBTConstants.SLURRY_TANKS, DataHandlerUtils.writeContainers(getSlurryTanks(null)));
         }
     }
 
@@ -121,5 +134,6 @@ public class GaugeDropperContentsHandler extends ItemCapability implements IMeka
         capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.GAS_HANDLER_CAPABILITY, this));
         capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.INFUSION_HANDLER_CAPABILITY, this));
         capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.PIGMENT_HANDLER_CAPABILITY, this));
+        capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SLURRY_HANDLER_CAPABILITY, this));
     }
 }

@@ -9,6 +9,8 @@ import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.ISlurryHandler;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -71,6 +73,10 @@ public class ItemGaugeDropper extends Item {
         if (!pigmentStack.isEmpty()) {
             return pigmentStack.getChemicalTint();
         }
+        SlurryStack slurryStack = StorageUtils.getStoredSlurryFromNBT(stack);
+        if (!slurryStack.isEmpty()) {
+            return slurryStack.getChemicalTint();
+        }
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluidStack.isEmpty()) {
             return fluidStack.getFluid().getAttributes().getColor(fluidStack);
@@ -104,6 +110,13 @@ public class ItemGaugeDropper extends Item {
                     pigmentHandlerItem.setPigmentInTank(tank, PigmentStack.EMPTY);
                 }
             }
+            Optional<ISlurryHandler> slurryCapability = MekanismUtils.toOptional(stack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY));
+            if (slurryCapability.isPresent()) {
+                ISlurryHandler slurryHandlerItem = slurryCapability.get();
+                for (int tank = 0; tank < slurryHandlerItem.getSlurryTankCount(); tank++) {
+                    slurryHandlerItem.setSlurryInTank(tank, SlurryStack.EMPTY);
+                }
+            }
             Optional<IFluidHandlerItem> fluidCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
             if (fluidCapability.isPresent()) {
                 IFluidHandlerItem fluidHandler = fluidCapability.get();
@@ -126,8 +139,9 @@ public class ItemGaugeDropper extends Item {
         GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
         InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
         PigmentStack pigmentStack = StorageUtils.getStoredPigmentFromNBT(stack);
+        SlurryStack slurryStack = StorageUtils.getStoredSlurryFromNBT(stack);
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
-        if (gasStack.isEmpty() && infusionStack.isEmpty() && pigmentStack.isEmpty() && fluidStack.isEmpty()) {
+        if (gasStack.isEmpty() && infusionStack.isEmpty() && pigmentStack.isEmpty() && slurryStack.isEmpty() && fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translate());
         } else if (!gasStack.isEmpty()) {
             tooltip.add(MekanismLang.STORED.translate(gasStack, gasStack.getAmount()));
@@ -135,6 +149,8 @@ public class ItemGaugeDropper extends Item {
             tooltip.add(MekanismLang.STORED.translate(infusionStack, infusionStack.getAmount()));
         } else if (!pigmentStack.isEmpty()) {
             tooltip.add(MekanismLang.STORED.translate(pigmentStack, pigmentStack.getAmount()));
+        } else if (!slurryStack.isEmpty()) {
+            tooltip.add(MekanismLang.STORED.translate(slurryStack, slurryStack.getAmount()));
         } else if (!fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.STORED.translate(fluidStack, fluidStack.getAmount()));
         }

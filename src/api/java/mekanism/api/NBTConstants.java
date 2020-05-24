@@ -162,6 +162,9 @@ public final class NBTConstants {
     public static final String SIZE_MODE = "sizeMode";
     public static final String SIZE_OVERRIDE = "SizeOverride";
     public static final String SLOT = "Slot";
+    public static final String SLURRY_NAME = "slurryName";
+    public static final String SLURRY_STORED = "slurry";
+    public static final String SLURRY_TANKS = "SlurryTanks";
     public static final String SORTING = "sorting";
     public static final String STATE = "state";
     public static final String STOCK_CONTROL = "stockControl";

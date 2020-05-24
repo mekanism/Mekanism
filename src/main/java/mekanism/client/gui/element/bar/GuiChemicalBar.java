@@ -9,6 +9,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -69,6 +70,8 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                     tankType = TankType.INFUSION_TANK;
                 } else if (type instanceof Pigment) {
                     tankType = TankType.PIGMENT_TANK;
+                } else if (type instanceof Slurry) {
+                    tankType = TankType.SLURRY_TANK;
                 }
                 if (tankType != null) {
                     int index = getHandler().getTankIndex();

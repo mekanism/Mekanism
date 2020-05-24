@@ -21,6 +21,9 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.BasicSlurryTank;
+import mekanism.api.chemical.slurry.ISlurryHandler;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -138,6 +141,17 @@ public class StorageUtils {
     }
 
     /**
+     * Gets the slurry if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a slurry handler
+     * attached to our item but it may have stored data in its tank from when it was a block
+     */
+    @Nonnull
+    public static SlurryStack getStoredSlurryFromNBT(ItemStack stack) {
+        BasicSlurryTank tank = BasicSlurryTank.create(Long.MAX_VALUE, null);
+        DataHandlerUtils.readContainers(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.SLURRY_TANKS));
+        return tank.getStack();
+    }
+
+    /**
      * Gets the energy if one is stored from an item's container going off the basis there is a single energy container. This is for cases when we may not actually have
      * an energy handler attached to our item but it may have stored data in its container from when it was a block
      */
@@ -192,7 +206,7 @@ public class StorageUtils {
     public static double getDurabilityForDisplay(ItemStack stack) {
         //Note we ensure the capabilities are not null, as the first call to getDurabilityForDisplay happens before capability injection
         if (Capabilities.GAS_HANDLER_CAPABILITY == null || Capabilities.INFUSION_HANDLER_CAPABILITY == null || Capabilities.PIGMENT_HANDLER_CAPABILITY == null ||
-            CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null || Capabilities.STRICT_ENERGY_CAPABILITY == null) {
+            Capabilities.SLURRY_HANDLER_CAPABILITY == null || CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null || Capabilities.STRICT_ENERGY_CAPABILITY == null) {
             return 1;
         }
         double bestRatio = 0;
@@ -218,6 +232,14 @@ public class StorageUtils {
             int tanks = pigmentHandlerItem.getPigmentTankCount();
             for (int tank = 0; tank < tanks; tank++) {
                 bestRatio = Math.max(bestRatio, getRatio(pigmentHandlerItem.getPigmentInTank(tank).getAmount(), pigmentHandlerItem.getPigmentTankCapacity(tank)));
+            }
+        }
+        Optional<ISlurryHandler> slurryCapability = MekanismUtils.toOptional(stack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY));
+        if (slurryCapability.isPresent()) {
+            ISlurryHandler slurryHandlerItem = slurryCapability.get();
+            int tanks = slurryHandlerItem.getSlurryTankCount();
+            for (int tank = 0; tank < tanks; tank++) {
+                bestRatio = Math.max(bestRatio, getRatio(slurryHandlerItem.getSlurryInTank(tank).getAmount(), slurryHandlerItem.getSlurryTankCapacity(tank)));
             }
         }
         Optional<IFluidHandlerItem> fluidCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));

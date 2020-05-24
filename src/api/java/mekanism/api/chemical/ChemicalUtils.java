@@ -13,6 +13,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.SlurryStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -41,6 +42,10 @@ public class ChemicalUtils {
 
     public static PigmentStack readPigmentStack(PacketBuffer buffer) {
         return buffer.readBoolean() ? PigmentStack.readFromPacket(buffer) : PigmentStack.EMPTY;
+    }
+
+    public static SlurryStack readSlurryStack(PacketBuffer buffer) {
+        return buffer.readBoolean() ? SlurryStack.readFromPacket(buffer) : SlurryStack.EMPTY;
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL readChemicalFromNBT(@Nullable CompoundNBT nbtTags, CHEMICAL empty, String nbtName,

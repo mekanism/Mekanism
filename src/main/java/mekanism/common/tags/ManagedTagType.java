@@ -8,6 +8,7 @@ import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import net.minecraft.tags.TagCollection;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -23,6 +24,7 @@ public final class ManagedTagType<TYPE extends IForgeRegistryEntry<TYPE>> {
     private static final ManagedTagType<Gas> GAS = new ManagedTagType<>("gas", "gases", () -> MekanismAPI.GAS_REGISTRY, ChemicalTags.GAS::setCollection);
     private static final ManagedTagType<InfuseType> INFUSE_TYPE = new ManagedTagType<>("infuse_type", "infuse_types", () -> MekanismAPI.INFUSE_TYPE_REGISTRY, ChemicalTags.INFUSE_TYPE::setCollection);
     private static final ManagedTagType<Pigment> PIGMENT = new ManagedTagType<>("pigment", "pigments", () -> MekanismAPI.PIGMENT_REGISTRY, ChemicalTags.PIGMENT::setCollection);
+    private static final ManagedTagType<Slurry> SLURRY = new ManagedTagType<>("slurry", "slurries", () -> MekanismAPI.SLURRY_REGISTRY, ChemicalTags.SLURRY::setCollection);
 
     public static List<ManagedTagType<?>> getManagedTypes() {
         return managedTypes;

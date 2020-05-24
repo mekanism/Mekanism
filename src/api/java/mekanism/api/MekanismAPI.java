@@ -7,6 +7,8 @@ import mekanism.api.chemical.infuse.EmptyInfuseType;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.EmptyPigment;
 import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.EmptySlurry;
+import mekanism.api.chemical.slurry.Slurry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,6 +33,7 @@ public class MekanismAPI {
     public static IForgeRegistry<Gas> GAS_REGISTRY = new RegistryBuilder<Gas>().setName(new ResourceLocation(MEKANISM_MODID, "gas")).setType(Gas.class).create();
     public static IForgeRegistry<InfuseType> INFUSE_TYPE_REGISTRY = new RegistryBuilder<InfuseType>().setName(new ResourceLocation(MEKANISM_MODID, "infuse_type")).setType(InfuseType.class).create();
     public static IForgeRegistry<Pigment> PIGMENT_REGISTRY = new RegistryBuilder<Pigment>().setName(new ResourceLocation(MEKANISM_MODID, "pigment")).setType(Pigment.class).create();
+    public static IForgeRegistry<Slurry> SLURRY_REGISTRY = new RegistryBuilder<Slurry>().setName(new ResourceLocation(MEKANISM_MODID, "slurry")).setType(Slurry.class).create();
 
     /**
      * Mekanism debug mode
@@ -43,6 +46,8 @@ public class MekanismAPI {
     public static final InfuseType EMPTY_INFUSE_TYPE = new EmptyInfuseType();
     @Nonnull
     public static final Pigment EMPTY_PIGMENT = new EmptyPigment();
+    @Nonnull
+    public static final Slurry EMPTY_SLURRY = new EmptySlurry();
 
     @SubscribeEvent
     public static void registerGases(RegistryEvent.Register<Gas> event) {
@@ -60,5 +65,11 @@ public class MekanismAPI {
     public static void registerPigments(RegistryEvent.Register<Pigment> event) {
         //Register EMPTY Pigment
         event.getRegistry().register(EMPTY_PIGMENT);
+    }
+
+    @SubscribeEvent
+    public static void registerSlurries(RegistryEvent.Register<Slurry> event) {
+        //Register EMPTY Slurry
+        event.getRegistry().register(EMPTY_SLURRY);
     }
 }

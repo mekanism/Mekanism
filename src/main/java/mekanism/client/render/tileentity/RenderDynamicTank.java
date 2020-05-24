@@ -14,6 +14,7 @@ import mekanism.client.render.data.GasRenderData;
 import mekanism.client.render.data.InfusionRenderData;
 import mekanism.client.render.data.PigmentRenderData;
 import mekanism.client.render.data.RenderData;
+import mekanism.client.render.data.SlurryRenderData;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
@@ -65,6 +66,8 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
                 return new InfusionRenderData(multiblock.getInfusionTank().getStack());
             case PIGMENT:
                 return new PigmentRenderData(multiblock.getPigmentTank().getStack());
+            case SLURRY:
+                return new SlurryRenderData(multiblock.getSlurryTank().getStack());
         }
         return null;
     }

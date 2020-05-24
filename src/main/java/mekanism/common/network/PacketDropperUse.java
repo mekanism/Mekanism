@@ -15,6 +15,9 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
+import mekanism.api.chemical.slurry.ISlurryHandler;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
@@ -72,8 +75,8 @@ public class PacketDropperUse {
         context.get().setPacketHandled(true);
     }
 
-    private static <HANDLER extends IMekanismFluidHandler & IMekanismGasHandler & IMekanismInfusionHandler & IMekanismPigmentHandler> void handleTankType(HANDLER handler,
-          PacketDropperUse message, PlayerEntity player, ItemStack stack) {
+    private static <HANDLER extends IMekanismFluidHandler & IMekanismGasHandler & IMekanismInfusionHandler & IMekanismPigmentHandler & IMekanismSlurryHandler>
+    void handleTankType(HANDLER handler, PacketDropperUse message, PlayerEntity player, ItemStack stack) {
         if (message.tankType == TankType.FLUID_TANK) {
             IExtendedFluidTank fluidTank = handler.getFluidTank(message.tankId, null);
             if (fluidTank != null) {
@@ -89,6 +92,9 @@ public class PacketDropperUse {
                     tank = handler.getInfusionTank(message.tankId, null);
                     break;
                 case PIGMENT_TANK:
+                    tank = handler.getPigmentTank(message.tankId, null);
+                    break;
+                case SLURRY_TANK:
                     tank = handler.getPigmentTank(message.tankId, null);
                     break;
             }
@@ -140,6 +146,14 @@ public class PacketDropperUse {
                 IPigmentHandler pigmentHandler = capability.get();
                 if (pigmentHandler instanceof IMekanismPigmentHandler) {
                     itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismPigmentHandler) pigmentHandler).getPigmentTank(0, null);
+                }
+            }
+        } else if (emptyStack == SlurryStack.EMPTY) {
+            Optional<ISlurryHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY));
+            if (capability.isPresent()) {
+                ISlurryHandler slurryHandler = capability.get();
+                if (slurryHandler instanceof IMekanismSlurryHandler) {
+                    itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismSlurryHandler) slurryHandler).getSlurryTank(0, null);
                 }
             }
         }
@@ -227,6 +241,7 @@ public class PacketDropperUse {
         GAS_TANK,
         FLUID_TANK,
         INFUSION_TANK,
-        PIGMENT_TANK
+        PIGMENT_TANK,
+        SLURRY_TANK
     }
 }

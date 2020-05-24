@@ -16,6 +16,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongConsumer;
 import net.minecraft.item.ItemStack;
@@ -153,6 +154,12 @@ public class NBTUtils {
     public static void setPigmentStackIfPresent(CompoundNBT nbt, String key, Consumer<PigmentStack> setter) {
         if (nbt.contains(key, NBT.TAG_COMPOUND)) {
             setter.accept(PigmentStack.readFromNBT(nbt.getCompound(key)));
+        }
+    }
+
+    public static void setSlurryStackIfPresent(CompoundNBT nbt, String key, Consumer<SlurryStack> setter) {
+        if (nbt.contains(key, NBT.TAG_COMPOUND)) {
+            setter.accept(SlurryStack.readFromNBT(nbt.getCompound(key)));
         }
     }
 

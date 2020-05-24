@@ -11,6 +11,9 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
@@ -48,10 +51,16 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
         return side -> getMultiblock().getPigmentTanks(side);
     }
 
+    @Nonnull
+    @Override
+    protected IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
+        return side -> getMultiblock().getSlurryTanks(side);
+    }
+
     @Override
     public boolean persists(SubstanceType type) {
         //Do not handle fluid when it comes to syncing it/saving this tile to disk
-        if (type == SubstanceType.FLUID || type == SubstanceType.GAS || type == SubstanceType.INFUSION || type == SubstanceType.PIGMENT) {
+        if (type == SubstanceType.FLUID || type == SubstanceType.GAS || type == SubstanceType.INFUSION || type == SubstanceType.PIGMENT || type == SubstanceType.SLURRY) {
             return false;
         }
         return super.persists(type);

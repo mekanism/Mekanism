@@ -27,6 +27,10 @@ import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
+import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -69,6 +73,7 @@ import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.capabilities.resolver.manager.InfusionHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
 import mekanism.common.capabilities.resolver.manager.PigmentHandlerManager;
+import mekanism.common.capabilities.resolver.manager.SlurryHandlerManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -79,6 +84,7 @@ import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.container.sync.SyncablePigmentStack;
+import mekanism.common.inventory.container.sync.SyncableSlurryStack;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.item.ItemConfigurationCard;
@@ -129,7 +135,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
       ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler,
-      IMekanismPigmentHandler {
+      IMekanismPigmentHandler, IMekanismSlurryHandler {
 
     /**
      * The players currently using this block.
@@ -194,6 +200,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected final PigmentHandlerManager pigmentHandlerManager;
     //End variables IMekanismPigmentHandler
 
+    //Variables for handling IMekanismSlurryHandler
+    protected final SlurryHandlerManager slurryHandlerManager;
+    //End variables IMekanismSlurryHandler
+
     //Variables for handling IMekanismFluidHandler
     protected final FluidHandlerManager fluidHandlerManager;
     //End variables IMekanismFluidHandler
@@ -236,6 +246,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         capabilityHandlerManagers.add(gasHandlerManager = new GasHandlerManager(getInitialGasTanks(), this));
         capabilityHandlerManagers.add(infusionHandlerManager = new InfusionHandlerManager(getInitialInfusionTanks(), this));
         capabilityHandlerManagers.add(pigmentHandlerManager = new PigmentHandlerManager(getInitialPigmentTanks(), this));
+        capabilityHandlerManagers.add(slurryHandlerManager = new SlurryHandlerManager(getInitialSlurryTanks(), this));
         capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(), this));
         capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(), this));
         capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(), this));
@@ -357,6 +368,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public final boolean canHandlePigment() {
         return pigmentHandlerManager.canHandle();
+    }
+
+    @Override
+    public final boolean canHandleSlurry() {
+        return slurryHandlerManager.canHandle();
     }
 
     @Override
@@ -623,6 +639,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 container.track(SyncablePigmentStack.create(pigmentTank));
             }
         }
+        if (canHandleSlurry() && handles(SubstanceType.SLURRY)) {
+            List<ISlurryTank> slurryTanks = getSlurryTanks(null);
+            for (ISlurryTank slurryTank : slurryTanks) {
+                container.track(SyncableSlurryStack.create(slurryTank));
+            }
+        }
         if (canHandleFluid() && handles(SubstanceType.FLUID)) {
             List<IExtendedFluidTank> fluidTanks = getFluidTanks(null);
             for (IExtendedFluidTank fluidTank : fluidTanks) {
@@ -881,6 +903,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return pigmentHandlerManager.getContainers(side);
     }
     //End methods IMekanismPigmentHandler
+
+    //Methods for implementing IMekanismSlurryHandler
+    @Nullable
+    protected IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public final List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
+        return slurryHandlerManager.getContainers(side);
+    }
+    //End methods IMekanismSlurryHandler
 
     //Methods for implementing IMekanismFluidHandler
     @Nullable

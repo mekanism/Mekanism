@@ -59,7 +59,7 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
     }
 
     /**
-     * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link Tag < InfuseType >}
+     * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link Tag<InfuseType>}
      */
     @Nonnull
     public static NSSInfuseType createTag(@Nonnull Tag<InfuseType> tag) {

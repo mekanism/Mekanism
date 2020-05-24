@@ -55,6 +55,9 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
                 case PIGMENT:
                     addStored(ret, tile.getMultiblock().getPigmentTank());
                     break;
+                case SLURRY:
+                    addStored(ret, tile.getMultiblock().getSlurryTank());
+                    break;
             }
             ret.add(MekanismLang.CAPACITY.translate(""));
             // capacity is the same for the tank no matter what type it is currently stored

@@ -8,6 +8,7 @@ import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -30,6 +31,7 @@ public final class TagType<TYPE extends IForgeRegistryEntry<TYPE>> {
     public static TagType<Gas> GAS = new TagType<>("Gas", "gases", () -> MekanismAPI.GAS_REGISTRY, ChemicalTags.GAS::setCollection);
     public static TagType<InfuseType> INFUSE_TYPE = new TagType<>("Infuse Type", "infuse_types", () -> MekanismAPI.INFUSE_TYPE_REGISTRY, ChemicalTags.INFUSE_TYPE::setCollection);
     public static TagType<Pigment> PIGMENT = new TagType<>("Pigment", "pigments", () -> MekanismAPI.PIGMENT_REGISTRY, ChemicalTags.PIGMENT::setCollection);
+    public static TagType<Slurry> SLURRY = new TagType<>("Slurry", "slurries", () -> MekanismAPI.SLURRY_REGISTRY, ChemicalTags.SLURRY::setCollection);
 
     private final Consumer<TagCollection<TYPE>> collectionSetter;
     private final Supplier<IForgeRegistry<TYPE>> registry;

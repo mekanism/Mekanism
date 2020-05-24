@@ -18,12 +18,14 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IPigmentProvider;
+import mekanism.api.providers.ISlurryProvider;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import net.minecraft.block.Block;
@@ -164,6 +166,10 @@ public abstract class BaseTagProvider implements IDataProvider {
         return getBuilder(TagType.PIGMENT, tag);
     }
 
+    protected Tag.Builder<Slurry> getSlurryBuilder(Tag<Slurry> tag) {
+        return getBuilder(TagType.SLURRY, tag);
+    }
+
     protected void addToTag(Tag<Item> tag, IItemProvider... itemProviders) {
         Tag.Builder<Item> tagBuilder = getItemBuilder(tag);
         for (IItemProvider itemProvider : itemProviders) {
@@ -219,6 +225,13 @@ public abstract class BaseTagProvider implements IDataProvider {
         Tag.Builder<Pigment> tagBuilder = getPigmentBuilder(tag);
         for (IPigmentProvider pigmentProvider : pigmentProviders) {
             tagBuilder.add(pigmentProvider.getPigment());
+        }
+    }
+
+    protected void addToTag(Tag<Slurry> tag, ISlurryProvider... slurryProviders) {
+        Tag.Builder<Slurry> tagBuilder = getSlurryBuilder(tag);
+        for (ISlurryProvider slurryProvider : slurryProviders) {
+            tagBuilder.add(slurryProvider.getSlurry());
         }
     }
 }
