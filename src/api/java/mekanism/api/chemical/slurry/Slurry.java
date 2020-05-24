@@ -18,7 +18,7 @@ import net.minecraft.util.Util;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class Slurry extends Chemical<Slurry> implements ISlurryProvider {//TODO: Improve this to have some of the "magic" that Slurry/gas currently has
+public class Slurry extends Chemical<Slurry> implements ISlurryProvider {//TODO: Improve this to have some of the "magic" that the current GasSlurry has
 
     public Slurry(SlurryBuilder builder) {
         super(builder, ChemicalTags.SLURRY);

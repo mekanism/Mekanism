@@ -200,9 +200,8 @@ public class MekanismJEI implements IModPlugin {
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void registerIngredientType(IModIngredientRegistration registry,
           IForgeRegistry<CHEMICAL> forgeRegistry, IIngredientType<STACK> ingredientType, ChemicalStackHelper<CHEMICAL, STACK> stackHelper,
           ChemicalStackRenderer<CHEMICAL, STACK> stackRenderer, ChemicalToStackCreator<CHEMICAL, STACK> stackCreator) {
-        //TODO: Re-implement hidden
         List<STACK> types = forgeRegistry.getValues().stream()
-              .filter(chemical -> !chemical.isEmptyType())
+              .filter(chemical -> !chemical.isEmptyType() && !chemical.isHidden())
               .map(chemical -> stackCreator.createStack(chemical, FluidAttributes.BUCKET_VOLUME))
               .collect(Collectors.toList());
         registry.register(ingredientType, types, stackHelper, stackRenderer);
